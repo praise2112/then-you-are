@@ -27,6 +27,16 @@ cd frontend && npm install && npm run dev       # http://127.0.0.1:5173
 
 The dev server proxies `/api` to the backend.
 
+## Mockups
+
+Static HTML mockups of every Phase-1 screen live in `mockups/`. They share the
+frontend's token sheet, so a palette change shows up in both. Serve them and open
+the contact sheet:
+
+```bash
+python3 -m http.server 8090      # then open http://localhost:8090/mockups/
+```
+
 ## Checks
 
 ```bash

@@ -12,6 +12,9 @@
   --amber: #b08d3e;
   --slate: #7a6fa0;
 
+  --bar-bg: #17151a;
+  --bar-fg: #f6f1e7;
+
   --serif: Georgia, "Times New Roman", serif;
   --mono: ui-monospace, "SF Mono", Menlo, monospace;
 
@@ -30,6 +33,8 @@
   --ink-soft: #c3bbab;
   --ink-faint: #8b8378;
   --vermilion: #e8613f;
+  --bar-bg: #201d24;
+  --bar-fg: #f6f1e7;
 }
 
 body {
