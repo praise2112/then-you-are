@@ -1,0 +1,22 @@
+# Local session context, holds absolute paths to the spec folder
+CLAUDE.md
+HANDOFF.md
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Secrets and local state
+.env
+.env.local
+*.db

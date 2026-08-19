@@ -1,0 +1,40 @@
+/* Ink & Folio. Light is canonical; dark is a token swap, nothing else changes. */
+:root {
+  --paper: #f6f1e7;
+  --paper-raised: #fffdf7;
+  --paper-sunk: #efe8d8;
+  --rule: #d8cfbc;
+  --ink: #17151a;
+  --ink-soft: #4a443b;
+  --ink-faint: #7a7263;
+  --vermilion: #d9482b;
+  --brass: #d4a93c;
+  --amber: #b08d3e;
+  --slate: #7a6fa0;
+
+  --serif: Georgia, "Times New Roman", serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  --space-1: 0.4rem;
+  --space-2: 0.8rem;
+  --space-3: 1.6rem;
+  --space-4: 3.2rem;
+}
+
+:root[data-theme="dark"] {
+  --paper: #17151a;
+  --paper-raised: #201d24;
+  --paper-sunk: #100e13;
+  --rule: #3a3540;
+  --ink: #f6f1e7;
+  --ink-soft: #c3bbab;
+  --ink-faint: #8b8378;
+  --vermilion: #e8613f;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+}
