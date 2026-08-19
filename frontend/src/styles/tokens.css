@@ -6,8 +6,9 @@
   --rule: #d8cfbc;
   --ink: #17151a;
   --ink-soft: #4a443b;
-  --ink-faint: #7a7263;
+  --ink-faint: #6b6355;
   --vermilion: #d9482b;
+  --vermilion-ink: #b0341c;
   --brass: #d4a93c;
   --amber: #b08d3e;
   --slate: #7a6fa0;
@@ -33,6 +34,8 @@
   --ink-soft: #c3bbab;
   --ink-faint: #8b8378;
   --vermilion: #e8613f;
+  --vermilion-ink: #f0836a;
+  --brass: #d8b45a;
   --bar-bg: #201d24;
   --bar-fg: #f6f1e7;
 }
