@@ -37,6 +37,9 @@ the contact sheet:
 python3 -m http.server 8090      # then open http://localhost:8090/mockups/
 ```
 
+The methodology page is generated, not hand-written. Edit `mockups/methodology.md`
+and run `python3 mockups/build_methodology.py`.
+
 ## Checks
 
 ```bash
