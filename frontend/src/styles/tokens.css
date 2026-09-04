@@ -16,8 +16,10 @@
   --bar-bg: #17151a;
   --bar-fg: #f6f1e7;
 
-  --serif: Georgia, "Times New Roman", serif;
-  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --display: "Fraunces", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --emoji: "Noto Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
 
   --space-1: 0.4rem;
   --space-2: 0.8rem;
