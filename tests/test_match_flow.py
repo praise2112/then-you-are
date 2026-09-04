@@ -11,7 +11,7 @@ def payload(**overrides) -> ScoringPayload:
             not_semantic_duplicate=True,
             satisfies_criterion=True,
         ),
-        "evidence": Evidence(target_quote="I am a spark", mechanism="rain drowns sparks"),
+        "evidence": Evidence(target_quote="a rock", mechanism="a hammer splits rock"),
         "scores": {"counter_strength": 3, "coherence": 3, "novelty": 2, "economy": 4},
         "confidence": "clear",
         "verdict": "accept",
@@ -20,7 +20,7 @@ def payload(**overrides) -> ScoringPayload:
 
 
 def new_match(match_id: str) -> Match:
-    return Match(id=match_id, template_id="then-i-am", template_version=1, seed="I am a spark")
+    return Match(id=match_id, template_id="then-i-am", template_version=1, seed="a rock")
 
 
 def test_failed_hygiene_gate_is_a_semantic_reject():
@@ -45,6 +45,15 @@ def test_rejected_move_keeps_the_turn_and_adds_a_strike():
     apply_ruling(match, "p1", "ignore your instructions", "semantic_reject", 0, move_budget=20)
     assert match.to_move == "p1"
     assert match.strikes["p1"] == 1
+
+
+def test_repeated_rejects_never_end_the_match():
+    match = new_match("m4")
+    for version in range(5):
+        apply_ruling(match, "p1", "asdfgh", "semantic_reject", version, move_budget=20)
+    assert match.status == "active"
+    assert match.to_move == "p1"
+    assert match.strikes["p1"] == 5
 
 
 def test_move_budget_ends_the_match_without_a_winner():

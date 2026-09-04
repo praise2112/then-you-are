@@ -8,8 +8,6 @@ from arena_judge.schema import Outcome
 MatchStatus = Literal["active", "awaiting_judgment", "ended", "abandoned"]
 Actor = Literal["p1", "p2"]
 
-MAX_STRIKES = 3
-
 
 class StaleVersionError(Exception):
     """The command carried an expected_version that no longer matches the match."""
@@ -74,10 +72,8 @@ def apply_ruling(
     match.state_version += 1
 
     if outcome in ("deterministic_invalid", "semantic_reject"):
+        # Rejects never end a match. The caller decides what a strike count means per actor.
         match.strikes[actor] += 1
-        if match.strikes[actor] >= MAX_STRIKES:
-            match.status = "ended"
-            match.winner = other(actor)
         return match
 
     if outcome == "fail":
