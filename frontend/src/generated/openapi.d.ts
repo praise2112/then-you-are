@@ -467,6 +467,8 @@ export interface components {
             host: components["schemas"]["HostPayload"];
             /** Badges */
             badges: string[];
+            /** Points */
+            points: number;
             /** Points P1 */
             points_p1: number;
             /** Points P2 */
@@ -534,6 +536,10 @@ export interface components {
             rules_text: string;
             /** Max Chars */
             max_chars: number;
+            /** Move Prefix */
+            move_prefix: string;
+            /** Move Example */
+            move_example: string;
             /** Move Budget */
             move_budget: number;
             /** Host Name */
@@ -573,6 +579,8 @@ export interface components {
             outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "judge_unavailable";
             scoring: components["schemas"]["ScoringPayload"] | null;
             host: components["schemas"]["HostPayload"] | null;
+            /** Points */
+            points: number | null;
         };
         /** ValidationError */
         ValidationError: {

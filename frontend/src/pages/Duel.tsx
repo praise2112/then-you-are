@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
 import { ThemeToggle } from "../App.tsx";
 import {
@@ -15,7 +15,7 @@ import {
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { capitalize, formName, lastStanding, rulingLine, standingBefore, truncate } from "./format.ts";
+import { capitalize, formName, fullMove, HOUSE, lastStanding, rulingLine, standingBefore } from "./format.ts";
 import { MatchEnd } from "./MatchEnd.tsx";
 import { VerdictSheet } from "./Verdict.tsx";
 
@@ -34,6 +34,7 @@ export function Duel({ matchId }: Props) {
   const [ended, setEnded] = useState<MatchEnded | null>(null);
   const [showResign, setShowResign] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const refresh = useCallback(() => api.match(matchId).then(setSnap, (e) => setError(e.message)), [matchId]);
 
@@ -82,7 +83,7 @@ export function Duel({ matchId }: Props) {
                 ? s.transcript
                 : [
                     ...s.transcript,
-                    { seq: r.seq, actor: r.actor, move_text: r.move_text, outcome: r.outcome, scoring: r.scoring, host: r.host },
+                    { seq: r.seq, actor: r.actor, move_text: r.move_text, outcome: r.outcome, scoring: r.scoring, host: r.host, points: r.points },
                   ],
             },
           );
@@ -122,13 +123,19 @@ export function Duel({ matchId }: Props) {
     setPending(true);
     setReturned(null);
     try {
-      await api.move(matchId, snap!.state_version, text);
+      await api.move(matchId, snap!.state_version, fullMove(template!.move_prefix, text));
     } catch (e) {
       setPending(false);
       setError(null);
       setReturned({ outcome: "deterministic_invalid", reason_text: (e as Error).message, strikes: 0, nudge_text: null });
       void refresh();
     }
+  }
+
+  function onKey(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key !== "Enter" || event.shiftKey) return;
+    event.preventDefault();
+    formRef.current?.requestSubmit();
   }
 
   async function resign() {
@@ -141,17 +148,17 @@ export function Duel({ matchId }: Props) {
   }
 
   const standingHead = streaming
-    ? `${snap.opponent_name} is becoming`
+    ? `${HOUSE} is becoming`
     : standingIsMine
       ? "You became"
       : standing
-        ? `Beat this, from ${snap.opponent_name}`
+        ? `Beat this, from ${HOUSE}`
         : "Beat this, the opening";
   const composerLabel = paused
     ? "Draft your next move while you wait"
     : returned
       ? "Your move, still yours"
-      : `Your move, beat ${formName(standingText)}`;
+      : `Your move, beat ${formName(standingText, template.move_prefix)}`;
   const hostLine = paused
     ? paused.host_text
     : strikesNudge
@@ -159,8 +166,8 @@ export function Duel({ matchId }: Props) {
       : thinking
         ? "The judge is reading."
         : standingIsMine
-          ? `${snap.opponent_name} is thinking.`
-          : `${capitalize(formName(standingText))}. Beat it, do not become it.`;
+          ? `${HOUSE} is thinking.`
+          : `${capitalize(formName(standingText, template.move_prefix))}. Beat it, do not become it.`;
 
   return (
     <>
@@ -179,7 +186,7 @@ export function Duel({ matchId }: Props) {
             <b>
               {snap.points_p1} : {snap.points_p2}
             </b>
-            <span className="small-caps">{snap.opponent_name}</span>
+            <span className="small-caps">{HOUSE}</span>
           </div>
           <p className="centered-label small-caps" style={{ marginTop: "var(--space-3)" }}>
             The match so far
@@ -200,9 +207,9 @@ export function Duel({ matchId }: Props) {
               <li key={turn.seq}>
                 <div className="move">
                   <span>
-                    <b>R{turn.seq + 1}:</b> {truncate(turn.move_text)}
+                    <b>R{turn.seq + 1}:</b> {turn.move_text}
                   </span>
-                  <span className="medallion sm" role="img" aria-label={formName(turn.move_text)}>
+                  <span className="medallion sm" role="img" aria-label={formName(turn.move_text, template.move_prefix)}>
                     {turn.host?.generated_emoji ?? "?"}
                   </span>
                 </div>
@@ -213,7 +220,7 @@ export function Duel({ matchId }: Props) {
               <li>
                 <div className="move">
                   <span>
-                    <b>R{round}:</b> {truncate(text)}
+                    <b>R{round}:</b> {fullMove(template.move_prefix, text)}
                   </span>
                   <span className="medallion sm empty">?</span>
                 </div>
@@ -233,12 +240,12 @@ export function Duel({ matchId }: Props) {
           <p className="small-caps last-move-head">{standingHead}</p>
           <div className="torn">
             {paused && <span className="tag">Awaiting ruling</span>}
-            <p className="last-move">{paused ? text : standingText}</p>
+            <p className="last-move">{paused ? fullMove(template.move_prefix, text) : standingText}</p>
           </div>
           {paused && <p className="waiting">The match is paused until the judge rules.</p>}
           {thinking && !paused && <p className="waiting">The judge is considering.</p>}
 
-          <form className={`composer${returned ? " returned" : ""}`} style={{ marginTop: "var(--space-3)" }} onSubmit={play}>
+          <form ref={formRef} className={`composer${returned ? " returned" : ""}`} style={{ marginTop: "var(--space-3)" }} onSubmit={play}>
             {returned && (
               <span className="slip returned-slip" aria-hidden="true">
                 Returned, try again
@@ -247,18 +254,21 @@ export function Duel({ matchId }: Props) {
             <label className="small-caps" htmlFor="move">
               {composerLabel}
             </label>
-            <textarea
-              id="move"
-              maxLength={template.max_chars}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              disabled={pending || !!ended || (snap.to_move !== "p1" && !paused)}
-              placeholder={
-                paused
-                  ? "Nothing to lose by thinking ahead. It sends when play resumes."
-                  : `Become something ${formName(standingText)} cannot survive. ${template.max_chars} characters.`
-              }
-            />
+            <div className="compose-box">
+              <span className="prefix" aria-hidden="true">
+                {template.move_prefix}
+              </span>
+              <textarea
+                id="move"
+                maxLength={template.max_chars - template.move_prefix.length}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={onKey}
+                disabled={pending || !!ended || (snap.to_move !== "p1" && !paused)}
+                placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example.slice(template.move_prefix.length)}
+              />
+            </div>
+            <p className="compose-hint">Enter sends. Shift+Enter for a new line.</p>
             {returned && (
               <p className="why">
                 <b>Not a move yet.</b> {returned.reason_text}
@@ -266,7 +276,7 @@ export function Duel({ matchId }: Props) {
             )}
             <div className="composer-foot">
               <span className="counter" aria-live="polite">
-                {text.length}/{template.max_chars}
+                {fullMove(template.move_prefix, text).length}/{template.max_chars}
               </span>
               <button className={`ticket${canPlay ? "" : " quiet"}`} type="submit" disabled={!canPlay}>
                 {pending ? "Sent" : "Play it"}
@@ -296,7 +306,7 @@ export function Duel({ matchId }: Props) {
         <VerdictSheet
           ruling={verdict}
           previous={standingBefore(snap.transcript, verdict.seq, snap.seed_token)}
-          opponentName={snap.opponent_name}
+          opponentName={HOUSE}
           template={template}
           ended={!!ended}
           onNext={() => setVerdict(null)}
@@ -311,7 +321,7 @@ export function Duel({ matchId }: Props) {
               Resign this match?
             </h2>
             <p style={{ margin: "var(--space-2) 0 0", color: "var(--ink-soft)" }}>
-              {snap.opponent_name} takes the win at {snap.points_p1} : {snap.points_p2} after{" "}
+              {HOUSE} takes the win at {snap.points_p1} : {snap.points_p2} after{" "}
               {snap.judged_moves} judged moves. The replay is saved either way.
             </p>
             <div className="sheet-actions">

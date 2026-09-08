@@ -72,7 +72,7 @@ export function Play() {
                 <b>Become the thing that beats it.</b>
                 <p>Say what you are and why it wins. Plain words. Under {template.max_chars} characters.</p>
                 <p className="example">
-                  Against a rock: <span>I am the hammer, two kilos, rock-splitting.</span>
+                  For example: <span>{template.move_example}</span>
                 </p>
               </div>
             </li>
@@ -80,9 +80,8 @@ export function Play() {
               <div>
                 <b>The judge rules every move.</b>
                 <p>
-                  One move that fails to beat what is standing ends the match. {template.move_budget}{" "}
-                  moves with nobody falling goes to points. A muddled move comes back to you for
-                  another go, no harm done.
+                  One move that fails ends the match. {template.move_budget} moves with nobody
+                  falling goes to points. A muddled move comes back to you, no harm done.
                 </p>
               </div>
             </li>

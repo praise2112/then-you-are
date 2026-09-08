@@ -274,6 +274,7 @@ class MatchService:
                     outcome=t["outcome"],
                     scoring=t["scoring"],
                     host=t["host"],
+                    points=self._turn_points(t["scoring"]),
                 )
                 for t in extra["turn_rows"]
             ],
@@ -289,6 +290,11 @@ class MatchService:
             share_text=self._share_text(snap),
             highlight_seq=self._highlight_seq(snap),
         )
+
+    def _turn_points(self, scoring: dict[str, Any] | None) -> int | None:
+        if scoring is None:
+            return None
+        return round(weighted_total(scoring["scores"], self.template.weights))
 
     def _highlight_seq(self, snap: MatchSnapshot) -> int | None:
         winner_moves = [
@@ -467,6 +473,7 @@ class MatchService:
                 scoring=response.scoring,
                 host=response.host.model_copy(update={"badges": badges}),
                 badges=badges,
+                points=round(points),
                 points_p1=p1,
                 points_p2=p2,
                 to_move=match.to_move,

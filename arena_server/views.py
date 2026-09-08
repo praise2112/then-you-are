@@ -19,6 +19,8 @@ class TemplateView(BaseModel):
     rubric: list[RubricView]
     rules_text: str
     max_chars: int
+    move_prefix: str
+    move_example: str
     move_budget: int
     host_name: str
 
@@ -30,6 +32,7 @@ class TurnView(BaseModel):
     outcome: Outcome
     scoring: ScoringPayload | None
     host: HostPayload | None
+    points: int | None
 
 
 class MatchSnapshot(BaseModel):

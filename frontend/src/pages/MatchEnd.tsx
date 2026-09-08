@@ -5,7 +5,7 @@ import type { MatchEnded, MatchSnapshot, TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { formName, STANDING, total } from "./format.ts";
+import { formName, HOUSE, STANDING } from "./format.ts";
 
 type Props = { snap: MatchSnapshot; ended: MatchEnded; template: TemplateView };
 
@@ -31,7 +31,7 @@ export function MatchEnd({ snap, ended, template }: Props) {
   const kicker = onPoints
     ? `${template.title}, ${snap.judged_moves} moves, nobody fell`
     : `${template.title}, a duel concluded`;
-  const verdictLine = lastTurn?.host?.headline ?? (won ? "The other side gave up." : "You gave up.");
+  const verdictLine = lastTurn?.host?.quotable_line ?? (won ? "The other side gave up." : "You gave up.");
   const replayUrl = `${location.origin}/r/${snap.id}`;
 
   const exchanges = useMemo(() => {
@@ -41,7 +41,7 @@ export function MatchEnd({ snap, ended, template }: Props) {
       const [a, b] = [judged[i], judged[i + 1]];
       const mine = a.actor === "p1" ? a : b;
       const theirs = a.actor === "p1" ? b : a;
-      marks.push(total(mine.scoring) >= total(theirs.scoring));
+      marks.push((mine.points ?? 0) >= (theirs.points ?? 0));
     }
     return marks;
   }, [snap.transcript]);
@@ -73,7 +73,7 @@ export function MatchEnd({ snap, ended, template }: Props) {
             </p>
             <p className="score-names">
               <span>You</span>
-              <span>{snap.opponent_name}</span>
+              <span>{HOUSE}</span>
             </p>
           </>
         )}
@@ -108,7 +108,7 @@ export function MatchEnd({ snap, ended, template }: Props) {
                   <span className={`medallion${i === standingTurns.length - 1 && turn.actor === ended.winner ? " crowned" : ""}`}>
                     {turn.host?.generated_emoji}
                   </span>
-                  <figcaption>{formName(turn.move_text)}</figcaption>
+                  <figcaption>{formName(turn.move_text, template.move_prefix)}</figcaption>
                 </figure>
               </span>
             ))}
@@ -175,8 +175,9 @@ export function MatchEnd({ snap, ended, template }: Props) {
             <p style={{ margin: "var(--space-1) 0 var(--space-2)", color: "var(--ink-faint)", fontSize: "0.9rem" }}>
               No moves in the text, so nobody gets the answers before they play.
             </p>
-            <p className="slip plates" style={{ fontSize: "1.05rem", padding: "var(--space-2)" }}>
-              {ended.share_text}
+            <p className="share-text">
+              {ended.share_text.replace(/\s*https?:\S+$/, "")}
+              <a href={replayUrl}>{replayUrl}</a>
             </p>
             <div className="sheet-actions">
               <span style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}>

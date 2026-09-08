@@ -101,6 +101,7 @@ class Ruling(BaseModel):
     scoring: ScoringPayload
     host: HostPayload
     badges: list[str]
+    points: int
     points_p1: int
     points_p2: int
     to_move: Literal["p1", "p2"]

@@ -20,7 +20,7 @@ export function VerdictSheet({ ruling, previous, opponentName, template, ended, 
   const mine = ruling.actor === "p1";
   const closeCall = ruling.outcome === "semantic_uncertain";
   const fail = ruling.outcome === "fail";
-  const name = formName(ruling.move_text);
+  const name = formName(ruling.move_text, template.move_prefix);
 
   const stamp = closeCall ? "Close call" : fail ? "The form breaks" : `Point: ${name}`;
   const whose = closeCall

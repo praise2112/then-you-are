@@ -24,6 +24,8 @@ seed_pool:
 
 move_constraints:
   max_chars: 200
+  prefix: "I am "
+  example: "I am the hammer, two kilos, rock-splitting."
 
 rubric:
   - name: counter_strength

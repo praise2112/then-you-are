@@ -1,12 +1,21 @@
-import type { ScoringPayload, TurnView } from "../api.ts";
-
-const WEIGHTS: Record<string, number> = { counter_strength: 0.5, coherence: 0.3, novelty: 0.2 };
+import type { TurnView } from "../api.ts";
 
 export const STANDING = new Set(["accept", "semantic_uncertain"]);
 
-/** "I am the rust, patient, steel-eating." becomes "the rust". */
-export function formName(move: string): string {
-  const stripped = move.replace(/^\s*(then\s+)?i\s+am\s+/i, "").replace(/[.!?]+\s*$/, "");
+/** What the opponent is called during play. The model name shows only on replays. */
+export const HOUSE = "The House";
+
+/** Joins the template's fixed prefix to what the player typed, without doubling the prefix. */
+export function fullMove(prefix: string, tail: string): string {
+  const trimmed = tail.trim();
+  const doubled = prefix && trimmed.toLowerCase().startsWith(prefix.trim().toLowerCase() + " ");
+  return prefix + (doubled ? trimmed.slice(prefix.trim().length).trim() : trimmed);
+}
+
+/** The short name of a move: the prefix dropped, the first clause kept. */
+export function formName(move: string, prefix = ""): string {
+  const head0 = prefix && move.toLowerCase().startsWith(prefix.toLowerCase()) ? move.slice(prefix.length) : move;
+  const stripped = head0.replace(/[.!?]+\s*$/, "");
   const head = stripped.split(/[,;:]/)[0].trim();
   return head || move;
 }
@@ -15,20 +24,8 @@ export function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export function truncate(text: string, max = 32): string {
-  return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
-}
-
 export function criterionLabel(name: string): string {
   return name.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
-}
-
-export function total(scoring: ScoringPayload | null | undefined): number {
-  if (!scoring) return 0;
-  return Object.entries(scoring.scores).reduce(
-    (sum, [name, value]) => sum + (WEIGHTS[name] ?? 0) * value,
-    0,
-  );
 }
 
 export function lastStanding(transcript: TurnView[]): TurnView | undefined {
@@ -43,6 +40,7 @@ export function standingBefore(transcript: TurnView[], seq: number, seed: string
 export function rulingLine(turn: TurnView): string {
   if (turn.outcome === "fail") return "Broke against the standing form";
   if (turn.outcome === "semantic_uncertain") return "Close call, the move stands";
-  const strength = turn.scoring?.scores.counter_strength;
-  return strength === undefined ? "Accepted" : `Accepted, counter strength ${strength} of 4`;
+  const deciding = turn.host?.because_clause.criterion;
+  const score = deciding ? turn.scoring?.scores[deciding] : undefined;
+  return deciding && score !== undefined ? `Accepted, ${criterionLabel(deciding).toLowerCase()} ${score} of 4` : "Accepted";
 }

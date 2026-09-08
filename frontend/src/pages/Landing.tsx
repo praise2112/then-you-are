@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 
 import { Link, ThemeToggle } from "../App.tsx";
-import { api, type Replay } from "../api.ts";
+import { api, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { formName, lastStanding } from "./format.ts";
 
 export function Landing() {
   const [curated, setCurated] = useState<Replay[] | null>(null);
+  const [template, setTemplate] = useState<TemplateView | null>(null);
   useEffect(() => {
     api.curated().then(setCurated, () => setCurated([]));
+    api.template().then(setTemplate, () => setTemplate(null));
   }, []);
+  const prefix = template?.move_prefix ?? "";
 
   return (
     <>
@@ -121,7 +124,7 @@ export function Landing() {
                     <p className="billing" style={{ margin: 0 }}>
                       {replay.stage_name} <span className="vs">vs</span> {replay.opponent_name}
                     </p>
-                    <blockquote>“{last?.move_text ?? formName(replay.seed_token)}”</blockquote>
+                    <blockquote>“{last?.move_text ?? formName(replay.seed_token, prefix)}”</blockquote>
                     <Link className="watch" to={`/r/${replay.id}`}>
                       Watch the duel
                     </Link>

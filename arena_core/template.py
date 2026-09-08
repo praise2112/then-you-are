@@ -20,6 +20,8 @@ class Seed(Strict):
 
 class MoveConstraints(Strict):
     max_chars: int = Field(gt=0)
+    prefix: str = ""
+    example: str
 
 
 class RubricEntry(Strict):
@@ -115,6 +117,8 @@ class Template(Strict):
             "rubric": [{"name": r.name, "description": r.description} for r in self.rubric],
             "rules_text": self.rules_text.strip(),
             "max_chars": self.move_constraints.max_chars,
+            "move_prefix": self.move_constraints.prefix,
+            "move_example": self.move_constraints.example,
             "move_budget": self.move_budget,
             "host_name": self.host.persona_name,
         }

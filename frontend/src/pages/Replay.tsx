@@ -1,30 +1,32 @@
 import { useEffect, useState } from "react";
 
 import { Link, ThemeToggle } from "../App.tsx";
-import { api, type Replay, type TurnView } from "../api.ts";
+import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { criterionLabel, formName } from "./format.ts";
 
 type Props = { matchId: string };
 
-function slip(turn: TurnView) {
+function slip(turn: TurnView, prefix: string) {
   if (turn.outcome === "fail") return <span className="stamp ink">Fell</span>;
   if (turn.outcome === "semantic_uncertain") return <span className="stamp ink">Close call</span>;
-  return <span className="stamp">Point: {formName(turn.move_text)}</span>;
+  return <span className="stamp">Point: {formName(turn.move_text, prefix)}</span>;
 }
 
 export function ReplayPage({ matchId }: Props) {
   const [replay, setReplay] = useState<Replay | null>(null);
+  const [template, setTemplate] = useState<TemplateView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     api.replay(matchId).then(setReplay, (e) => setError(e.message));
+    api.template().then(setTemplate, (e) => setError(e.message));
   }, [matchId]);
 
   if (error) return <p className="page-status">{error}</p>;
-  if (!replay) return <p className="page-status">Opening the programme.</p>;
+  if (!replay || !template) return <p className="page-status">Opening the programme.</p>;
 
   const who = (turn: TurnView) => (turn.actor === "p1" ? replay.stage_name : replay.opponent_name);
   const winnerName = replay.winner === "p1" ? replay.stage_name : replay.opponent_name;
@@ -52,7 +54,7 @@ export function ReplayPage({ matchId }: Props) {
         <h1>
           {replay.stage_name} vs {replay.opponent_name}
         </h1>
-        <p className="kicker">A duel of Then I Am, replayed move by move</p>
+        <p className="kicker">A duel of {template.title}, replayed move by move</p>
         <p className="billing small-caps">
           {replay.stage_name} <span className="model human">human</span> against {replay.opponent_name}{" "}
           <span className="model">model</span>, {date}
@@ -76,7 +78,7 @@ export function ReplayPage({ matchId }: Props) {
             </article>
             {turn.host && (
               <div className="verdict-slip slip">
-                {slip(turn)}
+                {slip(turn, template.move_prefix)}
                 <em>
                   <b>{criterionLabel(turn.host.because_clause.criterion)}:</b> {turn.host.because_clause.text}
                 </em>
