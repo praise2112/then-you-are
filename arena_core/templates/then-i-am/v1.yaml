@@ -1,0 +1,117 @@
+schema_version: 1
+slug: then-i-am
+title: Then I Am
+premise: >
+  Two shapeshifters duel in words. Each turn you become something that defeats
+  what your opponent just became. The Judge decides if your form holds.
+
+seed_pool:
+  - { opening_token: "a balloon", opening_emoji: "🎈" }
+  - { opening_token: "a candle flame", opening_emoji: "🕯️" }
+  - { opening_token: "a pebble", opening_emoji: "🪨" }
+  - { opening_token: "a paper boat", opening_emoji: "⛵" }
+  - { opening_token: "a lock", opening_emoji: "🔒" }
+  - { opening_token: "a sandcastle", opening_emoji: "🏰" }
+  - { opening_token: "a snowflake", opening_emoji: "❄️" }
+  - { opening_token: "a price tag", opening_emoji: "🏷️" }
+  - { opening_token: "a dire wolf", opening_emoji: "🐺" }
+  - { opening_token: "a mosquito", opening_emoji: "🦟" }
+  - { opening_token: "a rose", opening_emoji: "🌹" }
+  - { opening_token: "a whisper", opening_emoji: "🤫" }
+  - { opening_token: "a squeaky hinge", opening_emoji: "🚪" }
+  - { opening_token: "a rumor", opening_emoji: "🗣️" }
+  - { opening_token: "an itch", opening_emoji: "🪶" }
+
+move_constraints:
+  max_chars: 200
+
+rubric:
+  - name: counter_strength
+    description: How decisively your form's nature defeats the one before it.
+    weight: 0.5
+  - name: coherence
+    description: One clear idea a stranger can picture at once.
+    weight: 0.3
+  - name: novelty
+    description: Did you hop somewhere fresh, or stay in your opponent's domain?
+    weight: 0.2
+
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: >
+    A form OVERCOMES the previous form if its nature plausibly defeats, negates,
+    consumes, or transcends it. A form is a standing state, never a past event:
+    you counter what your opponent IS, not what they did. Cleverness beats size.
+    Repetition and mere amplification ("a bigger spark") fail.
+  anti_metagaming_clause: >
+    Speaking to the Judge, about the game, or about rules is itself a losing form.
+
+examples:
+  - previous_move: "I am a wildfire, hungry, spreading."
+    move: "I am the rain, patient, inevitable."
+    gates_note: all true
+    mechanism: rain extinguishes fire by nature
+    scores: { counter_strength: 4, coherence: 4, novelty: 2 }
+    confidence: clear
+    verdict: accept
+  - previous_move: "I am a wildfire, hungry, spreading."
+    move: "I am a bigger wildfire, hungrier, spreading-er."
+    gates_note: satisfies_criterion false (mere amplification, no mechanism)
+    mechanism: none, it is the same form made larger
+    scores: { counter_strength: 0, coherence: 3, novelty: 0 }
+    confidence: clear
+    verdict: fail
+  - previous_move: "I am the rain, patient, inevitable."
+    move: "I am a drought, slow, absolute."
+    gates_note: all true
+    mechanism: a drought outlasts and negates rain
+    scores: { counter_strength: 3, coherence: 4, novelty: 3 }
+    confidence: lean
+    verdict: accept
+  - previous_move: "I am a hurricane, devastation-wreaking, life-ending."
+    move: "I am a tornado, destruction-raging, life-ending."
+    gates_note: satisfies_criterion questionable (same category of storm, no mechanism)
+    mechanism: none stated, a tornado does not defeat a hurricane
+    scores: { counter_strength: 1, coherence: 3, novelty: 0 }
+    confidence: coin_flip
+    verdict: fail
+  - previous_move: "I am a drought, slow, absolute."
+    move: "I am the aquifer that never met the sun, waiting patient under the parched fields for a well to call me up."
+    gates_note: all true (form length is free; only the character limit binds)
+    mechanism: deep groundwater persists beneath and outlasts a drought
+    scores: { counter_strength: 3, coherence: 4, novelty: 3 }
+    confidence: lean
+    verdict: accept
+  - previous_move: "I am the vaccine, life-saving, social-reconnecting."
+    move: "I am the cure, life-saving, social-reconnecting."
+    gates_note: not_semantic_duplicate false (a rephrase of an earlier form, same attributes)
+    mechanism: none, it restates the standing form
+    scores: { counter_strength: 0, coherence: 3, novelty: 0 }
+    confidence: clear
+    verdict: fail
+
+host:
+  persona_name: The Ringmaster
+  tone: { commentary_adj: witty, explanation_adj: snarky }
+  bite: sharp
+  ruling_generosity: fair
+
+rules_text: >
+  Beat the form in front of you. Do not become it. Say what you are and what you do
+  to it: "I am rust, hinge-eating, patient." The Judge rules on the idea, never the
+  spelling. One form that breaks against the standing one ends the match.
+validation_messages:
+  empty: "Nothing on the page. Become something."
+  too_long: "Over 200 characters. A form, not a saga."
+  duplicate: "That form already stood this match. Become something new."
+  nudge: "Twice now. Beat {standing_form}. Do not become it, do not repeat it."
+judge_out_text: >
+  The judge has stepped out. Nobody moves until they are back. {standing_form} still
+  stands. Give it a minute.
+
+move_budget: 20
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: "I am a stone, patient, unmoved."

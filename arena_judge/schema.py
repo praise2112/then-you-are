@@ -1,4 +1,4 @@
-"""Judge wire schemas. Shared by the live server and the offline eval harness."""
+"""Judge, host, and SSE wire schemas. Shared by the live server and the offline harness."""
 
 from typing import Literal
 
@@ -66,9 +66,72 @@ class HostPayload(BaseModel):
     badges: list[str] = Field(default_factory=list)
 
 
+class JudgeResponse(BaseModel):
+    """The one-call judge output: scoring block first, host block behind it."""
+
+    scoring: ScoringPayload
+    host: HostPayload
+
+
 def route_outcome(payload: ScoringPayload) -> Outcome:
     if not payload.gates.hygiene_passed():
         return "semantic_reject"
     if payload.confidence == "coin_flip":
         return "semantic_uncertain"
     return payload.verdict
+
+
+class TurnRejected(BaseModel):
+    seq: int | None = None
+    outcome: Literal["deterministic_invalid", "semantic_reject"]
+    reason_text: str
+    strikes: int
+    nudge_text: str | None = None
+
+
+class JudgeStarted(BaseModel):
+    seq: int
+
+
+class Ruling(BaseModel):
+    seq: int
+    actor: Literal["p1", "p2"]
+    move_text: str
+    outcome: Outcome
+    scoring: ScoringPayload
+    host: HostPayload
+    badges: list[str]
+    points_p1: int
+    points_p2: int
+    to_move: Literal["p1", "p2"]
+    state_version: int
+
+
+class MoveToken(BaseModel):
+    seq: int
+    text: str
+
+
+class JudgePaused(BaseModel):
+    seq: int
+    host_text: str
+
+
+class JudgeResumed(BaseModel):
+    seq: int
+
+
+class MatchEnded(BaseModel):
+    end_reason: Literal["sudden_death", "move_cap_points", "resign", "abandoned"]
+    winner: Literal["p1", "p2"] | None
+    points_p1: int
+    points_p2: int
+    highlight_seq: int | None
+    coaching_line: str | None = None
+    share_text: str
+    replay_id: str
+    state_version: int
+
+
+class StateResync(BaseModel):
+    state_version: int
