@@ -16,14 +16,16 @@ export function Landing() {
 
   return (
     <>
-      <header className="masthead">
+      <header className="bar-top">
         <span className="wordmark">Oddstage</span>
-        <nav>
-          <a href="#bill">Games</a>
+        <span className="round">
+          Now playing <b>{template?.title}</b>
+        </span>
+        <span className="aside">
           <a href="#replays">Replays</a>
-          <a href="/mockups/methodology.html">How the judging works</a>
-        </nav>
-        <ThemeToggle />
+          <a href="/mockups/methodology.html">The judging</a>
+          <ThemeToggle icon />
+        </span>
       </header>
 
       <main className="wrap">

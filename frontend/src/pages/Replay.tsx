@@ -42,12 +42,15 @@ export function ReplayPage({ matchId }: Props) {
 
   return (
     <>
-      <header className="masthead">
-        <span className="wordmark">Oddstage</span>
-        <nav>
+      <header className="bar-top">
+        <Link className="wordmark" to="/">
+          Oddstage
+        </Link>
+        <span className="round">A replay</span>
+        <span className="aside">
           <Link to="/">Home</Link>
-        </nav>
-        <ThemeToggle />
+          <ThemeToggle icon />
+        </span>
       </header>
 
       <main className="program">

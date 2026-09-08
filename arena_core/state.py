@@ -41,7 +41,7 @@ class Match:
     to_move: Actor = "p1"
     turns: list[Turn] = field(default_factory=list)
     strikes: dict[Actor, int] = field(default_factory=lambda: {"p1": 0, "p2": 0})
-    points: dict[Actor, float] = field(default_factory=lambda: {"p1": 0.0, "p2": 0.0})
+    points: dict[Actor, int] = field(default_factory=lambda: {"p1": 0, "p2": 0})
     winner: Actor | None = None
     end_reason: EndReason | None = None
 
@@ -85,8 +85,8 @@ def layer1(template: Template, move_text: str, match: Match) -> Layer1Reason | N
     return None
 
 
-def weighted_total(scores: dict[str, int], weights: dict[str, float]) -> float:
-    return sum(weights.get(name, 0.0) * value for name, value in scores.items())
+def weighted_total(scores: dict[str, int], weights: dict[str, int]) -> int:
+    return sum(weights.get(name, 0) * value for name, value in scores.items())
 
 
 def _check_command(match: Match, actor: Actor, expected_version: int) -> None:
@@ -105,7 +105,7 @@ def apply_ruling(
     outcome: Outcome,
     expected_version: int,
     move_budget: int,
-    points: float = 0.0,
+    points: int = 0,
 ) -> Match:
     """Record a judged or refused move and advance the match. One fail ends it."""
     _check_command(match, actor, expected_version)

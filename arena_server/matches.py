@@ -245,7 +245,7 @@ class MatchService:
     # Snapshots
 
     def _points(self, match: Match) -> tuple[int, int]:
-        return round(match.points["p1"]), round(match.points["p2"])
+        return match.points["p1"], match.points["p2"]
 
     async def snapshot(self, match_id: str) -> MatchSnapshot:
         match, extra = await self._load(match_id)
@@ -294,7 +294,7 @@ class MatchService:
     def _turn_points(self, scoring: dict[str, Any] | None) -> int | None:
         if scoring is None:
             return None
-        return round(weighted_total(scoring["scores"], self.template.weights))
+        return weighted_total(scoring["scores"], self.template.weights)
 
     def _highlight_seq(self, snap: MatchSnapshot) -> int | None:
         winner_moves = [
@@ -473,7 +473,7 @@ class MatchService:
                 scoring=response.scoring,
                 host=response.host.model_copy(update={"badges": badges}),
                 badges=badges,
-                points=round(points),
+                points=points,
                 points_p1=p1,
                 points_p2=p2,
                 to_move=match.to_move,

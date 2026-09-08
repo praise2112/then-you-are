@@ -30,13 +30,13 @@ move_constraints:
 rubric:
   - name: counter_strength
     description: How decisively your form's nature defeats the one before it.
-    weight: 0.5
+    weight: 5
   - name: coherence
     description: One clear idea a stranger can picture at once.
-    weight: 0.3
+    weight: 3
   - name: novelty
     description: Did you hop somewhere fresh, or stay in your opponent's domain?
-    weight: 0.2
+    weight: 2
 
 criterion:
   verb: overcomes

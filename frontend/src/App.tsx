@@ -37,19 +37,22 @@ export function Link({ to, children, ...rest }: { to: string; children: ReactNod
   );
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ icon = false }: { icon?: boolean }) {
   const [theme, setTheme] = useState(store.theme());
+  const label = theme === "dark" ? "Day edition" : "Night edition";
   return (
     <button
-      className="theme-toggle"
+      className={icon ? "theme-toggle moon" : "theme-toggle"}
       type="button"
+      aria-label={icon ? label : undefined}
+      title={icon ? label : undefined}
       onClick={() => {
         const next = theme === "dark" ? "light" : "dark";
         store.setTheme(next);
         setTheme(next);
       }}
     >
-      {theme === "dark" ? "Day edition" : "Night edition"}
+      {icon ? (theme === "dark" ? "☀" : "☾") : label}
     </button>
   );
 }

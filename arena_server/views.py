@@ -10,6 +10,7 @@ from arena_judge.schema import HostPayload, Outcome, ScoringPayload
 class RubricView(BaseModel):
     name: str
     description: str
+    max_points: int
 
 
 class TemplateView(BaseModel):
@@ -22,6 +23,7 @@ class TemplateView(BaseModel):
     move_prefix: str
     move_example: str
     move_budget: int
+    score_max: int
     host_name: str
 
 

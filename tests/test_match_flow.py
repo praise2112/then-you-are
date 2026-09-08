@@ -46,7 +46,7 @@ def test_move_cap_ends_on_points_and_a_tie_goes_to_the_standing_form():
     match = new_match("m3")
     actor = "p1"
     for version in range(4):
-        apply_ruling(match, actor, f"I am form {version}", "accept", version, 4, points=2.5)
+        apply_ruling(match, actor, f"I am form {version}", "accept", version, 4, points=25)
         actor = "p2" if actor == "p1" else "p1"
     assert match.status == "ended"
     assert match.end_reason == "move_cap_points"

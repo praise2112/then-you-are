@@ -50,10 +50,10 @@ export function Play() {
   return (
     <>
       <div className="backdrop" style={{ padding: "var(--space-3)" }}>
-        <header className="masthead">
+        <header className="bar-top">
           <span className="wordmark">Oddstage</span>
-          <span className="small-caps">Round 1</span>
-          <ThemeToggle />
+          <span className="round">Round 1</span>
+          <ThemeToggle icon />
         </header>
       </div>
       <div className="scrim">

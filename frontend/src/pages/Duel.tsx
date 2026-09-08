@@ -8,16 +8,14 @@ import {
   type MatchEnded,
   type MatchEvent,
   type MatchSnapshot,
-  type Ruling,
   type TemplateView,
   type TurnRejected,
+  type TurnView,
 } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
-import { store } from "../store.ts";
-import { capitalize, formName, fullMove, HOUSE, lastStanding, rulingLine, standingBefore } from "./format.ts";
+import { capitalize, criterionLabel, formName, fullMove, HOUSE, lastStanding } from "./format.ts";
 import { MatchEnd } from "./MatchEnd.tsx";
-import { VerdictSheet } from "./Verdict.tsx";
 
 type Props = { matchId: string };
 
@@ -30,9 +28,10 @@ export function Duel({ matchId }: Props) {
   const [returned, setReturned] = useState<TurnRejected | null>(null);
   const [streaming, setStreaming] = useState("");
   const [paused, setPaused] = useState<JudgePaused | null>(null);
-  const [verdict, setVerdict] = useState<Ruling | null>(null);
   const [ended, setEnded] = useState<MatchEnded | null>(null);
   const [showResign, setShowResign] = useState(false);
+  const [showRubric, setShowRubric] = useState(false);
+  const [voted, setVoted] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -83,11 +82,18 @@ export function Duel({ matchId }: Props) {
                 ? s.transcript
                 : [
                     ...s.transcript,
-                    { seq: r.seq, actor: r.actor, move_text: r.move_text, outcome: r.outcome, scoring: r.scoring, host: r.host, points: r.points },
+                    {
+                      seq: r.seq,
+                      actor: r.actor,
+                      move_text: r.move_text,
+                      outcome: r.outcome,
+                      scoring: r.scoring,
+                      host: r.host,
+                      points: r.points,
+                    },
                   ],
             },
           );
-          setVerdict(r);
           return;
         }
         case "match_ended":
@@ -105,17 +111,22 @@ export function Duel({ matchId }: Props) {
   if (error) return <p className="page-status">{error}</p>;
   if (!snap || !template) return <p className="page-status">Finding your seat.</p>;
 
-  if (ended && snap.status === "ended" && !verdict) {
+  if (ended && snap.status === "ended") {
     return <MatchEnd snap={snap} ended={ended} template={template} />;
   }
 
+  const prefix = template.move_prefix;
   const standing = lastStanding(snap.transcript);
+  const latest = snap.transcript[snap.transcript.length - 1];
+  const yourLast = [...snap.transcript].reverse().find((t) => t.actor === "p1" && t.host);
+  const showYourSlip = yourLast && latest?.actor === "p2" && !streaming;
   const standingText = streaming || standing?.move_text || snap.seed_token;
   const standingIsMine = !streaming && standing?.actor === "p1";
-  const canPlay =
-    snap.status === "active" && snap.to_move === "p1" && !pending && !paused && !ended;
+  const waiting = pending || thinking || !!streaming || (snap.to_move === "p2" && !paused);
+  const canPlay = snap.status === "active" && snap.to_move === "p1" && !pending && !paused && !ended;
   const round = snap.transcript.length + 1;
   const strikesNudge = returned?.nudge_text;
+  const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
 
   async function play(event: FormEvent) {
     event.preventDefault();
@@ -123,7 +134,7 @@ export function Duel({ matchId }: Props) {
     setPending(true);
     setReturned(null);
     try {
-      await api.move(matchId, snap!.state_version, fullMove(template!.move_prefix, text));
+      await api.move(matchId, snap!.state_version, fullMove(prefix, text));
     } catch (e) {
       setPending(false);
       setError(null);
@@ -147,6 +158,10 @@ export function Duel({ matchId }: Props) {
     }
   }
 
+  function disagree(seq: number) {
+    void api.disagree(matchId, seq).then(() => setVoted((v) => new Set(v).add(seq)));
+  }
+
   const standingHead = streaming
     ? `${HOUSE} is becoming`
     : standingIsMine
@@ -158,16 +173,16 @@ export function Duel({ matchId }: Props) {
     ? "Draft your next move while you wait"
     : returned
       ? "Your move, still yours"
-      : `Your move, beat ${formName(standingText, template.move_prefix)}`;
+      : `Your move, beat ${formName(standingText, prefix)}`;
   const hostLine = paused
     ? paused.host_text
     : strikesNudge
       ? strikesNudge
-      : thinking
-        ? "The judge is reading."
-        : standingIsMine
+      : waiting
+        ? standingIsMine
           ? `${HOUSE} is thinking.`
-          : `${capitalize(formName(standingText, template.move_prefix))}. Beat it, do not become it.`;
+          : "The judge is reading."
+        : `${capitalize(formName(standingText, prefix))}. Beat it, do not become it.`;
 
   return (
     <>
@@ -195,36 +210,43 @@ export function Duel({ matchId }: Props) {
             <li>
               <div className="move">
                 <span>
-                  <b>R1:</b> {snap.seed_token}
+                  <span className="who">The opening</span>
+                  {snap.seed_token}
                 </span>
                 <span className="medallion sm" role="img" aria-label={snap.seed_token}>
                   {snap.seed_emoji}
                 </span>
               </div>
-              <p className="ruling">The opening</p>
             </li>
             {snap.transcript.map((turn) => (
               <li key={turn.seq}>
                 <div className="move">
                   <span>
-                    <b>R{turn.seq + 1}:</b> {turn.move_text}
+                    <span className={`who${turn.actor === "p1" ? " you" : ""}`}>{turn.actor === "p1" ? "You" : HOUSE}</span>
+                    {turn.move_text}
                   </span>
-                  <span className="medallion sm" role="img" aria-label={formName(turn.move_text, template.move_prefix)}>
+                  <span className="medallion sm" role="img" aria-label={formName(turn.move_text, prefix)}>
                     {turn.host?.generated_emoji ?? "?"}
                   </span>
                 </div>
-                <p className="ruling">{rulingLine(turn)}</p>
+                <p className="ruling">
+                  <span className="word">{rulingWord(turn)}</span>
+                  <em>{turn.host?.headline}</em>
+                </p>
               </li>
             ))}
             {paused && (
               <li>
                 <div className="move">
                   <span>
-                    <b>R{round}:</b> {fullMove(template.move_prefix, text)}
+                    <span className="who you">You</span>
+                    {fullMove(prefix, text)}
                   </span>
                   <span className="medallion sm empty">?</span>
                 </div>
-                <p className="ruling">Waiting for the judge</p>
+                <p className="ruling">
+                  <em>Waiting for the judge</em>
+                </p>
               </li>
             )}
           </ol>
@@ -237,15 +259,58 @@ export function Duel({ matchId }: Props) {
         </section>
 
         <section>
+          {showYourSlip && (
+            <p className="your-slip">
+              <span className="medallion" aria-hidden="true">
+                {yourLast.host?.generated_emoji}
+              </span>
+              <span>
+                <b>
+                  {rulingWord(yourLast)} for {formName(yourLast.move_text, prefix)}.
+                </b>{" "}
+                <q>{yourLast.host?.headline}</q>
+              </span>
+            </p>
+          )}
+
           <p className="small-caps last-move-head">{standingHead}</p>
-          <div className="torn">
+          <div className={`torn standing${waiting ? " reading" : ""}`}>
             {paused && <span className="tag">Awaiting ruling</span>}
-            <p className="last-move">{paused ? fullMove(template.move_prefix, text) : standingText}</p>
+            {standing && !streaming && !paused && (
+              <span className={`stamp corner${standing.outcome === "semantic_uncertain" ? " ink" : ""}`}>
+                {standing.outcome === "semantic_uncertain" ? "Close call" : `Point: ${formName(standing.move_text, prefix)}`}
+              </span>
+            )}
+            <p className="last-move">{paused ? fullMove(prefix, text) : standingText}</p>
+            {standing?.host && !streaming && !paused && (
+              <div className="ruled">
+                <Host state="verdict" />
+                <div>
+                  <p className="headline">{standing.host.headline}</p>
+                  <p className="because">
+                    <b>{criterionLabel(standing.host.because_clause.criterion)}:</b> {standing.host.because_clause.text}
+                  </p>
+                  <button
+                    className="vote"
+                    type="button"
+                    disabled={voted.has(standing.seq)}
+                    onClick={() => disagree(standing.seq)}
+                  >
+                    <Icon name="speech" />
+                    {voted.has(standing.seq) ? "Noted. The ruling stands." : "I disagree with this ruling"}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           {paused && <p className="waiting">The match is paused until the judge rules.</p>}
-          {thinking && !paused && <p className="waiting">The judge is considering.</p>}
 
-          <form ref={formRef} className={`composer${returned ? " returned" : ""}`} style={{ marginTop: "var(--space-3)" }} onSubmit={play}>
+          <form
+            ref={formRef}
+            className={`composer${returned ? " returned" : ""}`}
+            style={{ marginTop: "var(--space-3)" }}
+            onSubmit={play}
+          >
             {returned && (
               <span className="slip returned-slip" aria-hidden="true">
                 Returned, try again
@@ -256,16 +321,16 @@ export function Duel({ matchId }: Props) {
             </label>
             <div className="compose-box">
               <span className="prefix" aria-hidden="true">
-                {template.move_prefix}
+                {prefix}
               </span>
               <textarea
                 id="move"
-                maxLength={template.max_chars - template.move_prefix.length}
+                maxLength={template.max_chars - prefix.length}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyDown={onKey}
                 disabled={pending || !!ended || (snap.to_move !== "p1" && !paused)}
-                placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example.slice(template.move_prefix.length)}
+                placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example.slice(prefix.length)}
               />
             </div>
             <p className="compose-hint">Enter sends. Shift+Enter for a new line.</p>
@@ -276,43 +341,92 @@ export function Duel({ matchId }: Props) {
             )}
             <div className="composer-foot">
               <span className="counter" aria-live="polite">
-                {fullMove(template.move_prefix, text).length}/{template.max_chars}
+                {fullMove(prefix, text).length}/{template.max_chars}
               </span>
               <button className={`ticket${canPlay ? "" : " quiet"}`} type="submit" disabled={!canPlay}>
                 {pending ? "Sent" : "Play it"}
               </button>
             </div>
           </form>
+
+          {waiting && !paused && (
+            <div className="judge-reading" role="status">
+              <Host state="thinking" />
+              <span>
+                {streaming ? `${HOUSE} is answering` : "The judge is reading"}
+                <span className="dots" />
+              </span>
+            </div>
+          )}
         </section>
 
         <section>
-          <p className="centered-label small-caps">The rubric</p>
-          <div className="rubric">
-            {template.rubric.map((entry) => (
-              <details key={entry.name} open={!store.firstPlayDone() || snap.transcript.length < 2}>
-                <summary>{entry.name.replace(/_/g, " ")}</summary>
-                <p>{entry.description}</p>
-              </details>
-            ))}
-          </div>
+          {latest?.scoring && !showRubric ? (
+            <>
+              <p className="panel-head">
+                <span className="small-caps">Last ruling, {formName(latest.move_text, prefix)}</span>
+                <button className="swap small-caps" type="button" onClick={() => setShowRubric(true)}>
+                  Scoring rules
+                </button>
+              </p>
+              <div className="scorecard">
+                <p className="for">
+                  <span>{latest.actor === "p1" ? "Your move" : `${HOUSE}'s move`}</span>
+                  <span>The judge was {latest.scoring.confidence}</span>
+                </p>
+                <dl className="points">
+                  {template.rubric.map((entry) => {
+                    const earned = (latest.scoring?.scores[entry.name] ?? 0) * (entry.max_points / template.score_max);
+                    const decided = entry.name === latest.host?.because_clause.criterion;
+                    return (
+                      <div key={entry.name} className={decided ? "decided" : undefined}>
+                        <dt>{criterionLabel(entry.name)}</dt>
+                        <dd>
+                          <b>{earned}</b> of {entry.max_points}
+                        </dd>
+                      </div>
+                    );
+                  })}
+                </dl>
+                <p className="decided-note">
+                  <b>Red</b> marks the criterion that decided the ruling.
+                </p>
+                <p className="total">
+                  <span>This move</span>
+                  <b>
+                    {latest.points ?? 0} of {totalAvailable}
+                  </b>
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="panel-head">
+                <span className="small-caps">Scoring rules</span>
+                {latest?.scoring && (
+                  <button className="swap small-caps" type="button" onClick={() => setShowRubric(false)}>
+                    Last ruling
+                  </button>
+                )}
+              </p>
+              <div className="rubric">
+                {template.rubric.map((entry) => (
+                  <details key={entry.name} open>
+                    <summary>
+                      {criterionLabel(entry.name)} <small>up to {entry.max_points}</small>
+                    </summary>
+                    <p>{entry.description}</p>
+                  </details>
+                ))}
+              </div>
+            </>
+          )}
           <div className="host" style={{ marginTop: "var(--space-3)" }}>
-            <Host state={paused || thinking ? "thinking" : "idle"} />
+            <Host state={paused || waiting ? "thinking" : "idle"} />
             <p className="host-line">{hostLine}</p>
           </div>
         </section>
       </main>
-
-      {verdict && (
-        <VerdictSheet
-          ruling={verdict}
-          previous={standingBefore(snap.transcript, verdict.seq, snap.seed_token)}
-          opponentName={HOUSE}
-          template={template}
-          ended={!!ended}
-          onNext={() => setVerdict(null)}
-          onDisagree={() => api.disagree(matchId, verdict.seq)}
-        />
-      )}
 
       {showResign && (
         <div className="scrim">
@@ -321,8 +435,8 @@ export function Duel({ matchId }: Props) {
               Resign this match?
             </h2>
             <p style={{ margin: "var(--space-2) 0 0", color: "var(--ink-soft)" }}>
-              {HOUSE} takes the win at {snap.points_p1} : {snap.points_p2} after{" "}
-              {snap.judged_moves} judged moves. The replay is saved either way.
+              {HOUSE} takes the win at {snap.points_p1} : {snap.points_p2} after {snap.judged_moves} judged moves. The
+              replay is saved either way.
             </p>
             <div className="sheet-actions">
               <button className="quiet-button" type="button" onClick={resign}>
@@ -338,4 +452,10 @@ export function Duel({ matchId }: Props) {
       )}
     </>
   );
+}
+
+function rulingWord(turn: TurnView): string {
+  if (turn.outcome === "fail") return "Fell";
+  if (turn.outcome === "semantic_uncertain") return `Close call, ${turn.points ?? 0}`;
+  return `Point, ${turn.points ?? 0}`;
 }

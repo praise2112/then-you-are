@@ -31,16 +31,3 @@ export function criterionLabel(name: string): string {
 export function lastStanding(transcript: TurnView[]): TurnView | undefined {
   return [...transcript].reverse().find((t) => STANDING.has(t.outcome));
 }
-
-export function standingBefore(transcript: TurnView[], seq: number, seed: string): string {
-  const before = transcript.filter((t) => t.seq < seq && STANDING.has(t.outcome));
-  return before.length ? before[before.length - 1].move_text : seed;
-}
-
-export function rulingLine(turn: TurnView): string {
-  if (turn.outcome === "fail") return "Broke against the standing form";
-  if (turn.outcome === "semantic_uncertain") return "Close call, the move stands";
-  const deciding = turn.host?.because_clause.criterion;
-  const score = deciding ? turn.scoring?.scores[deciding] : undefined;
-  return deciding && score !== undefined ? `Accepted, ${criterionLabel(deciding).toLowerCase()} ${score} of 4` : "Accepted";
-}

@@ -446,6 +446,8 @@ export interface components {
             name: string;
             /** Description */
             description: string;
+            /** Max Points */
+            max_points: number;
         };
         /** Ruling */
         Ruling: {
@@ -542,6 +544,8 @@ export interface components {
             move_example: string;
             /** Move Budget */
             move_budget: number;
+            /** Score Max */
+            score_max: number;
             /** Host Name */
             host_name: string;
         };

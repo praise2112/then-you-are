@@ -34,6 +34,48 @@
 .bar-top .round {
   font-variant: all-small-caps;
   letter-spacing: 0.16em;
+  color: #a89f90;
+}
+
+.bar-top .round b {
+  color: var(--bar-fg);
+  font-weight: 600;
+}
+
+.bar-top .aside {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.9rem;
+}
+
+.bar-top .aside a {
+  color: #a89f90;
+  text-decoration: none;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+.bar-top .aside a:hover {
+  color: var(--bar-fg);
+}
+
+.bar-top .wordmark {
+  color: var(--bar-fg);
+  text-decoration: none;
+}
+
+.theme-toggle.moon {
+  border: 0;
+  font-size: 1.15rem;
+  padding: 0.2rem 0.4rem;
+  line-height: 1;
+}
+
+@media (max-width: 40rem) {
+  .bar-top .round {
+    display: none;
+  }
 }
 
 .stage {
@@ -215,128 +257,272 @@
   }
 }
 
-/* Verdict sheet and first-play card */
+/* In-place rulings */
 
-.sheet-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-2);
-}
-
-.verdict-emoji {
-  text-align: center;
-  margin: 0;
-}
-
-.verdict-emoji figcaption {
+.transcript .who {
+  display: block;
   font-variant: all-small-caps;
   letter-spacing: 0.1em;
-  font-size: 0.75rem;
-  color: var(--ink-soft);
-}
-
-.headline {
-  font-size: 1.85rem;
-  font-weight: 500;
-  font-style: italic;
-  line-height: 1.2;
-  margin: var(--space-2) 0 var(--space-1);
-  text-wrap: balance;
-}
-
-.sheet {
-  overflow: visible;
-}
-
-.sheet-head .stamp {
-  font-size: 1.45rem;
-  transform: rotate(-6deg);
-  margin: -1.9rem 0 0 -0.9rem;
-}
-
-.sheet .host-figure {
-  width: 6.5rem;
-}
-
-.scores .deciding .bar > i {
-  background: var(--vermilion);
-}
-
-.scores .deciding .name {
-  box-shadow: inset 3px 0 0 var(--vermilion);
-  padding-left: 0.5rem;
-}
-
-.scores caption {
-  text-align: left;
-  padding-bottom: var(--space-1);
   color: var(--ink-faint);
+  font-size: 0.85rem;
 }
 
-.whose {
-  margin: 0.4rem 0 0 0.2rem;
+.transcript .who.you {
   color: var(--vermilion-ink);
 }
 
-.stamp.ink + .whose {
-  color: var(--ink-soft);
-}
-
-.because {
-  margin: 0 0 var(--space-3);
-  color: var(--ink-soft);
-}
-
-.because b {
-  color: var(--ink);
-}
-
-.confidence {
+.transcript .ruling {
   margin: 0.4rem 0 0;
-  font-size: 0.85rem;
-  color: var(--ink-faint);
-}
-
-.evidence {
-  margin: var(--space-3) 0 0;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.2rem var(--space-2);
-  align-items: baseline;
-  font-size: 0.9rem;
-}
-
-.evidence dt {
-  font-variant: all-small-caps;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
-}
-
-.evidence dd {
-  margin: 0;
-  color: var(--ink-soft);
-}
-
-.evidence .own-move {
-  color: var(--ink);
-}
-
-.sheet-foot {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: baseline;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-style: normal;
+}
+
+.transcript .ruling .word {
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--vermilion-ink);
+  flex: none;
+}
+
+.transcript .ruling em {
+  color: var(--ink-faint);
+}
+
+.stage .standing .stamp.corner {
+  display: inline-block;
+  font-size: 1.15rem;
+  transform: rotate(-3deg);
+  margin: 0 0 var(--space-2) -0.3rem;
+}
+
+.stage .standing.reading {
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.ruled {
+  display: flex;
   gap: var(--space-2);
+  align-items: flex-start;
+  margin-top: var(--space-3);
   border-top: 1px solid var(--rule);
   padding-top: var(--space-2);
-  flex-wrap: wrap;
 }
 
-.foot-hint {
-  margin: 0.2rem 0 0;
-  font-size: 0.78rem;
+.ruled .host-figure {
+  width: 5.5rem;
+  flex: none;
+}
+
+.ruled .headline {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.ruled .because {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.ruled .because b {
+  color: var(--ink);
+}
+
+.ruled .vote {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+}
+
+.your-slip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 auto var(--space-2);
+  max-width: 38rem;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.your-slip .medallion {
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1rem;
+  flex: none;
+}
+
+.your-slip b {
+  color: var(--ink);
+}
+
+.your-slip q {
+  font-style: italic;
+}
+
+.judge-reading {
+  margin-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.judge-reading .host-figure {
+  width: 4.5rem;
+  animation: bob 1.6s ease-in-out infinite;
+}
+
+.judge-reading .dots::after {
+  content: "";
+  animation: dots 1.5s steps(4) infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(1.5deg);
+  }
+}
+
+@keyframes dots {
+  to {
+    content: "...";
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .judge-reading .host-figure,
+  .stage .standing.reading {
+    animation: none;
+  }
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-1);
+}
+
+.panel-head .swap {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  color: var(--vermilion-ink);
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: right;
+}
+
+.scorecard {
+  border: 1px solid var(--rule);
+  padding: var(--space-2);
+  background: var(--paper-raised);
+}
+
+.scorecard .for {
+  margin: 0 0 var(--space-2);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.points {
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.points > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.points dt {
+  font-variant: all-small-caps;
+  letter-spacing: 0.08em;
+  font-size: 0.95rem;
+}
+
+.points dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.points dd b {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-right: 0.15rem;
+}
+
+.points .decided dt,
+.points .decided dd b {
+  color: var(--vermilion-ink);
+}
+
+.decided-note {
+  margin: var(--space-1) 0 0;
+  font-size: 0.8rem;
   color: var(--ink-faint);
-  max-width: 22rem;
+}
+
+.decided-note b {
+  color: var(--vermilion-ink);
+  font-weight: 500;
+}
+
+.total {
+  margin: var(--space-2) 0 0;
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-1);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+.total b {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+
+.rubric summary small {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  font-weight: 400;
+  margin-left: 0.3rem;
 }
 
 .sheet-actions {

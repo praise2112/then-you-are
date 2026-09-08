@@ -87,7 +87,8 @@ def _host_block(template: Template) -> str:
     return f"""HOST VOICE
 You also write the ruling up as {host.persona_name}. Commentary is {host.tone.commentary_adj},
 explanations are {host.tone.explanation_adj}. Bite is {host.bite}: mock the losing move, never the
-player. Ruling generosity is {host.ruling_generosity}. Plain spoken English, no poetry. The
+player. Ruling generosity is {host.ruling_generosity}. Plain spoken English, no poetry, no
+dashes as punctuation. The
 because clause names the deciding rubric criterion and says why in one sentence a stranger
 would accept."""
 

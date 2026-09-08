@@ -18,6 +18,9 @@ class Seed(Strict):
     opening_emoji: str
 
 
+SCORE_MAX = 4
+
+
 class MoveConstraints(Strict):
     max_chars: int = Field(gt=0)
     prefix: str = ""
@@ -27,7 +30,7 @@ class MoveConstraints(Strict):
 class RubricEntry(Strict):
     name: str
     description: str
-    weight: float = Field(gt=0, le=1)
+    weight: int = Field(gt=0)
 
 
 class Criterion(Strict):
@@ -91,8 +94,6 @@ class Template(Strict):
         names = [r.name for r in self.rubric]
         if len(set(names)) != len(names):
             raise ValueError("rubric names must be unique")
-        if abs(sum(r.weight for r in self.rubric) - 1.0) > 1e-6:
-            raise ValueError("rubric weights must sum to 1")
         for ex in self.examples:
             if set(ex.scores) != set(names):
                 raise ValueError(f"example scores {sorted(ex.scores)} do not match rubric {names}")
@@ -105,21 +106,25 @@ class Template(Strict):
         return self
 
     @property
-    def weights(self) -> dict[str, float]:
+    def weights(self) -> dict[str, int]:
         return {r.name: r.weight for r in self.rubric}
 
     def player_projection(self) -> dict:
-        """What the browser may see: no examples, no weights."""
+        """What the browser may see: no examples."""
         return {
             "slug": self.slug,
             "title": self.title,
             "premise": self.premise.strip(),
-            "rubric": [{"name": r.name, "description": r.description} for r in self.rubric],
+            "rubric": [
+                {"name": r.name, "description": r.description, "max_points": r.weight * SCORE_MAX}
+                for r in self.rubric
+            ],
             "rules_text": self.rules_text.strip(),
             "max_chars": self.move_constraints.max_chars,
             "move_prefix": self.move_constraints.prefix,
             "move_example": self.move_constraints.example,
             "move_budget": self.move_budget,
+            "score_max": SCORE_MAX,
             "host_name": self.host.persona_name,
         }
 
