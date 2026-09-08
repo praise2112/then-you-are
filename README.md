@@ -28,7 +28,8 @@ uv run uvicorn arena_server.app:app --reload    # http://127.0.0.1:8000
 cd frontend && npm install && npm run dev       # http://127.0.0.1:5173
 ```
 
-The dev server proxies `/api` to the backend.
+The dev server proxies the API paths to the backend. `npm run gen` regenerates the
+TypeScript types from the server's OpenAPI document.
 
 ## Mockups
 

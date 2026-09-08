@@ -33,6 +33,7 @@ from arena_judge.schema import (
 )
 from arena_server.db import Pool
 from arena_server.events import EventBus
+from arena_server.views import MatchSnapshot, Replay, TurnView
 
 PAUSE_BACKOFF_S = (5, 10, 20, 30)
 
@@ -87,7 +88,7 @@ class MatchService:
             )
         return key
 
-    async def create(self, session_key: str) -> dict:
+    async def create(self, session_key: str) -> MatchSnapshot:
         seed = secrets.choice(self.template.seed_pool)
         match_id = secrets.token_urlsafe(8)
         async with self.pool.connection() as conn:
@@ -246,47 +247,63 @@ class MatchService:
     def _points(self, match: Match) -> tuple[int, int]:
         return round(match.points["p1"]), round(match.points["p2"])
 
-    async def snapshot(self, match_id: str) -> dict:
+    async def snapshot(self, match_id: str) -> MatchSnapshot:
         match, extra = await self._load(match_id)
         p1, p2 = self._points(match)
-        return {
-            "id": match.id,
-            "template_id": match.template_id,
-            "status": match.status,
-            "state_version": match.state_version,
-            "seed_token": match.seed,
-            "seed_emoji": match.seed_emoji,
-            "stage_name": extra["stage_name"],
-            "opponent_name": self.opponent_name,
-            "to_move": match.to_move,
-            "winner": match.winner,
-            "end_reason": match.end_reason,
-            "points_p1": p1,
-            "points_p2": p2,
-            "judged_moves": match.judged_moves,
-            "move_budget": self.template.move_budget,
-            "transcript": [
-                {
-                    "seq": t["seq"],
-                    "actor": t["actor"],
-                    "move_text": t["move_text"],
-                    "outcome": t["outcome"],
-                    "scoring": t["scoring"],
-                    "host": t["host"],
-                }
+        return MatchSnapshot(
+            id=match.id,
+            template_id=match.template_id,
+            status=match.status,
+            state_version=match.state_version,
+            seed_token=match.seed,
+            seed_emoji=match.seed_emoji,
+            stage_name=extra["stage_name"],
+            opponent_name=self.opponent_name,
+            to_move=match.to_move,
+            winner=match.winner,
+            end_reason=match.end_reason,
+            points_p1=p1,
+            points_p2=p2,
+            judged_moves=match.judged_moves,
+            move_budget=self.template.move_budget,
+            transcript=[
+                TurnView(
+                    seq=t["seq"],
+                    actor=t["actor"],
+                    move_text=t["move_text"],
+                    outcome=t["outcome"],
+                    scoring=t["scoring"],
+                    host=t["host"],
+                )
                 for t in extra["turn_rows"]
             ],
-            "created_at": extra["created_at"].isoformat(),
-        }
+            created_at=extra["created_at"].isoformat(),
+        )
 
-    async def replay(self, match_id: str) -> dict:
+    async def replay(self, match_id: str) -> Replay:
         snap = await self.snapshot(match_id)
-        if snap["status"] not in ("ended", "abandoned"):
+        if snap.status not in ("ended", "abandoned"):
             raise MatchError(404, "match still running")
-        snap["share_text"] = self._share_text(snap)
-        return snap
+        return Replay(
+            **snap.model_dump(),
+            share_text=self._share_text(snap),
+            highlight_seq=self._highlight_seq(snap),
+        )
 
-    async def curated(self) -> list[dict]:
+    def _highlight_seq(self, snap: MatchSnapshot) -> int | None:
+        winner_moves = [
+            t
+            for t in snap.transcript
+            if t.actor == snap.winner and t.scoring and t.outcome != "fail"
+        ]
+        best = max(
+            winner_moves,
+            key=lambda t: weighted_total(t.scoring.scores, self.template.weights),  # type: ignore[union-attr]
+            default=None,
+        )
+        return best.seq if best else None
+
+    async def curated(self) -> list[Replay]:
         async with self.pool.connection() as conn:
             rows = await (
                 await conn.execute(
@@ -296,17 +313,16 @@ class MatchService:
             ).fetchall()
         return [await self.replay(r["id"]) for r in rows]
 
-    def _share_text(self, snap: dict) -> str:
-        chain = [snap["seed_emoji"]] + [
-            t["host"]["generated_emoji"]
-            for t in snap["transcript"]
-            if t["host"] and t["outcome"] in ("accept", "semantic_uncertain")
+    def _share_text(self, snap: MatchSnapshot) -> str:
+        chain = [snap.seed_emoji] + [
+            t.host.generated_emoji
+            for t in snap.transcript
+            if t.host and t.outcome in ("accept", "semantic_uncertain")
         ]
-        result = "won" if snap["winner"] == "p1" else "lost"
-        moves = snap["judged_moves"]
+        result = "won" if snap.winner == "p1" else "lost"
         return (
-            f"I {result} a duel of {self.template.title} in {moves} moves. "
-            f"{'→'.join(chain)} {self.public_base_url}/r/{snap['id']}"
+            f"I {result} a duel of {self.template.title} in {snap.judged_moves} moves. "
+            f"{'→'.join(chain)} {self.public_base_url}/r/{snap.id}"
         )
 
     # Commands
@@ -541,16 +557,6 @@ class MatchService:
 
     async def _emit_match_ended(self, match: Match, coaching_line: str | None) -> None:
         snap = await self.snapshot(match.id)
-        winner_moves = [
-            t
-            for t in snap["transcript"]
-            if t["actor"] == match.winner and t["scoring"] and t["outcome"] != "fail"
-        ]
-        highlight = max(
-            winner_moves,
-            key=lambda t: weighted_total(t["scoring"]["scores"], self.template.weights),
-            default=None,
-        )
         assert match.end_reason is not None
         self.bus.emit(
             match.id,
@@ -558,9 +564,9 @@ class MatchService:
             MatchEnded(
                 end_reason=match.end_reason,
                 winner=match.winner,
-                points_p1=snap["points_p1"],
-                points_p2=snap["points_p2"],
-                highlight_seq=highlight["seq"] if highlight else None,
+                points_p1=snap.points_p1,
+                points_p2=snap.points_p2,
+                highlight_seq=self._highlight_seq(snap),
                 coaching_line=coaching_line,
                 share_text=self._share_text(snap),
                 replay_id=match.id,

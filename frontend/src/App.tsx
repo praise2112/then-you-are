@@ -1,38 +1,65 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
-type Health = { status: string; game: string };
+import { Duel } from "./pages/Duel.tsx";
+import { Landing } from "./pages/Landing.tsx";
+import { Play } from "./pages/Play.tsx";
+import { ReplayPage } from "./pages/Replay.tsx";
+import { store } from "./store.ts";
 
-export default function App() {
-  const [health, setHealth] = useState<Health | null>(null);
-  const [error, setError] = useState<string | null>(null);
+export function navigate(path: string) {
+  history.pushState(null, "", path);
+  dispatchEvent(new PopStateEvent("popstate"));
+}
 
+function usePath() {
+  const [path, setPath] = useState(location.pathname);
   useEffect(() => {
-    fetch("/api/healthz")
-      .then((r) => r.json())
-      .then(setHealth)
-      .catch(() => setError("backend unreachable"));
+    const onChange = () => setPath(location.pathname);
+    addEventListener("popstate", onChange);
+    return () => removeEventListener("popstate", onChange);
   }, []);
+  return path;
+}
 
+export function Link({ to, children, ...rest }: { to: string; children: ReactNode; className?: string }) {
   return (
-    <main
-      style={{
-        maxWidth: "42rem",
-        margin: "0 auto",
-        padding: "var(--space-4) var(--space-3)",
+    <a
+      href={to}
+      {...rest}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey) return;
+        event.preventDefault();
+        navigate(to);
       }}
     >
-      <p style={{ letterSpacing: "0.2em", fontSize: "0.75rem", color: "var(--ink-faint)" }}>
-        ODDSTAGE
-      </p>
-      <h1 style={{ fontSize: "2.5rem", margin: "0 0 var(--space-2)" }}>Then I Am</h1>
-      <p style={{ color: "var(--ink-soft)", fontStyle: "italic" }}>The escalation duel.</p>
-      <hr style={{ border: 0, borderTop: "3px double var(--ink)", margin: "var(--space-3) 0" }} />
-      <p style={{ fontFamily: "var(--mono)", fontSize: "0.85rem" }}>
-        backend:{" "}
-        <span style={{ color: error ? "var(--vermilion)" : "var(--ink)" }}>
-          {error ?? (health ? `${health.status} · ${health.game}` : "checking...")}
-        </span>
-      </p>
-    </main>
+      {children}
+    </a>
   );
+}
+
+export function ThemeToggle() {
+  const [theme, setTheme] = useState(store.theme());
+  return (
+    <button
+      className="theme-toggle"
+      type="button"
+      onClick={() => {
+        const next = theme === "dark" ? "light" : "dark";
+        store.setTheme(next);
+        setTheme(next);
+      }}
+    >
+      {theme === "dark" ? "Day edition" : "Night edition"}
+    </button>
+  );
+}
+
+export default function App() {
+  const path = usePath();
+  const match = path.match(/^\/m\/([^/]+)$/);
+  const replay = path.match(/^\/r\/([^/]+)$/);
+  if (match) return <Duel matchId={match[1]} key={match[1]} />;
+  if (replay) return <ReplayPage matchId={replay[1]} key={replay[1]} />;
+  if (path === "/play") return <Play />;
+  return <Landing />;
 }

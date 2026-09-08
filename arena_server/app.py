@@ -27,6 +27,7 @@ from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
 from arena_server.matches import MatchError, MatchService
+from arena_server.views import MatchSnapshot, Replay, TemplateView
 
 SESSION_COOKIE = "oddstage_session"
 
@@ -109,11 +110,13 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         return Health(status="ok", game=template.slug)
 
     @app.get("/templates/then-i-am")
-    async def get_template() -> dict:
-        return template.player_projection()
+    async def get_template() -> TemplateView:
+        return TemplateView(**template.player_projection())
 
     @app.post("/matches", status_code=201)
-    async def create_match(body: CreateMatch, request: Request, response: Response) -> dict:
+    async def create_match(
+        body: CreateMatch, request: Request, response: Response
+    ) -> MatchSnapshot:
         if body.template_id != template.slug:
             raise HTTPException(404, "no such template")
         key = await service.ensure_session(request.cookies.get(SESSION_COOKIE), body.stage_name)
@@ -123,7 +126,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         return await service.create(key)
 
     @app.get("/matches/{match_id}")
-    async def get_match(match_id: str) -> dict:
+    async def get_match(match_id: str) -> MatchSnapshot:
         return await service.snapshot(match_id)
 
     @app.post("/matches/{match_id}/moves", status_code=202)
@@ -163,20 +166,18 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         raise HTTPException(404, "schema-only endpoint")
 
     @app.get("/replays/{match_id}")
-    async def get_replay(match_id: str) -> dict:
+    async def get_replay(match_id: str) -> Replay:
         return await service.replay(match_id)
 
     @app.get("/replays")
-    async def list_replays(curated: bool = False) -> list[dict]:
+    async def list_replays(curated: bool = False) -> list[Replay]:
         return await service.curated() if curated else []
 
     @app.get("/r/{match_id}", response_class=HTMLResponse)
     async def replay_shell(match_id: str) -> HTMLResponse:
         replay = await service.replay(match_id)
-        title = html.escape(
-            f"{replay['stage_name']} vs {replay['opponent_name']}, {template.title}"
-        )
-        description = html.escape(replay["share_text"])
+        title = html.escape(f"{replay.stage_name} vs {replay.opponent_name}, {template.title}")
+        description = html.escape(replay.share_text)
         head = (
             f'<meta property="og:title" content="{title}">'
             f'<meta property="og:description" content="{description}">'
@@ -190,6 +191,10 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             f"<body>{description}</body></html>"
         )
 
+    mockups = Path(__file__).parents[1] / "mockups"
+    app.mount("/mockups", StaticFiles(directory=mockups, html=True), name="mockups")
+    frontend_src = Path(__file__).parents[1] / "frontend"
+    app.mount("/frontend", StaticFiles(directory=frontend_src), name="frontend-src")
     if settings.frontend_dist:
         mount_frontend(app, settings.frontend_dist)
 

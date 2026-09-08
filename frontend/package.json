@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen": "cd .. && uv run python -c \"from arena_server.app import app; import json; print(json.dumps(app.openapi()))\" > frontend/openapi.json && cd frontend && openapi-typescript openapi.json -o src/generated/openapi.d.ts"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -18,6 +19,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
+    "openapi-typescript": "^7.13.0",
     "oxlint": "^1.75.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
