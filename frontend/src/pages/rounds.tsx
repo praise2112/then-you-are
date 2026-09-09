@@ -21,13 +21,7 @@ export function WordCard({ round, compact = false, children }: WordCardProps) {
   );
 }
 
-type TruthLineProps = { round: RoundView; turns?: (TurnView | undefined)[]; hostName?: string };
-
-/** The reveal: the card's truth, and one host line for the round, from the bluff that scored higher. */
-export function TruthLine({ round, turns = [], hostName }: TruthLineProps) {
-  const best = turns
-    .filter((t): t is TurnView => !!t?.host)
-    .sort((a, b) => (b.points ?? 0) - (a.points ?? 0))[0];
+export function TruthLine({ round }: { round: RoundView }) {
   return (
     <div className="truth-line">
       <span className="medallion sm" role="img" aria-label={round.token}>
@@ -35,11 +29,6 @@ export function TruthLine({ round, turns = [], hostName }: TruthLineProps) {
       </span>
       <span>
         <b>What {round.token} really means:</b> {round.truth}
-        {best?.host && hostName && (
-          <em className="host-says">
-            <span className="small-caps">{hostName}</span> {best.host.headline}
-          </em>
-        )}
       </span>
     </div>
   );

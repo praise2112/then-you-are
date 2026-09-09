@@ -96,7 +96,7 @@ export function ReplayPage({ matchId }: Props) {
                   template={template}
                 />
               </div>
-              <TruthLine round={round} turns={[mine, theirs]} hostName={template.host_name} />
+              <TruthLine round={round} />
             </section>
           ))}
 

@@ -2033,23 +2033,6 @@
   border-left: 2px solid var(--rule);
 }
 
-.truth-line .host-says {
-  display: block;
-  margin-top: 0.25rem;
-  font-family: var(--display);
-  font-size: 0.95rem;
-  color: var(--ink-soft);
-}
-
-.truth-line .host-says .small-caps {
-  font-family: var(--serif);
-  font-style: normal;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
-  margin-right: 0.3rem;
-}
-
 .bill .card .premise {
   font-size: 0.85rem;
   line-height: 1.4;

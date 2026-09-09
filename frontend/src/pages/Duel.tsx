@@ -676,11 +676,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
 
           {lastResult && (
             <section className="round-result">
-              <TruthLine
-                round={lastResult.round}
-                turns={[lastResult.mine, lastResult.theirs]}
-                hostName={template.host_name}
-              />
+              <TruthLine round={lastResult.round} />
               <div className="bluffs">
                 <Bluff
                   turn={lastResult.mine!}
