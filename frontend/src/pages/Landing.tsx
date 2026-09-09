@@ -1,31 +1,22 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Link, navigate, ThemeToggle } from "../App.tsx";
-import { api, type MatchSnapshot, type Replay, type ReplaySort, type StageView, type TemplateView } from "../api.ts";
+import { api, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { store } from "../store.ts";
-import { criterionLabel, formName, fullMove, HOUSE, lastStanding, resultLabel, STANDING } from "./format.ts";
+import { ReplayCard } from "./cards.tsx";
+import { criterionLabel, formName, fullMove, HOUSE } from "./format.ts";
 
 const STILL = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 export function Landing() {
   const [template, setTemplate] = useState<TemplateView | null>(null);
-  const [stage, setStage] = useState<StageView | null>(null);
-  const [sort, setSort] = useState<ReplaySort>("curated");
-  const [lists, setLists] = useState<Partial<Record<ReplaySort, Replay[]>>>({});
+  const [curated, setCurated] = useState<Replay[] | null>(null);
   useEffect(() => {
     api.template().then(setTemplate, () => setTemplate(null));
-    api.stage().then(setStage, () => setStage(null));
+    api.replays("curated").then(setCurated, () => setCurated([]));
   }, []);
-  useEffect(() => {
-    if (lists[sort]) return;
-    api.replays(sort).then(
-      (rows) => setLists((l) => ({ ...l, [sort]: rows })),
-      () => setLists((l) => ({ ...l, [sort]: [] })),
-    );
-  }, [sort, lists]);
-  const replays = lists[sort];
   const prefix = template?.move_prefix ?? "";
 
   return (
@@ -36,7 +27,7 @@ export function Landing() {
           Now playing <b>{template?.title}</b>
         </span>
         <span className="aside">
-          <a href="#replays">Replays</a>
+          <Link to="/stage">The stage</Link>
           <a href="/mockups/methodology.html">The judging</a>
           <ThemeToggle icon />
         </span>
@@ -58,12 +49,6 @@ export function Landing() {
               <h3>Then I Am,</h3>
               <em>the escalation duel</em>
               <span className="ribbon">Now playing</span>
-              {stage && (
-                <p className="stat-line">
-                  {stage.duels_played} {stage.duels_played === 1 ? "duel" : "duels"} played
-                  {stage.live.length > 0 && ` · ${stage.live.length} on stage now`}
-                </p>
-              )}
             </article>
             <article className="card">
               <h3>Verse vs Verse,</h3>
@@ -88,45 +73,22 @@ export function Landing() {
           </div>
         </section>
 
-        {stage && stage.live.length > 0 && (
-          <section id="on-stage">
-            <h2 className="centered-label small-caps">On stage now</h2>
-            <div className="live-row">
-              {stage.live.map((m) => (
-                <LiveCard key={m.id} match={m} prefix={prefix} title={template?.title ?? ""} />
-              ))}
-            </div>
-          </section>
-        )}
-
         <p className="fleuron" aria-hidden="true">❧</p>
 
         <section id="replays">
-          <h2 className="centered-label small-caps">Replays</h2>
-          <div className="tabs" role="tablist">
-            {(["curated", "newest", "longest"] as ReplaySort[]).map((key) => (
-              <button
-                key={key}
-                role="tab"
-                type="button"
-                aria-selected={sort === key}
-                onClick={() => setSort(key)}
-              >
-                {key === "curated" ? "Curated" : key === "newest" ? "Newest" : "Longest run"}
-              </button>
-            ))}
-          </div>
+          <h2 className="centered-label small-caps">Great duels, replayed</h2>
           <div className="classics">
-            {replays === undefined && <p className="empty-strip">Fetching the archive.</p>}
-            {replays?.length === 0 && (
-              <p className="empty-strip">
-                {sort === "curated" ? "No duels curated yet. Yours could be the first." : "No finished duels yet."}
-              </p>
+            {curated === null && <p className="empty-strip">Fetching the archive.</p>}
+            {curated?.length === 0 && (
+              <p className="empty-strip">No duels curated yet. Yours could be the first.</p>
             )}
-            {replays?.map((replay) => (
+            {curated?.map((replay) => (
               <ReplayCard key={replay.id} replay={replay} prefix={prefix} />
             ))}
           </div>
+          <p className="strip-foot">
+            <Link to="/stage">Live duels and every listed replay, on the stage</Link>
+          </p>
         </section>
 
         <section className="trust host" id="trust">
@@ -141,57 +103,7 @@ export function Landing() {
   );
 }
 
-function ReplayCard({ replay, prefix }: { replay: Replay; prefix: string }) {
-  const last = lastStanding(replay.transcript);
-  const result = resultLabel(replay);
-  const score = replay.end_reason === "move_cap_points" ? ` · ${replay.points_p1} : ${replay.points_p2}` : "";
-  return (
-    <article className="card">
-      <span className="medallion" aria-hidden="true">
-        {last?.host?.generated_emoji ?? replay.seed_emoji}
-      </span>
-      <div>
-        <p className="billing" style={{ margin: 0 }}>
-          {replay.stage_name} <span className="vs">vs</span> {HOUSE}{" "}
-          <span className={`result${result.won ? "" : " ink"}`}>{result.text}</span>
-        </p>
-        <blockquote>“{last?.move_text ?? formName(replay.seed_token, prefix)}”</blockquote>
-        <p className="meta">
-          {replay.judged_moves} {replay.judged_moves === 1 ? "move" : "moves"}
-          {score}
-        </p>
-        <Link className="watch" to={`/r/${replay.id}`}>
-          Watch the duel
-        </Link>
-      </div>
-    </article>
-  );
-}
 
-function LiveCard({ match, prefix, title }: { match: MatchSnapshot; prefix: string; title: string }) {
-  const forms = [match.seed_token, ...match.transcript.filter((t) => STANDING.has(t.outcome)).map((t) => formName(t.move_text, prefix))];
-  const shown = forms.slice(-4);
-  return (
-    <Link className="card" to={`/w/${match.id}`}>
-      <span>
-        <span className="dot" aria-hidden="true" />
-        Round {match.transcript.length + 1} · {title}
-      </span>
-      <span className="chainlet">
-        {forms.length > shown.length && "… → "}
-        {shown.join(" → ")} → …
-      </span>
-      <span className="scoreline">
-        <span className="small-caps">{match.stage_name}</span>
-        <b>
-          {match.points_p1} : {match.points_p2}
-        </b>
-        <span className="small-caps">{HOUSE}</span>
-      </span>
-      <span className="watch">Watch live</span>
-    </Link>
-  );
-}
 
 /** The card a visitor plays from: an opening, the first-move box, and one demo round beneath. */
 function Stage({ template }: { template: TemplateView }) {

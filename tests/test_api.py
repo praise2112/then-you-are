@@ -217,14 +217,28 @@ async def test_a_match_can_open_with_a_first_move_from_the_landing():
 
 
 @pytest.mark.anyio
-async def test_the_stage_lists_public_matches_in_play():
+async def test_duels_are_private_unless_the_player_lists_them():
     caller = FakeCaller(rulings=[], opponent_moves=[])
     app, manager, client = await run_app(caller)
     try:
-        created = await client.post("/matches", json={"template_id": "then-i-am"})
-        stage = (await client.get("/stage")).json()
-        assert created.json()["id"] in [m["id"] for m in stage["live"]]
-        assert stage["duels_played"] >= 0
+        quiet = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        assert quiet["is_public"] is False and quiet["is_yours"] is True
+        assert quiet["id"] not in [m["id"] for m in (await client.get("/on-stage")).json()["live"]]
+
+        me = (await client.put("/sessions/me", json={"list_duels": True})).json()
+        assert me["list_duels"] is True
+        listed = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        assert listed["is_public"] is True
+        assert listed["id"] in [m["id"] for m in (await client.get("/on-stage")).json()["live"]]
+
+        shown = await client.post(f"/matches/{quiet['id']}/visibility", json={"public": True})
+        assert shown.status_code == 204
+        assert (await client.get(f"/matches/{quiet['id']}")).json()["is_public"] is True
+
+        stranger = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test")
+        denied = await stranger.post(f"/matches/{quiet['id']}/visibility", json={"public": False})
+        assert denied.status_code == 401
+        await stranger.aclose()
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
@@ -235,6 +249,7 @@ async def test_replay_lists_sort_and_curation_needs_the_token():
     caller = FakeCaller(rulings=[judge_response(verdict="fail")], opponent_moves=[])
     app, manager, client = await run_app(caller)
     try:
+        await client.put("/sessions/me", json={"list_duels": True})
         match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
         await client.post(
             f"/matches/{match['id']}/moves",

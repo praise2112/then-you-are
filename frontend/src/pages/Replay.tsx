@@ -120,6 +120,22 @@ export function ReplayPage({ matchId }: Props) {
           <span className="cta-hint">A fresh opening, the same judge.</span>
         </p>
 
+        {replay.is_yours && (
+          <p className="curate">
+            <button
+              className="quiet-button"
+              type="button"
+              onClick={() =>
+                api.setVisibility(matchId, !replay.is_public).then(
+                  () => setReplay({ ...replay, is_public: !replay.is_public, is_curated: replay.is_curated && !replay.is_public }),
+                  (e) => setCurateError(e.message),
+                )
+              }
+            >
+              {replay.is_public ? "Listed on the stage. Take it off" : "Put this duel on the stage"}
+            </button>
+          </p>
+        )}
         {curatorToken && (
           <p className="curate">
             <button

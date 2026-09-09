@@ -10,6 +10,7 @@ export function Play() {
   const [stageName, setStageName] = useState(store.stageName());
   const [error, setError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [listDuels, setListDuels] = useState(false);
   const firstPlay = !store.firstPlayDone();
 
   async function start(name: string) {
@@ -44,7 +45,7 @@ export function Play() {
     const name = stageName.trim().slice(0, 24);
     store.setStageName(name);
     store.markFirstPlayDone();
-    void start(name);
+    void api.updateSession({ stage_name: name || undefined, list_duels: listDuels }).then(() => start(name));
   }
 
   return (
@@ -104,6 +105,13 @@ export function Play() {
             />
             <small>Optional. Shown on your replays.</small>
           </div>
+          <label className="choice">
+            <input type="checkbox" checked={listDuels} onChange={(e) => setListDuels(e.target.checked)} />
+            <span>
+              List my duels on the stage, so others can watch live and find the replays.
+              <small>Off by default. Your duels stay private and shareable by link either way.</small>
+            </span>
+          </label>
           {error && <p className="error-line">{error}</p>}
           <div className="sheet-actions">
             <small>You will not see this card again. The rubric stays on the duel screen.</small>

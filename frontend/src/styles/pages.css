@@ -1310,6 +1310,60 @@
   margin-top: var(--space-3);
 }
 
+#on-stage {
+  margin-top: var(--space-3);
+}
+
+#on-stage > .empty-strip {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.strip-foot {
+  text-align: center;
+  margin: var(--space-2) 0 0;
+  font-size: 0.9rem;
+}
+
+.strip-foot a {
+  color: var(--ink-soft);
+}
+
+.choice {
+  display: flex;
+  gap: var(--space-1);
+  align-items: flex-start;
+  margin-top: var(--space-2);
+  font-size: 0.95rem;
+}
+
+.choice input {
+  margin-top: 0.3rem;
+  accent-color: var(--vermilion-ink);
+}
+
+.choice small {
+  display: block;
+  color: var(--ink-faint);
+}
+
+.listing {
+  text-align: center;
+  margin: var(--space-2) 0 0;
+}
+
+.listing small {
+  display: block;
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}
+
+.listing .error {
+  color: var(--vermilion-ink);
+}
+
 .curate .error {
   display: block;
   color: var(--vermilion-ink);

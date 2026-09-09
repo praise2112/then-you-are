@@ -28,7 +28,7 @@ from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
 from arena_server.matches import MatchError, MatchService
-from arena_server.views import MatchSnapshot, Replay, StageView, TemplateView
+from arena_server.views import MatchSnapshot, Replay, SessionView, StageView, TemplateView
 
 SESSION_COOKIE = "oddstage_session"
 
@@ -83,6 +83,13 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         expected_version: int
         move_text: str = Field(max_length=2000)
 
+    class VisibilityCommand(BaseModel):
+        public: bool
+
+    class SessionUpdate(BaseModel):
+        stage_name: str | None = Field(default=None, max_length=40)
+        list_duels: bool | None = None
+
     class ResignCommand(BaseModel):
         action_id: str = Field(min_length=1, max_length=64)
         expected_version: int
@@ -116,6 +123,20 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def get_template() -> TemplateView:
         return TemplateView(**template.player_projection())
 
+    @app.get("/sessions/me")
+    async def get_session(request: Request) -> SessionView:
+        return await service.session_view(request.cookies.get(SESSION_COOKIE))
+
+    @app.put("/sessions/me")
+    async def put_session(body: SessionUpdate, request: Request, response: Response) -> SessionView:
+        key = await service.ensure_session(
+            request.cookies.get(SESSION_COOKIE), body.stage_name, body.list_duels
+        )
+        response.set_cookie(
+            SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365
+        )
+        return await service.session_view(key)
+
     @app.post("/matches", status_code=201)
     async def create_match(
         body: CreateMatch, request: Request, response: Response
@@ -129,12 +150,17 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         snap = await service.create(key, body.seed_token)
         if body.first_move:
             await service.submit_move(snap.id, key, f"first-{snap.id}", 0, body.first_move)
-            snap = await service.snapshot(snap.id)
+            snap = await service.snapshot(snap.id, key)
         return snap
 
     @app.get("/matches/{match_id}")
-    async def get_match(match_id: str) -> MatchSnapshot:
-        return await service.snapshot(match_id)
+    async def get_match(match_id: str, request: Request) -> MatchSnapshot:
+        return await service.snapshot(match_id, request.cookies.get(SESSION_COOKIE))
+
+    @app.post("/matches/{match_id}/visibility", status_code=204)
+    async def post_visibility(match_id: str, body: VisibilityCommand, request: Request) -> Response:
+        await service.set_visibility(match_id, session_of(request), body.public)
+        return Response(status_code=204)
 
     @app.post("/matches/{match_id}/moves", status_code=202)
     async def post_move(match_id: str, body: MoveCommand, request: Request) -> Accepted:
@@ -172,13 +198,13 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def sse_payloads() -> SsePayloads:
         raise HTTPException(404, "schema-only endpoint")
 
-    @app.get("/stage")
+    @app.get("/on-stage")
     async def get_stage() -> StageView:
         return await service.stage()
 
     @app.get("/replays/{match_id}")
-    async def get_replay(match_id: str) -> Replay:
-        return await service.replay(match_id)
+    async def get_replay(match_id: str, request: Request) -> Replay:
+        return await service.replay(match_id, request.cookies.get(SESSION_COOKIE))
 
     @app.get("/replays")
     async def list_replays(

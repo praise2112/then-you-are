@@ -89,6 +89,13 @@ class MatchSnapshot(BaseModel):
     move_budget: int
     transcript: list[TurnView]
     created_at: str
+    is_public: bool
+    is_yours: bool = False
+
+
+class SessionView(BaseModel):
+    stage_name: str
+    list_duels: bool
 
 
 class StageView(BaseModel):

@@ -33,7 +33,7 @@ from arena_judge.schema import (
 )
 from arena_server.db import Pool
 from arena_server.events import EventBus
-from arena_server.views import MatchSnapshot, Replay, StageView, TurnView
+from arena_server.views import MatchSnapshot, Replay, SessionView, StageView, TurnView
 
 PAUSE_BACKOFF_S = (5, 10, 20, 30)
 
@@ -77,16 +77,38 @@ class MatchService:
 
     # Sessions and creation
 
-    async def ensure_session(self, session_key: str | None, stage_name: str | None) -> str:
+    async def ensure_session(
+        self, session_key: str | None, stage_name: str | None, list_duels: bool | None = None
+    ) -> str:
         key = session_key or secrets.token_urlsafe(24)
         async with self.pool.connection() as conn:
             await conn.execute(
-                "insert into sessions (session_key, stage_name) values (%s, %s) "
-                "on conflict (session_key) do update "
-                "set stage_name = coalesce(%s, sessions.stage_name)",
-                (key, (stage_name or "Challenger")[:40], stage_name and stage_name[:40]),
+                "insert into sessions (session_key, stage_name, list_duels) "
+                "values (%s, %s, coalesce(%s, false)) on conflict (session_key) do update "
+                "set stage_name = coalesce(%s, sessions.stage_name), "
+                "list_duels = coalesce(%s, sessions.list_duels)",
+                (
+                    key,
+                    (stage_name or "Challenger")[:40],
+                    list_duels,
+                    stage_name and stage_name[:40],
+                    list_duels,
+                ),
             )
         return key
+
+    async def session_view(self, session_key: str | None) -> SessionView:
+        if session_key:
+            async with self.pool.connection() as conn:
+                row = await (
+                    await conn.execute(
+                        "select stage_name, list_duels from sessions where session_key = %s",
+                        (session_key,),
+                    )
+                ).fetchone()
+            if row:
+                return SessionView(stage_name=row["stage_name"], list_duels=row["list_duels"])
+        return SessionView(stage_name="Challenger", list_duels=False)
 
     async def create(self, session_key: str, seed_token: str | None = None) -> MatchSnapshot:
         seed = self.template.seed_named(seed_token) if seed_token else None
@@ -94,11 +116,12 @@ class MatchService:
             raise MatchError(422, "that opening is not in this game")
         seed = seed or secrets.choice(self.template.seed_pool)
         match_id = secrets.token_urlsafe(8)
+        listed = (await self.session_view(session_key)).list_duels
         async with self.pool.connection() as conn:
             await conn.execute(
                 "insert into matches (id, template_id, template_version, config, seed_token, "
-                "seed_emoji, p1_session_key, p2_model_ref, status) "
-                "values (%s, %s, %s, %s, %s, %s, %s, %s, 'active')",
+                "seed_emoji, p1_session_key, p2_model_ref, status, is_public) "
+                "values (%s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)",
                 (
                     match_id,
                     self.template.slug,
@@ -108,9 +131,20 @@ class MatchService:
                     seed.opening_emoji,
                     session_key,
                     self.opponent_ref,
+                    listed,
                 ),
             )
-        return await self.snapshot(match_id)
+        return await self.snapshot(match_id, session_key)
+
+    async def set_visibility(self, match_id: str, session_key: str, public: bool) -> None:
+        _, extra = await self._load(match_id)
+        if extra["p1_session_key"] != session_key:
+            raise MatchError(403, "not your match")
+        async with self.pool.connection() as conn:
+            await conn.execute(
+                "update matches set is_public = %s, is_curated = is_curated and %s where id = %s",
+                (public, public, match_id),
+            )
 
     # Loading and saving
 
@@ -251,7 +285,7 @@ class MatchService:
     def _points(self, match: Match) -> tuple[int, int]:
         return match.points["p1"], match.points["p2"]
 
-    async def snapshot(self, match_id: str) -> MatchSnapshot:
+    async def snapshot(self, match_id: str, session_key: str | None = None) -> MatchSnapshot:
         match, extra = await self._load(match_id)
         p1, p2 = self._points(match)
         return MatchSnapshot(
@@ -283,11 +317,13 @@ class MatchService:
                 for t in extra["turn_rows"]
             ],
             created_at=extra["created_at"].isoformat(),
+            is_public=extra["is_public"],
+            is_yours=session_key is not None and extra["p1_session_key"] == session_key,
         )
 
-    async def replay(self, match_id: str) -> Replay:
+    async def replay(self, match_id: str, session_key: str | None = None) -> Replay:
         _, extra = await self._load(match_id)
-        snap = await self.snapshot(match_id)
+        snap = await self.snapshot(match_id, session_key)
         if snap.status not in ("ended", "abandoned"):
             raise MatchError(404, "match still running")
         return Replay(
@@ -351,8 +387,9 @@ class MatchService:
     async def set_curated(self, match_id: str, curated: bool) -> None:
         async with self.pool.connection() as conn:
             result = await conn.execute(
-                "update matches set is_curated = %s where id = %s and status = 'ended'",
-                (curated, match_id),
+                "update matches set is_curated = %s, is_public = is_public or %s "
+                "where id = %s and status = 'ended'",
+                (curated, curated, match_id),
             )
             if result.rowcount == 0:
                 raise MatchError(404, "no finished match with that id")

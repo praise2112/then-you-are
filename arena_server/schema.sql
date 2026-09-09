@@ -66,3 +66,6 @@ create table if not exists verdict_pairs (
     first_seen_at timestamptz not null default now(),
     primary key (template_id, prev_norm, move_norm)
 );
+
+alter table sessions add column if not exists list_duels boolean not null default false;
+alter table matches alter column is_public set default false;

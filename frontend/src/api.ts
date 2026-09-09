@@ -7,6 +7,7 @@ export type TemplateView = S["TemplateView"];
 export type MatchSnapshot = S["MatchSnapshot"];
 export type Replay = S["Replay"];
 export type StageView = S["StageView"];
+export type SessionView = S["SessionView"];
 export type ReplaySort = "curated" | "newest" | "longest";
 export type TurnView = S["TurnView"];
 export type Ruling = S["Ruling"];
@@ -89,7 +90,12 @@ export const api = {
     }),
   disagree: (id: string, seq: number) =>
     request<void>(`/matches/${id}/turns/${seq}/disagree`, { method: "POST" }),
-  stage: () => request<StageView>("/stage"),
+  session: () => request<SessionView>("/sessions/me"),
+  updateSession: (body: { stage_name?: string; list_duels?: boolean }) =>
+    request<SessionView>("/sessions/me", { method: "PUT", body: JSON.stringify(body) }),
+  setVisibility: (id: string, isPublic: boolean) =>
+    request<void>(`/matches/${id}/visibility`, { method: "POST", body: JSON.stringify({ public: isPublic }) }),
+  stage: () => request<StageView>("/on-stage"),
   replay: (id: string) => request<Replay>(`/replays/${id}`),
   replays: (sort: ReplaySort) => request<Replay[]>(`/replays?sort=${sort}`),
   curate: (id: string, curated: boolean, token: string) =>

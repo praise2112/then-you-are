@@ -4,6 +4,7 @@ import { Duel } from "./pages/Duel.tsx";
 import { Landing } from "./pages/Landing.tsx";
 import { Play } from "./pages/Play.tsx";
 import { ReplayPage } from "./pages/Replay.tsx";
+import { StagePage } from "./pages/Stage.tsx";
 import { store } from "./store.ts";
 
 export function navigate(path: string) {
@@ -66,5 +67,6 @@ export default function App() {
   if (watch) return <Duel matchId={watch[1]} key={`w-${watch[1]}`} spectator />;
   if (replay) return <ReplayPage matchId={replay[1]} key={replay[1]} />;
   if (path === "/play") return <Play />;
+  if (path === "/stage") return <StagePage />;
   return <Landing />;
 }

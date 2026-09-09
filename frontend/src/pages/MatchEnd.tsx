@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { Link } from "../App.tsx";
+import { api } from "../api.ts";
 import type { MatchEnded, MatchSnapshot, TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
@@ -12,9 +13,21 @@ type Props = { snap: MatchSnapshot; ended: MatchEnded; template: TemplateView };
 export function MatchEnd({ snap, ended, template }: Props) {
   const won = ended.winner === "p1";
   const onPoints = ended.end_reason === "move_cap_points";
-  const { streak, best } = useMemo(() => store.recordResult(snap.id, won), [snap.id, won]);
+  const { streak, best } = useMemo(
+    () => store.recordResult(snap.id, won),
+    [snap.id, won],
+  );
   const [share, setShare] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [listed, setListed] = useState(snap.is_public);
+  const [listError, setListError] = useState<string | null>(null);
+
+  function toggleListed() {
+    api.setVisibility(snap.id, !listed).then(
+      () => setListed(!listed),
+      (e) => setListError((e as Error).message),
+    );
+  }
 
   const standingTurns = snap.transcript.filter((t) => STANDING.has(t.outcome));
   const CHAIN_SHOWN = 8;
@@ -34,7 +47,9 @@ export function MatchEnd({ snap, ended, template }: Props) {
   const kicker = onPoints
     ? `${template.title}, ${snap.judged_moves} moves, nobody fell`
     : `${template.title}, a duel concluded`;
-  const verdictLine = lastTurn?.host?.quotable_line ?? (won ? "The other side gave up." : "You gave up.");
+  const verdictLine =
+    lastTurn?.host?.quotable_line ??
+    (won ? "The other side gave up." : "You gave up.");
   const replayUrl = `${location.origin}/r/${snap.id}`;
 
   const exchanges = useMemo(() => {
@@ -94,7 +109,9 @@ export function MatchEnd({ snap, ended, template }: Props) {
                 <i key={i} className={mine ? "you" : undefined}></i>
               ))}
             </div>
-            <p className="tally-caption">Each mark is an exchange. Red ones went your way.</p>
+            <p className="tally-caption">
+              Each mark is an exchange. Red ones went your way.
+            </p>
           </>
         )}
 
@@ -117,10 +134,14 @@ export function MatchEnd({ snap, ended, template }: Props) {
               <span key={turn.seq} style={{ display: "contents" }}>
                 <span className="chain-link">→</span>
                 <figure>
-                  <span className={`medallion${i === shownTurns.length - 1 && turn.actor === ended.winner ? " crowned" : ""}`}>
+                  <span
+                    className={`medallion${i === shownTurns.length - 1 && turn.actor === ended.winner ? " crowned" : ""}`}
+                  >
                     {turn.host?.generated_emoji}
                   </span>
-                  <figcaption>{formName(turn.move_text, template.move_prefix)}</figcaption>
+                  <figcaption>
+                    {formName(turn.move_text, template.move_prefix)}
+                  </figcaption>
                 </figure>
               </span>
             ))}
@@ -153,7 +174,11 @@ export function MatchEnd({ snap, ended, template }: Props) {
         </Link>
 
         <div className="after">
-          <button className="icon-link" type="button" onClick={() => setShare(true)}>
+          <button
+            className="icon-link"
+            type="button"
+            onClick={() => setShare(true)}
+          >
             <Icon name="share" />
             Share result
           </button>
@@ -166,6 +191,25 @@ export function MatchEnd({ snap, ended, template }: Props) {
             Back to the bill
           </Link>
         </div>
+        {snap.is_yours && (
+          <p className="listing">
+            <button
+              className="quiet-button"
+              type="button"
+              onClick={toggleListed}
+            >
+              {listed
+                ? "Listed on the stage. Take it off"
+                : "Put this duel on the stage"}
+            </button>
+            <small>
+              {listed
+                ? "Anyone can find this replay."
+                : "Private. Only people with the link can see it."}
+            </small>
+            {listError && <small className="error">{listError}</small>}
+          </p>
+        )}
 
         <div className="host host-corner">
           <Host state="tipping" big worn={!won} />
@@ -176,7 +220,9 @@ export function MatchEnd({ snap, ended, template }: Props) {
             </p>
           ) : (
             <p className="host-line">
-              {won ? "Take the win and go. The next one will not be so polite." : "The replay is saved. So is the lesson."}
+              {won
+                ? "Take the win and go. The next one will not be so polite."
+                : "The replay is saved. So is the lesson."}
             </p>
           )}
         </div>
@@ -184,11 +230,23 @@ export function MatchEnd({ snap, ended, template }: Props) {
 
       {share && (
         <div className="scrim">
-          <div className="sheet" role="dialog" aria-modal="true" aria-labelledby="share-title" style={{ maxWidth: "26rem" }}>
+          <div
+            className="sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="share-title"
+            style={{ maxWidth: "26rem" }}
+          >
             <h2 id="share-title" style={{ margin: 0, fontSize: "1.8rem" }}>
               Share the duel
             </h2>
-            <p style={{ margin: "var(--space-1) 0 var(--space-2)", color: "var(--ink-faint)", fontSize: "0.9rem" }}>
+            <p
+              style={{
+                margin: "var(--space-1) 0 var(--space-2)",
+                color: "var(--ink-faint)",
+                fontSize: "0.9rem",
+              }}
+            >
               No moves in the text, so nobody gets the answers before they play.
             </p>
             <p className="share-text">
@@ -196,12 +254,26 @@ export function MatchEnd({ snap, ended, template }: Props) {
               <a href={replayUrl}>{replayUrl}</a>
             </p>
             <div className="sheet-actions">
-              <span style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}>
-                <button className="icon-link" type="button" onClick={() => copy("link")}>
+              <span
+                style={{
+                  display: "flex",
+                  gap: "var(--space-3)",
+                  flexWrap: "wrap",
+                }}
+              >
+                <button
+                  className="icon-link"
+                  type="button"
+                  onClick={() => copy("link")}
+                >
                   <Icon name="link" />
                   {copied === "link" ? "Link copied" : "Copy link"}
                 </button>
-                <button className="icon-link" type="button" onClick={() => copy("text")}>
+                <button
+                  className="icon-link"
+                  type="button"
+                  onClick={() => copy("text")}
+                >
                   <Icon name="quill" />
                   {copied === "text" ? "Text copied" : "Copy text"}
                 </button>
@@ -215,7 +287,11 @@ export function MatchEnd({ snap, ended, template }: Props) {
                   Post to X
                 </a>
               </span>
-              <button className="quiet-button" type="button" onClick={() => setShare(false)}>
+              <button
+                className="quiet-button"
+                type="button"
+                onClick={() => setShare(false)}
+              >
                 Close
               </button>
             </div>
