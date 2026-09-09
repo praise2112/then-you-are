@@ -5,7 +5,7 @@ import { api, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { store } from "../store.ts";
 import { ReplayCard } from "./cards.tsx";
-import { criterionLabel, formName, fullMove, HOUSE, prefixOf } from "./format.ts";
+import { criterionLabel, fullMove, HOUSE, prefixOf } from "./format.ts";
 
 const STILL = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -200,7 +200,6 @@ function Stage({ template }: { template: TemplateView }) {
   const ghostText = opening.examples[ghost % opening.examples.length];
   const showGhost = !tail && !focused;
   const showcase = template.mode === "showcase";
-  const pointFor = showcase ? scorer : formName(winner.text, prefix);
 
   return (
     <div className={`torn stage-card${step >= 7 ? " played" : ""}`}>
@@ -278,7 +277,7 @@ function Stage({ template }: { template: TemplateView }) {
         )}
         {step >= 3 && <p className="versus on">vs</p>}
         {step >= 4 && (
-          <div className="replay-move on">
+          <div className={`replay-move on${step >= 5 ? " won" : ""}`}>
             <span>
               <span className={`who${winner.actor === "p1" ? " you" : ""}`}>{scorer}</span>
               <i className="prefix">{prefix}</i>
@@ -287,12 +286,8 @@ function Stage({ template }: { template: TemplateView }) {
             <span className="medallion" aria-hidden="true">
               {winner.emoji}
             </span>
+            {step >= 5 && <span className="stamp thump point">Point</span>}
           </div>
-        )}
-        {step >= 5 && (
-          <p className="stamp-row on">
-            <span className="stamp thump">Point: {pointFor}</span>
-          </p>
         )}
         {step >= 6 && (
           <p className="pts on">
@@ -307,10 +302,16 @@ function Stage({ template }: { template: TemplateView }) {
             ))}
           </p>
         )}
-        {step >= 7 && <p className="headline on">{demo.headline}</p>}
+        {step >= 7 && !showcase && <p className="headline on">{demo.headline}</p>}
         {step >= 7 && showcase && demo.opening.reveal && (
           <p className="reveal on">
-            <b>What {demo.opening.token} really means:</b> {demo.opening.reveal}
+            <span className="medallion" aria-hidden="true">
+              {demo.opening.emoji}
+            </span>
+            <span>
+              <b>What {demo.opening.token} really means</b>
+              {demo.opening.reveal}
+            </span>
           </p>
         )}
       </div>
