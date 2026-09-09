@@ -3,20 +3,21 @@ import { useEffect, useState, type FormEvent } from "react";
 import { navigate, ThemeToggle } from "../App.tsx";
 import { api, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
+import { HOUSE } from "./format.ts";
 
-/** Entry to a new match: the first-play card once, then straight into a duel. */
-export function Play() {
+/** Entry to a new match: the first-play card once per game, then straight into a duel. */
+export function Play({ slug }: { slug: string }) {
   const [template, setTemplate] = useState<TemplateView | null>(null);
   const [stageName, setStageName] = useState(store.stageName());
   const [error, setError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
   const [listDuels, setListDuels] = useState(false);
-  const firstPlay = !store.firstPlayDone();
+  const firstPlay = !store.firstPlayDone(slug);
 
   async function start(name: string) {
     setStarting(true);
     try {
-      const match = await api.createMatch({ stageName: name || undefined });
+      const match = await api.createMatch(slug, { stageName: name || undefined });
       navigate(`/m/${match.id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "The stage door is stuck.");
@@ -25,16 +26,16 @@ export function Play() {
   }
 
   useEffect(() => {
-    api.template().then(setTemplate, () => setError("The backend is not answering."));
-  }, []);
+    api.template(slug).then(setTemplate, () => setError("The backend is not answering."));
+  }, [slug]);
 
   useEffect(() => {
     if (firstPlay) return;
-    api.createMatch({ stageName: store.stageName() || undefined }).then(
+    api.createMatch(slug, { stageName: store.stageName() || undefined }).then(
       (match) => navigate(`/m/${match.id}`),
       (e) => setError(e instanceof Error ? e.message : "The stage door is stuck."),
     );
-  }, [firstPlay]);
+  }, [firstPlay, slug]);
 
   if (!firstPlay || !template) {
     return <p className="page-status">{error ?? "Raising the curtain."}</p>;
@@ -44,7 +45,7 @@ export function Play() {
     event.preventDefault();
     const name = stageName.trim().slice(0, 24);
     store.setStageName(name);
-    store.markFirstPlayDone();
+    store.markFirstPlayDone(slug);
     void api.updateSession({ stage_name: name || undefined, list_duels: listDuels }).then(() => start(name));
   }
 
@@ -60,33 +61,7 @@ export function Play() {
       <div className="scrim">
         <form className="sheet first-play" role="dialog" aria-modal="true" aria-labelledby="fp-title" onSubmit={submit}>
           <h2 id="fp-title">{template.title}</h2>
-          <p className="kicker">Two minutes to learn. A lifetime to master, allegedly.</p>
-          <ol className="steps">
-            <li>
-              <div>
-                <b>Something is standing.</b>
-                <p>The opening form is waiting for you. Your job is to beat it, not to be it.</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <b>Become the thing that beats it.</b>
-                <p>Say what you are and why it wins. Plain words. Under {template.max_chars} characters.</p>
-                <p className="example">
-                  For example: <span>{template.move_example}</span>
-                </p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <b>The judge rules every move.</b>
-                <p>
-                  One move that fails ends the match. {template.move_budget} moves with nobody
-                  falling goes to points. A muddled move comes back to you, no harm done.
-                </p>
-              </div>
-            </li>
-          </ol>
+          {template.mode === "showcase" ? <ShowcaseRules template={template} /> : <EscalationRules template={template} />}
           <div className="name-field">
             <label className="small-caps" htmlFor="stage-name">
               Your stage name
@@ -121,6 +96,65 @@ export function Play() {
           </div>
         </form>
       </div>
+    </>
+  );
+}
+
+function EscalationRules({ template }: { template: TemplateView }) {
+  return (
+    <>
+      <p className="kicker">Two minutes to learn. A lifetime to master, allegedly.</p>
+      <ol className="steps">
+        <li>
+          <div>
+            <b>Something is standing.</b>
+            <p>The opening form is waiting for you. Your job is to beat it, not to be it.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <b>Become the thing that beats it.</b>
+            <p>Say what you are and why it wins. Plain words. Under {template.max_chars} characters.</p>
+            <p className="example">
+              For example: <span>{template.move_example}</span>
+            </p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <b>The judge rules every move.</b>
+            <p>
+              One move that fails ends the match. {template.move_budget} moves with nobody
+              falling goes to points. A muddled move comes back to you, no harm done.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </>
+  );
+}
+
+function ShowcaseRules({ template }: { template: TemplateView }) {
+  const demo = template.demo.opening;
+  const sample = template.demo.moves[0].text;
+  return (
+    <>
+      <p className="kicker">{template.tagline}</p>
+      <p className="rules-text">{template.rules_text}</p>
+      <div className="word-card entry-card">
+        <p className="headword">{demo.token}</p>
+        <p className="detail">{demo.detail}</p>
+        <p className="example">
+          You might write: <span>{sample}</span>
+        </p>
+        <p className="truth-line">
+          <b>What {demo.token} really means:</b> {demo.reveal}.
+        </p>
+      </div>
+      <p className="rules-foot">
+        {HOUSE} plays the same word, hidden until the Judge has scored you both. Under {template.max_chars} characters a
+        bluff.
+      </p>
     </>
   );
 }

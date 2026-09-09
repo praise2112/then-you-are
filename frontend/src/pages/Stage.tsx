@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, ThemeToggle } from "../App.tsx";
 import { api, type Replay, type ReplaySort, type StageView, type TemplateView } from "../api.ts";
 import { LiveCard, ReplayCard } from "./cards.tsx";
+import { prefixOf } from "./format.ts";
 
 const SORTS: { key: ReplaySort; label: string }[] = [
   { key: "curated", label: "Curated" },
@@ -12,12 +13,12 @@ const SORTS: { key: ReplaySort; label: string }[] = [
 
 /** Public matches in play and every listed replay. Only duels their players chose to list appear. */
 export function StagePage() {
-  const [template, setTemplate] = useState<TemplateView | null>(null);
+  const [templates, setTemplates] = useState<TemplateView[] | null>(null);
   const [stage, setStage] = useState<StageView | null>(null);
   const [sort, setSort] = useState<ReplaySort>("newest");
   const [lists, setLists] = useState<Partial<Record<ReplaySort, Replay[]>>>({});
   useEffect(() => {
-    api.template().then(setTemplate, () => setTemplate(null));
+    api.templates().then(setTemplates, () => setTemplates(null));
     api.stage().then(setStage, () => setStage(null));
   }, []);
   useEffect(() => {
@@ -28,7 +29,6 @@ export function StagePage() {
     );
   }, [sort, lists]);
   const replays = lists[sort];
-  const prefix = template?.move_prefix ?? "";
 
   return (
     <>
@@ -53,7 +53,7 @@ export function StagePage() {
           {stage && stage.live.length > 0 && (
             <div className="live-row">
               {stage.live.map((m) => (
-                <LiveCard key={m.id} match={m} prefix={prefix} title={template?.title ?? ""} />
+                <LiveCard key={m.id} match={m} prefix={prefixOf(templates, m.template_id)} />
               ))}
             </div>
           )}
@@ -78,7 +78,7 @@ export function StagePage() {
               </p>
             )}
             {replays?.map((replay) => (
-              <ReplayCard key={replay.id} replay={replay} prefix={prefix} />
+              <ReplayCard key={replay.id} replay={replay} prefix={prefixOf(templates, replay.template_id)} />
             ))}
           </div>
         </section>

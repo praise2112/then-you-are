@@ -25,6 +25,10 @@ function write(key: string, value: string) {
   }
 }
 
+function firstPlayKey(slug: string): string {
+  return slug === "then-i-am" ? KEYS.firstPlayDone : `${KEYS.firstPlayDone}-${slug}`;
+}
+
 export const store = {
   theme(): "light" | "dark" {
     const saved = read(KEYS.theme);
@@ -35,8 +39,8 @@ export const store = {
     write(KEYS.theme, theme);
     document.documentElement.dataset.theme = theme;
   },
-  firstPlayDone: () => read(KEYS.firstPlayDone) === "1",
-  markFirstPlayDone: () => write(KEYS.firstPlayDone, "1"),
+  firstPlayDone: (slug: string) => read(firstPlayKey(slug)) === "1",
+  markFirstPlayDone: (slug: string) => write(firstPlayKey(slug), "1"),
   stageName: () => read(KEYS.stageName) ?? "",
   setStageName: (name: string) => write(KEYS.stageName, name),
   /** A first move sent from the landing, shown as pending until its ruling arrives. */
@@ -57,12 +61,12 @@ export const store = {
   curatorToken: () => read(KEYS.curatorToken) ?? "",
   streak: () => Number(read(KEYS.streak) ?? 0),
   bestStreak: () => Number(read(KEYS.bestStreak) ?? 0),
-  /** Records a finished match once and returns the streak after it. */
-  recordResult(matchId: string, won: boolean): { streak: number; best: number } {
+  /** Records a finished match once and returns the streak after it. A draw (null) leaves it unchanged. */
+  recordResult(matchId: string, won: boolean | null): { streak: number; best: number } {
     let streak = this.streak();
     let best = this.bestStreak();
     if (read(KEYS.lastCounted) !== matchId) {
-      streak = won ? streak + 1 : 0;
+      streak = won === null ? streak : won ? streak + 1 : 0;
       best = Math.max(best, streak);
       write(KEYS.streak, String(streak));
       write(KEYS.bestStreak, String(best));

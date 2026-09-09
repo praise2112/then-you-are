@@ -21,7 +21,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/templates/then-i-am": {
+    "/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Templates */
+        get: operations["list_templates_templates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/templates/{slug}": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,7 +46,7 @@ export interface paths {
             cookie?: never;
         };
         /** Get Template */
-        get: operations["get_template_templates_then_i_am_get"];
+        get: operations["get_template_templates__slug__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -330,6 +347,10 @@ export interface components {
             token: string;
             /** Emoji */
             emoji: string;
+            /** Detail */
+            detail: string;
+            /** Reveal */
+            reveal: string;
         };
         /** DemoPoints */
         DemoPoints: {
@@ -384,8 +405,8 @@ export interface components {
         Health: {
             /** Status */
             status: string;
-            /** Game */
-            game: string;
+            /** Games */
+            games: string[];
         };
         /**
          * HostPayload
@@ -436,7 +457,7 @@ export interface components {
              * End Reason
              * @enum {string}
              */
-            end_reason: "sudden_death" | "move_cap_points" | "resign" | "abandoned";
+            end_reason: "sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned";
             /** Winner */
             winner: ("p1" | "p2") | null;
             /** Points P1 */
@@ -460,6 +481,13 @@ export interface components {
             id: string;
             /** Template Id */
             template_id: string;
+            /** Title */
+            title: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "escalation" | "showcase";
             /**
              * Status
              * @enum {string}
@@ -471,6 +499,8 @@ export interface components {
             seed_token: string;
             /** Seed Emoji */
             seed_emoji: string;
+            /** Rounds */
+            rounds: components["schemas"]["RoundView"][];
             /** Stage Name */
             stage_name: string;
             /** Opponent Name */
@@ -483,7 +513,7 @@ export interface components {
             /** Winner */
             winner: ("p1" | "p2") | null;
             /** End Reason */
-            end_reason: ("sudden_death" | "move_cap_points" | "resign" | "abandoned") | null;
+            end_reason: ("sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned") | null;
             /** Points P1 */
             points_p1: number;
             /** Points P2 */
@@ -526,6 +556,13 @@ export interface components {
             id: string;
             /** Template Id */
             template_id: string;
+            /** Title */
+            title: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "escalation" | "showcase";
             /**
              * Status
              * @enum {string}
@@ -537,6 +574,8 @@ export interface components {
             seed_token: string;
             /** Seed Emoji */
             seed_emoji: string;
+            /** Rounds */
+            rounds: components["schemas"]["RoundView"][];
             /** Stage Name */
             stage_name: string;
             /** Opponent Name */
@@ -549,7 +588,7 @@ export interface components {
             /** Winner */
             winner: ("p1" | "p2") | null;
             /** End Reason */
-            end_reason: ("sudden_death" | "move_cap_points" | "resign" | "abandoned") | null;
+            end_reason: ("sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned") | null;
             /** Points P1 */
             points_p1: number;
             /** Points P2 */
@@ -583,6 +622,40 @@ export interface components {
             /** Expected Version */
             expected_version: number;
         };
+        /**
+         * RoundRevealed
+         * @description Showcase only: both answers are in, so the card's truth may be shown.
+         */
+        RoundRevealed: {
+            /** Round N */
+            round_n: number;
+            /** Token */
+            token: string;
+            /** Emoji */
+            emoji: string;
+            /** Detail */
+            detail: string;
+            /** Truth */
+            truth: string;
+            /** State Version */
+            state_version: number;
+        };
+        /**
+         * RoundView
+         * @description A dealt card. The truth is filled in only once both answers are judged.
+         */
+        RoundView: {
+            /** Round N */
+            round_n: number;
+            /** Token */
+            token: string;
+            /** Emoji */
+            emoji: string;
+            /** Detail */
+            detail: string;
+            /** Truth */
+            truth: string | null;
+        };
         /** RubricView */
         RubricView: {
             /** Name */
@@ -596,6 +669,8 @@ export interface components {
         Ruling: {
             /** Seq */
             seq: number;
+            /** Round N */
+            round_n: number;
             /**
              * Actor
              * @enum {string}
@@ -647,6 +722,12 @@ export interface components {
              * @enum {string}
              */
             verdict: "accept" | "fail";
+            /**
+             * Truth Proximity
+             * @default none
+             * @enum {string}
+             */
+            truth_proximity: "hit" | "near" | "none";
         };
         /** SessionUpdate */
         SessionUpdate: {
@@ -674,6 +755,7 @@ export interface components {
             judge_paused: components["schemas"]["JudgePaused"];
             judge_resumed: components["schemas"]["JudgeResumed"];
             match_ended: components["schemas"]["MatchEnded"];
+            round_revealed: components["schemas"]["RoundRevealed"];
             state_resync: components["schemas"]["StateResync"];
         };
         /**
@@ -701,6 +783,13 @@ export interface components {
             tagline: string;
             /** Premise */
             premise: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "escalation" | "showcase";
+            /** Rounds */
+            rounds: number | null;
             /** Rubric */
             rubric: components["schemas"]["RubricView"][];
             /** Rules Text */
@@ -741,6 +830,8 @@ export interface components {
         TurnView: {
             /** Seq */
             seq: number;
+            /** Round N */
+            round_n: number;
             /**
              * Actor
              * @enum {string}
@@ -805,7 +896,7 @@ export interface operations {
             };
         };
     };
-    get_template_templates_then_i_am_get: {
+    list_templates_templates_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -820,7 +911,38 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    "application/json": components["schemas"]["TemplateView"][];
+                };
+            };
+        };
+    };
+    get_template_templates__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
                     "application/json": components["schemas"]["TemplateView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

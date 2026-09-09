@@ -10,6 +10,8 @@ export type StageView = S["StageView"];
 export type SessionView = S["SessionView"];
 export type ReplaySort = "curated" | "newest" | "longest";
 export type TurnView = S["TurnView"];
+export type RoundView = S["RoundView"];
+export type RoundRevealed = S["RoundRevealed"];
 export type Ruling = S["Ruling"];
 export type TurnRejected = S["TurnRejected"];
 export type MatchEnded = S["MatchEnded"];
@@ -26,6 +28,7 @@ export type MatchEvent =
   | { name: "judge_paused"; data: JudgePaused }
   | { name: "judge_resumed"; data: S["JudgeResumed"] }
   | { name: "match_ended"; data: MatchEnded }
+  | { name: "round_revealed"; data: RoundRevealed }
   | { name: "state_resync"; data: S["StateResync"] };
 
 const EVENT_NAMES: MatchEvent["name"][] = [
@@ -36,6 +39,7 @@ const EVENT_NAMES: MatchEvent["name"][] = [
   "judge_paused",
   "judge_resumed",
   "match_ended",
+  "round_revealed",
   "state_resync",
 ];
 
@@ -62,12 +66,13 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  template: () => request<TemplateView>("/templates/then-i-am"),
-  createMatch: (opts: { stageName?: string; seedToken?: string; firstMove?: string } = {}) =>
+  templates: () => request<TemplateView[]>("/templates"),
+  template: (slug: string) => request<TemplateView>(`/templates/${slug}`),
+  createMatch: (templateId: string, opts: { stageName?: string; seedToken?: string; firstMove?: string } = {}) =>
     request<MatchSnapshot>("/matches", {
       method: "POST",
       body: JSON.stringify({
-        template_id: "then-i-am",
+        template_id: templateId,
         stage_name: opts.stageName || null,
         seed_token: opts.seedToken ?? null,
         first_move: opts.firstMove ?? null,

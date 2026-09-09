@@ -5,19 +5,19 @@ import { api, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { store } from "../store.ts";
 import { ReplayCard } from "./cards.tsx";
-import { criterionLabel, formName, fullMove, HOUSE } from "./format.ts";
+import { criterionLabel, formName, fullMove, HOUSE, prefixOf } from "./format.ts";
 
 const STILL = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 export function Landing() {
-  const [template, setTemplate] = useState<TemplateView | null>(null);
+  const [templates, setTemplates] = useState<TemplateView[] | null>(null);
   const [curated, setCurated] = useState<Replay[] | null>(null);
   useEffect(() => {
-    api.template().then(setTemplate, () => setTemplate(null));
+    api.templates().then(setTemplates, () => setTemplates(null));
     api.replays("curated").then(setCurated, () => setCurated([]));
   }, []);
-  const prefix = template?.move_prefix ?? "";
+  const template = templates?.find((t) => t.slug === "then-i-am") ?? null;
 
   return (
     <>
@@ -45,26 +45,13 @@ export function Landing() {
         <section id="bill">
           <h2 className="centered-label small-caps">On the bill</h2>
           <div className="bill">
-            <article className="card now">
-              <h3>Then I Am,</h3>
-              <em>the escalation duel</em>
-              <span className="ribbon">Now playing</span>
-            </article>
-            <article className="card">
-              <h3>Verse vs Verse,</h3>
-              <em>a rap battle</em>
-              <span className="ribbon quiet">Coming soon</span>
-            </article>
-            <article className="card">
-              <h3>Seventeen Syllables,</h3>
-              <em>a haiku duel</em>
-              <span className="ribbon quiet">Coming soon</span>
-            </article>
-            <article className="card">
-              <h3>The Floor is Yours,</h3>
-              <em>a debate</em>
-              <span className="ribbon quiet">Coming soon</span>
-            </article>
+            {templates?.map((t) => (
+              <Link key={t.slug} className="card now" to={`/play/${t.slug}`}>
+                <h3>{t.title}</h3>
+                <em>{t.tagline}</em>
+                <span className="ribbon">Now playing</span>
+              </Link>
+            ))}
             <article className="card dashed">
               <h3>Stage your own game</h3>
               <em>a template, a rubric, a judge</em>
@@ -83,7 +70,7 @@ export function Landing() {
               <p className="empty-strip">No duels curated yet. Yours could be the first.</p>
             )}
             {curated?.map((replay) => (
-              <ReplayCard key={replay.id} replay={replay} prefix={prefix} />
+              <ReplayCard key={replay.id} replay={replay} prefix={prefixOf(templates, replay.template_id)} />
             ))}
           </div>
           <p className="strip-foot">
@@ -166,12 +153,12 @@ function Stage({ template }: { template: TemplateView }) {
     setStarting(true);
     setError(null);
     try {
-      const match = await api.createMatch({
+      const match = await api.createMatch(template.slug, {
         stageName: store.stageName() || undefined,
         seedToken: opening.token,
         firstMove: fullMove(prefix, tail),
       });
-      store.markFirstPlayDone();
+      store.markFirstPlayDone(template.slug);
       store.setOpeningMove(match.id, tail.trim());
       navigate(`/m/${match.id}`);
     } catch (e) {

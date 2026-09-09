@@ -6,16 +6,19 @@ import type { MatchEnded, MatchSnapshot, TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { formName, HOUSE, STANDING } from "./format.ts";
+import { formName, groupRounds, HOUSE, STANDING } from "./format.ts";
+import { Badges } from "./rounds.tsx";
 
 type Props = { snap: MatchSnapshot; ended: MatchEnded; template: TemplateView };
 
 export function MatchEnd({ snap, ended, template }: Props) {
   const won = ended.winner === "p1";
-  const onPoints = ended.end_reason === "move_cap_points";
+  const draw = ended.winner === null;
+  const showcase = snap.mode === "showcase";
+  const onPoints = ended.end_reason === "move_cap_points" || ended.end_reason === "rounds_complete";
   const { streak, best } = useMemo(
-    () => store.recordResult(snap.id, won),
-    [snap.id, won],
+    () => store.recordResult(snap.id, draw ? null : won),
+    [snap.id, won, draw],
   );
   const [share, setShare] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
@@ -35,21 +38,26 @@ export function MatchEnd({ snap, ended, template }: Props) {
   const shownTurns = standingTurns.slice(hiddenLinks);
   const lastTurn = snap.transcript[snap.transcript.length - 1];
   const highlight = snap.transcript.find((t) => t.seq === ended.highlight_seq);
-  const stamp = onPoints
-    ? won
-      ? "Won on points"
-      : "Lost on points"
-    : ended.end_reason === "resign"
-      ? "Resigned"
-      : won
-        ? "Victory"
-        : "Defeat";
-  const kicker = onPoints
-    ? `${template.title}, ${snap.judged_moves} moves, nobody fell`
-    : `${template.title}, a duel concluded`;
+  const stamp = draw
+    ? "A draw"
+    : onPoints
+      ? won
+        ? "Won on points"
+        : "Lost on points"
+      : ended.end_reason === "resign"
+        ? "Resigned"
+        : won
+          ? "Victory"
+          : "Defeat";
+  const kicker = showcase
+    ? `${template.title}, ${template.rounds === 3 ? "three" : template.rounds} rounds`
+    : onPoints
+      ? `${template.title}, ${snap.judged_moves} moves, nobody fell`
+      : `${template.title}, a duel concluded`;
   const verdictLine =
     lastTurn?.host?.quotable_line ??
     (won ? "The other side gave up." : "You gave up.");
+  const rounds = showcase ? groupRounds(snap.rounds, snap.transcript).filter((g) => g.revealed) : [];
   const replayUrl = `${location.origin}/r/${snap.id}`;
 
   const exchanges = useMemo(() => {
@@ -98,7 +106,36 @@ export function MatchEnd({ snap, ended, template }: Props) {
 
         <p className="verdict-line">{verdictLine}</p>
 
-        {onPoints && exchanges.length > 0 && (
+        {showcase && rounds.length > 0 && (
+          <ol className="recap">
+            {rounds.map(({ round, mine, theirs }) => (
+              <li key={round.round_n}>
+                <p className="recap-word">
+                  <span className="medallion sm" role="img" aria-label={round.token}>
+                    {round.emoji}
+                  </span>
+                  <span>
+                    <b>{round.token}</b> <em>{round.truth}</em>
+                  </span>
+                </p>
+                <div className="recap-bluffs">
+                  <p>
+                    <span className="who you">You, {mine?.points ?? 0}</span>
+                    {mine?.move_text}
+                    {mine && <Badges turn={mine} />}
+                  </p>
+                  <p>
+                    <span className="who">{HOUSE}, {theirs?.points ?? 0}</span>
+                    {theirs?.move_text}
+                    {theirs && <Badges turn={theirs} />}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {!showcase && onPoints && exchanges.length > 0 && (
           <>
             <div
               className="tally"
@@ -115,7 +152,7 @@ export function MatchEnd({ snap, ended, template }: Props) {
           </>
         )}
 
-        {!onPoints && (
+        {!showcase && !onPoints && (
           <div className="chain">
             <figure>
               <span className="medallion">{snap.seed_emoji}</span>
@@ -156,7 +193,7 @@ export function MatchEnd({ snap, ended, template }: Props) {
             Best streak <b>{best}</b>
           </span>
           <span>
-            Moves judged <b>{snap.judged_moves}</b>
+            {showcase ? "Rounds played" : "Moves judged"} <b>{showcase ? rounds.length : snap.judged_moves}</b>
           </span>
         </p>
 
@@ -169,7 +206,7 @@ export function MatchEnd({ snap, ended, template }: Props) {
           </div>
         )}
 
-        <Link className="ticket" to="/play">
+        <Link className="ticket" to={`/play/${snap.template_id}`}>
           {won ? "Play again" : "Rematch"}
         </Link>
 
@@ -211,9 +248,11 @@ export function MatchEnd({ snap, ended, template }: Props) {
             </p>
           ) : (
             <p className="host-line">
-              {won
-                ? "Take the win and go. The next one will not be so polite."
-                : "The replay is saved. So is the lesson."}
+              {draw
+                ? "Level. The dictionary keeps the last word."
+                : won
+                  ? "Take the win and go. The next one will not be so polite."
+                  : "The replay is saved. So is the lesson."}
             </p>
           )}
         </div>

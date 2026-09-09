@@ -5,7 +5,8 @@ import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { criterionLabel, formName } from "./format.ts";
+import { criterionLabel, formName, groupRounds } from "./format.ts";
+import { Bluff, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
 
@@ -24,8 +25,13 @@ export function ReplayPage({ matchId }: Props) {
   const curatorToken = store.curatorToken();
 
   useEffect(() => {
-    api.replay(matchId).then(setReplay, (e) => setError(e.message));
-    api.template().then(setTemplate, (e) => setError(e.message));
+    api.replay(matchId).then(
+      (r) => {
+        setReplay(r);
+        api.template(r.template_id).then(setTemplate, (e) => setError(e.message));
+      },
+      (e) => setError(e.message),
+    );
   }, [matchId]);
 
   if (error) return <p className="page-status">{error}</p>;
@@ -36,12 +42,16 @@ export function ReplayPage({ matchId }: Props) {
   const lastTurn = replay.transcript[replay.transcript.length - 1];
   const highlight = replay.transcript.find((t) => t.seq === replay.highlight_seq);
   const date = new Date(replay.created_at).toLocaleDateString(undefined, { day: "numeric", month: "long" });
+  const showcase = replay.mode === "showcase";
   const finish =
-    replay.end_reason === "move_cap_points"
-      ? `${winnerName} wins on points, ${replay.points_p1}:${replay.points_p2}`
-      : replay.end_reason === "resign"
-        ? `${winnerName} wins by resignation`
-        : `${winnerName} wins by sudden death in ${replay.judged_moves} moves`;
+    replay.winner === null
+      ? `A draw, ${replay.points_p1}:${replay.points_p2}`
+      : replay.end_reason === "move_cap_points" || replay.end_reason === "rounds_complete"
+        ? `${winnerName} wins on points, ${replay.points_p1}:${replay.points_p2}`
+        : replay.end_reason === "resign"
+          ? `${winnerName} wins by resignation`
+          : `${winnerName} wins by sudden death in ${replay.judged_moves} moves`;
+  const rounds = showcase ? groupRounds(replay.rounds, replay.transcript).filter((g) => g.revealed) : [];
 
   return (
     <>
@@ -60,17 +70,32 @@ export function ReplayPage({ matchId }: Props) {
         <h1>
           {replay.stage_name} vs {replay.opponent_name}
         </h1>
-        <p className="kicker">A duel of {template.title}, replayed move by move</p>
+        <p className="kicker">A duel of {template.title}, replayed {showcase ? "round by round" : "move by move"}</p>
         <p className="billing small-caps">
           {replay.stage_name} <span className="model human">human</span> against {replay.opponent_name}{" "}
           <span className="model">model</span>, {date}
         </p>
 
-        <div className="card opening">
-          <b>Opening:</b> {replay.seed_token} {replay.seed_emoji}
-        </div>
+        {showcase &&
+          rounds.map(({ round, mine, theirs }) => (
+            <section key={round.round_n} className="round-result">
+              <p className="centered-label small-caps">Round {round.round_n}</p>
+              <WordCard round={round} />
+              <div className="bluffs">
+                <Bluff turn={mine!} who={replay.stage_name} you template={template} />
+                <Bluff turn={theirs!} who={replay.opponent_name} template={template} />
+              </div>
+              <TruthLine round={round} />
+            </section>
+          ))}
 
-        {replay.transcript.map((turn) => (
+        {!showcase && (
+          <div className="card opening">
+            <b>Opening:</b> {replay.seed_token} {replay.seed_emoji}
+          </div>
+        )}
+
+        {!showcase && replay.transcript.map((turn) => (
           <div key={turn.seq}>
             <article className="entry torn">
               <div>
@@ -114,10 +139,10 @@ export function ReplayPage({ matchId }: Props) {
         </section>
 
         <p className="play-cta">
-          <Link className="ticket" to="/play">
+          <Link className="ticket" to={`/play/${replay.template_id}`}>
             Play a duel
           </Link>
-          <span className="cta-hint">A fresh opening, the same judge.</span>
+          <span className="cta-hint">{showcase ? "Three fresh words, the same judge." : "A fresh opening, the same judge."}</span>
         </p>
 
         {replay.is_yours && (

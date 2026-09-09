@@ -360,7 +360,7 @@ class MatchService:
             status=match.status,
             state_version=match.state_version,
             seed_token=match.seed,
-            seed_emoji=match.seed_emoji,
+            seed_emoji=match.seed_emoji if template.mode == "escalation" else "",
             rounds=self._rounds(match, template),
             stage_name=extra["stage_name"],
             opponent_name=self.opponent_name,
