@@ -703,7 +703,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               <label className="small-caps" htmlFor="move">
                 {paused ? "Draft your definition while you wait" : `Your definition of ${current.round.token}`}
               </label>
-              <div className="compose-box bare">
+              <div className={`compose-box bare${judging && !paused ? " scanning" : ""}`}>
                 <textarea
                   id="move"
                   autoComplete="off"

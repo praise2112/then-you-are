@@ -60,7 +60,10 @@ export function Bluff({ turn, who, you = false, template }: BluffProps) {
         {turn.scoring && <span>The judge was {turn.scoring.confidence}</span>}
       </p>
       <p className="said">{turn.move_text}</p>
-      <p className="headline">{turn.host?.headline}</p>
+      <p className="headline">
+        <span className="small-caps">{template.host_name}</span>
+        {turn.host?.headline}
+      </p>
       <p className="marks">
         {template.rubric.map((entry) => {
           const earned = (turn.scoring?.scores[entry.name] ?? 0) * (entry.max_points / template.score_max);

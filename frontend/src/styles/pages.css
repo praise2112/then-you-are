@@ -442,7 +442,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .judge-reading .host-figure,
-  .stage .standing.reading {
+  .stage .standing.reading,
+  .compose-box.scanning::after {
     animation: none;
   }
 }
@@ -1870,8 +1871,8 @@
 }
 
 .bluff .marks {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, auto));
   gap: 0 var(--space-2);
   border-top: 1px solid var(--rule);
   padding-top: var(--space-1);
@@ -1933,8 +1934,55 @@
 .bluff .headline {
   font-family: var(--display);
   font-style: italic;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--ink-soft);
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--rule);
+}
+
+.bluff .headline .small-caps {
+  display: block;
+  font-family: var(--serif);
+  font-style: normal;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+}
+
+.bill .card .premise {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  margin: var(--space-1) 0 0;
+}
+
+.compose-box.scanning {
+  position: relative;
+  overflow: hidden;
+}
+
+.compose-box.scanning::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in srgb, var(--vermilion) 18%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  animation: scan 1.8s linear infinite;
+}
+
+@keyframes scan {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
 }
 
 .badges {

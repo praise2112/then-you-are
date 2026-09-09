@@ -24,7 +24,13 @@ export function Landing() {
       <header className="bar-top">
         <span className="wordmark">Oddstage</span>
         <span className="round">
-          Now playing <b>{template?.title}</b>
+          Now playing{" "}
+          {templates?.map((t, i) => (
+            <span key={t.slug}>
+              {i > 0 && " and "}
+              <b>{t.title}</b>
+            </span>
+          ))}
         </span>
         <span className="aside">
           <Link to="/stage">The stage</Link>
@@ -49,6 +55,7 @@ export function Landing() {
               <Link key={t.slug} className="card now" to={`/play/${t.slug}`}>
                 <h3>{t.title}</h3>
                 <em>{t.tagline}</em>
+                <p className="premise">{t.premise}</p>
                 <span className="ribbon">Now playing</span>
               </Link>
             ))}
