@@ -1,6 +1,6 @@
 """Golden set runner: sends fixed move pairs to the live judge and reports drift.
 
-uv run python -m arena_evals.run_golden --split dev --repeats 1 --concurrency 4
+uv run python -m arena_evals.run_golden --template then-i-am --split dev --repeats 1
 """
 
 import argparse
@@ -14,19 +14,15 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from arena_core.template import load_template
+from arena_core.template import Template, load_template
 from arena_judge.caller import ModelCaller
 from arena_judge.schema import Outcome, route_outcome
 from arena_server.config import load_model, load_settings
 
-GOLDEN_DIR = Path(__file__).parent / "golden" / "v1"
+GOLDEN_DIR = Path(__file__).parent / "golden"
 Split = Literal["dev", "holdout"]
 
-STATUS_OPENER = re.compile(
-    r"^\s*((accepted|rejected|refused|denied|approved|verdict)\s*[:,.!]"
-    r"|move refused|the ringmaster refuses)",
-    re.IGNORECASE,
-)
+STATUS_WORDS = r"accepted|rejected|refused|denied|approved|verdict"
 DASH = re.compile(r"—|–|\s-\s|\.\.\.")
 
 
@@ -45,18 +41,27 @@ class GoldenRecord(BaseModel):
     provenance: Literal["live_match", "authored"]
 
 
-def load_golden(split: Split) -> list[GoldenRecord]:
-    lines = (GOLDEN_DIR / f"{split}.jsonl").read_text().splitlines()
+def load_golden(template_id: str, split: Split) -> list[GoldenRecord]:
+    lines = (GOLDEN_DIR / template_id / "v1" / f"{split}.jsonl").read_text().splitlines()
     records = [GoldenRecord.model_validate_json(line) for line in lines if line.strip()]
     ids = [r.id for r in records]
     if len(set(ids)) != len(ids):
         raise ValueError("duplicate golden ids")
+    if {r.template_id for r in records} != {template_id}:
+        raise ValueError(f"records in {template_id}/{split} name another template")
     return records
 
 
-def headline_faults(headline: str) -> list[str]:
+def status_opener(persona_name: str) -> re.Pattern[str]:
+    return re.compile(
+        rf"^\s*(({STATUS_WORDS})\s*[:,.!]|move refused|{re.escape(persona_name)} refuses)",
+        re.IGNORECASE,
+    )
+
+
+def headline_faults(headline: str, persona_name: str = "The Ringmaster") -> list[str]:
     faults = []
-    if STATUS_OPENER.search(headline):
+    if status_opener(persona_name).search(headline):
         faults.append("status opener")
     if DASH.search(headline):
         faults.append("dash")
@@ -79,8 +84,9 @@ class Result(BaseModel):
         return self.got != self.expected
 
 
-async def judge_one(caller: ModelCaller, record: GoldenRecord, sem: asyncio.Semaphore) -> Result:
-    template = load_template(record.template_id)
+async def judge_one(
+    caller: ModelCaller, template: Template, record: GoldenRecord, sem: asyncio.Semaphore
+) -> Result:
     transcript = record.transcript
     if (
         not transcript
@@ -110,11 +116,13 @@ async def judge_one(caller: ModelCaller, record: GoldenRecord, sem: asyncio.Sema
         confidence=scoring.confidence,
         scores=scoring.scores,
         headline=host.headline,
-        faults=headline_faults(host.headline),
+        faults=headline_faults(host.headline, template.host.persona_name),
     )
 
 
-async def run(split: Split, repeats: int, concurrency: int, only: set[str]) -> list[Result]:
+async def run(
+    template_id: str, split: Split, repeats: int, concurrency: int, only: set[str]
+) -> list[Result]:
     settings = load_settings()
     caller = ModelCaller(
         settings.openrouter_api_key,
@@ -122,10 +130,11 @@ async def run(split: Split, repeats: int, concurrency: int, only: set[str]) -> l
         load_model(settings.opponent_ref),
     )
     sem = asyncio.Semaphore(concurrency)
-    records = [r for r in load_golden(split) if not only or r.id in only]
+    template = load_template(template_id)
+    records = [r for r in load_golden(template_id, split) if not only or r.id in only]
     try:
         return await asyncio.gather(
-            *(judge_one(caller, r, sem) for r in records for _ in range(repeats))
+            *(judge_one(caller, template, r, sem) for r in records for _ in range(repeats))
         )
     finally:
         await caller.aclose()
@@ -151,6 +160,7 @@ def report(results: list[Result]) -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--template", default="then-i-am")
     parser.add_argument("--split", choices=["dev", "holdout"], default="dev")
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--concurrency", type=int, default=4)
@@ -158,7 +168,7 @@ def main() -> None:
     parser.add_argument("--only", default="", help="comma-separated record ids")
     args = parser.parse_args()
     only = {i for i in args.only.split(",") if i}
-    results = asyncio.run(run(args.split, args.repeats, args.concurrency, only))
+    results = asyncio.run(run(args.template, args.split, args.repeats, args.concurrency, only))
     if args.out:
         args.out.write_text(
             json.dumps([r.model_dump() for r in results], indent=1, ensure_ascii=False)

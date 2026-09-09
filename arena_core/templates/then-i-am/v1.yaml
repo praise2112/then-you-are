@@ -99,6 +99,9 @@ criterion:
       A bigger, faster, or stronger version of the standing form is NOT a duplicate, and
       neither is a cousin from the same family (a needle after a pin). Those are failed
       counters: not_semantic_duplicate stays true and satisfies_criterion is false.
+    - >
+      Becoming the opening form itself, or a recoloured copy of it ("a grey pebble" against
+      "a pebble"), is a duplicate: not_semantic_duplicate is false.
 
 examples:
   - previous_move: "I am a wildfire, hungry, spreading."

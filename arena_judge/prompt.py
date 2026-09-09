@@ -143,7 +143,7 @@ EXAMPLES
 
 MATCH STATE
 
-Transcript so far:
+Transcript so far (moves already judged; the move under judgment is not among them):
 {chr(10).join(transcript) or "(match start)"}
 
 {_hidden_block(hidden)}The prompt to answer:
