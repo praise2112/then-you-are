@@ -343,6 +343,8 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
 
         replay = (await client.get(f"/replays/{match['id']}")).json()
         assert "lost a duel of Word for Word" in replay["share_text"]
+        assert replay["transcript"][1]["host"]["badges"] == ["accidental_truth"]
+        assert replay["transcript"][4]["host"]["badges"] == ["close_call"]
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

@@ -1,6 +1,7 @@
 """Match service: creates matches, runs the human and opponent turns, persists everything."""
 
 import asyncio
+import json
 import secrets
 from collections import defaultdict
 from dataclasses import dataclass
@@ -290,6 +291,14 @@ class MatchService:
                     "update verdicts set turn_id = %s where id = %s", (row["id"], verdict_id)
                 )
         return row["id"]
+
+    async def _stamp_badges(self, verdict_id: int, badges: list[str]) -> None:
+        async with self.pool.connection() as conn:
+            await conn.execute(
+                "update verdicts set host = host || jsonb_build_object('badges', %s::jsonb) "
+                "where id = %s",
+                (json.dumps(badges), verdict_id),
+            )
 
     async def _insert_verdict(self, call: JudgeCall) -> int:
         response = call.response
@@ -648,6 +657,8 @@ class MatchService:
             badges.append("accidental_truth")
         elif hidden and response.scoring.truth_proximity == "near":
             badges.append("near_miss")
+        if badges:
+            await self._stamp_badges(judged.verdict_id, badges)
         p1, p2 = self._points(match)
         self.bus.emit(
             match.id,
