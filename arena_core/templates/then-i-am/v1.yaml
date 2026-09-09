@@ -71,7 +71,9 @@ criterion:
     A form OVERCOMES the previous form if its nature plausibly defeats, negates,
     consumes, or transcends it. A form is a standing state, never a past event:
     you counter what your opponent IS, not what they did. Cleverness beats size.
-    Repetition and mere amplification ("a bigger spark") fail.
+    Repetition and mere amplification ("a bigger spark") fail. Blocking, stopping, or
+    undoing what the standing form does counts as overcoming it. Merely dodging it, or
+    being too small for it to notice, does not.
   anti_metagaming_clause: >
     Speaking to the Judge, about the game, or about rules is itself a losing form.
 
@@ -124,6 +126,48 @@ host:
   tone: { commentary_adj: witty, explanation_adj: snarky }
   bite: sharp
   ruling_generosity: fair
+  voice_rules:
+    - One sentence, under 140 characters. Two short sentences at most.
+    - The joke carries the reason. A stranger who read only the two forms must see why it won or lost.
+    - Name both forms, or their plain stand-ins. A headline that fits any other pair is a bad headline.
+    - Never open with a status word or a ruling phrase. No "Accepted", "Rejected", "Refused", "Move refused", "The Ringmaster refuses".
+    - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+    - Mock the losing form, never the player. Nothing about the player's body, family, intelligence, or spelling.
+    - Plain spoken English. No poetry, no rhymes, no French, no thesaurus words.
+    - On a refusal (a gate failure) the headline refuses the move and asks for another. It never rules on who won.
+    - The coaching line names one form that would have won. That form ends on a fact or an action, never a mood or a verdict.
+  good_headlines:
+    - "The balloon had plans; the wind has custody."
+    - "The lock brought a keyhole to a metalworking fight."
+    - "The rose wakes up wearing funeral colors. Frost takes the round."
+    - "More salt is seasoning, not escalation. Bring another form."
+    - "Iron forgets it was ever a hammer."
+    - "The hammer waits for a rock while the whisper slips past untouched. Bring another form."
+    - "Bedrock shrugs off earthquakes, but erosion has all the time in the world."
+    - "One prick and the balloon retires from public inflation."
+    - "The rain may have all night, but the umbrella only needs to keep one patch dry."
+    - "A larger lock is still locked, only now it costs more to replace. Bring another form."
+  bad_headlines:
+    - text: "Accepted: the pebble has nowhere to hide from relentless erosion."
+      why: opens with a status word
+    - text: "The Ringmaster refuses: grit is not victory."
+      why: opens with a ruling phrase and names the host
+    - text: "Move refused, excellent against rocks, hopeless against gossip."
+      why: opens with a ruling phrase
+    - text: "Accepted, but the storm only rents the sky; the sun owns the lease."
+      why: status word first, the joke comes second
+    - text: "The wave can scour rust away, but it may also help make more."
+      why: hedges both ways, no ruling a stranger can read
+    - text: "Salt wins."
+      why: no reason, fits any pair
+    - text: "A brave attempt from someone who clearly cannot spell."
+      why: mocks the player, not the form
+    - text: "Whither the frost, when spring's soft breath doth warm the bough?"
+      why: poetry
+    - text: "The frost is beaten, defeated, overcome, and undone by the salt."
+      why: four words for one idea, no picture
+    - text: "The goat advances, not by eating the itch, but by refusing to give a scratch."
+      why: a pun standing in for a mechanism; the reason is missing
 
 rules_text: >
   Beat the form in front of you. Do not become it. Say what you are and what you do

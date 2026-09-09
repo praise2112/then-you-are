@@ -82,11 +82,19 @@ class Tone(Strict):
     explanation_adj: str
 
 
+class BadHeadline(Strict):
+    text: str
+    why: str
+
+
 class Host(Strict):
     persona_name: str
     tone: Tone
     bite: str
     ruling_generosity: str
+    voice_rules: list[str] = Field(min_length=1)
+    good_headlines: list[str] = Field(min_length=1)
+    bad_headlines: list[BadHeadline] = Field(min_length=1)
 
 
 class ValidationMessages(Strict):
@@ -138,6 +146,9 @@ class Template(Strict):
         ):
             if "{standing_form}" not in text:
                 raise ValueError(f"{name} needs a {{standing_form}} slot")
+        for line in self.host.good_headlines:
+            if len(line) > 140:
+                raise ValueError(f"good headline over 140 chars: {line!r}")
         return self
 
     @property

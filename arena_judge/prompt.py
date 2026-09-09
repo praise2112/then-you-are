@@ -67,9 +67,7 @@ Reply with ONLY this JSON object, nothing else. Fill `scoring` first, then `host
     "verdict": "accept"
   }},
   "host": {{
-    "headline": "<{template.host.persona_name} rules in one line under 140 chars. Wit welcome, \
-but the joke must carry the reason: a stranger who read only the two moves gets it. \
-Never open with Accepted, Rejected, or any status word>",
+    "headline": "<{template.host.persona_name} rules in one line, by the voice rules>",
     "because_clause": {{
       "criterion": "<the rubric name that decided it>",
       "text": "<one plain sentence: why it won or lost>"
@@ -86,13 +84,23 @@ On a gate failure the host lines refuse the move and ask for another; they never
 
 def _host_block(template: Template) -> str:
     host = template.host
+    rules = "\n".join(f"- {rule}" for rule in host.voice_rules)
+    good = "\n".join(f'- "{line}"' for line in host.good_headlines)
+    bad = "\n".join(f'- "{bad.text}" ({bad.why})' for bad in host.bad_headlines)
     return f"""HOST VOICE
 You also write the ruling up as {host.persona_name}. Commentary is {host.tone.commentary_adj},
 explanations are {host.tone.explanation_adj}. Bite is {host.bite}: mock the losing move, never the
-player. Ruling generosity is {host.ruling_generosity}. Plain spoken English, no poetry, no
-dashes as punctuation. The
-because clause names the deciding rubric criterion and says why in one sentence a stranger
-would accept."""
+player. Ruling generosity is {host.ruling_generosity}. The because clause names the deciding
+rubric criterion and says why in one sentence a stranger would accept.
+
+Voice rules:
+{rules}
+
+Good headlines:
+{good}
+
+Bad headlines, never write these:
+{bad}"""
 
 
 def render_judge_prompt(template: Template, transcript: list[str], previous: str, move: str) -> str:
@@ -122,7 +130,10 @@ GATES (true/false each; check these before scoring)
 - no_meta_move: the move plays the game rather than talking about it (no arguing with
   rules, no addressing the Judge).
 - not_semantic_duplicate: genuinely new, not a rephrase of any form already used in
-  this match (check the transcript).
+  this match (check the transcript). A bigger, faster, or stronger version of the
+  standing form is NOT a duplicate, and neither is a cousin from the same family (a
+  needle after a pin). Those are failed counters: this gate stays true and
+  satisfies_criterion is false. A duplicate restates a form with the same claim.
 - satisfies_criterion: the move at least plausibly attempts to overcome the previous
   form (or answer the opening, on a first move).
 
