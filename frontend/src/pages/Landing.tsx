@@ -1,23 +1,31 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Link, navigate, ThemeToggle } from "../App.tsx";
-import { api, type MatchSnapshot, type Replay, type StageView, type TemplateView } from "../api.ts";
+import { api, type MatchSnapshot, type Replay, type ReplaySort, type StageView, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { store } from "../store.ts";
-import { criterionLabel, formName, fullMove, HOUSE, lastStanding, STANDING } from "./format.ts";
+import { criterionLabel, formName, fullMove, HOUSE, lastStanding, resultLabel, STANDING } from "./format.ts";
 
 const STILL = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 export function Landing() {
-  const [curated, setCurated] = useState<Replay[] | null>(null);
   const [template, setTemplate] = useState<TemplateView | null>(null);
   const [stage, setStage] = useState<StageView | null>(null);
+  const [sort, setSort] = useState<ReplaySort>("curated");
+  const [lists, setLists] = useState<Partial<Record<ReplaySort, Replay[]>>>({});
   useEffect(() => {
-    api.curated().then(setCurated, () => setCurated([]));
     api.template().then(setTemplate, () => setTemplate(null));
     api.stage().then(setStage, () => setStage(null));
   }, []);
+  useEffect(() => {
+    if (lists[sort]) return;
+    api.replays(sort).then(
+      (rows) => setLists((l) => ({ ...l, [sort]: rows })),
+      () => setLists((l) => ({ ...l, [sort]: [] })),
+    );
+  }, [sort, lists]);
+  const replays = lists[sort];
   const prefix = template?.move_prefix ?? "";
 
   return (
@@ -94,31 +102,30 @@ export function Landing() {
         <p className="fleuron" aria-hidden="true">❧</p>
 
         <section id="replays">
-          <h2 className="centered-label small-caps">Great duels, replayed</h2>
+          <h2 className="centered-label small-caps">Replays</h2>
+          <div className="tabs" role="tablist">
+            {(["curated", "newest", "longest"] as ReplaySort[]).map((key) => (
+              <button
+                key={key}
+                role="tab"
+                type="button"
+                aria-selected={sort === key}
+                onClick={() => setSort(key)}
+              >
+                {key === "curated" ? "Curated" : key === "newest" ? "Newest" : "Longest run"}
+              </button>
+            ))}
+          </div>
           <div className="classics">
-            {curated === null && <p className="empty-strip">Fetching the archive.</p>}
-            {curated?.length === 0 && (
-              <p className="empty-strip">No duels curated yet. Yours could be the first.</p>
+            {replays === undefined && <p className="empty-strip">Fetching the archive.</p>}
+            {replays?.length === 0 && (
+              <p className="empty-strip">
+                {sort === "curated" ? "No duels curated yet. Yours could be the first." : "No finished duels yet."}
+              </p>
             )}
-            {curated?.map((replay) => {
-              const last = lastStanding(replay.transcript);
-              return (
-                <article className="card" key={replay.id}>
-                  <span className="medallion" aria-hidden="true">
-                    {last?.host?.generated_emoji ?? replay.seed_emoji}
-                  </span>
-                  <div>
-                    <p className="billing" style={{ margin: 0 }}>
-                      {replay.stage_name} <span className="vs">vs</span> {replay.opponent_name}
-                    </p>
-                    <blockquote>“{last?.move_text ?? formName(replay.seed_token, prefix)}”</blockquote>
-                    <Link className="watch" to={`/r/${replay.id}`}>
-                      Watch the duel
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
+            {replays?.map((replay) => (
+              <ReplayCard key={replay.id} replay={replay} prefix={prefix} />
+            ))}
           </div>
         </section>
 
@@ -131,6 +138,33 @@ export function Landing() {
         </section>
       </main>
     </>
+  );
+}
+
+function ReplayCard({ replay, prefix }: { replay: Replay; prefix: string }) {
+  const last = lastStanding(replay.transcript);
+  const result = resultLabel(replay);
+  const score = replay.end_reason === "move_cap_points" ? ` · ${replay.points_p1} : ${replay.points_p2}` : "";
+  return (
+    <article className="card">
+      <span className="medallion" aria-hidden="true">
+        {last?.host?.generated_emoji ?? replay.seed_emoji}
+      </span>
+      <div>
+        <p className="billing" style={{ margin: 0 }}>
+          {replay.stage_name} <span className="vs">vs</span> {HOUSE}{" "}
+          <span className={`result${result.won ? "" : " ink"}`}>{result.text}</span>
+        </p>
+        <blockquote>“{last?.move_text ?? formName(replay.seed_token, prefix)}”</blockquote>
+        <p className="meta">
+          {replay.judged_moves} {replay.judged_moves === 1 ? "move" : "moves"}
+          {score}
+        </p>
+        <Link className="watch" to={`/r/${replay.id}`}>
+          Watch the duel
+        </Link>
+      </div>
+    </article>
   );
 }
 

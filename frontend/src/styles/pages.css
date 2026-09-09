@@ -1263,6 +1263,60 @@
   letter-spacing: 0.06em;
 }
 
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin: var(--space-2) 0 0;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+.tabs button {
+  background: none;
+  border: 0;
+  font: inherit;
+  color: var(--ink-faint);
+  cursor: pointer;
+  padding: 0.2rem 0;
+  border-bottom: 2px solid transparent;
+}
+
+.tabs button[aria-selected="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--vermilion);
+}
+
+.classics .result {
+  font-family: var(--display);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--vermilion-ink);
+}
+
+.classics .result.ink {
+  color: var(--ink-faint);
+}
+
+.classics .meta {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+.curate {
+  text-align: center;
+  margin-top: var(--space-3);
+}
+
+.curate .error {
+  display: block;
+  color: var(--vermilion-ink);
+  font-size: 0.85rem;
+  margin-top: var(--space-1);
+}
+
 .billing .vs {
   color: var(--vermilion);
 }

@@ -1,4 +1,4 @@
-import type { TurnView } from "../api.ts";
+import type { Replay, TurnView } from "../api.ts";
 
 export const STANDING = new Set(["accept", "semantic_uncertain"]);
 
@@ -30,4 +30,14 @@ export function criterionLabel(name: string): string {
 
 export function lastStanding(transcript: TurnView[]): TurnView | undefined {
   return [...transcript].reverse().find((t) => STANDING.has(t.outcome));
+}
+
+/** How a finished duel ended, from the player's side: "Victory", "Fell in round 3", "Won on points". */
+export function resultLabel(replay: Replay): { text: string; won: boolean } {
+  const won = replay.winner === "p1";
+  if (replay.end_reason === "move_cap_points") return { text: won ? "Won on points" : "Lost on points", won };
+  if (replay.end_reason === "resign") return { text: won ? "The House resigned" : "Resigned", won };
+  if (won) return { text: "Victory", won };
+  const fell = replay.transcript.filter((t) => t.actor === "p1").length;
+  return { text: `Fell in round ${fell}`, won };
 }

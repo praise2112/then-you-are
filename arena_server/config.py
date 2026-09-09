@@ -19,6 +19,7 @@ class Settings:
     opponent_ref: str
     public_base_url: str
     frontend_dist: Path | None
+    curator_token: str
 
 
 def load_settings() -> Settings:
@@ -32,6 +33,7 @@ def load_settings() -> Settings:
         opponent_ref=os.environ.get("OPPONENT_REF", "opponent-v1"),
         public_base_url=os.environ.get("PUBLIC_BASE_URL", "http://127.0.0.1:8000").rstrip("/"),
         frontend_dist=dist if (dist / "index.html").exists() else None,
+        curator_token=os.environ.get("CURATOR_TOKEN", ""),
     )
 
 

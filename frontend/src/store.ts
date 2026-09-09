@@ -6,6 +6,7 @@ const KEYS = {
   bestStreak: "oddstage-best-streak",
   lastCounted: "oddstage-last-counted-match",
   openingMove: "oddstage-opening-move",
+  curatorToken: "oddstage-curator-token",
 };
 
 function read(key: string): string | null {
@@ -53,6 +54,7 @@ export const store = {
       return null;
     }
   },
+  curatorToken: () => read(KEYS.curatorToken) ?? "",
   streak: () => Number(read(KEYS.streak) ?? 0),
   bestStreak: () => Number(read(KEYS.bestStreak) ?? 0),
   /** Records a finished match once and returns the streak after it. */

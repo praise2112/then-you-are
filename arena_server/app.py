@@ -4,6 +4,7 @@ import html
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, Header, HTTPException, Request, Response
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
@@ -180,8 +181,22 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         return await service.replay(match_id)
 
     @app.get("/replays")
-    async def list_replays(curated: bool = False) -> list[Replay]:
-        return await service.curated() if curated else []
+    async def list_replays(
+        sort: Literal["curated", "newest", "longest"] = "curated",
+    ) -> list[Replay]:
+        return await service.replays(sort)
+
+    class CurateCommand(BaseModel):
+        curated: bool
+
+    @app.post("/replays/{match_id}/curate", status_code=204)
+    async def post_curate(
+        match_id: str, body: CurateCommand, x_curator_token: str = Header(default="")
+    ) -> Response:
+        if not settings.curator_token or x_curator_token != settings.curator_token:
+            raise HTTPException(403, "curator token required")
+        await service.set_curated(match_id, body.curated)
+        return Response(status_code=204)
 
     @app.get("/r/{match_id}", response_class=HTMLResponse)
     async def replay_shell(match_id: str) -> HTMLResponse:

@@ -208,6 +208,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/replays/{match_id}/curate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Post Curate */
+        post: operations["post_curate_replays__match_id__curate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/r/{match_id}": {
         parameters: {
             query?: never;
@@ -254,6 +271,11 @@ export interface components {
             seed_token?: string | null;
             /** First Move */
             first_move?: string | null;
+        };
+        /** CurateCommand */
+        CurateCommand: {
+            /** Curated */
+            curated: boolean;
         };
         /** DemoMoveView */
         DemoMoveView: {
@@ -502,6 +524,8 @@ export interface components {
             share_text: string;
             /** Highlight Seq */
             highlight_seq: number | null;
+            /** Is Curated */
+            is_curated: boolean;
         };
         /** ResignCommand */
         ResignCommand: {
@@ -591,7 +615,7 @@ export interface components {
         };
         /**
          * StageView
-         * @description What the landing shows about the arena: public matches in play, and how many have finished.
+         * @description Public matches in play, and how many duels have finished.
          */
         StageView: {
             /** Live */
@@ -1004,7 +1028,7 @@ export interface operations {
     list_replays_replays_get: {
         parameters: {
             query?: {
-                curated?: boolean;
+                sort?: "curated" | "newest" | "longest";
             };
             header?: never;
             path?: never;
@@ -1020,6 +1044,41 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Replay"][];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_curate_replays__match_id__curate_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "x-curator-token"?: string;
+            };
+            path: {
+                match_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CurateCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

@@ -17,7 +17,9 @@ pytestmark = pytest.mark.skipif(
 
 
 async def run_app(caller: FakeCaller):
-    settings = dataclasses.replace(load_settings(), database_url=os.environ["TEST_DATABASE_URL"])
+    settings = dataclasses.replace(
+        load_settings(), database_url=os.environ["TEST_DATABASE_URL"], curator_token="shh"
+    )
     app = build_app(settings, caller)
     manager = LifespanManager(app)
     await manager.__aenter__()
@@ -223,6 +225,39 @@ async def test_the_stage_lists_public_matches_in_play():
         stage = (await client.get("/stage")).json()
         assert created.json()["id"] in [m["id"] for m in stage["live"]]
         assert stage["duels_played"] >= 0
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_replay_lists_sort_and_curation_needs_the_token():
+    caller = FakeCaller(rulings=[judge_response(verdict="fail")], opponent_moves=[])
+    app, manager, client = await run_app(caller)
+    try:
+        match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        await client.post(
+            f"/matches/{match['id']}/moves",
+            json={"action_id": "a1", "expected_version": 0, "move_text": "I am a bigger rock."},
+        )
+        await settle(app)
+        newest = (await client.get("/replays?sort=newest")).json()
+        assert newest[0]["id"] == match["id"]
+        assert newest[0]["is_curated"] is False
+        assert match["id"] not in [r["id"] for r in (await client.get("/replays")).json()]
+
+        denied = await client.post(f"/replays/{match['id']}/curate", json={"curated": True})
+        assert denied.status_code == 403
+        ok = await client.post(
+            f"/replays/{match['id']}/curate",
+            json={"curated": True},
+            headers={"x-curator-token": "shh"},
+        )
+        assert ok.status_code == 204
+        curated = (await client.get("/replays?sort=curated")).json()
+        assert curated[0]["id"] == match["id"] and curated[0]["is_curated"] is True
+        lengths = [len(r["transcript"]) for r in (await client.get("/replays?sort=longest")).json()]
+        assert lengths == sorted(lengths, reverse=True)
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

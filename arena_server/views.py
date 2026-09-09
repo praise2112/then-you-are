@@ -101,3 +101,4 @@ class StageView(BaseModel):
 class Replay(MatchSnapshot):
     share_text: str
     highlight_seq: int | None
+    is_curated: bool

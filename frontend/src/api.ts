@@ -7,6 +7,7 @@ export type TemplateView = S["TemplateView"];
 export type MatchSnapshot = S["MatchSnapshot"];
 export type Replay = S["Replay"];
 export type StageView = S["StageView"];
+export type ReplaySort = "curated" | "newest" | "longest";
 export type TurnView = S["TurnView"];
 export type Ruling = S["Ruling"];
 export type TurnRejected = S["TurnRejected"];
@@ -90,7 +91,13 @@ export const api = {
     request<void>(`/matches/${id}/turns/${seq}/disagree`, { method: "POST" }),
   stage: () => request<StageView>("/stage"),
   replay: (id: string) => request<Replay>(`/replays/${id}`),
-  curated: () => request<Replay[]>("/replays?curated=true"),
+  replays: (sort: ReplaySort) => request<Replay[]>(`/replays?sort=${sort}`),
+  curate: (id: string, curated: boolean, token: string) =>
+    request<void>(`/replays/${id}/curate`, {
+      method: "POST",
+      headers: { "x-curator-token": token },
+      body: JSON.stringify({ curated }),
+    }),
 };
 
 export function useMatchEvents(matchId: string | null, onEvent: (event: MatchEvent) => void) {

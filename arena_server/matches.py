@@ -155,6 +155,7 @@ class MatchService:
             "stage_name": session["stage_name"] if session else "Challenger",
             "p1_session_key": row["p1_session_key"],
             "is_public": row["is_public"],
+            "is_curated": row["is_curated"],
             "created_at": row["created_at"],
         }
         return match, extra
@@ -285,6 +286,7 @@ class MatchService:
         )
 
     async def replay(self, match_id: str) -> Replay:
+        _, extra = await self._load(match_id)
         snap = await self.snapshot(match_id)
         if snap.status not in ("ended", "abandoned"):
             raise MatchError(404, "match still running")
@@ -292,6 +294,7 @@ class MatchService:
             **snap.model_dump(),
             share_text=self._share_text(snap),
             highlight_seq=self._highlight_seq(snap),
+            is_curated=extra["is_curated"],
         )
 
     def _turn_points(self, scoring: dict[str, Any] | None) -> int | None:
@@ -330,15 +333,29 @@ class MatchService:
             duels_played=played["n"] if played else 0,
         )
 
-    async def curated(self) -> list[Replay]:
+    async def replays(self, sort: Literal["curated", "newest", "longest"]) -> list[Replay]:
+        where = "status = 'ended' and is_public" + (" and is_curated" if sort == "curated" else "")
+        order = (
+            "(select count(*) from turns t where t.match_id = m.id and t.seq is not null) desc"
+            if sort == "longest"
+            else "ended_at desc"
+        )
         async with self.pool.connection() as conn:
             rows = await (
                 await conn.execute(
-                    "select id from matches where is_curated and status = 'ended' "
-                    "order by ended_at desc limit 12"
+                    f"select id from matches m where {where} order by {order} limit 12"
                 )
             ).fetchall()
         return [await self.replay(r["id"]) for r in rows]
+
+    async def set_curated(self, match_id: str, curated: bool) -> None:
+        async with self.pool.connection() as conn:
+            result = await conn.execute(
+                "update matches set is_curated = %s where id = %s and status = 'ended'",
+                (curated, match_id),
+            )
+            if result.rowcount == 0:
+                raise MatchError(404, "no finished match with that id")
 
     def _share_text(self, snap: MatchSnapshot) -> str:
         chain = [snap.seed_emoji] + [

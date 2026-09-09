@@ -4,6 +4,7 @@ import { Link, ThemeToggle } from "../App.tsx";
 import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
+import { store } from "../store.ts";
 import { criterionLabel, formName } from "./format.ts";
 
 type Props = { matchId: string };
@@ -19,6 +20,8 @@ export function ReplayPage({ matchId }: Props) {
   const [template, setTemplate] = useState<TemplateView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [curateError, setCurateError] = useState<string | null>(null);
+  const curatorToken = store.curatorToken();
 
   useEffect(() => {
     api.replay(matchId).then(setReplay, (e) => setError(e.message));
@@ -116,6 +119,24 @@ export function ReplayPage({ matchId }: Props) {
           </Link>
           <span className="cta-hint">A fresh opening, the same judge.</span>
         </p>
+
+        {curatorToken && (
+          <p className="curate">
+            <button
+              className="quiet-button"
+              type="button"
+              onClick={() =>
+                api.curate(matchId, !replay.is_curated, curatorToken).then(
+                  () => setReplay({ ...replay, is_curated: !replay.is_curated }),
+                  (e) => setCurateError(e.message),
+                )
+              }
+            >
+              {replay.is_curated ? "Remove from the curated strip" : "Curate this duel"}
+            </button>
+            {curateError && <span className="error">{curateError}</span>}
+          </p>
+        )}
 
         <p className="centered-label small-caps" style={{ marginTop: "var(--space-3)" }}>
           Share this duel
