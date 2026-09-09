@@ -19,7 +19,7 @@ import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
 import { capitalize, criterionLabel, formName, fullMove, groupRounds, HOUSE, lastStanding } from "./format.ts";
 import { MatchEnd } from "./MatchEnd.tsx";
-import { Bluff, TruthLine, WordCard } from "./rounds.tsx";
+import { Bluff, roundWinner, TruthLine, WordCard } from "./rounds.tsx";
 
 function endedFromReplay(r: Replay): MatchEnded {
   return {
@@ -665,7 +665,9 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                     <b>{round.token}</b> <em>{round.truth}</em>
                   </span>
                   <span className="tally-line">
-                    {mine?.points ?? 0} : {theirs?.points ?? 0}
+                    {roundWinner(mine, theirs) === "mine" ? <b>{mine?.points ?? 0}</b> : mine?.points ?? 0}
+                    {" : "}
+                    {roundWinner(mine, theirs) === "theirs" ? <b>{theirs?.points ?? 0}</b> : theirs?.points ?? 0}
                   </span>
                 </li>
               ))}
@@ -680,8 +682,19 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                 hostName={template.host_name}
               />
               <div className="bluffs">
-                <Bluff turn={lastResult.mine!} who={me} you template={template} />
-                <Bluff turn={lastResult.theirs!} who={HOUSE} template={template} />
+                <Bluff
+                  turn={lastResult.mine!}
+                  who={me}
+                  you
+                  won={roundWinner(lastResult.mine, lastResult.theirs) === "mine"}
+                  template={template}
+                />
+                <Bluff
+                  turn={lastResult.theirs!}
+                  who={HOUSE}
+                  won={roundWinner(lastResult.mine, lastResult.theirs) === "theirs"}
+                  template={template}
+                />
               </div>
             </section>
           )}

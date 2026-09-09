@@ -6,7 +6,7 @@ import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
 import { criterionLabel, formName, groupRounds } from "./format.ts";
-import { Bluff, TruthLine, WordCard } from "./rounds.tsx";
+import { Bluff, roundWinner, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
 
@@ -82,8 +82,19 @@ export function ReplayPage({ matchId }: Props) {
               <p className="centered-label small-caps">Round {round.round_n}</p>
               <WordCard round={round} />
               <div className="bluffs">
-                <Bluff turn={mine!} who={replay.stage_name} you template={template} />
-                <Bluff turn={theirs!} who={replay.opponent_name} template={template} />
+                <Bluff
+                  turn={mine!}
+                  who={replay.stage_name}
+                  you
+                  won={roundWinner(mine, theirs) === "mine"}
+                  template={template}
+                />
+                <Bluff
+                  turn={theirs!}
+                  who={replay.opponent_name}
+                  won={roundWinner(mine, theirs) === "theirs"}
+                  template={template}
+                />
               </div>
               <TruthLine round={round} turns={[mine, theirs]} hostName={template.host_name} />
             </section>

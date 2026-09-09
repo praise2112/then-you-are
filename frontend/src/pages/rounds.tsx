@@ -59,13 +59,27 @@ export function Badges({ turn }: { turn: TurnView }) {
   );
 }
 
-type BluffProps = { turn: TurnView; who: string; you?: boolean; template: TemplateView };
+type BluffProps = {
+  turn: TurnView;
+  who: string;
+  you?: boolean;
+  won?: boolean;
+  template: TemplateView;
+};
+
+/** Which side of a round scored more, or null on a tie. */
+export function roundWinner(mine?: TurnView, theirs?: TurnView): "mine" | "theirs" | null {
+  const a = mine?.points ?? 0;
+  const b = theirs?.points ?? 0;
+  return a === b ? null : a > b ? "mine" : "theirs";
+}
 
 /** One player's answer to a card with its ruling. Rows share a subgrid so two side by side line up. */
-export function Bluff({ turn, who, you = false, template }: BluffProps) {
+export function Bluff({ turn, who, you = false, won = false, template }: BluffProps) {
   const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
   return (
-    <article className="bluff">
+    <article className={`bluff${won ? " won" : ""}`}>
+      {won && <span className="stamp point">Point</span>}
       <p className="for">
         <span className={`who${you ? " you" : ""}`}>{who}</span>
         {turn.scoring && <span>The judge was {turn.scoring.confidence}</span>}
