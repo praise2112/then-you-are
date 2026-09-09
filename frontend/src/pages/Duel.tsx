@@ -15,6 +15,7 @@ import {
 } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
+import { store } from "../store.ts";
 import { capitalize, criterionLabel, formName, fullMove, HOUSE, lastStanding } from "./format.ts";
 import { MatchEnd } from "./MatchEnd.tsx";
 
@@ -54,6 +55,11 @@ export function Duel({ matchId }: Props) {
     () =>
       api.match(matchId).then((s) => {
         setSnap(s);
+        const opening = store.takeOpeningMove(matchId);
+        if (opening && s.status === "awaiting_judgment") {
+          setText(opening);
+          setPending(true);
+        }
         if (s.status === "ended" && s.end_reason) return api.replay(matchId).then(endedFromReplay).then(setEnded);
       }, (e) => setError(e.message)),
     [matchId],

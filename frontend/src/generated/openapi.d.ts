@@ -233,6 +233,50 @@ export interface components {
             template_id: string;
             /** Stage Name */
             stage_name?: string | null;
+            /** Seed Token */
+            seed_token?: string | null;
+            /** First Move */
+            first_move?: string | null;
+        };
+        /** DemoMoveView */
+        DemoMoveView: {
+            /**
+             * Actor
+             * @enum {string}
+             */
+            actor: "p1" | "p2";
+            /** Text */
+            text: string;
+            /** Emoji */
+            emoji: string;
+        };
+        /** DemoOpening */
+        DemoOpening: {
+            /** Token */
+            token: string;
+            /** Emoji */
+            emoji: string;
+        };
+        /** DemoPoints */
+        DemoPoints: {
+            /** Name */
+            name: string;
+            /** Earned */
+            earned: number;
+            /** Max Points */
+            max_points: number;
+        };
+        /** DemoView */
+        DemoView: {
+            opening: components["schemas"]["DemoOpening"];
+            /** Moves */
+            moves: components["schemas"]["DemoMoveView"][];
+            /** Headline */
+            headline: string;
+            /** Points */
+            points: components["schemas"]["DemoPoints"][];
+            /** Openings */
+            openings: components["schemas"]["LandingOpeningView"][];
         };
         /** Evidence */
         Evidence: {
@@ -302,6 +346,15 @@ export interface components {
         JudgeStarted: {
             /** Seq */
             seq: number;
+        };
+        /** LandingOpeningView */
+        LandingOpeningView: {
+            /** Token */
+            token: string;
+            /** Emoji */
+            emoji: string;
+            /** Examples */
+            examples: string[];
         };
         /** MatchEnded */
         MatchEnded: {
@@ -530,6 +583,8 @@ export interface components {
             slug: string;
             /** Title */
             title: string;
+            /** Tagline */
+            tagline: string;
             /** Premise */
             premise: string;
             /** Rubric */
@@ -542,12 +597,15 @@ export interface components {
             move_prefix: string;
             /** Move Example */
             move_example: string;
+            /** Move Hint */
+            move_hint: string;
             /** Move Budget */
             move_budget: number;
             /** Score Max */
             score_max: number;
             /** Host Name */
             host_name: string;
+            demo: components["schemas"]["DemoView"];
         };
         /** TurnRejected */
         TurnRejected: {

@@ -67,7 +67,9 @@ Reply with ONLY this JSON object, nothing else. Fill `scoring` first, then `host
     "verdict": "accept"
   }},
   "host": {{
-    "headline": "<{template.host.persona_name} rules in one line under 140 chars. Wit welcome, but the joke must carry the reason: a stranger who read only the two moves gets it. Never open with Accepted, Rejected, or any status word>",
+    "headline": "<{template.host.persona_name} rules in one line under 140 chars. Wit welcome, \
+but the joke must carry the reason: a stranger who read only the two moves gets it. \
+Never open with Accepted, Rejected, or any status word>",
     "because_clause": {{
       "criterion": "<the rubric name that decided it>",
       "text": "<one plain sentence: why it won or lost>"

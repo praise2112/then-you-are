@@ -60,10 +60,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   template: () => request<TemplateView>("/templates/then-i-am"),
-  createMatch: (stageName?: string) =>
+  createMatch: (opts: { stageName?: string; seedToken?: string; firstMove?: string } = {}) =>
     request<MatchSnapshot>("/matches", {
       method: "POST",
-      body: JSON.stringify({ template_id: "then-i-am", stage_name: stageName || null }),
+      body: JSON.stringify({
+        template_id: "then-i-am",
+        stage_name: opts.stageName || null,
+        seed_token: opts.seedToken ?? null,
+        first_move: opts.firstMove ?? null,
+      }),
     }),
   match: (id: string) => request<MatchSnapshot>(`/matches/${id}`),
   move: (id: string, expectedVersion: number, moveText: string) =>

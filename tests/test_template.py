@@ -23,3 +23,18 @@ def test_lint_rejects_a_judge_out_text_without_the_slot():
     data["judge_out_text"] = "The judge is out."
     with pytest.raises(ValidationError, match="standing_form"):
         Template.model_validate(data)
+
+
+def test_demo_round_carries_points_and_openings_from_the_seed_pool():
+    template = load_template("then-i-am")
+    demo = template.player_projection()["demo"]
+    assert [p["earned"] for p in demo["points"]] == [20, 12, 4]
+    assert all(template.seed_named(o["token"]) for o in demo["openings"])
+    assert demo["openings"][0]["examples"]
+
+
+def test_lint_rejects_a_demo_opening_outside_the_seed_pool():
+    data = load_template("then-i-am").model_dump()
+    data["demo"]["openings"][0]["token"] = "a unicorn"
+    with pytest.raises(ValidationError, match="seed pool"):
+        Template.model_validate(data)

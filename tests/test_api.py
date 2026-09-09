@@ -180,3 +180,35 @@ async def test_resign_ends_the_match_and_disagree_counts_once():
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_match_can_open_with_a_first_move_from_the_landing():
+    caller = FakeCaller(
+        rulings=[judge_response(), judge_response()], opponent_moves=["I am a hammer."]
+    )
+    app, manager, client = await run_app(caller)
+    try:
+        created = await client.post(
+            "/matches",
+            json={
+                "template_id": "then-i-am",
+                "seed_token": "a lock",
+                "first_move": "I am the rust, patient, hinge-eating.",
+            },
+        )
+        assert created.status_code == 201
+        match = created.json()
+        assert match["seed_token"] == "a lock"
+        await settle(app)
+        snap = (await client.get(f"/matches/{match['id']}")).json()
+        assert [t["actor"] for t in snap["transcript"]] == ["p1", "p2"]
+        assert snap["transcript"][0]["move_text"] == "I am the rust, patient, hinge-eating."
+
+        bad = await client.post(
+            "/matches", json={"template_id": "then-i-am", "seed_token": "a unicorn"}
+        )
+        assert bad.status_code == 422
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)

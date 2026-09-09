@@ -15,7 +15,7 @@ export function Play() {
   async function start(name: string) {
     setStarting(true);
     try {
-      const match = await api.createMatch(name || undefined);
+      const match = await api.createMatch({ stageName: name || undefined });
       navigate(`/m/${match.id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "The stage door is stuck.");
@@ -29,7 +29,7 @@ export function Play() {
 
   useEffect(() => {
     if (firstPlay) return;
-    api.createMatch(store.stageName() || undefined).then(
+    api.createMatch({ stageName: store.stageName() || undefined }).then(
       (match) => navigate(`/m/${match.id}`),
       (e) => setError(e instanceof Error ? e.message : "The stage door is stuck."),
     );

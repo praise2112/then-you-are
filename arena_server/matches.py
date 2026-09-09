@@ -88,8 +88,11 @@ class MatchService:
             )
         return key
 
-    async def create(self, session_key: str) -> MatchSnapshot:
-        seed = secrets.choice(self.template.seed_pool)
+    async def create(self, session_key: str, seed_token: str | None = None) -> MatchSnapshot:
+        seed = self.template.seed_named(seed_token) if seed_token else None
+        if seed_token and seed is None:
+            raise MatchError(422, "that opening is not in this game")
+        seed = seed or secrets.choice(self.template.seed_pool)
         match_id = secrets.token_urlsafe(8)
         async with self.pool.connection() as conn:
             await conn.execute(

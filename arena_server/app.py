@@ -74,6 +74,8 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     class CreateMatch(BaseModel):
         template_id: str
         stage_name: str | None = Field(default=None, max_length=40)
+        seed_token: str | None = None
+        first_move: str | None = Field(default=None, max_length=2000)
 
     class MoveCommand(BaseModel):
         action_id: str = Field(min_length=1, max_length=64)
@@ -123,7 +125,11 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         response.set_cookie(
             SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365
         )
-        return await service.create(key)
+        snap = await service.create(key, body.seed_token)
+        if body.first_move:
+            await service.submit_move(snap.id, key, f"first-{snap.id}", 0, body.first_move)
+            snap = await service.snapshot(snap.id)
+        return snap
 
     @app.get("/matches/{match_id}")
     async def get_match(match_id: str) -> MatchSnapshot:

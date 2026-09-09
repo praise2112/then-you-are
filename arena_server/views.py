@@ -13,18 +13,52 @@ class RubricView(BaseModel):
     max_points: int
 
 
+class DemoOpening(BaseModel):
+    token: str
+    emoji: str
+
+
+class DemoMoveView(BaseModel):
+    actor: Literal["p1", "p2"]
+    text: str
+    emoji: str
+
+
+class DemoPoints(BaseModel):
+    name: str
+    earned: int
+    max_points: int
+
+
+class LandingOpeningView(BaseModel):
+    token: str
+    emoji: str
+    examples: list[str]
+
+
+class DemoView(BaseModel):
+    opening: DemoOpening
+    moves: list[DemoMoveView]
+    headline: str
+    points: list[DemoPoints]
+    openings: list[LandingOpeningView]
+
+
 class TemplateView(BaseModel):
     slug: str
     title: str
+    tagline: str
     premise: str
     rubric: list[RubricView]
     rules_text: str
     max_chars: int
     move_prefix: str
     move_example: str
+    move_hint: str
     move_budget: int
     score_max: int
     host_name: str
+    demo: DemoView
 
 
 class TurnView(BaseModel):

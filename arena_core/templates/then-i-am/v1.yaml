@@ -1,6 +1,7 @@
 schema_version: 1
 slug: then-i-am
 title: Then I Am
+tagline: "Become something that beats what came before."
 premise: >
   Two shapeshifters duel in words. Each turn you become something that defeats
   what your opponent just became. The Judge decides if your form holds.
@@ -22,10 +23,35 @@ seed_pool:
   - { opening_token: "a rumor", opening_emoji: "🗣️" }
   - { opening_token: "an itch", opening_emoji: "🪶" }
 
+demo:
+  opening: { token: "a rock", emoji: "🪨" }
+  moves:
+    - { actor: p1, text: "I am the hammer, two kilos, rock-splitting.", emoji: "🔨" }
+    - { actor: p2, text: "I am the rust, patient, steel-eating.", emoji: "🔩" }
+  headline: "Iron forgets it was ever a hammer."
+  scores: { counter_strength: 4, coherence: 4, novelty: 2 }
+  openings:
+    - token: "a candle flame"
+      examples:
+        - "the rain, steady, wick-drowning."
+        - "a snuffer, brass, flame-pinching."
+        - "the dawn, slow, making you pointless."
+    - token: "a balloon"
+      examples:
+        - "a thorn, small, patient, one touch."
+        - "the cold, air-shrinking, string-loosening."
+        - "a cat, bored, claws out."
+    - token: "a lock"
+      examples:
+        - "the rust, patient, hinge-eating."
+        - "a locksmith, tired, paid by the hour."
+        - "the key, cut for you, already turning."
+
 move_constraints:
   max_chars: 200
   prefix: "I am "
   example: "I am the hammer, two kilos, rock-splitting."
+  hint: "A form, a trait, how it wins."
 
 rubric:
   - name: counter_strength
