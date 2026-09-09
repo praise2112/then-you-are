@@ -21,16 +21,27 @@ export function WordCard({ round, compact = false, children }: WordCardProps) {
   );
 }
 
-export function TruthLine({ round }: { round: RoundView }) {
+type TruthLineProps = { round: RoundView; turns?: (TurnView | undefined)[]; hostName?: string };
+
+/** The reveal: the card's truth, and one host line for the round, from the bluff that scored higher. */
+export function TruthLine({ round, turns = [], hostName }: TruthLineProps) {
+  const best = turns
+    .filter((t): t is TurnView => !!t?.host)
+    .sort((a, b) => (b.points ?? 0) - (a.points ?? 0))[0];
   return (
-    <p className="truth-line">
+    <div className="truth-line">
       <span className="medallion sm" role="img" aria-label={round.token}>
         {round.emoji}
       </span>
       <span>
         <b>What {round.token} really means:</b> {round.truth}
+        {best?.host && hostName && (
+          <em className="host-says">
+            <span className="small-caps">{hostName}</span> {best.host.headline}
+          </em>
+        )}
       </span>
-    </p>
+    </div>
   );
 }
 
@@ -60,10 +71,7 @@ export function Bluff({ turn, who, you = false, template }: BluffProps) {
         {turn.scoring && <span>The judge was {turn.scoring.confidence}</span>}
       </p>
       <p className="said">{turn.move_text}</p>
-      <p className="headline">
-        <span className="small-caps">{template.host_name}</span>
-        {turn.host?.headline}
-      </p>
+      <p className="headline">{turn.host?.because_clause.text}</p>
       <p className="marks">
         {template.rubric.map((entry) => {
           const earned = (turn.scoring?.scores[entry.name] ?? 0) * (entry.max_points / template.score_max);

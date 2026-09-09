@@ -1932,21 +1932,28 @@
 }
 
 .bluff .headline {
-  font-family: var(--display);
-  font-style: italic;
   font-size: 0.9rem;
+  line-height: 1.4;
   color: var(--ink-soft);
   padding-left: var(--space-2);
   border-left: 2px solid var(--rule);
 }
 
-.bluff .headline .small-caps {
+.truth-line .host-says {
   display: block;
+  margin-top: 0.25rem;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.truth-line .host-says .small-caps {
   font-family: var(--serif);
   font-style: normal;
   font-size: 0.7rem;
   letter-spacing: 0.12em;
   color: var(--ink-faint);
+  margin-right: 0.3rem;
 }
 
 .bill .card .premise {
@@ -1969,11 +1976,11 @@
   background: linear-gradient(
     100deg,
     transparent 30%,
-    color-mix(in srgb, var(--vermilion) 18%, transparent) 50%,
+    color-mix(in srgb, var(--vermilion) 5%, transparent) 50%,
     transparent 70%
   );
   background-size: 250% 100%;
-  animation: scan 1.8s linear infinite;
+  animation: scan 2.8s linear infinite;
 }
 
 @keyframes scan {
