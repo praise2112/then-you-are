@@ -282,8 +282,8 @@ async def test_replay_lists_sort_and_curation_needs_the_token():
 async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
     caller = FakeCaller(
         rulings=[
-            judge_response(),
             judge_response(truth_proximity="hit"),
+            judge_response(),
             judge_response(verdict="fail"),
             judge_response(),
             judge_response(confidence="coin_flip"),
@@ -332,7 +332,7 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
         reveals = [d for _, name, d in events if name == "round_revealed"]
         assert reveals[0]["token"] == "zarf" and reveals[0]["truth"].startswith("a holder")
         rulings = [d for _, name, d in events if name == "ruling"]
-        assert rulings[1]["badges"] == ["accidental_truth"]
+        assert rulings[0]["badges"] == ["accidental_truth"]
         assert rulings[2]["points"] == 0
         assert rulings[4]["badges"] == ["close_call"]
         assert rulings[5]["badges"] == ["near_miss"]
@@ -343,8 +343,36 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
 
         replay = (await client.get(f"/replays/{match['id']}")).json()
         assert "lost a duel of Word for Word" in replay["share_text"]
-        assert replay["transcript"][1]["host"]["badges"] == ["accidental_truth"]
+        assert replay["transcript"][0]["host"]["badges"] == ["accidental_truth"]
         assert replay["transcript"][4]["host"]["badges"] == ["close_call"]
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_the_house_writes_again_when_its_bluff_is_the_truth():
+    caller = FakeCaller(
+        rulings=[judge_response(), judge_response(truth_proximity="hit"), judge_response()],
+        opponent_moves=["a cup holder", "a desert wind"],
+    )
+    app, manager, client = await run_app(caller)
+    try:
+        match = (
+            await client.post(
+                "/matches", json={"template_id": "word-for-word", "seed_token": "zarf"}
+            )
+        ).json()
+        await settle(app)
+        await client.post(
+            f"/matches/{match['id']}/moves",
+            json={"action_id": "r1", "expected_version": 0, "move_text": "a woollen cloak"},
+        )
+        await settle(app)
+        snap = (await client.get(f"/matches/{match['id']}")).json()
+        assert snap["transcript"][1]["move_text"] == "a desert wind"
+        assert "real meaning" in caller.opponent_saw[1][-1]
+        assert snap["transcript"][1]["host"]["badges"] == []
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

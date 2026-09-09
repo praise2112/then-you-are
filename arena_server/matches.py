@@ -758,12 +758,21 @@ class MatchService:
     ) -> tuple["Judged", str]:
         """Judges the House's answer, regenerating on a refusal until one is rulable."""
         refusals = 0
+        retold = False
         while True:
             reason = layer1(template, text, match)
             if reason is None:
                 judged = await self._judge_until_ruled(
                     match, template, seq, text, card.card_text, transcript, card.hidden
                 )
+                hit = judged.response.scoring.truth_proximity == "hit"
+                if hit and card.hidden and not retold:
+                    # The House is meant to bluff: one more try when it wrote the truth.
+                    retold = True
+                    text = await self._stream_opponent_move(
+                        match, template, card.card_text, silent=True, avoid=text
+                    )
+                    continue
                 if judged.outcome != "semantic_reject":
                     return judged, text
             refusals += 1
@@ -873,14 +882,20 @@ class MatchService:
                 return
 
     async def _stream_opponent_move(
-        self, match: Match, template: Template, card: str, silent: bool = False
+        self,
+        match: Match,
+        template: Template,
+        card: str,
+        silent: bool = False,
+        avoid: str | None = None,
     ) -> str:
         seq = len(match.turns) + 1
         parts: list[str] = []
+        transcript = self._transcript(match, template, finished_only=True)
+        if avoid:
+            transcript.append(f"(your draft was the real meaning, write a false one: {avoid})")
         try:
-            async for chunk in self.caller.opponent_stream(
-                template, card, self._transcript(match, template, finished_only=True)
-            ):
+            async for chunk in self.caller.opponent_stream(template, card, transcript):
                 parts.append(chunk)
                 if not silent:
                     self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))
