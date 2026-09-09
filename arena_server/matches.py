@@ -33,7 +33,7 @@ from arena_judge.schema import (
 )
 from arena_server.db import Pool
 from arena_server.events import EventBus
-from arena_server.views import MatchSnapshot, Replay, TurnView
+from arena_server.views import MatchSnapshot, Replay, StageView, TurnView
 
 PAUSE_BACKOFF_S = (5, 10, 20, 30)
 
@@ -311,6 +311,24 @@ class MatchService:
             default=None,
         )
         return best.seq if best else None
+
+    async def stage(self) -> StageView:
+        async with self.pool.connection() as conn:
+            live = await (
+                await conn.execute(
+                    "select id from matches where is_public and status in "
+                    "('active', 'awaiting_judgment', 'paused') "
+                    "and created_at > now() - interval '2 hours' "
+                    "order by created_at desc limit 6"
+                )
+            ).fetchall()
+            played = await (
+                await conn.execute("select count(*) as n from matches where status = 'ended'")
+            ).fetchone()
+        return StageView(
+            live=[await self.snapshot(r["id"]) for r in live],
+            duels_played=played["n"] if played else 0,
+        )
 
     async def curated(self) -> list[Replay]:
         async with self.pool.connection() as conn:

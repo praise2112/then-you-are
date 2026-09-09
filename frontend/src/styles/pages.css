@@ -101,6 +101,15 @@
 
 .scoreline b {
   font-size: 1.3rem;
+  white-space: nowrap;
+  flex: none;
+}
+
+.scoreline .small-caps {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .transcript {
@@ -1111,6 +1120,66 @@
 
 #bill {
   margin-bottom: var(--space-4);
+}
+
+.stat-line {
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  margin: var(--space-1) 0 0;
+}
+
+.live-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.live-row .card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.live-row .card:hover {
+  border-color: var(--ink);
+}
+
+.live-row .dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--vermilion);
+  margin-right: 0.4rem;
+  animation: dots-blink 1.4s steps(2) infinite;
+}
+
+.live-row .chainlet {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.live-row .scoreline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1);
+  margin-top: 0.2rem;
+}
+
+.live-row .scoreline b {
+  font-family: var(--display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.live-row .scoreline .small-caps {
+  color: var(--ink-soft);
 }
 
 .bill .card.dashed {

@@ -27,7 +27,7 @@ from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
 from arena_server.matches import MatchError, MatchService
-from arena_server.views import MatchSnapshot, Replay, TemplateView
+from arena_server.views import MatchSnapshot, Replay, StageView, TemplateView
 
 SESSION_COOKIE = "oddstage_session"
 
@@ -170,6 +170,10 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     @app.get("/sse-payloads", include_in_schema=True)
     async def sse_payloads() -> SsePayloads:
         raise HTTPException(404, "schema-only endpoint")
+
+    @app.get("/stage")
+    async def get_stage() -> StageView:
+        return await service.stage()
 
     @app.get("/replays/{match_id}")
     async def get_replay(match_id: str) -> Replay:

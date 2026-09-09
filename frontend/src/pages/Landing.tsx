@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Link, navigate, ThemeToggle } from "../App.tsx";
-import { api, type Replay, type TemplateView } from "../api.ts";
+import { api, type MatchSnapshot, type Replay, type StageView, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { store } from "../store.ts";
-import { criterionLabel, formName, fullMove, HOUSE, lastStanding } from "./format.ts";
+import { criterionLabel, formName, fullMove, HOUSE, lastStanding, STANDING } from "./format.ts";
 
 const STILL = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -12,9 +12,11 @@ const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 export function Landing() {
   const [curated, setCurated] = useState<Replay[] | null>(null);
   const [template, setTemplate] = useState<TemplateView | null>(null);
+  const [stage, setStage] = useState<StageView | null>(null);
   useEffect(() => {
     api.curated().then(setCurated, () => setCurated([]));
     api.template().then(setTemplate, () => setTemplate(null));
+    api.stage().then(setStage, () => setStage(null));
   }, []);
   const prefix = template?.move_prefix ?? "";
 
@@ -48,6 +50,12 @@ export function Landing() {
               <h3>Then I Am,</h3>
               <em>the escalation duel</em>
               <span className="ribbon">Now playing</span>
+              {stage && (
+                <p className="stat-line">
+                  {stage.duels_played} {stage.duels_played === 1 ? "duel" : "duels"} played
+                  {stage.live.length > 0 && ` · ${stage.live.length} on stage now`}
+                </p>
+              )}
             </article>
             <article className="card">
               <h3>Verse vs Verse,</h3>
@@ -71,6 +79,17 @@ export function Landing() {
             </article>
           </div>
         </section>
+
+        {stage && stage.live.length > 0 && (
+          <section id="on-stage">
+            <h2 className="centered-label small-caps">On stage now</h2>
+            <div className="live-row">
+              {stage.live.map((m) => (
+                <LiveCard key={m.id} match={m} prefix={prefix} title={template?.title ?? ""} />
+              ))}
+            </div>
+          </section>
+        )}
 
         <p className="fleuron" aria-hidden="true">❧</p>
 
@@ -112,6 +131,31 @@ export function Landing() {
         </section>
       </main>
     </>
+  );
+}
+
+function LiveCard({ match, prefix, title }: { match: MatchSnapshot; prefix: string; title: string }) {
+  const forms = [match.seed_token, ...match.transcript.filter((t) => STANDING.has(t.outcome)).map((t) => formName(t.move_text, prefix))];
+  const shown = forms.slice(-4);
+  return (
+    <Link className="card" to={`/w/${match.id}`}>
+      <span>
+        <span className="dot" aria-hidden="true" />
+        Round {match.transcript.length + 1} · {title}
+      </span>
+      <span className="chainlet">
+        {forms.length > shown.length && "… → "}
+        {shown.join(" → ")} → …
+      </span>
+      <span className="scoreline">
+        <span className="small-caps">{match.stage_name}</span>
+        <b>
+          {match.points_p1} : {match.points_p2}
+        </b>
+        <span className="small-caps">{HOUSE}</span>
+      </span>
+      <span className="watch">Watch live</span>
+    </Link>
   );
 }
 

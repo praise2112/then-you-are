@@ -61,7 +61,9 @@ export default function App() {
   const path = usePath();
   const match = path.match(/^\/m\/([^/]+)$/);
   const replay = path.match(/^\/r\/([^/]+)$/);
+  const watch = path.match(/^\/w\/([^/]+)$/);
   if (match) return <Duel matchId={match[1]} key={match[1]} />;
+  if (watch) return <Duel matchId={watch[1]} key={`w-${watch[1]}`} spectator />;
   if (replay) return <ReplayPage matchId={replay[1]} key={replay[1]} />;
   if (path === "/play") return <Play />;
   return <Landing />;

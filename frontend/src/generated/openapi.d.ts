@@ -157,6 +157,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Stage */
+        get: operations["get_stage_stage_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/replays/{match_id}": {
         parameters: {
             query?: never;
@@ -572,6 +589,16 @@ export interface components {
             match_ended: components["schemas"]["MatchEnded"];
             state_resync: components["schemas"]["StateResync"];
         };
+        /**
+         * StageView
+         * @description What the landing shows about the arena: public matches in play, and how many have finished.
+         */
+        StageView: {
+            /** Live */
+            live: components["schemas"]["MatchSnapshot"][];
+            /** Duels Played */
+            duels_played: number;
+        };
         /** StateResync */
         StateResync: {
             /** State Version */
@@ -919,6 +946,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SsePayloads"];
+                };
+            };
+        };
+    };
+    get_stage_stage_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StageView"];
                 };
             };
         };

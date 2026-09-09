@@ -6,6 +6,7 @@ type S = components["schemas"];
 export type TemplateView = S["TemplateView"];
 export type MatchSnapshot = S["MatchSnapshot"];
 export type Replay = S["Replay"];
+export type StageView = S["StageView"];
 export type TurnView = S["TurnView"];
 export type Ruling = S["Ruling"];
 export type TurnRejected = S["TurnRejected"];
@@ -87,6 +88,7 @@ export const api = {
     }),
   disagree: (id: string, seq: number) =>
     request<void>(`/matches/${id}/turns/${seq}/disagree`, { method: "POST" }),
+  stage: () => request<StageView>("/stage"),
   replay: (id: string) => request<Replay>(`/replays/${id}`),
   curated: () => request<Replay[]>("/replays?curated=true"),
 };

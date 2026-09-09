@@ -212,3 +212,17 @@ async def test_a_match_can_open_with_a_first_move_from_the_landing():
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_the_stage_lists_public_matches_in_play():
+    caller = FakeCaller(rulings=[], opponent_moves=[])
+    app, manager, client = await run_app(caller)
+    try:
+        created = await client.post("/matches", json={"template_id": "then-i-am"})
+        stage = (await client.get("/stage")).json()
+        assert created.json()["id"] in [m["id"] for m in stage["live"]]
+        assert stage["duels_played"] >= 0
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)

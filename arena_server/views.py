@@ -91,6 +91,13 @@ class MatchSnapshot(BaseModel):
     created_at: str
 
 
+class StageView(BaseModel):
+    """Public matches in play, and how many duels have finished."""
+
+    live: list[MatchSnapshot]
+    duels_played: int
+
+
 class Replay(MatchSnapshot):
     share_text: str
     highlight_seq: int | None

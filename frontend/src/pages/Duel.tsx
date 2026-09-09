@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
-import { ThemeToggle } from "../App.tsx";
+import { navigate, ThemeToggle } from "../App.tsx";
 import {
   api,
   useMatchEvents,
@@ -32,9 +32,9 @@ function endedFromReplay(r: Replay): MatchEnded {
     state_version: r.state_version,
   };
 }
-type Props = { matchId: string };
+type Props = { matchId: string; spectator?: boolean };
 
-export function Duel({ matchId }: Props) {
+export function Duel({ matchId, spectator = false }: Props) {
   const [snap, setSnap] = useState<MatchSnapshot | null>(null);
   const [template, setTemplate] = useState<TemplateView | null>(null);
   const [text, setText] = useState("");
@@ -60,9 +60,10 @@ export function Duel({ matchId }: Props) {
           setText(opening);
           setPending(true);
         }
+        if (s.status === "ended" && spectator) return navigate(`/r/${matchId}`);
         if (s.status === "ended" && s.end_reason) return api.replay(matchId).then(endedFromReplay).then(setEnded);
       }, (e) => setError(e.message)),
-    [matchId],
+    [matchId, spectator],
   );
 
   useEffect(() => {
@@ -131,6 +132,7 @@ export function Duel({ matchId }: Props) {
           return;
         }
         case "match_ended":
+          if (spectator) return navigate(`/r/${matchId}`);
           setEnded(event.data);
           void refresh();
           return;
@@ -138,7 +140,7 @@ export function Duel({ matchId }: Props) {
           void refresh();
       }
     },
-    [refresh],
+    [refresh, spectator, matchId],
   );
   useMatchEvents(matchId, onEvent);
 
@@ -150,6 +152,7 @@ export function Duel({ matchId }: Props) {
   }
 
   const prefix = template.move_prefix;
+  const me = spectator ? snap.stage_name : "You";
   const standing = lastStanding(snap.transcript);
   const latest = snap.transcript[snap.transcript.length - 1];
   const yourLast = [...snap.transcript].reverse().find((t) => t.actor === "p1" && t.host);
@@ -199,7 +202,7 @@ export function Duel({ matchId }: Props) {
   const standingHead = streaming
     ? `${HOUSE} is becoming`
     : standingIsMine
-      ? "You became"
+      ? `${me} became`
       : standing
         ? `Beat this, from ${HOUSE}`
         : "Beat this, the opening";
@@ -216,7 +219,9 @@ export function Duel({ matchId }: Props) {
         ? standingIsMine
           ? `${HOUSE} is thinking.`
           : "The judge is reading."
-        : `${capitalize(formName(standingText, prefix))}. Beat it, do not become it.`;
+        : spectator
+          ? `${capitalize(formName(standingText, prefix))} stands. ${snap.stage_name} to move.`
+          : `${capitalize(formName(standingText, prefix))}. Beat it, do not become it.`;
 
   return (
     <>
@@ -224,14 +229,16 @@ export function Duel({ matchId }: Props) {
         <a className="wordmark" href="/">
           Oddstage
         </a>
-        <span className="round">Round {round}</span>
+        <span className="round">
+          {spectator && <b>Watching </b>}Round {round}
+        </span>
         <ThemeToggle />
       </header>
 
       <main className="stage">
         <section>
           <div className="scoreline">
-            <span className="small-caps">You</span>
+            <span className="small-caps">{me}</span>
             <b>
               {snap.points_p1} : {snap.points_p2}
             </b>
@@ -256,7 +263,7 @@ export function Duel({ matchId }: Props) {
               <li key={turn.seq}>
                 <div className="move">
                   <span>
-                    <span className={`who${turn.actor === "p1" ? " you" : ""}`}>{turn.actor === "p1" ? "You" : HOUSE}</span>
+                    <span className={`who${turn.actor === "p1" ? " you" : ""}`}>{turn.actor === "p1" ? me : HOUSE}</span>
                     {turn.move_text}
                   </span>
                   <span className="medallion sm" role="img" aria-label={formName(turn.move_text, prefix)}>
@@ -284,16 +291,18 @@ export function Duel({ matchId }: Props) {
               </li>
             )}
           </ol>
-          <p className="resign-row">
-            <button className="quiet-button" type="button" onClick={() => setShowResign(true)} disabled={!!ended}>
-              <Icon name="flag" />
-              Resign the match
-            </button>
-          </p>
+          {!spectator && (
+            <p className="resign-row">
+              <button className="quiet-button" type="button" onClick={() => setShowResign(true)} disabled={!!ended}>
+                <Icon name="flag" />
+                Resign the match
+              </button>
+            </p>
+          )}
         </section>
 
         <section>
-          {showYourSlip && (
+          {showYourSlip && !spectator && (
             <p className="your-slip">
               <span className="medallion" aria-hidden="true">
                 {yourLast.host?.generated_emoji}
@@ -339,53 +348,58 @@ export function Duel({ matchId }: Props) {
           </div>
           {paused && <p className="waiting">The match is paused until the judge rules.</p>}
 
-          <form
-            ref={formRef}
-            className={`composer${returned ? " returned" : ""}`}
-            style={{ marginTop: "var(--space-3)" }}
-            onSubmit={play}
-          >
-            {returned && (
-              <span className="slip returned-slip" aria-hidden="true">
-                Returned, try again
-              </span>
-            )}
-            <label className="small-caps" htmlFor="move">
-              {composerLabel}
-            </label>
-            <div className="compose-box">
-              <span className="prefix" aria-hidden="true">
-                {prefix}
-              </span>
-              <textarea
-                id="move"
-                autoComplete="off"
-                data-form-type="other"
-                data-lpignore="true"
-                data-1p-ignore=""
-                maxLength={template.max_chars - prefix.length}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyDown={onKey}
-                disabled={pending || !!ended || (snap.to_move !== "p1" && !paused)}
-                placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example.slice(prefix.length)}
-              />
-            </div>
-            <p className="compose-hint">Enter sends. Shift+Enter for a new line.</p>
-            {returned && (
-              <p className="why">
-                <b>Not a move yet.</b> {returned.reason_text}
-              </p>
-            )}
-            <div className="composer-foot">
-              <span className="counter" aria-live="polite">
-                {fullMove(prefix, text).length}/{template.max_chars}
-              </span>
-              <button className={`ticket${canPlay ? "" : " quiet"}`} type="submit" disabled={!canPlay}>
-                {pending ? "Sent" : "Play it"}
-              </button>
-            </div>
-          </form>
+          {!spectator && (
+            <form
+              ref={formRef}
+              className={`composer${returned ? " returned" : ""}`}
+              style={{ marginTop: "var(--space-3)" }}
+              onSubmit={play}
+            >
+              {returned && (
+                <span className="slip returned-slip" aria-hidden="true">
+                  Returned, try again
+                </span>
+              )}
+              <label className="small-caps" htmlFor="move">
+                {composerLabel}
+              </label>
+              <div className="compose-box">
+                <span className="prefix" aria-hidden="true">
+                  {prefix}
+                </span>
+                <textarea
+                  id="move"
+                  autoComplete="off"
+                  data-form-type="other"
+                  data-lpignore="true"
+                  data-1p-ignore=""
+                  maxLength={template.max_chars - prefix.length}
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  onKeyDown={onKey}
+                  disabled={pending || !!ended || (snap.to_move !== "p1" && !paused)}
+                  placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example.slice(prefix.length)}
+                />
+              </div>
+              <p className="compose-hint">Enter sends. Shift+Enter for a new line.</p>
+              {returned && (
+                <p className="why">
+                  <b>Not a move yet.</b> {returned.reason_text}
+                </p>
+              )}
+              <div className="composer-foot">
+                <span className="counter" aria-live="polite">
+                  {fullMove(prefix, text).length}/{template.max_chars}
+                </span>
+                <button className={`ticket${canPlay ? "" : " quiet"}`} type="submit" disabled={!canPlay}>
+                  {pending ? "Sent" : "Play it"}
+                </button>
+              </div>
+            </form>
+          )}
+          {spectator && !waiting && !paused && (
+            <p className="waiting">Waiting for {snap.stage_name} to move.</p>
+          )}
 
           {waiting && !paused && (
             <div className="judge-reading" role="status">
@@ -409,7 +423,7 @@ export function Duel({ matchId }: Props) {
               </p>
               <div className="scorecard">
                 <p className="for">
-                  <span>{latest.actor === "p1" ? "Your move" : `${HOUSE}'s move`}</span>
+                  <span>{latest.actor === "p1" ? (spectator ? `${me}'s move` : "Your move") : `${HOUSE}'s move`}</span>
                   <span>The judge was {latest.scoring.confidence}</span>
                 </p>
                 <dl className="points">
