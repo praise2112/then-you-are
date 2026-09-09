@@ -147,7 +147,7 @@ function ShowcaseRules({ template }: { template: TemplateView }) {
         <p className="example">
           You might write: <span>{sample}</span>
         </p>
-        <p className="truth-line">
+        <p className="reveal-line">
           <b>What {demo.token} really means:</b> {demo.reveal}.
         </p>
       </div>

@@ -19,7 +19,7 @@ import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
 import { capitalize, criterionLabel, formName, fullMove, groupRounds, HOUSE, lastStanding } from "./format.ts";
 import { MatchEnd } from "./MatchEnd.tsx";
-import { Bluff, roundWinner, TruthLine, WordCard } from "./rounds.tsx";
+import { Bluff, RoundLedger, roundWinner, TruthLine, WordCard } from "./rounds.tsx";
 
 function endedFromReplay(r: Replay): MatchEnded {
   return {
@@ -645,6 +645,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
       </header>
 
       <main className="stage showcase">
+        <RoundLedger groups={groups} me={me} />
         <section>
           <div className="scoreline">
             <span className="small-caps">{me}</span>
@@ -680,6 +681,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               <div className="bluffs">
                 <Bluff
                   turn={lastResult.mine!}
+                  round={lastResult.round}
                   who={me}
                   you
                   won={roundWinner(lastResult.mine, lastResult.theirs) === "mine"}
@@ -687,6 +689,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                 />
                 <Bluff
                   turn={lastResult.theirs!}
+                  round={lastResult.round}
                   who={HOUSE}
                   won={roundWinner(lastResult.mine, lastResult.theirs) === "theirs"}
                   template={template}

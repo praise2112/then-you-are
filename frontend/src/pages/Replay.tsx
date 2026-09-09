@@ -84,6 +84,7 @@ export function ReplayPage({ matchId }: Props) {
               <div className="bluffs">
                 <Bluff
                   turn={mine!}
+                  round={round}
                   who={replay.stage_name}
                   you
                   won={roundWinner(mine, theirs) === "mine"}
@@ -91,6 +92,7 @@ export function ReplayPage({ matchId }: Props) {
                 />
                 <Bluff
                   turn={theirs!}
+                  round={round}
                   who={replay.opponent_name}
                   won={roundWinner(mine, theirs) === "theirs"}
                   template={template}

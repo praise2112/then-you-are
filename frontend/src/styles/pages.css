@@ -1792,9 +1792,25 @@
 /* Word for Word: the round view */
 
 .stage.showcase {
-  grid-template-columns: minmax(0, 1fr) 17rem;
-  max-width: 72rem;
+  grid-template-columns: 12rem minmax(0, 1fr) 17rem;
+  max-width: 84rem;
   margin: 0 auto;
+}
+
+@media (min-width: 75.01rem) {
+  .stage.showcase .rounds-so-far {
+    display: none;
+  }
+}
+
+@media (max-width: 75rem) {
+  .stage.showcase {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+  }
+
+  .stage.showcase .ledger {
+    display: none;
+  }
 }
 
 .word-card {
@@ -1920,153 +1936,141 @@
 .bluffs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(6, auto);
-  column-gap: var(--space-2);
-  margin-top: var(--space-2);
+  grid-template-rows: repeat(5, auto);
+  column-gap: var(--space-3);
+  margin-top: var(--space-1);
 }
 
 .bluff {
+  position: relative;
   display: grid;
   grid-template-rows: subgrid;
-  grid-row: span 6;
+  grid-row: span 5;
   row-gap: var(--space-1);
-  border: 1px solid var(--rule);
-  background: var(--paper-sunk);
-  padding: var(--space-2);
+  padding: var(--space-1) 0;
+}
+
+.bluff + .bluff {
+  border-left: 1px solid var(--rule);
+  padding-left: var(--space-3);
 }
 
 .bluff p {
   margin: 0;
 }
 
-.bluff.won {
-  border-color: var(--vermilion);
-  box-shadow: inset 3px 0 0 var(--vermilion);
-  position: relative;
-}
-
-.bluff .point {
-  position: absolute;
-  top: -0.8rem;
-  left: 50%;
-  transform: translateX(-50%) rotate(-3deg);
-  font-size: 0.85rem;
-  padding: 0.1rem 0.6rem;
-}
-
 .bluff .for {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: var(--space-2);
   font-size: 0.85rem;
   color: var(--ink-soft);
 }
 
-.bluff .marks {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, auto));
-  gap: 0 var(--space-2);
-  border-top: 1px solid var(--rule);
-  padding-top: var(--space-1);
-  font-size: 0.9rem;
-  color: var(--ink-soft);
-}
-
-.bluff .marks b {
-  font-family: var(--display);
-  font-size: 1.15rem;
+.bluff .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
   color: var(--ink);
 }
 
-.bluff .marks small {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-}
-
-.bluff .marks .decided,
-.bluff .marks .decided b {
+.bluff .who.you {
   color: var(--vermilion-ink);
 }
 
-.bluff .total {
+.bluff .said {
+  font-size: 1.1rem;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.bluff .said b {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+.bluff .said i {
+  color: var(--ink-soft);
+}
+
+.bluff .marks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, auto));
+  justify-content: start;
+  column-gap: var(--space-3);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-1);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.bluff .marks > span {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.bluff .marks .value {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.bluff .marks .decided .small-caps {
+  color: var(--vermilion-ink);
+}
+
+.bluff.won .marks .value {
+  color: var(--vermilion-ink);
+}
+
+.bluff .foot {
+  display: flex;
+  gap: var(--space-2);
   align-items: baseline;
   border-top: 1px solid var(--rule);
   padding-top: var(--space-1);
 }
 
-.bluff .total b {
+.bluff .total {
+  flex: none;
+  font-family: var(--display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.bluff .total small {
   font-family: var(--mono);
-  font-size: 1.05rem;
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+
+.bluff.won .total {
+  color: var(--vermilion-ink);
+}
+
+.bluff .why {
+  font-size: 0.88rem;
+  line-height: 1.4;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.bluff .stamp.point {
+  position: static;
+  font-size: 0.75rem;
+  padding: 0.02rem 0.5rem;
+  outline-offset: -5px;
+  margin-right: 0.6rem;
+  transform: rotate(-3deg) translateY(-0.1rem);
 }
 
 .bluff .badges {
-  min-height: 1.6rem;
+  min-height: 0;
   margin: 0;
-}
-
-.bluff .who {
-  font-variant: all-small-caps;
-  letter-spacing: 0.12em;
-  color: var(--ink-soft);
-  border-bottom: 2px solid var(--ink);
-}
-
-.bluff .who.you {
-  border-bottom-color: var(--vermilion);
-}
-
-.bluff .said {
-  font-size: 1.1rem;
-  line-height: 1.3;
-  margin-top: 0.25rem;
-  text-wrap: balance;
-}
-
-.bluff .headline {
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: var(--ink-soft);
-  margin-top: var(--space-1);
-  padding: 0.15rem 0 0.15rem var(--space-2);
-  border-left: 2px solid var(--rule);
-}
-
-.bill .card .premise {
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: var(--ink-soft);
-  margin: var(--space-1) 0 0;
-}
-
-.compose-box.scanning {
-  position: relative;
-  overflow: hidden;
-}
-
-.compose-box.scanning::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    100deg,
-    transparent 30%,
-    color-mix(in srgb, var(--vermilion) 5%, transparent) 50%,
-    transparent 70%
-  );
-  background-size: 250% 100%;
-  animation: scan 2.8s linear infinite;
-}
-
-@keyframes scan {
-  from {
-    background-position: 120% 0;
-  }
-  to {
-    background-position: -120% 0;
-  }
 }
 
 .badges {
@@ -2082,28 +2086,105 @@
   outline-offset: -5px;
 }
 
-.truth-line {
+.entry {
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  flex-wrap: wrap;
   margin: var(--space-2) 0 0;
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-1) 0;
   border-top: 3px double var(--ink);
   border-bottom: 1px solid var(--rule);
-  font-size: 1rem;
 }
 
-.truth-line b {
+.entry .medallion.sm {
+  align-self: center;
+}
+
+.entry .headword {
+  font-family: var(--display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  font-variation-settings: "opsz" 96;
+  line-height: 1;
+  margin: 0;
+}
+
+.entry-card .reveal-line {
+  margin: var(--space-1) 0 0;
+  padding-top: var(--space-1);
+  border-top: 3px double var(--ink);
+  font-size: 0.95rem;
+}
+
+.entry-card .reveal-line b {
   font-family: var(--display);
   font-weight: 600;
 }
 
-.entry-card .truth-line {
-  display: block;
-  border-bottom: 0;
-  padding: var(--space-1) 0 0;
-  font-size: 0.95rem;
+.entry .pos {
+  font-style: italic;
+  color: var(--ink-soft);
 }
+
+.entry .sense {
+  font-size: 1.1rem;
+}
+
+.ledger .small-caps {
+  color: var(--ink-faint);
+  letter-spacing: 0.16em;
+  margin: 0 0 var(--space-1);
+}
+
+.ledger ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ledger li {
+  border-top: 1px solid var(--rule);
+  padding: var(--space-1) 0;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.ledger .word {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.ledger .truth {
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+.ledger .open .truth {
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
+.ledger .tally-line {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+}
+
+.ledger .took {
+  color: var(--vermilion-ink);
+  font-weight: 700;
+}
+
+.ledger em {
+  display: block;
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
 
 .bill a.card {
   display: block;
