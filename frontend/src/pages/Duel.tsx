@@ -353,6 +353,10 @@ export function Duel({ matchId }: Props) {
               </span>
               <textarea
                 id="move"
+                autoComplete="off"
+                data-form-type="other"
+                data-lpignore="true"
+                data-1p-ignore=""
                 maxLength={template.max_chars - prefix.length}
                 value={text}
                 onChange={(e) => setText(e.target.value)}

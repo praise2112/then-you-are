@@ -96,6 +96,9 @@ export function Play() {
               maxLength={24}
               placeholder="Challenger"
               autoComplete="off"
+              data-form-type="other"
+              data-lpignore="true"
+              data-1p-ignore=""
               value={stageName}
               onChange={(e) => setStageName(e.target.value)}
             />
