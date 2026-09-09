@@ -9,9 +9,11 @@ const BADGE_LABELS: Record<string, string> = {
   near_miss: "Near miss",
 };
 
-export function WordCard({ round, children }: { round: RoundView; children?: ReactNode }) {
+type WordCardProps = { round: RoundView; compact?: boolean; children?: ReactNode };
+
+export function WordCard({ round, compact = false, children }: WordCardProps) {
   return (
-    <div className="torn word-card">
+    <div className={`torn word-card${compact ? " compact" : ""}`}>
       {children}
       <p className="headword">{round.token}</p>
       <p className="detail">{round.detail}</p>
@@ -34,7 +36,6 @@ export function TruthLine({ round }: { round: RoundView }) {
 
 export function Badges({ turn }: { turn: TurnView }) {
   const badges = turn.host?.badges ?? [];
-  if (turn.outcome !== "fail" && badges.length === 0) return null;
   return (
     <p className="badges">
       {turn.outcome === "fail" && <span className="stamp ink">Thrown out</span>}
@@ -49,31 +50,29 @@ export function Badges({ turn }: { turn: TurnView }) {
 
 type BluffProps = { turn: TurnView; who: string; you?: boolean; template: TemplateView };
 
-/** One player's answer to a card with its ruling: the sentence, the headline, and the scorecard. */
+/** One player's answer to a card with its ruling. Rows share a subgrid so two side by side line up. */
 export function Bluff({ turn, who, you = false, template }: BluffProps) {
   const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
   return (
-    <article className="bluff scorecard">
+    <article className="bluff">
       <p className="for">
         <span className={`who${you ? " you" : ""}`}>{who}</span>
         {turn.scoring && <span>The judge was {turn.scoring.confidence}</span>}
       </p>
       <p className="said">{turn.move_text}</p>
-      {turn.host && <p className="headline">{turn.host.headline}</p>}
-      <dl className="points">
+      <p className="headline">{turn.host?.headline}</p>
+      <p className="marks">
         {template.rubric.map((entry) => {
           const earned = (turn.scoring?.scores[entry.name] ?? 0) * (entry.max_points / template.score_max);
           const decided = entry.name === turn.host?.because_clause.criterion;
           return (
-            <div key={entry.name} className={decided ? "decided" : undefined}>
-              <dt>{criterionLabel(entry.name)}</dt>
-              <dd>
-                <b>{earned}</b> of {entry.max_points}
-              </dd>
-            </div>
+            <span key={entry.name} className={decided ? "decided" : undefined}>
+              <span className="small-caps">{criterionLabel(entry.name)}</span> <b>{earned}</b>
+              <small>/{entry.max_points}</small>
+            </span>
           );
         })}
-      </dl>
+      </p>
       <p className="total">
         <span>This round</span>
         <b>

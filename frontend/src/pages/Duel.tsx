@@ -674,14 +674,11 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
 
           {lastResult && (
             <section className="round-result">
-              <p className="centered-label small-caps">
-                Round {lastResult.round.round_n}, {lastResult.round.token}
-              </p>
+              <TruthLine round={lastResult.round} />
               <div className="bluffs">
                 <Bluff turn={lastResult.mine!} who={me} you template={template} />
                 <Bluff turn={lastResult.theirs!} who={HOUSE} template={template} />
               </div>
-              <TruthLine round={lastResult.round} />
             </section>
           )}
 
@@ -690,7 +687,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               <p className="small-caps last-move-head" style={{ marginTop: lastResult ? "var(--space-3)" : "var(--space-2)" }}>
                 {lastResult ? "The next word" : "The word"}
               </p>
-              <WordCard round={current.round}>
+              <WordCard round={current.round} compact={!!lastResult}>
                 {judging && <span className="tag">Being judged</span>}
               </WordCard>
             </>
