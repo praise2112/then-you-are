@@ -109,6 +109,17 @@
   padding: 0 var(--space-1) 0 0;
   max-height: 60vh;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--brass) transparent;
+}
+
+.transcript::-webkit-scrollbar {
+  width: 6px;
+}
+
+.transcript::-webkit-scrollbar-thumb {
+  background: var(--brass);
+  border-radius: 3px;
 }
 
 .transcript li + li {
@@ -328,12 +339,8 @@
 
 .ruled .because {
   margin: 0.4rem 0 0;
-  font-size: 0.95rem;
-  color: var(--ink-soft);
-}
-
-.ruled .because b {
-  color: var(--ink);
+  font-size: 0.9rem;
+  color: var(--ink-faint);
 }
 
 .ruled .vote {
@@ -478,6 +485,11 @@
   font-family: var(--mono);
   font-size: 0.9rem;
   color: var(--ink-soft);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 5.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .points dd b {
@@ -745,6 +757,14 @@
 .playbill .chain {
   justify-content: center;
   margin: var(--space-3) 0;
+}
+
+.medallion.more {
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  border-style: dashed;
 }
 
 .stats {

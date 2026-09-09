@@ -17,6 +17,9 @@ export function MatchEnd({ snap, ended, template }: Props) {
   const [copied, setCopied] = useState<string | null>(null);
 
   const standingTurns = snap.transcript.filter((t) => STANDING.has(t.outcome));
+  const CHAIN_SHOWN = 8;
+  const hiddenLinks = Math.max(0, standingTurns.length - CHAIN_SHOWN);
+  const shownTurns = standingTurns.slice(hiddenLinks);
   const lastTurn = snap.transcript[snap.transcript.length - 1];
   const highlight = snap.transcript.find((t) => t.seq === ended.highlight_seq);
   const stamp = onPoints
@@ -101,11 +104,20 @@ export function MatchEnd({ snap, ended, template }: Props) {
               <span className="medallion">{snap.seed_emoji}</span>
               <figcaption>{snap.seed_token}</figcaption>
             </figure>
-            {standingTurns.map((turn, i) => (
+            {hiddenLinks > 0 && (
+              <span style={{ display: "contents" }}>
+                <span className="chain-link">→</span>
+                <figure>
+                  <span className="medallion more">+{hiddenLinks}</span>
+                  <figcaption>more forms</figcaption>
+                </figure>
+              </span>
+            )}
+            {shownTurns.map((turn, i) => (
               <span key={turn.seq} style={{ display: "contents" }}>
                 <span className="chain-link">→</span>
                 <figure>
-                  <span className={`medallion${i === standingTurns.length - 1 && turn.actor === ended.winner ? " crowned" : ""}`}>
+                  <span className={`medallion${i === shownTurns.length - 1 && turn.actor === ended.winner ? " crowned" : ""}`}>
                     {turn.host?.generated_emoji}
                   </span>
                   <figcaption>{formName(turn.move_text, template.move_prefix)}</figcaption>
@@ -148,6 +160,10 @@ export function MatchEnd({ snap, ended, template }: Props) {
           <Link className="icon-link" to={`/r/${snap.id}`}>
             <Icon name="play" />
             See the full duel
+          </Link>
+          <Link className="icon-link" to="/">
+            <Icon name="bill" />
+            Back to the bill
           </Link>
         </div>
 

@@ -112,7 +112,7 @@ judge_out_text: >
   The judge has stepped out. Nobody moves until they are back. {standing_form} still
   stands. Give it a minute.
 
-move_budget: 20
+move_budget: 10
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2

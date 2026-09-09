@@ -8,6 +8,7 @@ import {
   type MatchEnded,
   type MatchEvent,
   type MatchSnapshot,
+  type Replay,
   type TemplateView,
   type TurnRejected,
   type TurnView,
@@ -17,6 +18,19 @@ import { Icon } from "../Icons.tsx";
 import { capitalize, criterionLabel, formName, fullMove, HOUSE, lastStanding } from "./format.ts";
 import { MatchEnd } from "./MatchEnd.tsx";
 
+function endedFromReplay(r: Replay): MatchEnded {
+  return {
+    end_reason: r.end_reason!,
+    winner: r.winner,
+    points_p1: r.points_p1,
+    points_p2: r.points_p2,
+    highlight_seq: r.highlight_seq,
+    coaching_line: null,
+    share_text: r.share_text,
+    replay_id: r.id,
+    state_version: r.state_version,
+  };
+}
 type Props = { matchId: string };
 
 export function Duel({ matchId }: Props) {
@@ -34,13 +48,27 @@ export function Duel({ matchId }: Props) {
   const [voted, setVoted] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const transcriptRef = useRef<HTMLOListElement>(null);
 
-  const refresh = useCallback(() => api.match(matchId).then(setSnap, (e) => setError(e.message)), [matchId]);
+  const refresh = useCallback(
+    () =>
+      api.match(matchId).then((s) => {
+        setSnap(s);
+        if (s.status === "ended" && s.end_reason) return api.replay(matchId).then(endedFromReplay).then(setEnded);
+      }, (e) => setError(e.message)),
+    [matchId],
+  );
 
   useEffect(() => {
     void refresh();
     api.template().then(setTemplate, (e) => setError(e.message));
   }, [refresh]);
+
+  const transcriptLength = snap?.transcript.length ?? 0;
+  useEffect(() => {
+    const el = transcriptRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [transcriptLength]);
 
   const onEvent = useCallback(
     (event: MatchEvent) => {
@@ -288,7 +316,7 @@ export function Duel({ matchId }: Props) {
                 <div>
                   <p className="headline">{standing.host.headline}</p>
                   <p className="because">
-                    <b>{criterionLabel(standing.host.because_clause.criterion)}:</b> {standing.host.because_clause.text}
+                    {criterionLabel(standing.host.because_clause.criterion)}: {standing.host.because_clause.text}
                   </p>
                   <button
                     className="vote"
