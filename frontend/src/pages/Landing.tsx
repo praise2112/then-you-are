@@ -17,20 +17,20 @@ export function Landing() {
     api.templates().then(setTemplates, () => setTemplates(null));
     api.replays("curated").then(setCurated, () => setCurated([]));
   }, []);
-  const template = templates?.find((t) => t.slug === "then-i-am") ?? null;
+  const [slug, setSlug] = useState<string | null>(null);
+  const template = templates?.find((t) => t.slug === slug) ?? templates?.[0] ?? null;
+  const at = templates && template ? templates.indexOf(template) : 0;
+  const turnTo = (offset: number) => {
+    if (!templates) return;
+    setSlug(templates[(at + offset + templates.length) % templates.length].slug);
+  };
 
   return (
     <>
       <header className="bar-top">
         <span className="wordmark">Oddstage</span>
         <span className="round">
-          Now playing{" "}
-          {templates?.map((t, i) => (
-            <span key={t.slug}>
-              {i > 0 && " and "}
-              <b>{t.title}</b>
-            </span>
-          ))}
+          On stage <b>{template?.title}</b>
         </span>
         <span className="aside">
           <Link to="/stage">The stage</Link>
@@ -45,7 +45,28 @@ export function Landing() {
             Your turn.
             <small>{template?.tagline}</small>
           </h1>
-          {template && <Stage template={template} />}
+          {templates && templates.length > 1 && (
+            <nav className="playbill-tabs" aria-label="Games on stage">
+              <button type="button" className="turn" aria-label="Previous game" onClick={() => turnTo(-1)}>
+                &lsaquo;
+              </button>
+              {templates.map((t) => (
+                <button
+                  key={t.slug}
+                  type="button"
+                  className={t.slug === template?.slug ? "on" : undefined}
+                  aria-pressed={t.slug === template?.slug}
+                  onClick={() => setSlug(t.slug)}
+                >
+                  {t.title}
+                </button>
+              ))}
+              <button type="button" className="turn" aria-label="Next game" onClick={() => turnTo(1)}>
+                &rsaquo;
+              </button>
+            </nav>
+          )}
+          {template && <Stage key={template.slug} template={template} />}
         </section>
 
         <section id="bill">
@@ -178,6 +199,8 @@ function Stage({ template }: { template: TemplateView }) {
   const scorer = winner.actor === "p1" ? "You" : HOUSE;
   const ghostText = opening.examples[ghost % opening.examples.length];
   const showGhost = !tail && !focused;
+  const showcase = template.mode === "showcase";
+  const pointFor = showcase ? scorer : formName(winner.text, prefix);
 
   return (
     <div className={`torn stage-card${step >= 7 ? " played" : ""}`}>
@@ -187,7 +210,8 @@ function Stage({ template }: { template: TemplateView }) {
             {opening.emoji}
           </span>
           <span>
-            Your opening: <b>{opening.token}</b>
+            {showcase ? "Your word" : "Your opening"}: <b>{opening.token}</b>
+            {opening.detail && <em className="detail"> {opening.detail}</em>}
           </span>
         </p>
         <form className="compose" onSubmit={play}>
@@ -219,7 +243,8 @@ function Stage({ template }: { template: TemplateView }) {
           </button>
         </form>
         <p className="hint">
-          {template.move_hint} An AI judge scores every move. <Link to="/play">Or just play.</Link>
+          {template.move_hint} An AI judge scores every move.{" "}
+          <Link to={`/play/${template.slug}`}>Or just play.</Link>
         </p>
         {error && <p className="hint error">{error}</p>}
       </div>
@@ -232,7 +257,8 @@ function Stage({ template }: { template: TemplateView }) {
               {demo.opening.emoji}
             </span>
             <span>
-              The opening: <b>{demo.opening.token}</b>
+              {showcase ? "The word" : "The opening"}: <b>{demo.opening.token}</b>
+              {demo.opening.detail && <em className="detail"> {demo.opening.detail}</em>}
             </span>
           </p>
         )}
@@ -265,7 +291,7 @@ function Stage({ template }: { template: TemplateView }) {
         )}
         {step >= 5 && (
           <p className="stamp-row on">
-            <span className="stamp thump">Point: {formName(winner.text, prefix)}</span>
+            <span className="stamp thump">Point: {pointFor}</span>
           </p>
         )}
         {step >= 6 && (
@@ -282,6 +308,11 @@ function Stage({ template }: { template: TemplateView }) {
           </p>
         )}
         {step >= 7 && <p className="headline on">{demo.headline}</p>}
+        {step >= 7 && showcase && demo.opening.reveal && (
+          <p className="reveal on">
+            <b>What {demo.opening.token} really means:</b> {demo.opening.reveal}
+          </p>
+        )}
       </div>
     </div>
   );

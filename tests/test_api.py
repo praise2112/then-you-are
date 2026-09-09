@@ -376,3 +376,29 @@ async def test_the_house_writes_again_when_its_bluff_is_the_truth():
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_the_featured_template_leads_the_list():
+    app, manager, client = await run_app(FakeCaller(rulings=[], opponent_moves=[]))
+    try:
+        listed = (await client.get("/templates")).json()
+        assert [t["slug"] for t in listed][:2] == ["then-i-am", "word-for-word"]
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+    settings = dataclasses.replace(
+        load_settings(),
+        database_url=os.environ["TEST_DATABASE_URL"],
+        featured_template="word-for-word",
+    )
+    app = build_app(settings, FakeCaller(rulings=[], opponent_moves=[]))
+    async with (
+        LifespanManager(app),
+        httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as c,
+    ):
+        assert (await c.get("/templates")).json()[0]["slug"] == "word-for-word"
+    with pytest.raises(KeyError):
+        build_app(
+            dataclasses.replace(settings, featured_template="no-such-game"), FakeCaller([], [])
+        )

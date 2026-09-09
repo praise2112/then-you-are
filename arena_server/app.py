@@ -37,6 +37,15 @@ SESSION_COOKIE = "oddstage_session"
 def build_app(settings: Settings | None = None, caller: ModelCaller | None = None) -> FastAPI:
     settings = settings or load_settings()
     templates = load_templates()
+    if settings.featured_template not in templates:
+        raise KeyError(
+            f"FEATURED_TEMPLATE {settings.featured_template!r} is not a template on disk"
+        )
+    # The featured game leads the list; the landing opens on it.
+    templates = {
+        settings.featured_template: templates[settings.featured_template],
+        **templates,
+    }
     judge_spec = load_model(settings.judge_ref)
     opponent_spec = load_model(settings.opponent_ref)
     caller = caller or ModelCaller(settings.openrouter_api_key, judge_spec, opponent_spec)

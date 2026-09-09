@@ -215,6 +215,7 @@ class Template(Strict):
                 {
                     "token": o.token,
                     "emoji": self.seed_named(o.token).opening_emoji,  # type: ignore[union-attr]
+                    "detail": self.seed_named(o.token).detail,  # type: ignore[union-attr]
                     "examples": o.examples,
                 }
                 for o in demo.openings

@@ -916,6 +916,64 @@
   line-height: 1.4;
 }
 
+.playbill-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-2);
+}
+
+.playbill-tabs button {
+  font: inherit;
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+}
+
+.playbill-tabs button.on {
+  color: var(--ink);
+  border-bottom-color: var(--vermilion);
+}
+
+.playbill-tabs button:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
+.playbill-tabs .turn {
+  font-family: var(--display);
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0 0.5rem;
+  border-bottom: 0;
+}
+
+.stage-card .opening .detail,
+.demo .opening .detail {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 0.9em;
+}
+
+.demo .reveal {
+  margin: var(--space-1) 0 0;
+  padding-top: var(--space-1);
+  border-top: 3px double var(--ink);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.demo .reveal b {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
 .stage-card .round-head {
   text-align: center;
   border-bottom: 1px solid var(--rule);

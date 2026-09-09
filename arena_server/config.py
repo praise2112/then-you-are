@@ -20,6 +20,7 @@ class Settings:
     public_base_url: str
     frontend_dist: Path | None
     curator_token: str
+    featured_template: str
 
 
 def load_settings() -> Settings:
@@ -34,6 +35,7 @@ def load_settings() -> Settings:
         public_base_url=os.environ.get("PUBLIC_BASE_URL", "http://127.0.0.1:8000").rstrip("/"),
         frontend_dist=dist if (dist / "index.html").exists() else None,
         curator_token=os.environ.get("CURATOR_TOKEN", ""),
+        featured_template=os.environ.get("FEATURED_TEMPLATE", "then-i-am"),
     )
 
 

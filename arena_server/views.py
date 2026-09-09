@@ -35,6 +35,7 @@ class DemoPoints(BaseModel):
 class LandingOpeningView(BaseModel):
     token: str
     emoji: str
+    detail: str
     examples: list[str]
 
 

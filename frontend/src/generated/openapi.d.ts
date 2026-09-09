@@ -448,6 +448,8 @@ export interface components {
             token: string;
             /** Emoji */
             emoji: string;
+            /** Detail */
+            detail: string;
             /** Examples */
             examples: string[];
         };
