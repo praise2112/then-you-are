@@ -370,7 +370,11 @@ class MatchService:
         )
 
     async def replays(self, sort: Literal["curated", "newest", "longest"]) -> list[Replay]:
-        where = "status = 'ended' and is_public" + (" and is_curated" if sort == "curated" else "")
+        where = "status = 'ended' and is_public"
+        if sort == "curated":
+            where += " and is_curated"
+        if sort == "longest":
+            where += " and ended_at > now() - interval '7 days'"
         order = (
             "(select count(*) from turns t where t.match_id = m.id and t.seq is not null) desc"
             if sort == "longest"

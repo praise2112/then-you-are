@@ -220,14 +220,12 @@ function Stage({ template }: { template: TemplateView }) {
               </span>
             )}
           </span>
-          {showGhost && <span className="eg">an example</span>}
           <button className="ticket" type="submit" disabled={starting}>
             {starting ? "Curtain up" : "Play it"}
           </button>
         </form>
         <p className="hint">
-          {template.move_hint} Every move is scored by an AI judge, and the rubric is shown before you type. Or{" "}
-          <Link to="/play">skip the box and just play</Link>.
+          {template.move_hint} An AI judge scores every move. <Link to="/play">Or just play.</Link>
         </p>
         {error && <p className="hint error">{error}</p>}
       </div>

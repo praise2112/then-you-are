@@ -22,9 +22,9 @@ export function MatchEnd({ snap, ended, template }: Props) {
   const [listed, setListed] = useState(snap.is_public);
   const [listError, setListError] = useState<string | null>(null);
 
-  function toggleListed() {
-    api.setVisibility(snap.id, !listed).then(
-      () => setListed(!listed),
+  function setListing(on: boolean) {
+    api.setVisibility(snap.id, on).then(
+      () => setListed(on),
       (e) => setListError((e as Error).message),
     );
   }
@@ -188,27 +188,18 @@ export function MatchEnd({ snap, ended, template }: Props) {
           </Link>
           <Link className="icon-link" to="/">
             <Icon name="bill" />
-            Back to the bill
+            Home
           </Link>
         </div>
         {snap.is_yours && (
-          <p className="listing">
-            <button
-              className="quiet-button"
-              type="button"
-              onClick={toggleListed}
-            >
-              {listed
-                ? "Listed on the stage. Take it off"
-                : "Put this duel on the stage"}
-            </button>
-            <small>
-              {listed
-                ? "Anyone can find this replay."
-                : "Private. Only people with the link can see it."}
-            </small>
-            {listError && <small className="error">{listError}</small>}
-          </p>
+          <label className="choice listing">
+            <input type="checkbox" checked={listed} onChange={(e) => setListing(e.target.checked)} />
+            <span>
+              List this duel on the stage
+              <small>{listed ? "Anyone can find this replay." : "Private. Only people with the link can see it."}</small>
+              {listError && <small className="error">{listError}</small>}
+            </span>
+          </label>
         )}
 
         <div className="host host-corner">

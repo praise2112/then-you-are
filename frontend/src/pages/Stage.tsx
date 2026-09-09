@@ -7,7 +7,7 @@ import { LiveCard, ReplayCard } from "./cards.tsx";
 const SORTS: { key: ReplaySort; label: string }[] = [
   { key: "curated", label: "Curated" },
   { key: "newest", label: "Newest" },
-  { key: "longest", label: "Longest run" },
+  { key: "longest", label: "Longest run this week" },
 ];
 
 /** Public matches in play and every listed replay. Only duels their players chose to list appear. */
@@ -56,11 +56,6 @@ export function StagePage() {
                 <LiveCard key={m.id} match={m} prefix={prefix} title={template?.title ?? ""} />
               ))}
             </div>
-          )}
-          {stage && (
-            <p className="stat-line" style={{ textAlign: "center" }}>
-              {stage.duels_played} {stage.duels_played === 1 ? "duel" : "duels"} played so far.
-            </p>
           )}
         </section>
 

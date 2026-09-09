@@ -121,20 +121,23 @@ export function ReplayPage({ matchId }: Props) {
         </p>
 
         {replay.is_yours && (
-          <p className="curate">
-            <button
-              className="quiet-button"
-              type="button"
-              onClick={() =>
-                api.setVisibility(matchId, !replay.is_public).then(
-                  () => setReplay({ ...replay, is_public: !replay.is_public, is_curated: replay.is_curated && !replay.is_public }),
-                  (e) => setCurateError(e.message),
-                )
-              }
-            >
-              {replay.is_public ? "Listed on the stage. Take it off" : "Put this duel on the stage"}
-            </button>
-          </p>
+          <label className="choice listing">
+            <input
+              type="checkbox"
+              checked={replay.is_public}
+              onChange={(e) => {
+                const on = e.target.checked;
+                api.setVisibility(matchId, on).then(
+                  () => setReplay({ ...replay, is_public: on, is_curated: replay.is_curated && on }),
+                  (err) => setCurateError(err.message),
+                );
+              }}
+            />
+            <span>
+              List this duel on the stage
+              <small>{replay.is_public ? "Anyone can find this replay." : "Private. Only people with the link can see it."}</small>
+            </span>
+          </label>
         )}
         {curatorToken && (
           <p className="curate">

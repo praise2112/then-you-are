@@ -44,6 +44,7 @@ export function Duel({ matchId, spectator = false }: Props) {
   const [streaming, setStreaming] = useState("");
   const [paused, setPaused] = useState<JudgePaused | null>(null);
   const [ended, setEnded] = useState<MatchEnded | null>(null);
+  const [revealEnd, setRevealEnd] = useState(false);
   const [showResign, setShowResign] = useState(false);
   const [showRubric, setShowRubric] = useState(false);
   const [voted, setVoted] = useState<Set<number>>(new Set());
@@ -61,7 +62,10 @@ export function Duel({ matchId, spectator = false }: Props) {
           setPending(true);
         }
         if (s.status === "ended" && spectator) return navigate(`/r/${matchId}`);
-        if (s.status === "ended" && s.end_reason) return api.replay(matchId).then(endedFromReplay).then(setEnded);
+        if (s.status === "ended" && s.end_reason) {
+          setRevealEnd(true);
+          return api.replay(matchId).then(endedFromReplay).then(setEnded);
+        }
       }, (e) => setError(e.message)),
     [matchId, spectator],
   );
@@ -131,11 +135,15 @@ export function Duel({ matchId, spectator = false }: Props) {
           );
           return;
         }
-        case "match_ended":
-          if (spectator) return navigate(`/r/${matchId}`);
-          setEnded(event.data);
-          void refresh();
+        case "match_ended": {
+          const e = event.data;
+          setThinking(false);
+          setStreaming("");
+          setSnap((s) => s && { ...s, status: "ended", winner: e.winner, end_reason: e.end_reason, points_p1: e.points_p1, points_p2: e.points_p2 });
+          setEnded(e);
+          setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), 3200);
           return;
+        }
         case "state_resync":
           void refresh();
       }
@@ -147,7 +155,7 @@ export function Duel({ matchId, spectator = false }: Props) {
   if (error) return <p className="page-status">{error}</p>;
   if (!snap || !template) return <p className="page-status">Finding your seat.</p>;
 
-  if (ended && snap.status === "ended") {
+  if (ended && revealEnd && snap.status === "ended") {
     return <MatchEnd snap={snap} ended={ended} template={template} />;
   }
 
@@ -155,6 +163,8 @@ export function Duel({ matchId, spectator = false }: Props) {
   const me = spectator ? snap.stage_name : "You";
   const standing = lastStanding(snap.transcript);
   const latest = snap.transcript[snap.transcript.length - 1];
+  const fell = ended && latest?.outcome === "fail" ? latest : null;
+  const shown = fell ?? standing;
   const yourLast = [...snap.transcript].reverse().find((t) => t.actor === "p1" && t.host);
   const showYourSlip = yourLast && latest?.actor === "p2" && !streaming;
   const standingText = streaming || standing?.move_text || snap.seed_token;
@@ -199,7 +209,11 @@ export function Duel({ matchId, spectator = false }: Props) {
     void api.disagree(matchId, seq).then(() => setVoted((v) => new Set(v).add(seq)));
   }
 
-  const standingHead = streaming
+  const standingHead = fell
+    ? fell.actor === "p1"
+      ? `${me} fell`
+      : `${HOUSE} fell`
+    : streaming
     ? `${HOUSE} is becoming`
     : standingIsMine
       ? `${me} became`
@@ -211,7 +225,9 @@ export function Duel({ matchId, spectator = false }: Props) {
     : returned
       ? "Your move, still yours"
       : `Your move, beat ${formName(standingText, prefix)}`;
-  const hostLine = paused
+  const hostLine = fell
+    ? "The match is over. One moment."
+    : paused
     ? paused.host_text
     : strikesNudge
       ? strikesNudge
@@ -319,28 +335,28 @@ export function Duel({ matchId, spectator = false }: Props) {
           <p className="small-caps last-move-head">{standingHead}</p>
           <div className={`torn standing${waiting ? " reading" : ""}`}>
             {paused && <span className="tag">Awaiting ruling</span>}
-            {standing && !streaming && !paused && (
-              <span className={`stamp corner${standing.outcome === "semantic_uncertain" ? " ink" : ""}`}>
-                {standing.outcome === "semantic_uncertain" ? "Close call" : `Point: ${formName(standing.move_text, prefix)}`}
+            {shown && !streaming && !paused && (
+              <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>
+                {fell ? `Fell: ${formName(fell.move_text, prefix)}` : shown.outcome === "semantic_uncertain" ? "Close call" : `Point: ${formName(shown.move_text, prefix)}`}
               </span>
             )}
-            <p className="last-move">{paused ? fullMove(prefix, text) : standingText}</p>
-            {standing?.host && !streaming && !paused && (
+            <p className="last-move">{paused ? fullMove(prefix, text) : fell ? fell.move_text : standingText}</p>
+            {shown?.host && !streaming && !paused && (
               <div className="ruled">
                 <Host state="verdict" />
                 <div>
-                  <p className="headline">{standing.host.headline}</p>
+                  <p className="headline">{shown.host.headline}</p>
                   <p className="because">
-                    {criterionLabel(standing.host.because_clause.criterion)}: {standing.host.because_clause.text}
+                    {criterionLabel(shown.host.because_clause.criterion)}: {shown.host.because_clause.text}
                   </p>
                   <button
                     className="vote"
                     type="button"
-                    disabled={voted.has(standing.seq)}
-                    onClick={() => disagree(standing.seq)}
+                    disabled={voted.has(shown.seq)}
+                    onClick={() => disagree(shown.seq)}
                   >
                     <Icon name="speech" />
-                    {voted.has(standing.seq) ? "Noted. The ruling stands." : "I disagree with this ruling"}
+                    {voted.has(shown.seq) ? "Noted. The ruling stands." : "I disagree with this ruling"}
                   </button>
                 </div>
               </div>
