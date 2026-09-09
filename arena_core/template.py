@@ -14,8 +14,16 @@ class Strict(BaseModel):
 
 
 class Seed(Strict):
+    """A dealt card: an opening form, or a word with a public detail and a judge-only truth."""
+
     opening_token: str
     opening_emoji: str
+    detail: str = ""
+    hidden: str = ""
+
+    @property
+    def card_text(self) -> str:
+        return f"{self.opening_token} ({self.detail})" if self.detail else self.opening_token
 
 
 class Opening(Strict):
@@ -57,6 +65,7 @@ class Demo(Strict):
 class RubricEntry(Strict):
     name: str
     description: str
+    anchors: str
     weight: int = Field(gt=0)
 
 
@@ -65,6 +74,7 @@ class Criterion(Strict):
     inverse_verb: str
     description: str
     anti_metagaming_clause: str
+    judge_notes: list[str] = Field(default_factory=list)
 
 
 class Example(Strict):
@@ -104,12 +114,19 @@ class ValidationMessages(Strict):
     nudge: str
 
 
+Mode = Literal["escalation", "showcase"]
+
+
 class Template(Strict):
+    """escalation: each move answers the standing move.
+    showcase: both players answer one dealt card per round."""
+
     schema_version: int
     slug: str
     title: str
     tagline: str
     premise: str
+    mode: Mode
     seed_pool: list[Seed] = Field(min_length=1)
     demo: Demo
     move_constraints: MoveConstraints
@@ -120,9 +137,10 @@ class Template(Strict):
     rules_text: str
     validation_messages: ValidationMessages
     judge_out_text: str
+    opponent_prompt: str
     move_budget: int = Field(gt=0)
-    win_condition: Literal["sudden_death"]
-    tie_policy: Literal["defender_holds"]
+    win_condition: Literal["sudden_death", "points_total"]
+    tie_policy: Literal["defender_holds", "draw"]
     strikes_before_consequence: int = Field(gt=0)
     default_move: str
 
@@ -149,7 +167,22 @@ class Template(Strict):
         for line in self.host.good_headlines:
             if len(line) > 140:
                 raise ValueError(f"good headline over 140 chars: {line!r}")
+        if "{max_chars}" not in self.opponent_prompt:
+            raise ValueError("opponent_prompt needs a {max_chars} slot")
+        if self.mode == "showcase":
+            if self.win_condition != "points_total":
+                raise ValueError("a showcase game is decided on points_total")
+            if self.move_budget % 2:
+                raise ValueError(
+                    "a showcase move_budget is two moves per round, so it must be even"
+                )
+            if len(self.seed_pool) < self.move_budget // 2:
+                raise ValueError("the seed pool must cover every round")
         return self
+
+    @property
+    def rounds(self) -> int | None:
+        return self.move_budget // 2 if self.mode == "showcase" else None
 
     @property
     def weights(self) -> dict[str, int]:
@@ -160,8 +193,14 @@ class Template(Strict):
 
     def _demo_projection(self) -> dict:
         demo = self.demo
+        card = self.seed_named(demo.opening.token)
         return {
-            "opening": {"token": demo.opening.token, "emoji": demo.opening.emoji},
+            "opening": {
+                "token": demo.opening.token,
+                "emoji": demo.opening.emoji,
+                "detail": card.detail if card else "",
+                "reveal": card.hidden if card else "",
+            },
             "moves": [m.model_dump() for m in demo.moves],
             "headline": demo.headline,
             "points": [
@@ -189,6 +228,8 @@ class Template(Strict):
             "title": self.title,
             "tagline": self.tagline,
             "premise": self.premise.strip(),
+            "mode": self.mode,
+            "rounds": self.rounds,
             "rubric": [
                 {"name": r.name, "description": r.description, "max_points": r.weight * SCORE_MAX}
                 for r in self.rubric
@@ -208,3 +249,8 @@ class Template(Strict):
 def load_template(slug: str, version: int = 1) -> Template:
     path = TEMPLATES_DIR / slug / f"v{version}.yaml"
     return Template.model_validate(yaml.safe_load(path.read_text()))
+
+
+def load_templates() -> dict[str, Template]:
+    """Every game on disk, keyed by slug, in directory order."""
+    return {d.name: load_template(d.name) for d in sorted(TEMPLATES_DIR.iterdir()) if d.is_dir()}

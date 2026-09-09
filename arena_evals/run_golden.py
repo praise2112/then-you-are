@@ -38,6 +38,7 @@ class GoldenRecord(BaseModel):
     category: Literal["boundary", "close_creative", "adversarial"]
     previous_move: str
     move: str
+    hidden: str = ""
     transcript: list[str] = []
     expected: Literal["accept", "fail", "semantic_reject"]
     notes: str
@@ -81,10 +82,16 @@ class Result(BaseModel):
 async def judge_one(caller: ModelCaller, record: GoldenRecord, sem: asyncio.Semaphore) -> Result:
     template = load_template(record.template_id)
     transcript = record.transcript
-    if not transcript and template.seed_named(record.previous_move) is None:
+    if (
+        not transcript
+        and template.mode == "escalation"
+        and template.seed_named(record.previous_move) is None
+    ):
         transcript = [f"player2: {record.previous_move}"]
     async with sem:
-        call = await caller.judge(template, transcript, record.previous_move, record.move)
+        call = await caller.judge(
+            template, transcript, record.previous_move, record.move, record.hidden
+        )
     if call.response is None:
         return Result(
             id=record.id,

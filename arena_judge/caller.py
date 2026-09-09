@@ -120,10 +120,10 @@ class ModelCaller:
             raise CallError(str(e)) from e
 
     async def judge(
-        self, template: Template, transcript: list[str], previous: str, move: str
+        self, template: Template, transcript: list[str], previous: str, move: str, hidden: str = ""
     ) -> JudgeCall:
         """Hard timeout, one structured retry, substring salvage, then no response."""
-        prompt = render_judge_prompt(template, transcript, previous, move)
+        prompt = render_judge_prompt(template, transcript, previous, move, hidden)
         call = JudgeCall(response=None, raw="", prompt_hash=judge_prompt_hash(template))
         messages: list[dict] = [{"role": "user", "content": prompt}]
         for attempt in range(2):
@@ -161,9 +161,9 @@ class ModelCaller:
         return call
 
     def opponent_stream(
-        self, template: Template, seed: str, transcript: list[str]
+        self, template: Template, card: str, transcript: list[str]
     ) -> AsyncIterator[str]:
-        return self.stream(self.opponent_spec, render_opponent_messages(template, seed, transcript))
+        return self.stream(self.opponent_spec, render_opponent_messages(template, card, transcript))
 
 
 def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
@@ -178,7 +178,7 @@ def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
         # A judge that skipped the host block still produced a usable scoring block.
         data = {"scoring": data, "host": None}
     if data.get("host") is None:
-        data["host"] = _fallback_host(data.get("scoring") or {})
+        data["host"] = _fallback_host(data.get("scoring") or {}, rubric_names[0])
     try:
         response = JudgeResponse.model_validate(data)
     except ValidationError:
@@ -188,15 +188,19 @@ def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
     return response
 
 
-def _fallback_host(scoring: dict) -> dict:
+def _fallback_line(verdict: str) -> str:
+    return "The move stands." if verdict == "accept" else "The move falls."
+
+
+def _fallback_host(scoring: dict, criterion: str) -> dict:
     verdict = scoring.get("verdict", "accept")
     return {
-        "headline": "The form stands." if verdict == "accept" else "The form breaks.",
+        "headline": _fallback_line(verdict),
         "because_clause": {
-            "criterion": "counter_strength",
+            "criterion": criterion,
             "text": (scoring.get("evidence") or {}).get("mechanism", "The Judge gave no reason."),
         },
-        "quotable_line": "The form stands." if verdict == "accept" else "The form breaks.",
+        "quotable_line": _fallback_line(verdict),
         "generated_emoji": "🎭",
         "coaching_line": None,
     }
@@ -226,11 +230,9 @@ def salvage_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
         verdict=verdict.group(1),  # type: ignore[arg-type]
     )
     host = HostPayload(
-        headline="The form stands." if scoring.verdict == "accept" else "The form breaks.",
-        because_clause=BecauseClause(
-            criterion="counter_strength", text="The Judge gave no reason."
-        ),
-        quotable_line="The form stands." if scoring.verdict == "accept" else "The form breaks.",
+        headline=_fallback_line(scoring.verdict),
+        because_clause=BecauseClause(criterion=rubric_names[0], text="The Judge gave no reason."),
+        quotable_line=_fallback_line(scoring.verdict),
         generated_emoji="🎭",
     )
     return JudgeResponse(scoring=scoring, host=host)

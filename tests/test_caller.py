@@ -17,7 +17,7 @@ def test_parse_fills_a_missing_host_block():
     scoring_only = json.loads(judge_response(verdict="fail").model_dump_json())["scoring"]
     parsed = parse_judge(json.dumps(scoring_only), NAMES)
     assert parsed is not None
-    assert parsed.host.headline == "The form breaks."
+    assert parsed.host.headline == "The move falls."
 
 
 def test_parse_rejects_scores_that_do_not_match_the_rubric():

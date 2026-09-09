@@ -6,6 +6,8 @@ from pydantic import BaseModel, Field
 
 Confidence = Literal["clear", "lean", "coin_flip"]
 Verdict = Literal["accept", "fail"]
+TruthProximity = Literal["hit", "near", "none"]
+EndReason = Literal["sudden_death", "move_cap_points", "rounds_complete", "resign", "abandoned"]
 
 Outcome = Literal[
     "accept",
@@ -48,6 +50,7 @@ class ScoringPayload(BaseModel):
     scores: dict[str, int]
     confidence: Confidence
     verdict: Verdict
+    truth_proximity: TruthProximity = "none"
 
 
 class BecauseClause(BaseModel):
@@ -95,6 +98,7 @@ class JudgeStarted(BaseModel):
 
 class Ruling(BaseModel):
     seq: int
+    round_n: int
     actor: Literal["p1", "p2"]
     move_text: str
     outcome: Outcome
@@ -122,8 +126,19 @@ class JudgeResumed(BaseModel):
     seq: int
 
 
+class RoundRevealed(BaseModel):
+    """Showcase only: both answers are in, so the card's truth may be shown."""
+
+    round_n: int
+    token: str
+    emoji: str
+    detail: str
+    truth: str
+    state_version: int
+
+
 class MatchEnded(BaseModel):
-    end_reason: Literal["sudden_death", "move_cap_points", "resign", "abandoned"]
+    end_reason: EndReason
     winner: Literal["p1", "p2"] | None
     points_p1: int
     points_p2: int

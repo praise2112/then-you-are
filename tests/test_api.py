@@ -276,3 +276,73 @@ async def test_replay_lists_sort_and_curation_needs_the_token():
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
+    caller = FakeCaller(
+        rulings=[
+            judge_response(),
+            judge_response(truth_proximity="hit"),
+            judge_response(verdict="fail"),
+            judge_response(),
+            judge_response(confidence="coin_flip"),
+            judge_response(truth_proximity="near"),
+        ],
+        opponent_moves=["a cup holder", "a low groan", "a hinge pin"],
+    )
+    app, manager, client = await run_app(caller)
+    try:
+        created = await client.post(
+            "/matches", json={"template_id": "word-for-word", "seed_token": "zarf"}
+        )
+        assert created.status_code == 201
+        match = created.json()
+        assert match["mode"] == "showcase" and match["title"] == "Word for Word"
+        assert [r["token"] for r in match["rounds"]] == ["zarf"]
+        assert match["rounds"][0]["truth"] is None and match["rounds"][0]["detail"]
+        await settle(app)
+        assert (await client.get(f"/matches/{match['id']}")).json()["transcript"] == []
+
+        for n, (version, bluff) in enumerate(
+            [(0, "a desert cloak"), (2, "to shell peas"), (4, "a sailor's knot")], start=1
+        ):
+            posted = await client.post(
+                f"/matches/{match['id']}/moves",
+                json={"action_id": f"r{n}", "expected_version": version, "move_text": bluff},
+            )
+            assert posted.status_code == 202
+            await settle(app)
+
+        snap = (await client.get(f"/matches/{match['id']}")).json()
+        assert snap["status"] == "ended" and snap["end_reason"] == "rounds_complete"
+        assert [t["round_n"] for t in snap["transcript"]] == [1, 1, 2, 2, 3, 3]
+        assert [t["actor"] for t in snap["transcript"]] == ["p1", "p2"] * 3
+        assert snap["transcript"][1]["move_text"] == "a cup holder"
+        assert all(r["truth"] for r in snap["rounds"]) and len(snap["rounds"]) == 3
+        assert snap["points_p1"] == 2 * (5 * 3 + 3 * 3 + 2 * 3)
+        assert snap["points_p2"] == 3 * (5 * 3 + 3 * 3 + 2 * 3)
+        assert snap["winner"] == "p2"
+
+        events = events_of(app, match["id"])
+        names = [name for _, name, _ in events]
+        assert names.count("round_revealed") == 3 and names.count("ruling") == 6
+        assert names[-1] == "match_ended"
+        assert names.index("round_revealed") > names.index("ruling")
+        reveals = [d for _, name, d in events if name == "round_revealed"]
+        assert reveals[0]["token"] == "zarf" and reveals[0]["truth"].startswith("a holder")
+        rulings = [d for _, name, d in events if name == "ruling"]
+        assert rulings[1]["badges"] == ["accidental_truth"]
+        assert rulings[2]["points"] == 0
+        assert rulings[4]["badges"] == ["close_call"]
+        assert rulings[5]["badges"] == ["near_miss"]
+        assert all(h for h in caller.hidden_seen)
+        assert caller.opponent_saw[0] == []
+        assert caller.opponent_saw[1][0].startswith("round 1, prompt: zarf")
+        assert "player1: a desert cloak" in caller.opponent_saw[1]
+
+        replay = (await client.get(f"/replays/{match['id']}")).json()
+        assert "lost a duel of Word for Word" in replay["share_text"]
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)

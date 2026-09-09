@@ -5,10 +5,9 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from arena_core.template import Template
-from arena_judge.schema import Outcome
+from arena_judge.schema import EndReason, Outcome
 
 MatchStatus = Literal["active", "awaiting_judgment", "paused", "ended", "abandoned"]
-EndReason = Literal["sudden_death", "move_cap_points", "resign", "abandoned"]
 Actor = Literal["p1", "p2"]
 Layer1Reason = Literal["empty", "too_long", "duplicate"]
 
@@ -27,6 +26,7 @@ class Turn:
     actor: Actor
     move_text: str
     outcome: Outcome
+    round_n: int = 1
 
 
 @dataclass
@@ -34,7 +34,7 @@ class Match:
     id: str
     template_id: str
     template_version: int
-    seed: str
+    cards: list[str]
     seed_emoji: str = ""
     status: MatchStatus = "active"
     state_version: int = 0
@@ -44,6 +44,10 @@ class Match:
     points: dict[Actor, int] = field(default_factory=lambda: {"p1": 0, "p2": 0})
     winner: Actor | None = None
     end_reason: EndReason | None = None
+
+    @property
+    def seed(self) -> str:
+        return self.cards[0]
 
     @property
     def judged_moves(self) -> int:
@@ -65,6 +69,19 @@ class Match:
     def history(self) -> list[str]:
         return [t.move_text for t in self.turns if t.outcome in STANDING]
 
+    @property
+    def round_n(self) -> int:
+        """Showcase only: the round in play, two judged moves per round."""
+        return self.judged_moves // 2 + 1
+
+    @property
+    def card(self) -> str:
+        """Showcase only: the card dealt for the round in play."""
+        return self.cards[min(self.round_n, len(self.cards)) - 1]
+
+    def round_turns(self, round_n: int) -> list[Turn]:
+        return [t for t in self.turns if t.round_n == round_n and t.outcome in JUDGED]
+
 
 def other(actor: Actor) -> Actor:
     return "p2" if actor == "p1" else "p1"
@@ -80,7 +97,7 @@ def layer1(template: Template, move_text: str, match: Match) -> Layer1Reason | N
         return "empty"
     if len(move_text) > template.move_constraints.max_chars:
         return "too_long"
-    if normalize(move_text) in {normalize(h) for h in [match.seed, *match.history]}:
+    if normalize(move_text) in {normalize(h) for h in [*match.cards, *match.history]}:
         return "duplicate"
     return None
 
@@ -104,11 +121,15 @@ def apply_ruling(
     move_text: str,
     outcome: Outcome,
     expected_version: int,
-    move_budget: int,
+    template: Template,
     points: int = 0,
 ) -> Match:
-    """Record a judged or refused move and advance the match. One fail ends it."""
-    _check_command(match, actor, expected_version)
+    """Record a judged or refused move and advance the match by the template's win rule."""
+    if template.mode == "showcase" and actor == "p2":
+        # The House answers the same card as the player; the engine plays it, never the clock.
+        _check_command(match, "p1", expected_version)
+    else:
+        _check_command(match, actor, expected_version)
     match.state_version += 1
     match.status = "active"
 
@@ -117,24 +138,35 @@ def apply_ruling(
         match.strikes[actor] += 1
         return match
 
+    round_n = match.round_n if template.mode == "showcase" else len(match.turns) + 1
     match.turns.append(
-        Turn(seq=len(match.turns) + 1, actor=actor, move_text=move_text, outcome=outcome)
+        Turn(
+            seq=len(match.turns) + 1,
+            actor=actor,
+            move_text=move_text,
+            outcome=outcome,
+            round_n=round_n,
+        )
     )
-    match.points[actor] += points
+    if template.win_condition == "sudden_death":
+        match.points[actor] += points
+        if outcome == "fail":
+            match.status = "ended"
+            match.winner = other(actor)
+            match.end_reason = "sudden_death"
+            return match
+        match.to_move = other(actor)
+    elif outcome != "fail":
+        match.points[actor] += points
 
-    if outcome == "fail":
+    if match.judged_moves >= template.move_budget:
         match.status = "ended"
-        match.winner = other(actor)
-        match.end_reason = "sudden_death"
-        return match
-
-    match.to_move = other(actor)
-    if match.judged_moves >= move_budget:
-        match.status = "ended"
-        match.end_reason = "move_cap_points"
+        match.end_reason = "rounds_complete" if template.mode == "showcase" else "move_cap_points"
         p1, p2 = match.points["p1"], match.points["p2"]
-        # A tie goes to whoever holds the standing form, which is the actor who just moved.
-        match.winner = "p1" if p1 > p2 else "p2" if p2 > p1 else actor
+        if p1 != p2:
+            match.winner = "p1" if p1 > p2 else "p2"
+        elif template.tie_policy == "defender_holds":
+            match.winner = actor
     return match
 
 

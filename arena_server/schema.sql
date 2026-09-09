@@ -69,3 +69,7 @@ create table if not exists verdict_pairs (
 
 alter table sessions add column if not exists list_duels boolean not null default false;
 alter table matches alter column is_public set default false;
+alter table matches add column if not exists cards text[] not null default '{}';
+alter table matches add column if not exists held_move text;
+update matches set cards = array[seed_token] where cards = '{}';
+alter table turns add column if not exists round_n int not null default 1;

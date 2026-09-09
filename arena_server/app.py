@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
-from arena_core.template import load_template
+from arena_core.template import load_templates
 from arena_judge.caller import ModelCaller
 from arena_judge.schema import (
     JudgePaused,
@@ -20,6 +20,7 @@ from arena_judge.schema import (
     JudgeStarted,
     MatchEnded,
     MoveToken,
+    RoundRevealed,
     Ruling,
     StateResync,
     TurnRejected,
@@ -35,7 +36,7 @@ SESSION_COOKIE = "oddstage_session"
 
 def build_app(settings: Settings | None = None, caller: ModelCaller | None = None) -> FastAPI:
     settings = settings or load_settings()
-    template = load_template("then-i-am")
+    templates = load_templates()
     judge_spec = load_model(settings.judge_ref)
     opponent_spec = load_model(settings.opponent_ref)
     caller = caller or ModelCaller(settings.openrouter_api_key, judge_spec, opponent_spec)
@@ -45,7 +46,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         pool,
         bus,
         caller,
-        template,
+        templates,
         settings.opponent_ref,
         opponent_spec.display_name,
         judge_spec.model,
@@ -70,7 +71,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
 
     class Health(BaseModel):
         status: str
-        game: str
+        games: list[str]
 
     class CreateMatch(BaseModel):
         template_id: str
@@ -107,6 +108,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         judge_paused: JudgePaused
         judge_resumed: JudgeResumed
         match_ended: MatchEnded
+        round_revealed: RoundRevealed
         state_resync: StateResync
 
     def session_of(request: Request) -> str:
@@ -117,11 +119,17 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
 
     @app.get("/healthz")
     async def healthz() -> Health:
-        return Health(status="ok", game=template.slug)
+        return Health(status="ok", games=list(templates))
 
-    @app.get("/templates/then-i-am")
-    async def get_template() -> TemplateView:
-        return TemplateView(**template.player_projection())
+    @app.get("/templates")
+    async def list_templates() -> list[TemplateView]:
+        return [TemplateView(**t.player_projection()) for t in templates.values()]
+
+    @app.get("/templates/{slug}")
+    async def get_template(slug: str) -> TemplateView:
+        if slug not in templates:
+            raise HTTPException(404, "no such template")
+        return TemplateView(**templates[slug].player_projection())
 
     @app.get("/sessions/me")
     async def get_session(request: Request) -> SessionView:
@@ -141,13 +149,13 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def create_match(
         body: CreateMatch, request: Request, response: Response
     ) -> MatchSnapshot:
-        if body.template_id != template.slug:
+        if body.template_id not in templates:
             raise HTTPException(404, "no such template")
         key = await service.ensure_session(request.cookies.get(SESSION_COOKIE), body.stage_name)
         response.set_cookie(
             SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365
         )
-        snap = await service.create(key, body.seed_token)
+        snap = await service.create(key, body.template_id, body.seed_token)
         if body.first_move:
             await service.submit_move(snap.id, key, f"first-{snap.id}", 0, body.first_move)
             snap = await service.snapshot(snap.id, key)
@@ -227,7 +235,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     @app.get("/r/{match_id}", response_class=HTMLResponse)
     async def replay_shell(match_id: str) -> HTMLResponse:
         replay = await service.replay(match_id)
-        title = html.escape(f"{replay.stage_name} vs {replay.opponent_name}, {template.title}")
+        title = html.escape(f"{replay.stage_name} vs {replay.opponent_name}, {replay.title}")
         description = html.escape(replay.share_text)
         head = (
             f'<meta property="og:title" content="{title}">'

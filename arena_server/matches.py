@@ -17,7 +17,7 @@ from arena_core.state import (
     resign,
     weighted_total,
 )
-from arena_core.template import Template
+from arena_core.template import Seed, Template
 from arena_judge.caller import JudgeCall, ModelCaller
 from arena_judge.schema import (
     JudgePaused,
@@ -27,13 +27,21 @@ from arena_judge.schema import (
     MatchEnded,
     MoveToken,
     Outcome,
+    RoundRevealed,
     Ruling,
     TurnRejected,
     route_outcome,
 )
 from arena_server.db import Pool
 from arena_server.events import EventBus
-from arena_server.views import MatchSnapshot, Replay, SessionView, StageView, TurnView
+from arena_server.views import (
+    MatchSnapshot,
+    Replay,
+    RoundView,
+    SessionView,
+    StageView,
+    TurnView,
+)
 
 PAUSE_BACKOFF_S = (5, 10, 20, 30)
 
@@ -58,7 +66,7 @@ class MatchService:
         pool: Pool,
         bus: EventBus,
         caller: ModelCaller,
-        template: Template,
+        templates: dict[str, Template],
         opponent_ref: str,
         opponent_name: str,
         judge_model: str,
@@ -67,13 +75,17 @@ class MatchService:
         self.pool = pool
         self.bus = bus
         self.caller = caller
-        self.template = template
+        self.templates = templates
         self.opponent_ref = opponent_ref
         self.opponent_name = opponent_name
         self.judge_model = judge_model
         self.public_base_url = public_base_url
         self.locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
         self.tasks: set[asyncio.Task] = set()
+        self.held: dict[str, asyncio.Task[str]] = {}
+
+    def template_of(self, match: Match) -> Template:
+        return self.templates[match.template_id]
 
     # Sessions and creation
 
@@ -110,31 +122,48 @@ class MatchService:
                 return SessionView(stage_name=row["stage_name"], list_duels=row["list_duels"])
         return SessionView(stage_name="Challenger", list_duels=False)
 
-    async def create(self, session_key: str, seed_token: str | None = None) -> MatchSnapshot:
-        seed = self.template.seed_named(seed_token) if seed_token else None
-        if seed_token and seed is None:
+    async def create(
+        self, session_key: str, template_id: str, seed_token: str | None = None
+    ) -> MatchSnapshot:
+        template = self.templates.get(template_id)
+        if template is None:
+            raise MatchError(404, "no such template")
+        first = template.seed_named(seed_token) if seed_token else None
+        if seed_token and first is None:
             raise MatchError(422, "that opening is not in this game")
-        seed = seed or secrets.choice(self.template.seed_pool)
+        cards = self._deal(template, first)
         match_id = secrets.token_urlsafe(8)
         listed = (await self.session_view(session_key)).list_duels
         async with self.pool.connection() as conn:
             await conn.execute(
                 "insert into matches (id, template_id, template_version, config, seed_token, "
-                "seed_emoji, p1_session_key, p2_model_ref, status, is_public) "
-                "values (%s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)",
+                "seed_emoji, cards, p1_session_key, p2_model_ref, status, is_public) "
+                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)",
                 (
                     match_id,
-                    self.template.slug,
-                    self.template.schema_version,
-                    self.template.model_dump_json(),
-                    seed.opening_token,
-                    seed.opening_emoji,
+                    template.slug,
+                    template.schema_version,
+                    template.model_dump_json(),
+                    cards[0].opening_token,
+                    cards[0].opening_emoji,
+                    [c.opening_token for c in cards],
                     session_key,
                     self.opponent_ref,
                     listed,
                 ),
             )
+        if template.mode == "showcase":
+            self._prepare_house(match_id)
         return await self.snapshot(match_id, session_key)
+
+    @staticmethod
+    def _deal(template: Template, first: Seed | None) -> list[Seed]:
+        """One card for an escalation duel, one per round for a showcase."""
+        if template.mode == "escalation":
+            return [first or secrets.choice(template.seed_pool)]
+        rest = [c for c in template.seed_pool if c is not first]
+        cards = secrets.SystemRandom().sample(rest, template.move_budget // 2 - bool(first))
+        return [first, *cards] if first else cards
 
     async def set_visibility(self, match_id: str, session_key: str, public: bool) -> None:
         _, extra = await self._load(match_id)
@@ -173,12 +202,15 @@ class MatchService:
             id=row["id"],
             template_id=row["template_id"],
             template_version=row["template_version"],
-            seed=row["seed_token"],
+            cards=row["cards"],
             seed_emoji=row["seed_emoji"],
             status=row["status"],
             state_version=row["state_version"],
             to_move=row["to_move"],
-            turns=[Turn(t["seq"], t["actor"], t["move_text"], t["outcome"]) for t in turns],
+            turns=[
+                Turn(t["seq"], t["actor"], t["move_text"], t["outcome"], t["round_n"])
+                for t in turns
+            ],
             strikes={"p1": row["strikes_p1"], "p2": row["strikes_p2"]},
             points={"p1": row["points_p1"], "p2": row["points_p2"]},
             winner=row["winner"],
@@ -191,6 +223,7 @@ class MatchService:
             "is_public": row["is_public"],
             "is_curated": row["is_curated"],
             "created_at": row["created_at"],
+            "held_move": row["held_move"],
         }
         return match, extra
 
@@ -231,12 +264,13 @@ class MatchService:
         verdict_id: int | None,
         action_id: str | None,
     ) -> int:
+        round_n = match.turns[-1].round_n if seq is not None and match.turns else match.round_n
         async with self.pool.connection() as conn:
             row = await (
                 await conn.execute(
                     "insert into turns (match_id, seq, actor, move_text, layer1_result, outcome, "
-                    "live_verdict_id, action_id) "
-                    "values (%s, %s, %s, %s, %s, %s, %s, %s) returning id",
+                    "live_verdict_id, action_id, round_n) "
+                    "values (%s, %s, %s, %s, %s, %s, %s, %s, %s) returning id",
                     (
                         match.id,
                         seq,
@@ -246,6 +280,7 @@ class MatchService:
                         outcome,
                         verdict_id,
                         action_id,
+                        round_n,
                     ),
                 )
             ).fetchone()
@@ -285,16 +320,39 @@ class MatchService:
     def _points(self, match: Match) -> tuple[int, int]:
         return match.points["p1"], match.points["p2"]
 
+    def _rounds(self, match: Match, template: Template) -> list[RoundView]:
+        if template.mode == "escalation":
+            return []
+        views = []
+        for n, token in enumerate(match.cards[: match.round_n], start=1):
+            card = template.seed_named(token)
+            assert card is not None
+            revealed = len(match.round_turns(n)) == 2
+            views.append(
+                RoundView(
+                    round_n=n,
+                    token=token,
+                    emoji=card.opening_emoji if revealed else "",
+                    detail=card.detail,
+                    truth=card.hidden if revealed else None,
+                )
+            )
+        return views
+
     async def snapshot(self, match_id: str, session_key: str | None = None) -> MatchSnapshot:
         match, extra = await self._load(match_id)
+        template = self.template_of(match)
         p1, p2 = self._points(match)
         return MatchSnapshot(
             id=match.id,
             template_id=match.template_id,
+            title=template.title,
+            mode=template.mode,
             status=match.status,
             state_version=match.state_version,
             seed_token=match.seed,
             seed_emoji=match.seed_emoji,
+            rounds=self._rounds(match, template),
             stage_name=extra["stage_name"],
             opponent_name=self.opponent_name,
             to_move=match.to_move,
@@ -303,16 +361,17 @@ class MatchService:
             points_p1=p1,
             points_p2=p2,
             judged_moves=match.judged_moves,
-            move_budget=self.template.move_budget,
+            move_budget=template.move_budget,
             transcript=[
                 TurnView(
                     seq=t["seq"],
+                    round_n=t["round_n"],
                     actor=t["actor"],
                     move_text=t["move_text"],
                     outcome=t["outcome"],
                     scoring=t["scoring"],
                     host=t["host"],
-                    points=self._turn_points(t["scoring"]),
+                    points=self._turn_points(t["scoring"], template),
                 )
                 for t in extra["turn_rows"]
             ],
@@ -333,12 +392,13 @@ class MatchService:
             is_curated=extra["is_curated"],
         )
 
-    def _turn_points(self, scoring: dict[str, Any] | None) -> int | None:
+    def _turn_points(self, scoring: dict[str, Any] | None, template: Template) -> int | None:
         if scoring is None:
             return None
-        return weighted_total(scoring["scores"], self.template.weights)
+        return weighted_total(scoring["scores"], template.weights)
 
     def _highlight_seq(self, snap: MatchSnapshot) -> int | None:
+        weights = self.templates[snap.template_id].weights
         winner_moves = [
             t
             for t in snap.transcript
@@ -346,7 +406,7 @@ class MatchService:
         ]
         best = max(
             winner_moves,
-            key=lambda t: weighted_total(t.scoring.scores, self.template.weights),  # type: ignore[union-attr]
+            key=lambda t: weighted_total(t.scoring.scores, weights),  # type: ignore[union-attr]
             default=None,
         )
         return best.seq if best else None
@@ -399,6 +459,14 @@ class MatchService:
                 raise MatchError(404, "no finished match with that id")
 
     def _share_text(self, snap: MatchSnapshot) -> str:
+        link = f"{self.public_base_url}/r/{snap.id}"
+        if snap.mode == "showcase":
+            result = "won" if snap.winner == "p1" else "lost" if snap.winner else "drew"
+            cards = " ".join(r.emoji for r in snap.rounds if r.emoji)
+            return (
+                f"I {result} a duel of {snap.title}, {snap.points_p1} to {snap.points_p2}. "
+                f"{cards} {link}"
+            )
         chain = [snap.seed_emoji] + [
             t.host.generated_emoji
             for t in snap.transcript
@@ -406,8 +474,8 @@ class MatchService:
         ]
         result = "won" if snap.winner == "p1" else "lost"
         return (
-            f"I {result} a duel of {self.template.title} in {snap.judged_moves} moves. "
-            f"{'→'.join(chain)} {self.public_base_url}/r/{snap.id}"
+            f"I {result} a duel of {snap.title} in {snap.judged_moves} moves. "
+            f"{'→'.join(chain)} {link}"
         )
 
     # Commands
@@ -439,13 +507,17 @@ class MatchService:
 
     async def disagree(self, match_id: str, seq: int) -> None:
         match, _ = await self._load(match_id)
+        template = self.template_of(match)
         turn = next((t for t in match.turns if t.seq == seq), None)
         if turn is None:
             raise MatchError(404, "no such turn")
-        previous = next(
-            (t.move_text for t in reversed(match.turns[: seq - 1]) if t.outcome not in REFUSED),
-            match.seed,
-        )
+        if template.mode == "showcase":
+            previous = match.cards[turn.round_n - 1]
+        else:
+            previous = next(
+                (t.move_text for t in reversed(match.turns[: seq - 1]) if t.outcome not in REFUSED),
+                match.seed,
+            )
         async with self.pool.connection() as conn:
             await conn.execute(
                 "insert into verdict_pairs (template_id, prev_norm, move_norm, disagree_count) "
@@ -483,96 +555,258 @@ class MatchService:
 
     # Turns
 
-    def _transcript(self, match: Match) -> list[str]:
-        return [
-            f"{'player1' if t.actor == 'p1' else 'player2'}: {t.move_text}" for t in match.turns
-        ]
+    def _transcript(
+        self, match: Match, template: Template, finished_only: bool = False
+    ) -> list[str]:
+        if template.mode == "escalation":
+            return [f"{_player(t.actor)}: {t.move_text}" for t in match.turns]
+        lines = []
+        for n, token in enumerate(match.cards, start=1):
+            turns = match.round_turns(n)
+            if not turns or (finished_only and len(turns) < 2):
+                break
+            card = template.seed_named(token)
+            assert card is not None
+            lines.append(f"round {n}, prompt: {card.card_text}")
+            lines.extend(f"{_player(t.actor)}: {t.move_text}" for t in turns)
+        return lines
 
     async def _run_human_move(self, match_id: str, action_id: str, move_text: str) -> None:
         async with self.locks[match_id]:
-            match, _ = await self._load(match_id)
-            ended = await self._play_move(match, "p1", move_text, action_id)
+            match, extra = await self._load(match_id)
+            template = self.template_of(match)
+            if template.mode == "showcase":
+                await self._play_round(match, template, extra["held_move"], move_text, action_id)
+                return
+            ended = await self._play_move(match, template, "p1", move_text, action_id)
             if not ended and match.to_move == "p2":
-                await self._play_opponent(match)
+                await self._play_opponent(match, template)
 
-    async def _play_move(
-        self, match: Match, actor: Actor, move_text: str, action_id: str | None
+    async def _refuse_layer1(
+        self, match: Match, template: Template, actor: Actor, move_text: str, action_id: str | None
     ) -> bool:
-        """Runs one move through Layer 1 and the judge. Returns True when the match ended."""
-        version = match.state_version
-        reason = layer1(self.template, move_text, match)
-        if reason:
-            apply_ruling(
-                match, actor, move_text, "deterministic_invalid", version, self.template.move_budget
-            )
-            await self._save(match)
-            await self._insert_turn(
-                match, actor, move_text, "deterministic_invalid", None, reason, None, action_id
-            )
-            self._emit_rejection(
-                match,
-                actor,
-                "deterministic_invalid",
-                getattr(self.template.validation_messages, reason),
-            )
+        """Applies a Layer 1 refusal when there is one. Returns True when the move was refused."""
+        reason = layer1(template, move_text, match)
+        if reason is None:
             return False
-
-        seq = len(match.turns) + 1
-        self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
-        judged = await self._judge_until_ruled(match, seq, move_text)
-        outcome, response = judged.outcome, judged.response
-
-        if outcome == "semantic_reject":
-            apply_ruling(match, actor, move_text, outcome, version, self.template.move_budget)
-            await self._save(match)
-            await self._insert_turn(
-                match, actor, move_text, outcome, None, None, judged.verdict_id, action_id
-            )
-            self._emit_rejection(
-                match, actor, outcome, response.host.headline, response.host.quotable_line
-            )
-            return False
-
-        points = weighted_total(response.scoring.scores, self.template.weights)
-        apply_ruling(match, actor, move_text, outcome, version, self.template.move_budget, points)
+        apply_ruling(
+            match, actor, move_text, "deterministic_invalid", match.state_version, template
+        )
         await self._save(match)
         await self._insert_turn(
-            match, actor, move_text, outcome, seq, None, judged.verdict_id, action_id
+            match, actor, move_text, "deterministic_invalid", None, reason, None, action_id
         )
-        badges = ["close_call"] if outcome == "semantic_uncertain" else []
+        self._emit_rejection(
+            match,
+            template,
+            actor,
+            "deterministic_invalid",
+            getattr(template.validation_messages, reason),
+        )
+        return True
+
+    async def _refuse_semantic(
+        self,
+        match: Match,
+        template: Template,
+        actor: Actor,
+        move_text: str,
+        judged: "Judged",
+        action_id: str | None,
+    ) -> None:
+        apply_ruling(match, actor, move_text, "semantic_reject", match.state_version, template)
+        await self._save(match)
+        await self._insert_turn(
+            match, actor, move_text, "semantic_reject", None, None, judged.verdict_id, action_id
+        )
+        host = judged.response.host
+        self._emit_rejection(
+            match, template, actor, "semantic_reject", host.headline, host.quotable_line
+        )
+
+    async def _record_ruling(
+        self,
+        match: Match,
+        template: Template,
+        actor: Actor,
+        move_text: str,
+        judged: "Judged",
+        seq: int,
+        action_id: str | None,
+        hidden: str = "",
+    ) -> None:
+        response = judged.response
+        before = match.points[actor]
+        earned = weighted_total(response.scoring.scores, template.weights)
+        apply_ruling(match, actor, move_text, judged.outcome, match.state_version, template, earned)
+        await self._save(match)
+        await self._insert_turn(
+            match, actor, move_text, judged.outcome, seq, None, judged.verdict_id, action_id
+        )
+        badges = ["close_call"] if judged.outcome == "semantic_uncertain" else []
+        if hidden and response.scoring.truth_proximity == "hit":
+            badges.append("accidental_truth")
+        elif hidden and response.scoring.truth_proximity == "near":
+            badges.append("near_miss")
         p1, p2 = self._points(match)
         self.bus.emit(
             match.id,
             "ruling",
             Ruling(
                 seq=seq,
+                round_n=match.turns[-1].round_n,
                 actor=actor,
                 move_text=move_text,
-                outcome=outcome,
+                outcome=judged.outcome,
                 scoring=response.scoring,
                 host=response.host.model_copy(update={"badges": badges}),
                 badges=badges,
-                points=points,
+                points=match.points[actor] - before,
                 points_p1=p1,
                 points_p2=p2,
                 to_move=match.to_move,
                 state_version=match.state_version,
             ),
         )
+
+    async def _play_move(
+        self, match: Match, template: Template, actor: Actor, move_text: str, action_id: str | None
+    ) -> bool:
+        """Escalation: one move through Layer 1 and the judge. Returns True when the match ended."""
+        if await self._refuse_layer1(match, template, actor, move_text, action_id):
+            return False
+        seq = len(match.turns) + 1
+        self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
+        judged = await self._judge_until_ruled(
+            match, template, seq, move_text, match.standing_form, self._transcript(match, template)
+        )
+        if judged.outcome == "semantic_reject":
+            await self._refuse_semantic(match, template, actor, move_text, judged, action_id)
+            return False
+        await self._record_ruling(match, template, actor, move_text, judged, seq, action_id)
         if match.status == "ended":
-            coaching = response.host.coaching_line if outcome == "fail" else None
+            coaching = judged.response.host.coaching_line if judged.outcome == "fail" else None
             await self._emit_match_ended(match, coaching)
             return True
         return False
 
-    async def _judge_until_ruled(self, match: Match, seq: int, move_text: str) -> Judged:
+    async def _play_round(
+        self, match: Match, template: Template, held: str | None, move_text: str, action_id: str
+    ) -> None:
+        """Showcase: both answers are judged together, then the card is revealed."""
+        if await self._refuse_layer1(match, template, "p1", move_text, action_id):
+            return
+        card = template.seed_named(match.card)
+        assert card is not None
+        seq = len(match.turns) + 1
+        self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
+        transcript = self._transcript(match, template)
+        house_text = await self._house_move(match, template, held)
+        human, house = await asyncio.gather(
+            self._judge_until_ruled(
+                match, template, seq, move_text, card.card_text, transcript, card.hidden
+            ),
+            self._judge_house(match, template, seq + 1, house_text, card, transcript),
+        )
+        if human.outcome == "semantic_reject":
+            await self._refuse_semantic(match, template, "p1", move_text, human, action_id)
+            await self._hold(match.id, house[1])
+            return
+        await self._record_ruling(
+            match, template, "p1", move_text, human, seq, action_id, card.hidden
+        )
+        await self._record_ruling(
+            match, template, "p2", house[1], house[0], seq + 1, None, card.hidden
+        )
+        await self._hold(match.id, None)
+        self.bus.emit(
+            match.id,
+            "round_revealed",
+            RoundRevealed(
+                round_n=match.turns[-1].round_n,
+                token=card.opening_token,
+                emoji=card.opening_emoji,
+                detail=card.detail,
+                truth=card.hidden,
+                state_version=match.state_version,
+            ),
+        )
+        if match.status == "ended":
+            await self._emit_match_ended(match, coaching_line=None)
+            return
+        self._prepare_house(match.id)
+
+    async def _judge_house(
+        self,
+        match: Match,
+        template: Template,
+        seq: int,
+        text: str,
+        card: Seed,
+        transcript: list[str],
+    ) -> tuple["Judged", str]:
+        """Judges the House's answer, regenerating on a refusal until one is rulable."""
+        refusals = 0
+        while True:
+            reason = layer1(template, text, match)
+            if reason is None:
+                judged = await self._judge_until_ruled(
+                    match, template, seq, text, card.card_text, transcript, card.hidden
+                )
+                if judged.outcome != "semantic_reject":
+                    return judged, text
+            refusals += 1
+            if refusals < template.strikes_before_consequence:
+                text = await self._stream_opponent_move(match, template, card.card_text)
+            else:
+                text = template.default_move
+
+    def _prepare_house(self, match_id: str) -> None:
+        """Starts the House writing its answer for the round in play, hidden until the reveal."""
+
+        async def write() -> str:
+            match, _ = await self._load(match_id)
+            template = self.template_of(match)
+            card = template.seed_named(match.card)
+            assert card is not None
+            text = await self._stream_opponent_move(match, template, card.card_text, silent=True)
+            await self._hold(match_id, text)
+            return text
+
+        task = asyncio.create_task(write())
+        self.held[match_id] = task
+        self.tasks.add(task)
+        task.add_done_callback(self.tasks.discard)
+
+    async def _house_move(self, match: Match, template: Template, held: str | None) -> str:
+        task = self.held.pop(match.id, None)
+        if task is not None:
+            return await task
+        if held is not None:
+            return held
+        card = template.seed_named(match.card)
+        assert card is not None
+        return await self._stream_opponent_move(match, template, card.card_text, silent=True)
+
+    async def _hold(self, match_id: str, text: str | None) -> None:
+        async with self.pool.connection() as conn:
+            await conn.execute("update matches set held_move = %s where id = %s", (text, match_id))
+
+    async def _judge_until_ruled(
+        self,
+        match: Match,
+        template: Template,
+        seq: int,
+        move_text: str,
+        previous: str,
+        transcript: list[str],
+        hidden: str = "",
+    ) -> Judged:
         """Retries the same judge call while the match sits paused, until a ruling lands."""
-        transcript = self._transcript(match)
-        previous = match.standing_form
         paused = False
         attempt = 0
         while True:
-            call = await self.caller.judge(self.template, transcript, previous, move_text)
+            call = await self.caller.judge(template, transcript, previous, move_text, hidden)
             verdict_id = await self._insert_verdict(call)
             if call.response is not None:
                 if paused:
@@ -582,7 +816,7 @@ class MatchService:
             if not paused:
                 paused = True
                 await self._set_status(match.id, "paused")
-                host_text = self.template.judge_out_text.strip().format(standing_form=previous)
+                host_text = template.judge_out_text.strip().format(standing_form=previous)
                 self.bus.emit(match.id, "judge_paused", JudgePaused(seq=seq, host_text=host_text))
             await asyncio.sleep(PAUSE_BACKOFF_S[min(attempt, len(PAUSE_BACKOFF_S) - 1)])
             attempt += 1
@@ -590,6 +824,7 @@ class MatchService:
     def _emit_rejection(
         self,
         match: Match,
+        template: Template,
         actor: Actor,
         outcome: Literal["deterministic_invalid", "semantic_reject"],
         reason_text: str,
@@ -597,9 +832,8 @@ class MatchService:
     ) -> None:
         strikes = match.strikes[actor]
         if strikes >= 2 and nudge is None:
-            nudge = self.template.validation_messages.nudge.format(
-                standing_form=match.standing_form
-            )
+            target = match.card if template.mode == "showcase" else match.standing_form
+            nudge = template.validation_messages.nudge.format(standing_form=target)
         self.bus.emit(
             match.id,
             "turn_rejected",
@@ -611,31 +845,34 @@ class MatchService:
             ),
         )
 
-    async def _play_opponent(self, match: Match) -> None:
+    async def _play_opponent(self, match: Match, template: Template) -> None:
         strikes_before = match.strikes["p2"]
         while match.status == "active" and match.to_move == "p2":
             refusals = match.strikes["p2"] - strikes_before
-            if refusals < self.template.strikes_before_consequence:
-                move_text = await self._stream_opponent_move(match)
-            elif refusals == self.template.strikes_before_consequence:
-                move_text = self.template.default_move
+            if refusals < template.strikes_before_consequence:
+                move_text = await self._stream_opponent_move(match, template, match.seed)
+            elif refusals == template.strikes_before_consequence:
+                move_text = template.default_move
             else:
                 resign(match, "p2", match.state_version)
                 await self._save(match)
                 await self._emit_match_ended(match, coaching_line=None)
                 return
-            if await self._play_move(match, "p2", move_text, None):
+            if await self._play_move(match, template, "p2", move_text, None):
                 return
 
-    async def _stream_opponent_move(self, match: Match) -> str:
+    async def _stream_opponent_move(
+        self, match: Match, template: Template, card: str, silent: bool = False
+    ) -> str:
         seq = len(match.turns) + 1
         parts: list[str] = []
         try:
             async for chunk in self.caller.opponent_stream(
-                self.template, match.seed, self._transcript(match)
+                template, card, self._transcript(match, template, finished_only=True)
             ):
                 parts.append(chunk)
-                self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))
+                if not silent:
+                    self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))
         except Exception:
             # A dead opponent call is a refusal: the strike path swaps in the default move.
             return ""
@@ -659,3 +896,7 @@ class MatchService:
                 state_version=match.state_version,
             ),
         )
+
+
+def _player(actor: Actor) -> str:
+    return "player1" if actor == "p1" else "player2"

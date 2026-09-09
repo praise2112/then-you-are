@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from arena_judge.schema import HostPayload, Outcome, ScoringPayload
+from arena_judge.schema import EndReason, HostPayload, Outcome, ScoringPayload
 
 
 class RubricView(BaseModel):
@@ -16,6 +16,8 @@ class RubricView(BaseModel):
 class DemoOpening(BaseModel):
     token: str
     emoji: str
+    detail: str
+    reveal: str
 
 
 class DemoMoveView(BaseModel):
@@ -49,6 +51,8 @@ class TemplateView(BaseModel):
     title: str
     tagline: str
     premise: str
+    mode: Literal["escalation", "showcase"]
+    rounds: int | None
     rubric: list[RubricView]
     rules_text: str
     max_chars: int
@@ -63,6 +67,7 @@ class TemplateView(BaseModel):
 
 class TurnView(BaseModel):
     seq: int
+    round_n: int
     actor: Literal["p1", "p2"]
     move_text: str
     outcome: Outcome
@@ -71,18 +76,31 @@ class TurnView(BaseModel):
     points: int | None
 
 
+class RoundView(BaseModel):
+    """A dealt card. The truth is filled in only once both answers are judged."""
+
+    round_n: int
+    token: str
+    emoji: str
+    detail: str
+    truth: str | None
+
+
 class MatchSnapshot(BaseModel):
     id: str
     template_id: str
+    title: str
+    mode: Literal["escalation", "showcase"]
     status: Literal["active", "awaiting_judgment", "paused", "ended", "abandoned"]
     state_version: int
     seed_token: str
     seed_emoji: str
+    rounds: list[RoundView]
     stage_name: str
     opponent_name: str
     to_move: Literal["p1", "p2"]
     winner: Literal["p1", "p2"] | None
-    end_reason: Literal["sudden_death", "move_cap_points", "resign", "abandoned"] | None
+    end_reason: EndReason | None
     points_p1: int
     points_p2: int
     judged_moves: int

@@ -2,6 +2,7 @@ schema_version: 1
 slug: then-i-am
 title: Then I Am
 tagline: "Become something that beats what came before."
+mode: escalation
 premise: >
   Two shapeshifters duel in words. Each turn you become something that defeats
   what your opponent just became. The Judge decides if your form holds.
@@ -56,12 +57,26 @@ move_constraints:
 rubric:
   - name: counter_strength
     description: How decisively your form's nature defeats the one before it.
+    anchors: >
+      0 = no mechanism at all; 1 = asserted but flimsy; 2 = plausible but partial or
+      contestable; 3 = solid, clearly wins the exchange; 4 = inevitable, the previous form
+      simply cannot survive it (rare).
     weight: 5
   - name: coherence
     description: One clear idea a stranger can picture at once.
+    anchors: >
+      0 = self-contradicting or unreadable; 1 = needs specialist knowledge to understand at
+      all; 2 = understandable but muddled or abstract; 3 = clear and concrete; 4 = vivid, you
+      can see it (rare). Length never wins on its own: a long move must justify every clause
+      or it scores low here.
     weight: 3
   - name: novelty
     description: Did you hop somewhere fresh, or stay in your opponent's domain?
+    anchors: >
+      Novelty measures the domain hop, never the phrasing: a plain, sincere form from a fresh
+      domain scores high; a flashy phrase from the previous move's own domain scores 0.
+      Obscurity is NOT novelty. 0 = the stock answer, or the same domain as the previous
+      move; 2 = a decent twist; 4 = a hop into territory nobody saw coming (rare).
     weight: 2
 
 criterion:
@@ -76,6 +91,14 @@ criterion:
     being too small for it to notice, does not.
   anti_metagaming_clause: >
     Speaking to the Judge, about the game, or about rules is itself a losing form.
+  judge_notes:
+    - >
+      On a FIRST move there is no previous form: judge the move against the opening prompt
+      instead (does this form plausibly answer or overcome the opening?).
+    - >
+      A bigger, faster, or stronger version of the standing form is NOT a duplicate, and
+      neither is a cousin from the same family (a needle after a pin). Those are failed
+      counters: not_semantic_duplicate stays true and satisfies_criterion is false.
 
 examples:
   - previous_move: "I am a wildfire, hungry, spreading."
@@ -181,6 +204,26 @@ validation_messages:
 judge_out_text: >
   The judge has stepped out. Nobody moves until they are back. {standing_form} still
   stands. Give it a minute.
+opponent_prompt: |
+  Two shapeshifters duel in words. Each turn you become something that defeats
+  what your opponent just became. The Judge decides if your form holds.
+  Always: "I am X, attribute, attribute." Attributes are 1-4 word fragments, never
+  clauses, and at least one must name what you do to their form.
+  Good: "I am rust, hinge-eating, patient." / "I am the landlord's email,
+  rent-raising, weekend-ruining."
+  Bad: "I am rust, creeping over your hinges and turning them to powder" (a sentence
+  in a costume). Bad: "I am rust, ancient, smug" (moods and verdicts are not
+  attributes). Bad: "I am parched earth" (a poem, not a thing).
+  Talk like a person across a table, not a poet. Name things anyone would name:
+  a bucket, a landlord, a Tuesday, a dog. Plain words beat pretty ones.
+  You are not performing for a crowd and you are not joking. You are trying to
+  survive. If a move lands funny, it is because the thing you became truly beats
+  theirs.
+  Stay picturable and jargon-free: creatures, weather, tools, work, myth, the street.
+  Hop domains: a kitchen, a folktale, rush hour, a group chat beats digging in deeper.
+  Rules: at most {max_chars} characters. Answer the form your opponent just took. Never reuse
+  a form or an attribute from this match. Speaking to the Judge, about the game, or
+  about rules is itself a losing form. Reply with your move only, no commentary.
 
 move_budget: 10
 win_condition: sudden_death
