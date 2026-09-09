@@ -40,13 +40,13 @@ seed_pool:
   - { opening_token: crapulous, opening_emoji: "🍷", detail: "adjective, from Latin", hidden: "sick from too much eating or drinking" }
   - { opening_token: deipnosophist, opening_emoji: "🍽️", detail: "noun, from Greek", hidden: "a person skilled in the art of dinner table conversation" }
   - { opening_token: gardyloo, opening_emoji: "🪣", detail: "interjection, from French via Scots", hidden: "a warning cry before throwing dirty water from an upstairs window into the street" }
-  - { opening_token: liripipe, opening_emoji: "🎓", detail: "noun, from Medieval Latin", hidden: "the long hanging tail of a medieval hood or graduate's hood" }
+  - { opening_token: liripipe, opening_emoji: "🎓", detail: "noun, from Medieval Latin", hidden: "the long hanging tail of a Medieval hood or graduate's hood" }
   - { opening_token: peristeronic, opening_emoji: "🕊️", detail: "adjective, from Greek", hidden: "relating to pigeons" }
   - { opening_token: quaquaversal, opening_emoji: "💥", detail: "adjective, from Latin", hidden: "pointing or sloping outward in every direction from a center" }
   - { opening_token: ullage, opening_emoji: "🍾", detail: "noun, from French", hidden: "the empty space in a bottle or barrel between the liquid and the top" }
   - { opening_token: winkle-picker, opening_emoji: "👞", detail: "noun, from English", hidden: "a shoe with a very long, sharply pointed toe" }
   - { opening_token: bibliopole, opening_emoji: "📚", detail: "noun, from Greek via Latin", hidden: "a bookseller, especially one dealing in rare books" }
-  - { opening_token: dandiprat, opening_emoji: "🪙", detail: "noun, origin unknown", hidden: "an old english coin worth three halfpence, or an insignificant person" }
+  - { opening_token: dandiprat, opening_emoji: "🪙", detail: "noun, origin unknown", hidden: "an Old English coin worth three halfpence, or an insignificant person" }
   - { opening_token: famulus, opening_emoji: "🧙", detail: "noun, from Latin", hidden: "the assistant of a magician or scholar" }
   - { opening_token: galligaskins, opening_emoji: "👖", detail: "noun, from Italian via French", hidden: "loose, baggy breeches worn in the 16th and 17th centuries" }
   - { opening_token: inkhorn, opening_emoji: "🖋️", detail: "noun, from Old English", hidden: "a small portable ink pot made of horn, hence a pedantic, showy word" }
@@ -99,10 +99,10 @@ seed_pool:
   - { opening_token: wayzgoose, opening_emoji: "🖨️", detail: "noun, origin unknown", hidden: "an annual summer outing or party given for printers" }
   - { opening_token: yawp, opening_emoji: "📣", detail: "verb, from Middle English, imitative", hidden: "to utter a loud harsh cry, or to talk loudly and coarsely" }
   - { opening_token: zibeline, opening_emoji: "🧣", detail: "noun, from Italian via French", hidden: "a thick soft woollen cloth with a long nap, or the sable and its fur" }
-  - { opening_token: bardolatry, opening_emoji: "🎭", detail: "noun, from English", hidden: "excessive worship of shakespeare" }
+  - { opening_token: bardolatry, opening_emoji: "🎭", detail: "noun, from English", hidden: "excessive worship of Shakespeare" }
   - { opening_token: crambo, opening_emoji: "🎲", detail: "noun, origin unknown", hidden: "a game in which players must find words that rhyme with a given word" }
   - { opening_token: erinaceous, opening_emoji: "🦔", detail: "adjective, from Latin", hidden: "resembling or relating to a hedgehog" }
-  - { opening_token: haruspex, opening_emoji: "🔮", detail: "noun, from Latin", hidden: "an ancient roman priest who told the future by inspecting animal entrails" }
+  - { opening_token: haruspex, opening_emoji: "🔮", detail: "noun, from Latin", hidden: "an ancient Roman priest who told the future by inspecting animal entrails" }
   - { opening_token: impignorate, opening_emoji: "🏪", detail: "verb, from Latin", hidden: "to pawn or pledge something" }
   - { opening_token: kvell, opening_emoji: "🥹", detail: "verb, from Yiddish", hidden: "to burst with pride and delight" }
   - { opening_token: lalochezia, opening_emoji: "🤐", detail: "noun, from Greek", hidden: "swearing to relieve stress or pain" }
@@ -121,8 +121,8 @@ seed_pool:
   - { opening_token: sleekit, opening_emoji: "🦊", detail: "adjective, from Scots", hidden: "sly, cunning and flattering" }
   - { opening_token: tumshie, opening_emoji: "🥬", detail: "noun, from Scots", hidden: "a turnip, or jokingly a foolish person" }
   - { opening_token: argle-bargle, opening_emoji: "🗨️", detail: "noun, from Scots", hidden: "a noisy quarrel or wrangling argument" }
-  - { opening_token: shivoo, opening_emoji: "🎉", detail: "noun, origin unknown", hidden: "a lively party or celebration, in australia" }
-  - { opening_token: larrikin, opening_emoji: "😈", detail: "noun, origin unknown", hidden: "a mischievous, high-spirited rebel against convention, in australia" }
+  - { opening_token: shivoo, opening_emoji: "🎉", detail: "noun, origin unknown", hidden: "a lively party or celebration, in Australia" }
+  - { opening_token: larrikin, opening_emoji: "😈", detail: "noun, origin unknown", hidden: "a mischievous, high-spirited rebel against convention, in Australia" }
   - { opening_token: furphy, opening_emoji: "📰", detail: "noun, from an Australian surname", hidden: "a far-fetched rumour or improbable story" }
   - { opening_token: eftsoons, opening_emoji: "⏩", detail: "adverb, from Old English", hidden: "soon afterwards, or once again" }
   - { opening_token: hugger-mugger, opening_emoji: "🤫", detail: "adverb, origin unknown", hidden: "secretly, or in a confused muddle" }
@@ -190,8 +190,8 @@ criterion:
   description: >
     A definition PLAYS if it offers a meaning for the dealt word, in the part of speech
     given, that a stranger could mistake for a dictionary entry. It fails when it is not
-    a meaning at all (a joke about the word, a comment, a question, a story, a sentence
-    that merely uses the word) or when it ignores the part of speech (a verb defined as
+    a meaning at all (a joke about the word, a comment, a story, a sentence that
+    merely uses the word) or when it ignores the part of speech (a verb defined as
     a thing). An unlikely meaning still plays and scores low on believable. Landing on
     the real meaning is not a fail: it plays, and you report truth_proximity as hit.
   anti_metagaming_clause: >
@@ -207,8 +207,9 @@ criterion:
       Both players answer the same word. Judge each definition on its own; the other
       player's definition is not the standard.
     - >
-      A hedge ("I think", "maybe", "probably") is not the voice of an entry. If a meaning
-      is still offered the move plays, but believable and dictionary_shaped score low.
+      A hedge ("I think", "maybe", "probably") or a question mark is not the voice of an
+      entry. If a meaning is still offered the move plays, but believable and
+      dictionary_shaped score low. A question with no meaning in it fails.
 
 examples:
   - previous_move: "zarf (noun, from Arabic via Turkish)"

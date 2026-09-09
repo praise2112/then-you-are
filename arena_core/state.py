@@ -93,7 +93,7 @@ def normalize(text: str) -> str:
 
 def layer1(template: Template, move_text: str, match: Match) -> Layer1Reason | None:
     """Deterministic checks before the judge: empty, over the cap, exact duplicate."""
-    if not move_text.strip():
+    if not normalize(move_text):
         return "empty"
     if len(move_text) > template.move_constraints.max_chars:
         return "too_long"

@@ -653,9 +653,10 @@ class MatchService:
             match, actor, move_text, judged.outcome, seq, None, judged.verdict_id, action_id
         )
         badges = ["close_call"] if judged.outcome == "semantic_uncertain" else []
-        if hidden and response.scoring.truth_proximity == "hit":
+        proximity = response.scoring.truth_proximity if hidden else "none"
+        if judged.outcome != "fail" and proximity == "hit":
             badges.append("accidental_truth")
-        elif hidden and response.scoring.truth_proximity == "near":
+        elif judged.outcome != "fail" and proximity == "near":
             badges.append("near_miss")
         if badges:
             await self._stamp_badges(judged.verdict_id, badges)
