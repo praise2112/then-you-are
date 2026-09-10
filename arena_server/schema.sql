@@ -103,3 +103,6 @@ begin
         alter table accounts drop column provider, drop column provider_id;
     end if;
 end $$;
+
+create index if not exists sessions_account_id_idx on sessions (account_id);
+create index if not exists matches_p1_session_key_idx on matches (p1_session_key);

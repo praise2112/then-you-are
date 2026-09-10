@@ -351,6 +351,10 @@ export interface components {
             display_name: string;
             /** Avatar Url */
             avatar_url: string;
+            /** Streak */
+            streak: number;
+            /** Best Streak */
+            best_streak: number;
         };
         /** BecauseClause */
         BecauseClause: {

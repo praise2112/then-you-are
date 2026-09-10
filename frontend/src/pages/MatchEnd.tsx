@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Link } from "../App.tsx";
 import { api } from "../api.ts";
@@ -16,10 +16,16 @@ export function MatchEnd({ snap, ended, template }: Props) {
   const draw = ended.winner === null;
   const showcase = snap.mode === "showcase";
   const onPoints = ended.end_reason === "move_cap_points" || ended.end_reason === "rounds_complete";
-  const { streak, best } = useMemo(
-    () => store.recordResult(snap.id, draw ? null : won),
-    [snap.id, won, draw],
-  );
+  const local = useMemo(() => store.recordResult(snap.id, draw ? null : won), [snap.id, won, draw]);
+  // A signed-in player's streak comes from the server, so it follows the account across devices.
+  const [account, setAccount] = useState<{ streak: number; best: number } | null>(null);
+  useEffect(() => {
+    api.session().then(
+      (s) => s.account && setAccount({ streak: s.account.streak, best: s.account.best_streak }),
+      () => undefined,
+    );
+  }, [snap.id]);
+  const { streak, best } = account ?? local;
   const [share, setShare] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [listed, setListed] = useState(snap.is_public);

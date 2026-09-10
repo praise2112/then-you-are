@@ -9,6 +9,7 @@ from asgi_lifespan import LifespanManager
 from arena_server import auth
 from arena_server.app import build_app
 from arena_server.config import load_settings
+from arena_server.leaderboard import streaks
 from tests.conftest import FakeCaller, judge_response
 from tests.test_api import settle
 
@@ -52,6 +53,12 @@ async def resign(client: httpx.AsyncClient, app) -> None:
     await settle(app)
 
 
+def test_streaks_skip_draws_and_reset_on_a_loss():
+    assert streaks([]) == (0, 0)
+    assert streaks(["p1", "p1", None, "p2", "p1"]) == (1, 2)
+    assert streaks(["p2", "p1", "p1", "p1"]) == (3, 3)
+
+
 def test_public_names_are_first_names_only():
     assert auth.first_name("Ada King Lovelace", "ada") == "Ada"
     assert auth.first_name("   ", "ada") == "ada"
@@ -90,6 +97,8 @@ async def test_signing_in_claims_the_guest_session_and_signing_out_leaves_it(mon
             "providers": ["github"],
             "display_name": PROFILE.display_name,
             "avatar_url": "https://avatars.example/ada.png",
+            "streak": 0,
+            "best_streak": 0,
         }
         assert me["stage_name"] == PROFILE.display_name
 
@@ -134,6 +143,9 @@ async def test_leaderboard_counts_an_account_across_its_sessions(monkeypatch):
             json={"action_id": "a1", "expected_version": 0, "move_text": "I am rain."},
         )
         await settle(app)
+
+        me = (await client.get("/sessions/me")).json()
+        assert (me["account"]["streak"], me["account"]["best_streak"]) == (1, 1)
 
         boards = (await client.get("/leaderboard")).json()
         assert [b["slug"] for b in boards] == ["then-i-am", "word-for-word"]

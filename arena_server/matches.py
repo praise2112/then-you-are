@@ -35,6 +35,7 @@ from arena_judge.schema import (
 )
 from arena_server.db import Pool
 from arena_server.events import EventBus
+from arena_server.leaderboard import account_streaks
 from arena_server.views import (
     AccountView,
     MatchSnapshot,
@@ -116,7 +117,7 @@ class MatchService:
             async with self.pool.connection() as conn:
                 row = await (
                     await conn.execute(
-                        "select s.stage_name, s.list_duels, a.display_name, a.avatar_url, "
+                        "select s.stage_name, s.list_duels, a.id, a.display_name, a.avatar_url, "
                         "(select coalesce(array_agg(i.provider order by i.created_at), '{}') "
                         "from identities i where i.account_id = a.id) as providers "
                         "from sessions s left join accounts a on a.id = s.account_id "
@@ -124,14 +125,17 @@ class MatchService:
                         (session_key,),
                     )
                 ).fetchone()
-            if row:
                 account = None
-                if row["display_name"]:
+                if row and row["id"]:
+                    streak, best = await account_streaks(conn, row["id"])
                     account = AccountView(
                         providers=row["providers"],
                         display_name=row["display_name"],
                         avatar_url=row["avatar_url"],
+                        streak=streak,
+                        best_streak=best,
                     )
+            if row:
                 return SessionView(
                     stage_name=row["stage_name"], list_duels=row["list_duels"], account=account
                 )

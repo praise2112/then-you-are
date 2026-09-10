@@ -116,6 +116,8 @@ class AccountView(BaseModel):
     providers: list[str]
     display_name: str
     avatar_url: str
+    streak: int
+    best_streak: int
 
 
 class SessionView(BaseModel):
