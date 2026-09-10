@@ -20,13 +20,15 @@ pytestmark = pytest.mark.skipif(
 RUN = secrets.token_hex(4)
 PROFILE = auth.Profile("github", RUN, f"Ada {RUN}", "https://avatars.example/ada.png")
 PLAYER = auth.Profile("github", f"{RUN}-b", f"Bea {RUN}", "")
+LINKER = auth.Profile("github", f"{RUN}-l", f"Lin {RUN}", "")
+SECOND = auth.Profile("discord", f"{RUN}-d", f"lin_{RUN}", "https://cdn.example/d.png")
 
 
 async def run_app(caller: FakeCaller):
     settings = dataclasses.replace(
         load_settings(),
         database_url=os.environ["TEST_DATABASE_URL"],
-        oauth_clients={"github": ("id", "secret")},
+        oauth_clients={"github": ("id", "secret"), "discord": ("id", "secret")},
     )
     app = build_app(settings, caller)
     manager = LifespanManager(app)
@@ -80,12 +82,12 @@ async def test_signing_in_claims_the_guest_session_and_signing_out_leaves_it(mon
     try:
         guest = await client.put("/sessions/me", json={"stage_name": "Echo"})
         assert guest.json()["account"] is None
-        assert guest.json()["providers"] == ["github"]
+        assert guest.json()["providers"] == ["github", "discord"]
 
         await sign_in(client)
         me = (await client.get("/sessions/me")).json()
         assert me["account"] == {
-            "provider": "github",
+            "providers": ["github"],
             "display_name": PROFILE.display_name,
             "avatar_url": "https://avatars.example/ada.png",
         }
@@ -140,6 +142,60 @@ async def test_leaderboard_counts_an_account_across_its_sessions(monkeypatch):
         assert mine[0]["wins"] == 1
         assert mine[0]["played"] == 3
         assert all(s["display_name"] != PLAYER.display_name for s in boards[1]["standings"])
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_signed_in_player_links_a_second_provider_to_the_same_account(monkeypatch):
+    profiles = [LINKER, SECOND, SECOND, SECOND]
+
+    async def fake_profile(_client, _provider, _request):
+        return profiles.pop(0)
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    app, manager, client = await run_app(FakeCaller([], []))
+    try:
+        await client.get("/auth/github/callback?code=c&state=s")
+        linked = await client.get("/auth/discord/callback?code=c&state=s")
+        assert linked.headers["location"] == f"/?account=linked:discord:{SECOND.display_name}"
+        me = (await client.get("/sessions/me")).json()
+        assert me["account"]["providers"] == ["github", "discord"]
+        assert me["account"]["display_name"] == LINKER.display_name
+
+        again = await client.get("/auth/discord/callback?code=c&state=s")
+        assert again.headers["location"].startswith("/?account=linked:discord")
+
+        await client.post("/auth/logout")
+        await client.get("/auth/discord/callback?code=c&state=s")
+        me = (await client.get("/sessions/me")).json()
+        assert me["account"]["providers"] == ["github", "discord"]
+        assert me["stage_name"] == LINKER.display_name
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_an_identity_on_another_account_is_not_moved(monkeypatch):
+    other = auth.Profile("discord", f"{RUN}-x", f"Xan {RUN}", "")
+    profiles = [other, PLAYER, other]
+
+    async def fake_profile(_client, _provider, _request):
+        return profiles.pop(0)
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    app, manager, client = await run_app(FakeCaller([], []))
+    try:
+        await client.get("/auth/discord/callback?code=c&state=s")
+        await client.post("/auth/logout")
+        await sign_in(client)
+        taken = await client.get("/auth/discord/callback?code=c&state=s")
+        assert taken.headers["location"] == f"/?account=taken:discord:Xan%20{RUN}"
+        me = (await client.get("/sessions/me")).json()
+        assert me["account"]["display_name"] == PLAYER.display_name
+        assert me["account"]["providers"] == ["github"]
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

@@ -345,8 +345,8 @@ export interface components {
         };
         /** AccountView */
         AccountView: {
-            /** Provider */
-            provider: string;
+            /** Providers */
+            providers: string[];
             /** Display Name */
             display_name: string;
             /** Avatar Url */

@@ -113,7 +113,7 @@ class MatchSnapshot(BaseModel):
 
 
 class AccountView(BaseModel):
-    provider: str
+    providers: list[str]
     display_name: str
     avatar_url: str
 

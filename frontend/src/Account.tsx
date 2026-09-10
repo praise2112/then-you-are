@@ -6,10 +6,26 @@ import { api, type SessionView } from "./api.ts";
 const PROVIDER_NAMES: Record<string, string> = { google: "Google", github: "GitHub", discord: "Discord" };
 
 /** Sign-in menu for guests; name and settings gear for signed-in players. Providers come from the server. */
+/** What the sign-in callback reports back in the URL after a link attempt. */
+type Notice = { kind: "linked" | "taken"; provider: string; name: string } | null;
+
+function takeNotice(): Notice {
+  const params = new URLSearchParams(location.search);
+  const raw = params.get("account");
+  if (!raw) return null;
+  params.delete("account");
+  const query = params.toString();
+  history.replaceState(null, "", location.pathname + (query ? `?${query}` : ""));
+  const [kind, provider, ...name] = raw.split(":");
+  if (kind !== "linked" && kind !== "taken") return null;
+  return { kind, provider, name: name.join(":") };
+}
+
 export function AccountMenu() {
   const [session, setSession] = useState<SessionView | null>(null);
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState(false);
+  const [notice] = useState<Notice>(takeNotice);
+  const [settings, setSettings] = useState(notice !== null);
   const menuRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     api.session().then(setSession, () => setSession(null));
@@ -47,7 +63,7 @@ export function AccountMenu() {
         </button>
         {settings &&
           createPortal(
-            <SettingsSheet session={session} onChange={setSession} onClose={() => setSettings(false)} />,
+            <SettingsSheet session={session} notice={notice} onChange={setSession} onClose={() => setSettings(false)} />,
             document.body,
           )}
       </span>
@@ -73,14 +89,19 @@ export function AccountMenu() {
 
 function SettingsSheet({
   session,
+  notice,
   onChange,
   onClose,
 }: {
   session: SessionView;
+  notice: Notice;
   onChange: (session: SessionView) => void;
   onClose: () => void;
 }) {
   const account = session.account!;
+  const label = (p: string) => PROVIDER_NAMES[p] ?? p;
+  const unlinked = session.providers.filter((p) => !account.providers.includes(p));
+  const back = encodeURIComponent(location.pathname);
   const [name, setName] = useState(account.display_name);
   const [step, setStep] = useState<"edit" | "confirm" | "saved">("edit");
   const [error, setError] = useState<string | null>(null);
@@ -114,9 +135,35 @@ function SettingsSheet({
     <div className="scrim" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <form className="sheet settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" onSubmit={submit}>
         <h2 id="settings-title">Your account</h2>
+        {notice?.kind === "linked" && (
+          <p className="notice">
+            {label(notice.provider)} is now linked. Signing in with it lands on this account.
+          </p>
+        )}
+        {notice?.kind === "taken" && (
+          <p className="notice warn">
+            That {label(notice.provider)} account already belongs to <b>{notice.name}</b>, so nothing changed here.
+            To play as {notice.name}, sign out first and sign in with {label(notice.provider)}.
+          </p>
+        )}
         <p className="who">
           {account.avatar_url && <img src={account.avatar_url} alt="" />}
-          <span>Signed in with {PROVIDER_NAMES[account.provider] ?? account.provider}.</span>
+          <span>
+            Signs in with {account.providers.map(label).join(" and ")}.
+            {unlinked.length > 0 && (
+              <>
+                {" "}
+                Link{" "}
+                {unlinked.map((p, i) => (
+                  <span key={p}>
+                    {i > 0 && " or "}
+                    <a href={`/auth/${p}/login?next=${back}`}>{label(p)}</a>
+                  </span>
+                ))}{" "}
+                to sign in with it too.
+              </>
+            )}
+          </span>
         </p>
         <div className="name-field">
           <label className="small-caps" htmlFor="public-name">

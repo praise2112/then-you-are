@@ -84,3 +84,22 @@ create table if not exists accounts (
     unique (provider, provider_id)
 );
 alter table sessions add column if not exists account_id text references accounts(id);
+
+create table if not exists identities (
+    provider text not null,
+    provider_id text not null,
+    account_id text not null references accounts(id),
+    created_at timestamptz not null default now(),
+    primary key (provider, provider_id)
+);
+do $$
+begin
+    if exists (
+        select 1 from information_schema.columns
+        where table_name = 'accounts' and column_name = 'provider'
+    ) then
+        insert into identities (provider, provider_id, account_id)
+        select provider, provider_id, id from accounts on conflict do nothing;
+        alter table accounts drop column provider, drop column provider_id;
+    end if;
+end $$;

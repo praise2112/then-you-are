@@ -116,17 +116,19 @@ class MatchService:
             async with self.pool.connection() as conn:
                 row = await (
                     await conn.execute(
-                        "select s.stage_name, s.list_duels, a.provider, a.display_name, "
-                        "a.avatar_url from sessions s left join accounts a on a.id = s.account_id "
+                        "select s.stage_name, s.list_duels, a.display_name, a.avatar_url, "
+                        "(select coalesce(array_agg(i.provider order by i.created_at), '{}') "
+                        "from identities i where i.account_id = a.id) as providers "
+                        "from sessions s left join accounts a on a.id = s.account_id "
                         "where s.session_key = %s",
                         (session_key,),
                     )
                 ).fetchone()
             if row:
                 account = None
-                if row["provider"]:
+                if row["display_name"]:
                     account = AccountView(
-                        provider=row["provider"],
+                        providers=row["providers"],
                         display_name=row["display_name"],
                         avatar_url=row["avatar_url"],
                     )

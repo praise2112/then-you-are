@@ -2354,6 +2354,23 @@
   border-radius: 50%;
 }
 
+.settings .notice {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-1) var(--space-2);
+  border-left: 3px solid var(--vermilion);
+  background: var(--paper-sunk);
+  color: var(--ink);
+}
+
+.settings .notice.warn {
+  border-left-color: var(--ink-faint);
+  color: var(--ink-soft);
+}
+
+.settings .who a {
+  color: var(--vermilion-ink);
+}
+
 .settings .confirm {
   margin: var(--space-2) 0 0;
   color: var(--ink-soft);
