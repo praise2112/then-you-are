@@ -2101,22 +2101,30 @@ ul.rules-text li {
 
 .bluff .why summary {
   cursor: pointer;
-  font-variant: all-small-caps;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
   list-style: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 1px solid var(--ink-faint);
+  border-radius: 50%;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.bluff .why summary:hover,
+.bluff .why summary:focus-visible,
+.bluff .why[open] summary {
+  color: var(--vermilion-ink);
+  border-color: var(--vermilion-ink);
 }
 
 .bluff .why summary::-webkit-details-marker {
   display: none;
-}
-
-.bluff .why summary::after {
-  content: " +";
-}
-
-.bluff .why[open] summary::after {
-  content: " \2212";
 }
 
 .bluff .why p {

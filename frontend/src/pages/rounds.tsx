@@ -220,7 +220,9 @@ export function Bluff({ turn, round, who, you = false, won = false, template }: 
           <small>/{totalAvailable}</small>
         </span>
         <details className="why">
-          <summary>Why</summary>
+          <summary title="Why this score" aria-label="Why this score">
+            ?
+          </summary>
           <p>{turn.host?.because_clause.text}</p>
         </details>
       </div>

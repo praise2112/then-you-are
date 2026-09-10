@@ -313,12 +313,10 @@ host:
       why: no reason, no word, no bluff
 
 rules:
-  - Three words, three rounds. Each word is real and obscure.
-  - Write one sentence that could sit under it in a dictionary. Match the part of speech.
-  - The House writes its own bluff at the same time. Neither of you sees the other's until the Judge has scored both.
-  - Then you see the House's bluff beside the real entry and call which is real.
-  - Call it right and the points are yours. Fall for the bluff and they go to the House.
-  - The real meaning is read out. Most points after three rounds wins.
+  - Three rounds, one real and obscure word each.
+  - Write one sentence that could sit under it in a dictionary, in the part of speech given. The House writes its own, unseen, and the Judge scores both.
+  - Then call which of two entries is real, the House's bluff or the dictionary's. Right, and the points are yours. Fooled, and they go to the House.
+  - Most points after three rounds wins.
 validation_messages:
   empty: "Nothing on the page. Define the word."
   too_long: "Over 160 characters. An entry, not an essay."

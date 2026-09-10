@@ -502,7 +502,7 @@ class MatchService:
         bluffs = {t.actor: t.move_text for t in match.round_turns(match.round_n)}
         table = {}
         for pick in match.guess_options(guesser):
-            text = card.hidden if pick == "truth" else bluffs[pick]
+            text = entry_case(card.hidden if pick == "truth" else bluffs[pick])
             key = hashlib.sha256(f"{match.id}:{match.round_n}:{text}".encode()).hexdigest()[:8]
             table[key] = (pick, text)
         return table
@@ -1214,6 +1214,14 @@ class MatchService:
                 state_version=match.state_version,
             ),
         )
+
+
+def entry_case(text: str) -> str:
+    """Dictionary casing for an entry on the table: lowercase start, no closing full stop."""
+    text = text.strip().rstrip(".").strip()
+    if len(text) > 1 and text[1].islower():
+        text = text[0].lower() + text[1:]
+    return text
 
 
 def _player(actor: Actor) -> str:

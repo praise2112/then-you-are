@@ -170,3 +170,14 @@ def test_showcase_tie_is_a_draw():
     assert match.status == "ended"
     assert match.winner is None
     assert match.end_reason == "rounds_complete"
+
+
+def test_entries_on_the_table_share_one_casing():
+    from arena_server.matches import entry_case
+
+    assert (
+        entry_case("The practice of quoting an authority.")
+        == "the practice of quoting an authority"
+    )
+    assert entry_case("dogmatic assertion") == "dogmatic assertion"
+    assert entry_case("OK, a shout") == "OK, a shout"
