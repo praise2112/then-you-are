@@ -33,7 +33,11 @@ class ModelSpec(BaseModel):
 
 
 class CallError(Exception):
-    """The upstream call failed: network, timeout, or a non-2xx status."""
+    """The upstream call failed: network, timeout, or a non-2xx status (kept in `status`)."""
+
+    def __init__(self, message: str, status: int | None = None):
+        super().__init__(message)
+        self.status = status
 
 
 @dataclass
@@ -55,6 +59,7 @@ class JudgeCall:
     tokens_out: int = 0
     cost_usd: float = 0.0
     attempts: list[str] = field(default_factory=list)
+    error_status: int | None = None
 
 
 class ModelCaller:
@@ -91,6 +96,8 @@ class ModelCaller:
             resp = await self.client.post(OPENROUTER_URL, json=self._body(spec, messages, **extra))
             resp.raise_for_status()
             data = resp.json()
+        except httpx.HTTPStatusError as e:
+            raise CallError(str(e), e.response.status_code) from e
         except (httpx.HTTPError, ValueError) as e:
             raise CallError(str(e)) from e
         if "choices" not in data:
@@ -133,6 +140,7 @@ class ModelCaller:
                 )
             except CallError as e:
                 call.attempts.append(f"call_error: {e}")
+                call.error_status = e.status
                 continue
             call.raw = result.text
             call.latency_ms += result.latency_ms

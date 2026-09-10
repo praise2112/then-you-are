@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type RefObject } from "react";
 
-import { navigate, ThemeToggle } from "../App.tsx";
+import { Link, navigate, ThemeToggle } from "../App.tsx";
 import {
   api,
   useMatchEvents,
@@ -83,6 +83,7 @@ export function Duel({ matchId, spectator = false }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const transcriptRef = useRef<HTMLOListElement>(null);
   const modeRef = useRef<MatchSnapshot["mode"]>("escalation");
+  const prefixRef = useRef("");
   const heldRef = useRef<Ruling[]>([]);
 
   const refresh = useCallback(
@@ -110,7 +111,14 @@ export function Duel({ matchId, spectator = false }: Props) {
 
   const templateId = snap?.template_id;
   useEffect(() => {
-    if (templateId) api.template(templateId).then(setTemplate, (e) => setError(e.message));
+    if (!templateId) return;
+    api.template(templateId).then(
+      (t) => {
+        prefixRef.current = t.move_prefix;
+        setTemplate(t);
+      },
+      (e) => setError(e.message),
+    );
   }, [templateId]);
 
   const transcriptLength = snap?.transcript.length ?? 0;
@@ -136,6 +144,7 @@ export function Duel({ matchId, spectator = false }: Props) {
           return;
         case "judge_paused":
           setPaused(event.data);
+          setText((t) => t || event.data.move_text.slice(prefixRef.current.length));
           return;
         case "judge_resumed":
           setPaused(null);
@@ -192,6 +201,13 @@ export function Duel({ matchId, spectator = false }: Props) {
 
   if (error) return <p className="page-status">{error}</p>;
   if (!snap || !template) return <p className="page-status">Finding your seat.</p>;
+  if (snap.status === "abandoned") {
+    return (
+      <p className="page-status">
+        This duel closed after a day without a move. <Link to={`/play/${snap.template_id}`}>Start a fresh one</Link>.
+      </p>
+    );
+  }
 
   if (ended && revealEnd && snap.status === "ended") {
     return <MatchEnd snap={snap} ended={ended} template={template} />;

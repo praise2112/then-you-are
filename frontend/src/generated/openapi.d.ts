@@ -466,6 +466,8 @@ export interface components {
             status: string;
             /** Games */
             games: string[];
+            /** Judge */
+            judge: string;
         };
         /**
          * HostPayload
@@ -490,6 +492,8 @@ export interface components {
             seq: number;
             /** Host Text */
             host_text: string;
+            /** Move Text */
+            move_text: string;
         };
         /** JudgeResumed */
         JudgeResumed: {

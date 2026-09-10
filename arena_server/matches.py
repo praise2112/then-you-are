@@ -2,9 +2,11 @@
 
 import asyncio
 import json
+import logging
 import secrets
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import timedelta
 from typing import Any, Literal
 
 from arena_core.state import (
@@ -47,6 +49,12 @@ from arena_server.views import (
 )
 
 PAUSE_BACKOFF_S = (5, 10, 20, 30)
+# A judge call refused for credentials or credit will not heal on its own; retry slowly.
+BILLING_STATUSES = (401, 402, 403)
+BILLING_RETRY_S = 60
+ABANDON_WINDOW = timedelta(hours=24)
+
+log = logging.getLogger(__name__)
 
 
 class MatchError(Exception):
@@ -54,6 +62,10 @@ class MatchError(Exception):
         super().__init__(detail)
         self.status = status
         self.detail = detail
+
+
+class MatchClosed(Exception):
+    """The match was abandoned while a turn was still waiting on the judge."""
 
 
 @dataclass
@@ -86,6 +98,7 @@ class MatchService:
         self.locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
         self.tasks: set[asyncio.Task] = set()
         self.held: dict[str, asyncio.Task[str]] = {}
+        self.judge_fault: str | None = None
 
     def template_of(self, match: Match) -> Template:
         return self.templates[match.template_id]
@@ -251,7 +264,8 @@ class MatchService:
             await conn.execute(
                 "update matches set status = %s, state_version = %s, to_move = %s, "
                 "winner = %s, end_reason = %s, points_p1 = %s, points_p2 = %s, "
-                "strikes_p1 = %s, strikes_p2 = %s, ended_at = case when %s = 'ended' "
+                "strikes_p1 = %s, strikes_p2 = %s, updated_at = now(), "
+                "ended_at = case when %s = 'ended' "
                 "and ended_at is null then now() else ended_at end where id = %s",
                 (
                     match.status,
@@ -270,7 +284,31 @@ class MatchService:
 
     async def _set_status(self, match_id: str, status: str) -> None:
         async with self.pool.connection() as conn:
-            await conn.execute("update matches set status = %s where id = %s", (status, match_id))
+            await conn.execute(
+                "update matches set status = %s, updated_at = now() where id = %s",
+                (status, match_id),
+            )
+
+    async def close_abandoned(self) -> list[str]:
+        """Closes every match idle for longer than the abandon window. Returns their ids."""
+        async with self.pool.connection() as conn:
+            rows = await (
+                await conn.execute(
+                    "update matches set status = 'abandoned', end_reason = 'abandoned', "
+                    "ended_at = now(), updated_at = now() "
+                    "where status in ('active', 'awaiting_judgment', 'paused') "
+                    "and updated_at < now() - %s returning id",
+                    (ABANDON_WINDOW,),
+                )
+            ).fetchall()
+        return [row["id"] for row in rows]
+
+    async def _status_of(self, match_id: str) -> str:
+        async with self.pool.connection() as conn:
+            row = await (
+                await conn.execute("select status from matches where id = %s", (match_id,))
+            ).fetchone()
+        return row["status"] if row else "abandoned"
 
     async def _insert_turn(
         self,
@@ -602,12 +640,17 @@ class MatchService:
         async with self.locks[match_id]:
             match, extra = await self._load(match_id)
             template = self.template_of(match)
-            if template.mode == "showcase":
-                await self._play_round(match, template, extra["held_move"], move_text, action_id)
-                return
-            ended = await self._play_move(match, template, "p1", move_text, action_id)
-            if not ended and match.to_move == "p2":
-                await self._play_opponent(match, template)
+            try:
+                if template.mode == "showcase":
+                    await self._play_round(
+                        match, template, extra["held_move"], move_text, action_id
+                    )
+                    return
+                ended = await self._play_move(match, template, "p1", move_text, action_id)
+                if not ended and match.to_move == "p2":
+                    await self._play_opponent(match, template)
+            except MatchClosed:
+                log.info("match %s abandoned while waiting on the judge", match_id)
 
     async def _refuse_layer1(
         self, match: Match, template: Template, actor: Actor, move_text: str, action_id: str | None
@@ -841,13 +884,16 @@ class MatchService:
         transcript: list[str],
         hidden: str = "",
     ) -> Judged:
-        """Retries the same judge call while the match sits paused, until a ruling lands."""
+        """Retries the same judge call while the match sits paused, until a ruling lands.
+
+        Raises MatchClosed once the abandon sweep has closed the match."""
         paused = False
         attempt = 0
         while True:
             call = await self.caller.judge(template, transcript, previous, move_text, hidden)
             verdict_id = await self._insert_verdict(call)
             if call.response is not None:
+                self.judge_fault = None
                 if paused:
                     await self._set_status(match.id, "awaiting_judgment")
                     self.bus.emit(match.id, "judge_resumed", JudgeResumed(seq=seq))
@@ -856,9 +902,22 @@ class MatchService:
                 paused = True
                 await self._set_status(match.id, "paused")
                 host_text = template.judge_out_text.strip().format(standing_form=previous)
-                self.bus.emit(match.id, "judge_paused", JudgePaused(seq=seq, host_text=host_text))
-            await asyncio.sleep(PAUSE_BACKOFF_S[min(attempt, len(PAUSE_BACKOFF_S) - 1)])
+                self.bus.emit(
+                    match.id,
+                    "judge_paused",
+                    JudgePaused(seq=seq, host_text=host_text, move_text=move_text),
+                )
+            if call.error_status in BILLING_STATUSES:
+                fault = f"judge provider answered HTTP {call.error_status}"
+                if self.judge_fault != fault:
+                    log.error("%s; retrying every %s s", fault, BILLING_RETRY_S)
+                self.judge_fault = fault
+                await asyncio.sleep(BILLING_RETRY_S)
+            else:
+                await asyncio.sleep(PAUSE_BACKOFF_S[min(attempt, len(PAUSE_BACKOFF_S) - 1)])
             attempt += 1
+            if await self._status_of(match.id) == "abandoned":
+                raise MatchClosed(match.id)
 
     def _emit_rejection(
         self,

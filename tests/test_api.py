@@ -2,6 +2,7 @@ import asyncio
 import dataclasses
 import json
 import os
+import time
 
 import httpx
 import pytest
@@ -402,3 +403,89 @@ async def test_the_featured_template_leads_the_list():
         build_app(
             dataclasses.replace(settings, featured_template="no-such-game"), FakeCaller([], [])
         )
+
+
+@pytest.mark.anyio
+async def test_a_refused_judge_bill_backs_off_and_flags_the_health_check(monkeypatch):
+    import arena_server.matches as matches
+
+    monkeypatch.setattr(matches, "PAUSE_BACKOFF_S", (5,))
+    monkeypatch.setattr(matches, "BILLING_RETRY_S", 0.2)
+    caller = FakeCaller(rulings=[402, judge_response(verdict="fail")], opponent_moves=[])
+    app, manager, client = await run_app(caller)
+    try:
+        assert (await client.get("/healthz")).json()["judge"] == "ok"
+        match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        started = time.monotonic()
+        await client.post(
+            f"/matches/{match['id']}/moves",
+            json={"action_id": "c1", "expected_version": 0, "move_text": "I am a whisper."},
+        )
+        await asyncio.sleep(0.05)
+        assert (await client.get("/healthz")).json()["judge"] == "judge provider answered HTTP 402"
+        await settle(app)
+        assert time.monotonic() - started < 2
+        names = [name for _, name, _ in events_of(app, match["id"])]
+        assert names == ["judge_started", "judge_paused", "judge_resumed", "ruling", "match_ended"]
+        assert (await client.get("/healthz")).json()["judge"] == "ok"
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_an_idle_match_is_abandoned_and_its_pending_judge_call_stops(monkeypatch):
+    import arena_server.matches as matches
+
+    monkeypatch.setattr(matches, "PAUSE_BACKOFF_S", (0.2,))
+    caller = FakeCaller(rulings=[None] * 50, opponent_moves=[])
+    app, manager, client = await run_app(caller)
+    try:
+        fresh = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        stale = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        await client.post(
+            f"/matches/{stale['id']}/moves",
+            json={"action_id": "c1", "expected_version": 0, "move_text": "I am a whisper."},
+        )
+        await asyncio.sleep(0.05)
+        async with app.state.service.pool.connection() as conn:
+            await conn.execute(
+                "update matches set updated_at = now() - interval '25 hours' where id = %s",
+                (stale["id"],),
+            )
+        assert await app.state.service.close_abandoned() == [stale["id"]]
+        await settle(app)
+
+        snap = (await client.get(f"/matches/{stale['id']}")).json()
+        assert (snap["status"], snap["end_reason"]) == ("abandoned", "abandoned")
+        assert (await client.get(f"/matches/{fresh['id']}")).json()["status"] == "active"
+        stuck = await client.post(
+            f"/matches/{stale['id']}/moves",
+            json={"action_id": "c2", "expected_version": 1, "move_text": "I am rain."},
+        )
+        assert stuck.status_code == 409
+        assert len(caller.judged) <= 4
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_blocked_names_are_refused_with_a_plain_reason():
+    app, manager, client = await run_app(FakeCaller([], []))
+    try:
+        for name in ["Sh1thead", "The House", "admin"]:
+            refused = await client.post(
+                "/matches", json={"template_id": "then-i-am", "stage_name": name}
+            )
+            assert refused.status_code == 422, name
+            assert (
+                refused.json()["detail"] == "That name will not do on a public stage. Pick another."
+            )
+        refused = await client.put("/sessions/me", json={"stage_name": "Ass Kicker"})
+        assert refused.status_code == 422
+        fine = await client.put("/sessions/me", json={"stage_name": "Scunthorpe"})
+        assert fine.json()["stage_name"] == "Scunthorpe"
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)

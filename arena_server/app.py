@@ -1,6 +1,8 @@
 """FastAPI application: HTTP, SSE, sessions, and the built frontend."""
 
+import asyncio
 import html
+import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -32,6 +34,7 @@ from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
 from arena_server.leaderboard import leaderboard
 from arena_server.matches import MatchError, MatchService
+from arena_server.names import check_name
 from arena_server.views import (
     BoardView,
     MatchSnapshot,
@@ -40,6 +43,9 @@ from arena_server.views import (
     StageView,
     TemplateView,
 )
+
+SWEEP_EVERY_S = 600
+log = logging.getLogger(__name__)
 
 
 def build_app(settings: Settings | None = None, caller: ModelCaller | None = None) -> FastAPI:
@@ -70,11 +76,24 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         settings.public_base_url,
     )
 
+    async def sweep_abandoned() -> None:
+        while True:
+            await asyncio.sleep(SWEEP_EVERY_S)
+            try:
+                closed = await service.close_abandoned()
+            except Exception:
+                log.exception("abandon sweep failed")
+                continue
+            if closed:
+                log.info("abandoned %d idle matches", len(closed))
+
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         await pool.open()
         await apply_schema(pool)
+        sweeper = asyncio.create_task(sweep_abandoned())
         yield
+        sweeper.cancel()
         await caller.aclose()
         await pool.close()
 
@@ -91,6 +110,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     class Health(BaseModel):
         status: str
         games: list[str]
+        judge: str
 
     class CreateMatch(BaseModel):
         template_id: str
@@ -130,6 +150,10 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         round_revealed: RoundRevealed
         state_resync: StateResync
 
+    def refuse_bad_name(stage_name: str | None) -> None:
+        if stage_name and (refusal := check_name(stage_name)):
+            raise HTTPException(422, refusal)
+
     def session_of(request: Request) -> str:
         key = request.cookies.get(SESSION_COOKIE)
         if not key:
@@ -138,7 +162,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
 
     @app.get("/healthz")
     async def healthz() -> Health:
-        return Health(status="ok", games=list(templates))
+        return Health(status="ok", games=list(templates), judge=service.judge_fault or "ok")
 
     @app.get("/templates")
     async def list_templates() -> list[TemplateView]:
@@ -165,6 +189,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
 
     @app.put("/sessions/me")
     async def put_session(body: SessionUpdate, request: Request, response: Response) -> SessionView:
+        refuse_bad_name(body.stage_name)
         key = await service.ensure_session(
             request.cookies.get(SESSION_COOKIE), body.stage_name, body.list_duels
         )
@@ -181,6 +206,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     ) -> MatchSnapshot:
         if body.template_id not in templates:
             raise HTTPException(404, "no such template")
+        refuse_bad_name(body.stage_name)
         key = await service.ensure_session(request.cookies.get(SESSION_COOKIE), body.stage_name)
         response.set_cookie(
             SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365

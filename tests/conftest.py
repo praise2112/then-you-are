@@ -58,9 +58,10 @@ def judge_response(
 
 
 class FakeCaller(ModelCaller):
-    """Scripted judge and opponent. Each judge call pops the next response, None means outage."""
+    """Scripted judge and opponent. Each judge call pops the next response; None means an
+    outage and an int means the provider refused with that HTTP status."""
 
-    def __init__(self, rulings: list[JudgeResponse | None], opponent_moves: list[str]):
+    def __init__(self, rulings: list[JudgeResponse | None | int], opponent_moves: list[str]):
         self.rulings = list(rulings)
         self.opponent_moves = list(opponent_moves)
         self.judged: list[str] = []
@@ -74,6 +75,8 @@ class FakeCaller(ModelCaller):
         self.judged.append(move)
         self.hidden_seen.append(hidden)
         response = self.rulings.pop(0) if self.rulings else judge_response()
+        if isinstance(response, int):
+            return JudgeCall(response=None, raw="", prompt_hash="test", error_status=response)
         if response and set(response.scoring.scores) != set(template.weights):
             response = response.model_copy(deep=True)
             response.scoring.scores = dict.fromkeys(template.weights, 3)

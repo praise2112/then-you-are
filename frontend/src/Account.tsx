@@ -1,7 +1,7 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 
-import { api, type SessionView } from "./api.ts";
+import { api, ApiError, type SessionView } from "./api.ts";
 import { PROVIDER_MARKS } from "./providerMarks.ts";
 
 const PROVIDER_NAMES: Record<string, string> = { google: "Google", github: "GitHub", discord: "Discord" };
@@ -131,6 +131,8 @@ function SettingsSheet({
   const [listDuels, setListDuels] = useState(session.list_duels);
   const [step, setStep] = useState<"edit" | "confirm" | "saved">("edit");
   const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
@@ -164,7 +166,12 @@ function SettingsSheet({
       onChange(next);
       setStep("saved");
     } catch (e) {
-      setError((e as Error).message);
+      if (e instanceof ApiError && e.status === 422) {
+        setNameError(e.message);
+        nameRef.current?.focus();
+      } else {
+        setError((e as Error).message);
+      }
       setStep("edit");
     }
   }
@@ -195,13 +202,15 @@ function SettingsSheet({
             <ProviderButtons providers={unlinked} verb="Link" />
           </div>
         )}
-        <div className="name-field">
+        <div className={nameError ? "name-field refused" : "name-field"}>
           <label className="small-caps" htmlFor="public-name">
             Public name
           </label>
           <input
+            ref={nameRef}
             id="public-name"
             type="text"
+            aria-invalid={!!nameError}
             maxLength={40}
             autoFocus
             autoComplete="off"
@@ -211,10 +220,11 @@ function SettingsSheet({
             value={name}
             onChange={(e) => {
               setName(e.target.value);
+              setNameError(null);
               setStep("edit");
             }}
           />
-          <small>Shown on the standings, your replays, and to anyone watching you play.</small>
+          <small>{nameError ?? "Shown on the standings, your replays, and to anyone watching you play."}</small>
         </div>
         <label className="choice">
           <input

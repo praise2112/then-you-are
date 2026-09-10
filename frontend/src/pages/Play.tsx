@@ -1,7 +1,7 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { navigate, ThemeToggle } from "../App.tsx";
-import { api, type TemplateView } from "../api.ts";
+import { api, ApiError, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
 import { HOUSE } from "./format.ts";
 
@@ -10,9 +10,11 @@ export function Play({ slug }: { slug: string }) {
   const [template, setTemplate] = useState<TemplateView | null>(null);
   const [stageName, setStageName] = useState(store.stageName());
   const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   const [starting, setStarting] = useState(false);
   const [listDuels, setListDuels] = useState(false);
-  const firstPlay = !store.firstPlayDone(slug);
+  const [firstPlay] = useState(() => !store.firstPlayDone(slug));
 
   async function start(name: string) {
     setStarting(true);
@@ -41,12 +43,24 @@ export function Play({ slug }: { slug: string }) {
     return <p className="page-status">{error ?? "Raising the curtain."}</p>;
   }
 
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault();
     const name = stageName.trim().slice(0, 24);
+    setError(null);
+    try {
+      await api.updateSession({ stage_name: name || undefined, list_duels: listDuels });
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 422) {
+        setNameError(e.message);
+        nameRef.current?.focus();
+      } else {
+        setError(e instanceof Error ? e.message : "The stage door is stuck.");
+      }
+      return;
+    }
     store.setStageName(name);
     store.markFirstPlayDone(slug);
-    void api.updateSession({ stage_name: name || undefined, list_duels: listDuels }).then(() => start(name));
+    void start(name);
   }
 
   return (
@@ -62,13 +76,15 @@ export function Play({ slug }: { slug: string }) {
         <form className="sheet first-play" role="dialog" aria-modal="true" aria-labelledby="fp-title" onSubmit={submit}>
           <h2 id="fp-title">{template.title}</h2>
           {template.mode === "showcase" ? <ShowcaseRules template={template} /> : <EscalationRules template={template} />}
-          <div className="name-field">
+          <div className={nameError ? "name-field refused" : "name-field"}>
             <label className="small-caps" htmlFor="stage-name">
               Your stage name
             </label>
             <input
+              ref={nameRef}
               id="stage-name"
               type="text"
+              aria-invalid={!!nameError}
               maxLength={24}
               placeholder="Challenger"
               autoComplete="off"
@@ -76,9 +92,12 @@ export function Play({ slug }: { slug: string }) {
               data-lpignore="true"
               data-1p-ignore=""
               value={stageName}
-              onChange={(e) => setStageName(e.target.value)}
+              onChange={(e) => {
+                setStageName(e.target.value);
+                setNameError(null);
+              }}
             />
-            <small>Optional. Shown on your replays.</small>
+            <small>{nameError ?? "Optional. Shown on your replays."}</small>
           </div>
           <label className="choice">
             <input type="checkbox" checked={listDuels} onChange={(e) => setListDuels(e.target.checked)} />

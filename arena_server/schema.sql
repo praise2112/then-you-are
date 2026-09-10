@@ -71,6 +71,7 @@ alter table sessions add column if not exists list_duels boolean not null defaul
 alter table matches alter column is_public set default false;
 alter table matches add column if not exists cards text[] not null default '{}';
 alter table matches add column if not exists held_move text;
+alter table matches add column if not exists updated_at timestamptz not null default now();
 update matches set cards = array[seed_token] where cards = '{}';
 alter table turns add column if not exists round_n int not null default 1;
 

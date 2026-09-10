@@ -120,6 +120,7 @@ class MoveToken(BaseModel):
 class JudgePaused(BaseModel):
     seq: int
     host_text: str
+    move_text: str
 
 
 class JudgeResumed(BaseModel):
