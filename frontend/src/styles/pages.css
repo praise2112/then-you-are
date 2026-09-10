@@ -1299,15 +1299,6 @@
   color: var(--ink-soft);
 }
 
-.bill .card.dashed {
-  border: 1px dashed var(--ink-faint);
-  background: transparent;
-}
-
-.bill .card.dashed h3 {
-  color: var(--ink-soft);
-}
-
 :root[data-theme="dark"] .ribbon.quiet {
   color: var(--ink-soft);
   border-color: var(--ink-soft);
@@ -1325,34 +1316,56 @@
 }
 
 .bill {
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
 }
 
 .classics {
   grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
 }
 
-.bill .card {
-  text-align: center;
-  padding: var(--space-2);
-  border-top: 3px double var(--ink);
+.bill-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  color: inherit;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--game-accent, var(--ink-faint));
+  padding: var(--space-1) var(--space-2);
 }
 
-.bill .card.now {
-  border-top: 4px solid var(--vermilion);
+.bill-row .medallion {
+  width: 2.8rem;
+  height: 2.8rem;
+  font-size: 1.2rem;
+  border-color: var(--game-accent, var(--ink));
 }
 
-.bill h3 {
-  font-size: 1.4rem;
+.bill-row h3 {
+  margin: 0;
+  font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: 0;
 }
 
-.bill em {
+.bill-row em {
   display: block;
   color: var(--ink-soft);
-  font-size: 0.9rem;
-  margin-bottom: var(--space-1);
+  font-size: 0.92rem;
+}
+
+a.bill-row:hover h3 {
+  color: var(--vermilion-ink);
+}
+
+.bill-row.stage-own {
+  border-style: dashed;
+  background: none;
+}
+
+.bill-row.stage-own h3 {
+  color: var(--ink-soft);
 }
 
 .classics .card {
@@ -1689,7 +1702,7 @@
 }
 
 .bill {
-  grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
 }
 
 .classics {
@@ -2198,16 +2211,6 @@
   color: var(--ink-faint);
 }
 
-
-.bill a.card {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
-.bill a.card:hover h3 {
-  color: var(--vermilion-ink);
-}
 
 /* Word for Word: the playbill and the programme */
 
@@ -2869,15 +2872,6 @@
 .playbill-tabs .emblem {
   font-size: 0.95em;
   margin-right: 0.15rem;
-}
-
-.bill .card.now {
-  border-top-color: var(--game-accent, var(--vermilion));
-}
-
-.bill .card .medallion.emblem {
-  margin: 0 auto var(--space-1);
-  border-color: var(--game-accent, var(--ink));
 }
 
 .board-index {

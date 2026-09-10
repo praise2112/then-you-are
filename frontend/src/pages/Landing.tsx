@@ -92,21 +92,25 @@ export function Landing() {
           <h2 className="centered-label small-caps">On the bill</h2>
           <div className="bill">
             {templates?.map((t) => (
-              <Link key={t.slug} className="card now" to={`/play/${t.slug}`} style={{ "--game-accent": t.accent } as React.CSSProperties}>
+              <Link key={t.slug} className="bill-row" to={`/play/${t.slug}`} style={{ "--game-accent": t.accent } as React.CSSProperties}>
                 <span className="medallion emblem" aria-hidden="true">
                   {t.emblem}
                 </span>
-                <h3>{t.title}</h3>
-                <em>{t.tagline}</em>
-                <p className="premise">{t.premise}</p>
-                <span className="ribbon">Now playing</span>
+                <span>
+                  <h3>{t.title}</h3>
+                  <em>{t.tagline}</em>
+                </span>
               </Link>
             ))}
-            <article className="card dashed">
-              <h3>Stage your own game</h3>
-              <em>a template, scoring rules, a judge</em>
-              <span className="ribbon quiet">In rehearsal</span>
-            </article>
+            <span className="bill-row stage-own">
+              <span className="medallion emblem empty" aria-hidden="true">
+                ✎
+              </span>
+              <span>
+                <h3>Stage your own game</h3>
+                <em>A template, scoring rules, a judge. In rehearsal.</em>
+              </span>
+            </span>
           </div>
         </section>
 
