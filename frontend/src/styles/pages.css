@@ -78,8 +78,9 @@
 
 .theme-toggle.moon {
   border: 0;
-  font-size: 1.15rem;
-  padding: 0.2rem 0.4rem;
+  font-size: 1.6rem;
+  min-height: 0;
+  padding: 0.1rem 0.3rem;
   line-height: 1;
 }
 
@@ -2300,7 +2301,11 @@
   border-radius: 50%;
 }
 
-.bar-top .account b {
+.bar-top .account .name {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
   font-weight: 600;
   font-variant: all-small-caps;
   letter-spacing: 0.1em;
@@ -2309,20 +2314,57 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
+  text-decoration: underline transparent;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.15s;
 }
 
-.bar-top .account b {
-  cursor: text;
+.bar-top .account .name:hover,
+.bar-top .account .name:focus-visible {
+  text-decoration-color: var(--vermilion);
 }
 
-.bar-top .account input {
-  font: inherit;
-  font-size: 0.9rem;
-  width: 9rem;
-  padding: 0.05rem 0.4rem;
-  background: var(--paper-raised);
+.bar-top .account .gear {
+  background: none;
+  border: 0;
+  padding: 0.1rem 0.3rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--bar-fg);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.bar-top .account .gear:hover {
+  transform: rotate(30deg);
+}
+
+.settings .who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+  color: var(--ink-soft);
+}
+
+.settings .who img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+}
+
+.settings .confirm {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-soft);
+}
+
+.settings .confirm b {
   color: var(--ink);
-  border: 1px solid var(--rule);
+}
+
+.settings .saved {
+  color: var(--vermilion-ink);
 }
 
 .bar-top .account button {
