@@ -104,6 +104,10 @@ criterion:
     - >
       Becoming the opening form itself, or a recoloured copy of it ("a grey pebble" against
       "a pebble"), is a duplicate: not_semantic_duplicate is false.
+    - >
+      Strength is measured against the standing form, never in the abstract. A form with
+      no way to act on what stands (a blade against a rumour) is a failed counter however
+      impressive it is on its own: satisfies_criterion is false.
 
 examples:
   - previous_move: "I am a wildfire, hungry, spreading."

@@ -212,6 +212,10 @@ criterion:
       A hedge ("I think", "maybe", "probably") or a question mark is not the voice of an
       entry. If a meaning is still offered the move plays, but believable and
       dictionary_shaped score low. A question with no meaning in it fails.
+    - >
+      A bare word or short phrase that names a meaning in the right part of speech is a
+      definition and plays ("sediment" for a noun). It scores low on dictionary_shaped,
+      not zero on everything.
 
 examples:
   - previous_move: "zarf (noun, from Arabic via Turkish)"

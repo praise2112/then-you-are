@@ -7,6 +7,7 @@ import argparse
 import asyncio
 import json
 import re
+import statistics
 import sys
 from collections import Counter
 from pathlib import Path
@@ -78,6 +79,11 @@ class Result(BaseModel):
     scores: dict[str, int]
     headline: str
     faults: list[str]
+    latency_ms: int
+    tokens_in: int
+    tokens_out: int
+    cost_usd: float
+    attempts: list[str]
 
     @property
     def drifted(self) -> bool:
@@ -98,6 +104,13 @@ async def judge_one(
         call = await caller.judge(
             template, transcript, record.previous_move, record.move, record.hidden
         )
+    meta = dict(
+        latency_ms=call.latency_ms,
+        tokens_in=call.tokens_in,
+        tokens_out=call.tokens_out,
+        cost_usd=call.cost_usd,
+        attempts=call.attempts,
+    )
     if call.response is None:
         return Result(
             id=record.id,
@@ -107,6 +120,7 @@ async def judge_one(
             scores={},
             headline="",
             faults=["no ruling: " + ", ".join(call.attempts)],
+            **meta,
         )
     scoring, host = call.response.scoring, call.response.host
     return Result(
@@ -117,6 +131,7 @@ async def judge_one(
         scores=scoring.scores,
         headline=host.headline,
         faults=headline_faults(host.headline, template.host.persona_name),
+        **meta,
     )
 
 
@@ -155,6 +170,17 @@ def report(results: list[Result]) -> bool:
     print(f"\n{len(results)} rulings, {len(drift)} drifted, {len(faulty)} headline faults")
     for (expected, got), n in sorted(by_outcome.items()):
         print(f"  expected {expected}, got {got}: {n}")
+    latencies = sorted(r.latency_ms for r in results)
+    p95 = latencies[int(0.95 * (len(latencies) - 1))]
+    first_try = sum(r.attempts[:1] == ["parsed"] for r in results)
+    salvaged = sum("salvaged" in r.attempts for r in results)
+    print(
+        f"latency median {statistics.median(latencies):.0f} ms, p95 {p95} ms; "
+        f"tokens out mean {statistics.mean(r.tokens_out for r in results):.0f}; "
+        f"cost total ${sum(r.cost_usd for r in results):.4f}; "
+        f"parsed first try {first_try}/{len(results)}, salvaged {salvaged}"
+    )
+    print("confidence:", dict(Counter(r.confidence or "none" for r in results)))
     return not drift and not faulty
 
 
