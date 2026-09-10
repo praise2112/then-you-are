@@ -12,7 +12,11 @@ export function ResultCard({ snap, ended }: Props) {
   const won = ended.winner === "p1";
   const draw = ended.winner === null;
   const onPoints = ended.end_reason === "move_cap_points" || ended.end_reason === "rounds_complete";
-  const local = useMemo(() => store.recordResult(snap.id, draw ? null : won), [snap.id, won, draw]);
+  // Only the player's own duel moves their streak; a visitor's copy of the page counts nothing.
+  const local = useMemo(
+    () => (snap.is_yours ? store.recordResult(snap.id, draw ? null : won) : { streak: store.streak(), best: store.bestStreak() }),
+    [snap.id, snap.is_yours, won, draw],
+  );
   // A signed-in player's streak comes from the server, so it follows the account across devices.
   const [account, setAccount] = useState<{ streak: number; best: number } | null>(null);
   useEffect(() => {

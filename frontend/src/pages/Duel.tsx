@@ -22,13 +22,15 @@ import { ResultCard } from "./ResultCard.tsx";
 import { Bluff, CallCard, CallLine, RoundLedger, TruthLine, WordCard } from "./rounds.tsx";
 
 function endedFromReplay(r: Replay): MatchEnded {
+  // Walking back into a finished duel: the coaching line is on the move that fell.
+  const last = r.transcript[r.transcript.length - 1];
   return {
     end_reason: r.end_reason!,
     winner: r.winner,
     points_p1: r.points_p1,
     points_p2: r.points_p2,
     highlight_seq: r.highlight_seq,
-    coaching_line: null,
+    coaching_line: last?.outcome === "fail" ? (last.host?.coaching_line ?? null) : null,
     share_text: r.share_text,
     replay_id: r.id,
     state_version: r.state_version,
