@@ -26,7 +26,7 @@ from arena_judge.schema import (
     StateResync,
     TurnRejected,
 )
-from arena_server.auth import SESSION_COOKIE, mount_auth
+from arena_server.auth import SESSION_COOKIE, mount_auth, rename_account
 from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
@@ -168,6 +168,8 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         key = await service.ensure_session(
             request.cookies.get(SESSION_COOKIE), body.stage_name, body.list_duels
         )
+        if body.stage_name and body.stage_name.strip():
+            await rename_account(pool, key, body.stage_name.strip()[:40])
         response.set_cookie(
             SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365
         )

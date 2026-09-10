@@ -19,6 +19,7 @@ pytestmark = pytest.mark.skipif(
 # The test database keeps rows between runs, so each run signs in as a new person.
 RUN = secrets.token_hex(4)
 PROFILE = auth.Profile("github", RUN, f"Ada {RUN}", "https://avatars.example/ada.png")
+PLAYER = auth.Profile("github", f"{RUN}-b", f"Bea {RUN}", "")
 
 
 async def run_app(caller: FakeCaller):
@@ -47,6 +48,12 @@ async def resign(client: httpx.AsyncClient, app) -> None:
         f"/matches/{match['id']}/resign", json={"action_id": "r", "expected_version": 0}
     )
     await settle(app)
+
+
+def test_public_names_are_first_names_only():
+    assert auth.first_name("Ada King Lovelace", "ada") == "Ada"
+    assert auth.first_name("   ", "ada") == "ada"
+    assert auth.first_name(None, "ada") == "ada"
 
 
 @pytest.mark.anyio
@@ -82,7 +89,12 @@ async def test_signing_in_claims_the_guest_session_and_signing_out_leaves_it(mon
             "display_name": PROFILE.display_name,
             "avatar_url": "https://avatars.example/ada.png",
         }
-        assert me["stage_name"] == "Echo"
+        assert me["stage_name"] == PROFILE.display_name
+
+        chosen = f"Countess {RUN}"
+        renamed = (await client.put("/sessions/me", json={"stage_name": chosen})).json()
+        assert renamed["stage_name"] == chosen
+        assert renamed["account"]["display_name"] == chosen
 
         out = await client.post("/auth/logout")
         assert out.status_code == 204
@@ -90,8 +102,8 @@ async def test_signing_in_claims_the_guest_session_and_signing_out_leaves_it(mon
 
         await sign_in(client)
         me = (await client.get("/sessions/me")).json()
-        assert me["account"]["display_name"] == PROFILE.display_name
-        assert me["stage_name"] == PROFILE.display_name
+        assert me["account"]["display_name"] == chosen
+        assert me["stage_name"] == chosen
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
@@ -100,7 +112,7 @@ async def test_signing_in_claims_the_guest_session_and_signing_out_leaves_it(mon
 @pytest.mark.anyio
 async def test_leaderboard_counts_an_account_across_its_sessions(monkeypatch):
     async def fake_profile(_client, _provider, _request):
-        return PROFILE
+        return PLAYER
 
     monkeypatch.setattr(auth, "fetch_profile", fake_profile)
     caller = FakeCaller(
@@ -123,11 +135,11 @@ async def test_leaderboard_counts_an_account_across_its_sessions(monkeypatch):
 
         boards = (await client.get("/leaderboard")).json()
         assert [b["slug"] for b in boards] == ["then-i-am", "word-for-word"]
-        mine = [s for s in boards[0]["standings"] if s["display_name"] == PROFILE.display_name]
+        mine = [s for s in boards[0]["standings"] if s["display_name"] == PLAYER.display_name]
         assert len(mine) == 1
         assert mine[0]["wins"] == 1
         assert mine[0]["played"] == 3
-        assert all(s["display_name"] != PROFILE.display_name for s in boards[1]["standings"])
+        assert all(s["display_name"] != PLAYER.display_name for s in boards[1]["standings"])
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

@@ -8,6 +8,7 @@ const PROVIDER_NAMES: Record<string, string> = { google: "Google", github: "GitH
 export function AccountMenu() {
   const [session, setSession] = useState<SessionView | null>(null);
   const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState<string | null>(null);
   const menuRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     api.session().then(setSession, () => setSession(null));
@@ -25,10 +26,34 @@ export function AccountMenu() {
   const back = encodeURIComponent(location.pathname);
 
   if (session.account) {
+    const save = async () => {
+      const name = draft?.trim();
+      setDraft(null);
+      if (name && name !== session.account?.display_name) {
+        setSession(await api.updateSession({ stage_name: name }));
+      }
+    };
     return (
       <span className="account">
         {session.account.avatar_url && <img src={session.account.avatar_url} alt="" />}
-        <b>{session.account.display_name}</b>
+        {draft === null ? (
+          <b title="Change your public name" onClick={() => setDraft(session.account?.display_name ?? "")}>
+            {session.account.display_name}
+          </b>
+        ) : (
+          <input
+            autoFocus
+            aria-label="Your public name"
+            maxLength={40}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={save}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") void save();
+              if (e.key === "Escape") setDraft(null);
+            }}
+          />
+        )}
         <button
           type="button"
           onClick={async () => {

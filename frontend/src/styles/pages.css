@@ -2311,6 +2311,20 @@
   white-space: nowrap;
 }
 
+.bar-top .account b {
+  cursor: text;
+}
+
+.bar-top .account input {
+  font: inherit;
+  font-size: 0.9rem;
+  width: 9rem;
+  padding: 0.05rem 0.4rem;
+  background: var(--paper-raised);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+}
+
 .bar-top .account button {
   background: none;
   border: 1px solid #a89f90;

@@ -42,15 +42,21 @@ class Profile:
     avatar_url: str
 
 
+def first_name(full_name: str | None, fallback: str) -> str:
+    """Standings are public, so a legal name is cut to its first word."""
+    words = (full_name or "").split()
+    return words[0] if words else fallback
+
+
 async def fetch_profile(client: StarletteOAuth2App, provider: str, request: Request) -> Profile:
     token = await client.authorize_access_token(request)
     if provider == "google":
         data = (await client.get("userinfo", token=token)).json()
-        return Profile("google", data["sub"], data.get("name") or "Player", data.get("picture", ""))
+        name = data.get("given_name") or first_name(data.get("name"), "Player")
+        return Profile("google", data["sub"], name, data.get("picture", ""))
     if provider == "github":
         data = (await client.get("user", token=token)).json()
-        name = data.get("name") or data["login"]
-        return Profile("github", str(data["id"]), name, data.get("avatar_url", ""))
+        return Profile("github", str(data["id"]), data["login"], data.get("avatar_url", ""))
     data = (await client.get("users/@me", token=token)).json()
     name = data.get("global_name") or data["username"]
     avatar = data.get("avatar")
@@ -66,8 +72,7 @@ async def link_account(pool: Pool, session_key: str | None, profile: Profile) ->
             await conn.execute(
                 "insert into accounts (id, provider, provider_id, display_name, avatar_url) "
                 "values (%s, %s, %s, %s, %s) on conflict (provider, provider_id) do update "
-                "set display_name = excluded.display_name, avatar_url = excluded.avatar_url "
-                "returning id",
+                "set avatar_url = excluded.avatar_url returning id, display_name",
                 (
                     secrets.token_urlsafe(12),
                     profile.provider,
@@ -81,11 +86,28 @@ async def link_account(pool: Pool, session_key: str | None, profile: Profile) ->
         await conn.execute(
             "insert into sessions (session_key, stage_name, account_id) values (%s, %s, %s) "
             "on conflict (session_key) do update set account_id = excluded.account_id, "
-            "stage_name = case when sessions.stage_name = 'Challenger' "
-            "then excluded.stage_name else sessions.stage_name end",
-            (key, profile.display_name[:40], row["id"]),
+            "stage_name = excluded.stage_name",
+            (key, row["display_name"], row["id"]),
         )
     return key
+
+
+async def rename_account(pool: Pool, session_key: str, display_name: str) -> bool:
+    """Renames the account behind the session and every session it owns. False if a guest."""
+    async with pool.connection() as conn:
+        row = await (
+            await conn.execute(
+                "update accounts set display_name = %s where id = "
+                "(select account_id from sessions where session_key = %s) returning id",
+                (display_name, session_key),
+            )
+        ).fetchone()
+        if row is None:
+            return False
+        await conn.execute(
+            "update sessions set stage_name = %s where account_id = %s", (display_name, row["id"])
+        )
+    return True
 
 
 def mount_auth(app: FastAPI, settings: Settings, pool: Pool) -> None:
