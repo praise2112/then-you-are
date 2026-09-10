@@ -2090,13 +2090,16 @@ ul.rules-text li {
 
 .bluff .foot {
   margin: 0;
+  align-items: center;
 }
 
+/* The reason opens as a note over the card, so nothing below it moves. */
 .bluff .why {
+  position: relative;
+  display: inline-grid;
   font-size: 0.88rem;
   line-height: 1.4;
   color: var(--ink-soft);
-  align-self: baseline;
 }
 
 .bluff .why summary {
@@ -2128,8 +2131,20 @@ ul.rules-text li {
 }
 
 .bluff .why p {
-  margin: 0.2rem 0 0;
+  position: absolute;
+  z-index: 3;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: 17rem;
+  max-width: 70vw;
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--vermilion-ink);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.25);
   font-style: italic;
+  color: var(--ink);
 }
 
 .bluff .stamp.point {
