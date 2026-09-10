@@ -158,8 +158,13 @@ function Stage({ template }: { template: TemplateView }) {
   const [ghost, setGhost] = useState(0);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [step, setStep] = useState(STILL ? LAST_STEP : 0);
-  const [typed, setTyped] = useState(STILL ? demo.moves[0].text.slice(prefix.length) : "");
+  // The demo round plays itself the first time a visitor meets a game, then it is a still.
+  // A switch between games must not start a second moving thing beside the live input.
+  const [plays] = useState(() => !STILL && !store.demoSeen(template.slug));
+  const full = demo.moves[0].text.slice(prefix.length);
+  const [step, setStep] = useState(plays ? 0 : LAST_STEP);
+  const [typed, setTyped] = useState(plays ? "" : full);
+  const [replays, setReplays] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -169,7 +174,8 @@ function Stage({ template }: { template: TemplateView }) {
   }, [tail, focused]);
 
   useEffect(() => {
-    if (STILL) return;
+    if (!plays && replays === 0) return;
+    store.markDemoSeen(template.slug);
     let live = true;
     const go = async () => {
       await wait(600);
@@ -178,9 +184,8 @@ function Stage({ template }: { template: TemplateView }) {
       await wait(900);
       setStep(2);
       await wait(300);
-      const text = demo.moves[0].text.slice(prefix.length);
-      for (let i = 1; i <= text.length && live; i++) {
-        setTyped(text.slice(0, i));
+      for (let i = 1; i <= full.length && live; i++) {
+        setTyped(full.slice(0, i));
         await wait(38);
       }
       await wait(500);
@@ -201,7 +206,7 @@ function Stage({ template }: { template: TemplateView }) {
     return () => {
       live = false;
     };
-  }, [demo, prefix, template.mode]);
+  }, [full, plays, replays, template.mode, template.slug]);
 
   async function play(event: FormEvent) {
     event.preventDefault();
@@ -281,7 +286,22 @@ function Stage({ template }: { template: TemplateView }) {
         {error && <p className="hint error">{error}</p>}
       </div>
 
-      <p className="small-caps round-head">{played ? "That was one round. Now yours." : "How a round goes"}</p>
+      <p className="small-caps round-head">
+        {played ? "That was one round. Now yours." : "How a round goes"}
+        {played && !STILL && (
+          <button
+            className="watch-again"
+            type="button"
+            onClick={() => {
+              setStep(0);
+              setTyped("");
+              setReplays((n) => n + 1);
+            }}
+          >
+            Watch it again
+          </button>
+        )}
+      </p>
       <div className="demo">
         {step >= 1 && (
           <p className="opening on">

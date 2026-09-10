@@ -6,6 +6,7 @@ const KEYS = {
   bestStreak: "oddstage-best-streak",
   lastCounted: "oddstage-last-counted-match",
   openingMove: "oddstage-opening-move",
+  demoSeen: "oddstage-demo-seen",
   curatorToken: "oddstage-curator-token",
 };
 
@@ -41,6 +42,9 @@ export const store = {
   },
   firstPlayDone: (slug: string) => read(firstPlayKey(slug)) === "1",
   markFirstPlayDone: (slug: string) => write(firstPlayKey(slug), "1"),
+  /** The demo round plays itself once per game, then it is a still you can replay. */
+  demoSeen: (slug: string) => read(`${KEYS.demoSeen}-${slug}`) === "1",
+  markDemoSeen: (slug: string) => write(`${KEYS.demoSeen}-${slug}`, "1"),
   stageName: () => read(KEYS.stageName) ?? "",
   setStageName: (name: string) => write(KEYS.stageName, name),
   /** A first move sent from the landing, shown as pending until its ruling arrives. */
