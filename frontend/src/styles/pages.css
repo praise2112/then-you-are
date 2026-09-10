@@ -2858,3 +2858,84 @@
   background: var(--vermilion);
   border-color: var(--vermilion);
 }
+
+/* Game identity: emblem glyph and accent colour from the template */
+
+.emblem {
+  font-family: var(--emoji);
+  font-style: normal;
+}
+
+.playbill-tabs .emblem {
+  font-size: 0.95em;
+  margin-right: 0.15rem;
+}
+
+.bill .card.now {
+  border-top-color: var(--game-accent, var(--vermilion));
+}
+
+.bill .card .medallion.emblem {
+  margin: 0 auto var(--space-1);
+  border-color: var(--game-accent, var(--ink));
+}
+
+.board-index {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.game-card {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  border-top: 4px solid var(--game-accent, var(--ink));
+}
+
+.game-card .medallion {
+  border-color: var(--game-accent, var(--ink));
+}
+
+.game-card h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.game-card .leader,
+.game-card .meta {
+  margin: 0.2rem 0 0;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.game-card .leader img {
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+}
+
+.game-card .meta {
+  color: var(--ink-faint);
+}
+
+.standings .back {
+  margin: 0 0 var(--space-1);
+  font-size: 0.92rem;
+}
+
+.standings .board h2 {
+  border-top-color: var(--game-accent, var(--ink));
+}
+
+.record td .emblem {
+  font-size: 0.9em;
+  margin-right: 0.2rem;
+}

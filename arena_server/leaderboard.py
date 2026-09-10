@@ -5,7 +5,7 @@ from psycopg.rows import DictRow
 
 from arena_core.template import Template
 from arena_server.db import Pool
-from arena_server.views import BoardView, StandingView
+from arena_server.views import BoardSummary, BoardView, StandingView
 
 MIN_PLAYED = 3
 TOP = 20
@@ -30,6 +30,8 @@ async def board(pool: Pool, template: Template) -> BoardView:
     return BoardView(
         slug=template.slug,
         title=template.title,
+        emblem=template.emblem,
+        accent=template.accent,
         standings=[
             StandingView(
                 rank=rank,
@@ -42,6 +44,35 @@ async def board(pool: Pool, template: Template) -> BoardView:
             for rank, row in enumerate(rows, start=1)
         ],
     )
+
+
+async def boards_index(pool: Pool, templates: dict[str, Template]) -> list[BoardSummary]:
+    async with pool.connection() as conn:
+        rows = await (
+            await conn.execute(
+                "select template_id, count(*) as ranked from (select m.template_id, s.account_id "
+                "from matches m join sessions s on s.session_key = m.p1_session_key "
+                "where m.status = 'ended' and s.account_id is not null "
+                "group by m.template_id, s.account_id having count(*) >= %s) ranked "
+                "group by template_id",
+                (MIN_PLAYED,),
+            )
+        ).fetchall()
+    ranked = {row["template_id"]: row["ranked"] for row in rows}
+    summaries = []
+    for slug, template in templates.items():
+        top = await board(pool, template) if ranked.get(slug) else None
+        summaries.append(
+            BoardSummary(
+                slug=slug,
+                title=template.title,
+                emblem=template.emblem,
+                accent=template.accent,
+                ranked=ranked.get(slug, 0),
+                leader=top.standings[0] if top and top.standings else None,
+            )
+        )
+    return summaries
 
 
 def streaks(winners: list[str | None]) -> tuple[int, int]:

@@ -51,6 +51,8 @@ class TemplateView(BaseModel):
     slug: str
     title: str
     tagline: str
+    emblem: str
+    accent: str
     premise: str
     mode: Literal["escalation", "showcase"]
     rounds: int | None
@@ -149,7 +151,20 @@ class StandingView(BaseModel):
 class BoardView(BaseModel):
     slug: str
     title: str
+    emblem: str
+    accent: str
     standings: list[StandingView]
+
+
+class BoardSummary(BaseModel):
+    """One card on the standings index: the game, who leads it, how many are ranked."""
+
+    slug: str
+    title: str
+    emblem: str
+    accent: str
+    ranked: int
+    leader: StandingView | None
 
 
 class StageView(BaseModel):

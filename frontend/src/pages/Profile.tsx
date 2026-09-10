@@ -46,7 +46,7 @@ export function Profile({ accountId }: { accountId: string }) {
         {profile && (
           <>
             <Cover profile={profile} />
-            <Record profile={profile} />
+            <Record profile={profile} templates={templates} />
             <BadgeList profile={profile} />
             <Duels profile={profile} />
             {profile.best.length > 0 && (
@@ -99,7 +99,7 @@ function Cover({ profile }: { profile: ProfileView }) {
   );
 }
 
-function Record({ profile }: { profile: ProfileView }) {
+function Record({ profile, templates }: { profile: ProfileView; templates: TemplateView[] | null }) {
   if (profile.records.length === 0) return null;
   const total = {
     played: profile.played,
@@ -125,7 +125,12 @@ function Record({ profile }: { profile: ProfileView }) {
         <tbody>
           {profile.records.map((r) => (
             <tr key={r.slug}>
-              <td>{r.title}</td>
+              <td>
+                <span className="emblem" aria-hidden="true">
+                  {emblemOf(templates, r.slug)}
+                </span>{" "}
+                {r.title}
+              </td>
               <td>{r.played}</td>
               <td>
                 <b>{r.won}</b>
@@ -222,4 +227,8 @@ function ordinal(n: number): string {
   const rest = n % 100;
   if (rest >= 11 && rest <= 13) return `${n}th`;
   return `${n}${["th", "st", "nd", "rd"][n % 10] ?? "th"}`;
+}
+
+function emblemOf(templates: TemplateView[] | null, slug: string): string {
+  return templates?.find((t) => t.slug === slug)?.emblem ?? "";
 }

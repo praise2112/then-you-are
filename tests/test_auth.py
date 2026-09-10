@@ -150,13 +150,19 @@ async def test_leaderboard_counts_an_account_across_its_sessions(monkeypatch):
 
         board = (await client.get("/leaderboard/then-i-am")).json()
         assert board["title"] == "Then I Am"
-        mine = [s for s in board["standings"] if s["display_name"] == PLAYER.display_name]
-        assert len(mine) == 1
-        assert mine[0]["wins"] == 1
-        assert mine[0]["played"] == 3
+        assert 1 <= len(board["standings"]) <= 20
+        assert board["standings"][0]["rank"] == 1
+        account_id = me["account"]["id"]
+        record = (await client.get(f"/profiles/{account_id}")).json()["records"]
+        assert [(r["slug"], r["played"], r["won"]) for r in record] == [("then-i-am", 3, 1)]
+        assert record[0]["rank"] >= 1
         other = (await client.get("/leaderboard/word-for-word")).json()
-        assert all(s["display_name"] != PLAYER.display_name for s in other["standings"])
+        assert all(s["account_id"] != account_id for s in other["standings"])
         assert (await client.get("/leaderboard/no-such-game")).status_code == 404
+        index = (await client.get("/leaderboard")).json()
+        assert [b["slug"] for b in index] == ["then-i-am", "word-for-word"]
+        assert index[0]["emblem"] and index[0]["accent"].startswith("#")
+        assert index[0]["ranked"] >= 1 and index[0]["leader"] is not None
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

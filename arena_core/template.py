@@ -125,6 +125,8 @@ class Template(Strict):
     slug: str
     title: str
     tagline: str
+    emblem: str
+    accent: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
     premise: str
     mode: Mode
     seed_pool: list[Seed] = Field(min_length=1)
@@ -228,6 +230,8 @@ class Template(Strict):
             "slug": self.slug,
             "title": self.title,
             "tagline": self.tagline,
+            "emblem": self.emblem,
+            "accent": self.accent,
             "premise": self.premise.strip(),
             "mode": self.mode,
             "rounds": self.rounds,

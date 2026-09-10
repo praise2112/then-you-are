@@ -74,6 +74,9 @@ export function Landing() {
                   aria-pressed={t.slug === template?.slug}
                   onClick={() => setSlug(t.slug)}
                 >
+                  <span className="emblem" aria-hidden="true">
+                    {t.emblem}
+                  </span>{" "}
                   {t.title}
                 </button>
               ))}
@@ -89,7 +92,10 @@ export function Landing() {
           <h2 className="centered-label small-caps">On the bill</h2>
           <div className="bill">
             {templates?.map((t) => (
-              <Link key={t.slug} className="card now" to={`/play/${t.slug}`}>
+              <Link key={t.slug} className="card now" to={`/play/${t.slug}`} style={{ "--game-accent": t.accent } as React.CSSProperties}>
+                <span className="medallion emblem" aria-hidden="true">
+                  {t.emblem}
+                </span>
                 <h3>{t.title}</h3>
                 <em>{t.tagline}</em>
                 <p className="premise">{t.premise}</p>

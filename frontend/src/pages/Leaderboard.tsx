@@ -1,25 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, navigate, ThemeToggle } from "../App.tsx";
-import { api, type BoardView, type TemplateView } from "../api.ts";
+import { Link, ThemeToggle } from "../App.tsx";
+import { api, type BoardSummary, type BoardView } from "../api.ts";
 
-/** Standings for one game at a time: signed-in players with at least three finished duels. */
+/** Standings: an index of games, then one board per game. Signed-in players, three finished duels or more. */
 export function Leaderboard({ slug }: { slug?: string }) {
-  const [templates, setTemplates] = useState<TemplateView[] | null>(null);
-  const [boards, setBoards] = useState<Record<string, BoardView>>({});
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    api.templates().then(setTemplates, () => setError("The backend is not answering."));
-  }, []);
-  const current = templates?.find((t) => t.slug === slug) ?? templates?.[0] ?? null;
-  const currentSlug = current?.slug;
-  useEffect(() => {
-    if (!currentSlug) return;
-    api.board(currentSlug).then((b) => setBoards((all) => ({ ...all, [b.slug]: b })), (e) => setError(e.message));
-  }, [currentSlug]);
-  const board = currentSlug ? boards[currentSlug] : undefined;
-
   return (
     <>
       <header className="bar-top">
@@ -34,68 +20,105 @@ export function Leaderboard({ slug }: { slug?: string }) {
           <ThemeToggle icon />
         </span>
       </header>
-
-      <main className="wrap standings">
-        {templates && templates.length > 1 && (
-          <nav className="playbill-tabs" aria-label="Games">
-            {templates.map((t) => (
-              <button
-                key={t.slug}
-                type="button"
-                className={t.slug === currentSlug ? "on" : undefined}
-                aria-pressed={t.slug === currentSlug}
-                onClick={() => navigate(`/standings/${t.slug}`)}
-              >
-                {t.title}
-              </button>
-            ))}
-          </nav>
-        )}
-        {error && <p className="page-status">{error}</p>}
-        {current && (
-          <section className="board">
-            <h2>{current.title}</h2>
-            {!board && !error && <p className="empty-strip">Counting the house.</p>}
-            {board?.standings.length === 0 && (
-              <p className="empty-strip">
-                Nobody on the board yet. <Link to={`/play/${current.slug}`}>Play three duels signed in</Link> and your
-                name goes up first.
-              </p>
-            )}
-            {board && board.standings.length > 0 && (
-              <table>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Player</th>
-                    <th>Wins</th>
-                    <th>Played</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {board.standings.map((row) => (
-                    <tr key={row.rank}>
-                      <td className="rank">{row.rank}</td>
-                      <td className="player">
-                        <Link to={`/p/${row.account_id}`}>
-                          {row.avatar_url && <img src={row.avatar_url} alt="" />}
-                          {row.display_name}
-                        </Link>
-                      </td>
-                      <td className="num">{row.wins}</td>
-                      <td className="num">{row.played}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            <p className="board-foot">
-              Signed-in players only, ranked by wins once they have finished three duels. Play three signed in and your
-              name goes up.
-            </p>
-          </section>
-        )}
-      </main>
+      <main className="wrap standings">{slug ? <Board slug={slug} /> : <BoardIndex />}</main>
     </>
+  );
+}
+
+function BoardIndex() {
+  const [boards, setBoards] = useState<BoardSummary[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    api.boards().then(setBoards, (e) => setError(e.message));
+  }, []);
+  return (
+    <>
+      <p className="centered-label small-caps">Pick a game</p>
+      {error && <p className="page-status">{error}</p>}
+      {boards === null && !error && <p className="empty-strip">Counting the house.</p>}
+      <div className="board-index">
+        {boards?.map((b) => (
+          <Link key={b.slug} className="card game-card" to={`/standings/${b.slug}`} style={{ "--game-accent": b.accent } as React.CSSProperties}>
+            <span className="medallion" aria-hidden="true">
+              {b.emblem}
+            </span>
+            <span>
+              <h3>{b.title}</h3>
+              {b.leader ? (
+                <p className="leader">
+                  {b.leader.avatar_url && <img src={b.leader.avatar_url} alt="" />}
+                  <b>{b.leader.display_name}</b> leads, {b.leader.wins} {b.leader.wins === 1 ? "win" : "wins"}
+                </p>
+              ) : (
+                <p className="leader">Nobody on the board yet.</p>
+              )}
+              <p className="meta">
+                {b.ranked} {b.ranked === 1 ? "player" : "players"} ranked
+              </p>
+            </span>
+          </Link>
+        ))}
+      </div>
+      <p className="board-foot">Signed-in players only, ranked by wins once they have finished three duels in a game.</p>
+    </>
+  );
+}
+
+function Board({ slug }: { slug: string }) {
+  const [board, setBoard] = useState<BoardView | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    api.board(slug).then(setBoard, (e) => setError(e.message));
+  }, [slug]);
+  if (error) return <p className="page-status">{error}</p>;
+  if (!board) return <p className="empty-strip">Counting the house.</p>;
+  return (
+    <section className="board" style={{ "--game-accent": board.accent } as React.CSSProperties}>
+      <p className="back">
+        <Link to="/standings">All games</Link>
+      </p>
+      <h2>
+        <span className="emblem" aria-hidden="true">
+          {board.emblem}
+        </span>{" "}
+        {board.title}
+      </h2>
+      {board.standings.length === 0 ? (
+        <p className="empty-strip">
+          Nobody on the board yet. <Link to={`/play/${board.slug}`}>Play three duels signed in</Link> and your name goes up
+          first.
+        </p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Player</th>
+              <th>Wins</th>
+              <th>Played</th>
+            </tr>
+          </thead>
+          <tbody>
+            {board.standings.map((row) => (
+              <tr key={row.rank}>
+                <td className="rank">{row.rank}</td>
+                <td className="player">
+                  <Link to={`/p/${row.account_id}`}>
+                    {row.avatar_url && <img src={row.avatar_url} alt="" />}
+                    {row.display_name}
+                  </Link>
+                </td>
+                <td className="num">{row.wins}</td>
+                <td className="num">{row.played}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <p className="board-foot">
+        Signed-in players only, ranked by wins once they have finished three duels. Play three signed in and your name
+        goes up.
+      </p>
+    </section>
   );
 }

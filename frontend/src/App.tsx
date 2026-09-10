@@ -24,7 +24,7 @@ function usePath() {
   return path;
 }
 
-export function Link({ to, children, ...rest }: { to: string; children: ReactNode; className?: string }) {
+export function Link({ to, children, ...rest }: { to: string; children: ReactNode; className?: string; style?: React.CSSProperties }) {
   return (
     <a
       href={to}

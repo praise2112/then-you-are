@@ -10,6 +10,7 @@ export type StageView = S["StageView"];
 export type SessionView = S["SessionView"];
 export type AccountView = S["AccountView"];
 export type BoardView = S["BoardView"];
+export type BoardSummary = S["BoardSummary"];
 export type ProfileView = S["ProfileView"];
 export type DuelRow = S["DuelRow"];
 export type OpenDuel = S["OpenDuel"];
@@ -106,6 +107,7 @@ export const api = {
   setVisibility: (id: string, isPublic: boolean) =>
     request<void>(`/matches/${id}/visibility`, { method: "POST", body: JSON.stringify({ public: isPublic }) }),
   logout: () => request<void>("/auth/logout", { method: "POST" }),
+  boards: () => request<BoardSummary[]>("/leaderboard"),
   board: (slug: string) => request<BoardView>(`/leaderboard/${slug}`),
   profile: (id: string) => request<ProfileView>(`/profiles/${id}`),
   stage: () => request<StageView>("/on-stage"),

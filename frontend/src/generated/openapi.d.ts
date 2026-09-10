@@ -93,6 +93,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Boards */
+        get: operations["get_boards_leaderboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/leaderboard/{slug}": {
         parameters: {
             query?: never;
@@ -389,12 +406,33 @@ export interface components {
             /** Text */
             text: string;
         };
+        /**
+         * BoardSummary
+         * @description One card on the standings index: the game, who leads it, how many are ranked.
+         */
+        BoardSummary: {
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Emblem */
+            emblem: string;
+            /** Accent */
+            accent: string;
+            /** Ranked */
+            ranked: number;
+            leader: components["schemas"]["StandingView"] | null;
+        };
         /** BoardView */
         BoardView: {
             /** Slug */
             slug: string;
             /** Title */
             title: string;
+            /** Emblem */
+            emblem: string;
+            /** Accent */
+            accent: string;
             /** Standings */
             standings: components["schemas"]["StandingView"][];
         };
@@ -981,6 +1019,10 @@ export interface components {
             title: string;
             /** Tagline */
             tagline: string;
+            /** Emblem */
+            emblem: string;
+            /** Accent */
+            accent: string;
             /** Premise */
             premise: string;
             /**
@@ -1214,6 +1256,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_boards_leaderboard_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardSummary"][];
                 };
             };
         };
