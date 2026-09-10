@@ -128,27 +128,40 @@ function SettingsSheet({
   const label = (p: string) => PROVIDER_NAMES[p] ?? p;
   const unlinked = session.providers.filter((p) => !account.providers.includes(p));
   const [name, setName] = useState(account.display_name);
+  const [listDuels, setListDuels] = useState(session.list_duels);
   const [step, setStep] = useState<"edit" | "confirm" | "saved">("edit");
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key !== "Escape") return;
+      if (step === "confirm") setStep("edit");
+      else onClose();
     };
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [onClose, step]);
 
   const trimmed = name.trim();
-  const changed = trimmed !== "" && trimmed !== account.display_name;
+  const changes: string[] = [];
+  if (trimmed && trimmed !== account.display_name) {
+    changes.push(`Public name: ${account.display_name}, now ${trimmed}.`);
+  }
+  if (listDuels !== session.list_duels) {
+    changes.push(`Duels listed on the stage: ${listDuels ? "yes" : "no"}.`);
+  }
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    if (changed) setStep("confirm");
+    if (changes.length > 0) setStep("confirm");
   }
 
   async function save() {
     try {
-      onChange(await api.updateSession({ stage_name: trimmed }));
+      const next = await api.updateSession({
+        stage_name: trimmed !== account.display_name ? trimmed : undefined,
+        list_duels: listDuels !== session.list_duels ? listDuels : undefined,
+      });
+      onChange(next);
       setStep("saved");
     } catch (e) {
       setError((e as Error).message);
@@ -171,6 +184,7 @@ function SettingsSheet({
             it, sign out and sign in with {label(notice.provider)}.
           </p>
         )}
+        {step === "saved" && <p className="notice">Settings saved.</p>}
         <p className="who">
           {account.avatar_url && <img src={account.avatar_url} alt="" />}
           <span>Signed in with {account.providers.map(label).join(" and ")}.</span>
@@ -195,7 +209,6 @@ function SettingsSheet({
             data-lpignore="true"
             data-1p-ignore=""
             value={name}
-            disabled={step !== "edit"}
             onChange={(e) => {
               setName(e.target.value);
               setStep("edit");
@@ -203,35 +216,50 @@ function SettingsSheet({
           />
           <small>Shown on the standings, your replays, and to anyone watching you play.</small>
         </div>
+        <label className="choice">
+          <input
+            type="checkbox"
+            checked={listDuels}
+            onChange={(e) => {
+              setListDuels(e.target.checked);
+              setStep("edit");
+            }}
+          />
+          <span>
+            List my duels on the stage, so others can watch live and find the replays.
+            <small>Your duels stay private and shareable by link either way.</small>
+          </span>
+        </label>
         {error && <p className="error-line">{error}</p>}
-        {step === "confirm" && (
-          <p className="confirm">
-            Show up as <b>{trimmed}</b> from now on? Past replays change too.
-          </p>
-        )}
-        {step === "saved" && <p className="confirm saved">Saved. You are {account.display_name} on the standings.</p>}
         <div className="sheet-actions">
-          {step === "confirm" ? (
-            <>
-              <button className="quiet-button" type="button" onClick={() => setStep("edit")}>
-                Keep {account.display_name}
-              </button>
-              <button className="ticket" type="button" onClick={save} autoFocus>
-                Yes, change it
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="quiet-button" type="button" onClick={onClose}>
-                {step === "saved" ? "Done" : "Close"}
-              </button>
-              <button className="ticket" type="submit" disabled={!changed}>
-                Save
-              </button>
-            </>
-          )}
+          <button className="quiet-button" type="button" onClick={onClose}>
+            {step === "saved" ? "Done" : "Close"}
+          </button>
+          <button className="ticket" type="submit" disabled={changes.length === 0}>
+            Save
+          </button>
         </div>
       </form>
+      {step === "confirm" && (
+        <div className="scrim" onClick={(e) => e.target === e.currentTarget && setStep("edit")}>
+          <div className="sheet settings confirm-sheet" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+            <h2 id="confirm-title">Save these changes?</h2>
+            <ul className="changes">
+              {changes.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
+            <div className="sheet-actions">
+              <button className="quiet-button" type="button" onClick={() => setStep("edit")}>
+                Cancel
+              </button>
+              <button className="ticket" type="button" onClick={save} autoFocus>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
