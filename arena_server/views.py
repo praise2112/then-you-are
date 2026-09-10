@@ -70,7 +70,7 @@ class TemplateView(BaseModel):
     mode: Literal["escalation", "showcase"]
     rounds: int | None
     rubric: list[RubricView]
-    rules_text: str
+    rules: list[str]
     max_chars: int
     move_prefix: str
     move_example: str

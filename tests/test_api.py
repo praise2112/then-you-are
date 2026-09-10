@@ -282,14 +282,16 @@ async def test_replay_lists_sort_and_curation_needs_the_token():
 
 @pytest.mark.anyio
 async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
+    # The House is written and judged as each round opens, before the player's move, so the
+    # scripted rulings run House, player, House, player, House, player.
     caller = FakeCaller(
         rulings=[
+            judge_response(),
             judge_response(truth_proximity="hit"),
             judge_response(),
             judge_response(verdict="fail"),
-            judge_response(),
-            judge_response(confidence="coin_flip"),
             judge_response(truth_proximity="near"),
+            judge_response(confidence="coin_flip"),
         ],
         opponent_moves=["a cup holder", "a low groan", "a hinge pin"],
     )
@@ -386,6 +388,7 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
         assert rulings[5]["badges"] == ["near_miss"]
         assert all(h for h in caller.hidden_seen)
         assert caller.opponent_saw[0] == []
+        assert caller.opponent_hidden[0].startswith("a holder")
         assert caller.opponent_saw[1][0].startswith("round 1, prompt: zarf")
         assert "player1: a desert cloak" in caller.opponent_saw[1]
 
@@ -401,7 +404,7 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
 @pytest.mark.anyio
 async def test_the_house_writes_again_when_its_bluff_is_the_truth():
     caller = FakeCaller(
-        rulings=[judge_response(), judge_response(truth_proximity="hit"), judge_response()],
+        rulings=[judge_response(truth_proximity="hit"), judge_response(), judge_response()],
         opponent_moves=["a cup holder", "a desert wind"],
     )
     app, manager, client = await run_app(caller)
@@ -420,7 +423,7 @@ async def test_the_house_writes_again_when_its_bluff_is_the_truth():
         snap = (await client.get(f"/matches/{match['id']}")).json()
         table = snap["rounds"][0]["options"]
         assert "a desert wind" in {o["text"] for o in table} and len(table) == 2
-        assert "real meaning" in caller.opponent_saw[1][-1]
+        assert len(caller.opponent_saw) == 2 and all(caller.opponent_hidden)
         await client.post(
             f"/matches/{match['id']}/guesses",
             json={"action_id": "g1", "expected_version": 2, "key": table[0]["key"]},

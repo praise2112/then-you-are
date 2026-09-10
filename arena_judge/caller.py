@@ -169,9 +169,10 @@ class ModelCaller:
         return call
 
     def opponent_stream(
-        self, template: Template, card: str, transcript: list[str]
+        self, template: Template, card: str, transcript: list[str], hidden: str = ""
     ) -> AsyncIterator[str]:
-        return self.stream(self.opponent_spec, render_opponent_messages(template, card, transcript))
+        messages = render_opponent_messages(template, card, transcript, hidden)
+        return self.stream(self.opponent_spec, messages)
 
 
 def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:

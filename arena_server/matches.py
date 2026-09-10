@@ -110,7 +110,8 @@ class MatchService:
         self.public_base_url = public_base_url
         self.locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
         self.tasks: set[asyncio.Task] = set()
-        self.held: dict[str, asyncio.Task[str]] = {}
+        # The House's bluff for the round in play, written and judged while the player types.
+        self.held: dict[str, asyncio.Future[tuple[Judged, str]]] = {}
         self.judge_fault: str | None = None
 
     def template_of(self, match: Match) -> Template:
@@ -937,16 +938,22 @@ class MatchService:
         seq = len(match.turns) + 1
         self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
         transcript = self._transcript(match, template)
-        house_text = await self._house_move(match, template, held)
+        house_future = self.held.pop(match.id, None)
+        if house_future is None:
+            house_future = asyncio.ensure_future(
+                self._write_and_judge_house(match, template, held, seq + 1, card, transcript)
+            )
         human, house = await asyncio.gather(
             self._judge_until_ruled(
                 match, template, seq, move_text, card.card_text, transcript, card.hidden
             ),
-            self._judge_house(match, template, seq + 1, house_text, card, transcript),
+            house_future,
         )
         if human.outcome == "semantic_reject":
             await self._refuse_semantic(match, template, "p1", move_text, human, action_id)
-            await self._hold(match.id, house[1])
+            keep: asyncio.Future[tuple[Judged, str]] = asyncio.get_running_loop().create_future()
+            keep.set_result(house)
+            self.held[match.id] = keep
             return
         await self._record_ruling(
             match, template, "p1", move_text, human, seq, action_id, card.hidden
@@ -1020,16 +1027,23 @@ class MatchService:
             return
         self._prepare_house(match.id)
 
-    async def _judge_house(
+    async def _write_and_judge_house(
         self,
         match: Match,
         template: Template,
+        held: str | None,
         seq: int,
-        text: str,
         card: Seed,
         transcript: list[str],
     ) -> tuple["Judged", str]:
-        """Judges the House's answer, regenerating on a refusal until one is rulable."""
+        """The House's answer for the round, judged and rulable. Regenerates when the bluff is
+        refused or lands on the real meaning, and persists the text so a restart can reuse it."""
+        text = held
+        if text is None:
+            text = await self._stream_opponent_move(
+                match, template, card.card_text, card.hidden, silent=True
+            )
+            await self._hold(match.id, text)
         refusals = 0
         retold = False
         while True:
@@ -1043,43 +1057,39 @@ class MatchService:
                     # The House is meant to bluff: one more try when it wrote the truth.
                     retold = True
                     text = await self._stream_opponent_move(
-                        match, template, card.card_text, silent=True, avoid=text
+                        match, template, card.card_text, card.hidden, silent=True
                     )
+                    await self._hold(match.id, text)
                     continue
                 if judged.outcome != "semantic_reject":
                     return judged, text
             refusals += 1
             if refusals < template.strikes_before_consequence:
-                text = await self._stream_opponent_move(match, template, card.card_text)
+                text = await self._stream_opponent_move(
+                    match, template, card.card_text, card.hidden, silent=True
+                )
+                await self._hold(match.id, text)
             else:
                 text = template.default_move
 
     def _prepare_house(self, match_id: str) -> None:
-        """Starts the House writing its answer for the round in play, hidden until the reveal."""
+        """Starts the House writing and being judged for the round in play, so the player's
+        submit waits only on their own ruling. Hidden until the reveal."""
 
-        async def write() -> str:
+        async def prepare() -> tuple[Judged, str]:
             match, _ = await self._load(match_id)
             template = self.template_of(match)
             card = template.seed_named(match.card)
             assert card is not None
-            text = await self._stream_opponent_move(match, template, card.card_text, silent=True)
-            await self._hold(match_id, text)
-            return text
+            seq = len(match.turns) + 2
+            return await self._write_and_judge_house(
+                match, template, None, seq, card, self._transcript(match, template)
+            )
 
-        task = asyncio.create_task(write())
+        task = asyncio.create_task(prepare())
         self.held[match_id] = task
         self.tasks.add(task)
         task.add_done_callback(self.tasks.discard)
-
-    async def _house_move(self, match: Match, template: Template, held: str | None) -> str:
-        task = self.held.pop(match.id, None)
-        if task is not None:
-            return await task
-        if held is not None:
-            return held
-        card = template.seed_named(match.card)
-        assert card is not None
-        return await self._stream_opponent_move(match, template, card.card_text, silent=True)
 
     async def _hold(self, match_id: str, text: str | None) -> None:
         async with self.pool.connection() as conn:
@@ -1171,20 +1181,13 @@ class MatchService:
                 return
 
     async def _stream_opponent_move(
-        self,
-        match: Match,
-        template: Template,
-        card: str,
-        silent: bool = False,
-        avoid: str | None = None,
+        self, match: Match, template: Template, prompt: str, hidden: str = "", silent: bool = False
     ) -> str:
         seq = len(match.turns) + 1
         parts: list[str] = []
         transcript = self._transcript(match, template, finished_only=True)
-        if avoid:
-            transcript.append(f"(your draft was the real meaning, write a false one: {avoid})")
         try:
-            async for chunk in self.caller.opponent_stream(template, card, transcript):
+            async for chunk in self.caller.opponent_stream(template, prompt, transcript, hidden):
                 parts.append(chunk)
                 if not silent:
                     self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))

@@ -1142,8 +1142,8 @@ export interface components {
             rounds: number | null;
             /** Rubric */
             rubric: components["schemas"]["RubricView"][];
-            /** Rules Text */
-            rules_text: string;
+            /** Rules */
+            rules: string[];
             /** Max Chars */
             max_chars: number;
             /** Move Prefix */

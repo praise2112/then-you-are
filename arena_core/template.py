@@ -144,7 +144,7 @@ class Template(Strict):
     criterion: Criterion
     examples: list[Example]
     host: Host
-    rules_text: str
+    rules: list[str] = Field(min_length=1)
     validation_messages: ValidationMessages
     judge_out_text: str
     opponent_prompt: str
@@ -253,7 +253,7 @@ class Template(Strict):
                 {"name": r.name, "description": r.description, "max_points": r.weight * SCORE_MAX}
                 for r in self.rubric
             ],
-            "rules_text": self.rules_text.strip(),
+            "rules": [r.strip() for r in self.rules],
             "max_chars": self.move_constraints.max_chars,
             "move_prefix": self.move_constraints.prefix,
             "move_example": self.move_constraints.example,

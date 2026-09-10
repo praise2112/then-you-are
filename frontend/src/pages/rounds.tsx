@@ -195,10 +195,7 @@ export function Bluff({ turn, round, who, you = false, won = false, template }: 
     <article className={`bluff${won ? " won" : ""}`}>
       <p className="for">
         <span className={`who${you ? " you" : ""}`}>{who} wrote</span>
-        <span>
-          {won && <span className="stamp point">Point</span>}
-          {turn.scoring && `The judge was ${turn.scoring.confidence}`}
-        </span>
+        {won && <span className="stamp point">Point</span>}
       </p>
       <p className="said">
         <b>{round.token}</b> <i>{POS_SHORT[pos] ?? pos}</i> {turn.move_text}
@@ -217,13 +214,16 @@ export function Bluff({ turn, round, who, you = false, won = false, template }: 
           );
         })}
       </p>
-      <p className="foot">
+      <div className="foot">
         <span className="total">
           {turn.points ?? 0}
           <small>/{totalAvailable}</small>
         </span>
-        <span className="why">{turn.host?.because_clause.text}</span>
-      </p>
+        <details className="why">
+          <summary>Why</summary>
+          <p>{turn.host?.because_clause.text}</p>
+        </details>
+      </div>
       <Badges turn={turn} />
     </article>
   );

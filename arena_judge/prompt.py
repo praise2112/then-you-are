@@ -163,8 +163,11 @@ def judge_prompt_hash(template: Template) -> str:
     return hashlib.sha256(fixed.encode()).hexdigest()[:16]
 
 
-def render_opponent_messages(template: Template, card: str, transcript: list[str]) -> list[dict]:
+def render_opponent_messages(
+    template: Template, card: str, transcript: list[str], hidden: str = ""
+) -> list[dict]:
     lines = "\n".join(transcript) if transcript else "(you move first)"
+    truth = f"\nThe real meaning, which yours must not share: {hidden}\n" if hidden else ""
     return [
         {
             "role": "system",
@@ -172,5 +175,8 @@ def render_opponent_messages(template: Template, card: str, transcript: list[str
                 max_chars=template.move_constraints.max_chars
             ),
         },
-        {"role": "user", "content": f"TRANSCRIPT:\nPrompt: {card}\n{lines}\n\nYOUR MOVE:"},
+        {
+            "role": "user",
+            "content": f"TRANSCRIPT:\nPrompt: {card}\n{lines}\n{truth}\nYOUR MOVE:",
+        },
     ]

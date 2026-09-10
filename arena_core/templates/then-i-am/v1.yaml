@@ -201,10 +201,11 @@ host:
     - text: "The goat advances, not by eating the itch, but by refusing to give a scratch."
       why: a pun standing in for a mechanism; the reason is missing
 
-rules_text: >
-  Beat the form in front of you. Do not become it. Say what you are and what you do
-  to it: "I am rust, hinge-eating, patient." The Judge rules on the idea, never the
-  spelling. One form that breaks against the standing one ends the match.
+rules:
+  - Beat the form in front of you. Do not become it.
+  - 'Say what you are and what you do to it: "I am rust, hinge-eating, patient."'
+  - The Judge rules on the idea, never the spelling.
+  - One form that breaks against the standing one ends the match.
 validation_messages:
   empty: "Nothing on the page. Become something."
   too_long: "Over 200 characters. A form, not a saga."

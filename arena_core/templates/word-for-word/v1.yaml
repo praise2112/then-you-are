@@ -312,13 +312,13 @@ host:
     - text: "Nice one."
       why: no reason, no word, no bluff
 
-rules_text: >
-  Three words, three rounds. Each word is real and obscure. Write one sentence that
-  could sit under it in a dictionary. Match the part of speech. The House writes its
-  own bluff at the same time, and neither of you sees the other's until the Judge has
-  scored both. Then you see the House's bluff beside the real entry and call which is
-  real. Call it right and the points are yours. Fall for the bluff and they go to the
-  House. Then the real meaning is read out. Most points after three rounds wins.
+rules:
+  - Three words, three rounds. Each word is real and obscure.
+  - Write one sentence that could sit under it in a dictionary. Match the part of speech.
+  - The House writes its own bluff at the same time. Neither of you sees the other's until the Judge has scored both.
+  - Then you see the House's bluff beside the real entry and call which is real.
+  - Call it right and the points are yours. Fall for the bluff and they go to the House.
+  - The real meaning is read out. Most points after three rounds wins.
 validation_messages:
   empty: "Nothing on the page. Define the word."
   too_long: "Over 160 characters. An entry, not an essay."
@@ -338,9 +338,10 @@ opponent_prompt: |
   the same pattern twice in a match, and not always an object with a material and a
   century. Do not use the word itself or its pieces in the definition. Do not explain
   or hedge.
-  You are bluffing. If you happen to know the word, do not write its real meaning;
-  invent a different one. Match the part of speech exactly: a verb gets "to ...", a
-  noun gets a thing or a person, an adjective describes.
+  You are bluffing. The real meaning is given to you so you can steer clear of it:
+  never write it, a paraphrase of it, or the same kind of thing for the same purpose.
+  Match the part of speech exactly: a verb gets "to ...", a noun gets a thing or a
+  person, an adjective describes.
   Rules: at most {max_chars} characters. Do not reuse a meaning from an earlier round.
   Reply with the definition only, no quotation marks, no commentary.
 

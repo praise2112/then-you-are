@@ -1886,6 +1886,14 @@ a.bill-row:hover h3 {
   color: var(--ink-soft);
 }
 
+ul.rules-text {
+  padding-left: 1.1rem;
+}
+
+ul.rules-text li {
+  margin: 0.25rem 0;
+}
+
 .rules-foot {
   margin: var(--space-2) 0 0;
   font-size: 0.9rem;
@@ -2080,11 +2088,40 @@ a.bill-row:hover h3 {
   color: var(--vermilion-ink);
 }
 
+.bluff .foot {
+  margin: 0;
+}
+
 .bluff .why {
   font-size: 0.88rem;
   line-height: 1.4;
-  font-style: italic;
   color: var(--ink-soft);
+  align-self: baseline;
+}
+
+.bluff .why summary {
+  cursor: pointer;
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  list-style: none;
+}
+
+.bluff .why summary::-webkit-details-marker {
+  display: none;
+}
+
+.bluff .why summary::after {
+  content: " +";
+}
+
+.bluff .why[open] summary::after {
+  content: " \2212";
+}
+
+.bluff .why p {
+  margin: 0.2rem 0 0;
+  font-style: italic;
 }
 
 .bluff .stamp.point {

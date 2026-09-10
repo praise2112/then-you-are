@@ -673,11 +673,11 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
   const me = spectator ? snap.stage_name : "You";
   const groups = groupRounds(snap.rounds, snap.transcript);
   const revealed = groups.filter((g) => g.revealed);
-  const lastResult = revealed[revealed.length - 1];
-  const earlier = revealed.slice(0, -1);
   const current = groups.find((g) => !g.revealed);
-  const roundN = current?.round.round_n ?? lastResult?.round.round_n ?? 1;
+  const roundN = current?.round.round_n ?? revealed[revealed.length - 1]?.round.round_n ?? 1;
   const onCall = snap.phase === "guess" && !!current && current.round.options.length > 0;
+  const lastResult = onCall ? undefined : revealed[revealed.length - 1];
+  const earlier = onCall ? revealed : revealed.slice(0, -1);
   const judging = !onCall && (pending || thinking || snap.status === "awaiting_judgment");
   const canPlay = snap.status === "active" && !onCall && !pending && !paused && !ended && !!current;
   const hostLine = ended
@@ -781,7 +781,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               <p className="small-caps last-move-head" style={{ marginTop: lastResult ? "var(--space-3)" : "var(--space-2)" }}>
                 {lastResult ? "The next word" : "The word"}
               </p>
-              <WordCard round={current.round} compact={!!lastResult || onCall}>
+              <WordCard round={current.round} compact={revealed.length > 0}>
                 {judging && <span className="tag">Being judged</span>}
               </WordCard>
             </>
@@ -875,7 +875,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
           </p>
           <div className="rubric">
             {template.rubric.map((entry) => (
-              <details key={entry.name} open>
+              <details key={entry.name} open={revealed.length === 0}>
                 <summary>
                   {criterionLabel(entry.name)} <small>up to {entry.max_points}</small>
                 </summary>
@@ -883,7 +883,11 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               </details>
             ))}
           </div>
-          <p className="rules-text">{template.rules_text}</p>
+          <ul className="rules-text">
+            {template.rules.map((rule) => (
+              <li key={rule}>{rule}</li>
+            ))}
+          </ul>
           <div className="host" style={{ marginTop: "var(--space-3)" }}>
             <Host state={paused || judging ? "thinking" : "idle"} />
             <p className="host-line">{hostLine}</p>

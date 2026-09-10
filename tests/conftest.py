@@ -67,6 +67,7 @@ class FakeCaller(ModelCaller):
         self.judged: list[str] = []
         self.hidden_seen: list[str] = []
         self.opponent_saw: list[list[str]] = []
+        self.opponent_hidden: list[str] = []
 
     async def aclose(self) -> None:
         return None
@@ -83,8 +84,9 @@ class FakeCaller(ModelCaller):
         raw = response.model_dump_json() if response else ""
         return JudgeCall(response=response, raw=raw, prompt_hash="test", latency_ms=1)
 
-    def opponent_stream(self, template, card, transcript) -> AsyncIterator[str]:
+    def opponent_stream(self, template, card, transcript, hidden="") -> AsyncIterator[str]:
         self.opponent_saw.append(list(transcript))
+        self.opponent_hidden.append(hidden)
         move = (
             self.opponent_moves.pop(0) if self.opponent_moves else "I am a bucket, water-holding."
         )

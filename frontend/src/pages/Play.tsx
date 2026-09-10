@@ -159,7 +159,11 @@ function ShowcaseRules({ template }: { template: TemplateView }) {
   return (
     <>
       <p className="kicker">{template.tagline}</p>
-      <p className="rules-text">{template.rules_text}</p>
+      <ul className="rules-text">
+        {template.rules.map((rule) => (
+          <li key={rule}>{rule}</li>
+        ))}
+      </ul>
       <div className="word-card entry-card">
         <p className="headword">{demo.token}</p>
         <p className="detail">{demo.detail}</p>
