@@ -11,6 +11,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
+from starlette.middleware.sessions import SessionMiddleware
 
 from arena_core.template import load_templates
 from arena_judge.caller import ModelCaller
@@ -25,13 +26,20 @@ from arena_judge.schema import (
     StateResync,
     TurnRejected,
 )
+from arena_server.auth import SESSION_COOKIE, mount_auth
 from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
+from arena_server.leaderboard import leaderboard
 from arena_server.matches import MatchError, MatchService
-from arena_server.views import MatchSnapshot, Replay, SessionView, StageView, TemplateView
-
-SESSION_COOKIE = "oddstage_session"
+from arena_server.views import (
+    BoardView,
+    MatchSnapshot,
+    Replay,
+    SessionView,
+    StageView,
+    TemplateView,
+)
 
 
 def build_app(settings: Settings | None = None, caller: ModelCaller | None = None) -> FastAPI:
@@ -71,8 +79,10 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         await pool.close()
 
     app = FastAPI(title="Oddstage", version="0.1.0", lifespan=lifespan)
+    app.add_middleware(SessionMiddleware, secret_key=settings.session_secret, same_site="lax")
     app.state.service = service
     app.state.bus = bus
+    mount_auth(app, settings, pool)
 
     @app.exception_handler(MatchError)
     async def match_error(_: Request, exc: MatchError) -> JSONResponse:
@@ -140,9 +150,18 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             raise HTTPException(404, "no such template")
         return TemplateView(**templates[slug].player_projection())
 
+    async def session_with_providers(key: str | None) -> SessionView:
+        view = await service.session_view(key)
+        view.providers = list(settings.oauth_clients)
+        return view
+
     @app.get("/sessions/me")
     async def get_session(request: Request) -> SessionView:
-        return await service.session_view(request.cookies.get(SESSION_COOKIE))
+        return await session_with_providers(request.cookies.get(SESSION_COOKIE))
+
+    @app.get("/leaderboard")
+    async def get_leaderboard() -> list[BoardView]:
+        return await leaderboard(pool, templates)
 
     @app.put("/sessions/me")
     async def put_session(body: SessionUpdate, request: Request, response: Response) -> SessionView:
@@ -152,7 +171,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         response.set_cookie(
             SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365
         )
-        return await service.session_view(key)
+        return await session_with_providers(key)
 
     @app.post("/matches", status_code=201)
     async def create_match(

@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout
+         * @description Signing out hands the browser a fresh guest session; the account keeps the old one.
+         */
+        post: operations["logout_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/healthz": {
         parameters: {
             query?: never;
@@ -66,6 +86,23 @@ export interface paths {
         get: operations["get_session_sessions_me_get"];
         /** Put Session */
         put: operations["put_session_sessions_me_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Leaderboard */
+        get: operations["get_leaderboard_leaderboard_get"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -306,12 +343,30 @@ export interface components {
              */
             accepted: boolean;
         };
+        /** AccountView */
+        AccountView: {
+            /** Provider */
+            provider: string;
+            /** Display Name */
+            display_name: string;
+            /** Avatar Url */
+            avatar_url: string;
+        };
         /** BecauseClause */
         BecauseClause: {
             /** Criterion */
             criterion: string;
             /** Text */
             text: string;
+        };
+        /** BoardView */
+        BoardView: {
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Standings */
+            standings: components["schemas"]["StandingView"][];
         };
         /** CreateMatch */
         CreateMatch: {
@@ -744,6 +799,12 @@ export interface components {
             stage_name: string;
             /** List Duels */
             list_duels: boolean;
+            account?: components["schemas"]["AccountView"] | null;
+            /**
+             * Providers
+             * @default []
+             */
+            providers: string[];
         };
         /**
          * SsePayloads
@@ -769,6 +830,19 @@ export interface components {
             live: components["schemas"]["MatchSnapshot"][];
             /** Duels Played */
             duels_played: number;
+        };
+        /** StandingView */
+        StandingView: {
+            /** Rank */
+            rank: number;
+            /** Display Name */
+            display_name: string;
+            /** Avatar Url */
+            avatar_url: string;
+            /** Wins */
+            wins: number;
+            /** Played */
+            played: number;
         };
         /** StateResync */
         StateResync: {
@@ -878,6 +952,24 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    logout_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     healthz_healthz_get: {
         parameters: {
             query?: never;
@@ -998,6 +1090,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_leaderboard_leaderboard_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardView"][];
                 };
             };
         };

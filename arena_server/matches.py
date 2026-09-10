@@ -36,6 +36,7 @@ from arena_judge.schema import (
 from arena_server.db import Pool
 from arena_server.events import EventBus
 from arena_server.views import (
+    AccountView,
     MatchSnapshot,
     Replay,
     RoundView,
@@ -115,12 +116,23 @@ class MatchService:
             async with self.pool.connection() as conn:
                 row = await (
                     await conn.execute(
-                        "select stage_name, list_duels from sessions where session_key = %s",
+                        "select s.stage_name, s.list_duels, a.provider, a.display_name, "
+                        "a.avatar_url from sessions s left join accounts a on a.id = s.account_id "
+                        "where s.session_key = %s",
                         (session_key,),
                     )
                 ).fetchone()
             if row:
-                return SessionView(stage_name=row["stage_name"], list_duels=row["list_duels"])
+                account = None
+                if row["provider"]:
+                    account = AccountView(
+                        provider=row["provider"],
+                        display_name=row["display_name"],
+                        avatar_url=row["avatar_url"],
+                    )
+                return SessionView(
+                    stage_name=row["stage_name"], list_duels=row["list_duels"], account=account
+                )
         return SessionView(stage_name="Challenger", list_duels=False)
 
     async def create(

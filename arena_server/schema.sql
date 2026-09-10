@@ -73,3 +73,14 @@ alter table matches add column if not exists cards text[] not null default '{}';
 alter table matches add column if not exists held_move text;
 update matches set cards = array[seed_token] where cards = '{}';
 alter table turns add column if not exists round_n int not null default 1;
+
+create table if not exists accounts (
+    id text primary key,
+    provider text not null,
+    provider_id text not null,
+    display_name text not null,
+    avatar_url text not null default '',
+    created_at timestamptz not null default now(),
+    unique (provider, provider_id)
+);
+alter table sessions add column if not exists account_id text references accounts(id);

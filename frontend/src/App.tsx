@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { Duel } from "./pages/Duel.tsx";
 import { Landing } from "./pages/Landing.tsx";
+import { Leaderboard } from "./pages/Leaderboard.tsx";
 import { Play } from "./pages/Play.tsx";
 import { ReplayPage } from "./pages/Replay.tsx";
 import { StagePage } from "./pages/Stage.tsx";
@@ -69,5 +70,6 @@ export default function App() {
   if (replay) return <ReplayPage matchId={replay[1]} key={replay[1]} />;
   if (play) return <Play slug={play[1] ?? "then-i-am"} key={play[1] ?? "then-i-am"} />;
   if (path === "/stage") return <StagePage />;
+  if (path === "/standings") return <Leaderboard />;
   return <Landing />;
 }

@@ -2284,3 +2284,129 @@
     grid-row: auto;
   }
 }
+
+/* Accounts and standings */
+
+.bar-top .account {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.bar-top .account img {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+}
+
+.bar-top .account b {
+  font-weight: 500;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-top .account button {
+  background: none;
+  border: 1px solid #a89f90;
+  border-radius: 999px;
+  color: var(--bar-fg);
+  font: inherit;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  padding: 0.1rem 0.7rem;
+  cursor: pointer;
+}
+
+.bar-top .account button:hover {
+  border-color: var(--bar-fg);
+}
+
+.bar-top .signin-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  display: grid;
+  min-width: 9rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18);
+  z-index: 5;
+}
+
+.bar-top .signin-menu a {
+  color: var(--ink);
+  padding: 0.5rem 0.9rem;
+  font-variant: normal;
+  letter-spacing: 0;
+}
+
+.bar-top .signin-menu a:hover {
+  background: var(--paper-sunk);
+  color: var(--ink);
+}
+
+.boards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.board h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-top: 3px double var(--ink);
+  padding-top: var(--space-1);
+  margin: 0 0 var(--space-2);
+}
+
+.board table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.board th {
+  text-align: left;
+  font-weight: 500;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.3rem 0.5rem;
+}
+
+.board td {
+  padding: 0.45rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.board tr:first-child td.rank {
+  color: var(--vermilion);
+  font-weight: 600;
+}
+
+.board td.rank {
+  width: 2rem;
+  color: var(--ink-faint);
+}
+
+.board td.player {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.board td.player img {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+}
+
+.board th:nth-child(n + 3),
+.board td.num {
+  text-align: right;
+}

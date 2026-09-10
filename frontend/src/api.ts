@@ -8,6 +8,8 @@ export type MatchSnapshot = S["MatchSnapshot"];
 export type Replay = S["Replay"];
 export type StageView = S["StageView"];
 export type SessionView = S["SessionView"];
+export type AccountView = S["AccountView"];
+export type BoardView = S["BoardView"];
 export type ReplaySort = "curated" | "newest" | "longest";
 export type TurnView = S["TurnView"];
 export type RoundView = S["RoundView"];
@@ -100,6 +102,8 @@ export const api = {
     request<SessionView>("/sessions/me", { method: "PUT", body: JSON.stringify(body) }),
   setVisibility: (id: string, isPublic: boolean) =>
     request<void>(`/matches/${id}/visibility`, { method: "POST", body: JSON.stringify({ public: isPublic }) }),
+  logout: () => request<void>("/auth/logout", { method: "POST" }),
+  leaderboard: () => request<BoardView[]>("/leaderboard"),
   stage: () => request<StageView>("/on-stage"),
   replay: (id: string) => request<Replay>(`/replays/${id}`),
   replays: (sort: ReplaySort) => request<Replay[]>(`/replays?sort=${sort}`),

@@ -1,6 +1,7 @@
 """Environment settings and the model registry."""
 
 import os
+import secrets
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -21,6 +22,8 @@ class Settings:
     frontend_dist: Path | None
     curator_token: str
     featured_template: str
+    session_secret: str
+    oauth_clients: dict[str, tuple[str, str]]
 
 
 def load_settings() -> Settings:
@@ -36,7 +39,20 @@ def load_settings() -> Settings:
         frontend_dist=dist if (dist / "index.html").exists() else None,
         curator_token=os.environ.get("CURATOR_TOKEN", ""),
         featured_template=os.environ.get("FEATURED_TEMPLATE", "then-i-am"),
+        session_secret=os.environ.get("SESSION_SECRET") or secrets.token_urlsafe(32),
+        oauth_clients=_oauth_clients(),
     )
+
+
+def _oauth_clients() -> dict[str, tuple[str, str]]:
+    """Providers with both an id and a secret in the environment, in sign-in menu order."""
+    found = {}
+    for provider in ("google", "github", "discord"):
+        client_id = os.environ.get(f"{provider.upper()}_CLIENT_ID", "")
+        secret = os.environ.get(f"{provider.upper()}_CLIENT_SECRET", "")
+        if client_id and secret:
+            found[provider] = (client_id, secret)
+    return found
 
 
 def load_model(ref: str) -> ModelSpec:

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
+import { AccountMenu } from "../Account.tsx";
 import { Link, navigate, ThemeToggle } from "../App.tsx";
 import { api, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
@@ -34,7 +35,9 @@ export function Landing() {
         </span>
         <span className="aside">
           <Link to="/stage">The stage</Link>
+          <Link to="/standings">Standings</Link>
           <a href="/mockups/methodology.html">The judging</a>
+          <AccountMenu />
           <ThemeToggle icon />
         </span>
       </header>

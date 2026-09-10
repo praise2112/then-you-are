@@ -112,9 +112,31 @@ class MatchSnapshot(BaseModel):
     is_yours: bool = False
 
 
+class AccountView(BaseModel):
+    provider: str
+    display_name: str
+    avatar_url: str
+
+
 class SessionView(BaseModel):
     stage_name: str
     list_duels: bool
+    account: AccountView | None = None
+    providers: list[str] = []
+
+
+class StandingView(BaseModel):
+    rank: int
+    display_name: str
+    avatar_url: str
+    wins: int
+    played: int
+
+
+class BoardView(BaseModel):
+    slug: str
+    title: str
+    standings: list[StandingView]
 
 
 class StageView(BaseModel):
