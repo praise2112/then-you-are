@@ -1,4 +1,6 @@
-from arena_core.state import Match, apply_ruling, resign
+import pytest
+
+from arena_core.state import Match, apply_guess, apply_ruling, resign
 from arena_core.template import Template, load_template
 from arena_judge.schema import route_outcome
 from tests.conftest import judge_response
@@ -83,35 +85,88 @@ def test_resign_hands_the_win_to_the_other_side():
     assert match.end_reason == "resign"
 
 
-def test_showcase_fail_scores_nothing_and_the_match_goes_on():
+def play_round(match: Match, p1_points: int, p2_points: int, picked: str = "truth") -> None:
+    """One showcase round: both bluffs judged, then the player calls."""
+    n = match.round_n
+    v = match.state_version
+    apply_ruling(match, "p1", f"bluff p1 {n}", "accept", v, WORDS, points=p1_points)
+    apply_ruling(match, "p2", f"bluff p2 {n}", "accept", v + 1, WORDS, points=p2_points)
+    apply_guess(match, "p1", picked, v + 2, WORDS)  # type: ignore[arg-type]
+
+
+def test_showcase_fail_scores_nothing_and_the_round_waits_on_the_call():
     match = word_match()
     apply_ruling(match, "p1", "lol a hat", "fail", 0, WORDS, points=10)
     apply_ruling(match, "p2", "a cup holder", "accept", 1, WORDS, points=30)
     assert match.status == "active"
     assert match.points == {"p1": 0, "p2": 30}
-    assert match.to_move == "p1"
+    assert (match.phase, match.to_move) == ("guess", "p1")
     assert [t.round_n for t in match.turns] == [1, 1]
-    assert match.round_n == 2 and match.card == "groak"
+    assert match.round_n == 1 and match.card == "zarf"
+    assert match.guess_options("p1") == ["truth", "p2"]
+    assert match.owed_guesses() == ["p1"]
 
 
-def test_showcase_ends_after_the_last_round_on_points():
+def test_calling_the_truth_pays_the_caller_and_opens_the_next_round():
     match = word_match()
-    for version in range(6):
-        actor = "p1" if version % 2 == 0 else "p2"
-        apply_ruling(
-            match, actor, f"bluff {version}", "accept", version, WORDS, points=20 + version
-        )
+    apply_ruling(match, "p1", "a cloak", "accept", 0, WORDS, points=20)
+    apply_ruling(match, "p2", "a cup holder", "accept", 1, WORDS, points=20)
+    apply_guess(match, "p1", "truth", 2, WORDS)
+    assert match.points == {"p1": 30, "p2": 20}
+    assert (match.phase, match.to_move, match.round_n) == ("write", "p1", 2)
+    assert match.card == "groak"
+    assert match.guesses[0].awarded_to == "p1" and match.guesses[0].points == 10
+
+
+def test_falling_for_a_bluff_pays_its_author():
+    match = word_match()
+    apply_ruling(match, "p1", "a cloak", "accept", 0, WORDS, points=20)
+    apply_ruling(match, "p2", "a cup holder", "accept", 1, WORDS, points=20)
+    apply_guess(match, "p1", "p2", 2, WORDS)
+    assert match.points == {"p1": 20, "p2": 30}
+    assert match.guesses[0].picked == "p2" and match.guesses[0].awarded_to == "p2"
+
+
+def test_a_bluff_that_hit_the_truth_leaves_nothing_to_call():
+    match = word_match()
+    apply_ruling(match, "p1", "a cloak", "accept", 0, WORDS, points=20)
+    apply_ruling(match, "p2", "a cup holder", "accept", 1, WORDS, points=40, truth_hit=True)
+    assert match.phase == "write" and match.round_n == 2
+    assert match.guesses == []
+
+
+def test_no_move_or_second_call_while_the_round_is_being_called():
+    match = word_match()
+    apply_ruling(match, "p1", "a cloak", "accept", 0, WORDS, points=20)
+    apply_ruling(match, "p2", "a cup holder", "accept", 1, WORDS, points=20)
+    with pytest.raises(ValueError, match="guessed on"):
+        apply_ruling(match, "p1", "a hat", "accept", 2, WORDS, points=20)
+    with pytest.raises(ValueError, match="not on the table"):
+        apply_guess(match, "p1", "p1", 2, WORDS)
+    apply_guess(match, "p1", "truth", 2, WORDS)
+    with pytest.raises(ValueError, match="no call"):
+        apply_guess(match, "p1", "truth", 3, WORDS)
+
+
+def test_showcase_ends_after_the_last_call_on_points():
+    match = word_match()
+    play_round(match, 20, 21)
+    play_round(match, 22, 23)
+    assert match.status == "active"
+    play_round(match, 24, 25, picked="p2")
     assert match.status == "ended"
     assert match.end_reason == "rounds_complete"
-    assert match.winner == "p2"
+    assert match.points == {"p1": 66 + 20, "p2": 69 + 10}
+    assert match.winner == "p1"
     assert [t.round_n for t in match.turns] == [1, 1, 2, 2, 3, 3]
+    assert [g.round_n for g in match.guesses] == [1, 2, 3]
 
 
 def test_showcase_tie_is_a_draw():
     match = word_match()
-    for version in range(6):
-        actor = "p1" if version % 2 == 0 else "p2"
-        apply_ruling(match, actor, f"bluff {version}", "accept", version, WORDS, points=20)
+    play_round(match, 20, 30)
+    play_round(match, 20, 30)
+    play_round(match, 20, 30)
     assert match.status == "ended"
     assert match.winner is None
     assert match.end_reason == "rounds_complete"

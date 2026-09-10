@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
-import type { RoundView, TemplateView, TurnView } from "../api.ts";
-import { criterionLabel, HOUSE, type RoundGroup } from "./format.ts";
+import type { GuessOption, RoundView, TemplateView, TurnView } from "../api.ts";
+import { criterionLabel, HOUSE, roundTotals, roundWinner, type RoundGroup } from "./format.ts";
 
 const BADGE_LABELS: Record<string, string> = {
   close_call: "Close call",
@@ -48,6 +48,84 @@ export function TruthLine({ round }: { round: RoundView }) {
   );
 }
 
+type CallCardProps = {
+  round: RoundView;
+  template: TemplateView;
+  picked: string | null;
+  onPick: (key: string) => void;
+  onCall: () => void;
+  pending: boolean;
+  spectator?: boolean;
+  who?: string;
+};
+
+/** The call: the other side's bluff and the real entry, in an order that gives nothing away. */
+export function CallCard({ round, template, picked, onPick, onCall, pending, spectator = false, who = "You" }: CallCardProps) {
+  const pos = posOf(round.detail);
+  return (
+    <div className="call-card">
+      <p className="small-caps last-move-head">{spectator ? `${who} to call` : "Your call"}</p>
+      <p className="call-prompt">{template.guess?.prompt}</p>
+      <div className="call-options" role={spectator ? undefined : "radiogroup"} aria-label="The entries on the table">
+        {round.options.map((option: GuessOption) => (
+          <button
+            key={option.key}
+            type="button"
+            className={`call-option${picked === option.key ? " picked" : ""}`}
+            role={spectator ? undefined : "radio"}
+            aria-checked={spectator ? undefined : picked === option.key}
+            disabled={spectator || pending}
+            onClick={() => onPick(option.key)}
+          >
+            <span className="said">
+              <b>{round.token}</b> <i>{POS_SHORT[pos] ?? pos}</i> {option.text}
+            </span>
+            {picked === option.key && <span className="stamp point">The real one</span>}
+          </button>
+        ))}
+      </div>
+      {!spectator && (
+        <div className="composer-foot">
+          <span className="counter">
+            {template.guess?.spot_points} points to whoever is right about it
+          </span>
+          <button className={`ticket${picked && !pending ? "" : " quiet"}`} type="button" disabled={!picked || pending} onClick={onCall}>
+            {pending ? "Called" : "Call it"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+type CallLineProps = { group: RoundGroup; me: string; theirs?: string };
+
+/** How the call went: who was fooled, who saw through it, and what it paid. */
+export function CallLine({ group, me, theirs = HOUSE }: CallLineProps) {
+  const name = (actor: "p1" | "p2") => (actor === "p1" ? me : theirs);
+  if (group.round.guesses.length === 0) {
+    return <p className="call-line">Nothing to call this round. {theirs} had written the real meaning.</p>;
+  }
+  return (
+    <>
+      {group.round.guesses.map((g) => (
+        <p key={g.actor} className={`call-line${g.awarded_to === "p1" ? " mine" : ""}`}>
+          {g.picked === "truth" ? (
+            <>
+              <b>{name(g.actor)} called the real entry.</b> {g.points} points.
+            </>
+          ) : (
+            <>
+              <b>{name(g.actor)} took the bait.</b> {name(g.picked)}&rsquo;s bluff read as the real thing, {g.points} points to{" "}
+              {name(g.awarded_to)}.
+            </>
+          )}
+        </p>
+      ))}
+    </>
+  );
+}
+
 type LedgerProps = { groups: RoundGroup[]; me: string };
 
 /** Every round so far: the word, its truth once revealed, and who took the points. */
@@ -56,8 +134,10 @@ export function RoundLedger({ groups, me }: LedgerProps) {
     <section className="ledger" aria-label="The rounds">
       <p className="small-caps">The rounds</p>
       <ol>
-        {groups.map(({ round, mine, theirs, revealed }) => {
-          const won = roundWinner(mine, theirs);
+        {groups.map((group) => {
+          const { round, revealed } = group;
+          const won = roundWinner(group);
+          const totals = roundTotals(group);
           return (
             <li key={round.round_n} className={revealed ? undefined : "open"}>
               <b className="word">{round.token}</b>
@@ -65,16 +145,16 @@ export function RoundLedger({ groups, me }: LedgerProps) {
                 <>
                   <span className="truth">{round.truth}</span>
                   <span className="tally-line">
-                    <span className={won === "mine" ? "took" : undefined}>{mine?.points ?? 0}</span>
+                    <span className={won === "mine" ? "took" : undefined}>{totals.mine}</span>
                     {" : "}
-                    <span className={won === "theirs" ? "took" : undefined}>{theirs?.points ?? 0}</span>
+                    <span className={won === "theirs" ? "took" : undefined}>{totals.theirs}</span>
                     <em>
                       {won === null ? "shared" : won === "mine" ? `${me} took it` : `${HOUSE} took it`}
                     </em>
                   </span>
                 </>
               ) : (
-                <span className="truth">in play</span>
+                <span className="truth">{round.options.length > 0 ? "your call" : "in play"}</span>
               )}
             </li>
           );
@@ -106,13 +186,6 @@ type BluffProps = {
   won?: boolean;
   template: TemplateView;
 };
-
-/** Which side of a round scored more, or null on a tie. */
-export function roundWinner(mine?: TurnView, theirs?: TurnView): "mine" | "theirs" | null {
-  const a = mine?.points ?? 0;
-  const b = theirs?.points ?? 0;
-  return a === b ? null : a > b ? "mine" : "theirs";
-}
 
 /** One bluff set as a dictionary entry that did not make it, with its marks and the judge's reason. */
 export function Bluff({ turn, round, who, you = false, won = false, template }: BluffProps) {

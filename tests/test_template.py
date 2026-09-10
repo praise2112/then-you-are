@@ -71,3 +71,24 @@ def test_card_text_pairs_the_word_with_its_detail():
     card = load_template("word-for-word").seed_named("zarf")
     assert card and card.card_text == "zarf (noun, from Arabic via Turkish)"
     assert load_template("then-i-am").seed_pool[0].card_text == "a balloon"
+
+
+def test_showcase_projection_carries_the_call_and_then_i_am_has_none():
+    template = load_template("word-for-word")
+    assert template.player_projection()["guess"] == {
+        "spot_points": 10,
+        "fool_points": 10,
+        "prompt": "One of these is the real entry. Call it.",
+    }
+    assert load_template("then-i-am").player_projection()["guess"] is None
+
+
+def test_lint_rejects_a_call_without_a_hidden_truth_or_outside_a_showcase():
+    data = load_template("word-for-word").model_dump()
+    data["seed_pool"][0]["hidden"] = ""
+    with pytest.raises(ValidationError, match="hidden truth"):
+        Template.model_validate(data)
+    data = load_template("then-i-am").model_dump()
+    data["guess"] = {"spot_points": 10, "fool_points": 10, "prompt": "Call it."}
+    with pytest.raises(ValidationError, match="showcase"):
+        Template.model_validate(data)

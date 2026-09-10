@@ -8,7 +8,9 @@ mode: showcase
 premise: >
   Three rounds. Each round deals one real, obscure English word with its part of
   speech and origin. Both players write a one-sentence definition that sounds true.
-  The Judge, who knows the real meaning, scores each bluff. Then the truth is read out.
+  The Judge, who knows the real meaning, scores each bluff. Then each player sees the
+  other's bluff beside the real entry and calls which one is real. Then the truth is
+  read out.
 
 seed_pool:
   - { opening_token: tittynope, opening_emoji: "🥄", detail: "noun, origin unknown", hidden: "a small quantity of something left over" }
@@ -314,7 +316,9 @@ rules_text: >
   Three words, three rounds. Each word is real and obscure. Write one sentence that
   could sit under it in a dictionary. Match the part of speech. The House writes its
   own bluff at the same time, and neither of you sees the other's until the Judge has
-  scored both. Then the real meaning is read out. Most points after three rounds wins.
+  scored both. Then you see the House's bluff beside the real entry and call which is
+  real. Call it right and the points are yours. Fall for the bluff and they go to the
+  House. Then the real meaning is read out. Most points after three rounds wins.
 validation_messages:
   empty: "Nothing on the page. Define the word."
   too_long: "Over 160 characters. An entry, not an essay."
@@ -340,6 +344,10 @@ opponent_prompt: |
   Rules: at most {max_chars} characters. Do not reuse a meaning from an earlier round.
   Reply with the definition only, no quotation marks, no commentary.
 
+guess:
+  spot_points: 10
+  fool_points: 10
+  prompt: "One of these is the real entry. Call it."
 move_budget: 6
 win_condition: points_total
 tie_policy: draw

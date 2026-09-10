@@ -114,6 +114,14 @@ class ValidationMessages(Strict):
     nudge: str
 
 
+class GuessRules(Strict):
+    """The call after both bluffs are judged: pick the real entry from among the bluffs."""
+
+    spot_points: int = Field(gt=0)
+    fool_points: int = Field(gt=0)
+    prompt: str
+
+
 Mode = Literal["escalation", "showcase"]
 
 
@@ -140,6 +148,7 @@ class Template(Strict):
     validation_messages: ValidationMessages
     judge_out_text: str
     opponent_prompt: str
+    guess: GuessRules | None = None
     move_budget: int = Field(gt=0)
     win_condition: Literal["sudden_death", "points_total"]
     tie_policy: Literal["defender_holds", "draw"]
@@ -180,6 +189,11 @@ class Template(Strict):
                 )
             if len(self.seed_pool) < self.move_budget // 2:
                 raise ValueError("the seed pool must cover every round")
+        if self.guess is not None:
+            if self.mode != "showcase":
+                raise ValueError("only a showcase game has a guess beat")
+            if any(not s.hidden for s in self.seed_pool):
+                raise ValueError("a guess beat needs a hidden truth on every seed")
         return self
 
     @property
@@ -247,6 +261,7 @@ class Template(Strict):
             "move_budget": self.move_budget,
             "score_max": SCORE_MAX,
             "host_name": self.host.persona_name,
+            "guess": self.guess.model_dump() if self.guess else None,
             "demo": self._demo_projection(),
         }
 

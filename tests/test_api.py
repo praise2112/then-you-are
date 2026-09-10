@@ -8,6 +8,7 @@ import httpx
 import pytest
 from asgi_lifespan import LifespanManager
 
+from arena_core.template import load_template
 from arena_server.app import build_app
 from arena_server.config import load_settings
 from tests.conftest import FakeCaller, judge_response
@@ -305,8 +306,12 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
         await settle(app)
         assert (await client.get(f"/matches/{match['id']}")).json()["transcript"] == []
 
-        for n, (version, bluff) in enumerate(
-            [(0, "a desert cloak"), (2, "to shell peas"), (4, "a sailor's knot")], start=1
+        # Round 1: the player hits the truth, so the House's table has one entry and the
+        # House owes no call; the player calls between the House bluff and the truth.
+        # Rounds 2 and 3: the player calls the bluff, then the truth.
+        for n, (version, bluff, call) in enumerate(
+            [(0, "a desert cloak", "truth"), (3, "to shell peas", "bluff"), (6, "a knot", "truth")],
+            start=1,
         ):
             posted = await client.post(
                 f"/matches/{match['id']}/moves",
@@ -314,24 +319,66 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
             )
             assert posted.status_code == 202
             await settle(app)
+            snap = (await client.get(f"/matches/{match['id']}")).json()
+            assert snap["phase"] == "guess" and snap["state_version"] == version + 2
+            assert all(t["round_n"] != n for t in snap["transcript"])
+            table = snap["rounds"][-1]
+            assert table["truth"] is None and len(table["options"]) == 2
+            texts = {o["text"] for o in table["options"]}
+            assert bluff not in texts and len({o["key"] for o in table["options"]}) == 2
+            card = load_template("word-for-word").seed_named(table["token"])
+            assert card is not None
+            truth = card.hidden
+            picked = next(o for o in table["options"] if (o["text"] == truth) == (call == "truth"))
+            early = await client.post(
+                f"/matches/{match['id']}/moves",
+                json={"action_id": f"x{n}", "expected_version": version + 2, "move_text": "no"},
+            )
+            assert early.status_code == 409
+            called = await client.post(
+                f"/matches/{match['id']}/guesses",
+                json={"action_id": f"g{n}", "expected_version": version + 2, "key": picked["key"]},
+            )
+            assert called.status_code == 202
+            again = await client.post(
+                f"/matches/{match['id']}/guesses",
+                json={"action_id": f"g{n}", "expected_version": version + 2, "key": picked["key"]},
+            )
+            assert again.status_code == 202
+            await settle(app)
 
         snap = (await client.get(f"/matches/{match['id']}")).json()
         assert snap["status"] == "ended" and snap["end_reason"] == "rounds_complete"
+        assert snap["phase"] == "write"
         assert [t["round_n"] for t in snap["transcript"]] == [1, 1, 2, 2, 3, 3]
         assert [t["actor"] for t in snap["transcript"]] == ["p1", "p2"] * 3
         assert snap["transcript"][1]["move_text"] == "a cup holder"
         assert all(r["truth"] for r in snap["rounds"]) and len(snap["rounds"]) == 3
-        assert snap["points_p1"] == 2 * (5 * 3 + 3 * 3 + 2 * 3)
-        assert snap["points_p2"] == 3 * (5 * 3 + 3 * 3 + 2 * 3)
+        assert [r["guesses"] for r in snap["rounds"]] == [
+            [{"actor": "p1", "picked": "truth", "points": 10, "awarded_to": "p1"}],
+            [{"actor": "p1", "picked": "p2", "points": 10, "awarded_to": "p2"}],
+            [{"actor": "p1", "picked": "truth", "points": 10, "awarded_to": "p1"}],
+        ]
+        bluff_points = 5 * 3 + 3 * 3 + 2 * 3
+        assert snap["points_p1"] == 2 * bluff_points + 20
+        assert snap["points_p2"] == 3 * bluff_points + 10
         assert snap["winner"] == "p2"
 
         events = events_of(app, match["id"])
         names = [name for _, name, _ in events]
+        assert names.count("guess_opened") == 3
         assert names.count("round_revealed") == 3 and names.count("ruling") == 6
         assert names[-1] == "match_ended"
-        assert names.index("round_revealed") > names.index("ruling")
+        assert names.index("guess_opened") < names.index("ruling") < names.index("round_revealed")
+        opened = [d for _, name, d in events if name == "guess_opened"]
+        assert opened[0]["round_n"] == 1 and len(opened[0]["options"]) == 2
         reveals = [d for _, name, d in events if name == "round_revealed"]
         assert reveals[0]["token"] == "zarf" and reveals[0]["truth"].startswith("a holder")
+        assert reveals[0]["guesses"][0]["picked"] == "truth"
+        assert (reveals[0]["points_p1"], reveals[0]["points_p2"]) == (
+            bluff_points + 10,
+            bluff_points,
+        )
         rulings = [d for _, name, d in events if name == "ruling"]
         assert rulings[0]["badges"] == ["accidental_truth"]
         assert rulings[2]["points"] == 0
@@ -371,8 +418,15 @@ async def test_the_house_writes_again_when_its_bluff_is_the_truth():
         )
         await settle(app)
         snap = (await client.get(f"/matches/{match['id']}")).json()
-        assert snap["transcript"][1]["move_text"] == "a desert wind"
+        table = snap["rounds"][0]["options"]
+        assert "a desert wind" in {o["text"] for o in table} and len(table) == 2
         assert "real meaning" in caller.opponent_saw[1][-1]
+        await client.post(
+            f"/matches/{match['id']}/guesses",
+            json={"action_id": "g1", "expected_version": 2, "key": table[0]["key"]},
+        )
+        snap = (await client.get(f"/matches/{match['id']}")).json()
+        assert snap["transcript"][1]["move_text"] == "a desert wind"
         assert snap["transcript"][1]["host"]["badges"] == []
     finally:
         await client.aclose()

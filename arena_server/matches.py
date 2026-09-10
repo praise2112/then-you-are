@@ -1,6 +1,7 @@
 """Match service: creates matches, runs the human and opponent turns, persists everything."""
 
 import asyncio
+import hashlib
 import json
 import logging
 import secrets
@@ -10,10 +11,16 @@ from datetime import timedelta
 from typing import Any, Literal
 
 from arena_core.state import (
+    PLAYERS,
     REFUSED,
     Actor,
+    Guess,
     Match,
+    Phase,
+    Pick,
+    StaleVersionError,
     Turn,
+    apply_guess,
     apply_ruling,
     layer1,
     normalize,
@@ -23,6 +30,10 @@ from arena_core.state import (
 from arena_core.template import Seed, Template
 from arena_judge.caller import JudgeCall, ModelCaller
 from arena_judge.schema import (
+    GuessOpened,
+    GuessOption,
+    GuessView,
+    HostPayload,
     JudgePaused,
     JudgeResponse,
     JudgeResumed,
@@ -32,6 +43,7 @@ from arena_judge.schema import (
     Outcome,
     RoundRevealed,
     Ruling,
+    ScoringPayload,
     TurnRejected,
     route_outcome,
 )
@@ -181,7 +193,9 @@ class MatchService:
         match, _ = await self._load(match_id)
         template = self.template_of(match)
         if template.mode == "showcase":
-            line = f"round {match.round_n} of {template.move_budget // 2}, {match.card}"
+            line = f"round {match.round_n} of {template.rounds}, {match.card}"
+            if match.phase == "guess":
+                line += ", your call"
         else:
             form = match.standing_form
             if form.lower().startswith(template.move_constraints.prefix.lower()):
@@ -262,6 +276,13 @@ class MatchService:
                     (match_id,),
                 )
             ).fetchall()
+            guesses = await (
+                await conn.execute(
+                    "select round_n, actor, picked, points, awarded_to from guesses "
+                    "where match_id = %s order by id",
+                    (match_id,),
+                )
+            ).fetchall()
             session = await (
                 await conn.execute(
                     "select stage_name from sessions where session_key = %s",
@@ -277,10 +298,19 @@ class MatchService:
             status=row["status"],
             state_version=row["state_version"],
             to_move=row["to_move"],
+            phase=row["phase"],
             turns=[
-                Turn(t["seq"], t["actor"], t["move_text"], t["outcome"], t["round_n"])
+                Turn(
+                    t["seq"],
+                    t["actor"],
+                    t["move_text"],
+                    t["outcome"],
+                    t["round_n"],
+                    truth_hit=bool(t["scoring"]) and t["scoring"].get("truth_proximity") == "hit",
+                )
                 for t in turns
             ],
+            guesses=[Guess(**g) for g in guesses],
             strikes={"p1": row["strikes_p1"], "p2": row["strikes_p2"]},
             points={"p1": row["points_p1"], "p2": row["points_p2"]},
             winner=row["winner"],
@@ -300,7 +330,7 @@ class MatchService:
     async def _save(self, match: Match) -> None:
         async with self.pool.connection() as conn:
             await conn.execute(
-                "update matches set status = %s, state_version = %s, to_move = %s, "
+                "update matches set status = %s, state_version = %s, to_move = %s, phase = %s, "
                 "winner = %s, end_reason = %s, points_p1 = %s, points_p2 = %s, "
                 "strikes_p1 = %s, strikes_p2 = %s, updated_at = now(), "
                 "ended_at = case when %s = 'ended' "
@@ -309,6 +339,7 @@ class MatchService:
                     match.status,
                     match.state_version,
                     match.to_move,
+                    match.phase,
                     match.winner,
                     match.end_reason,
                     match.points["p1"],
@@ -386,6 +417,22 @@ class MatchService:
                 )
         return row["id"]
 
+    async def _insert_guess(self, match: Match, guess: Guess, action_id: str) -> None:
+        async with self.pool.connection() as conn:
+            await conn.execute(
+                "insert into guesses (match_id, round_n, actor, picked, points, awarded_to, "
+                "action_id) values (%s, %s, %s, %s, %s, %s, %s)",
+                (
+                    match.id,
+                    guess.round_n,
+                    guess.actor,
+                    guess.picked,
+                    guess.points,
+                    guess.awarded_to,
+                    action_id,
+                ),
+            )
+
     async def _stamp_badges(self, verdict_id: int, badges: list[str]) -> None:
         async with self.pool.connection() as conn:
             await conn.execute(
@@ -423,6 +470,9 @@ class MatchService:
     def _points(self, match: Match) -> tuple[int, int]:
         return match.points["p1"], match.points["p2"]
 
+    def _in_call(self, match: Match, round_n: int) -> bool:
+        return match.phase == "guess" and round_n == match.round_n
+
     def _rounds(self, match: Match, template: Template) -> list[RoundView]:
         if template.mode == "escalation":
             return []
@@ -430,7 +480,8 @@ class MatchService:
         for n, token in enumerate(match.cards[: match.round_n], start=1):
             card = template.seed_named(token)
             assert card is not None
-            revealed = len(match.round_turns(n)) == 2
+            in_call = self._in_call(match, n)
+            revealed = len(match.round_turns(n)) == len(PLAYERS) and not in_call
             views.append(
                 RoundView(
                     round_n=n,
@@ -438,9 +489,39 @@ class MatchService:
                     emoji=card.opening_emoji if revealed else "",
                     detail=card.detail,
                     truth=card.hidden if revealed else None,
+                    options=self._options(match, card, "p1") if in_call else [],
+                    guesses=self._guess_views(match, n) if revealed else [],
                 )
             )
         return views
+
+    @staticmethod
+    def _table(match: Match, card: Seed, guesser: Actor) -> dict[str, tuple[Pick, str]]:
+        """The entries on the table for a guesser, keyed by a hash that says nothing about them."""
+        bluffs = {t.actor: t.move_text for t in match.round_turns(match.round_n)}
+        table = {}
+        for pick in match.guess_options(guesser):
+            text = card.hidden if pick == "truth" else bluffs[pick]
+            key = hashlib.sha256(f"{match.id}:{match.round_n}:{text}".encode()).hexdigest()[:8]
+            table[key] = (pick, text)
+        return table
+
+    def _options(self, match: Match, card: Seed, guesser: Actor) -> list[GuessOption]:
+        table = self._table(match, card, guesser)
+        return [GuessOption(key=key, text=table[key][1]) for key in sorted(table)]
+
+    def _resolve_pick(self, match: Match, card: Seed, guesser: Actor, key: str) -> Pick:
+        entry = self._table(match, card, guesser).get(key)
+        if entry is None:
+            raise MatchError(422, "that entry is not on the table")
+        return entry[0]
+
+    @staticmethod
+    def _guess_views(match: Match, round_n: int) -> list[GuessView]:
+        return [
+            GuessView(actor=g.actor, picked=g.picked, points=g.points, awarded_to=g.awarded_to)
+            for g in match.round_guesses(round_n)
+        ]
 
     async def snapshot(self, match_id: str, session_key: str | None = None) -> MatchSnapshot:
         match, extra = await self._load(match_id)
@@ -453,6 +534,7 @@ class MatchService:
             mode=template.mode,
             status=match.status,
             state_version=match.state_version,
+            phase=match.phase,
             seed_token=match.seed,
             seed_emoji=match.seed_emoji if template.mode == "escalation" else "",
             rounds=self._rounds(match, template),
@@ -477,6 +559,8 @@ class MatchService:
                     points=self._turn_points(t["scoring"], template),
                 )
                 for t in extra["turn_rows"]
+                # A round being called on keeps both bluffs off the wire until the reveal.
+                if not self._in_call(match, t["round_n"])
             ],
             created_at=extra["created_at"].isoformat(),
             is_public=extra["is_public"],
@@ -586,12 +670,35 @@ class MatchService:
     async def submit_move(
         self, match_id: str, session_key: str, action_id: str, expected_version: int, move_text: str
     ) -> None:
-        match, extra = await self._load(match_id)
-        self._check_command(match, extra, session_key, expected_version)
         if await self._action_seen(match_id, action_id):
             return
+        match, extra = await self._load(match_id)
+        self._check_command(match, extra, session_key, expected_version, "write")
         await self._set_status(match_id, "awaiting_judgment")
         self._spawn(self._run_human_move(match_id, action_id, move_text))
+
+    async def submit_guess(
+        self, match_id: str, session_key: str, action_id: str, expected_version: int, key: str
+    ) -> None:
+        """The player calls the real entry. Settles the round at once: no judge is involved."""
+        if await self._action_seen(match_id, action_id):
+            return
+        match, extra = await self._load(match_id)
+        self._check_command(match, extra, session_key, expected_version, "guess")
+        async with self.locks[match_id]:
+            match, _ = await self._load(match_id)
+            template = self.template_of(match)
+            card = template.seed_named(match.card)
+            assert card is not None
+            pick = self._resolve_pick(match, card, "p1", key)
+            try:
+                apply_guess(match, "p1", pick, expected_version, template)
+            except (StaleVersionError, ValueError) as e:
+                raise MatchError(409, str(e)) from e
+            await self._save(match)
+            await self._insert_guess(match, match.guesses[-1], action_id)
+            if match.phase == "write":
+                await self._settle_round(match, template)
 
     async def resign_match(
         self, match_id: str, session_key: str, action_id: str, expected_version: int
@@ -630,7 +737,12 @@ class MatchService:
             )
 
     def _check_command(
-        self, match: Match, extra: dict, session_key: str, expected_version: int
+        self,
+        match: Match,
+        extra: dict,
+        session_key: str,
+        expected_version: int,
+        phase: Phase | None = None,
     ) -> None:
         if extra["p1_session_key"] != session_key:
             raise MatchError(403, "not your match")
@@ -638,6 +750,8 @@ class MatchService:
             raise MatchError(409, "match already ended")
         if match.status != "active" or match.to_move != "p1":
             raise MatchError(409, "not your move")
+        if phase is not None and match.phase != phase:
+            raise MatchError(409, "not your move" if phase == "write" else "no call to make")
         if expected_version != match.state_version:
             raise MatchError(409, f"stale version: match is at {match.state_version}")
 
@@ -645,8 +759,9 @@ class MatchService:
         async with self.pool.connection() as conn:
             row = await (
                 await conn.execute(
-                    "select 1 from turns where match_id = %s and action_id = %s",
-                    (match_id, action_id),
+                    "select 1 from turns where match_id = %s and action_id = %s "
+                    "union all select 1 from guesses where match_id = %s and action_id = %s",
+                    (match_id, action_id, match_id, action_id),
                 )
             ).fetchone()
         return row is not None
@@ -742,17 +857,27 @@ class MatchService:
         seq: int,
         action_id: str | None,
         hidden: str = "",
-    ) -> None:
+    ) -> Ruling:
+        """Applies and stores a ruling. Returns the event; the caller decides when it goes out."""
         response = judged.response
         before = match.points[actor]
         earned = weighted_total(response.scoring.scores, template.weights)
-        apply_ruling(match, actor, move_text, judged.outcome, match.state_version, template, earned)
+        proximity = response.scoring.truth_proximity if hidden else "none"
+        apply_ruling(
+            match,
+            actor,
+            move_text,
+            judged.outcome,
+            match.state_version,
+            template,
+            earned,
+            truth_hit=proximity == "hit",
+        )
         await self._save(match)
         await self._insert_turn(
             match, actor, move_text, judged.outcome, seq, None, judged.verdict_id, action_id
         )
         badges = ["close_call"] if judged.outcome == "semantic_uncertain" else []
-        proximity = response.scoring.truth_proximity if hidden else "none"
         if judged.outcome != "fail" and proximity == "hit":
             badges.append("accidental_truth")
         elif judged.outcome != "fail" and proximity == "near":
@@ -760,24 +885,20 @@ class MatchService:
         if badges:
             await self._stamp_badges(judged.verdict_id, badges)
         p1, p2 = self._points(match)
-        self.bus.emit(
-            match.id,
-            "ruling",
-            Ruling(
-                seq=seq,
-                round_n=match.turns[-1].round_n,
-                actor=actor,
-                move_text=move_text,
-                outcome=judged.outcome,
-                scoring=response.scoring,
-                host=response.host.model_copy(update={"badges": badges}),
-                badges=badges,
-                points=match.points[actor] - before,
-                points_p1=p1,
-                points_p2=p2,
-                to_move=match.to_move,
-                state_version=match.state_version,
-            ),
+        return Ruling(
+            seq=seq,
+            round_n=match.turns[-1].round_n,
+            actor=actor,
+            move_text=move_text,
+            outcome=judged.outcome,
+            scoring=response.scoring,
+            host=response.host.model_copy(update={"badges": badges}),
+            badges=badges,
+            points=match.points[actor] - before,
+            points_p1=p1,
+            points_p2=p2,
+            to_move=match.to_move,
+            state_version=match.state_version,
         )
 
     async def _play_move(
@@ -794,7 +915,10 @@ class MatchService:
         if judged.outcome == "semantic_reject":
             await self._refuse_semantic(match, template, actor, move_text, judged, action_id)
             return False
-        await self._record_ruling(match, template, actor, move_text, judged, seq, action_id)
+        ruling = await self._record_ruling(
+            match, template, actor, move_text, judged, seq, action_id
+        )
+        self.bus.emit(match.id, "ruling", ruling)
         if match.status == "ended":
             coaching = judged.response.host.coaching_line if judged.outcome == "fail" else None
             await self._emit_match_ended(match, coaching)
@@ -804,7 +928,8 @@ class MatchService:
     async def _play_round(
         self, match: Match, template: Template, held: str | None, move_text: str, action_id: str
     ) -> None:
-        """Showcase: both answers are judged together, then the card is revealed."""
+        """Showcase: both answers are judged together. The rulings stay held until the
+        round is revealed, which waits on the player's call when the game has one."""
         if await self._refuse_layer1(match, template, "p1", move_text, action_id):
             return
         card = template.seed_named(match.card)
@@ -830,15 +955,63 @@ class MatchService:
             match, template, "p2", house[1], house[0], seq + 1, None, card.hidden
         )
         await self._hold(match.id, None)
+        if match.phase == "guess":
+            self.bus.emit(
+                match.id,
+                "guess_opened",
+                GuessOpened(
+                    round_n=match.round_n,
+                    options=self._options(match, card, "p1"),
+                    state_version=match.state_version,
+                ),
+            )
+            return
+        await self._settle_round(match, template)
+
+    async def _settle_round(self, match: Match, template: Template) -> None:
+        """Sends out the round's rulings and reveal, then ends the match or deals the next card."""
+        _, extra = await self._load(match.id)
+        round_n = match.turns[-1].round_n
+        card = template.seed_named(match.cards[round_n - 1])
+        assert card is not None
+        p1, p2 = self._points(match)
+        for row in extra["turn_rows"]:
+            if row["round_n"] != round_n or row["scoring"] is None:
+                continue
+            scoring = ScoringPayload.model_validate(row["scoring"])
+            host = HostPayload.model_validate(row["host"])
+            earned = self._turn_points(row["scoring"], template) or 0
+            self.bus.emit(
+                match.id,
+                "ruling",
+                Ruling(
+                    seq=row["seq"],
+                    round_n=round_n,
+                    actor=row["actor"],
+                    move_text=row["move_text"],
+                    outcome=row["outcome"],
+                    scoring=scoring,
+                    host=host,
+                    badges=host.badges,
+                    points=0 if row["outcome"] == "fail" else earned,
+                    points_p1=p1,
+                    points_p2=p2,
+                    to_move=match.to_move,
+                    state_version=match.state_version,
+                ),
+            )
         self.bus.emit(
             match.id,
             "round_revealed",
             RoundRevealed(
-                round_n=match.turns[-1].round_n,
+                round_n=round_n,
                 token=card.opening_token,
                 emoji=card.opening_emoji,
                 detail=card.detail,
                 truth=card.hidden,
+                guesses=self._guess_views(match, round_n),
+                points_p1=p1,
+                points_p2=p2,
                 state_version=match.state_version,
             ),
         )

@@ -18,6 +18,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from arena_core.template import load_templates
 from arena_judge.caller import ModelCaller
 from arena_judge.schema import (
+    GuessOpened,
     JudgePaused,
     JudgeResumed,
     JudgeStarted,
@@ -137,6 +138,11 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         action_id: str = Field(min_length=1, max_length=64)
         expected_version: int
 
+    class GuessCommand(BaseModel):
+        action_id: str = Field(min_length=1, max_length=64)
+        expected_version: int
+        key: str = Field(min_length=1, max_length=16)
+
     class Accepted(BaseModel):
         accepted: bool = True
 
@@ -151,6 +157,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         judge_resumed: JudgeResumed
         match_ended: MatchEnded
         round_revealed: RoundRevealed
+        guess_opened: GuessOpened
         state_resync: StateResync
 
     def refuse_bad_name(stage_name: str | None) -> None:
@@ -243,6 +250,13 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def post_move(match_id: str, body: MoveCommand, request: Request) -> Accepted:
         await service.submit_move(
             match_id, session_of(request), body.action_id, body.expected_version, body.move_text
+        )
+        return Accepted()
+
+    @app.post("/matches/{match_id}/guesses", status_code=202)
+    async def post_guess(match_id: str, body: GuessCommand, request: Request) -> Accepted:
+        await service.submit_guess(
+            match_id, session_of(request), body.action_id, body.expected_version, body.key
         )
         return Accepted()
 

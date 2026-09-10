@@ -17,9 +17,9 @@ import {
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { capitalize, criterionLabel, formName, fullMove, groupRounds, HOUSE, lastStanding } from "./format.ts";
+import { capitalize, criterionLabel, formName, fullMove, groupRounds, HOUSE, lastStanding, roundTotals, roundWinner } from "./format.ts";
 import { MatchEnd } from "./MatchEnd.tsx";
-import { Bluff, RoundLedger, roundWinner, TruthLine, WordCard } from "./rounds.tsx";
+import { Bluff, CallCard, CallLine, RoundLedger, TruthLine, WordCard } from "./rounds.tsx";
 
 function endedFromReplay(r: Replay): MatchEnded {
   return {
@@ -79,6 +79,8 @@ export function Duel({ matchId, spectator = false }: Props) {
   const [showResign, setShowResign] = useState(false);
   const [showRubric, setShowRubric] = useState(false);
   const [voted, setVoted] = useState<Set<number>>(new Set());
+  const [picked, setPicked] = useState<string | null>(null);
+  const [calling, setCalling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const transcriptRef = useRef<HTMLOListElement>(null);
@@ -163,20 +165,46 @@ export function Duel({ matchId, spectator = false }: Props) {
           setSnap((s) => s && withRulings(s, [r]));
           return;
         }
+        case "guess_opened": {
+          const g = event.data;
+          setThinking(false);
+          setPending(false);
+          setReturned(null);
+          setText("");
+          setPicked(null);
+          setCalling(false);
+          setSnap(
+            (s) =>
+              s && {
+                ...s,
+                phase: "guess",
+                state_version: g.state_version,
+                rounds: s.rounds.map((x) => (x.round_n === g.round_n ? { ...x, options: g.options } : x)),
+              },
+          );
+          return;
+        }
         case "round_revealed": {
           const held = heldRef.current;
           heldRef.current = [];
           const r = event.data;
           setThinking(false);
           setPending(false);
+          setCalling(false);
+          setPicked(null);
           setReturned(null);
           setText("");
           setSnap(
             (s) =>
               s && {
                 ...withRulings(s, held),
+                phase: "write",
                 state_version: r.state_version,
-                rounds: s.rounds.map((x) => (x.round_n === r.round_n ? { ...x, truth: r.truth, emoji: r.emoji } : x)),
+                points_p1: r.points_p1,
+                points_p2: r.points_p2,
+                rounds: s.rounds.map((x) =>
+                  x.round_n === r.round_n ? { ...x, truth: r.truth, emoji: r.emoji, guesses: r.guesses, options: [] } : x,
+                ),
               },
           );
           void api.match(matchId).then((s) => setSnap((prev) => prev && { ...prev, rounds: s.rounds }));
@@ -263,6 +291,18 @@ export function Duel({ matchId, spectator = false }: Props) {
     void api.disagree(matchId, seq).then(() => setVoted((v) => new Set(v).add(seq)));
   }
 
+  async function call() {
+    if (!picked || calling) return;
+    setCalling(true);
+    try {
+      await api.guess(matchId, snap!.state_version, picked);
+    } catch (e) {
+      setCalling(false);
+      setReturned({ outcome: "deterministic_invalid", reason_text: (e as Error).message, strikes: 0, nudge_text: null });
+      void refresh();
+    }
+  }
+
   if (snap.mode === "showcase") {
     return (
       <ShowcaseDuel
@@ -279,6 +319,10 @@ export function Duel({ matchId, spectator = false }: Props) {
         play={play}
         resign={resign}
         formRef={formRef}
+        picked={picked}
+        setPicked={setPicked}
+        calling={calling}
+        call={call}
       />
     );
   }
@@ -616,10 +660,15 @@ type ShowcaseProps = {
   play: (event: FormEvent) => Promise<void>;
   resign: () => Promise<void>;
   formRef: RefObject<HTMLFormElement | null>;
+  picked: string | null;
+  setPicked: (key: string) => void;
+  calling: boolean;
+  call: () => Promise<void>;
 };
 
-/** The round view: one card at a time, both answers shown together once the truth is out. */
-function ShowcaseDuel({ snap, template, spectator, text, setText, pending, thinking, returned, paused, ended, play, resign, formRef }: ShowcaseProps) {
+/** The round view: one card at a time, the call once both bluffs are judged, both answers shown
+ *  together once the truth is out. */
+function ShowcaseDuel({ snap, template, spectator, text, setText, pending, thinking, returned, paused, ended, play, resign, formRef, picked, setPicked, calling, call }: ShowcaseProps) {
   const [showResign, setShowResign] = useState(false);
   const me = spectator ? snap.stage_name : "You";
   const groups = groupRounds(snap.rounds, snap.transcript);
@@ -628,19 +677,26 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
   const earlier = revealed.slice(0, -1);
   const current = groups.find((g) => !g.revealed);
   const roundN = current?.round.round_n ?? lastResult?.round.round_n ?? 1;
-  const judging = pending || thinking || snap.status === "awaiting_judgment";
-  const canPlay = snap.status === "active" && !pending && !paused && !ended && !!current;
+  const onCall = snap.phase === "guess" && !!current && current.round.options.length > 0;
+  const judging = !onCall && (pending || thinking || snap.status === "awaiting_judgment");
+  const canPlay = snap.status === "active" && !onCall && !pending && !paused && !ended && !!current;
   const hostLine = ended
     ? "The match is over. One moment."
     : paused
       ? paused.host_text
       : returned?.nudge_text
         ? returned.nudge_text
-        : judging
-          ? "The Judge is reading both."
-          : spectator
-            ? `${snap.stage_name} is writing.`
-            : template.move_hint;
+        : onCall
+          ? spectator
+            ? `${snap.stage_name} is calling.`
+            : calling
+              ? "Called. The truth is coming out."
+              : "Two entries. One of them was written this minute."
+          : judging
+            ? "The Judge is reading both."
+            : spectator
+              ? `${snap.stage_name} is writing.`
+              : template.move_hint;
 
   function onKey(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key !== "Enter" || event.shiftKey) return;
@@ -673,21 +729,26 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
 
           {earlier.length > 0 && (
             <ol className="rounds-so-far">
-              {earlier.map(({ round, mine, theirs }) => (
-                <li key={round.round_n}>
-                  <span className="medallion sm" role="img" aria-label={round.token}>
-                    {round.emoji}
-                  </span>
-                  <span>
-                    <b>{round.token}</b> <em>{round.truth}</em>
-                  </span>
-                  <span className="tally-line">
-                    {roundWinner(mine, theirs) === "mine" ? <b>{mine?.points ?? 0}</b> : mine?.points ?? 0}
-                    {" : "}
-                    {roundWinner(mine, theirs) === "theirs" ? <b>{theirs?.points ?? 0}</b> : theirs?.points ?? 0}
-                  </span>
-                </li>
-              ))}
+              {earlier.map((group) => {
+                const { round } = group;
+                const totals = roundTotals(group);
+                const won = roundWinner(group);
+                return (
+                  <li key={round.round_n}>
+                    <span className="medallion sm" role="img" aria-label={round.token}>
+                      {round.emoji}
+                    </span>
+                    <span>
+                      <b>{round.token}</b> <em>{round.truth}</em>
+                    </span>
+                    <span className="tally-line">
+                      {won === "mine" ? <b>{totals.mine}</b> : totals.mine}
+                      {" : "}
+                      {won === "theirs" ? <b>{totals.theirs}</b> : totals.theirs}
+                    </span>
+                  </li>
+                );
+              })}
             </ol>
           )}
 
@@ -700,17 +761,18 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                   round={lastResult.round}
                   who={me}
                   you
-                  won={roundWinner(lastResult.mine, lastResult.theirs) === "mine"}
+                  won={roundWinner(lastResult) === "mine"}
                   template={template}
                 />
                 <Bluff
                   turn={lastResult.theirs!}
                   round={lastResult.round}
                   who={HOUSE}
-                  won={roundWinner(lastResult.mine, lastResult.theirs) === "theirs"}
+                  won={roundWinner(lastResult) === "theirs"}
                   template={template}
                 />
               </div>
+              {template.guess && <CallLine group={lastResult} me={me} />}
             </section>
           )}
 
@@ -719,13 +781,31 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               <p className="small-caps last-move-head" style={{ marginTop: lastResult ? "var(--space-3)" : "var(--space-2)" }}>
                 {lastResult ? "The next word" : "The word"}
               </p>
-              <WordCard round={current.round} compact={!!lastResult}>
+              <WordCard round={current.round} compact={!!lastResult || onCall}>
                 {judging && <span className="tag">Being judged</span>}
               </WordCard>
             </>
           )}
 
-          {!spectator && current && (
+          {onCall && current && (
+            <CallCard
+              round={current.round}
+              template={template}
+              picked={picked}
+              onPick={setPicked}
+              onCall={call}
+              pending={calling}
+              spectator={spectator}
+              who={snap.stage_name}
+            />
+          )}
+          {onCall && returned && (
+            <p className="why">
+              <b>The call did not land.</b> {returned.reason_text}
+            </p>
+          )}
+
+          {!spectator && current && !onCall && (
             <form ref={formRef} className={`composer${returned ? " returned" : ""}`} style={{ marginTop: "var(--space-3)" }} onSubmit={play}>
               {returned && (
                 <span className="slip returned-slip" aria-hidden="true">
@@ -767,7 +847,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
             </form>
           )}
           {paused && <p className="waiting">The match is paused until the judge rules.</p>}
-          {spectator && current && !judging && <p className="waiting">Waiting for {snap.stage_name} to write.</p>}
+          {spectator && current && !judging && !onCall && <p className="waiting">Waiting for {snap.stage_name} to write.</p>}
 
           {judging && !paused && (
             <div className="judge-reading" role="status">

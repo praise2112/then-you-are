@@ -11,7 +11,7 @@ import statistics
 import sys
 from collections import Counter
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict
 
@@ -104,7 +104,7 @@ async def judge_one(
         call = await caller.judge(
             template, transcript, record.previous_move, record.move, record.hidden
         )
-    meta = dict(
+    meta: dict[str, Any] = dict(
         latency_ms=call.latency_ms,
         tokens_in=call.tokens_in,
         tokens_out=call.tokens_out,

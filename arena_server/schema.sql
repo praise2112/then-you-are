@@ -107,3 +107,18 @@ end $$;
 
 create index if not exists sessions_account_id_idx on sessions (account_id);
 create index if not exists matches_p1_session_key_idx on matches (p1_session_key);
+
+alter table matches add column if not exists phase text not null default 'write';
+create table if not exists guesses (
+    id bigserial primary key,
+    match_id text not null references matches(id),
+    round_n int not null,
+    actor text not null,
+    picked text not null,
+    points int not null,
+    awarded_to text not null,
+    action_id text,
+    created_at timestamptz not null default now(),
+    unique (match_id, round_n, actor),
+    unique (match_id, action_id)
+);

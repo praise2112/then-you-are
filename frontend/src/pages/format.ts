@@ -60,3 +60,16 @@ export function groupRounds(rounds: RoundView[], transcript: TurnView[]): RoundG
     return { round, mine, theirs, revealed: !!mine && !!theirs && round.truth !== null };
   });
 }
+
+/** Each side's points for a round: the bluff's marks plus whatever the call paid them. */
+export function roundTotals({ round, mine, theirs }: RoundGroup): { mine: number; theirs: number } {
+  const paid = (actor: "p1" | "p2") =>
+    round.guesses.filter((g) => g.awarded_to === actor).reduce((sum, g) => sum + g.points, 0);
+  return { mine: (mine?.points ?? 0) + paid("p1"), theirs: (theirs?.points ?? 0) + paid("p2") };
+}
+
+/** Which side took a round, or null when level. */
+export function roundWinner(group: RoundGroup): "mine" | "theirs" | null {
+  const { mine, theirs } = roundTotals(group);
+  return mine === theirs ? null : mine > theirs ? "mine" : "theirs";
+}

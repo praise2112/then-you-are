@@ -2101,6 +2101,109 @@ a.bill-row:hover h3 {
   margin: 0;
 }
 
+/* The call: two entries on the table, one of them written this minute */
+
+.call-card {
+  margin-top: var(--space-3);
+}
+
+.call-prompt {
+  margin: 0 0 var(--space-2);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.call-options {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.call-option {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--rule);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.call-option:hover:not(:disabled),
+.call-option:focus-visible {
+  border-color: var(--ink-soft);
+  border-left-color: var(--ink);
+}
+
+.call-option.picked {
+  border-color: var(--vermilion);
+  border-left-color: var(--vermilion-ink);
+}
+
+.call-option:disabled {
+  cursor: default;
+}
+
+.call-option .said {
+  display: block;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  text-wrap: pretty;
+  padding-right: 7rem;
+}
+
+.call-option .said b {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+.call-option .said i {
+  color: var(--ink-soft);
+}
+
+.call-option .stamp.point {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.8rem;
+  font-size: 0.72rem;
+  padding: 0.05rem 0.5rem;
+  outline-offset: -5px;
+  transform: rotate(-4deg);
+}
+
+.call-card .composer-foot {
+  margin-top: var(--space-2);
+}
+
+.call-line {
+  margin: var(--space-2) 0 0;
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--rule);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.call-line b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.call-line.mine b {
+  color: var(--vermilion-ink);
+}
+
+.recap .call-line {
+  font-size: 0.88rem;
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0.3rem;
+}
+
 .badges {
   display: flex;
   flex-wrap: wrap;

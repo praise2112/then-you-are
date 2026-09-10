@@ -5,8 +5,8 @@ import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { criterionLabel, formName, groupRounds, type RoundGroup } from "./format.ts";
-import { Bluff, roundWinner, TruthLine, WordCard } from "./rounds.tsx";
+import { criterionLabel, formName, groupRounds, roundWinner, type RoundGroup } from "./format.ts";
+import { Bluff, CallLine, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
 
@@ -202,7 +202,8 @@ export function ReplayPage({ matchId }: Props) {
 function RoundStepper({ rounds, replay, template }: { rounds: RoundGroup[]; replay: Replay; template: TemplateView }) {
   const fromHash = Number(location.hash.match(/^#round-(\d+)$/)?.[1]);
   const [at, setAt] = useState(fromHash >= 1 && fromHash <= rounds.length ? fromHash - 1 : 0);
-  const { round, mine, theirs } = rounds[at];
+  const group = rounds[at];
+  const { round, mine, theirs } = group;
   const go = (next: number) => {
     if (next < 0 || next >= rounds.length) return;
     setAt(next);
@@ -233,10 +234,11 @@ function RoundStepper({ rounds, replay, template }: { rounds: RoundGroup[]; repl
       </p>
       <WordCard round={round} />
       <div className="bluffs">
-        <Bluff turn={mine!} round={round} who={replay.stage_name} you won={roundWinner(mine, theirs) === "mine"} template={template} />
-        <Bluff turn={theirs!} round={round} who={replay.opponent_name} won={roundWinner(mine, theirs) === "theirs"} template={template} />
+        <Bluff turn={mine!} round={round} who={replay.stage_name} you won={roundWinner(group) === "mine"} template={template} />
+        <Bluff turn={theirs!} round={round} who={replay.opponent_name} won={roundWinner(group) === "theirs"} template={template} />
       </div>
       <TruthLine round={round} />
+      {template.guess && <CallLine group={group} me={replay.stage_name} theirs={replay.opponent_name} />}
       <p className="stepper-dots" aria-hidden="true">
         {rounds.map((r, i) => (
           <button key={r.round.round_n} type="button" className={i === at ? "on" : undefined} onClick={() => go(i)} tabIndex={-1} />

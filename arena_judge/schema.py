@@ -127,14 +127,41 @@ class JudgeResumed(BaseModel):
     seq: int
 
 
+class GuessOption(BaseModel):
+    """One entry on the table during a call. The key says nothing about which is real."""
+
+    key: str
+    text: str
+
+
+class GuessView(BaseModel):
+    """A call made: who picked, what they picked (the truth or a player's bluff), who got paid."""
+
+    actor: Literal["p1", "p2"]
+    picked: Literal["truth", "p1", "p2"]
+    points: int
+    awarded_to: Literal["p1", "p2"]
+
+
+class GuessOpened(BaseModel):
+    """Showcase only: both bluffs are judged and the player may call the real entry."""
+
+    round_n: int
+    options: list[GuessOption]
+    state_version: int
+
+
 class RoundRevealed(BaseModel):
-    """Showcase only: both answers are in, so the card's truth may be shown."""
+    """Showcase only: every call is in, so the card's truth may be shown."""
 
     round_n: int
     token: str
     emoji: str
     detail: str
     truth: str
+    guesses: list[GuessView]
+    points_p1: int
+    points_p2: int
     state_version: int
 
 

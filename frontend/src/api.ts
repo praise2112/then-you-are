@@ -18,6 +18,9 @@ export type ReplaySort = "curated" | "newest" | "longest";
 export type TurnView = S["TurnView"];
 export type RoundView = S["RoundView"];
 export type RoundRevealed = S["RoundRevealed"];
+export type GuessOpened = S["GuessOpened"];
+export type GuessOption = S["GuessOption"];
+export type GuessView = S["GuessView"];
 export type Ruling = S["Ruling"];
 export type TurnRejected = S["TurnRejected"];
 export type MatchEnded = S["MatchEnded"];
@@ -35,6 +38,7 @@ export type MatchEvent =
   | { name: "judge_resumed"; data: S["JudgeResumed"] }
   | { name: "match_ended"; data: MatchEnded }
   | { name: "round_revealed"; data: RoundRevealed }
+  | { name: "guess_opened"; data: GuessOpened }
   | { name: "state_resync"; data: S["StateResync"] };
 
 const EVENT_NAMES: MatchEvent["name"][] = [
@@ -46,6 +50,7 @@ const EVENT_NAMES: MatchEvent["name"][] = [
   "judge_resumed",
   "match_ended",
   "round_revealed",
+  "guess_opened",
   "state_resync",
 ];
 
@@ -93,6 +98,11 @@ export const api = {
         expected_version: expectedVersion,
         move_text: moveText,
       }),
+    }),
+  guess: (id: string, expectedVersion: number, key: string) =>
+    request<void>(`/matches/${id}/guesses`, {
+      method: "POST",
+      body: JSON.stringify({ action_id: crypto.randomUUID(), expected_version: expectedVersion, key }),
     }),
   resign: (id: string, expectedVersion: number) =>
     request<void>(`/matches/${id}/resign`, {

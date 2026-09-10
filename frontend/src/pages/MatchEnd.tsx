@@ -6,8 +6,8 @@ import type { MatchEnded, MatchSnapshot, TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { formName, groupRounds, HOUSE, STANDING } from "./format.ts";
-import { Badges } from "./rounds.tsx";
+import { formName, groupRounds, HOUSE, roundTotals, STANDING } from "./format.ts";
+import { Badges, CallLine } from "./rounds.tsx";
 
 type Props = { snap: MatchSnapshot; ended: MatchEnded; template: TemplateView };
 
@@ -114,30 +114,35 @@ export function MatchEnd({ snap, ended, template }: Props) {
 
         {showcase && rounds.length > 0 && (
           <ol className="recap">
-            {rounds.map(({ round, mine, theirs }) => (
-              <li key={round.round_n}>
-                <p className="recap-word">
-                  <span className="medallion sm" role="img" aria-label={round.token}>
-                    {round.emoji}
-                  </span>
-                  <span>
-                    <b>{round.token}</b> <em>{round.truth}</em>
-                  </span>
-                </p>
-                <div className="recap-bluffs">
-                  <p>
-                    <span className="who you">You, {mine?.points ?? 0}</span>
-                    {mine?.move_text}
-                    {mine && <Badges turn={mine} />}
+            {rounds.map((group) => {
+              const { round, mine, theirs } = group;
+              const totals = roundTotals(group);
+              return (
+                <li key={round.round_n}>
+                  <p className="recap-word">
+                    <span className="medallion sm" role="img" aria-label={round.token}>
+                      {round.emoji}
+                    </span>
+                    <span>
+                      <b>{round.token}</b> <em>{round.truth}</em>
+                    </span>
                   </p>
-                  <p>
-                    <span className="who">{HOUSE}, {theirs?.points ?? 0}</span>
-                    {theirs?.move_text}
-                    {theirs && <Badges turn={theirs} />}
-                  </p>
-                </div>
-              </li>
-            ))}
+                  <div className="recap-bluffs">
+                    <p>
+                      <span className="who you">You, {totals.mine}</span>
+                      {mine?.move_text}
+                      {mine && <Badges turn={mine} />}
+                    </p>
+                    <p>
+                      <span className="who">{HOUSE}, {totals.theirs}</span>
+                      {theirs?.move_text}
+                      {theirs && <Badges turn={theirs} />}
+                    </p>
+                  </div>
+                  {template.guess && <CallLine group={group} me="You" />}
+                </li>
+              );
+            })}
           </ol>
         )}
 

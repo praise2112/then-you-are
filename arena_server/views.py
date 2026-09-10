@@ -4,7 +4,14 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from arena_judge.schema import EndReason, HostPayload, Outcome, ScoringPayload
+from arena_judge.schema import (
+    EndReason,
+    GuessOption,
+    GuessView,
+    HostPayload,
+    Outcome,
+    ScoringPayload,
+)
 
 
 class RubricView(BaseModel):
@@ -47,6 +54,12 @@ class DemoView(BaseModel):
     openings: list[LandingOpeningView]
 
 
+class GuessRulesView(BaseModel):
+    spot_points: int
+    fool_points: int
+    prompt: str
+
+
 class TemplateView(BaseModel):
     slug: str
     title: str
@@ -65,6 +78,7 @@ class TemplateView(BaseModel):
     move_budget: int
     score_max: int
     host_name: str
+    guess: GuessRulesView | None
     demo: DemoView
 
 
@@ -80,13 +94,16 @@ class TurnView(BaseModel):
 
 
 class RoundView(BaseModel):
-    """A dealt card. The truth is filled in only once both answers are judged."""
+    """A dealt card. Options are on the table while the round is being called; the truth
+    and the calls are filled in once the round is revealed."""
 
     round_n: int
     token: str
     emoji: str
     detail: str
     truth: str | None
+    options: list[GuessOption] = []
+    guesses: list[GuessView] = []
 
 
 class MatchSnapshot(BaseModel):
@@ -96,6 +113,7 @@ class MatchSnapshot(BaseModel):
     mode: Literal["escalation", "showcase"]
     status: Literal["active", "awaiting_judgment", "paused", "ended", "abandoned"]
     state_version: int
+    phase: Literal["write", "guess"]
     seed_token: str
     seed_emoji: str
     rounds: list[RoundView]

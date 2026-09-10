@@ -212,6 +212,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/matches/{match_id}/guesses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Post Guess */
+        post: operations["post_guess_matches__match_id__guesses_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/matches/{match_id}/resign": {
         parameters: {
             query?: never;
@@ -558,6 +575,69 @@ export interface components {
             /** Satisfies Criterion */
             satisfies_criterion: boolean;
         };
+        /** GuessCommand */
+        GuessCommand: {
+            /** Action Id */
+            action_id: string;
+            /** Expected Version */
+            expected_version: number;
+            /** Key */
+            key: string;
+        };
+        /**
+         * GuessOpened
+         * @description Showcase only: both bluffs are judged and the player may call the real entry.
+         */
+        GuessOpened: {
+            /** Round N */
+            round_n: number;
+            /** Options */
+            options: components["schemas"]["GuessOption"][];
+            /** State Version */
+            state_version: number;
+        };
+        /**
+         * GuessOption
+         * @description One entry on the table during a call. The key says nothing about which is real.
+         */
+        GuessOption: {
+            /** Key */
+            key: string;
+            /** Text */
+            text: string;
+        };
+        /** GuessRulesView */
+        GuessRulesView: {
+            /** Spot Points */
+            spot_points: number;
+            /** Fool Points */
+            fool_points: number;
+            /** Prompt */
+            prompt: string;
+        };
+        /**
+         * GuessView
+         * @description A call made: who picked, what they picked (the truth or a player's bluff), who got paid.
+         */
+        GuessView: {
+            /**
+             * Actor
+             * @enum {string}
+             */
+            actor: "p1" | "p2";
+            /**
+             * Picked
+             * @enum {string}
+             */
+            picked: "truth" | "p1" | "p2";
+            /** Points */
+            points: number;
+            /**
+             * Awarded To
+             * @enum {string}
+             */
+            awarded_to: "p1" | "p2";
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -663,6 +743,11 @@ export interface components {
             status: "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
             /** State Version */
             state_version: number;
+            /**
+             * Phase
+             * @enum {string}
+             */
+            phase: "write" | "guess";
             /** Seed Token */
             seed_token: string;
             /** Seed Emoji */
@@ -782,6 +867,11 @@ export interface components {
             status: "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
             /** State Version */
             state_version: number;
+            /**
+             * Phase
+             * @enum {string}
+             */
+            phase: "write" | "guess";
             /** Seed Token */
             seed_token: string;
             /** Seed Emoji */
@@ -836,7 +926,7 @@ export interface components {
         };
         /**
          * RoundRevealed
-         * @description Showcase only: both answers are in, so the card's truth may be shown.
+         * @description Showcase only: every call is in, so the card's truth may be shown.
          */
         RoundRevealed: {
             /** Round N */
@@ -849,12 +939,19 @@ export interface components {
             detail: string;
             /** Truth */
             truth: string;
+            /** Guesses */
+            guesses: components["schemas"]["GuessView"][];
+            /** Points P1 */
+            points_p1: number;
+            /** Points P2 */
+            points_p2: number;
             /** State Version */
             state_version: number;
         };
         /**
          * RoundView
-         * @description A dealt card. The truth is filled in only once both answers are judged.
+         * @description A dealt card. Options are on the table while the round is being called; the truth
+         *     and the calls are filled in once the round is revealed.
          */
         RoundView: {
             /** Round N */
@@ -867,6 +964,16 @@ export interface components {
             detail: string;
             /** Truth */
             truth: string | null;
+            /**
+             * Options
+             * @default []
+             */
+            options: components["schemas"]["GuessOption"][];
+            /**
+             * Guesses
+             * @default []
+             */
+            guesses: components["schemas"]["GuessView"][];
         };
         /** RubricView */
         RubricView: {
@@ -979,6 +1086,7 @@ export interface components {
             judge_resumed: components["schemas"]["JudgeResumed"];
             match_ended: components["schemas"]["MatchEnded"];
             round_revealed: components["schemas"]["RoundRevealed"];
+            guess_opened: components["schemas"]["GuessOpened"];
             state_resync: components["schemas"]["StateResync"];
         };
         /**
@@ -1050,6 +1158,7 @@ export interface components {
             score_max: number;
             /** Host Name */
             host_name: string;
+            guess: components["schemas"]["GuessRulesView"] | null;
             demo: components["schemas"]["DemoView"];
         };
         /** TurnRejected */
@@ -1451,6 +1560,41 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["MoveCommand"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accepted"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_guess_matches__match_id__guesses_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                match_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GuessCommand"];
             };
         };
         responses: {
