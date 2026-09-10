@@ -2367,10 +2367,6 @@
   color: var(--ink-soft);
 }
 
-.settings .who a {
-  color: var(--vermilion-ink);
-}
-
 .settings .confirm {
   margin: var(--space-2) 0 0;
   color: var(--ink-soft);
@@ -2401,28 +2397,51 @@
   border-color: var(--bar-fg);
 }
 
-.bar-top .signin-menu {
-  position: absolute;
-  top: calc(100% + 0.4rem);
-  right: 0;
+.settings .lede {
+  margin: var(--space-1) 0 var(--space-2);
+  color: var(--ink-soft);
+}
+
+.providers {
   display: grid;
-  min-width: 9rem;
-  background: var(--paper-raised);
+  gap: var(--space-1);
+}
+
+.provider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.9rem;
   border: 1px solid var(--rule);
-  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18);
-  z-index: 5;
-}
-
-.bar-top .signin-menu a {
+  background: var(--paper);
   color: var(--ink);
-  padding: 0.5rem 0.9rem;
-  font-variant: normal;
-  letter-spacing: 0;
+  text-decoration: none;
+  font-size: 1rem;
 }
 
-.bar-top .signin-menu a:hover {
+.provider:hover,
+.provider:focus-visible {
+  border-color: var(--ink);
   background: var(--paper-sunk);
-  color: var(--ink);
+}
+
+.provider svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+  flex: none;
+}
+
+.settings .link-row {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+  margin-top: var(--space-2);
+  display: grid;
+  gap: var(--space-1);
+}
+
+.settings .link-row .providers {
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
 }
 
 .boards {

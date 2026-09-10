@@ -1,11 +1,29 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 
 import { api, type SessionView } from "./api.ts";
+import { PROVIDER_MARKS } from "./providerMarks.ts";
 
 const PROVIDER_NAMES: Record<string, string> = { google: "Google", github: "GitHub", discord: "Discord" };
 
 /** Sign-in menu for guests; name and settings gear for signed-in players. Providers come from the server. */
+/** One button per provider, each a plain link into the redirect flow. */
+function ProviderButtons({ providers, verb }: { providers: string[]; verb: string }) {
+  const back = encodeURIComponent(location.pathname);
+  return (
+    <div className="providers">
+      {providers.map((p) => (
+        <a key={p} className="provider" href={`/auth/${p}/login?next=${back}`}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d={PROVIDER_MARKS[p]} />
+          </svg>
+          {verb} {PROVIDER_NAMES[p] ?? p}
+        </a>
+      ))}
+    </div>
+  );
+}
+
 /** What the sign-in callback reports back in the URL after a link attempt. */
 type Notice = { kind: "linked" | "taken"; provider: string; name: string } | null;
 
@@ -26,21 +44,19 @@ export function AccountMenu() {
   const [open, setOpen] = useState(false);
   const [notice] = useState<Notice>(takeNotice);
   const [settings, setSettings] = useState(notice !== null);
-  const menuRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     api.session().then(setSession, () => setSession(null));
   }, []);
   useEffect(() => {
     if (!open) return;
-    const close = (event: MouseEvent) => {
-      if (!menuRef.current?.contains(event.target as Node)) setOpen(false);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
     };
-    addEventListener("click", close);
-    return () => removeEventListener("click", close);
+    addEventListener("keydown", onKey);
+    return () => removeEventListener("keydown", onKey);
   }, [open]);
 
   if (!session || session.providers.length === 0) return null;
-  const back = encodeURIComponent(location.pathname);
 
   if (session.account) {
     return (
@@ -70,19 +86,29 @@ export function AccountMenu() {
     );
   }
   return (
-    <span className="account" ref={menuRef}>
-      <button type="button" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+    <span className="account">
+      <button type="button" onClick={() => setOpen(true)}>
         Sign in
       </button>
-      {open && (
-        <span className="signin-menu" role="menu">
-          {session.providers.map((p) => (
-            <a key={p} role="menuitem" href={`/auth/${p}/login?next=${back}`}>
-              {PROVIDER_NAMES[p] ?? p}
-            </a>
-          ))}
-        </span>
-      )}
+      {open &&
+        createPortal(
+          <div className="scrim" onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
+            <div className="sheet settings" role="dialog" aria-modal="true" aria-labelledby="signin-title">
+              <h2 id="signin-title">Sign in</h2>
+              <p className="lede">
+                Keep your duels under one name and take a place on the standings. No password: Oddstage only
+                receives your name and avatar.
+              </p>
+              <ProviderButtons providers={session.providers} verb="Continue with" />
+              <div className="sheet-actions">
+                <button className="quiet-button" type="button" onClick={() => setOpen(false)}>
+                  Not now
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </span>
   );
 }
@@ -101,7 +127,6 @@ function SettingsSheet({
   const account = session.account!;
   const label = (p: string) => PROVIDER_NAMES[p] ?? p;
   const unlinked = session.providers.filter((p) => !account.providers.includes(p));
-  const back = encodeURIComponent(location.pathname);
   const [name, setName] = useState(account.display_name);
   const [step, setStep] = useState<"edit" | "confirm" | "saved">("edit");
   const [error, setError] = useState<string | null>(null);
@@ -142,29 +167,20 @@ function SettingsSheet({
         )}
         {notice?.kind === "taken" && (
           <p className="notice warn">
-            That {label(notice.provider)} account already belongs to <b>{notice.name}</b>, so nothing changed here.
-            To play as {notice.name}, sign out first and sign in with {label(notice.provider)}.
+            That {label(notice.provider)} account is already its own Oddstage account, <b>{notice.name}</b>. To use
+            it, sign out and sign in with {label(notice.provider)}.
           </p>
         )}
         <p className="who">
           {account.avatar_url && <img src={account.avatar_url} alt="" />}
-          <span>
-            Signs in with {account.providers.map(label).join(" and ")}.
-            {unlinked.length > 0 && (
-              <>
-                {" "}
-                Link{" "}
-                {unlinked.map((p, i) => (
-                  <span key={p}>
-                    {i > 0 && " or "}
-                    <a href={`/auth/${p}/login?next=${back}`}>{label(p)}</a>
-                  </span>
-                ))}{" "}
-                to sign in with it too.
-              </>
-            )}
-          </span>
+          <span>Signed in with {account.providers.map(label).join(" and ")}.</span>
         </p>
+        {unlinked.length > 0 && (
+          <div className="link-row">
+            <span className="small-caps">Also sign in with</span>
+            <ProviderButtons providers={unlinked} verb="Link" />
+          </div>
+        )}
         <div className="name-field">
           <label className="small-caps" htmlFor="public-name">
             Public name
