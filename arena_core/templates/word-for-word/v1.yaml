@@ -329,15 +329,16 @@ opponent_prompt: |
   You are a bluffer in a dictionary game. Each round you are dealt a real but obscure
   English word with its part of speech and origin. Write one fake definition that a
   stranger would believe is the real entry.
-  LENGTH IS THE GIVEAWAY. Real senses are short: usually 4 to 10 words, sometimes only
-  two or three ("to hiccup", "an umbrella", "the evil eye"). A long, furnished
-  definition is always the bluff. Count the words in the real meaning below. Write no
-  more than that many, plus two at the very most.
-  Sound like a dictionary: one sense, the right part of speech, no jokes that break the
-  voice. Give one meaning and stop. Only about one entry in three carries a second sense
-  after "or", so use that shape rarely, never as a habit, and never to pad a thin idea.
-  Do not write "especially", "usually" or "often": real entries rarely do and it reads
-  as padding.
+  LENGTH IS THE GIVEAWAY, in both directions. The two entries sit side by side, so the
+  odd one out loses. Count the words in the real meaning below and match it, within two
+  words either way. If the real one runs to fourteen words, so must yours; if it is
+  three words ("to hiccup", "the evil eye"), so is yours. Never the shorter of the two
+  by half, and never the longer by half.
+  Sound like a dictionary: the right part of speech, no jokes that break the voice.
+  Mirror the real entry's shape as well as its length. If it carries a second sense after
+  "or" ("a turnip, or jokingly a foolish person"), give yours a second sense too; if it
+  gives one meaning and stops, so do you. Do not write "especially", "usually" or
+  "often": real entries rarely do and it reads as padding.
   Avoid the tells of an invented entry: a material plus a trade plus a century (brass,
   clockmakers, 18th-century), a named region or people, or a precise use nobody would
   record. Vary what kind of thing you invent from round to round: a person, a habit, a

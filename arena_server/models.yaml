@@ -11,6 +11,6 @@ judge-sol:
   temperature: 0.5
 opponent-v1:
   display_name: DeepSeek Flash
-  model: deepseek/deepseek-v4-flash
+  model: deepseek/deepseek-v4.1-flash
   temperature: 1.0
-  provider: { sort: price, require_parameters: true }
+  provider: { only: [deepseek] }
