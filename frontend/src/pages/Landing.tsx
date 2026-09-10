@@ -85,7 +85,7 @@ export function Landing() {
             ))}
             <article className="card dashed">
               <h3>Stage your own game</h3>
-              <em>a template, a rubric, a judge</em>
+              <em>a template, scoring rules, a judge</em>
               <span className="ribbon quiet">In rehearsal</span>
             </article>
           </div>
@@ -112,7 +112,7 @@ export function Landing() {
         <section className="trust host" id="trust">
           <Host state="idle" />
           <p className="host-line">
-            Every move scored by an AI judge. The rubric is shown before you type.{" "}
+            Every move scored by an AI judge. The scoring rules are shown before you type.{" "}
             <a href="/mockups/methodology.html">See how the judging is graded</a>.
           </p>
         </section>

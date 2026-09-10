@@ -108,7 +108,7 @@ export function Play({ slug }: { slug: string }) {
           </label>
           {error && <p className="error-line">{error}</p>}
           <div className="sheet-actions">
-            <small>You will not see this card again. The rubric stays on the duel screen.</small>
+            <small>You will not see this card again. The scoring rules stay on the duel screen.</small>
             <button className="ticket" type="submit" disabled={starting}>
               Play it
             </button>
