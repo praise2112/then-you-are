@@ -191,12 +191,15 @@ function Stage({ template }: { template: TemplateView }) {
       setStep(6);
       await wait(700);
       setStep(7);
+      if (template.mode !== "showcase") return;
+      await wait(1500);
+      setStep(8);
     };
     void go();
     return () => {
       live = false;
     };
-  }, [demo, prefix]);
+  }, [demo, prefix, template.mode]);
 
   async function play(event: FormEvent) {
     event.preventDefault();
@@ -227,8 +230,10 @@ function Stage({ template }: { template: TemplateView }) {
   const showGhost = !tail && !focused;
   const showcase = template.mode === "showcase";
 
+  const played = step >= (showcase ? 8 : 7);
+
   return (
-    <div className={`torn stage-card${step >= 7 ? " played" : ""}`}>
+    <div className={`torn stage-card${played ? " played" : ""}`}>
       <div className="live">
         <p className="opening">
           <span className="medallion" aria-hidden="true">
@@ -274,7 +279,7 @@ function Stage({ template }: { template: TemplateView }) {
         {error && <p className="hint error">{error}</p>}
       </div>
 
-      <p className="small-caps round-head">{step >= 7 ? "That was one round. Now yours." : "How a round goes"}</p>
+      <p className="small-caps round-head">{played ? "That was one round. Now yours." : "How a round goes"}</p>
       <div className="demo">
         {step >= 1 && (
           <p className="opening on">
@@ -330,15 +335,14 @@ function Stage({ template }: { template: TemplateView }) {
         )}
         {step >= 7 && !showcase && <p className="headline on">{demo.headline}</p>}
         {step >= 7 && showcase && demo.opening.reveal && (
-          <p className="reveal on">
-            <span className="medallion" aria-hidden="true">
-              {demo.opening.emoji}
-            </span>
-            <span>
-              <b>What {demo.opening.token} really means</b>
+          <div className="demo-call on">
+            <p className="who">{step >= 8 ? "One of them was the dictionary" : "Now call the real one"}</p>
+            <p className="demo-entry">{winner.text}</p>
+            <p className={`demo-entry${step >= 8 ? " real" : ""}`}>
               {demo.opening.reveal}
-            </span>
-          </p>
+              {step >= 8 && <span className="stamp thump point">The real one</span>}
+            </p>
+          </div>
         )}
       </div>
     </div>

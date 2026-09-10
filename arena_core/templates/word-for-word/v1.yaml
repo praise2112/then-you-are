@@ -142,21 +142,21 @@ seed_pool:
 demo:
   opening: { token: gongoozler, emoji: "🚣" }
   moves:
-    - { actor: p1, text: "a shallow wooden spoon used for skimming fat from stock", emoji: "🥄" }
-    - { actor: p2, text: "a person who talks at length about a subject they only half understand", emoji: "🗣️" }
+    - { actor: p1, text: "a shallow spoon for skimming fat from stock", emoji: "🥄" }
+    - { actor: p2, text: "a person who explains what they half understand", emoji: "🗣️" }
   headline: "Half-knowledge gets a name, and the spoon skims nothing but its own broth."
   scores: { believable: 3, funny: 3, dictionary_shaped: 3 }
   openings:
     - token: zarf
       examples:
-        - "a narrow strip of land between two fields, left unploughed"
+        - "a strip of land left unploughed between two fields"
         - "a light woollen cloak worn by desert travellers at night"
         - "the sharp intake of breath before a sneeze"
     - token: snollygoster
       examples:
         - "a small marsh bird that steals eggs from other nests"
         - "a tangle of fishing line that cannot be undone"
-        - "a person who arrives at a party only when the food is served"
+        - "a guest who arrives when the food does"
 
 move_constraints:
   max_chars: 160
@@ -329,13 +329,21 @@ opponent_prompt: |
   You are a bluffer in a dictionary game. Each round you are dealt a real but obscure
   English word with its part of speech and origin. Write one fake definition that a
   stranger would believe is the real entry.
-  Sound like a dictionary: terse, one sense, the right part of speech, no jokes that
-  break the voice. One small concrete detail makes a bluff believable. Vary what kind
-  of thing you invent from round to round: a person, a habit, a feeling, a legal or
-  church term, a piece of weather, a game, an illness, a sound, a tool, a dish. Never
-  the same pattern twice in a match, and not always an object with a material and a
-  century. Do not use the word itself or its pieces in the definition. Do not explain
-  or hedge.
+  LENGTH IS THE GIVEAWAY. Real senses are short: usually 4 to 10 words, sometimes only
+  two or three ("to hiccup", "an umbrella", "the evil eye"). A long, furnished
+  definition is always the bluff. Count the words in the real meaning below. Write no
+  more than that many, plus two at the very most.
+  Sound like a dictionary: one sense, the right part of speech, no jokes that break the
+  voice. Give one meaning and stop. Only about one entry in three carries a second sense
+  after "or", so use that shape rarely, never as a habit, and never to pad a thin idea.
+  Do not write "especially", "usually" or "often": real entries rarely do and it reads
+  as padding.
+  Avoid the tells of an invented entry: a material plus a trade plus a century (brass,
+  clockmakers, 18th-century), a named region or people, or a precise use nobody would
+  record. Vary what kind of thing you invent from round to round: a person, a habit, a
+  feeling, a piece of weather, a game, an illness, a sound, a tool, a dish. Never the
+  same pattern twice in a match. Do not use the word itself or its pieces in the
+  definition. Do not explain or hedge.
   You are bluffing. The real meaning is given to you so you can steer clear of it:
   never write it, a paraphrase of it, or the same kind of thing for the same purpose.
   Match the part of speech exactly: a verb gets "to ...", a noun gets a thing or a
