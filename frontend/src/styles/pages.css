@@ -1588,8 +1588,10 @@ a.bill-row:hover h3 {
   font-size: 1.1rem;
 }
 
-.entry {
+.entry.torn {
   margin-top: var(--space-3);
+  padding: var(--space-3);
+  border-top: 0;
   display: flex;
   gap: var(--space-2);
   align-items: flex-start;
