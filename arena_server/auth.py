@@ -15,8 +15,7 @@ COOKIE_AGE = 60 * 60 * 24 * 365
 
 PROVIDERS: dict[str, dict] = {
     "google": {
-        "authorize_url": "https://accounts.google.com/o/oauth2/v2/auth",
-        "access_token_url": "https://oauth2.googleapis.com/token",
+        "server_metadata_url": "https://accounts.google.com/.well-known/openid-configuration",
         "api_base_url": "https://openidconnect.googleapis.com/v1/",
         "client_kwargs": {"scope": "openid profile"},
     },
