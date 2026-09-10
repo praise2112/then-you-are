@@ -9,6 +9,8 @@ import { ReplayCard } from "./cards.tsx";
 import { criterionLabel, fullMove, HOUSE, prefixOf } from "./format.ts";
 
 const STILL = matchMedia("(prefers-reduced-motion: reduce)").matches;
+// The demo round runs to the reveal; without motion it opens there instead.
+const LAST_STEP = 8;
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 export function Landing() {
@@ -156,7 +158,7 @@ function Stage({ template }: { template: TemplateView }) {
   const [ghost, setGhost] = useState(0);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [step, setStep] = useState(STILL ? 7 : 0);
+  const [step, setStep] = useState(STILL ? LAST_STEP : 0);
   const [typed, setTyped] = useState(STILL ? demo.moves[0].text.slice(prefix.length) : "");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -230,7 +232,7 @@ function Stage({ template }: { template: TemplateView }) {
   const showGhost = !tail && !focused;
   const showcase = template.mode === "showcase";
 
-  const played = step >= (showcase ? 8 : 7);
+  const played = step >= (showcase ? LAST_STEP : 7);
 
   return (
     <div className={`torn stage-card${played ? " played" : ""}`}>
@@ -336,12 +338,20 @@ function Stage({ template }: { template: TemplateView }) {
         {step >= 7 && !showcase && <p className="headline on">{demo.headline}</p>}
         {step >= 7 && showcase && demo.opening.reveal && (
           <div className="demo-call on">
-            <p className="who">{step >= 8 ? "One of them was the dictionary" : "Now call the real one"}</p>
-            <p className="demo-entry">{winner.text}</p>
+            <p className="who">Your call: which one is the real entry?</p>
+            <p className="demo-entry">
+              {winner.text}
+              {step >= 8 && <span className="tag">{HOUSE}&rsquo;s bluff</span>}
+            </p>
             <p className={`demo-entry${step >= 8 ? " real" : ""}`}>
               {demo.opening.reveal}
               {step >= 8 && <span className="stamp thump point">The real one</span>}
             </p>
+            {step >= 8 && (
+              <p className="demo-call-foot">
+                Right, and the points are yours. Fooled, and they go to {HOUSE}.
+              </p>
+            )}
           </div>
         )}
       </div>

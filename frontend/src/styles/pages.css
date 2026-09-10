@@ -1441,10 +1441,11 @@ a.bill-row:hover h3 {
 }
 
 .program h1 {
-  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-size: clamp(1.7rem, 4.5vw, 2.4rem);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   text-align: center;
+  text-wrap: balance;
 }
 
 .program .kicker {
@@ -1533,9 +1534,16 @@ a.bill-row:hover h3 {
 }
 
 .finale .score {
-  font-size: 2.4rem;
-  text-transform: uppercase;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0;
   margin: 0.2rem 0;
+}
+
+.finale .score b {
+  font-family: var(--display);
+  font-weight: 600;
 }
 
 .play-cta {
@@ -1548,6 +1556,10 @@ a.bill-row:hover h3 {
   font-size: 0.85rem;
   color: var(--ink-faint);
   margin-top: var(--space-1);
+}
+
+.icon-link .icon {
+  margin-top: -0.1em;
 }
 
 .share {
@@ -1596,7 +1608,7 @@ a.bill-row:hover h3 {
 }
 
 .finale .score {
-  font-size: clamp(1.6rem, 8vw, 2.4rem);
+  font-size: 1.2rem;
   overflow-wrap: anywhere;
 }
 
@@ -2167,6 +2179,18 @@ ul.rules-text li {
   border-left-color: var(--vermilion-ink);
 }
 
+.demo-entry .tag {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.4rem;
+}
+
+.demo-call-foot {
+  margin: var(--space-1) 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+}
+
 .demo-entry .stamp.point {
   position: absolute;
   top: 0.1rem;
@@ -2262,6 +2286,15 @@ ul.rules-text li {
 .program .chain {
   justify-content: center;
   margin: var(--space-3) 0;
+}
+
+.chain figcaption {
+  max-width: 8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 @media (max-width: 40rem) {

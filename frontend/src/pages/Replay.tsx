@@ -45,12 +45,12 @@ export function ReplayPage({ matchId }: Props) {
   const showcase = replay.mode === "showcase";
   const finish =
     replay.winner === null
-      ? `A draw, ${replay.points_p1}:${replay.points_p2}`
+      ? `a draw, ${replay.points_p1} to ${replay.points_p2}`
       : replay.end_reason === "move_cap_points" || replay.end_reason === "rounds_complete"
-        ? `${winnerName} wins on points, ${replay.points_p1}:${replay.points_p2}`
+        ? `wins on points, ${replay.points_p1} to ${replay.points_p2}`
         : replay.end_reason === "resign"
-          ? `${winnerName} wins by resignation`
-          : `${winnerName} wins by sudden death in ${replay.judged_moves} moves`;
+          ? "wins by resignation"
+          : `wins by sudden death in ${replay.judged_moves} moves`;
   const rounds = showcase ? groupRounds(replay.rounds, replay.transcript).filter((g) => g.revealed) : [];
 
   return (
@@ -116,7 +116,9 @@ export function ReplayPage({ matchId }: Props) {
           <p className="small-caps" style={{ margin: 0 }}>
             Final result
           </p>
-          <p className="score">{finish}</p>
+          <p className="score">
+            {replay.winner !== null && <b>{winnerName}</b>} {finish}
+          </p>
           <div className="host" style={{ justifyContent: "center", marginTop: "var(--space-2)" }}>
             <Host state="idle" />
             <p className="host-line">{lastTurn?.host?.quotable_line ?? "A quiet ending."}</p>
