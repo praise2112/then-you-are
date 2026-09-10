@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 
 import { api, ApiError, type SessionView } from "./api.ts";
+import { Link } from "./App.tsx";
 import { PROVIDER_MARKS } from "./providerMarks.ts";
 
 const PROVIDER_NAMES: Record<string, string> = { google: "Google", github: "GitHub", discord: "Discord" };
@@ -62,9 +63,9 @@ export function AccountMenu() {
     return (
       <span className="account">
         {session.account.avatar_url && <img src={session.account.avatar_url} alt="" />}
-        <button className="name" type="button" title="Change your public name" onClick={() => setSettings(true)}>
+        <Link className="name" to={`/p/${session.account.id}`}>
           {session.account.display_name}
-        </button>
+        </Link>
         <button
           type="button"
           onClick={async () => {

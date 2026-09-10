@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { AccountMenu } from "../Account.tsx";
 import { Link, navigate, ThemeToggle } from "../App.tsx";
-import { api, type Replay, type TemplateView } from "../api.ts";
+import { api, type OpenDuel, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { store } from "../store.ts";
 import { ReplayCard } from "./cards.tsx";
@@ -14,9 +14,11 @@ const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 export function Landing() {
   const [templates, setTemplates] = useState<TemplateView[] | null>(null);
   const [curated, setCurated] = useState<Replay[] | null>(null);
+  const [openDuels, setOpenDuels] = useState<OpenDuel[]>([]);
   useEffect(() => {
     api.templates().then(setTemplates, () => setTemplates(null));
     api.replays("curated").then(setCurated, () => setCurated([]));
+    api.session().then((s) => setOpenDuels(s.open_duels), () => setOpenDuels([]));
   }, []);
   const [slug, setSlug] = useState<string | null>(null);
   const template = templates?.find((t) => t.slug === slug) ?? templates?.[0] ?? null;
@@ -41,6 +43,17 @@ export function Landing() {
           <ThemeToggle icon />
         </span>
       </header>
+
+      {openDuels.map((duel) => (
+        <div key={duel.id} className="open-duel">
+          <p>
+            You have a duel waiting. <b>{duel.title}</b>, {duel.line}.
+          </p>
+          <Link className="ticket" to={`/m/${duel.id}`}>
+            Resume
+          </Link>
+        </div>
+      ))}
 
       <main className="wrap">
         <section className="hero">

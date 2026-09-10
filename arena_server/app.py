@@ -35,9 +35,11 @@ from arena_server.events import EventBus
 from arena_server.leaderboard import leaderboard
 from arena_server.matches import MatchError, MatchService
 from arena_server.names import check_name
+from arena_server.profiles import profile
 from arena_server.views import (
     BoardView,
     MatchSnapshot,
+    ProfileView,
     Replay,
     SessionView,
     StageView,
@@ -212,10 +214,14 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365
         )
         snap = await service.create(key, body.template_id, body.seed_token)
-        if body.first_move:
+        if body.first_move and snap.state_version == 0:
             await service.submit_move(snap.id, key, f"first-{snap.id}", 0, body.first_move)
             snap = await service.snapshot(snap.id, key)
         return snap
+
+    @app.get("/profiles/{account_id}")
+    async def get_profile(account_id: str, request: Request) -> ProfileView:
+        return await profile(service, account_id, request.cookies.get(SESSION_COOKIE))
 
     @app.get("/matches/{match_id}")
     async def get_match(match_id: str, request: Request) -> MatchSnapshot:

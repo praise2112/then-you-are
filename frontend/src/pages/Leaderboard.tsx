@@ -52,8 +52,10 @@ export function Leaderboard() {
                       <tr key={row.rank}>
                         <td className="rank">{row.rank}</td>
                         <td className="player">
-                          {row.avatar_url && <img src={row.avatar_url} alt="" />}
-                          {row.display_name}
+                          <Link to={`/p/${row.account_id}`}>
+                            {row.avatar_url && <img src={row.avatar_url} alt="" />}
+                            {row.display_name}
+                          </Link>
                         </td>
                         <td className="num">{row.wins}</td>
                         <td className="num">{row.played}</td>

@@ -15,7 +15,7 @@ async def leaderboard(pool: Pool, templates: dict[str, Template]) -> list[BoardV
     async with pool.connection() as conn:
         rows = await (
             await conn.execute(
-                "select m.template_id, a.display_name, a.avatar_url, "
+                "select m.template_id, a.id as account_id, a.display_name, a.avatar_url, "
                 "count(*) filter (where m.winner = 'p1') as wins, count(*) as played "
                 "from matches m "
                 "join sessions s on s.session_key = m.p1_session_key "
@@ -37,6 +37,7 @@ async def leaderboard(pool: Pool, templates: dict[str, Template]) -> list[BoardV
         board.standings.append(
             StandingView(
                 rank=len(board.standings) + 1,
+                account_id=row["account_id"],
                 display_name=row["display_name"],
                 avatar_url=row["avatar_url"],
                 wins=row["wins"],
@@ -66,3 +67,25 @@ async def account_streaks(conn: AsyncConnection[DictRow], account_id: str) -> tu
         )
     ).fetchall()
     return streaks([row["winner"] for row in rows])
+
+
+async def account_rank(
+    conn: AsyncConnection[DictRow], account_id: str, template_id: str
+) -> int | None:
+    """Where the account would sit on that game's board, or None below the entry bar."""
+    row = await (
+        await conn.execute(
+            "with tally as (select a.id, count(*) filter (where m.winner = 'p1') as wins, "
+            "count(*) as played, a.display_name from matches m "
+            "join sessions s on s.session_key = m.p1_session_key "
+            "join accounts a on a.id = s.account_id "
+            "where m.status = 'ended' and m.template_id = %s "
+            "group by a.id, a.display_name having count(*) >= %s) "
+            "select 1 + (select count(*) from tally t "
+            "where (t.wins, -t.played, t.display_name) "
+            "> (mine.wins, -mine.played, mine.display_name)) as rank "
+            "from tally mine where mine.id = %s",
+            (template_id, MIN_PLAYED, account_id),
+        )
+    ).fetchone()
+    return row["rank"] if row else None

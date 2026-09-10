@@ -113,6 +113,7 @@ class MatchSnapshot(BaseModel):
 
 
 class AccountView(BaseModel):
+    id: str
     providers: list[str]
     display_name: str
     avatar_url: str
@@ -120,15 +121,25 @@ class AccountView(BaseModel):
     best_streak: int
 
 
+class OpenDuel(BaseModel):
+    """A duel the session (or its account) can walk back into."""
+
+    id: str
+    title: str
+    line: str
+
+
 class SessionView(BaseModel):
     stage_name: str
     list_duels: bool
     account: AccountView | None = None
     providers: list[str] = []
+    open_duels: list[OpenDuel] = []
 
 
 class StandingView(BaseModel):
     rank: int
+    account_id: str
     display_name: str
     avatar_url: str
     wins: int
@@ -152,3 +163,47 @@ class Replay(MatchSnapshot):
     share_text: str
     highlight_seq: int | None
     is_curated: bool
+
+
+class GameRecord(BaseModel):
+    slug: str
+    title: str
+    played: int
+    won: int
+    drawn: int
+    best_streak: int
+    rank: int | None
+
+
+class BadgeCount(BaseModel):
+    name: str
+    count: int
+
+
+class DuelRow(BaseModel):
+    id: str
+    title: str
+    created_at: str
+    status: Literal["active", "awaiting_judgment", "paused", "ended", "abandoned"]
+    length: str
+    result: str
+    won: bool | None
+    is_public: bool
+
+
+class ProfileView(BaseModel):
+    """A player's public programme. Open, private and closed duels appear only to the owner."""
+
+    id: str
+    display_name: str
+    avatar_url: str
+    since: str
+    played: int
+    won: int
+    streak: int
+    best_streak: int
+    records: list[GameRecord]
+    badges: list[BadgeCount]
+    duels: list[DuelRow]
+    best: list[Replay]
+    is_yours: bool

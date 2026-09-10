@@ -228,7 +228,7 @@ async def test_duels_are_private_unless_the_player_lists_them():
 
         me = (await client.put("/sessions/me", json={"list_duels": True})).json()
         assert me["list_duels"] is True
-        listed = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        listed = (await client.post("/matches", json={"template_id": "word-for-word"})).json()
         assert listed["is_public"] is True
         assert listed["id"] in [m["id"] for m in (await client.get("/on-stage")).json()["live"]]
 
@@ -441,7 +441,6 @@ async def test_an_idle_match_is_abandoned_and_its_pending_judge_call_stops(monke
     caller = FakeCaller(rulings=[None] * 50, opponent_moves=[])
     app, manager, client = await run_app(caller)
     try:
-        fresh = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
         stale = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
         await client.post(
             f"/matches/{stale['id']}/moves",
@@ -455,6 +454,8 @@ async def test_an_idle_match_is_abandoned_and_its_pending_judge_call_stops(monke
             )
         assert await app.state.service.close_abandoned() == [stale["id"]]
         await settle(app)
+        fresh = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        assert fresh["id"] != stale["id"]
 
         snap = (await client.get(f"/matches/{stale['id']}")).json()
         assert (snap["status"], snap["end_reason"]) == ("abandoned", "abandoned")
@@ -486,6 +487,26 @@ async def test_blocked_names_are_refused_with_a_plain_reason():
         assert refused.status_code == 422
         fine = await client.put("/sessions/me", json={"stage_name": "Scunthorpe"})
         assert fine.json()["stage_name"] == "Scunthorpe"
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_starting_a_game_with_a_duel_open_resumes_it():
+    app, manager, client = await run_app(FakeCaller([], []))
+    try:
+        first = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        again = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        assert again["id"] == first["id"]
+        other = (await client.post("/matches", json={"template_id": "word-for-word"})).json()
+        assert other["id"] != first["id"]
+        me = (await client.get("/sessions/me")).json()
+        assert [d["id"] for d in me["open_duels"]] == [first["id"], other["id"]]
+        assert me["open_duels"][0]["title"] == "Then I Am"
+        assert me["open_duels"][0]["line"].startswith("round 1, ")
+        assert me["open_duels"][0]["line"].endswith(" stands")
+        assert me["open_duels"][1]["line"].startswith("round 1 of 3, ")
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

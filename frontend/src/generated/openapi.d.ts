@@ -127,6 +127,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/profiles/{account_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Profile */
+        get: operations["get_profile_profiles__account_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/matches/{match_id}": {
         parameters: {
             query?: never;
@@ -345,6 +362,8 @@ export interface components {
         };
         /** AccountView */
         AccountView: {
+            /** Id */
+            id: string;
             /** Providers */
             providers: string[];
             /** Display Name */
@@ -355,6 +374,13 @@ export interface components {
             streak: number;
             /** Best Streak */
             best_streak: number;
+        };
+        /** BadgeCount */
+        BadgeCount: {
+            /** Name */
+            name: string;
+            /** Count */
+            count: number;
         };
         /** BecauseClause */
         BecauseClause: {
@@ -432,12 +458,51 @@ export interface components {
             /** Openings */
             openings: components["schemas"]["LandingOpeningView"][];
         };
+        /** DuelRow */
+        DuelRow: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Created At */
+            created_at: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
+            /** Length */
+            length: string;
+            /** Result */
+            result: string;
+            /** Won */
+            won: boolean | null;
+            /** Is Public */
+            is_public: boolean;
+        };
         /** Evidence */
         Evidence: {
             /** Target Quote */
             target_quote: string;
             /** Mechanism */
             mechanism: string;
+        };
+        /** GameRecord */
+        GameRecord: {
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Played */
+            played: number;
+            /** Won */
+            won: number;
+            /** Drawn */
+            drawn: number;
+            /** Best Streak */
+            best_streak: number;
+            /** Rank */
+            rank: number | null;
         };
         /**
          * Gates
@@ -614,6 +679,50 @@ export interface components {
             seq: number;
             /** Text */
             text: string;
+        };
+        /**
+         * OpenDuel
+         * @description A duel the session (or its account) can walk back into.
+         */
+        OpenDuel: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Line */
+            line: string;
+        };
+        /**
+         * ProfileView
+         * @description A player's public programme. Open, private and closed duels appear only to the owner.
+         */
+        ProfileView: {
+            /** Id */
+            id: string;
+            /** Display Name */
+            display_name: string;
+            /** Avatar Url */
+            avatar_url: string;
+            /** Since */
+            since: string;
+            /** Played */
+            played: number;
+            /** Won */
+            won: number;
+            /** Streak */
+            streak: number;
+            /** Best Streak */
+            best_streak: number;
+            /** Records */
+            records: components["schemas"]["GameRecord"][];
+            /** Badges */
+            badges: components["schemas"]["BadgeCount"][];
+            /** Duels */
+            duels: components["schemas"]["DuelRow"][];
+            /** Best */
+            best: components["schemas"]["Replay"][];
+            /** Is Yours */
+            is_yours: boolean;
         };
         /** Replay */
         Replay: {
@@ -813,6 +922,11 @@ export interface components {
              * @default []
              */
             providers: string[];
+            /**
+             * Open Duels
+             * @default []
+             */
+            open_duels: components["schemas"]["OpenDuel"][];
         };
         /**
          * SsePayloads
@@ -843,6 +957,8 @@ export interface components {
         StandingView: {
             /** Rank */
             rank: number;
+            /** Account Id */
+            account_id: string;
             /** Display Name */
             display_name: string;
             /** Avatar Url */
@@ -1142,6 +1258,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MatchSnapshot"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_profile_profiles__account_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                account_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileView"];
                 };
             };
             /** @description Validation Error */

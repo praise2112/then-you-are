@@ -92,9 +92,9 @@ export function Duel({ matchId, spectator = false }: Props) {
         setSnap(s);
         modeRef.current = s.mode;
         const opening = store.takeOpeningMove(matchId);
-        if (opening && s.status === "awaiting_judgment") {
+        if (opening) {
           setText(opening);
-          setPending(true);
+          if (s.status === "awaiting_judgment") setPending(true);
         }
         if (s.status === "ended" && spectator) return navigate(`/r/${matchId}`);
         if (s.status === "ended" && s.end_reason) {

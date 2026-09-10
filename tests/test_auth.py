@@ -93,6 +93,7 @@ async def test_signing_in_claims_the_guest_session_and_signing_out_leaves_it(mon
 
         await sign_in(client)
         me = (await client.get("/sessions/me")).json()
+        assert me["account"].pop("id")
         assert me["account"] == {
             "providers": ["github"],
             "display_name": PROFILE.display_name,
@@ -208,6 +209,60 @@ async def test_an_identity_on_another_account_is_not_moved(monkeypatch):
         me = (await client.get("/sessions/me")).json()
         assert me["account"]["display_name"] == PLAYER.display_name
         assert me["account"]["providers"] == ["github"]
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_profile_shows_the_record_and_hides_private_duels_from_visitors(monkeypatch):
+    who = auth.Profile("github", f"{RUN}-p", f"Pia {RUN}", "")
+
+    async def fake_profile(_client, _provider, _request):
+        return who
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    caller = FakeCaller(
+        rulings=[judge_response(), judge_response(verdict="fail")],
+        opponent_moves=["I am a hammer, rock-splitting."],
+    )
+    app, manager, client = await run_app(caller)
+    try:
+        await sign_in(client)
+        await resign(client, app)
+        match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        await client.post(
+            f"/matches/{match['id']}/moves",
+            json={"action_id": "a1", "expected_version": 0, "move_text": "I am rain."},
+        )
+        await settle(app)
+        await client.post("/matches", json={"template_id": "word-for-word"})
+
+        account_id = (await client.get("/sessions/me")).json()["account"]["id"]
+        mine = (await client.get(f"/profiles/{account_id}")).json()
+        assert mine["is_yours"] is True
+        assert (mine["played"], mine["won"], mine["streak"]) == (2, 1, 1)
+        assert mine["records"] == [
+            {
+                "slug": "then-i-am",
+                "title": "Then I Am",
+                "played": 2,
+                "won": 1,
+                "drawn": 0,
+                "best_streak": 1,
+                "rank": None,
+            }
+        ]
+        assert [d["result"] for d in mine["duels"]] == ["On stage", "Victory", "Resigned"]
+        assert [r["id"] for r in mine["best"]] == [match["id"]]
+
+        stranger = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test")
+        theirs = (await stranger.get(f"/profiles/{account_id}")).json()
+        await stranger.aclose()
+        assert theirs["is_yours"] is False
+        assert theirs["duels"] == []
+        assert theirs["played"] == 2
+        assert (await client.get("/profiles/nobody")).status_code == 404
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

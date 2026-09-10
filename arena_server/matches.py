@@ -41,6 +41,7 @@ from arena_server.leaderboard import account_streaks
 from arena_server.views import (
     AccountView,
     MatchSnapshot,
+    OpenDuel,
     Replay,
     RoundView,
     SessionView,
@@ -142,6 +143,7 @@ class MatchService:
                 if row and row["id"]:
                     streak, best = await account_streaks(conn, row["id"])
                     account = AccountView(
+                        id=row["id"],
                         providers=row["providers"],
                         display_name=row["display_name"],
                         avatar_url=row["avatar_url"],
@@ -150,9 +152,42 @@ class MatchService:
                     )
             if row:
                 return SessionView(
-                    stage_name=row["stage_name"], list_duels=row["list_duels"], account=account
+                    stage_name=row["stage_name"],
+                    list_duels=row["list_duels"],
+                    account=account,
+                    open_duels=[
+                        await self._open_duel(m) for m in await self._open_ids(session_key)
+                    ],
                 )
         return SessionView(stage_name="Challenger", list_duels=False)
+
+    async def _open_ids(self, session_key: str, template_id: str | None = None) -> list[str]:
+        """Open matches of the session and, when signed in, of every session on its account."""
+        async with self.pool.connection() as conn:
+            rows = await (
+                await conn.execute(
+                    "select m.id from matches m "
+                    "join sessions s on s.session_key = m.p1_session_key "
+                    "where m.status in ('active', 'awaiting_judgment', 'paused') "
+                    "and (s.session_key = %s or s.account_id = "
+                    "(select account_id from sessions where session_key = %s)) "
+                    "and (%s::text is null or m.template_id = %s) order by m.created_at",
+                    (session_key, session_key, template_id, template_id),
+                )
+            ).fetchall()
+        return [row["id"] for row in rows]
+
+    async def _open_duel(self, match_id: str) -> OpenDuel:
+        match, _ = await self._load(match_id)
+        template = self.template_of(match)
+        if template.mode == "showcase":
+            line = f"round {match.round_n} of {template.move_budget // 2}, {match.card}"
+        else:
+            form = match.standing_form
+            if form.lower().startswith(template.move_constraints.prefix.lower()):
+                form = form[len(template.move_constraints.prefix) :]
+            line = f"round {len(match.turns) + 1}, {form.rstrip('.')} stands"
+        return OpenDuel(id=match.id, title=template.title, line=line)
 
     async def create(
         self, session_key: str, template_id: str, seed_token: str | None = None
@@ -163,6 +198,9 @@ class MatchService:
         first = template.seed_named(seed_token) if seed_token else None
         if seed_token and first is None:
             raise MatchError(422, "that opening is not in this game")
+        open_ids = await self._open_ids(session_key, template.slug)
+        if open_ids:
+            return await self.snapshot(open_ids[0], session_key)
         cards = self._deal(template, first)
         match_id = secrets.token_urlsafe(8)
         listed = (await self.session_view(session_key)).list_duels
