@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import type { GuessOption, RoundView, TemplateView, TurnView } from "../api.ts";
 import { criterionLabel, HOUSE, roundTotals, roundWinner, type RoundGroup } from "./format.ts";
@@ -164,6 +164,48 @@ export function RoundLedger({ groups, me }: LedgerProps) {
   );
 }
 
+/** The judge's reason, folded away. Opens on hover or a click, closes on a click away. */
+function Why({ text }: { text: string }) {
+  const [stuck, setStuck] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!stuck) return;
+    const away = (event: PointerEvent) => {
+      if (!ref.current?.contains(event.target as Node)) setStuck(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setStuck(false);
+    };
+    document.addEventListener("pointerdown", away);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", away);
+      document.removeEventListener("keydown", escape);
+    };
+  }, [stuck]);
+  const open = stuck || hovered;
+  return (
+    <span
+      className="why"
+      ref={ref}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <button
+        type="button"
+        className="why-mark"
+        aria-expanded={open}
+        aria-label="Why this score"
+        onClick={() => setStuck((on) => !on)}
+      >
+        ?
+      </button>
+      {open && <span className="why-note">{text}</span>}
+    </span>
+  );
+}
+
 export function Badges({ turn }: { turn: TurnView }) {
   const badges = turn.host?.badges ?? [];
   return (
@@ -219,12 +261,7 @@ export function Bluff({ turn, round, who, you = false, won = false, template }: 
           {turn.points ?? 0}
           <small>/{totalAvailable}</small>
         </span>
-        <details className="why">
-          <summary title="Why this score" aria-label="Why this score">
-            ?
-          </summary>
-          <p>{turn.host?.because_clause.text}</p>
-        </details>
+        <Why text={turn.host?.because_clause.text ?? ""} />
       </div>
       <Badges turn={turn} />
     </article>

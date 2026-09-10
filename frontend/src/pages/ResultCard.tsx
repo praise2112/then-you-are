@@ -65,14 +65,16 @@ export function ResultCard({ snap, ended }: Props) {
     <>
       <div className="result-card">
         <span className={`stamp${won ? "" : " ink"}`}>{stamp}</span>
-        <p className="stats">
-          <span>
-            Streak<b>{streak}</b>
-          </span>
-          <span>
-            Best<b>{best}</b>
-          </span>
-        </p>
+        {snap.is_yours && (
+          <p className="stats">
+            <span>
+              Streak<b>{streak}</b>
+            </span>
+            <span>
+              Best<b>{best}</b>
+            </span>
+          </p>
+        )}
         <Link className="ticket" to={`/play/${snap.template_id}`}>
           Next duel
         </Link>

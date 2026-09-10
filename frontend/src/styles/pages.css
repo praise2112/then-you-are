@@ -1998,9 +1998,10 @@ ul.rules-text li {
   color: var(--ink-soft);
 }
 
-.bluff .why summary {
+.bluff .why-mark {
   cursor: pointer;
-  list-style: none;
+  background: none;
+  padding: 0;
   display: inline-grid;
   place-items: center;
   width: 1.35rem;
@@ -2015,23 +2016,19 @@ ul.rules-text li {
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.bluff .why summary:hover,
-.bluff .why summary:focus-visible,
-.bluff .why[open] summary {
+.bluff .why-mark:hover,
+.bluff .why-mark:focus-visible,
+.bluff .why-mark[aria-expanded="true"] {
   color: var(--vermilion-ink);
   border-color: var(--vermilion-ink);
 }
 
-.bluff .why summary::-webkit-details-marker {
-  display: none;
-}
-
-.bluff .why p {
+.bluff .why-note {
   position: absolute;
   z-index: 3;
   top: calc(100% + 0.4rem);
   left: 0;
-  width: 17rem;
+  width: max(12rem, 100%);
   max-width: 70vw;
   margin: 0;
   padding: var(--space-1) var(--space-2);
@@ -2198,6 +2195,31 @@ ul.rules-text li {
   font-size: 0.7rem;
   padding: 0.02rem 0.45rem;
   outline-offset: -4px;
+}
+
+/* The side column is narrow, so the host stands above the line and the tail turns upward. */
+.stage > section .host {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.stage > section .host-line {
+  width: 100%;
+}
+
+.stage > section .host-line::before,
+.stage > section .host-line::after {
+  top: -0.6rem;
+  left: 2rem;
+  border: 0.6rem solid transparent;
+  border-top: 0;
+  border-bottom-color: var(--rule);
+}
+
+.stage > section .host-line::after {
+  top: -0.5rem;
+  border-bottom-color: var(--paper-sunk);
 }
 
 /* The end of a duel: the board stays, the composer's place takes the result card */

@@ -557,7 +557,7 @@ class MatchService:
                     outcome=t["outcome"],
                     scoring=t["scoring"],
                     host=t["host"],
-                    points=self._turn_points(t["scoring"], template),
+                    points=self._turn_points(t["scoring"], template, t["outcome"]),
                 )
                 for t in extra["turn_rows"]
                 # A round being called on keeps both bluffs off the wire until the reveal.
@@ -580,9 +580,14 @@ class MatchService:
             is_curated=extra["is_curated"],
         )
 
-    def _turn_points(self, scoring: dict[str, Any] | None, template: Template) -> int | None:
+    def _turn_points(
+        self, scoring: dict[str, Any] | None, template: Template, outcome: str = ""
+    ) -> int | None:
+        """What the move was awarded. A move that fell takes nothing, whatever it scored."""
         if scoring is None:
             return None
+        if outcome == "fail":
+            return 0
         return weighted_total(scoring["scores"], template.weights)
 
     def _highlight_seq(self, snap: MatchSnapshot) -> int | None:
@@ -987,7 +992,7 @@ class MatchService:
                 continue
             scoring = ScoringPayload.model_validate(row["scoring"])
             host = HostPayload.model_validate(row["host"])
-            earned = self._turn_points(row["scoring"], template) or 0
+            earned = self._turn_points(row["scoring"], template, row["outcome"]) or 0
             self.bus.emit(
                 match.id,
                 "ruling",
@@ -1000,7 +1005,7 @@ class MatchService:
                     scoring=scoring,
                     host=host,
                     badges=host.badges,
-                    points=0 if row["outcome"] == "fail" else earned,
+                    points=earned,
                     points_p1=p1,
                     points_p2=p2,
                     to_move=match.to_move,
