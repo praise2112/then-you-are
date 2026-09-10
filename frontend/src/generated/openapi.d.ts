@@ -93,15 +93,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/leaderboard": {
+    "/leaderboard/{slug}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Leaderboard */
-        get: operations["get_leaderboard_leaderboard_get"];
+        /** Get Board */
+        get: operations["get_board_leaderboard__slug__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1218,11 +1218,13 @@ export interface operations {
             };
         };
     };
-    get_leaderboard_leaderboard_get: {
+    get_board_leaderboard__slug__get: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                slug: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -1233,7 +1235,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BoardView"][];
+                    "application/json": components["schemas"]["BoardView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

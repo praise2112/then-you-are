@@ -148,13 +148,15 @@ async def test_leaderboard_counts_an_account_across_its_sessions(monkeypatch):
         me = (await client.get("/sessions/me")).json()
         assert (me["account"]["streak"], me["account"]["best_streak"]) == (1, 1)
 
-        boards = (await client.get("/leaderboard")).json()
-        assert [b["slug"] for b in boards] == ["then-i-am", "word-for-word"]
-        mine = [s for s in boards[0]["standings"] if s["display_name"] == PLAYER.display_name]
+        board = (await client.get("/leaderboard/then-i-am")).json()
+        assert board["title"] == "Then I Am"
+        mine = [s for s in board["standings"] if s["display_name"] == PLAYER.display_name]
         assert len(mine) == 1
         assert mine[0]["wins"] == 1
         assert mine[0]["played"] == 3
-        assert all(s["display_name"] != PLAYER.display_name for s in boards[1]["standings"])
+        other = (await client.get("/leaderboard/word-for-word")).json()
+        assert all(s["display_name"] != PLAYER.display_name for s in other["standings"])
+        assert (await client.get("/leaderboard/no-such-game")).status_code == 404
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

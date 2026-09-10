@@ -73,6 +73,7 @@ export default function App() {
   if (play) return <Play slug={play[1] ?? "then-i-am"} key={play[1] ?? "then-i-am"} />;
   if (person) return <Profile accountId={person[1]} key={person[1]} />;
   if (path === "/stage") return <StagePage />;
-  if (path === "/standings") return <Leaderboard />;
+  const standings = path.match(/^\/standings(?:\/([^/]+))?$/);
+  if (standings) return <Leaderboard slug={standings[1]} />;
   return <Landing />;
 }

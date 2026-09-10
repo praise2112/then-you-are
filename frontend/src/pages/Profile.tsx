@@ -91,7 +91,7 @@ function Cover({ profile }: { profile: ProfileView }) {
         </span>
         {ranked.map((r) => (
           <span key={r.slug} className="plaque">
-            Standing <b>{ordinal(r.rank!)}</b> in {r.title}
+            Standing <b>{ordinal(r.rank!)}</b> in <Link to={`/standings/${r.slug}`}>{r.title}</Link>
           </span>
         ))}
       </div>

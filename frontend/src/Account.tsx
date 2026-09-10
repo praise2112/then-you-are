@@ -237,7 +237,7 @@ function SettingsSheet({
             }}
           />
           <span>
-            List my duels on the stage, so others can watch live and find the replays.
+            List my duels, so others can watch them live and find the replays.
             <small>Your duels stay private and shareable by link either way.</small>
           </span>
         </label>

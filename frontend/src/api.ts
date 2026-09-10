@@ -106,7 +106,7 @@ export const api = {
   setVisibility: (id: string, isPublic: boolean) =>
     request<void>(`/matches/${id}/visibility`, { method: "POST", body: JSON.stringify({ public: isPublic }) }),
   logout: () => request<void>("/auth/logout", { method: "POST" }),
-  leaderboard: () => request<BoardView[]>("/leaderboard"),
+  board: (slug: string) => request<BoardView>(`/leaderboard/${slug}`),
   profile: (id: string) => request<ProfileView>(`/profiles/${id}`),
   stage: () => request<StageView>("/on-stage"),
   replay: (id: string) => request<Replay>(`/replays/${id}`),

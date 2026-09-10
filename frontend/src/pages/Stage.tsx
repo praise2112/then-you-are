@@ -36,7 +36,7 @@ export function StagePage() {
         <Link className="wordmark" to="/">
           Oddstage
         </Link>
-        <span className="round">The stage</span>
+        <span className="round">Watch</span>
         <span className="aside">
           <Link to="/">Home</Link>
           <ThemeToggle icon />
@@ -45,7 +45,7 @@ export function StagePage() {
 
       <main className="wrap">
         <section id="on-stage">
-          <h2 className="centered-label small-caps">On stage now</h2>
+          <h2 className="centered-label small-caps">Live now</h2>
           {stage === null && <p className="empty-strip">Looking in on the house.</p>}
           {stage?.live.length === 0 && (
             <p className="empty-strip">Nobody is playing in public right now. Duels are private unless their player lists them.</p>

@@ -36,7 +36,7 @@ export function Landing() {
           On stage <b>{template?.title}</b>
         </span>
         <span className="aside">
-          <Link to="/stage">The stage</Link>
+          <Link to="/stage">Watch</Link>
           <Link to="/standings">Standings</Link>
           <a href="/mockups/methodology.html">The judging</a>
           <AccountMenu />
@@ -118,7 +118,7 @@ export function Landing() {
             ))}
           </div>
           <p className="strip-foot">
-            <Link to="/stage">Live duels and every listed replay, on the stage</Link>
+            <Link to="/stage">Watch live duels and every listed replay</Link>
           </p>
         </section>
 

@@ -102,7 +102,7 @@ export function Play({ slug }: { slug: string }) {
           <label className="choice">
             <input type="checkbox" checked={listDuels} onChange={(e) => setListDuels(e.target.checked)} />
             <span>
-              List my duels on the stage, so others can watch live and find the replays.
+              List my duels, so others can watch them live and find the replays.
               <small>Off by default. Your duels stay private and shareable by link either way.</small>
             </span>
           </label>

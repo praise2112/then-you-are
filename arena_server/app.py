@@ -32,7 +32,7 @@ from arena_server.auth import SESSION_COOKIE, mount_auth, rename_account
 from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
-from arena_server.leaderboard import leaderboard
+from arena_server.leaderboard import board
 from arena_server.matches import MatchError, MatchService
 from arena_server.names import check_name
 from arena_server.profiles import profile
@@ -185,9 +185,11 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def get_session(request: Request) -> SessionView:
         return await session_with_providers(request.cookies.get(SESSION_COOKIE))
 
-    @app.get("/leaderboard")
-    async def get_leaderboard() -> list[BoardView]:
-        return await leaderboard(pool, templates)
+    @app.get("/leaderboard/{slug}")
+    async def get_board(slug: str) -> BoardView:
+        if slug not in templates:
+            raise HTTPException(404, "no such game")
+        return await board(pool, templates[slug])
 
     @app.put("/sessions/me")
     async def put_session(body: SessionUpdate, request: Request, response: Response) -> SessionView:

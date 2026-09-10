@@ -11,40 +11,37 @@ MIN_PLAYED = 3
 TOP = 20
 
 
-async def leaderboard(pool: Pool, templates: dict[str, Template]) -> list[BoardView]:
+async def board(pool: Pool, template: Template) -> BoardView:
     async with pool.connection() as conn:
         rows = await (
             await conn.execute(
-                "select m.template_id, a.id as account_id, a.display_name, a.avatar_url, "
+                "select a.id as account_id, a.display_name, a.avatar_url, "
                 "count(*) filter (where m.winner = 'p1') as wins, count(*) as played "
                 "from matches m "
                 "join sessions s on s.session_key = m.p1_session_key "
                 "join accounts a on a.id = s.account_id "
-                "where m.status = 'ended' "
-                "group by m.template_id, a.id, a.display_name, a.avatar_url "
+                "where m.status = 'ended' and m.template_id = %s "
+                "group by a.id, a.display_name, a.avatar_url "
                 "having count(*) >= %s "
-                "order by wins desc, played asc, a.display_name",
-                (MIN_PLAYED,),
+                "order by wins desc, played asc, a.display_name limit %s",
+                (template.slug, MIN_PLAYED, TOP),
             )
         ).fetchall()
-    boards = {
-        slug: BoardView(slug=slug, title=t.title, standings=[]) for slug, t in templates.items()
-    }
-    for row in rows:
-        board = boards.get(row["template_id"])
-        if board is None or len(board.standings) >= TOP:
-            continue
-        board.standings.append(
+    return BoardView(
+        slug=template.slug,
+        title=template.title,
+        standings=[
             StandingView(
-                rank=len(board.standings) + 1,
+                rank=rank,
                 account_id=row["account_id"],
                 display_name=row["display_name"],
                 avatar_url=row["avatar_url"],
                 wins=row["wins"],
                 played=row["played"],
             )
-        )
-    return list(boards.values())
+            for rank, row in enumerate(rows, start=1)
+        ],
+    )
 
 
 def streaks(winners: list[str | None]) -> tuple[int, int]:

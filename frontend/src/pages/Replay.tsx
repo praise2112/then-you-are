@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 
 import { Link, ThemeToggle } from "../App.tsx";
 import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { criterionLabel, formName, groupRounds } from "./format.ts";
+import { criterionLabel, formName, groupRounds, type RoundGroup } from "./format.ts";
 import { Bluff, roundWinner, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
@@ -76,31 +76,7 @@ export function ReplayPage({ matchId }: Props) {
           <span className="model">model</span>, {date}
         </p>
 
-        {showcase &&
-          rounds.map(({ round, mine, theirs }) => (
-            <section key={round.round_n} className="round-result">
-              <p className="centered-label small-caps">Round {round.round_n}</p>
-              <WordCard round={round} />
-              <div className="bluffs">
-                <Bluff
-                  turn={mine!}
-                  round={round}
-                  who={replay.stage_name}
-                  you
-                  won={roundWinner(mine, theirs) === "mine"}
-                  template={template}
-                />
-                <Bluff
-                  turn={theirs!}
-                  round={round}
-                  who={replay.opponent_name}
-                  won={roundWinner(mine, theirs) === "theirs"}
-                  template={template}
-                />
-              </div>
-              <TruthLine round={round} />
-            </section>
-          ))}
+        {showcase && rounds.length > 0 && <RoundStepper rounds={rounds} replay={replay} template={template} />}
 
         {!showcase && (
           <div className="card opening">
@@ -219,5 +195,53 @@ export function ReplayPage({ matchId }: Props) {
         </div>
       </main>
     </>
+  );
+}
+
+/** One round at a time, with arrows, the left and right keys, and a #round-N link into the page. */
+function RoundStepper({ rounds, replay, template }: { rounds: RoundGroup[]; replay: Replay; template: TemplateView }) {
+  const fromHash = Number(location.hash.match(/^#round-(\d+)$/)?.[1]);
+  const [at, setAt] = useState(fromHash >= 1 && fromHash <= rounds.length ? fromHash - 1 : 0);
+  const { round, mine, theirs } = rounds[at];
+  const go = (next: number) => {
+    if (next < 0 || next >= rounds.length) return;
+    setAt(next);
+    history.replaceState(null, "", `#round-${next + 1}`);
+  };
+  const onKey = (event: KeyboardEvent) => {
+    if (event.key === "ArrowLeft") go(at - 1);
+    if (event.key === "ArrowRight") go(at + 1);
+  };
+  return (
+    <section className="round-result stepper" tabIndex={0} onKeyDown={onKey} aria-label={`Round ${at + 1} of ${rounds.length}`}>
+      <p className="stepper-bar">
+        <button type="button" className="turn" aria-label="Previous round" disabled={at === 0} onClick={() => go(at - 1)}>
+          &lsaquo;
+        </button>
+        <span className="small-caps">
+          Round {at + 1} of {rounds.length}
+        </span>
+        <button
+          type="button"
+          className="turn"
+          aria-label="Next round"
+          disabled={at === rounds.length - 1}
+          onClick={() => go(at + 1)}
+        >
+          &rsaquo;
+        </button>
+      </p>
+      <WordCard round={round} />
+      <div className="bluffs">
+        <Bluff turn={mine!} round={round} who={replay.stage_name} you won={roundWinner(mine, theirs) === "mine"} template={template} />
+        <Bluff turn={theirs!} round={round} who={replay.opponent_name} won={roundWinner(mine, theirs) === "theirs"} template={template} />
+      </div>
+      <TruthLine round={round} />
+      <p className="stepper-dots" aria-hidden="true">
+        {rounds.map((r, i) => (
+          <button key={r.round.round_n} type="button" className={i === at ? "on" : undefined} onClick={() => go(i)} tabIndex={-1} />
+        ))}
+      </p>
+    </section>
   );
 }
