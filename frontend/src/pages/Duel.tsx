@@ -17,8 +17,8 @@ import {
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { capitalize, criterionLabel, formName, fullMove, groupRounds, HOUSE, lastStanding, roundTotals, roundWinner } from "./format.ts";
-import { MatchEnd } from "./MatchEnd.tsx";
+import { capitalize, criterionLabel, endLine, formName, fullMove, groupRounds, HOUSE, lastStanding, roundTotals, roundWinner } from "./format.ts";
+import { ResultCard } from "./ResultCard.tsx";
 import { Bluff, CallCard, CallLine, RoundLedger, TruthLine, WordCard } from "./rounds.tsx";
 
 function endedFromReplay(r: Replay): MatchEnded {
@@ -237,9 +237,9 @@ export function Duel({ matchId, spectator = false }: Props) {
     );
   }
 
-  if (ended && revealEnd && snap.status === "ended") {
-    return <MatchEnd snap={snap} ended={ended} template={template} />;
-  }
+  // The board stays up at the end; the composer's place takes the result card.
+  const finished = ended && revealEnd && snap.status === "ended" ? ended : null;
+  const parting = finished && endLine(finished);
 
   const prefix = template.move_prefix;
   const me = spectator ? snap.stage_name : "You";
@@ -248,7 +248,7 @@ export function Duel({ matchId, spectator = false }: Props) {
   const fell = ended && latest?.outcome === "fail" ? latest : null;
   const shown = fell ?? standing;
   const yourLast = [...snap.transcript].reverse().find((t) => t.actor === "p1" && t.host);
-  const showYourSlip = yourLast && latest?.actor === "p2" && !streaming;
+  const showYourSlip = yourLast && latest?.actor === "p2" && !streaming && !finished;
   const standingText = streaming || standing?.move_text || snap.seed_token;
   const standingIsMine = !streaming && standing?.actor === "p1";
   const waiting = pending || thinking || !!streaming || (snap.to_move === "p2" && !paused);
@@ -323,6 +323,7 @@ export function Duel({ matchId, spectator = false }: Props) {
         setPicked={setPicked}
         calling={calling}
         call={call}
+        finished={finished}
       />
     );
   }
@@ -331,6 +332,10 @@ export function Duel({ matchId, spectator = false }: Props) {
     ? fell.actor === "p1"
       ? `${me} fell`
       : `${HOUSE} fell`
+    : finished
+    ? standingIsMine
+      ? `${me} had the last word`
+      : `${HOUSE} had the last word`
     : streaming
     ? `${HOUSE} is becoming`
     : standingIsMine
@@ -343,7 +348,9 @@ export function Duel({ matchId, spectator = false }: Props) {
     : returned
       ? "Your move, still yours"
       : `Your move, beat ${formName(standingText, prefix)}`;
-  const hostLine = fell
+  const hostLine = finished
+    ? parting!.text
+    : fell
     ? "The match is over. One moment."
     : paused
     ? paused.host_text
@@ -425,7 +432,7 @@ export function Duel({ matchId, spectator = false }: Props) {
               </li>
             )}
           </ol>
-          {!spectator && (
+          {!spectator && !finished && (
             <p className="resign-row">
               <button className="quiet-button" type="button" onClick={() => setShowResign(true)} disabled={!!ended}>
                 <Icon name="flag" />
@@ -451,7 +458,7 @@ export function Duel({ matchId, spectator = false }: Props) {
           )}
 
           <p className="small-caps last-move-head">{standingHead}</p>
-          <div className={`torn standing${waiting ? " reading" : ""}`}>
+          <div className={`torn standing${waiting ? " reading" : ""}${finished ? " final" : ""}`}>
             {paused && <span className="tag">Awaiting ruling</span>}
             {shown && !streaming && !paused && (
               <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>
@@ -482,7 +489,8 @@ export function Duel({ matchId, spectator = false }: Props) {
           </div>
           {paused && <p className="waiting">The match is paused until the judge rules.</p>}
 
-          {!spectator && (
+          {finished && <ResultCard snap={snap} ended={finished} />}
+          {!spectator && !finished && (
             <form
               ref={formRef}
               className={`composer${returned ? " returned" : ""}`}
@@ -608,8 +616,11 @@ export function Duel({ matchId, spectator = false }: Props) {
             </>
           )}
           <div className="host" style={{ marginTop: "var(--space-3)" }}>
-            <Host state={paused || waiting ? "thinking" : "idle"} />
-            <p className="host-line">{hostLine}</p>
+            <Host state={finished ? "tipping" : paused || waiting ? "thinking" : "idle"} />
+            <p className={`host-line${parting?.label ? " coaching" : ""}`}>
+              {parting?.label && <span>{parting.label}</span>}
+              {hostLine}
+            </p>
           </div>
         </section>
       </main>
@@ -664,12 +675,14 @@ type ShowcaseProps = {
   setPicked: (key: string) => void;
   calling: boolean;
   call: () => Promise<void>;
+  finished: MatchEnded | null;
 };
 
 /** The round view: one card at a time, the call once both bluffs are judged, both answers shown
  *  together once the truth is out. */
-function ShowcaseDuel({ snap, template, spectator, text, setText, pending, thinking, returned, paused, ended, play, resign, formRef, picked, setPicked, calling, call }: ShowcaseProps) {
+function ShowcaseDuel({ snap, template, spectator, text, setText, pending, thinking, returned, paused, ended, play, resign, formRef, picked, setPicked, calling, call, finished }: ShowcaseProps) {
   const [showResign, setShowResign] = useState(false);
+  const parting = finished && endLine(finished);
   const me = spectator ? snap.stage_name : "You";
   const groups = groupRounds(snap.rounds, snap.transcript);
   const revealed = groups.filter((g) => g.revealed);
@@ -680,7 +693,9 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
   const earlier = onCall ? revealed : revealed.slice(0, -1);
   const judging = !onCall && (pending || thinking || snap.status === "awaiting_judgment");
   const canPlay = snap.status === "active" && !onCall && !pending && !paused && !ended && !!current;
-  const hostLine = ended
+  const hostLine = finished
+    ? parting!.text
+    : ended
     ? "The match is over. One moment."
     : paused
       ? paused.host_text
@@ -753,7 +768,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
           )}
 
           {lastResult && (
-            <section className="round-result">
+            <section className={`round-result${finished ? " final" : ""}`}>
               <TruthLine round={lastResult.round} />
               <div className="bluffs">
                 <Bluff
@@ -805,6 +820,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
             </p>
           )}
 
+          {finished && <ResultCard snap={snap} ended={finished} />}
           {!spectator && current && !onCall && (
             <form ref={formRef} className={`composer${returned ? " returned" : ""}`} style={{ marginTop: "var(--space-3)" }} onSubmit={play}>
               {returned && (
@@ -859,7 +875,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
             </div>
           )}
 
-          {!spectator && (
+          {!spectator && !finished && (
             <p className="resign-row">
               <button className="quiet-button" type="button" onClick={() => setShowResign(true)} disabled={ended}>
                 <Icon name="flag" />
@@ -889,8 +905,11 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
             ))}
           </ul>
           <div className="host" style={{ marginTop: "var(--space-3)" }}>
-            <Host state={paused || judging ? "thinking" : "idle"} />
-            <p className="host-line">{hostLine}</p>
+            <Host state={finished ? "tipping" : paused || judging ? "thinking" : "idle"} />
+            <p className={`host-line${parting?.label ? " coaching" : ""}`}>
+              {parting?.label && <span>{parting.label}</span>}
+              {hostLine}
+            </p>
           </div>
         </section>
       </main>

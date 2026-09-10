@@ -5,7 +5,7 @@ import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { criterionLabel, formName, groupRounds, roundWinner, type RoundGroup } from "./format.ts";
+import { criterionLabel, formName, groupRounds, roundWinner, STANDING, type RoundGroup } from "./format.ts";
 import { Bluff, CallLine, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
@@ -78,11 +78,7 @@ export function ReplayPage({ matchId }: Props) {
 
         {showcase && rounds.length > 0 && <RoundStepper rounds={rounds} replay={replay} template={template} />}
 
-        {!showcase && (
-          <div className="card opening">
-            <b>Opening:</b> {replay.seed_token} {replay.seed_emoji}
-          </div>
-        )}
+        {!showcase && <Chain replay={replay} prefix={template.move_prefix} />}
 
         {!showcase && replay.transcript.map((turn) => (
           <div key={turn.seq}>
@@ -245,5 +241,42 @@ function RoundStepper({ rounds, replay, template }: { rounds: RoundGroup[]; repl
         ))}
       </p>
     </section>
+  );
+}
+
+const CHAIN_SHOWN = 8;
+
+/** Every form that stood, as a row of medallions, the winner's last one crowned. */
+function Chain({ replay, prefix }: { replay: Replay; prefix: string }) {
+  const standing = replay.transcript.filter((t) => STANDING.has(t.outcome));
+  const hidden = Math.max(0, standing.length - CHAIN_SHOWN);
+  const shown = standing.slice(hidden);
+  return (
+    <div className="chain">
+      <figure>
+        <span className="medallion">{replay.seed_emoji}</span>
+        <figcaption>{replay.seed_token}</figcaption>
+      </figure>
+      {hidden > 0 && (
+        <span style={{ display: "contents" }}>
+          <span className="chain-link">→</span>
+          <figure>
+            <span className="medallion more">+{hidden}</span>
+            <figcaption>more forms</figcaption>
+          </figure>
+        </span>
+      )}
+      {shown.map((turn, i) => (
+        <span key={turn.seq} style={{ display: "contents" }}>
+          <span className="chain-link">→</span>
+          <figure>
+            <span className={`medallion${i === shown.length - 1 && turn.actor === replay.winner ? " crowned" : ""}`}>
+              {turn.host?.generated_emoji}
+            </span>
+            <figcaption>{formName(turn.move_text, prefix)}</figcaption>
+          </figure>
+        </span>
+      ))}
+    </div>
   );
 }

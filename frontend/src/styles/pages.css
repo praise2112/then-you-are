@@ -731,48 +731,6 @@
 
 /* Match end playbill */
 
-.playbill-page {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: var(--space-3);
-}
-
-.playbill {
-  background: var(--paper-raised);
-  border: 2px solid var(--brass);
-  outline: 1px solid var(--brass);
-  outline-offset: 5px;
-  padding: var(--space-4) var(--space-3) var(--space-3);
-  max-width: 46rem;
-  text-align: center;
-}
-
-.playbill .wordmark {
-  display: block;
-  font-size: 1rem;
-}
-
-.playbill .kicker {
-  display: block;
-  margin-top: 0.3rem;
-  color: var(--ink-faint);
-}
-
-.playbill .stamp.huge {
-  font-size: clamp(1.5rem, 7.5vw, 3.4rem);
-  padding: 0.2rem 1rem;
-}
-
-.verdict-line {
-  font-family: var(--display);
-  font-style: italic;
-  font-size: 1.35rem;
-  margin: var(--space-2) auto var(--space-3);
-  max-width: 34ch;
-  text-wrap: balance;
-}
-
 .score {
   font-family: var(--display);
   font-weight: 800;
@@ -787,27 +745,6 @@
   color: var(--vermilion);
 }
 
-.score-names {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-4);
-  font-variant: all-small-caps;
-  letter-spacing: 0.14em;
-  color: var(--ink-soft);
-  margin: 0.3rem 0 0;
-}
-
-.tally-caption {
-  font-size: 0.85rem;
-  color: var(--ink-faint);
-  margin: 0 0 var(--space-3);
-}
-
-.playbill .chain {
-  justify-content: center;
-  margin: var(--space-3) 0;
-}
-
 .medallion.more {
   font-family: var(--display);
   font-size: 1.1rem;
@@ -816,59 +753,12 @@
   border-style: dashed;
 }
 
-.stats {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-3);
-  border-top: 1px solid var(--brass);
-  border-bottom: 1px solid var(--brass);
-  padding: var(--space-1) 0;
-  font-variant: all-small-caps;
-  letter-spacing: 0.1em;
-  flex-wrap: wrap;
-}
-
-.stats b {
-  color: var(--vermilion);
-}
-
-.highlight {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  margin: var(--space-3) 0;
-  flex-wrap: wrap;
-}
-
-.highlight .small-caps {
-  flex-basis: 100%;
-}
-
-.highlight blockquote {
-  font-family: var(--display);
-  font-style: italic;
-  font-size: 1.25rem;
-  margin: 0;
-}
-
 .after {
   display: flex;
   justify-content: center;
   gap: var(--space-3);
   margin-top: var(--space-2);
   font-size: 0.9rem;
-}
-
-.host-corner {
-  justify-content: center;
-  align-items: center;
-  text-align: left;
-  margin-top: var(--space-3);
-}
-
-.host-corner .host-line {
-  max-width: 22rem;
 }
 
 .coaching span {
@@ -1697,12 +1587,6 @@ a.bill-row:hover h3 {
 
 /* Phones */
 
-.playbill {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
 .bill {
   grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
 }
@@ -2257,11 +2141,100 @@ ul.rules-text li {
   color: var(--vermilion-ink);
 }
 
-.recap .call-line {
-  font-size: 0.88rem;
-  border-top: 0;
-  padding-top: 0;
-  margin-top: 0.3rem;
+/* The end of a duel: the board stays, the composer's place takes the result card */
+
+.result-card {
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--paper-raised);
+  border-top: 3px double var(--ink);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "stamp streak ticket" "after after listing";
+  align-items: center;
+  column-gap: var(--space-3);
+  row-gap: var(--space-1);
+}
+
+.result-card > .stamp {
+  grid-area: stamp;
+  font-size: 1.25rem;
+  padding: 0.15rem 0.9rem;
+  transform: rotate(-2deg);
+}
+
+.result-card .stats {
+  grid-area: streak;
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+}
+
+.result-card .stats b {
+  color: var(--vermilion-ink);
+  font-family: var(--mono);
+  font-variant: normal;
+  letter-spacing: 0;
+  margin-left: 0.3rem;
+}
+
+.result-card .ticket {
+  grid-area: ticket;
+  font-size: 0.95rem;
+  padding: 0.5rem 1.6rem;
+}
+
+.result-card .after {
+  grid-area: after;
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.result-card .choice.listing {
+  grid-area: listing;
+  margin: 0;
+  width: auto;
+  font-size: 0.85rem;
+}
+
+.round-result.final .marks,
+.round-result.final .foot,
+.round-result.final .badges,
+.torn.standing.final .because,
+.torn.standing.final .vote {
+  display: none;
+}
+
+.torn.standing.final .last-move {
+  font-size: 1.7rem;
+}
+
+.torn.standing.final .ruled .host-figure,
+.torn.standing.final .ruled .host {
+  display: none;
+}
+
+.torn.standing.final .ruled {
+  margin-top: var(--space-1);
+  padding-top: var(--space-1);
+}
+
+.program .chain {
+  justify-content: center;
+  margin: var(--space-3) 0;
+}
+
+@media (max-width: 40rem) {
+  .result-card {
+    grid-template-columns: 1fr;
+    grid-template-areas: "stamp" "streak" "ticket" "after" "listing";
+    justify-items: start;
+  }
 }
 
 .badges {
@@ -2378,62 +2351,6 @@ ul.rules-text li {
 
 
 /* Word for Word: the playbill and the programme */
-
-.recap {
-  list-style: none;
-  margin: var(--space-2) 0 var(--space-3);
-  padding: 0;
-  text-align: left;
-}
-
-.recap li {
-  border-top: 1px solid var(--rule);
-  padding: var(--space-1) 0;
-}
-
-.recap-word {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin: 0 0 0.25rem;
-}
-
-.recap-word b {
-  font-family: var(--display);
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.recap-word em {
-  color: var(--ink-soft);
-}
-
-.recap-bluffs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-2);
-}
-
-.recap-bluffs p {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.35;
-}
-
-.recap-bluffs .who {
-  display: block;
-  font-variant: all-small-caps;
-  letter-spacing: 0.12em;
-  color: var(--ink-soft);
-}
-
-.recap-bluffs .who.you {
-  color: var(--vermilion-ink);
-}
-
-.recap-bluffs .badges {
-  margin-top: var(--space-1);
-}
 
 .program .round-result {
   margin-top: var(--space-4);

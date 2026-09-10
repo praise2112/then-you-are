@@ -1,4 +1,4 @@
-import type { Replay, RoundView, TemplateView, TurnView } from "../api.ts";
+import type { MatchEnded, Replay, RoundView, TemplateView, TurnView } from "../api.ts";
 
 export const STANDING = new Set(["accept", "semantic_uncertain"]);
 
@@ -72,4 +72,12 @@ export function roundTotals({ round, mine, theirs }: RoundGroup): { mine: number
 export function roundWinner(group: RoundGroup): "mine" | "theirs" | null {
   const { mine, theirs } = roundTotals(group);
   return mine === theirs ? null : mine > theirs ? "mine" : "theirs";
+}
+
+/** What the host says once the match is over: the coaching line on a loss, else a parting word. */
+export function endLine(ended: MatchEnded): { label: string | null; text: string } {
+  if (ended.coaching_line) return { label: "What would have won", text: ended.coaching_line };
+  if (ended.winner === null) return { label: null, text: "Level. The dictionary keeps the last word." };
+  if (ended.winner === "p1") return { label: null, text: "Take the win and go. The next one will not be so polite." };
+  return { label: null, text: "The replay is saved. So is the lesson." };
 }
