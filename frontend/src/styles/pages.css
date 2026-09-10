@@ -98,6 +98,8 @@
   gap: var(--space-3);
   padding: var(--space-3);
   align-items: start;
+  max-width: 104rem;
+  margin: 0 auto;
 }
 
 .stage > section + section {
@@ -1717,8 +1719,6 @@ a.bill-row:hover h3 {
 
 .stage.showcase {
   grid-template-columns: 12rem minmax(0, 1fr) 17rem;
-  max-width: 84rem;
-  margin: 0 auto;
 }
 
 @media (min-width: 75.01rem) {
@@ -1734,6 +1734,18 @@ a.bill-row:hover h3 {
 
   .stage.showcase .ledger {
     display: none;
+  }
+}
+
+/* Past this width the extra room goes to the columns that hold lists. The middle holds
+   prose, which stops reading well much past 80 characters a line. */
+@media (min-width: 105rem) {
+  .stage {
+    grid-template-columns: 19rem minmax(0, 1fr) 21rem;
+  }
+
+  .stage.showcase {
+    grid-template-columns: 17rem minmax(0, 1fr) 21rem;
   }
 }
 
