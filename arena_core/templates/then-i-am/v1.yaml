@@ -25,6 +25,541 @@ seed_pool:
   - { opening_token: "a squeaky hinge", opening_emoji: "🚪" }
   - { opening_token: "a rumor", opening_emoji: "🗣️" }
   - { opening_token: "an itch", opening_emoji: "🪶" }
+  - { opening_token: "a soap bubble", opening_emoji: "🫧" }
+  - { opening_token: "an ice cube", opening_emoji: "🧊" }
+  - { opening_token: "a lit match", opening_emoji: "🔥" }
+  - { opening_token: "a kite", opening_emoji: "🪁" }
+  - { opening_token: "a house of cards", opening_emoji: "🃏" }
+  - { opening_token: "a cobweb", opening_emoji: "🕸️" }
+  - { opening_token: "a chalk drawing", opening_emoji: "🖍️" }
+  - { opening_token: "a wet sock", opening_emoji: "🧦" }
+  - { opening_token: "an egg", opening_emoji: "🥚" }
+  - { opening_token: "a wine glass", opening_emoji: "🍷" }
+  - { opening_token: "a sticky note", opening_emoji: "📝" }
+  - { opening_token: "a parking ticket", opening_emoji: "🎫" }
+  - { opening_token: "a dandelion clock", opening_emoji: "🌼" }
+  - { opening_token: "a snowman", opening_emoji: "⛄" }
+  - { opening_token: "a leaky bucket", opening_emoji: "🪣" }
+  - { opening_token: "a rubber duck", opening_emoji: "🦆" }
+  - { opening_token: "a dripping tap", opening_emoji: "🚰" }
+  - { opening_token: "a birthday cake", opening_emoji: "🎂" }
+  - { opening_token: "a shadow", opening_emoji: "👤" }
+  - { opening_token: "a queue", opening_emoji: "🧍" }
+  - { opening_token: "a traffic cone", opening_emoji: "🚧" }
+  - { opening_token: "a paper crown", opening_emoji: "👑" }
+  - { opening_token: "a snail", opening_emoji: "🐌" }
+  - { opening_token: "a goldfish", opening_emoji: "🐟" }
+  - { opening_token: "a pigeon", opening_emoji: "🕊️" }
+  - { opening_token: "a goat", opening_emoji: "🐐" }
+  - { opening_token: "a scarecrow", opening_emoji: "🌾" }
+  - { opening_token: "a sleeping cat", opening_emoji: "🐱" }
+  - { opening_token: "a mime", opening_emoji: "🤐" }
+  - { opening_token: "a door-to-door salesman", opening_emoji: "🧳" }
+  - { opening_token: "a yawn", opening_emoji: "😴" }
+  - { opening_token: "an echo", opening_emoji: "🔊" }
+  - { opening_token: "a Monday morning", opening_emoji: "📅" }
+  - { opening_token: "a traffic jam", opening_emoji: "🚗" }
+  - { opening_token: "a coffee stain", opening_emoji: "☕" }
+  - { opening_token: "a loose thread", opening_emoji: "🧵" }
+  - { opening_token: "a wasp", opening_emoji: "🐝" }
+  - { opening_token: "a beehive", opening_emoji: "🍯" }
+  - { opening_token: "a mousetrap", opening_emoji: "🪤" }
+  - { opening_token: "a snore", opening_emoji: "😴" }
+  - { opening_token: "a lullaby", opening_emoji: "🎵" }
+  - { opening_token: "a food cart", opening_emoji: "🛒" }
+  - { opening_token: "a hot dog", opening_emoji: "🌭" }
+  - { opening_token: "a pretzel", opening_emoji: "🥨" }
+  - { opening_token: "a stapler", opening_emoji: "📎" }
+  - { opening_token: "an ant", opening_emoji: "🐜" }
+  - { opening_token: "a mouse", opening_emoji: "🐭" }
+  - { opening_token: "an intern", opening_emoji: "🧑‍💼" }
+  - { opening_token: "a temp", opening_emoji: "🗂️" }
+  - { opening_token: "a taxi", opening_emoji: "🚕" }
+  - { opening_token: "a jogger", opening_emoji: "🏃" }
+  - { opening_token: "a bus", opening_emoji: "🚌" }
+  - { opening_token: "a seashell", opening_emoji: "🐚" }
+  - { opening_token: "a crab", opening_emoji: "🦀" }
+  - { opening_token: "a seagull", opening_emoji: "🐦" }
+  - { opening_token: "a foghorn", opening_emoji: "📢" }
+  - { opening_token: "a peacock", opening_emoji: "🦚" }
+  - { opening_token: "a garden gnome", opening_emoji: "🧙" }
+  - { opening_token: "a bride", opening_emoji: "👰" }
+  - { opening_token: "a fly", opening_emoji: "🪰" }
+  - { opening_token: "a little brother", opening_emoji: "👦" }
+  - { opening_token: "a lunch thief", opening_emoji: "🥪" }
+  - { opening_token: "a soufflé", opening_emoji: "🥧" }
+  - { opening_token: "a houseguest", opening_emoji: "🧳" }
+  - { opening_token: "a kettle", opening_emoji: "🫖" }
+  - { opening_token: "a microwave", opening_emoji: "📡" }
+  - { opening_token: "a lollipop", opening_emoji: "🍭" }
+  - { opening_token: "a drunk", opening_emoji: "🍻" }
+  - { opening_token: "a pickpocket", opening_emoji: "🖐️" }
+  - { opening_token: "a jammed printer", opening_emoji: "🖨️" }
+  - { opening_token: "a picnic", opening_emoji: "🧺" }
+  - { opening_token: "a tomato", opening_emoji: "🍅" }
+  - { opening_token: "a sprinkler", opening_emoji: "💦" }
+  - { opening_token: "a glass beaker", opening_emoji: "🧪" }
+  - { opening_token: "a pencil tip", opening_emoji: "✏️" }
+  - { opening_token: "a taped-up page", opening_emoji: "📄" }
+  - { opening_token: "a puddle", opening_emoji: "💧" }
+  - { opening_token: "a smoke alarm", opening_emoji: "🚨" }
+  - { opening_token: "a trumpet", opening_emoji: "🎺" }
+  - { opening_token: "a bell", opening_emoji: "🔔" }
+  - { opening_token: "a gong", opening_emoji: "🥁" }
+  - { opening_token: "a draft", opening_emoji: "💨" }
+  - { opening_token: "a best man", opening_emoji: "🤵" }
+  - { opening_token: "a ring bearer", opening_emoji: "💍" }
+  - { opening_token: "a clipboard", opening_emoji: "📎" }
+  - { opening_token: "a desk fan", opening_emoji: "🌀" }
+  - { opening_token: "a bramble", opening_emoji: "🌿" }
+  - { opening_token: "a taco", opening_emoji: "🌮" }
+  - { opening_token: "a bad dream", opening_emoji: "😱" }
+  - { opening_token: "a lumpy mattress", opening_emoji: "🛏️" }
+  - { opening_token: "a drought", opening_emoji: "🌵" }
+  - { opening_token: "a debt", opening_emoji: "📉" }
+  - { opening_token: "a sacrifice", opening_emoji: "🔪" }
+  - { opening_token: "a pizza", opening_emoji: "🍕" }
+  - { opening_token: "a popcorn kernel", opening_emoji: "🍿" }
+  - { opening_token: "a mirror", opening_emoji: "🪞" }
+  - { opening_token: "a lobster", opening_emoji: "🦞" }
+  - { opening_token: "a pineapple", opening_emoji: "🍍" }
+  - { opening_token: "a cheesecake", opening_emoji: "🍰" }
+  - { opening_token: "a crumb", opening_emoji: "🍞" }
+  - { opening_token: "a whistle", opening_emoji: "🔔" }
+  - { opening_token: "a ringtone", opening_emoji: "📱" }
+  - { opening_token: "a spider", opening_emoji: "🕷️" }
+  - { opening_token: "a breeze", opening_emoji: "🌬️" }
+  - { opening_token: "a suntan", opening_emoji: "🌞" }
+  - { opening_token: "a moth", opening_emoji: "🦋" }
+  - { opening_token: "a wind chime", opening_emoji: "🎐" }
+  - { opening_token: "a cricket", opening_emoji: "🦗" }
+  - { opening_token: "a bubble wrap", opening_emoji: "🫧" }
+  - { opening_token: "a vine", opening_emoji: "🌿" }
+  - { opening_token: "a marching band", opening_emoji: "🥁" }
+  - { opening_token: "a toddler", opening_emoji: "🧒" }
+  - { opening_token: "a rain cloud", opening_emoji: "🌧️" }
+  - { opening_token: "a tornado", opening_emoji: "🌪️" }
+  - { opening_token: "a flood", opening_emoji: "🌊" }
+  - { opening_token: "a toast", opening_emoji: "🥂" }
+  - { opening_token: "a hiccup", opening_emoji: "🤭" }
+  - { opening_token: "a heatwave", opening_emoji: "🌡️" }
+  - { opening_token: "a sloth", opening_emoji: "🦥" }
+  - { opening_token: "a tortoise", opening_emoji: "🐢" }
+  - { opening_token: "an umbrella", opening_emoji: "☂️" }
+  - { opening_token: "a leaf", opening_emoji: "🍂" }
+  - { opening_token: "a boss", opening_emoji: "💼" }
+  - { opening_token: "a deadline", opening_emoji: "⏰" }
+  - { opening_token: "a compliment", opening_emoji: "😊" }
+  - { opening_token: "a doorman", opening_emoji: "🚪" }
+  - { opening_token: "a bat", opening_emoji: "🦇" }
+  - { opening_token: "a barnacle", opening_emoji: "🐚" }
+  - { opening_token: "a limpet", opening_emoji: "🐌" }
+  - { opening_token: "a gummy bear", opening_emoji: "🐻" }
+  - { opening_token: "a sheepdog", opening_emoji: "🐕" }
+  - { opening_token: "a pea", opening_emoji: "🟢" }
+  - { opening_token: "a mint", opening_emoji: "🍬" }
+  - { opening_token: "a cold sore", opening_emoji: "💋" }
+  - { opening_token: "a houseplant", opening_emoji: "🪴" }
+  - { opening_token: "a jellyfish", opening_emoji: "🪼" }
+  - { opening_token: "a stink bug", opening_emoji: "🪲" }
+  - { opening_token: "a rake", opening_emoji: "🧹" }
+  - { opening_token: "a chainsaw", opening_emoji: "🪚" }
+  - { opening_token: "a drum", opening_emoji: "🥁" }
+  - { opening_token: "a cookie", opening_emoji: "🍪" }
+  - { opening_token: "a sand dollar", opening_emoji: "🥰" }
+  - { opening_token: "a stamp", opening_emoji: "📮" }
+  - { opening_token: "a pancake", opening_emoji: "🥞" }
+  - { opening_token: "a pie", opening_emoji: "🥧" }
+  - { opening_token: "a rattle", opening_emoji: "🪇" }
+  - { opening_token: "a hold tune", opening_emoji: "🎵" }
+  - { opening_token: "a fax machine", opening_emoji: "📠" }
+  - { opening_token: "a timer", opening_emoji: "⏲️" }
+  - { opening_token: "a hornet", opening_emoji: "🐝" }
+  - { opening_token: "a sparrow", opening_emoji: "🐦" }
+  - { opening_token: "a hot pan", opening_emoji: "🍳" }
+  - { opening_token: "a grease splatter", opening_emoji: "💦" }
+  - { opening_token: "a hailstorm", opening_emoji: "🧊" }
+  - { opening_token: "a wave", opening_emoji: "🌊" }
+  - { opening_token: "a tractor tire", opening_emoji: "🚜" }
+  - { opening_token: "a grain silo", opening_emoji: "🏭" }
+  - { opening_token: "a toad", opening_emoji: "🐸" }
+  - { opening_token: "a rooster", opening_emoji: "🐓" }
+  - { opening_token: "a thunderclap", opening_emoji: "⚡" }
+  - { opening_token: "a lamb", opening_emoji: "🐑" }
+  - { opening_token: "a fence", opening_emoji: "🪵" }
+  - { opening_token: "a hot potato", opening_emoji: "🥔" }
+  - { opening_token: "a scared chicken", opening_emoji: "🐔" }
+  - { opening_token: "a goose", opening_emoji: "🦢" }
+  - { opening_token: "a bagpipe", opening_emoji: "🎶" }
+  - { opening_token: "a moldy lemon", opening_emoji: "🍋" }
+  - { opening_token: "a smell", opening_emoji: "👃" }
+  - { opening_token: "a swarm", opening_emoji: "🐝" }
+  - { opening_token: "a blackout", opening_emoji: "🌑" }
+  - { opening_token: "a compost heap", opening_emoji: "🪱" }
+  - { opening_token: "a tide", opening_emoji: "🌊" }
+  - { opening_token: "a glue stick", opening_emoji: "🖍️" }
+  - { opening_token: "a honey seller", opening_emoji: "🍯" }
+  - { opening_token: "a promise", opening_emoji: "🤞" }
+  - { opening_token: "a nap", opening_emoji: "😴" }
+  - { opening_token: "a headache", opening_emoji: "🤕" }
+  - { opening_token: "a hamster", opening_emoji: "🐹" }
+  - { opening_token: "an empty chair", opening_emoji: "🪑" }
+  - { opening_token: "a pink slip", opening_emoji: "📄" }
+  - { opening_token: "a flower girl", opening_emoji: "👧" }
+  - { opening_token: "a wedding ring", opening_emoji: "💍" }
+  - { opening_token: "a pop quiz", opening_emoji: "📝" }
+  - { opening_token: "a cheat sheet", opening_emoji: "🗒️" }
+  - { opening_token: "a hall pass", opening_emoji: "🎫" }
+  - { opening_token: "a chef", opening_emoji: "👨‍🍳" }
+  - { opening_token: "a honey jar", opening_emoji: "🍯" }
+  - { opening_token: "a garden hose", opening_emoji: "💦" }
+  - { opening_token: "a bouquet", opening_emoji: "💐" }
+  - { opening_token: "a fire drill", opening_emoji: "🚨" }
+  - { opening_token: "a tattletale", opening_emoji: "🗣️" }
+  - { opening_token: "a thorn", opening_emoji: "🌵" }
+  - { opening_token: "a tie", opening_emoji: "👔" }
+  - { opening_token: "a copier", opening_emoji: "🖨️" }
+  - { opening_token: "a siren", opening_emoji: "🚨" }
+  - { opening_token: "a curfew", opening_emoji: "🕛" }
+  - { opening_token: "a wish", opening_emoji: "🌟" }
+  - { opening_token: "a squirrel", opening_emoji: "🐿️" }
+  - { opening_token: "a mole", opening_emoji: "🐀" }
+  - { opening_token: "a lawnmower", opening_emoji: "🚜" }
+  - { opening_token: "a backseat driver", opening_emoji: "🚗" }
+  - { opening_token: "a prank gum", opening_emoji: "🍬" }
+  - { opening_token: "a busker", opening_emoji: "🎸" }
+  - { opening_token: "a boom box", opening_emoji: "📻" }
+  - { opening_token: "a substitute teacher", opening_emoji: "🍎" }
+  - { opening_token: "a phone buzz", opening_emoji: "📳" }
+  - { opening_token: "a parrot", opening_emoji: "🦜" }
+  - { opening_token: "an open bar", opening_emoji: "🍸" }
+  - { opening_token: "a roast", opening_emoji: "🍖" }
+  - { opening_token: "a mule", opening_emoji: "🫏" }
+  - { opening_token: "a windmill", opening_emoji: "🌬️" }
+  - { opening_token: "a beggar", opening_emoji: "🙏" }
+  - { opening_token: "a fishmonger", opening_emoji: "🐟" }
+  - { opening_token: "a chip", opening_emoji: "🍟" }
+  - { opening_token: "a dumpling", opening_emoji: "🥟" }
+  - { opening_token: "a noodle", opening_emoji: "🍜" }
+  - { opening_token: "an ambulance", opening_emoji: "🚑" }
+  - { opening_token: "a skateboard", opening_emoji: "🛹" }
+  - { opening_token: "a wrong turn", opening_emoji: "↩️" }
+  - { opening_token: "a missed stop", opening_emoji: "🚏" }
+  - { opening_token: "a glacier", opening_emoji: "🧊" }
+  - { opening_token: "a weed", opening_emoji: "🌿" }
+  - { opening_token: "a tan line", opening_emoji: "🌞" }
+  - { opening_token: "a burr", opening_emoji: "🌰" }
+  - { opening_token: "a kebab", opening_emoji: "🥙" }
+  - { opening_token: "a pillow", opening_emoji: "🛏️" }
+  - { opening_token: "a syrup", opening_emoji: "🍯" }
+  - { opening_token: "a jawbreaker", opening_emoji: "🍬" }
+  - { opening_token: "a daydream", opening_emoji: "💭" }
+  - { opening_token: "a caterpillar", opening_emoji: "🐛" }
+  - { opening_token: "a tadpole", opening_emoji: "🐸" }
+  - { opening_token: "a clam", opening_emoji: "🐚" }
+  - { opening_token: "a cough", opening_emoji: "🤧" }
+  - { opening_token: "a yell", opening_emoji: "🗣️" }
+  - { opening_token: "a tumbleweed", opening_emoji: "🌾" }
+  - { opening_token: "a frost", opening_emoji: "❄️" }
+  - { opening_token: "an invite", opening_emoji: "✉️" }
+  - { opening_token: "a fork", opening_emoji: "🍴" }
+  - { opening_token: "a jackhammer", opening_emoji: "🔨" }
+  - { opening_token: "a fruitcake", opening_emoji: "🍰" }
+  - { opening_token: "a freezer pop", opening_emoji: "🧊" }
+  - { opening_token: "a cold seat", opening_emoji: "💺" }
+  - { opening_token: "a bad melon", opening_emoji: "🍈" }
+  - { opening_token: "a doughnut", opening_emoji: "🍩" }
+  - { opening_token: "a chauffeur", opening_emoji: "🧑‍✈️" }
+  - { opening_token: "a hawker", opening_emoji: "📢" }
+  - { opening_token: "a fight", opening_emoji: "🥊" }
+  - { opening_token: "a mushroom", opening_emoji: "🍄" }
+  - { opening_token: "a pumpkin", opening_emoji: "🎃" }
+  - { opening_token: "a tuxedo", opening_emoji: "🤵" }
+  - { opening_token: "a prom dress", opening_emoji: "👗" }
+  - { opening_token: "a fur coat", opening_emoji: "🧥" }
+  - { opening_token: "a pit crew", opening_emoji: "🏎️" }
+  - { opening_token: "a mechanic", opening_emoji: "👨‍🔧" }
+  - { opening_token: "a raccoon", opening_emoji: "🦝" }
+  - { opening_token: "a grudge", opening_emoji: "🪨" }
+  - { opening_token: "a loose tooth", opening_emoji: "🦷" }
+  - { opening_token: "a gutter", opening_emoji: "🕳️" }
+  - { opening_token: "a tourist", opening_emoji: "🧳" }
+  - { opening_token: "a wedding singer", opening_emoji: "🎤" }
+  - { opening_token: "a midnight snack", opening_emoji: "🍪" }
+  - { opening_token: "a starfish", opening_emoji: "⭐" }
+  - { opening_token: "a speech", opening_emoji: "🎤" }
+  - { opening_token: "a garlic clove", opening_emoji: "🧄" }
+  - { opening_token: "a chili pepper", opening_emoji: "🌶️" }
+  - { opening_token: "a toolbox", opening_emoji: "🧰" }
+  - { opening_token: "a ladybug", opening_emoji: "🐞" }
+  - { opening_token: "a hummingbird", opening_emoji: "🐦" }
+  - { opening_token: "a lost glove", opening_emoji: "🧤" }
+  - { opening_token: "a drain", opening_emoji: "🕳️" }
+  - { opening_token: "a candy wrapper", opening_emoji: "🍬" }
+  - { opening_token: "a bulldog", opening_emoji: "🐕" }
+  - { opening_token: "a heckler", opening_emoji: "📢" }
+  - { opening_token: "a staple", opening_emoji: "📎" }
+  - { opening_token: "a pen cap", opening_emoji: "🖊️" }
+  - { opening_token: "a courier", opening_emoji: "📦" }
+  - { opening_token: "a last train", opening_emoji: "🚆" }
+  - { opening_token: "a barker", opening_emoji: "📣" }
+  - { opening_token: "a sprout", opening_emoji: "🌱" }
+  - { opening_token: "a monster", opening_emoji: "👹" }
+  - { opening_token: "a magpie", opening_emoji: "🐦" }
+  - { opening_token: "a milk carton", opening_emoji: "🥛" }
+  - { opening_token: "a full moon", opening_emoji: "🌕" }
+  - { opening_token: "a chick", opening_emoji: "🐤" }
+  - { opening_token: "a piglet", opening_emoji: "🐷" }
+  - { opening_token: "a wedgie", opening_emoji: "🩲" }
+  - { opening_token: "a radio", opening_emoji: "📻" }
+  - { opening_token: "a spitball", opening_emoji: "💦" }
+  - { opening_token: "a coupon lady", opening_emoji: "🛒" }
+  - { opening_token: "a bagger", opening_emoji: "🛍️" }
+  - { opening_token: "a bandage", opening_emoji: "🩹" }
+  - { opening_token: "a rainy recess", opening_emoji: "🌧️" }
+  - { opening_token: "a lighthouse", opening_emoji: "🗼" }
+  - { opening_token: "a cereal", opening_emoji: "🥣" }
+  - { opening_token: "a rainbow", opening_emoji: "🌈" }
+  - { opening_token: "a hallway stampede", opening_emoji: "🏃" }
+  - { opening_token: "a plow horse", opening_emoji: "🐎" }
+  - { opening_token: "a toaster", opening_emoji: "🍞" }
+  - { opening_token: "a paper cut", opening_emoji: "🩹" }
+  - { opening_token: "a muffin", opening_emoji: "🧁" }
+  - { opening_token: "a crisp", opening_emoji: "🥔" }
+  - { opening_token: "a rivalry", opening_emoji: "🤼" }
+  - { opening_token: "a free sample", opening_emoji: "🥟" }
+  - { opening_token: "a blizzard", opening_emoji: "❄️" }
+  - { opening_token: "a shrimp", opening_emoji: "🦐" }
+  - { opening_token: "an oyster", opening_emoji: "🦪" }
+  - { opening_token: "a rusty bike", opening_emoji: "🚲" }
+  - { opening_token: "a flypaper", opening_emoji: "🪰" }
+  - { opening_token: "a hum", opening_emoji: "🎵" }
+  - { opening_token: "a last coin", opening_emoji: "🪙" }
+  - { opening_token: "a lucky charm", opening_emoji: "🍀" }
+  - { opening_token: "a bubble wand", opening_emoji: "🫧" }
+  - { opening_token: "a jingle", opening_emoji: "🔔" }
+  - { opening_token: "a farmer", opening_emoji: "👨‍🌾" }
+  - { opening_token: "a meatball", opening_emoji: "🍝" }
+  - { opening_token: "a ghost", opening_emoji: "👻" }
+  - { opening_token: "a marshmallow", opening_emoji: "🍡" }
+  - { opening_token: "a bruised banana", opening_emoji: "🍌" }
+  - { opening_token: "a firefly", opening_emoji: "🪰" }
+  - { opening_token: "a tumbledown barn", opening_emoji: "🏚️" }
+  - { opening_token: "a gnat", opening_emoji: "🦟" }
+  - { opening_token: "a mug", opening_emoji: "☕" }
+  - { opening_token: "a crossing guard", opening_emoji: "🚸" }
+  - { opening_token: "a coconut", opening_emoji: "🥥" }
+  - { opening_token: "a pickle", opening_emoji: "🥒" }
+  - { opening_token: "a lunchbox", opening_emoji: "🍱" }
+  - { opening_token: "an eel", opening_emoji: "🐍" }
+  - { opening_token: "a bully", opening_emoji: "😠" }
+  - { opening_token: "a book report", opening_emoji: "📚" }
+  - { opening_token: "a sulk", opening_emoji: "😒" }
+  - { opening_token: "a sleepy passenger", opening_emoji: "😴" }
+  - { opening_token: "a cubicle", opening_emoji: "🪟" }
+  - { opening_token: "a peach", opening_emoji: "🍑" }
+  - { opening_token: "a crack", opening_emoji: "🧱" }
+  - { opening_token: "a dust bunny", opening_emoji: "🌫️" }
+  - { opening_token: "a dishwashing sponge", opening_emoji: "🧽" }
+  - { opening_token: "a priest", opening_emoji: "🙏" }
+  - { opening_token: "a sap", opening_emoji: "🌳" }
+  - { opening_token: "a sunburn", opening_emoji: "🔆" }
+  - { opening_token: "a bug bite", opening_emoji: "🦟" }
+  - { opening_token: "a caterer", opening_emoji: "🍽️" }
+  - { opening_token: "a lifeguard", opening_emoji: "🏊" }
+  - { opening_token: "a dodgeball", opening_emoji: "🥎" }
+  - { opening_token: "a snowsuit", opening_emoji: "🧥" }
+  - { opening_token: "a top hat", opening_emoji: "🎩" }
+  - { opening_token: "a bollard", opening_emoji: "🚧" }
+  - { opening_token: "a speed bump", opening_emoji: "🚧" }
+  - { opening_token: "a cello", opening_emoji: "🎻" }
+  - { opening_token: "a hedge", opening_emoji: "🌳" }
+  - { opening_token: "a gum wad", opening_emoji: "🍬" }
+  - { opening_token: "a glass slipper", opening_emoji: "👠" }
+  - { opening_token: "a mother-in-law", opening_emoji: "👩‍🦳" }
+  - { opening_token: "a plus-one", opening_emoji: "🎟️" }
+  - { opening_token: "a rock", opening_emoji: "🪨" }
+  - { opening_token: "a soda can", opening_emoji: "🥤" }
+  - { opening_token: "a nightlight", opening_emoji: "💡" }
+  - { opening_token: "a snake", opening_emoji: "🐍" }
+  - { opening_token: "a hall monitor", opening_emoji: "🦺" }
+  - { opening_token: "a blazer", opening_emoji: "🧥" }
+  - { opening_token: "a tulip", opening_emoji: "🌷" }
+  - { opening_token: "a bunk bed", opening_emoji: "🛏️" }
+  - { opening_token: "a wedding crasher", opening_emoji: "🎫" }
+  - { opening_token: "a coffee pod", opening_emoji: "☕" }
+  - { opening_token: "a cicada", opening_emoji: "🦗" }
+  - { opening_token: "a chill", opening_emoji: "🥶" }
+  - { opening_token: "a klaxon", opening_emoji: "📢" }
+  - { opening_token: "a vase", opening_emoji: "🏺" }
+  - { opening_token: "a fox", opening_emoji: "🦊" }
+  - { opening_token: "a clown", opening_emoji: "🤡" }
+  - { opening_token: "a rabbit", opening_emoji: "🐇" }
+  - { opening_token: "a rice shower", opening_emoji: "🌾" }
+  - { opening_token: "a revving engine", opening_emoji: "🏍️" }
+  - { opening_token: "a rutabaga", opening_emoji: "🥬" }
+  - { opening_token: "a cheese wedge", opening_emoji: "🧀" }
+  - { opening_token: "a guilt", opening_emoji: "😔" }
+  - { opening_token: "a sleeve", opening_emoji: "👕" }
+  - { opening_token: "a ketchup bottle", opening_emoji: "🍅" }
+  - { opening_token: "a backpack", opening_emoji: "🎒" }
+  - { opening_token: "a riptide", opening_emoji: "🌊" }
+  - { opening_token: "a broken light", opening_emoji: "🚦" }
+  - { opening_token: "a blender", opening_emoji: "🥤" }
+  - { opening_token: "a pew", opening_emoji: "🪑" }
+  - { opening_token: "a beanbag", opening_emoji: "🪑" }
+  - { opening_token: "a weather vane", opening_emoji: "🌬️" }
+  - { opening_token: "a baby", opening_emoji: "👶" }
+  - { opening_token: "a coffee break", opening_emoji: "☕" }
+  - { opening_token: "a preacher", opening_emoji: "📖" }
+  - { opening_token: "a forgotten fridge", opening_emoji: "🧊" }
+  - { opening_token: "a last plate", opening_emoji: "🍽️" }
+  - { opening_token: "a fear", opening_emoji: "😨" }
+  - { opening_token: "a diary", opening_emoji: "📔" }
+  - { opening_token: "a principal", opening_emoji: "🧑‍💼" }
+  - { opening_token: "a fire truck", opening_emoji: "🚒" }
+  - { opening_token: "a motorcycle", opening_emoji: "🏍️" }
+  - { opening_token: "a kazoo", opening_emoji: "🎷" }
+  - { opening_token: "a shortcake", opening_emoji: "🍰" }
+  - { opening_token: "a butter", opening_emoji: "🧈" }
+  - { opening_token: "a garage sale", opening_emoji: "🏷️" }
+  - { opening_token: "a sizzle", opening_emoji: "🔥" }
+  - { opening_token: "a champagne", opening_emoji: "🍾" }
+  - { opening_token: "a bullhorn", opening_emoji: "📢" }
+  - { opening_token: "a hay bale", opening_emoji: "🌾" }
+  - { opening_token: "a cockroach", opening_emoji: "🪳" }
+  - { opening_token: "a sick kitten", opening_emoji: "🐱" }
+  - { opening_token: "a squeaky wheel", opening_emoji: "🛞" }
+  - { opening_token: "a scarf", opening_emoji: "🧣" }
+  - { opening_token: "a getaway", opening_emoji: "🚗" }
+  - { opening_token: "a shortcut", opening_emoji: "🗺️" }
+  - { opening_token: "a hayride", opening_emoji: "🚜" }
+  - { opening_token: "a rev", opening_emoji: "🏍️" }
+  - { opening_token: "a teacup", opening_emoji: "🫖" }
+  - { opening_token: "a buoy", opening_emoji: "🛟" }
+  - { opening_token: "a juggler", opening_emoji: "🤹" }
+  - { opening_token: "a spill", opening_emoji: "🥤" }
+  - { opening_token: "a mystery meat", opening_emoji: "🍖" }
+  - { opening_token: "a pudding cup", opening_emoji: "🍮" }
+  - { opening_token: "a senior", opening_emoji: "🎓" }
+  - { opening_token: "a snow day", opening_emoji: "❄️" }
+  - { opening_token: "a junk drawer", opening_emoji: "🗄️" }
+  - { opening_token: "a creaky floorboard", opening_emoji: "🪵" }
+  - { opening_token: "a trophy", opening_emoji: "🏆" }
+  - { opening_token: "a smirk", opening_emoji: "😏" }
+  - { opening_token: "a buffet", opening_emoji: "🍽️" }
+  - { opening_token: "a punch bowl", opening_emoji: "🍹" }
+  - { opening_token: "a janitor", opening_emoji: "🧹" }
+  - { opening_token: "a piñata", opening_emoji: "🪅" }
+  - { opening_token: "a bullfrog", opening_emoji: "🐸" }
+  - { opening_token: "a sputter", opening_emoji: "🚗" }
+  - { opening_token: "a wool sweater", opening_emoji: "🧶" }
+  - { opening_token: "a slow dance", opening_emoji: "💃" }
+  - { opening_token: "a wallflower", opening_emoji: "🌸" }
+  - { opening_token: "a jewelry", opening_emoji: "💍" }
+  - { opening_token: "a speakerphone", opening_emoji: "🔊" }
+  - { opening_token: "a vendor", opening_emoji: "🧍" }
+  - { opening_token: "a purse", opening_emoji: "👛" }
+  - { opening_token: "an onion", opening_emoji: "🧅" }
+  - { opening_token: "a rut", opening_emoji: "🕳️" }
+  - { opening_token: "a thumbtack", opening_emoji: "📌" }
+  - { opening_token: "a drawl", opening_emoji: "🗣️" }
+  - { opening_token: "a late groom", opening_emoji: "🏃‍♂️" }
+  - { opening_token: "a meow", opening_emoji: "🐱" }
+  - { opening_token: "a gravy", opening_emoji: "🥣" }
+  - { opening_token: "a soup", opening_emoji: "🍲" }
+  - { opening_token: "a sunset", opening_emoji: "🌇" }
+  - { opening_token: "a molasses", opening_emoji: "🍯" }
+  - { opening_token: "a stowaway", opening_emoji: "🕵️" }
+  - { opening_token: "a taffy", opening_emoji: "🍬" }
+  - { opening_token: "a kickball", opening_emoji: "⚽" }
+  - { opening_token: "a gossip", opening_emoji: "🗣️" }
+  - { opening_token: "a crush", opening_emoji: "💘" }
+  - { opening_token: "a sneeze", opening_emoji: "🤧" }
+  - { opening_token: "a pit", opening_emoji: "🍑" }
+  - { opening_token: "a veil", opening_emoji: "👰" }
+  - { opening_token: "a bolt", opening_emoji: "🔩" }
+  - { opening_token: "a key", opening_emoji: "🔑" }
+  - { opening_token: "a price check", opening_emoji: "🏷️" }
+  - { opening_token: "a cold snap", opening_emoji: "❄️" }
+  - { opening_token: "a lipstick kiss", opening_emoji: "💋" }
+  - { opening_token: "a cafeteria", opening_emoji: "🍽️" }
+  - { opening_token: "a porcelain doll", opening_emoji: "🎎" }
+  - { opening_token: "a megaphone", opening_emoji: "📣" }
+  - { opening_token: "a swagger", opening_emoji: "🚶‍♂️" }
+  - { opening_token: "a pier post", opening_emoji: "⚓" }
+  - { opening_token: "a turkey", opening_emoji: "🦃" }
+  - { opening_token: "a haggler", opening_emoji: "🗣️" }
+  - { opening_token: "a knockoff", opening_emoji: "👜" }
+  - { opening_token: "a bargain", opening_emoji: "🏷️" }
+  - { opening_token: "a fiddle", opening_emoji: "🎻" }
+  - { opening_token: "a receipt", opening_emoji: "🧾" }
+  - { opening_token: "a mussel", opening_emoji: "🐚" }
+  - { opening_token: "a mist", opening_emoji: "🌫️" }
+  - { opening_token: "a night shift", opening_emoji: "🌙" }
+  - { opening_token: "a parade", opening_emoji: "🎺" }
+  - { opening_token: "a drizzle", opening_emoji: "🌧️" }
+  - { opening_token: "a hurry", opening_emoji: "⏳" }
+  - { opening_token: "a honk", opening_emoji: "📣" }
+  - { opening_token: "a minnow", opening_emoji: "🐟" }
+  - { opening_token: "a wilt", opening_emoji: "🥀" }
+  - { opening_token: "a lid", opening_emoji: "🍲" }
+  - { opening_token: "a paper shredder", opening_emoji: "📄" }
+  - { opening_token: "a uncle", opening_emoji: "🎤" }
+  - { opening_token: "a suit", opening_emoji: "🤵" }
+  - { opening_token: "a briefcase", opening_emoji: "💼" }
+  - { opening_token: "a thought", opening_emoji: "💭" }
+  - { opening_token: "a photographer", opening_emoji: "📷" }
+  - { opening_token: "a drone", opening_emoji: "🛩️" }
+  - { opening_token: "a sidewalk", opening_emoji: "🚶" }
+  - { opening_token: "a stop sign", opening_emoji: "🛑" }
+  - { opening_token: "a sundew", opening_emoji: "🪴" }
+  - { opening_token: "a single chopstick", opening_emoji: "🥢" }
+  - { opening_token: "a burnt pot", opening_emoji: "🍳" }
+  - { opening_token: "a statue", opening_emoji: "🗿" }
+  - { opening_token: "a blanket", opening_emoji: "🛌" }
+  - { opening_token: "a lurch", opening_emoji: "🚌" }
+  - { opening_token: "an ache", opening_emoji: "💢" }
+  - { opening_token: "a duct tape", opening_emoji: "🩹" }
+  - { opening_token: "a widow", opening_emoji: "🖤" }
+  - { opening_token: "a phone", opening_emoji: "☎️" }
+  - { opening_token: "a school milk", opening_emoji: "🥛" }
+  - { opening_token: "a squall", opening_emoji: "🌧️" }
+  - { opening_token: "a kiddie car", opening_emoji: "🚗" }
+  - { opening_token: "a mood", opening_emoji: "😶" }
+  - { opening_token: "a hired hand", opening_emoji: "👨‍🌾" }
+  - { opening_token: "a potluck", opening_emoji: "🍲" }
+  - { opening_token: "a gown", opening_emoji: "👗" }
+  - { opening_token: "a corset", opening_emoji: "🎀" }
+  - { opening_token: "a giggle", opening_emoji: "😄" }
+  - { opening_token: "a tar", opening_emoji: "🛢️" }
+  - { opening_token: "a hermit", opening_emoji: "🧙" }
+  - { opening_token: "a skunk", opening_emoji: "🦨" }
+  - { opening_token: "a hunch", opening_emoji: "🤔" }
+  - { opening_token: "a nettle", opening_emoji: "🌿" }
+  - { opening_token: "a tick", opening_emoji: "🕷️" }
+  - { opening_token: "a burdock", opening_emoji: "🌿" }
+  - { opening_token: "a caramel", opening_emoji: "🍮" }
+  - { opening_token: "a last call", opening_emoji: "📞" }
+  - { opening_token: "a jitter", opening_emoji: "🤯" }
+  - { opening_token: "a tattoo", opening_emoji: "🦑" }
+  - { opening_token: "a jelly shoe", opening_emoji: "👟" }
+  - { opening_token: "a wart", opening_emoji: "🦠" }
+  - { opening_token: "a pearl", opening_emoji: "🦪" }
+  - { opening_token: "a hook", opening_emoji: "🪝" }
+  - { opening_token: "a sunbeam", opening_emoji: "🌞" }
+  - { opening_token: "a whipped cream", opening_emoji: "🍦" }
+seed_recipe:
+  axes:
+    kind: [object, creature, person or role, weather or nature, food, sound, moment, feeling or idea]
+    setting: [kitchen, street, office, school, seaside, farm, bedroom, garden, garage, market, night bus, wedding]
+    property: [fragile, loud, slow, sticky, cheap, stubborn, temporary, tiny, smug, doomed, annoying, lonely, in a hurry, overdressed]
+  tests:
+    - A stranger pictures it at once. Nothing that needs explaining, nothing abstract.
+    - A non-player names a plain counter within five seconds. Say what that counter is.
+    - It stands in the ring. It bites, blocks, spreads, stings or refuses to move, like a wasp, a lock or a rumor. Never a victim or a scene, a spilled wine is already beaten and a rainy window is a view.
+    - It makes a stranger want to answer. A thing with a bit of character, like a mime or a mosquito. Never inventory, like a tongue depressor.
+    - Two or three everyday words a twelve-year-old knows. Never a word you would look up, like a burr or a heckler. No brand names, no proper nouns except a day of the week.
 
 demo:
   opening: { token: "a rock", emoji: "🪨" }

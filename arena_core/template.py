@@ -26,6 +26,13 @@ class Seed(Strict):
         return f"{self.opening_token} ({self.detail})" if self.detail else self.opening_token
 
 
+class SeedRecipe(Strict):
+    """How a generator grows the seed pool: the grid it samples and the tests a candidate passes."""
+
+    axes: dict[str, list[str]] = Field(min_length=2)
+    tests: list[str] = Field(min_length=1)
+
+
 class Opening(Strict):
     token: str
     emoji: str
@@ -138,6 +145,7 @@ class Template(Strict):
     premise: str
     mode: Mode
     seed_pool: list[Seed] = Field(min_length=1)
+    seed_recipe: SeedRecipe | None = None
     demo: Demo
     move_constraints: MoveConstraints
     rubric: list[RubricEntry] = Field(min_length=1)
