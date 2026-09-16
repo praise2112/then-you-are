@@ -22,6 +22,12 @@ def load_model(ref: str) -> ModelSpec:
     return ModelSpec.model_validate(registry[ref])
 
 
+def model_label(spec: ModelSpec) -> str:
+    """The model id, with the pinned provider when there is one: deepseek/x@fireworks."""
+    only = (spec.provider or {}).get("only") or []
+    return f"{spec.model}@{only[0]}" if only else spec.model
+
+
 def make_caller(judge_ref: str = "judge-v1", opponent_ref: str = "opponent-v1") -> ModelCaller:
     key = os.environ.get("OPENROUTER_API_KEY", "")
     if not key:

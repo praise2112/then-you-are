@@ -18,7 +18,7 @@ from arena_core.state import (
     weighted_total,
 )
 from arena_core.template import Seed, Template
-from arena_evals.common import with_backoff
+from arena_evals.common import model_label, with_backoff
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
 from arena_judge.prompt import judge_prompt_hash, render_opponent_messages
@@ -258,7 +258,7 @@ class MatchPlayer:
                 role="judge",
                 actor=actor,
                 seq=seq,
-                model=self.judge_spec.model,
+                model=model_label(self.judge_spec),
                 prompt_hash=call.prompt_hash,
                 raw=call.raw,
                 reasoning=call.reasoning,

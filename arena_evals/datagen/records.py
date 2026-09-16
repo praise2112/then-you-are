@@ -278,7 +278,7 @@ def _admit_host(
     outcome: Outcome,
     match_id: str,
 ) -> None:
-    if response.scoring.verdict == "fail" and outcome != "fail":
+    if response.scoring.verdict == "fail" and outcome == "semantic_uncertain":
         drops["host: fail narrated on a move that stood"] += 1
         return
     hosts.append(

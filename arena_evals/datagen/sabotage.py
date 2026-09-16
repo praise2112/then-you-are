@@ -6,7 +6,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from arena_core.template import Template
-from arena_evals.common import with_backoff
+from arena_evals.common import model_label, with_backoff
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_judge.caller import CallError, ModelCaller, ModelSpec
 from arena_judge.schema import JudgeResponse, route_outcome
@@ -56,7 +56,7 @@ class Position:
     move: str
     hidden: str
     transcript: list[str]
-    messages: list[dict]
+    student: dict
     outcome: str
 
 
@@ -90,7 +90,7 @@ def positions(calls: list[CallRow]) -> list[Position]:
                 p["move"],
                 p["hidden"],
                 p["transcript"],
-                last_move.payload["messages"],
+                last_move.payload,
                 outcome,
             )
         )
@@ -175,8 +175,9 @@ class Saboteur:
         return True
 
     async def _prompted(self, kind: str, pos: Position) -> str:
-        messages = [*pos.messages[:-1], {**pos.messages[-1]}]
-        messages[-1]["content"] = f"{PROMPTED[kind]}\n\n{messages[-1]['content']}"
+        original = pos.student["messages"]
+        messages = [*original[:-1], {**original[-1]}]
+        messages[-1]["content"] = f"{PROMPTED[kind]}\n\n{original[-1]['content']}"
 
         async def live() -> CallRow:
             base = dict(
@@ -187,7 +188,7 @@ class Saboteur:
                 seq=pos.seq,
                 model=self.writer.model,
                 prompt_hash="",
-                payload={"kind": kind, "messages": messages},
+                payload={**pos.student, "kind": kind},
             )
             try:
                 result = await with_backoff(
@@ -230,7 +231,7 @@ class Saboteur:
             role="judge",
             actor=pos.actor,
             seq=pos.seq,
-            model=self.judge.model,
+            model=model_label(self.judge),
             prompt_hash=call.prompt_hash,
             raw=call.raw,
             reasoning=call.reasoning,

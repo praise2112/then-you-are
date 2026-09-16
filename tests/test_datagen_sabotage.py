@@ -18,7 +18,7 @@ POS = Position(
     move="I am rust, hinge-eating, patient.",
     hidden="",
     transcript=["player1: I am a hammer, rock-splitting."],
-    messages=[{"role": "system", "content": "s"}, {"role": "user", "content": "u"}],
+    student={"card": "a rock", "transcript": [], "hidden": "", "messages": []},
     outcome="accept",
 )
 
