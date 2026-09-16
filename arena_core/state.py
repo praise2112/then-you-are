@@ -120,6 +120,26 @@ class Match:
         return [a for a in self.guessers if a not in called and len(self.guess_options(a)) >= 2]
 
 
+def player(actor: Actor) -> str:
+    return "player1" if actor == "p1" else "player2"
+
+
+def transcript(match: Match, template: Template, finished_only: bool = False) -> list[str]:
+    """The judged moves so far as prompt lines; showcase rounds open with their card."""
+    if template.mode == "escalation":
+        return [f"{player(t.actor)}: {t.move_text}" for t in match.turns]
+    lines = []
+    for n, token in enumerate(match.cards, start=1):
+        turns = match.round_turns(n)
+        if not turns or (finished_only and len(turns) < 2):
+            break
+        card = template.seed_named(token)
+        assert card is not None
+        lines.append(f"round {n}, prompt: {card.card_text}")
+        lines.extend(f"{player(t.actor)}: {t.move_text}" for t in turns)
+    return lines
+
+
 def other(actor: Actor) -> Actor:
     return "p2" if actor == "p1" else "p1"
 

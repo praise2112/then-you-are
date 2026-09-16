@@ -72,7 +72,7 @@ class FakeCaller(ModelCaller):
     async def aclose(self) -> None:
         return None
 
-    async def judge(self, template, transcript, previous, move, hidden="") -> JudgeCall:
+    async def judge(self, template, transcript, previous, move, hidden="", spec=None) -> JudgeCall:
         self.judged.append(move)
         self.hidden_seen.append(hidden)
         response = self.rulings.pop(0) if self.rulings else judge_response()

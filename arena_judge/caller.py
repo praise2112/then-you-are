@@ -44,6 +44,7 @@ class CallError(Exception):
 class CallResult:
     text: str
     latency_ms: int
+    reasoning: str | None = None
     tokens_in: int = 0
     tokens_out: int = 0
     cost_usd: float = 0.0
@@ -54,6 +55,7 @@ class JudgeCall:
     response: JudgeResponse | None
     raw: str
     prompt_hash: str
+    reasoning: str | None = None
     latency_ms: int = 0
     tokens_in: int = 0
     tokens_out: int = 0
@@ -103,9 +105,11 @@ class ModelCaller:
         if "choices" not in data:
             raise CallError(f"no choices in response: {json.dumps(data)[:300]}")
         usage = data.get("usage") or {}
+        message = data["choices"][0]["message"]
         return CallResult(
-            text=data["choices"][0]["message"].get("content") or "",
+            text=message.get("content") or "",
             latency_ms=int((time.monotonic() - t0) * 1000),
+            reasoning=message.get("reasoning") or None,
             tokens_in=usage.get("prompt_tokens", 0),
             tokens_out=usage.get("completion_tokens", 0),
             cost_usd=float(usage.get("cost", 0.0)),
@@ -127,7 +131,13 @@ class ModelCaller:
             raise CallError(str(e)) from e
 
     async def judge(
-        self, template: Template, transcript: list[str], previous: str, move: str, hidden: str = ""
+        self,
+        template: Template,
+        transcript: list[str],
+        previous: str,
+        move: str,
+        hidden: str = "",
+        spec: ModelSpec | None = None,
     ) -> JudgeCall:
         """Hard timeout, one structured retry, substring salvage, then no response."""
         prompt = render_judge_prompt(template, transcript, previous, move, hidden)
@@ -136,13 +146,14 @@ class ModelCaller:
         for attempt in range(2):
             try:
                 result = await self.complete(
-                    self.judge_spec, messages, response_format={"type": "json_object"}
+                    spec or self.judge_spec, messages, response_format={"type": "json_object"}
                 )
             except CallError as e:
                 call.attempts.append(f"call_error: {e}")
                 call.error_status = e.status
                 continue
             call.raw = result.text
+            call.reasoning = result.reasoning
             call.latency_ms += result.latency_ms
             call.tokens_in += result.tokens_in
             call.tokens_out += result.tokens_out

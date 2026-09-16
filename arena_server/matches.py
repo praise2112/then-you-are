@@ -25,6 +25,7 @@ from arena_core.state import (
     layer1,
     normalize,
     resign,
+    transcript,
     weighted_total,
 )
 from arena_core.template import Seed, Template
@@ -779,22 +780,6 @@ class MatchService:
 
     # Turns
 
-    def _transcript(
-        self, match: Match, template: Template, finished_only: bool = False
-    ) -> list[str]:
-        if template.mode == "escalation":
-            return [f"{_player(t.actor)}: {t.move_text}" for t in match.turns]
-        lines = []
-        for n, token in enumerate(match.cards, start=1):
-            turns = match.round_turns(n)
-            if not turns or (finished_only and len(turns) < 2):
-                break
-            card = template.seed_named(token)
-            assert card is not None
-            lines.append(f"round {n}, prompt: {card.card_text}")
-            lines.extend(f"{_player(t.actor)}: {t.move_text}" for t in turns)
-        return lines
-
     async def _run_human_move(self, match_id: str, action_id: str, move_text: str) -> None:
         async with self.locks[match_id]:
             match, extra = await self._load(match_id)
@@ -916,7 +901,7 @@ class MatchService:
         seq = len(match.turns) + 1
         self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
         judged = await self._judge_until_ruled(
-            match, template, seq, move_text, match.standing_form, self._transcript(match, template)
+            match, template, seq, move_text, match.standing_form, transcript(match, template)
         )
         if judged.outcome == "semantic_reject":
             await self._refuse_semantic(match, template, actor, move_text, judged, action_id)
@@ -942,15 +927,15 @@ class MatchService:
         assert card is not None
         seq = len(match.turns) + 1
         self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
-        transcript = self._transcript(match, template)
+        lines = transcript(match, template)
         house_future = self.held.pop(match.id, None)
         if house_future is None:
             house_future = asyncio.ensure_future(
-                self._write_and_judge_house(match, template, held, seq + 1, card, transcript)
+                self._write_and_judge_house(match, template, held, seq + 1, card, lines)
             )
         human, house = await asyncio.gather(
             self._judge_until_ruled(
-                match, template, seq, move_text, card.card_text, transcript, card.hidden
+                match, template, seq, move_text, card.card_text, lines, card.hidden
             ),
             house_future,
         )
@@ -1088,7 +1073,7 @@ class MatchService:
             assert card is not None
             seq = len(match.turns) + 2
             return await self._write_and_judge_house(
-                match, template, None, seq, card, self._transcript(match, template)
+                match, template, None, seq, card, transcript(match, template)
             )
 
         task = asyncio.create_task(prepare())
@@ -1190,9 +1175,9 @@ class MatchService:
     ) -> str:
         seq = len(match.turns) + 1
         parts: list[str] = []
-        transcript = self._transcript(match, template, finished_only=True)
+        lines = transcript(match, template, finished_only=True)
         try:
-            async for chunk in self.caller.opponent_stream(template, prompt, transcript, hidden):
+            async for chunk in self.caller.opponent_stream(template, prompt, lines, hidden):
                 parts.append(chunk)
                 if not silent:
                     self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))
@@ -1227,7 +1212,3 @@ def entry_case(text: str) -> str:
     if len(text) > 1 and text[1].islower():
         text = text[0].lower() + text[1:]
     return text
-
-
-def _player(actor: Actor) -> str:
-    return "player1" if actor == "p1" else "player2"

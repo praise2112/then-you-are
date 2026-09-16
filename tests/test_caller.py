@@ -1,6 +1,8 @@
+import asyncio
 import json
 
-from arena_judge.caller import parse_judge, salvage_judge
+from arena_core.template import load_template
+from arena_judge.caller import CallResult, ModelCaller, ModelSpec, parse_judge, salvage_judge
 from tests.conftest import judge_response
 
 NAMES = ["counter_strength", "coherence", "novelty"]
@@ -42,3 +44,24 @@ def test_salvage_reads_gates_and_verdict_out_of_broken_json():
 
 def test_salvage_gives_up_without_a_verdict():
     assert salvage_judge("the judge wandered off", NAMES) is None
+
+
+def test_judge_calls_the_given_spec_and_keeps_the_reasoning():
+    seen: list[str] = []
+
+    class Spy(ModelCaller):
+        async def complete(self, spec, messages, **extra):
+            seen.append(spec.model)
+            return CallResult(
+                text=judge_response().model_dump_json(), latency_ms=1, reasoning="because"
+            )
+
+    flash = ModelSpec(model="flash", display_name="Flash")
+    luna = ModelSpec(model="luna", display_name="Luna")
+    caller = Spy("key", flash, flash)
+    template = load_template("then-i-am")
+    call = asyncio.run(caller.judge(template, [], "a rock", "I am a river.", spec=luna))
+    assert seen == ["luna"]
+    assert call.reasoning == "because"
+    assert call.response is not None
+    asyncio.run(caller.aclose())

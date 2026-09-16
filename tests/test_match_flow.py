@@ -1,6 +1,6 @@
 import pytest
 
-from arena_core.state import Match, apply_guess, apply_ruling, resign
+from arena_core.state import Match, apply_guess, apply_ruling, resign, transcript
 from arena_core.template import Template, load_template
 from arena_judge.schema import route_outcome
 from tests.conftest import judge_response
@@ -181,3 +181,23 @@ def test_entries_on_the_table_share_one_casing():
     )
     assert entry_case("dogmatic assertion") == "dogmatic assertion"
     assert entry_case("OK, a shout") == "OK, a shout"
+
+
+def test_transcript_names_players_and_opens_showcase_rounds_with_the_card():
+    duel = new_match("t")
+    apply_ruling(duel, "p1", "I am a river.", "accept", 0, DUEL)
+    apply_ruling(duel, "p2", "lol", "semantic_reject", 1, DUEL)
+    apply_ruling(duel, "p2", "I am a dam.", "accept", 2, DUEL)
+    assert transcript(duel, DUEL) == ["player1: I am a river.", "player2: I am a dam."]
+
+    words = word_match()
+    apply_ruling(words, "p1", "a cup holder", "accept", 0, WORDS, points=30)
+    lines = transcript(words, WORDS)
+    assert lines[0].startswith("round 1, prompt: zarf (")
+    assert lines[1:] == ["player1: a cup holder"]
+    assert transcript(words, WORDS, finished_only=True) == []
+    apply_ruling(words, "p2", "a hat", "accept", 1, WORDS, points=20)
+    assert transcript(words, WORDS, finished_only=True)[1:] == [
+        "player1: a cup holder",
+        "player2: a hat",
+    ]
