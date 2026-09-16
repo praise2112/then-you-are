@@ -163,18 +163,29 @@ def judge_prompt_hash(template: Template) -> str:
     return hashlib.sha256(fixed.encode()).hexdigest()[:16]
 
 
+def render_opponent_system(template: Template) -> str:
+    """Premise, then what plays, then the move limits, then the role and style guidance."""
+    criterion = template.criterion
+    constraints = template.move_constraints
+    starts = f' and starts with "{constraints.prefix}"' if constraints.prefix else ""
+    return f"""{template.premise.strip()}
+
+WHAT PLAYS
+{criterion.description.strip()} {criterion.anti_metagaming_clause.strip()}
+
+MOVE
+Each move is at most {constraints.max_chars} characters{starts}. Reply with the move only.
+
+{template.opponent_prompt.strip()}"""
+
+
 def render_opponent_messages(
     template: Template, card: str, transcript: list[str], hidden: str = ""
 ) -> list[dict]:
     lines = "\n".join(transcript) if transcript else "(you move first)"
     truth = f"\nThe real meaning, which yours must not share: {hidden}\n" if hidden else ""
     return [
-        {
-            "role": "system",
-            "content": template.opponent_prompt.strip().format(
-                max_chars=template.move_constraints.max_chars
-            ),
-        },
+        {"role": "system", "content": render_opponent_system(template)},
         {
             "role": "user",
             "content": f"TRANSCRIPT:\nPrompt: {card}\n{lines}\n{truth}\nYOUR MOVE:",

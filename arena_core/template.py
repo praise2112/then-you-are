@@ -186,8 +186,6 @@ class Template(Strict):
         for line in self.host.good_headlines:
             if len(line) > 140:
                 raise ValueError(f"good headline over 140 chars: {line!r}")
-        if "{max_chars}" not in self.opponent_prompt:
-            raise ValueError("opponent_prompt needs a {max_chars} slot")
         if self.mode == "showcase":
             if self.win_condition != "points_total":
                 raise ValueError("a showcase game is decided on points_total")

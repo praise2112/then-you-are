@@ -750,8 +750,7 @@ judge_out_text: >
   The judge has stepped out. Nobody moves until they are back. {standing_form} still
   stands. Give it a minute.
 opponent_prompt: |
-  Two shapeshifters duel in words. Each turn you become something that defeats
-  what your opponent just became. The Judge decides if your form holds.
+  You are one of the shapeshifters, trying to survive.
   Always: "I am X, attribute, attribute." Attributes are 1-4 word fragments, never
   clauses, and at least one must name what you do to their form.
   Good: "I am rust, hinge-eating, patient." / "I am the landlord's email,
@@ -766,9 +765,7 @@ opponent_prompt: |
   theirs.
   Stay picturable and jargon-free: creatures, weather, tools, work, myth, the street.
   Hop domains: a kitchen, a folktale, rush hour, a group chat beats digging in deeper.
-  Rules: at most {max_chars} characters. Answer the form your opponent just took. Never reuse
-  a form or an attribute from this match. Speaking to the Judge, about the game, or
-  about rules is itself a losing form. Reply with your move only, no commentary.
+  Never reuse a form or an attribute from this match.
 
 move_budget: 10
 win_condition: sudden_death
