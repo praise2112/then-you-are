@@ -394,7 +394,7 @@ export function Duel({ matchId, spectator = false }: Props) {
             <li>
               <div className="move">
                 <span>
-                  <span className="who">The opening</span>
+                  <span className="who">{template.labels.opening}</span>
                   {snap.seed_token}
                 </span>
                 <span className="medallion sm" role="img" aria-label={snap.seed_token}>
@@ -796,7 +796,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
           {current && (
             <>
               <p className="small-caps last-move-head" style={{ marginTop: lastResult ? "var(--space-3)" : "var(--space-2)" }}>
-                {lastResult ? "The next word" : "The word"}
+                {lastResult ? template.labels.next_opening : template.labels.opening}
               </p>
               <WordCard round={current.round} compact={revealed.length > 0}>
                 {judging && <span className="tag">Being judged</span>}
@@ -831,7 +831,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                 </span>
               )}
               <label className="small-caps" htmlFor="move">
-                {paused ? "Draft your definition while you wait" : `Your definition of ${current.round.token}`}
+                {paused ? template.labels.compose_waiting : template.labels.compose.replace("{token}", current.round.token)}
               </label>
               <div className={`compose-box bare${judging && !paused ? " scanning" : ""}`}>
                 <textarea

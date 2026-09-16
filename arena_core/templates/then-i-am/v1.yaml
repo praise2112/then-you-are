@@ -736,6 +736,12 @@ host:
     - text: "The goat advances, not by eating the itch, but by refusing to give a scratch."
       why: a pun standing in for a mechanism; the reason is missing
 
+labels:
+  opening: The opening
+  next_opening: The next opening
+  your_opening: Your opening
+  compose: Your form against {token}
+  compose_waiting: Draft your next form while you wait
 rules:
   - Beat the form in front of you. Do not become it.
   - 'Say what you are and what you do to it: "I am rust, hinge-eating, patient."'

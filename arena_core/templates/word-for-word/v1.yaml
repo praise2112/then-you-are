@@ -312,6 +312,12 @@ host:
     - text: "Nice one."
       why: no reason, no word, no bluff
 
+labels:
+  opening: The word
+  next_opening: The next word
+  your_opening: Your word
+  compose: Your definition of {token}
+  compose_waiting: Draft your definition while you wait
 rules:
   - Three rounds, one real and obscure word each.
   - Write one sentence that could sit under it in a dictionary, in the part of speech given. The House writes its own, unseen, and the Judge scores both.

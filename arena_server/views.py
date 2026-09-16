@@ -60,6 +60,14 @@ class GuessRulesView(BaseModel):
     prompt: str
 
 
+class LabelsView(BaseModel):
+    opening: str
+    next_opening: str
+    your_opening: str
+    compose: str
+    compose_waiting: str
+
+
 class TemplateView(BaseModel):
     slug: str
     title: str
@@ -78,6 +86,7 @@ class TemplateView(BaseModel):
     move_budget: int
     score_max: int
     host_name: str
+    labels: LabelsView
     guess: GuessRulesView | None
     demo: DemoView
 

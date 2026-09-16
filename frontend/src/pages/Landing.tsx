@@ -247,7 +247,7 @@ function Stage({ template }: { template: TemplateView }) {
             {opening.emoji}
           </span>
           <span>
-            {showcase ? "Your word" : "Your opening"}: <b>{opening.token}</b>
+            {template.labels.your_opening}: <b>{opening.token}</b>
             {opening.detail && <em className="detail"> {opening.detail}</em>}
           </span>
         </p>
@@ -309,7 +309,7 @@ function Stage({ template }: { template: TemplateView }) {
               {demo.opening.emoji}
             </span>
             <span>
-              {showcase ? "The word" : "The opening"}: <b>{demo.opening.token}</b>
+              {template.labels.opening}: <b>{demo.opening.token}</b>
               {demo.opening.detail && <em className="detail"> {demo.opening.detail}</em>}
             </span>
           </p>

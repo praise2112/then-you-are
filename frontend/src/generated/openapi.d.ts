@@ -688,6 +688,19 @@ export interface components {
             /** Seq */
             seq: number;
         };
+        /** LabelsView */
+        LabelsView: {
+            /** Opening */
+            opening: string;
+            /** Next Opening */
+            next_opening: string;
+            /** Your Opening */
+            your_opening: string;
+            /** Compose */
+            compose: string;
+            /** Compose Waiting */
+            compose_waiting: string;
+        };
         /** LandingOpeningView */
         LandingOpeningView: {
             /** Token */
@@ -1158,6 +1171,7 @@ export interface components {
             score_max: number;
             /** Host Name */
             host_name: string;
+            labels: components["schemas"]["LabelsView"];
             guess: components["schemas"]["GuessRulesView"] | null;
             demo: components["schemas"]["DemoView"];
         };

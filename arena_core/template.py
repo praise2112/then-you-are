@@ -132,6 +132,16 @@ class GuessRules(Strict):
 Mode = Literal["escalation", "showcase"]
 
 
+class Labels(Strict):
+    """Presentation strings for the slots the frontend fills per game."""
+
+    opening: str
+    next_opening: str
+    your_opening: str
+    compose: str
+    compose_waiting: str
+
+
 class Template(Strict):
     """escalation: each move answers the standing move.
     showcase: both players answer one dealt card per round."""
@@ -153,6 +163,7 @@ class Template(Strict):
     examples: list[Example]
     host: Host
     rules: list[str] = Field(min_length=1)
+    labels: Labels
     validation_messages: ValidationMessages
     judge_out_text: str
     opponent_prompt: str
@@ -267,6 +278,7 @@ class Template(Strict):
             "move_budget": self.move_budget,
             "score_max": SCORE_MAX,
             "host_name": self.host.persona_name,
+            "labels": self.labels.model_dump(),
             "guess": self.guess.model_dump() if self.guess else None,
             "demo": self._demo_projection(),
         }

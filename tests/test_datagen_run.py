@@ -50,6 +50,15 @@ def test_a_run_stops_at_the_budget_then_resumes_and_reports(tmp_path: Path, monk
         return caller
 
     monkeypatch.setattr(run, "make_caller", lambda judge_ref: scripted())
+
+    class NoSabotage:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def run(self) -> int:
+            return 0
+
+    monkeypatch.setattr(run, "Saboteur", NoSabotage)
     asyncio.run(run.drive("r", ledger, TEMPLATES, budget=0.0025, now=True, concurrency=1))
     ended = ledger.matches("ended")
     assert 1 <= len(ended) < 3, "the budget stopped the run at a match boundary"
