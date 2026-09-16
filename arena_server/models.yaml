@@ -19,3 +19,7 @@ opponent-v1:
   model: deepseek/deepseek-v4.1-flash
   temperature: 1.0
   provider: { only: [deepseek] }
+opponent-luna:
+  display_name: GPT Luna
+  model: openai/gpt-5.6-luna
+  temperature: 1.0

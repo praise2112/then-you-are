@@ -20,3 +20,4 @@ frontend/dist/
 .env
 .env.local
 *.db
+arena_evals/datagen/corpus/
