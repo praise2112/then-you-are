@@ -43,7 +43,7 @@ target-version = "py312"
 select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.pyright]
-include = ["arena_core", "arena_judge", "arena_server", "tests"]
+include = ["arena_core", "arena_evals", "arena_judge", "arena_server", "tests"]
 typeCheckingMode = "standard"
 
 [tool.pytest.ini_options]

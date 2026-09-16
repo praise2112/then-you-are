@@ -1,6 +1,7 @@
 """Grow a template's seed pool: sample the recipe grid, generate, dedup, append.
 
 uv run python -m arena_evals.grow_seeds --template then-i-am --target 500 [--dry-run]
+uv run python -m arena_evals.grow_seeds --path arena_evals/variants/pool/counter/x.yaml --target 60
 """
 
 import argparse
@@ -20,9 +21,9 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel, ConfigDict, ValidationError
 
-from arena_core.template import TEMPLATES_DIR, Seed, Template, load_template
-from arena_judge.caller import CallError, ModelCaller
-from arena_server.config import load_model, load_settings
+from arena_core.template import TEMPLATES_DIR, Seed, Template, load_template_file
+from arena_evals.common import make_caller, with_backoff
+from arena_judge.caller import ModelCaller
 
 EMBED_URL = "https://openrouter.ai/api/v1/embeddings"
 EMBED_MODEL = "openai/text-embedding-3-small"
@@ -31,7 +32,6 @@ CACHE_DIR = Path(__file__).parent / "seeds"
 CANDIDATES_PER_CELL = 6
 KEEP_PER_CELL = 3
 AVOID_MAX = 150
-RETRY_STATUSES = {408, 409, 425, 429, 500, 502, 503, 504}
 ARTICLES = ("a ", "an ", "the ")
 STOP = {"of", "the", "a", "an"}
 ING_NOUNS = {
@@ -187,27 +187,6 @@ def parse_batch(raw: str) -> Batch | None:
         return None
 
 
-async def with_backoff(fn, *, tries: int = 6):
-    """Retry a call on rate limits, server errors and timeouts, honouring Retry-After."""
-    for attempt in range(tries):
-        try:
-            return await fn()
-        except (CallError, httpx.HTTPStatusError, httpx.TransportError) as e:
-            status = getattr(e, "status", None) or getattr(
-                getattr(e, "response", None), "status_code", None
-            )
-            if status is not None and status not in RETRY_STATUSES:
-                raise
-            if attempt == tries - 1:
-                raise
-            retry_after = getattr(getattr(e, "response", None), "headers", {}).get("Retry-After")
-            wait = (
-                float(retry_after) if retry_after else min(30.0, 0.5 * 2**attempt) + random.random()
-            )
-            await asyncio.sleep(wait)
-    raise AssertionError("unreachable")
-
-
 class Grower:
     def __init__(self, template: Template, caller: ModelCaller, concurrency: int, threshold: float):
         self.template = template
@@ -322,9 +301,8 @@ def all_cells(template: Template) -> list[dict[str, str]]:
     return cells
 
 
-def append_to_pool(template: Template, seeds: list[Seed]) -> Path:
+def append_to_pool(template: Template, seeds: list[Seed], path: Path) -> None:
     """Add seeds as flow-style lines after the last pool entry, keeping the file's own layout."""
-    path = TEMPLATES_DIR / template.slug / "v1.yaml"
     text = path.read_text()
     last = template.seed_pool[-1]
     anchor = (
@@ -337,21 +315,15 @@ def append_to_pool(template: Template, seeds: list[Seed]) -> Path:
         for s in seeds
     )
     path.write_text(text.replace(anchor, anchor + lines))
-    return path
 
 
 async def grow(
-    template_id: str, target: int, concurrency: int, threshold: float, dry_run: bool
+    path: Path, target: int, concurrency: int, threshold: float, dry_run: bool
 ) -> Report:
-    template = load_template(template_id)
+    template = load_template_file(path)
     if template.seed_recipe is None:
-        raise SystemExit(f"{template_id} has no seed_recipe")
-    settings = load_settings()
-    caller = ModelCaller(
-        settings.openrouter_api_key,
-        load_model(settings.judge_ref),
-        load_model(settings.opponent_ref),
-    )
+        raise SystemExit(f"{path} has no seed_recipe")
+    caller = make_caller()
     grower = Grower(template, caller, concurrency, threshold)
     rejects = Rejects()
     accepted: list[Seed] = []
@@ -380,14 +352,15 @@ async def grow(
     finally:
         await caller.aclose()
     if accepted and not dry_run:
-        append_to_pool(load_template(template_id), accepted)
-        load_template(template_id)  # the file must still lint
+        append_to_pool(load_template_file(path), accepted, path)
+        load_template_file(path)  # the file must still lint
     return Report(accepted, rejects, grower.calls, grower.cost)
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--template", required=True)
+    ap.add_argument("--template", help="a shipped game's slug")
+    ap.add_argument("--path", type=Path, help="any template YAML, for pool variants")
     ap.add_argument("--target", type=int, default=100)
     ap.add_argument("--concurrency", type=int, default=64)
     ap.add_argument(
@@ -395,9 +368,10 @@ def main() -> None:
     )
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
-    report = asyncio.run(
-        grow(args.template, args.target, args.concurrency, args.threshold, args.dry_run)
-    )
+    if (args.template is None) == (args.path is None):
+        ap.error("give exactly one of --template or --path")
+    path = args.path or TEMPLATES_DIR / args.template / "v1.yaml"
+    report = asyncio.run(grow(path, args.target, args.concurrency, args.threshold, args.dry_run))
     for seed in report.accepted:
         print(f"{seed.opening_emoji} {seed.opening_token}")
     one_word = sum(len(s.opening_token.split()) == 2 for s in report.accepted)

@@ -1,6 +1,6 @@
 """Golden set runner: sends fixed move pairs to the live judge and reports drift.
 
-uv run python -m arena_evals.run_golden --template then-i-am --split dev --repeats 1
+uv run python -m arena_evals.run_golden --template then-i-am --split dev [--judge judge-luna]
 """
 
 import argparse
@@ -16,9 +16,9 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict
 
 from arena_core.template import Template, load_template
+from arena_evals.common import make_caller
 from arena_judge.caller import ModelCaller
 from arena_judge.schema import Outcome, route_outcome
-from arena_server.config import load_model, load_settings
 
 GOLDEN_DIR = Path(__file__).parent / "golden"
 Split = Literal["dev", "holdout"]
@@ -136,14 +136,9 @@ async def judge_one(
 
 
 async def run(
-    template_id: str, split: Split, repeats: int, concurrency: int, only: set[str]
+    template_id: str, split: Split, repeats: int, concurrency: int, only: set[str], judge: str
 ) -> list[Result]:
-    settings = load_settings()
-    caller = ModelCaller(
-        settings.openrouter_api_key,
-        load_model(settings.judge_ref),
-        load_model(settings.opponent_ref),
-    )
+    caller = make_caller(judge_ref=judge)
     sem = asyncio.Semaphore(concurrency)
     template = load_template(template_id)
     records = [r for r in load_golden(template_id, split) if not only or r.id in only]
@@ -192,9 +187,12 @@ def main() -> None:
     parser.add_argument("--concurrency", type=int, default=4)
     parser.add_argument("--out", type=Path, help="write the results as JSON here")
     parser.add_argument("--only", default="", help="comma-separated record ids")
+    parser.add_argument("--judge", default="judge-v1", help="a models.yaml entry")
     args = parser.parse_args()
     only = {i for i in args.only.split(",") if i}
-    results = asyncio.run(run(args.template, args.split, args.repeats, args.concurrency, only))
+    results = asyncio.run(
+        run(args.template, args.split, args.repeats, args.concurrency, only, args.judge)
+    )
     if args.out:
         args.out.write_text(
             json.dumps([r.model_dump() for r in results], indent=1, ensure_ascii=False)

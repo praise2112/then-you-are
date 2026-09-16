@@ -275,7 +275,10 @@ class Template(Strict):
 
 
 def load_template(slug: str, version: int = 1) -> Template:
-    path = TEMPLATES_DIR / slug / f"v{version}.yaml"
+    return load_template_file(TEMPLATES_DIR / slug / f"v{version}.yaml")
+
+
+def load_template_file(path: Path) -> Template:
     return Template.model_validate(yaml.safe_load(path.read_text()))
 
 
