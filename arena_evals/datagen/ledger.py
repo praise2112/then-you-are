@@ -23,7 +23,7 @@ create table if not exists calls (
 create table if not exists sabotage (
     match_id text not null, seq integer not null, kind text not null, source text not null,
     mutated text not null, call_idx integer not null, expected text not null,
-    outcome text not null);
+    outcome text not null, primary key (match_id, seq, kind));
 """
 
 
@@ -143,7 +143,7 @@ class Ledger:
     ) -> None:
         with self.conn:
             self.conn.execute(
-                "insert into sabotage values (?, ?, ?, ?, ?, ?, ?, ?)",
+                "insert or ignore into sabotage values (?, ?, ?, ?, ?, ?, ?, ?)",
                 (match_id, seq, kind, source, mutated, call_idx, expected, outcome),
             )
 
