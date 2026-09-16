@@ -16,7 +16,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict
 
 from arena_core.template import Template, load_template
-from arena_evals.common import make_caller
+from arena_evals.common import RETRY_STATUSES, make_caller
 from arena_judge.caller import ModelCaller
 from arena_judge.schema import Outcome, route_outcome
 
@@ -104,6 +104,13 @@ async def judge_one(
         call = await caller.judge(
             template, transcript, record.previous_move, record.move, record.hidden
         )
+        for attempt in range(5):
+            if call.response is not None or call.error_status not in RETRY_STATUSES:
+                break
+            await asyncio.sleep(min(30.0, 2.0 * 2**attempt))
+            call = await caller.judge(
+                template, transcript, record.previous_move, record.move, record.hidden
+            )
     meta: dict[str, Any] = dict(
         latency_ms=call.latency_ms,
         tokens_in=call.tokens_in,

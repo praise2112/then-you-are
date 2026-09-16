@@ -1,7 +1,7 @@
 """Plan, drive, resume and report a data generation run.
 
 uv run python -m arena_evals.datagen.run start <run_id> --matches then-i-am=40 --budget 2
-uv run python -m arena_evals.datagen.run resume <run_id> --budget 2
+uv run python -m arena_evals.datagen.run resume <run_id> --budget 2 --concurrency 16
 uv run python -m arena_evals.datagen.run report <run_id>
 """
 
@@ -27,11 +27,16 @@ RUNS_DIR = Path(__file__).parent / "runs"
 CORPUS_DIR = Path(__file__).parent / "corpus"
 CARDS_DIR = Path(__file__).parent / "cards"
 CLASSES = {"then-i-am": "counter", "word-for-word": "showcase"}
-TEACHERS = {"opponent-v1": 0.8, "opponent-luna": 0.2}
+PROVIDERS = {
+    "fireworks": {"judge": "judge-fireworks", "flash": "opponent-fireworks", "concurrency": 16},
+    "deepseek": {"judge": "judge-v1", "flash": "opponent-v1", "concurrency": 64},
+}
+FLASH_SHARE = 0.8
+LUNA = "opponent-luna"
 WINDOW_OPEN = time(16, 30)
 WINDOW_CLOSE = time(0, 30)
 PEAK_RATIO = 2.7
-OFF_PEAK_USD = {"judge": 0.00067, "opponent-v1": 0.0001, "opponent-luna": 0.0003}
+UNIT_USD = {"judge": 0.00067, "flash": 0.0001, "luna": 0.0003}
 
 
 def in_window(now: datetime) -> bool:
@@ -46,18 +51,17 @@ def seconds_until_open(now: datetime) -> float:
 
 
 def estimate(templates: dict[str, Template], counts: dict[str, int]) -> tuple[float, float]:
-    """Expected bill for the planned matches, off peak and at peak, from the plan's unit costs."""
-    off_peak = 0.0
+    """Expected bill for the planned matches at the flat or off-peak Flash price, and at peak."""
+    base = 0.0
     peak = 0.0
     for slug, n in counts.items():
-        budget = templates[slug].move_budget
-        verdicts = budget * (1 + RATE)
-        judge = verdicts * OFF_PEAK_USD["judge"]
-        moves = sum(w * OFF_PEAK_USD[ref] for ref, w in TEACHERS.items()) * budget * (1 + RATE)
-        luna_moves = TEACHERS["opponent-luna"] * OFF_PEAK_USD["opponent-luna"] * budget
-        off_peak += n * (judge + moves)
-        peak += n * (PEAK_RATIO * (judge + moves - luna_moves) + luna_moves)
-    return off_peak, peak
+        calls = templates[slug].move_budget * (1 + RATE)
+        judge = calls * UNIT_USD["judge"]
+        flash_moves = FLASH_SHARE * UNIT_USD["flash"] * calls
+        luna_moves = (1 - FLASH_SHARE) * UNIT_USD["luna"] * calls
+        base += n * (judge + flash_moves + luna_moves)
+        peak += n * (PEAK_RATIO * (judge + flash_moves) + luna_moves)
+    return base, peak
 
 
 def lane_total() -> float:
@@ -70,10 +74,14 @@ def lane_total() -> float:
 
 
 def plan_matches(
-    ledger: Ledger, templates: dict[str, Template], counts: dict[str, int], rng: random.Random
+    ledger: Ledger,
+    templates: dict[str, Template],
+    counts: dict[str, int],
+    rng: random.Random,
+    flash_ref: str,
 ) -> None:
-    refs = list(TEACHERS)
-    weights = list(TEACHERS.values())
+    refs = [flash_ref, LUNA]
+    weights = [FLASH_SHARE, 1 - FLASH_SHARE]
     for slug, n in counts.items():
         template = templates[slug]
         for _ in range(n):
@@ -117,7 +125,8 @@ async def _drive(
     concurrency: int,
 ) -> None:
     judge = load_model(plan["judge_ref"])
-    writer = load_model("opponent-v1")
+    writer = load_model(plan["flash_ref"])
+    guarded = plan["provider"] == "deepseek" and not now
     sem = asyncio.Semaphore(concurrency)
     stop = asyncio.Event()
 
@@ -130,7 +139,7 @@ async def _drive(
         async with sem:
             if stop.is_set():
                 return
-            if not now and not in_window(datetime.now(UTC)):
+            if guarded and not in_window(datetime.now(UTC)):
                 wait = seconds_until_open(datetime.now(UTC))
                 print(f"outside the off-peak window, sleeping {wait / 3600:.1f} h", file=sys.stderr)
                 await asyncio.sleep(wait)
@@ -176,13 +185,13 @@ def main() -> None:
     start = sub.add_parser("start")
     start.add_argument("run_id")
     start.add_argument("--matches", nargs="+", required=True, help="slug=count ...")
-    start.add_argument("--judge", default="judge-v1")
+    start.add_argument("--provider", choices=list(PROVIDERS), default="fireworks")
     resume = sub.add_parser("resume")
     resume.add_argument("run_id")
     for p in (start, resume):
         p.add_argument("--budget", type=float, required=True, help="dollars; the run stops here")
-        p.add_argument("--now", action="store_true", help="ignore the off-peak window")
-        p.add_argument("--concurrency", type=int, default=64)
+        p.add_argument("--now", action="store_true", help="ignore DeepSeek's off-peak window")
+        p.add_argument("--concurrency", type=int, help="matches in flight; default per provider")
         p.add_argument("--yes", action="store_true", help="skip the price confirmation")
     report = sub.add_parser("report")
     report.add_argument("run_id")
@@ -201,20 +210,23 @@ def main() -> None:
         templates = {slug: load_template(slug) for slug in counts}
         if ledger.plan(args.run_id) is not None:
             raise SystemExit(f"run {args.run_id} exists; use resume")
+        provider = PROVIDERS[args.provider]
         ledger.create_run(
             args.run_id,
             {
                 "matches": counts,
                 "classes": {s: CLASSES[s] for s in counts},
-                "teachers": TEACHERS,
-                "judge_ref": args.judge,
+                "provider": args.provider,
+                "teachers": {provider["flash"]: FLASH_SHARE, LUNA: 1 - FLASH_SHARE},
+                "judge_ref": provider["judge"],
+                "flash_ref": provider["flash"],
                 "judge_prompt_hash": {s: judge_prompt_hash(t) for s, t in templates.items()},
                 "sabotage_rate": RATE,
                 "budget": args.budget,
                 "created": datetime.now(UTC).isoformat(),
             },
         )
-        plan_matches(ledger, templates, counts, random.Random())
+        plan_matches(ledger, templates, counts, random.Random(), provider["flash"])
     plan = ledger.plan(args.run_id)
     if plan is None:
         raise SystemExit(f"no run named {args.run_id}")
@@ -223,17 +235,23 @@ def main() -> None:
     pending = {}
     for row in ledger.matches("active"):
         pending[row["template_id"]] = pending.get(row["template_id"], 0) + 1
-    off_peak, peak = estimate(templates, pending)
+    base, peak = estimate(templates, pending)
+    concurrency = args.concurrency or PROVIDERS[plan["provider"]]["concurrency"]
+    price = (
+        f"${base:.2f}"
+        if plan["provider"] == "fireworks"
+        else f"${base:.2f} off peak, ${peak:.2f} at peak"
+    )
     print(
-        f"{sum(pending.values())} matches to play; estimate ${off_peak:.2f} off peak, "
-        f"${peak:.2f} at peak; spent so far in this run ${ledger.spent():.4f}, "
+        f"{sum(pending.values())} matches to play on {plan['provider']} at concurrency "
+        f"{concurrency}; estimate {price}; spent so far in this run ${ledger.spent():.4f}, "
         f"in the lane ${lane_total():.2f}; stop at ${args.budget:.2f}",
         file=sys.stderr,
     )
     if not args.yes and input("go? [y/N] ").strip().lower() != "y":
         return
     try:
-        asyncio.run(drive(args.run_id, ledger, templates, args.budget, args.now, args.concurrency))
+        asyncio.run(drive(args.run_id, ledger, templates, args.budget, args.now, concurrency))
     finally:
         ledger.close()
 

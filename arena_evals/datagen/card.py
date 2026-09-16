@@ -60,7 +60,9 @@ def write(run_id: str, ledger: Ledger, corpus_dir: Path, classes: dict[str, str]
         lines.append(f"- {teacher}: {stood}/{total} moves stood ({stood / total:.0%})")
     accepted_total = sum(accepted_by_teacher.values())
     if accepted_total:
-        share = accepted_by_teacher["opponent-v1"] / accepted_total
+        share = (
+            sum(n for t, n in accepted_by_teacher.items() if t != "opponent-luna") / accepted_total
+        )
         inside = FLASH_SHARE[0] <= share <= FLASH_SHARE[1]
         verdict = "inside" if inside else "OUTSIDE"
         lines.append(

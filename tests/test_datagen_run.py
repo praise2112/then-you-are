@@ -34,11 +34,13 @@ def test_a_run_stops_at_the_budget_then_resumes_and_reports(tmp_path: Path, monk
         "r",
         {
             "matches": {"then-i-am": 3},
-            "judge_ref": "judge-v1",
+            "provider": "fireworks",
+            "judge_ref": "judge-fireworks",
+            "flash_ref": "opponent-fireworks",
             "judge_prompt_hash": {"then-i-am": "x"},
         },
     )
-    run.plan_matches(ledger, TEMPLATES, {"then-i-am": 3}, random.Random(1))
+    run.plan_matches(ledger, TEMPLATES, {"then-i-am": 3}, random.Random(1), "opponent-fireworks")
     assert len(ledger.matches("active")) == 3
 
     def scripted() -> ScriptedCaller:
