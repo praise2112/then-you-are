@@ -1,0 +1,175 @@
+"""SQLite run ledger: one file per run, every model call written before the next starts."""
+
+import json
+import sqlite3
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+SCHEMA = """
+create table if not exists runs (
+    run_id text primary key, plan text not null, started text default current_timestamp,
+    finished text);
+create table if not exists matches (
+    match_id text primary key, template_id text not null, cards text not null,
+    teacher_p1 text not null, teacher_p2 text not null, status text not null,
+    outcome text);
+create table if not exists calls (
+    match_id text not null, idx integer not null, role text not null, actor text not null,
+    seq integer not null, model text not null, prompt_hash text not null, raw text not null,
+    reasoning text, payload text not null, tokens_in integer not null,
+    tokens_out integer not null, cost_usd real not null, latency_ms integer not null,
+    attempt text not null, primary key (match_id, idx));
+create table if not exists sabotage (
+    match_id text not null, seq integer not null, kind text not null, source text not null,
+    mutated text not null, call_idx integer not null, expected text not null,
+    outcome text not null);
+"""
+
+
+@dataclass(frozen=True)
+class CallRow:
+    match_id: str
+    idx: int
+    role: str
+    actor: str
+    seq: int
+    model: str
+    prompt_hash: str
+    raw: str
+    reasoning: str | None
+    payload: dict[str, Any]
+    tokens_in: int
+    tokens_out: int
+    cost_usd: float
+    latency_ms: int
+    attempt: str
+
+
+class Ledger:
+    def __init__(self, path: Path):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self.conn = sqlite3.connect(path)
+        self.conn.row_factory = sqlite3.Row
+        self.conn.executescript(SCHEMA)
+
+    def close(self) -> None:
+        self.conn.close()
+
+    def create_run(self, run_id: str, plan: dict[str, Any]) -> None:
+        with self.conn:
+            self.conn.execute(
+                "insert or ignore into runs (run_id, plan) values (?, ?)",
+                (run_id, json.dumps(plan)),
+            )
+
+    def plan(self, run_id: str) -> dict[str, Any] | None:
+        row = self.conn.execute("select plan from runs where run_id = ?", (run_id,)).fetchone()
+        return json.loads(row["plan"]) if row else None
+
+    def finish_run(self, run_id: str) -> None:
+        with self.conn:
+            self.conn.execute(
+                "update runs set finished = current_timestamp where run_id = ?", (run_id,)
+            )
+
+    def add_match(
+        self, match_id: str, template_id: str, cards: list[str], teacher_p1: str, teacher_p2: str
+    ) -> None:
+        with self.conn:
+            self.conn.execute(
+                "insert or ignore into matches (match_id, template_id, cards, teacher_p1, "
+                "teacher_p2, status) values (?, ?, ?, ?, ?, 'active')",
+                (match_id, template_id, json.dumps(cards), teacher_p1, teacher_p2),
+            )
+
+    def set_match_status(self, match_id: str, status: str, outcome: dict[str, Any]) -> None:
+        with self.conn:
+            self.conn.execute(
+                "update matches set status = ?, outcome = ? where match_id = ?",
+                (status, json.dumps(outcome), match_id),
+            )
+
+    def matches(self, status: str | None = None) -> list[sqlite3.Row]:
+        if status is None:
+            return self.conn.execute("select * from matches order by rowid").fetchall()
+        return self.conn.execute(
+            "select * from matches where status = ? order by rowid", (status,)
+        ).fetchall()
+
+    def add_call(self, row: CallRow) -> None:
+        with self.conn:
+            self.conn.execute(
+                "insert into calls values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    row.match_id,
+                    row.idx,
+                    row.role,
+                    row.actor,
+                    row.seq,
+                    row.model,
+                    row.prompt_hash,
+                    row.raw,
+                    row.reasoning,
+                    json.dumps(row.payload),
+                    row.tokens_in,
+                    row.tokens_out,
+                    row.cost_usd,
+                    row.latency_ms,
+                    row.attempt,
+                ),
+            )
+
+    def calls(self, match_id: str) -> list[CallRow]:
+        rows = self.conn.execute(
+            "select * from calls where match_id = ? order by idx", (match_id,)
+        ).fetchall()
+        return [_call_row(r) for r in rows]
+
+    def all_calls(self) -> list[CallRow]:
+        rows = self.conn.execute("select * from calls order by match_id, idx").fetchall()
+        return [_call_row(r) for r in rows]
+
+    def add_sabotage(
+        self,
+        match_id: str,
+        seq: int,
+        kind: str,
+        source: str,
+        mutated: str,
+        call_idx: int,
+        expected: str,
+        outcome: str,
+    ) -> None:
+        with self.conn:
+            self.conn.execute(
+                "insert into sabotage values (?, ?, ?, ?, ?, ?, ?, ?)",
+                (match_id, seq, kind, source, mutated, call_idx, expected, outcome),
+            )
+
+    def sabotage_rows(self) -> list[sqlite3.Row]:
+        return self.conn.execute("select * from sabotage order by rowid").fetchall()
+
+    def spent(self) -> float:
+        row = self.conn.execute("select coalesce(sum(cost_usd), 0) as total from calls").fetchone()
+        return float(row["total"])
+
+
+def _call_row(r: sqlite3.Row) -> CallRow:
+    return CallRow(
+        match_id=r["match_id"],
+        idx=r["idx"],
+        role=r["role"],
+        actor=r["actor"],
+        seq=r["seq"],
+        model=r["model"],
+        prompt_hash=r["prompt_hash"],
+        raw=r["raw"],
+        reasoning=r["reasoning"],
+        payload=json.loads(r["payload"]),
+        tokens_in=r["tokens_in"],
+        tokens_out=r["tokens_out"],
+        cost_usd=r["cost_usd"],
+        latency_ms=r["latency_ms"],
+        attempt=r["attempt"],
+    )

@@ -1,0 +1,135 @@
+import asyncio
+from pathlib import Path
+
+import pytest
+
+from arena_core.state import Actor, Match
+from arena_core.template import load_template
+from arena_evals.datagen.ledger import Ledger
+from arena_evals.datagen.play import MatchAbandoned, Teacher, deal, new_match, play_match
+from arena_judge.caller import CallResult, ModelSpec
+from tests.conftest import FakeCaller, judge_response
+
+DUEL = load_template("then-i-am")
+WORDS = load_template("word-for-word")
+FLASH = Teacher("opponent-v1", ModelSpec(model="flash", display_name="Flash"))
+LUNA = Teacher("opponent-luna", ModelSpec(model="luna", display_name="Luna"))
+SIDES: dict[Actor, Teacher] = {"p1": FLASH, "p2": LUNA}
+JUDGE = ModelSpec(model="flash-judge", display_name="The Judge")
+
+
+class ScriptedCaller(FakeCaller):
+    """Moves come from `complete`, verdicts from the fake judge. Records what each writer saw."""
+
+    def __init__(self, rulings, moves, fail_after: int | None = None):
+        super().__init__(rulings, [])
+        self.moves = list(moves)
+        self.writers_saw: list[tuple[str, list[dict]]] = []
+        self.fail_after = fail_after
+        self.completed = 0
+
+    async def complete(self, spec, messages, **extra) -> CallResult:
+        if self.fail_after is not None and self.completed >= self.fail_after:
+            raise RuntimeError("crash")
+        self.completed += 1
+        self.writers_saw.append((spec.model, messages))
+        assert extra["reasoning"] == {"enabled": False}
+        return CallResult(text=self.moves.pop(0), latency_ms=1, cost_usd=0.001)
+
+
+def duel_match() -> Match:
+    return new_match(DUEL, [DUEL.seed_named("a rock")])  # type: ignore[list-item]
+
+
+def word_match() -> Match:
+    return new_match(WORDS, [WORDS.seed_named(t) for t in ("zarf", "groak", "ferrule")])  # type: ignore[list-item]
+
+
+def test_deal_gives_one_card_to_a_duel_and_one_per_round_to_a_showcase():
+    assert len(deal(DUEL)) == 1
+    cards = deal(WORDS)
+    assert len(cards) == WORDS.move_budget // 2
+    assert len({c.opening_token for c in cards}) == len(cards)
+
+
+def test_a_duel_plays_to_sudden_death_and_every_call_lands_in_the_ledger(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    caller = ScriptedCaller(
+        rulings=[judge_response(), judge_response(), judge_response(verdict="fail")],
+        moves=["I am a hammer, rock-splitting.", '"I am rust, hinge-eating."', "I am a poem."],
+    )
+    match = asyncio.run(play_match(DUEL, duel_match(), SIDES, caller, ledger, JUDGE))
+    assert match.status == "ended" and match.end_reason == "sudden_death"
+    assert match.winner == "p2"
+    assert [t.move_text for t in match.turns][1] == "I am rust, hinge-eating."
+    assert [m for m, _ in caller.writers_saw] == ["flash", "luna", "flash"]
+    rows = ledger.calls(match.id)
+    assert [r.role for r in rows] == ["move", "judge"] * 3
+    assert rows[1].payload["previous"] == "a rock" and rows[3].payload["previous"].startswith(
+        "I am a hammer"
+    )
+    assert rows[0].payload["messages"] == caller.writers_saw[0][1]
+    assert ledger.spent() == pytest.approx(0.003)
+    assert ledger.matches("ended")[0]["teacher_p2"] == "opponent-luna"
+
+
+def test_showcase_writers_see_only_finished_rounds_and_nobody_guesses(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    caller = ScriptedCaller(
+        rulings=[judge_response()] * 6, moves=[f"a thing {i}" for i in range(6)]
+    )
+    match = asyncio.run(play_match(WORDS, word_match(), SIDES, caller, ledger, JUDGE))
+    assert match.status == "ended" and match.end_reason == "rounds_complete"
+    assert match.guesses == [] and match.phase == "write"
+    assert [t.round_n for t in match.turns] == [1, 1, 2, 2, 3, 3]
+    round_two_p2 = caller.writers_saw[3][1][1]["content"]
+    assert "a thing 0" in round_two_p2 and "a thing 1" in round_two_p2
+    assert "a thing 2" not in round_two_p2
+    assert caller.hidden_seen[0] == WORDS.seed_named("zarf").hidden  # type: ignore[union-attr]
+
+
+def test_a_truth_hit_is_rewritten_once_and_a_refusal_burns_a_strike(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    rulings = [
+        judge_response(truth_proximity="hit"),
+        judge_response(),
+        judge_response(gates={"no_meta_move": False}),
+        judge_response(),
+    ] + [judge_response()] * 4
+    caller = ScriptedCaller(rulings=rulings, moves=[f"a thing {i}" for i in range(9)])
+    match = asyncio.run(play_match(WORDS, word_match(), SIDES, caller, ledger, JUDGE))
+    assert [t.move_text for t in match.turns[:2]] == ["a thing 1", "a thing 3"]
+    assert match.turns[0].truth_hit is False
+
+
+def test_a_crashed_match_resumes_from_the_ledger_without_repeating_calls(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    match = duel_match()
+    moves = ["I am a hammer, rock-splitting.", "I am rust, hinge-eating.", "I am a poem."]
+    crashed = ScriptedCaller(rulings=[judge_response()] * 3, moves=list(moves), fail_after=2)
+    with pytest.raises(RuntimeError):
+        asyncio.run(play_match(DUEL, match, SIDES, crashed, ledger, JUDGE))
+    assert len(ledger.calls(match.id)) == 4
+    resumed = ScriptedCaller(rulings=[judge_response(verdict="fail")], moves=moves[2:])
+    match = asyncio.run(
+        play_match(DUEL, duel_match_with_id(match.id), SIDES, resumed, ledger, JUDGE)
+    )
+    assert match.status == "ended" and len(match.turns) == 3
+    assert resumed.completed == 1 and len(ledger.calls(match.id)) == 6
+
+
+def duel_match_with_id(match_id: str) -> Match:
+    match = duel_match()
+    match.id = match_id
+    return match
+
+
+def test_a_judge_that_stays_down_abandons_the_match(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr("arena_evals.datagen.play.JUDGE_RETRY_S", 0)
+    ledger = Ledger(tmp_path / "run.db")
+    caller = ScriptedCaller(rulings=[None] * 4, moves=["I am a hammer, rock-splitting."])
+    with pytest.raises(MatchAbandoned):
+        asyncio.run(play_match(DUEL, duel_match(), SIDES, caller, ledger, JUDGE))
+    row = ledger.matches("abandoned")[0]
+    assert "judge unavailable" in row["outcome"]
+    assert ledger.calls(row["match_id"])[-1].payload["response"] is None
