@@ -82,7 +82,9 @@ class FakeCaller(ModelCaller):
             response = response.model_copy(deep=True)
             response.scoring.scores = dict.fromkeys(template.weights, 3)
         raw = response.model_dump_json() if response else ""
-        return JudgeCall(response=response, raw=raw, prompt_hash="test", latency_ms=1)
+        return JudgeCall(
+            response=response, raw=raw, prompt_hash="test", latency_ms=1, attempts=["parsed"]
+        )
 
     def opponent_stream(self, template, card, transcript, hidden="") -> AsyncIterator[str]:
         self.opponent_saw.append(list(transcript))
