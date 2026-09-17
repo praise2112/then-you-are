@@ -179,6 +179,11 @@ Each move is at most {constraints.max_chars} characters{starts}. Reply with the 
 {template.opponent_prompt.strip()}"""
 
 
+def clean_move(raw: str) -> str:
+    """A writer's reply as the move text: surrounding whitespace and quotes dropped."""
+    return raw.strip().strip('"')
+
+
 def render_opponent_messages(
     template: Template, card: str, transcript: list[str], hidden: str = ""
 ) -> list[dict]:

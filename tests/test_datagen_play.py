@@ -1,12 +1,13 @@
 import asyncio
+import random
 from pathlib import Path
 
 import pytest
 
-from arena_core.state import Actor, Match
+from arena_core.state import Actor, Match, deal
 from arena_core.template import load_template
-from arena_evals.datagen.ledger import Ledger
-from arena_evals.datagen.play import MatchAbandoned, Teacher, deal, new_match, play_match
+from arena_evals.datagen.ledger import Ledger, Tape
+from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
 from arena_judge.caller import CallResult, ModelSpec
 from tests.conftest import FakeCaller, judge_response
 
@@ -46,8 +47,9 @@ def word_match() -> Match:
 
 
 def test_deal_gives_one_card_to_a_duel_and_one_per_round_to_a_showcase():
-    assert len(deal(DUEL)) == 1
-    cards = deal(WORDS)
+    rng = random.Random(0)
+    assert len(deal(DUEL, rng)) == 1
+    cards = deal(WORDS, rng)
     assert len(cards) == WORDS.move_budget // 2
     assert len({c.opening_token for c in cards}) == len(cards)
 
@@ -125,7 +127,6 @@ def duel_match_with_id(match_id: str) -> Match:
 
 
 def test_a_judge_that_stays_down_abandons_the_match(tmp_path: Path, monkeypatch):
-    monkeypatch.setattr("arena_evals.datagen.play.JUDGE_RETRY_S", 0)
     ledger = Ledger(tmp_path / "run.db")
     caller = ScriptedCaller(rulings=[None] * 4, moves=["I am a hammer, rock-splitting."])
     with pytest.raises(MatchAbandoned):
@@ -133,3 +134,20 @@ def test_a_judge_that_stays_down_abandons_the_match(tmp_path: Path, monkeypatch)
     row = ledger.matches("abandoned")[0]
     assert "judge unavailable" in row["outcome"]
     assert ledger.calls(row["match_id"])[-1].payload["response"] is None
+
+
+def test_a_replayed_row_that_is_not_the_expected_call_stops_the_run(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    caller = ScriptedCaller(
+        rulings=[judge_response(verdict="fail")], moves=["I am a hammer, rock-splitting."]
+    )
+    match = duel_match()
+    asyncio.run(play_match(DUEL, match, SIDES, caller, ledger, JUDGE))
+    tape = Tape(ledger, match.id)
+
+    async def never(idx: int):
+        raise AssertionError("must replay")
+
+    asyncio.run(tape.step("move", "p1", 1, never))
+    with pytest.raises(RuntimeError, match="replay diverged"):
+        asyncio.run(tape.step("move", "p2", 2, never))

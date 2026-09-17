@@ -43,6 +43,8 @@ seed_pool:
   - { opening_token: "A gym raised its monthly fee by two pounds.", opening_emoji: "🏋️" }
 
 seed_recipe:
+  card_shape: sentence
+  max_words: 15
   axes:
     actor: [a man, a woman, a boy, a girl, a neighbour, a shop, a cafe, a school, the council, a bus company, an animal]
     event: [returned something, lost something, found something, moved a time, changed a price, fixed something, painted something, ran out of something, arrived early or late, crossed a road]

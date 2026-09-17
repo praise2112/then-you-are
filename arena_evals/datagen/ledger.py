@@ -2,9 +2,13 @@
 
 import json
 import sqlite3
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from arena_evals.common import model_label, with_backoff
+from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
 
 SCHEMA = """
 create table if not exists runs (
@@ -51,7 +55,7 @@ class Ledger:
         path.parent.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(path)
         self.conn.row_factory = sqlite3.Row
-        self.conn.executescript(SCHEMA)
+        self.conn.executescript("pragma journal_mode=wal; pragma synchronous=normal;" + SCHEMA)
 
     def close(self) -> None:
         self.conn.close()
@@ -88,6 +92,20 @@ class Ledger:
             self.conn.execute(
                 "update matches set status = ?, outcome = ? where match_id = ?",
                 (status, json.dumps(outcome), match_id),
+            )
+
+    def ended_without_sabotage(self) -> list[sqlite3.Row]:
+        return self.conn.execute(
+            "select * from matches where status = 'ended' "
+            "and json_extract(outcome, '$.sabotage') is null order by rowid"
+        ).fetchall()
+
+    def mark_sabotaged(self, match_id: str, count: int) -> None:
+        with self.conn:
+            self.conn.execute(
+                "update matches set outcome = json_set(outcome, '$.sabotage', ?) "
+                "where match_id = ?",
+                (count, match_id),
             )
 
     def matches(self, status: str | None = None) -> list[sqlite3.Row]:
@@ -172,4 +190,112 @@ def _call_row(r: sqlite3.Row) -> CallRow:
         cost_usd=r["cost_usd"],
         latency_ms=r["latency_ms"],
         attempt=r["attempt"],
+    )
+
+
+class Tape:
+    """Record-or-replay cursor over one key's calls: a resumed run replays what it recorded
+    and asks the model only for what comes after."""
+
+    def __init__(self, ledger: Ledger, key: str):
+        self.ledger = ledger
+        self.key = key
+        self.recorded = ledger.calls(key)
+        self.idx = 0
+
+    async def step(
+        self, role: str, actor: str, seq: int, live: Callable[[int], Awaitable[CallRow]]
+    ) -> CallRow:
+        """The next row, replayed when recorded. A recorded row that is not the call the
+        caller is about to make means the code or the template changed under the run."""
+        if self.idx < len(self.recorded):
+            row = self.recorded[self.idx]
+            if (row.role, row.actor, row.seq) != (role, actor, seq):
+                raise RuntimeError(
+                    f"{self.key}: replay diverged at call {self.idx}, recorded "
+                    f"{row.role}/{row.actor}/{row.seq}, expected {role}/{actor}/{seq}"
+                )
+        else:
+            row = await live(self.idx)
+            self.ledger.add_call(row)
+        self.idx += 1
+        return row
+
+
+def judge_call_row(
+    key: str, idx: int, actor: str, seq: int, spec: ModelSpec, call: JudgeCall, inputs: dict
+) -> CallRow:
+    return CallRow(
+        match_id=key,
+        idx=idx,
+        role="judge",
+        actor=actor,
+        seq=seq,
+        model=model_label(spec),
+        prompt_hash=call.prompt_hash,
+        raw=call.raw,
+        reasoning=call.reasoning,
+        payload={
+            **inputs,
+            "response": call.response.model_dump() if call.response else None,
+            "attempts": call.attempts,
+        },
+        tokens_in=call.tokens_in,
+        tokens_out=call.tokens_out,
+        cost_usd=call.cost_usd,
+        latency_ms=call.latency_ms,
+        attempt=call.attempts[-1] if call.attempts else "call_error",
+    )
+
+
+async def move_call_row(
+    caller: ModelCaller,
+    spec: ModelSpec,
+    messages: list[dict],
+    key: str,
+    idx: int,
+    actor: str,
+    seq: int,
+    model: str,
+    payload: dict,
+) -> CallRow:
+    """One writer call as a ledger row; a failed call is a row with empty text."""
+    try:
+        result = await with_backoff(
+            lambda: caller.complete(spec, messages, reasoning={"enabled": False})
+        )
+    except CallError as e:
+        return CallRow(
+            key,
+            idx,
+            "move",
+            actor,
+            seq,
+            model,
+            "",
+            "",
+            None,
+            payload,
+            0,
+            0,
+            0.0,
+            0,
+            f"call_error: {e}",
+        )
+    return CallRow(
+        key,
+        idx,
+        "move",
+        actor,
+        seq,
+        model,
+        "",
+        result.text,
+        result.reasoning,
+        payload,
+        result.tokens_in,
+        result.tokens_out,
+        result.cost_usd,
+        result.latency_ms,
+        "ok",
     )

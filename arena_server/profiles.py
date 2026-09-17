@@ -83,7 +83,7 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
     ended_all = sorted((m for m in matches if m["status"] == "ended"), key=lambda m: m["ended_at"])
     streak, best_streak = streaks([m["winner"] for m in ended_all])
     shown = [m for m in matches if is_yours or (m["status"] == "ended" and m["is_public"])]
-    best_ids = _best_ids(matches, scorings, service)
+    best_ids = _best_ids(shown, scorings, service)
     return ProfileView(
         id=account["id"],
         display_name=account["display_name"],
@@ -104,17 +104,16 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
 def _best_ids(matches: list[Any], scorings: list[Any], service: MatchService) -> list[str]:
     """Won duels ranked by the player's highest-scoring move; curated duels first."""
     peak: dict[str, int] = {}
+    template_of = {m["id"]: m["template_id"] for m in matches}
     for row in scorings:
-        weights = service.templates[_template_of(matches, row["match_id"])].weights
+        if row["match_id"] not in template_of:
+            continue
+        weights = service.templates[template_of[row["match_id"]]].weights
         score = weighted_total(row["scoring"]["scores"], weights)
         peak[row["match_id"]] = max(peak.get(row["match_id"], 0), score)
     won = [m for m in matches if m["status"] == "ended" and m["winner"] == "p1"]
     won.sort(key=lambda m: (m["is_curated"], peak.get(m["id"], 0)), reverse=True)
     return [m["id"] for m in won[:BEST_SHOWN]]
-
-
-def _template_of(matches: list[Any], match_id: str) -> str:
-    return next(m["template_id"] for m in matches if m["id"] == match_id)
 
 
 def _row(m: Any, service: MatchService) -> DuelRow:

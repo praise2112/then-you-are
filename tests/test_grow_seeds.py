@@ -2,14 +2,19 @@ import asyncio
 
 import pytest
 
+from arena_core.template import Seed, load_template, load_template_file
 from arena_evals.common import RETRY_STATUSES, with_backoff
 from arena_evals.grow_seeds import (
     Candidate,
+    Shape,
+    append_to_pool,
+    card_shape,
     cosine,
     head_noun,
     is_single_emoji,
     mechanical_reason,
     parse_batch,
+    seed_line,
 )
 from arena_judge.caller import CallError
 
@@ -31,23 +36,64 @@ def test_single_emoji_accepts_variation_selectors_and_rejects_words():
     assert not is_single_emoji("")
 
 
+SHORT = Shape(short_form=True, max_words=3, needs_truth=False)
+
+
 def test_mechanical_reason_names_the_first_failure():
-    ok = Candidate(opening="a snowman", emoji="⛄", counter="the sun")
-    assert mechanical_reason(ok) is None
-    assert mechanical_reason(ok.model_copy(update={"opening": "snowman"})) == "no article"
-    assert mechanical_reason(ok.model_copy(update={"opening": "a Snowman"})) == "capitalised"
-    assert mechanical_reason(ok.model_copy(update={"opening": "a Monday morning"})) is None
-    assert mechanical_reason(ok.model_copy(update={"counter": "sun"})) == "no counter"
-    assert mechanical_reason(ok.model_copy(update={"opening": "a ant"})) == "wrong article"
-    assert mechanical_reason(ok.model_copy(update={"opening": "an egg"})) is None
-    assert mechanical_reason(ok.model_copy(update={"opening": "a dough rising"})) == "dangling verb"
-    long = ok.model_copy(update={"opening": "a very old gate"})
-    assert mechanical_reason(long) == "too long"
+    ok = Candidate(opening="a snowman", emoji="⛄", answer="the sun")
+    assert mechanical_reason(ok, SHORT) is None
+    assert mechanical_reason(ok.model_copy(update={"opening": "snowman"}), SHORT) == "no article"
+    assert mechanical_reason(ok.model_copy(update={"opening": "a Snowman"}), SHORT) == "capitalised"
+    assert mechanical_reason(ok.model_copy(update={"opening": "a Monday morning"}), SHORT) is None
+    assert mechanical_reason(ok.model_copy(update={"answer": "sun"}), SHORT) == "no answer"
+    assert mechanical_reason(ok.model_copy(update={"opening": "a ant"}), SHORT) == "wrong article"
+    assert mechanical_reason(ok.model_copy(update={"opening": "an egg"}), SHORT) is None
+    dangling = ok.model_copy(update={"opening": "a dough rising"})
+    assert mechanical_reason(dangling, SHORT) == "dangling verb"
+    long = ok.model_copy(update={"opening": "a very old gate in the wall"})
+    assert mechanical_reason(long, SHORT) == "too long"
+
+
+def test_card_shape_comes_from_the_pool_and_sentences_skip_the_short_form_checks():
+    assert card_shape(load_template("then-i-am")) == Shape(True, 3, False)
+    domino = card_shape(load_template("domino"))
+    assert not domino.short_form and domino.max_words >= 12
+    sentence = Candidate(
+        opening="The office printer jams five minutes before the big meeting.",
+        emoji="🖨️",
+        answer="the boss walks in",
+    )
+    assert mechanical_reason(sentence, domino) is None
+    assert (
+        mechanical_reason(sentence.model_copy(update={"opening": " ".join(["a"] * 40)}), domino)
+        == "too long"
+    )
+    words = Shape(short_form=False, max_words=2, needs_truth=True)
+    bare = Candidate(opening="zarf", emoji="☕", answer="a cup holder")
+    assert mechanical_reason(bare, words) == "no truth"
+    assert (
+        mechanical_reason(bare.model_copy(update={"detail": "noun", "hidden": "a holder"}), words)
+        is None
+    )
+
+
+def test_append_to_pool_extends_any_template_file_layout(tmp_path):
+    for slug in ("word-for-word", "front-page"):
+        template = load_template(slug)
+        path = tmp_path / f"{slug}.yaml"
+        path.write_text((load_template.__globals__["TEMPLATES_DIR"] / slug / "v1.yaml").read_text())
+        seed = Seed(opening_token="a fresh card", opening_emoji="🃏", detail="d", hidden="h")
+        append_to_pool(template, [seed], path)
+        grown = load_template_file(path)
+        assert grown.seed_pool[-1] == seed and len(grown.seed_pool) == len(template.seed_pool) + 1
+    assert seed_line(Seed(opening_token='say "hi"', opening_emoji="👋")) == (
+        '  - { opening_token: "say \\"hi\\"", opening_emoji: "👋" }\n'
+    )
 
 
 def test_parse_batch_finds_json_inside_prose():
     raw = (
-        'Here you go:\n{"candidates": [{"opening": "a kite", "emoji": "🪁", "counter": "no wind"}]}'
+        'Here you go:\n{"candidates": [{"opening": "a kite", "emoji": "🪁", "answer": "no wind"}]}'
     )
     batch = parse_batch(raw)
     assert batch is not None and batch.candidates[0].opening == "a kite"

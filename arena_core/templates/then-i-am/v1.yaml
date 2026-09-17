@@ -550,6 +550,8 @@ seed_pool:
   - { opening_token: "a sunbeam", opening_emoji: "🌞" }
   - { opening_token: "a whipped cream", opening_emoji: "🍦" }
 seed_recipe:
+  card_shape: short_form
+  max_words: 3
   axes:
     kind: [object, creature, person or role, weather or nature, food, sound, moment, feeling or idea]
     setting: [kitchen, street, office, school, seaside, farm, bedroom, garden, garage, market, night bus, wedding]

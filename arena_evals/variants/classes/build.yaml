@@ -1,0 +1,103 @@
+name: build
+examples: [domino, alibi]
+cells: 27
+
+fixed:
+  - mode
+  - win_condition
+  - tie_policy
+  - move_budget
+  - strikes_before_consequence
+  - guess
+  - criterion.verb
+  - criterion.inverse_verb
+  - move_constraints.max_chars
+
+varies:
+  - slug
+  - title
+  - tagline
+  - emblem
+  - accent
+  - premise
+  - rules
+  - labels
+  - criterion.description
+  - criterion.anti_metagaming_clause
+  - criterion.judge_notes
+  - rubric descriptions and anchors, names and order kept from the example
+  - examples
+  - move_constraints.prefix, example and hint
+  - seed_recipe
+  - seed_pool, three placeholder seeds from the example until the pool is grown
+  - demo
+  - host.persona_name, voice_rules, good_headlines, bad_headlines
+  - validation_messages
+  - judge_out_text
+  - opponent_prompt
+  - default_move
+
+axes:
+  theme:
+    - a small mishap at home that gets worse
+    - an alibi two suspects share
+    - an excuse for being late, told to the boss
+    - a rumour passing through a village
+    - a plan for a heist that keeps growing
+    - a family legend retold at dinner
+    - a recipe going wrong step by step
+    - a school trip going off the rails
+    - a wedding day, from the first hitch
+    - a cruise ship, from the first spilled drink
+    - a shopping list that turns into a mission
+    - a dare that escalates
+    - a prophecy delivered one line at a time
+    - a conspiracy theory built in a pub
+    - a complaint letter that grows a paragraph a turn
+    - a chain of favours between neighbours
+    - a road trip, one wrong turn at a time
+    - a house move, box by box
+    - a first date that keeps going
+    - a job interview answer that will not stop
+    - an animal loose in a town
+    - a village fete, from the first gust of wind
+    - a camping trip, from the first dropped tent peg
+    - a lie told to a teacher and kept up
+    - a group chat that spirals
+    - a treasure hunt with one more clue
+    - a haunted house tour where each room is worse
+    - a story told backwards, each step the cause of the last
+    - a new year's resolution collapsing
+    - a customer service call that escalates
+  voice:
+    - { commentary_adj: deadpan, explanation_adj: plain, bite: sharp, ruling_generosity: fair }
+    - { commentary_adj: dry, explanation_adj: flat, bite: sharp, ruling_generosity: fair }
+    - { commentary_adj: earnest, explanation_adj: gentle, bite: playful, ruling_generosity: merciful }
+    - { commentary_adj: theatrical, explanation_adj: grandiose, bite: sharp, ruling_generosity: merciless }
+    - { commentary_adj: chaotic, explanation_adj: hype, bite: savage, ruling_generosity: fair }
+  content_rating: { family: 1, mild: 2, edgy: 3 }
+  family_excludes:
+    bite: [savage]
+    explanation_adj: [snarky, menacing]
+  weights:
+    - [5, 3, 2]
+    - [5, 4, 2]
+    - [4, 3, 2]
+    - [6, 3, 1]
+
+sabotage_expectations:
+  near_duplicate: semantic_reject
+  verbosity: same_as_source
+  injection: semantic_reject
+  meta: semantic_reject
+  amplification: semantic_reject
+  off_topic: semantic_reject
+  weak_but_legal: accept
+
+tests:
+  - A stranger reads the premise and wants to play the first move now. Never a game that needs explaining twice.
+  - Each move adds exactly one step to one shared thing, and the step must fit everything that stands. The criterion names what a skipped link, an ending and an undo look like here.
+  - The points go to the mischief the player wants to make anyway. Fitting is the gate, not the score.
+  - The theme gives at least twenty opening cards that are a start and not a disaster, with more than one good next step each.
+  - The judge notes cover the first move, checking against the whole transcript, the restatement as a duplicate, and the newcomer the scene could not hold.
+  - The host names the step, or its plain stand-in, and never the player.

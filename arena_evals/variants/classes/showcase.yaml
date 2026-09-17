@@ -1,0 +1,103 @@
+name: showcase
+examples: [front-page, word-for-word]
+cells: 27
+
+fixed:
+  - mode
+  - win_condition
+  - tie_policy
+  - move_budget
+  - strikes_before_consequence
+  - guess
+  - criterion.verb
+  - criterion.inverse_verb
+  - move_constraints.max_chars
+
+varies:
+  - slug
+  - title
+  - tagline
+  - emblem
+  - accent
+  - premise
+  - rules
+  - labels
+  - criterion.description
+  - criterion.anti_metagaming_clause
+  - criterion.judge_notes
+  - rubric descriptions and anchors, names and order kept from the example
+  - examples
+  - move_constraints.prefix, example and hint
+  - seed_recipe
+  - seed_pool, three placeholder seeds from the example until the pool is grown
+  - demo
+  - host.persona_name, voice_rules, good_headlines, bad_headlines
+  - validation_messages
+  - judge_out_text
+  - opponent_prompt
+  - default_move
+
+axes:
+  theme:
+    - a tabloid headline for a dull fact
+    - a one-star review of an everyday object
+    - a horoscope for a job title
+    - a fortune cookie for a bad day
+    - a warning label for a harmless thing
+    - an estate agent listing for a terrible room
+    - a wine tasting note for a drink that is not wine
+    - an error message from a household appliance
+    - a gravestone inscription for a habit
+    - a dating profile for a kitchen utensil
+    - a museum label for an ordinary object
+    - a safety announcement for a normal room
+    - a weather forecast for a mood
+    - a motivational poster for a chore
+    - a wanted poster for a pet
+    - a film title and tagline for a small event
+    - a job advert for a role nobody wants
+    - a sports commentary line for a domestic task
+    - a lost and found notice for a feeling
+    - a corporate apology for a tiny mistake
+    - a school report comment for an adult
+    - a fairy tale opening for a weekday errand
+    - a proverb that sounds old and is not
+    - a slogan for a vegetable
+    - a menu description for a plain meal
+    - a thank-you note nobody wanted to write
+    - a band name and debut album for a household sound
+    - a text from your mum about the news
+    - a plausible definition for a real obscure word
+    - a plausible law for a real country
+    - a plausible origin for a real place name
+  voice:
+    - { commentary_adj: dry, explanation_adj: exact, bite: sharp, ruling_generosity: fair }
+    - { commentary_adj: witty, explanation_adj: snarky, bite: sharp, ruling_generosity: fair }
+    - { commentary_adj: ceremonial, explanation_adj: clinical, bite: playful, ruling_generosity: merciful }
+    - { commentary_adj: hype, explanation_adj: theatrical, bite: sharp, ruling_generosity: merciless }
+    - { commentary_adj: affectionate, explanation_adj: gentle, bite: playful, ruling_generosity: merciful }
+  content_rating: { family: 1, mild: 2, edgy: 3 }
+  family_excludes:
+    bite: [savage]
+    explanation_adj: [snarky, menacing]
+  weights:
+    - [5, 3, 2]
+    - [5, 4, 2]
+    - [4, 3, 2]
+    - [6, 3, 1]
+
+sabotage_expectations:
+  near_duplicate: semantic_reject
+  verbosity: same_as_source
+  injection: semantic_reject
+  meta: semantic_reject
+  off_topic: semantic_reject
+  weak_but_legal: accept
+
+tests:
+  - A stranger reads the premise and wants to play the first move now. Never a game that needs explaining twice.
+  - Both players answer the same dealt card, each headline or entry is judged on its own, and the criterion names the one thing the answer must keep true or in shape.
+  - The points go to how far the answer travels while the gate holds. A dull answer that keeps the gate plays and scores near zero.
+  - The theme gives at least twenty cards so dull that saying one aloud gets a shrug, each with two nouns an answer can turn.
+  - The judge notes say to test the gate one way only, to treat invented detail as fair, and to ignore case and punctuation.
+  - When the game has a call beat, every card carries a real, checkable truth that the answer must not give away.

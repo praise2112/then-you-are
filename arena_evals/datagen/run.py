@@ -7,53 +7,44 @@ uv run python -m arena_evals.datagen.run report <run_id>
 
 import argparse
 import asyncio
+import hashlib
 import json
 import random
 import sys
-from datetime import UTC, datetime, time, timedelta
+import traceback
+from datetime import UTC, datetime
 from pathlib import Path
 
-from arena_core.state import Actor, Match
+from arena_core.state import Actor, Match, deal
 from arena_core.template import Template, load_template
-from arena_evals.common import load_model, make_caller
+from arena_evals.common import in_window, load_model, make_caller, seconds_until_open
 from arena_evals.datagen import card
 from arena_evals.datagen.ledger import Ledger
-from arena_evals.datagen.play import MatchAbandoned, Teacher, deal, new_match, play_match
+from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
 from arena_evals.datagen.sabotage import RATE, Saboteur
+from arena_evals.variants.spec import load_spec, spec_names
 from arena_judge.caller import ModelCaller
 from arena_judge.prompt import judge_prompt_hash
 
 RUNS_DIR = Path(__file__).parent / "runs"
 CORPUS_DIR = Path(__file__).parent / "corpus"
 CARDS_DIR = Path(__file__).parent / "cards"
-CLASSES = {
-    "then-i-am": "counter",
-    "word-for-word": "showcase",
-    "domino": "build",
-    "alibi": "build",
-    "front-page": "showcase",
-}
+LANE_CEILING = 50.0
+
+
+def classes() -> dict[str, str]:
+    """Template slug to class name, from the class specs."""
+    return {slug: name for name in spec_names() for slug in load_spec(name)[0].examples}
+
+
 PROVIDERS = {
     "fireworks": {"judge": "judge-fireworks", "flash": "opponent-fireworks", "concurrency": 20},
     "deepseek": {"judge": "judge-v1", "flash": "opponent-v1", "concurrency": 64},
 }
 FLASH_SHARE = 0.8
 LUNA = "opponent-luna"
-WINDOW_OPEN = time(16, 30)
-WINDOW_CLOSE = time(0, 30)
 PEAK_RATIO = 2.7
 UNIT_USD = {"judge": 0.00067, "flash": 0.0001, "luna": 0.0003}
-
-
-def in_window(now: datetime) -> bool:
-    return now.time() >= WINDOW_OPEN or now.time() < WINDOW_CLOSE
-
-
-def seconds_until_open(now: datetime) -> float:
-    opens = now.replace(hour=WINDOW_OPEN.hour, minute=WINDOW_OPEN.minute, second=0, microsecond=0)
-    if opens <= now:
-        opens += timedelta(days=1)
-    return (opens - now).total_seconds()
 
 
 def estimate(templates: dict[str, Template], counts: dict[str, int]) -> tuple[float, float]:
@@ -91,7 +82,7 @@ def plan_matches(
     for slug, n in counts.items():
         template = templates[slug]
         for _ in range(n):
-            match = new_match(template, deal(template))
+            match = new_match(template, deal(template, rng))
             p1, p2 = rng.choices(refs, weights, k=2)
             ledger.add_match(match.id, slug, match.cards, p1, p2)
 
@@ -136,34 +127,55 @@ async def _drive(
     sem = asyncio.Semaphore(concurrency)
     stop = asyncio.Event()
 
-    async def one(row) -> None:
+    others = lane_total() - ledger.spent()
+    ceiling = min(budget, LANE_CEILING - others)
+    if ceiling < budget:
+        print(f"lane ceiling leaves ${ceiling:.2f} of the ${budget:.2f} budget", file=sys.stderr)
+    failures = 0
+
+    def over_budget() -> bool:
+        spent = ledger.spent()
+        if spent >= ceiling and not stop.is_set():
+            stop.set()
+            print(f"budget reached: ${spent:.4f} of ${ceiling:.2f}", file=sys.stderr)
+        return stop.is_set()
+
+    async def one(row, played: bool) -> None:
+        nonlocal failures
         template = templates[row["template_id"]]
         teachers: dict[Actor, Teacher] = {
             "p1": Teacher(row["teacher_p1"], load_model(row["teacher_p1"])),
             "p2": Teacher(row["teacher_p2"], load_model(row["teacher_p2"])),
         }
         async with sem:
-            if stop.is_set():
+            if over_budget():
                 return
             if guarded and not in_window(datetime.now(UTC)):
                 wait = seconds_until_open(datetime.now(UTC))
                 print(f"outside the off-peak window, sleeping {wait / 3600:.1f} h", file=sys.stderr)
                 await asyncio.sleep(wait)
             try:
-                await play_match(
-                    template, match_from_row(template, row), teachers, caller, ledger, judge
-                )
-                await Saboteur(template, row["match_id"], caller, ledger, judge, writer).run()
+                if not played:
+                    await play_match(
+                        template, match_from_row(template, row), teachers, caller, ledger, judge
+                    )
+                saboteur = Saboteur(template, row["match_id"], caller, ledger, judge, writer)
+                ledger.mark_sabotaged(row["match_id"], await saboteur.run())
             except MatchAbandoned as e:
                 print(f"abandoned: {e}", file=sys.stderr)
-            spent = ledger.spent()
-            if spent >= budget and not stop.is_set():
-                stop.set()
-                print(f"budget reached: ${spent:.4f} of ${budget:.2f}", file=sys.stderr)
+            except Exception:
+                failures += 1
+                traceback.print_exc()
+            over_budget()
 
-    rows = ledger.matches("active")
-    await asyncio.gather(*(one(row) for row in rows))
-    if not stop.is_set():
+    if over_budget():
+        return
+    fresh = [one(row, False) for row in ledger.matches("active")]
+    unsabotaged = [one(row, True) for row in ledger.ended_without_sabotage()]
+    await asyncio.gather(*fresh, *unsabotaged)
+    if failures:
+        print(f"{failures} matches failed; resume to retry them", file=sys.stderr)
+    elif not stop.is_set():
         ledger.finish_run(run_id)
     print(
         f"spent ${ledger.spent():.4f}, {len(ledger.matches('ended'))} matches ended",
@@ -171,10 +183,18 @@ async def _drive(
     )
 
 
+def template_hash(template: Template) -> str:
+    return hashlib.sha256(template.model_dump_json().encode()).hexdigest()[:16]
+
+
 def check_hashes(plan: dict, templates: dict[str, Template]) -> None:
+    """A run replays recorded calls by position, so the templates must not have changed."""
     for slug, stored in plan["judge_prompt_hash"].items():
         if judge_prompt_hash(templates[slug]) != stored:
             raise SystemExit(f"judge prompt for {slug} changed since the run was planned; refusing")
+    for slug, stored in plan.get("template_hash", {}).items():
+        if template_hash(templates[slug]) != stored:
+            raise SystemExit(f"template {slug} changed since the run was planned; refusing")
 
 
 def parse_counts(items: list[str]) -> dict[str, int]:
@@ -205,7 +225,7 @@ def main() -> None:
 
     ledger = Ledger(RUNS_DIR / f"{args.run_id}.db")
     if args.cmd == "report":
-        text = card.write(args.run_id, ledger, CORPUS_DIR / args.run_id, CLASSES)
+        text = card.write(args.run_id, ledger, CORPUS_DIR / args.run_id, classes())
         CARDS_DIR.mkdir(exist_ok=True)
         (CARDS_DIR / f"{args.run_id}.md").write_text(text)
         print(text)
@@ -221,12 +241,13 @@ def main() -> None:
             args.run_id,
             {
                 "matches": counts,
-                "classes": {s: CLASSES[s] for s in counts},
+                "classes": {s: classes()[s] for s in counts},
                 "provider": args.provider,
                 "teachers": {provider["flash"]: FLASH_SHARE, LUNA: 1 - FLASH_SHARE},
                 "judge_ref": provider["judge"],
                 "flash_ref": provider["flash"],
                 "judge_prompt_hash": {s: judge_prompt_hash(t) for s, t in templates.items()},
+                "template_hash": {s: template_hash(t) for s, t in templates.items()},
                 "sabotage_rate": RATE,
                 "budget": args.budget,
                 "created": datetime.now(UTC).isoformat(),

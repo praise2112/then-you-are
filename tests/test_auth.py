@@ -14,9 +14,13 @@ from arena_server.leaderboard import streaks
 from tests.conftest import FakeCaller, judge_response
 from tests.test_api import settle
 
-pytestmark = pytest.mark.skipif(
-    not os.environ.get("TEST_DATABASE_URL"), reason="needs TEST_DATABASE_URL pointing at Postgres"
-)
+pytestmark = [
+    pytest.mark.skipif(
+        not os.environ.get("TEST_DATABASE_URL"),
+        reason="needs TEST_DATABASE_URL pointing at Postgres",
+    ),
+    pytest.mark.xdist_group("database"),
+]
 
 # The test database keeps rows between runs, so each run signs in as a new person.
 RUN = secrets.token_hex(4)

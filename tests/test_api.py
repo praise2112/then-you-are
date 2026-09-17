@@ -13,9 +13,13 @@ from arena_server.app import build_app
 from arena_server.config import load_settings
 from tests.conftest import FakeCaller, judge_response
 
-pytestmark = pytest.mark.skipif(
-    not os.environ.get("TEST_DATABASE_URL"), reason="needs TEST_DATABASE_URL pointing at Postgres"
-)
+pytestmark = [
+    pytest.mark.skipif(
+        not os.environ.get("TEST_DATABASE_URL"),
+        reason="needs TEST_DATABASE_URL pointing at Postgres",
+    ),
+    pytest.mark.xdist_group("database"),
+]
 
 
 async def run_app(caller: FakeCaller):

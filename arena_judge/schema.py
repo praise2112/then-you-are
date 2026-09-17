@@ -1,8 +1,10 @@
 """Judge, host, and SSE wire schemas. Shared by the live server and the offline harness."""
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
+
+from arena_core.template import SCORE_MAX
 
 Confidence = Literal["clear", "lean", "coin_flip"]
 Verdict = Literal["accept", "fail"]
@@ -47,7 +49,7 @@ class ScoringPayload(BaseModel):
 
     gates: Gates
     evidence: Evidence
-    scores: dict[str, int]
+    scores: dict[str, Annotated[int, Field(ge=0, le=SCORE_MAX)]]
     confidence: Confidence
     verdict: Verdict
     truth_proximity: TruthProximity = "none"

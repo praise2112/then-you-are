@@ -24,6 +24,7 @@ dev = [
     "markdown>=3.7",
     "pyright>=1.1.390",
     "pytest>=8.3",
+    "pytest-xdist>=3.8.0",
     "ruff>=0.8",
     "types-pyyaml>=6.0.12.20260906",
 ]
@@ -48,3 +49,4 @@ typeCheckingMode = "standard"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-n 4 --dist loadgroup"

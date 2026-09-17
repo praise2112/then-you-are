@@ -15,19 +15,16 @@ import secrets
 import sys
 import unicodedata
 from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
-import httpx
+import yaml
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from arena_core.template import TEMPLATES_DIR, Seed, Template, load_template_file
-from arena_evals.common import make_caller, with_backoff
-from arena_judge.caller import ModelCaller
+from arena_evals.common import EMBED_BATCH, embed_texts, make_caller, with_backoff
+from arena_judge.caller import ModelCaller, extract_json
 
-EMBED_URL = "https://openrouter.ai/api/v1/embeddings"
-EMBED_MODEL = "openai/text-embedding-3-small"
-EMBED_BATCH = 256
 CACHE_DIR = Path(__file__).parent / "seeds"
 CANDIDATES_PER_CELL = 6
 KEEP_PER_CELL = 3
@@ -66,7 +63,29 @@ class Candidate(BaseModel):
 
     opening: str
     emoji: str
-    counter: str
+    answer: str
+    detail: str = ""
+    hidden: str = ""
+
+
+@dataclass(frozen=True)
+class Shape:
+    """What a card looks like: short forms get the article checks, every card a word cap,
+    and a guess game needs a detail and a truth on each card."""
+
+    short_form: bool
+    max_words: int
+    needs_truth: bool
+
+
+def card_shape(template: Template) -> Shape:
+    recipe = template.seed_recipe
+    assert recipe is not None
+    return Shape(
+        short_form=recipe.card_shape == "short_form",
+        max_words=recipe.max_words,
+        needs_truth=template.guess is not None,
+    )
 
 
 class Batch(BaseModel):
@@ -76,17 +95,9 @@ class Batch(BaseModel):
 
 
 @dataclass
-class Rejects:
-    by_reason: Counter[str] = field(default_factory=Counter)
-
-    def add(self, reason: str) -> None:
-        self.by_reason[reason] += 1
-
-
-@dataclass
 class Report:
     accepted: list[Seed]
-    rejects: Rejects
+    rejects: Counter[str]
     calls: int
     cost_usd: float
 
@@ -126,26 +137,31 @@ def is_single_emoji(text: str) -> bool:
     return symbols - joiners == 1
 
 
-def mechanical_reason(cand: Candidate) -> str | None:
+def mechanical_reason(cand: Candidate, shape: Shape) -> str | None:
     """Why a candidate fails the cheap checks, or None when it passes them all."""
     text = cand.opening.strip()
-    if not text.lower().startswith(ARTICLES):
-        return "no article"
-    if re.match(r"a [aeio]|an [^aeiouh]", text.lower()):
-        return "wrong article"
-    if len(text.split()) > 3:
+    if not text:
+        return "empty"
+    if len(text.split()) > shape.max_words:
         return "too long"
-    last = text.split()[-1].lower()
-    if last.endswith("ing") and last not in ING_NOUNS:
-        return "dangling verb"
-    if text != text.lower() and not re.search(
-        r"\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b", text
-    ):
-        return "capitalised"
+    if shape.short_form:
+        if not text.lower().startswith(ARTICLES):
+            return "no article"
+        if re.match(r"a [aeio]|an [^aeiouh]", text.lower()):
+            return "wrong article"
+        last = text.split()[-1].lower()
+        if last.endswith("ing") and last not in ING_NOUNS:
+            return "dangling verb"
+        if text != text.lower() and not re.search(
+            r"\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b", text
+        ):
+            return "capitalised"
     if not is_single_emoji(cand.emoji):
         return "bad emoji"
-    if len(cand.counter.split()) < 2:
-        return "no counter"
+    if len(cand.answer.split()) < 2:
+        return "no answer"
+    if shape.needs_truth and not (cand.detail.strip() and cand.hidden.strip()):
+        return "no truth"
     return None
 
 
@@ -154,23 +170,45 @@ def cosine(a: list[float], b: list[float]) -> float:
     return dot / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b)))
 
 
+def nearest(vec: list[float], others: dict[str, list[float]]) -> tuple[str, float]:
+    """The closest known vector by cosine and its score; ("", -1.0) when there is none."""
+    return max(
+        ((k, cosine(vec, v)) for k, v in others.items()), key=lambda p: p[1], default=("", -1.0)
+    )
+
+
 def generator_messages(template: Template, cell: dict[str, str], avoid: list[str]) -> list[dict]:
     recipe = template.seed_recipe
     assert recipe is not None
+    shape = card_shape(template)
     tests = "\n".join(f"- {t}" for t in recipe.tests)
     cell_text = ", ".join(f"{axis}: {value}" for axis, value in cell.items())
     avoid_text = "; ".join(avoid) if avoid else "(none yet)"
-    system = (
-        f"You write opening forms for a word game called {template.title}. "
-        f"{template.premise.strip()}\n"
-        f"Every opening must pass these tests:\n{tests}\n"
-        'Reply with JSON only: {"candidates": [{"opening": "a snowman", "emoji": "⛄", '
-        '"counter": "the sun"}, ...]}. The emoji is one emoji that shows the opening.'
+    first = template.seed_pool[0]
+    example = {"opening": first.opening_token, "emoji": first.opening_emoji, "answer": "..."}
+    if shape.needs_truth:
+        example |= {"detail": first.detail, "hidden": first.hidden}
+    truth = (
+        ' "detail" is the public line shown with the card and "hidden" is the truth only the '
+        "judge sees, real and checkable."
+        if shape.needs_truth
+        else ""
     )
+    system = (
+        f"You write opening cards for a word game called {template.title}. "
+        f"{template.premise.strip()}\n"
+        f"Every card must pass these tests:\n{tests}\n"
+        f'Reply with JSON only: {{"candidates": [{json.dumps(example, ensure_ascii=False)}, '
+        "...]}. "
+        'The emoji is one emoji that shows the card. "answer" is the plain first move a '
+        f"stranger would make in reply.{truth}"
+    )
+    short = ""
+    if shape.short_form:
+        short = "At least three are one word after the article, like a wasp. "
     user = (
-        f"Give {CANDIDATES_PER_CELL} openings from this corner of the world: {cell_text}.\n"
-        f"Each one a different thing, none of them a cousin of another. "
-        f"At least three are one word after the article, like a wasp. "
+        f"Give {CANDIDATES_PER_CELL} cards from this corner of the world: {cell_text}.\n"
+        f"Each one a different thing, none of them a cousin of another. {short}"
         f"Order them by how much a stranger would want to answer, best first.\n"
         f"Already taken, do not repeat or paraphrase: {avoid_text}"
     )
@@ -178,11 +216,11 @@ def generator_messages(template: Template, cell: dict[str, str], avoid: list[str
 
 
 def parse_batch(raw: str) -> Batch | None:
-    match = re.search(r"\{.*\}", raw, re.DOTALL)
-    if not match:
+    data = extract_json(raw)
+    if data is None:
         return None
     try:
-        return Batch.model_validate_json(match.group(0))
+        return Batch.model_validate(data)
     except ValidationError:
         return None
 
@@ -214,22 +252,9 @@ class Grower:
         return batch.candidates[:KEEP_PER_CELL] if batch else []
 
     async def embed(self, texts: list[str]) -> list[list[float]]:
-        async def post(chunk: list[str]) -> httpx.Response:
-            resp = await self.caller.client.post(
-                EMBED_URL, json={"model": EMBED_MODEL, "input": chunk}
-            )
-            resp.raise_for_status()
-            return resp
-
-        async def one(chunk: list[str]) -> list[list[float]]:
-            async with self.sem:
-                resp = await with_backoff(lambda: post(chunk))
-            return [row["embedding"] for row in resp.json()["data"]]
-
-        chunks = [texts[i : i + EMBED_BATCH] for i in range(0, len(texts), EMBED_BATCH)]
-        rows = await asyncio.gather(*(one(c) for c in chunks))
-        self.calls += len(chunks)
-        return list(itertools.chain.from_iterable(rows))
+        vectors = await embed_texts(self.caller, texts, self.sem)
+        self.calls += math.ceil(len(texts) / EMBED_BATCH)
+        return vectors
 
     async def load_pool_vectors(self) -> None:
         cache = CACHE_DIR / f"{self.template.slug}.json"
@@ -243,33 +268,28 @@ class Grower:
         CACHE_DIR.mkdir(exist_ok=True)
         cache.write_text(json.dumps(self.pool_vectors))
 
-    def nearest(self, vec: list[float], others: dict[str, list[float]]) -> tuple[str, float]:
-        best = ("", -1.0)
-        for token, other in others.items():
-            score = cosine(vec, other)
-            if score > best[1]:
-                best = (token, score)
-        return best
-
-    async def round(self, cells: list[dict[str, str]], rejects: Rejects) -> list[Seed]:
+    async def round(self, cells: list[dict[str, str]], rejects: Counter[str]) -> list[Seed]:
         pool = self.template.seed_pool
         tokens = [s.opening_token for s in pool]
         avoid = tokens if len(tokens) <= AVOID_MAX else random.sample(tokens, AVOID_MAX)
         raw = await asyncio.gather(*(self.generate_cell(c, avoid) for c in cells))
+        shape = card_shape(self.template)
         heads = {head_noun(s.opening_token) for s in pool}
         seen_tokens = {s.opening_token.lower() for s in pool}
         survivors: list[Candidate] = []
         for cand in itertools.chain.from_iterable(raw):
-            cand.opening = cand.opening.strip().rstrip(".")
-            if (reason := mechanical_reason(cand)) is not None:
-                rejects.add(reason)
+            cand.opening = cand.opening.strip()
+            if shape.short_form:
+                cand.opening = cand.opening.rstrip(".")
+            if (reason := mechanical_reason(cand, shape)) is not None:
+                rejects[reason] += 1
                 continue
             if cand.opening.lower() in seen_tokens:
-                rejects.add("exact repeat")
+                rejects["exact repeat"] += 1
                 continue
             head = head_noun(cand.opening)
-            if head in heads:
-                rejects.add("same head noun")
+            if shape.short_form and head in heads:
+                rejects["same head noun"] += 1
                 continue
             heads.add(head)
             seen_tokens.add(cand.opening.lower())
@@ -280,12 +300,19 @@ class Grower:
         accepted: list[Seed] = []
         known = dict(self.pool_vectors)
         for cand, vec in zip(survivors, vectors, strict=True):
-            token, score = self.nearest(vec, known)
+            token, score = nearest(vec, known)
             if score >= self.threshold:
-                rejects.add(f"too close ({token})")
+                rejects[f"too close ({token})"] += 1
                 continue
             known[cand.opening] = vec
-            accepted.append(Seed(opening_token=cand.opening, opening_emoji=cand.emoji))
+            accepted.append(
+                Seed(
+                    opening_token=cand.opening,
+                    opening_emoji=cand.emoji,
+                    detail=cand.detail.strip(),
+                    hidden=cand.hidden.strip(),
+                )
+            )
         self.pool_vectors = known
         return accepted
 
@@ -301,31 +328,47 @@ def all_cells(template: Template) -> list[dict[str, str]]:
     return cells
 
 
+def seed_line(seed: Seed) -> str:
+    """One flow-style pool line, the layout every template file uses for its cards."""
+    fields = {"opening_token": seed.opening_token, "opening_emoji": seed.opening_emoji}
+    if seed.detail or seed.hidden:
+        fields |= {"detail": seed.detail, "hidden": seed.hidden}
+    inner = ", ".join(f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in fields.items())
+    return f"  - {{ {inner} }}\n"
+
+
 def append_to_pool(template: Template, seeds: list[Seed], path: Path) -> None:
     """Add seeds as flow-style lines after the last pool entry, keeping the file's own layout."""
-    text = path.read_text()
+    lines = path.read_text().splitlines(keepends=True)
     last = template.seed_pool[-1]
-    anchor = (
-        f'  - {{ opening_token: "{last.opening_token}", opening_emoji: "{last.opening_emoji}" }}\n'
-    )
-    if text.count(anchor) != 1:
+    hits = [
+        i
+        for i, line in enumerate(lines)
+        if line.startswith("  - {")
+        and (yaml.safe_load(line[4:]) or {}).get("opening_token") == last.opening_token
+    ]
+    if len(hits) != 1:
         raise ValueError(f"could not find the last seed line in {path}")
-    lines = "".join(
-        f'  - {{ opening_token: "{s.opening_token}", opening_emoji: "{s.opening_emoji}" }}\n'
-        for s in seeds
-    )
-    path.write_text(text.replace(anchor, anchor + lines))
+    lines[hits[0] + 1 : hits[0] + 1] = [seed_line(s) for s in seeds]
+    path.write_text("".join(lines))
 
 
 async def grow(
-    path: Path, target: int, concurrency: int, threshold: float, dry_run: bool
+    path: Path,
+    target: int,
+    concurrency: int,
+    threshold: float,
+    dry_run: bool,
+    budget: float | None = None,
 ) -> Report:
+    """Grows the pool by `target` seeds, appending to the file after every round so a crash
+    keeps what was paid for."""
     template = load_template_file(path)
     if template.seed_recipe is None:
         raise SystemExit(f"{path} has no seed_recipe")
     caller = make_caller()
     grower = Grower(template, caller, concurrency, threshold)
-    rejects = Rejects()
+    rejects: Counter[str] = Counter()
     accepted: list[Seed] = []
     try:
         await grower.load_pool_vectors()
@@ -335,24 +378,28 @@ async def grow(
             raise SystemExit("the generator returned nothing parsable on a probe call")
         while len(accepted) < target and cells:
             shortfall = target - len(accepted)
-            # Half the candidates fall to dedup once the pool has some size; ask for twice the need.
             take = min(len(cells), max(1, math.ceil(2 * shortfall / KEEP_PER_CELL)))
             batch, cells = cells[:take], cells[take:]
             got = await grower.round(batch, rejects)
             if not got:
                 print("a whole round yielded nothing, stopping", file=sys.stderr)
                 break
-            accepted.extend(got[: target - len(accepted)])
+            got = got[: target - len(accepted)]
+            accepted.extend(got)
+            if not dry_run:
+                append_to_pool(template, got, path)
             template = template.model_copy(update={"seed_pool": [*template.seed_pool, *got]})
             grower.template = template
             print(
                 f"round: {len(batch)} cells, +{len(got)}, total {len(accepted)}/{target}",
                 file=sys.stderr,
             )
+            if budget is not None and grower.cost >= budget:
+                print(f"budget reached at ${grower.cost:.4f}", file=sys.stderr)
+                break
     finally:
         await caller.aclose()
     if accepted and not dry_run:
-        append_to_pool(load_template_file(path), accepted, path)
         load_template_file(path)  # the file must still lint
     return Report(accepted, rejects, grower.calls, grower.cost)
 
@@ -380,7 +427,7 @@ def main() -> None:
         f"calls {report.calls}, cost ${report.cost_usd:.4f}",
         file=sys.stderr,
     )
-    for reason, n in report.rejects.by_reason.most_common():
+    for reason, n in report.rejects.most_common():
         print(f"  rejected {n:3d}  {reason}", file=sys.stderr)
 
 

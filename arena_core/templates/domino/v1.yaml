@@ -38,6 +38,8 @@ seed_pool:
   - { opening_token: "Nan's teeth fall into the punch bowl.", opening_emoji: "🥤" }
 
 seed_recipe:
+  card_shape: sentence
+  max_words: 18
   axes:
     who: [a cat, a toddler, a dog, a pigeon, a seagull, grandad, a hamster, a bee, a waiter, a student, someone, the wind]
     place: [kitchen, office, wedding, school, bus, pier, supermarket, garden, car park, nursery, restaurant, lift, barbecue]

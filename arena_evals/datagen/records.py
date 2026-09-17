@@ -9,11 +9,11 @@ from typing import Any, Literal
 
 from pydantic import BaseModel
 
-from arena_core.state import normalize, weighted_total
+from arena_core.state import STANDING, normalize, weighted_total
 from arena_core.template import Template
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_evals.run_golden import GOLDEN_DIR, load_golden
-from arena_judge.prompt import render_judge_prompt, render_opponent_messages
+from arena_judge.prompt import clean_move, render_judge_prompt, render_opponent_messages
 from arena_judge.schema import JudgeResponse, Outcome, route_outcome
 
 PARSED = ("parsed", "parsed_on_retry")
@@ -178,7 +178,7 @@ def export(
                 _admit_host(hosts, drops, template, call, response, outcome, match_id)
             if sabotage and quality != "weak_but_legal":
                 continue
-            if last_move is None or last_move.raw.strip().strip('"') != call.payload["move"]:
+            if last_move is None or clean_move(last_move.raw) != call.payload["move"]:
                 drops["player: no student move"] += 1
                 continue
             reason = _player_drop_reason(template, call, response, outcome, contaminated)
@@ -213,7 +213,7 @@ def _player_drop_reason(
     contaminated: set[tuple[str, str]],
 ) -> str | None:
     move = call.payload["move"]
-    if outcome not in ("accept", "semantic_uncertain"):
+    if outcome not in STANDING:
         return "not accepted"
     if call.attempt not in PARSED:
         return "salvaged verdict"

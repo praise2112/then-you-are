@@ -2,9 +2,7 @@
 
 A match resumes by replaying its recorded calls in order, so a crash costs nothing."""
 
-import asyncio
 import secrets
-from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from arena_core.state import (
@@ -18,14 +16,11 @@ from arena_core.state import (
     weighted_total,
 )
 from arena_core.template import Seed, Template
-from arena_evals.common import model_label, with_backoff
-from arena_evals.datagen.ledger import CallRow, Ledger
-from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
-from arena_judge.prompt import judge_prompt_hash, render_opponent_messages
+from arena_evals.common import judge_with_backoff
+from arena_evals.datagen.ledger import CallRow, Ledger, Tape, judge_call_row, move_call_row
+from arena_judge.caller import ModelCaller, ModelSpec
+from arena_judge.prompt import clean_move, judge_prompt_hash, render_opponent_messages
 from arena_judge.schema import JudgeResponse, Outcome, route_outcome
-
-JUDGE_RETRIES = 3
-JUDGE_RETRY_S = 5.0
 
 
 class MatchAbandoned(Exception):
@@ -43,13 +38,6 @@ class Judged:
     outcome: Outcome
     response: JudgeResponse
     text: str
-
-
-def deal(template: Template) -> list[Seed]:
-    """One card for an escalation duel, one per round for a showcase."""
-    if template.mode == "escalation":
-        return [secrets.choice(template.seed_pool)]
-    return secrets.SystemRandom().sample(template.seed_pool, template.move_budget // 2)
 
 
 def new_match(template: Template, cards: list[Seed]) -> Match:
@@ -77,10 +65,8 @@ class MatchPlayer:
         self.match = match
         self.teachers = teachers
         self.caller = caller
-        self.ledger = ledger
         self.judge_spec = judge
-        self.recorded = ledger.calls(match.id)
-        self.idx = 0
+        self.tape = Tape(ledger, match.id)
 
     async def play(self) -> Match:
         if self.template.mode == "escalation":
@@ -167,15 +153,6 @@ class MatchPlayer:
 
     # Calls, recorded or replayed
 
-    async def _record(self, live: Callable[[], Awaitable[CallRow]]) -> CallRow:
-        if self.idx < len(self.recorded):
-            row = self.recorded[self.idx]
-        else:
-            row = await live()
-            self.ledger.add_call(row)
-        self.idx += 1
-        return row
-
     async def _write(self, actor: Actor, prompt: str, hidden: str) -> str:
         match, template = self.match, self.template
         teacher = self.teachers[actor]
@@ -183,64 +160,15 @@ class MatchPlayer:
         messages = render_opponent_messages(template, prompt, lines, hidden)
         seq = len(match.turns) + 1
         payload = {"card": prompt, "transcript": lines, "hidden": hidden, "messages": messages}
-
-        async def live() -> CallRow:
-            base = dict(
-                match_id=match.id,
-                idx=self.idx,
-                role="move",
-                actor=actor,
-                seq=seq,
-                model=teacher.ref,
-                prompt_hash="",
-                payload=payload,
-            )
-            try:
-                result = await with_backoff(
-                    lambda: self.caller.complete(
-                        teacher.spec, messages, reasoning={"enabled": False}
-                    )
-                )
-            except CallError as e:
-                return CallRow(
-                    raw="",
-                    reasoning=None,
-                    tokens_in=0,
-                    tokens_out=0,
-                    cost_usd=0.0,
-                    latency_ms=0,
-                    attempt=f"call_error: {e}",
-                    **base,  # type: ignore[arg-type]
-                )
-            return CallRow(
-                raw=result.text,
-                reasoning=result.reasoning,
-                tokens_in=result.tokens_in,
-                tokens_out=result.tokens_out,
-                cost_usd=result.cost_usd,
-                latency_ms=result.latency_ms,
-                attempt="ok",
-                **base,  # type: ignore[arg-type]
-            )
-
-        row = await self._record(live)
-        return row.raw.strip().strip('"')
-
-    async def _judge_with_retries(
-        self, lines: list[str], previous: str, move: str, hidden: str
-    ) -> JudgeCall:
-        template = self.template
-        call = await self.caller.judge(
-            template, lines, previous, move, hidden, spec=self.judge_spec
+        row = await self.tape.step(
+            "move",
+            actor,
+            seq,
+            lambda idx: move_call_row(
+                self.caller, teacher.spec, messages, match.id, idx, actor, seq, teacher.ref, payload
+            ),
         )
-        for _ in range(JUDGE_RETRIES):
-            if call.response is not None:
-                break
-            await asyncio.sleep(JUDGE_RETRY_S)
-            call = await self.caller.judge(
-                template, lines, previous, move, hidden, spec=self.judge_spec
-            )
-        return call
+        return clean_move(row.raw)
 
     async def _judge(
         self, actor: Actor, previous: str, move: str, hidden: str, lines: list[str]
@@ -249,30 +177,15 @@ class MatchPlayer:
         seq = len(match.turns) + 1
         inputs = {"previous": previous, "move": move, "hidden": hidden, "transcript": lines}
 
-        async def live() -> CallRow:
-            call = await self._judge_with_retries(lines, previous, move, hidden)
-            response = call.response.model_dump() if call.response else None
-            return CallRow(
-                match_id=match.id,
-                idx=self.idx,
-                role="judge",
-                actor=actor,
-                seq=seq,
-                model=model_label(self.judge_spec),
-                prompt_hash=call.prompt_hash,
-                raw=call.raw,
-                reasoning=call.reasoning,
-                payload={**inputs, "response": response, "attempts": call.attempts},
-                tokens_in=call.tokens_in,
-                tokens_out=call.tokens_out,
-                cost_usd=call.cost_usd,
-                latency_ms=call.latency_ms,
-                attempt=call.attempts[-1] if call.attempts else "call_error",
+        async def live(idx: int) -> CallRow:
+            call = await judge_with_backoff(
+                self.caller, self.template, lines, previous, move, hidden, self.judge_spec
             )
+            return judge_call_row(match.id, idx, actor, seq, self.judge_spec, call, inputs)
 
-        row = await self._record(live)
+        row = await self.tape.step("judge", actor, seq, live)
         if row.payload["response"] is None:
-            raise MatchAbandoned(f"{match.id}: judge unavailable after {JUDGE_RETRIES} retries")
+            raise MatchAbandoned(f"{match.id}: judge unavailable after retries")
         response = JudgeResponse.model_validate(row.payload["response"])
         return Judged(route_outcome(response.scoring), response, move)
 

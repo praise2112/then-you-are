@@ -5,13 +5,12 @@ import statistics
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from arena_core.state import weighted_total
+from arena_core.state import STANDING, weighted_total
 from arena_core.template import load_template
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_evals.datagen.records import PARSED, export
 from arena_judge.schema import JudgeResponse, route_outcome
 
-STOOD = ("accept", "semantic_uncertain")
 FLASH_SHARE = (0.75, 0.85)
 
 
@@ -50,7 +49,7 @@ def write(run_id: str, ledger: Ledger, corpus_dir: Path, classes: dict[str, str]
         teacher = matches[call.match_id][f"teacher_{call.actor}"]
         by_template[slug] += 1
         by_teacher[(teacher, outcome)] += 1
-        if outcome in STOOD:
+        if outcome in STANDING:
             accepted_by_teacher[teacher] += 1
     for slug, n in sorted(by_template.items()):
         lines.append(f"- {slug}: {n} verdicts in match")
@@ -88,17 +87,17 @@ def write(run_id: str, ledger: Ledger, corpus_dir: Path, classes: dict[str, str]
         stood_len = [
             len(c.payload["move"])
             for c, o, _ in in_match
-            if o in STOOD and matches[c.match_id]["template_id"] == slug
+            if o in STANDING and matches[c.match_id]["template_id"] == slug
         ]
         fell_len = [
             len(c.payload["move"])
             for c, o, _ in in_match
-            if o not in STOOD and matches[c.match_id]["template_id"] == slug
+            if o not in STANDING and matches[c.match_id]["template_id"] == slug
         ]
         pairs = [
             (len(c.payload["move"]), score)
             for c, o, score in in_match
-            if o in STOOD and matches[c.match_id]["template_id"] == slug
+            if o in STANDING and matches[c.match_id]["template_id"] == slug
         ]
         mean_stood = statistics.mean(stood_len) if stood_len else 0
         mean_fell = statistics.mean(fell_len) if fell_len else 0

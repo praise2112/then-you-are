@@ -1,10 +1,11 @@
 """Pure match state and transitions. No framework imports, no network."""
 
+import random
 import re
 from dataclasses import dataclass, field
 from typing import Literal
 
-from arena_core.template import Template
+from arena_core.template import Seed, Template
 from arena_judge.schema import EndReason, Outcome
 
 MatchStatus = Literal["active", "awaiting_judgment", "paused", "ended", "abandoned"]
@@ -138,6 +139,15 @@ def transcript(match: Match, template: Template, finished_only: bool = False) ->
         lines.append(f"round {n}, prompt: {card.card_text}")
         lines.extend(f"{player(t.actor)}: {t.move_text}" for t in turns)
     return lines
+
+
+def deal(template: Template, rng: random.Random, first: Seed | None = None) -> list[Seed]:
+    """One card for an escalation duel, one per round for a showcase, `first` leading if given."""
+    if template.mode == "escalation":
+        return [first or rng.choice(template.seed_pool)]
+    rest = [c for c in template.seed_pool if c is not first]
+    cards = rng.sample(rest, template.move_budget // 2 - bool(first))
+    return [first, *cards] if first else cards
 
 
 def other(actor: Actor) -> Actor:

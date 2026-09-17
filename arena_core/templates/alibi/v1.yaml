@@ -36,6 +36,8 @@ seed_pool:
   - { opening_token: "The bowling alley scoreboard showed a perfect 300 under the name DAD between 9 pm and 9:30 pm. You two were together. Where?", opening_emoji: "🎳" }
 
 seed_recipe:
+  card_shape: sentence
+  max_words: 44
   axes:
     place: [office, school, flat share, pub, gym, town square, car park, sports club, library, wedding, chip shop, bus stop]
     mischief: [something goes missing, something turns up somewhere silly, something is multiplied, something is rearranged, something is switched on or off, something is labelled or written on]

@@ -27,8 +27,11 @@ class Seed(Strict):
 
 
 class SeedRecipe(Strict):
-    """How a generator grows the seed pool: the grid it samples and the tests a candidate passes."""
+    """How a generator grows the seed pool: the card shape, the grid it samples and the tests
+    a candidate passes."""
 
+    card_shape: Literal["short_form", "sentence"]
+    max_words: int = Field(gt=0)
     axes: dict[str, list[str]] = Field(min_length=2)
     tests: list[str] = Field(min_length=1)
 
@@ -247,11 +250,12 @@ class Template(Strict):
             "openings": [
                 {
                     "token": o.token,
-                    "emoji": self.seed_named(o.token).opening_emoji,  # type: ignore[union-attr]
-                    "detail": self.seed_named(o.token).detail,  # type: ignore[union-attr]
+                    "emoji": card.opening_emoji,
+                    "detail": card.detail,
                     "examples": o.examples,
                 }
                 for o in demo.openings
+                if (card := self.seed_named(o.token)) is not None
             ],
         }
 

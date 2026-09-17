@@ -29,7 +29,7 @@ from arena_judge.schema import (
     StateResync,
     TurnRejected,
 )
-from arena_server.auth import SESSION_COOKIE, mount_auth, rename_account
+from arena_server.auth import SESSION_COOKIE, mount_auth, rename_account, set_session_cookie
 from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
@@ -95,6 +95,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         await pool.open()
         await apply_schema(pool)
+        await service.recover()
         sweeper = asyncio.create_task(sweep_abandoned())
         yield
         sweeper.cancel()
@@ -211,9 +212,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         )
         if body.stage_name and body.stage_name.strip():
             await rename_account(pool, key, body.stage_name.strip()[:40])
-        response.set_cookie(
-            SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365
-        )
+        set_session_cookie(response, key)
         return await session_with_providers(key)
 
     @app.post("/matches", status_code=201)
@@ -224,9 +223,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             raise HTTPException(404, "no such template")
         refuse_bad_name(body.stage_name)
         key = await service.ensure_session(request.cookies.get(SESSION_COOKIE), body.stage_name)
-        response.set_cookie(
-            SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 365
-        )
+        set_session_cookie(response, key)
         snap = await service.create(key, body.template_id, body.seed_token)
         if body.first_move and snap.state_version == 0:
             await service.submit_move(snap.id, key, f"first-{snap.id}", 0, body.first_move)
@@ -277,11 +274,11 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         match_id: str, last_event_id: str | None = Header(default=None)
     ) -> EventSourceResponse:
         await service.snapshot(match_id)
-        last_id = int(last_event_id) if last_event_id and last_event_id.isdigit() else 0
+        last_id = bus.cursor_from(last_event_id)
 
         async def gen() -> AsyncIterator[dict]:
             async for event in bus.subscribe(match_id, last_id):
-                yield {"id": str(event.id), "event": event.name, "data": event.data}
+                yield {"id": event.id, "event": event.name, "data": event.data}
 
         return EventSourceResponse(gen())
 
@@ -315,6 +312,10 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         await service.set_curated(match_id, body.curated)
         return Response(status_code=204)
 
+    shell_page = (
+        (settings.frontend_dist / "index.html").read_text() if settings.frontend_dist else None
+    )
+
     @app.get("/r/{match_id}", response_class=HTMLResponse)
     async def replay_shell(match_id: str) -> HTMLResponse:
         replay = await service.replay(match_id)
@@ -325,9 +326,8 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             f'<meta property="og:description" content="{description}">'
             f'<meta property="og:url" content="{settings.public_base_url}/r/{match_id}">'
         )
-        if settings.frontend_dist:
-            page = (settings.frontend_dist / "index.html").read_text()
-            return HTMLResponse(page.replace("</head>", head + "</head>", 1))
+        if shell_page is not None:
+            return HTMLResponse(shell_page.replace("</head>", head + "</head>", 1))
         return HTMLResponse(
             f"<!doctype html><html><head>{head}<title>{title}</title></head>"
             f"<body>{description}</body></html>"
@@ -346,12 +346,14 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
 def mount_frontend(app: FastAPI, dist: Path) -> None:
     app.mount("/assets", StaticFiles(directory=dist / "assets"), name="assets")
 
+    root = dist.resolve()
+
     @app.get("/{path:path}", include_in_schema=False)
     async def spa(path: str) -> FileResponse:
-        candidate = dist / path
-        if path and candidate.is_file():
+        candidate = (root / path).resolve()
+        if path and candidate.is_relative_to(root) and candidate.is_file():
             return FileResponse(candidate)
-        return FileResponse(dist / "index.html")
+        return FileResponse(root / "index.html")
 
 
 app = build_app()

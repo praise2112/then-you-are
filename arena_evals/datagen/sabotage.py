@@ -2,13 +2,14 @@
 fork discarded. Verdicts land in the ledger's sabotage table, never in the match."""
 
 import random
-from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
+from arena_core.state import STANDING
 from arena_core.template import Template
-from arena_evals.common import model_label, with_backoff
-from arena_evals.datagen.ledger import CallRow, Ledger
-from arena_judge.caller import CallError, ModelCaller, ModelSpec
+from arena_evals.common import judge_with_backoff
+from arena_evals.datagen.ledger import CallRow, Ledger, Tape, judge_call_row, move_call_row
+from arena_judge.caller import ModelCaller, ModelSpec
+from arena_judge.prompt import clean_move
 from arena_judge.schema import JudgeResponse, route_outcome
 
 RATE = 0.12
@@ -77,9 +78,9 @@ def positions(calls: list[CallRow]) -> list[Position]:
         if not call.payload["response"]:
             continue
         outcome = route_outcome(JudgeResponse.model_validate(call.payload["response"]).scoring)
-        if outcome not in ("accept", "semantic_uncertain"):
+        if outcome not in STANDING:
             continue
-        if last_move is None or last_move.raw.strip().strip('"') != call.payload["move"]:
+        if last_move is None or clean_move(last_move.raw) != call.payload["move"]:
             continue
         p = call.payload
         found.append(
@@ -139,8 +140,7 @@ class Saboteur:
         self.judge = judge
         self.writer = writer
         self.rate = rate
-        self.recorded = ledger.calls(self.key)
-        self.idx = 0
+        self.tape = Tape(ledger, self.key)
 
     async def run(self) -> int:
         """Picks positions with a seeded draw so a resumed run makes the same picks."""
@@ -162,8 +162,10 @@ class Saboteur:
             text = await self._prompted(kind, pos)
         if not text:
             return False
-        call_idx = self.idx
-        row = await self._record(lambda: self._judge_live(pos, text))
+        call_idx = self.tape.idx
+        row = await self.tape.step(
+            "judge", pos.actor, pos.seq, lambda idx: self._judge_live(idx, pos, text)
+        )
         response = row.payload["response"]
         outcome = (
             route_outcome(JudgeResponse.model_validate(response).scoring) if response else "none"
@@ -178,83 +180,33 @@ class Saboteur:
         original = pos.student["messages"]
         messages = [*original[:-1], {**original[-1]}]
         messages[-1]["content"] = f"{PROMPTED[kind]}\n\n{original[-1]['content']}"
-
-        async def live() -> CallRow:
-            base = dict(
-                match_id=self.key,
-                idx=self.idx,
-                role="move",
-                actor=pos.actor,
-                seq=pos.seq,
-                model=self.writer.model,
-                prompt_hash="",
-                payload={**pos.student, "kind": kind},
-            )
-            try:
-                result = await with_backoff(
-                    lambda: self.caller.complete(
-                        self.writer, messages, reasoning={"enabled": False}
-                    )
-                )
-            except CallError as e:
-                return CallRow(
-                    raw="",
-                    reasoning=None,
-                    tokens_in=0,
-                    tokens_out=0,
-                    cost_usd=0.0,
-                    latency_ms=0,
-                    attempt=f"call_error: {e}",
-                    **base,  # type: ignore[arg-type]
-                )
-            return CallRow(
-                raw=result.text,
-                reasoning=result.reasoning,
-                tokens_in=result.tokens_in,
-                tokens_out=result.tokens_out,
-                cost_usd=result.cost_usd,
-                latency_ms=result.latency_ms,
-                attempt="ok",
-                **base,  # type: ignore[arg-type]
-            )
-
-        row = await self._record(live)
-        return row.raw.strip().strip('"')
-
-    async def _judge_live(self, pos: Position, text: str) -> CallRow:
-        call = await self.caller.judge(
-            self.template, pos.transcript, pos.previous, text, pos.hidden, spec=self.judge
+        payload = {**pos.student, "kind": kind}
+        row = await self.tape.step(
+            "move",
+            pos.actor,
+            pos.seq,
+            lambda idx: move_call_row(
+                self.caller,
+                self.writer,
+                messages,
+                self.key,
+                idx,
+                pos.actor,
+                pos.seq,
+                self.writer.model,
+                payload,
+            ),
         )
-        return CallRow(
-            match_id=self.key,
-            idx=self.idx,
-            role="judge",
-            actor=pos.actor,
-            seq=pos.seq,
-            model=model_label(self.judge),
-            prompt_hash=call.prompt_hash,
-            raw=call.raw,
-            reasoning=call.reasoning,
-            payload={
-                "previous": pos.previous,
-                "move": text,
-                "hidden": pos.hidden,
-                "transcript": pos.transcript,
-                "response": call.response.model_dump() if call.response else None,
-                "attempts": call.attempts,
-            },
-            tokens_in=call.tokens_in,
-            tokens_out=call.tokens_out,
-            cost_usd=call.cost_usd,
-            latency_ms=call.latency_ms,
-            attempt=call.attempts[-1] if call.attempts else "call_error",
-        )
+        return clean_move(row.raw)
 
-    async def _record(self, live: Callable[[], Awaitable[CallRow]]) -> CallRow:
-        if self.idx < len(self.recorded):
-            row = self.recorded[self.idx]
-        else:
-            row = await live()
-            self.ledger.add_call(row)
-        self.idx += 1
-        return row
+    async def _judge_live(self, idx: int, pos: Position, text: str) -> CallRow:
+        call = await judge_with_backoff(
+            self.caller, self.template, pos.transcript, pos.previous, text, pos.hidden, self.judge
+        )
+        inputs = {
+            "previous": pos.previous,
+            "move": text,
+            "hidden": pos.hidden,
+            "transcript": pos.transcript,
+        }
+        return judge_call_row(self.key, idx, pos.actor, pos.seq, self.judge, call, inputs)

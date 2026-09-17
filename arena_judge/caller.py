@@ -186,13 +186,21 @@ class ModelCaller:
         return self.stream(self.opponent_spec, messages)
 
 
-def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
+def extract_json(raw: str) -> dict | None:
+    """The first JSON object inside a model reply, or None when there is none."""
     m = re.search(r"\{.*\}", raw, re.DOTALL)
     if not m:
         return None
     try:
         data = json.loads(m.group(0))
     except json.JSONDecodeError:
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
+    data = extract_json(raw)
+    if data is None:
         return None
     if "scoring" not in data and "gates" in data:
         # A judge that skipped the host block still produced a usable scoring block.

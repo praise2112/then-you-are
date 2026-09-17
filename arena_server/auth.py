@@ -15,6 +15,11 @@ from arena_server.db import Pool
 SESSION_COOKIE = "oddstage_session"
 COOKIE_AGE = 60 * 60 * 24 * 365
 
+
+def set_session_cookie(response: Response, key: str) -> None:
+    response.set_cookie(SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=COOKIE_AGE)
+
+
 PROVIDERS: dict[str, dict] = {
     "google": {
         "server_metadata_url": "https://accounts.google.com/.well-known/openid-configuration",
@@ -170,7 +175,7 @@ def mount_auth(app: FastAPI, settings: Settings, pool: Pool) -> None:
             joiner = "&" if "?" in target else "?"
             target = f"{target}{joiner}account={outcome}:{provider}:{quote(name)}"
         response = RedirectResponse(target, status_code=303)
-        response.set_cookie(SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=COOKIE_AGE)
+        set_session_cookie(response, key)
         return response
 
     @app.post("/auth/logout", status_code=204)
