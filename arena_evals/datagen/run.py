@@ -26,7 +26,13 @@ from arena_judge.prompt import judge_prompt_hash
 RUNS_DIR = Path(__file__).parent / "runs"
 CORPUS_DIR = Path(__file__).parent / "corpus"
 CARDS_DIR = Path(__file__).parent / "cards"
-CLASSES = {"then-i-am": "counter", "word-for-word": "showcase"}
+CLASSES = {
+    "then-i-am": "counter",
+    "word-for-word": "showcase",
+    "domino": "build",
+    "alibi": "build",
+    "front-page": "showcase",
+}
 PROVIDERS = {
     "fireworks": {"judge": "judge-fireworks", "flash": "opponent-fireworks", "concurrency": 20},
     "deepseek": {"judge": "judge-v1", "flash": "opponent-v1", "concurrency": 64},

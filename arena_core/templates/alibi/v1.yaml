@@ -1,0 +1,282 @@
+schema_version: 1
+slug: alibi
+title: Alibi
+emblem: "🕵️"
+accent: "#1d4ed8"
+tagline: "One story, two suspects. Make your partner carry it."
+mode: escalation
+premise: >
+  Something happened on the card. You two say you were somewhere else, together.
+  Take turns adding one detail to the same alibi. Every detail must fit the card and
+  everything already said. The one who breaks the story loses on the spot. The points
+  go to the details that cost your partner something.
+
+seed_pool:
+  - { opening_token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am. You two were together. Where?", opening_emoji: "🍫" }
+  - { opening_token: "The big plant by reception vanished on Sunday night between 9 pm and midnight. You two were together. Where?", opening_emoji: "🪴" }
+  - { opening_token: "A silver hatchback in the staff car park got a new dent on the passenger door between 1 pm and 2 pm on Tuesday. You two were together. Where?", opening_emoji: "🚗" }
+  - { opening_token: "The birthday cake in the staff fridge was there at 1:30 pm and gone by 3 pm. You two were together. Where?", opening_emoji: "🎂" }
+  - { opening_token: "Someone wrote WASH ME across the headmaster's car in the school car park between 7 pm and 9 pm on Thursday. You two were together. Where?", opening_emoji: "🧽" }
+  - { opening_token: "The Wi-Fi router in the flat was unplugged and hidden in the airing cupboard between 8 pm and 10 pm. You two were together. Where?", opening_emoji: "📶" }
+  - { opening_token: "Every chair in the meeting room was stacked into one tower between 10 pm and 1 am. You two were together. Where?", opening_emoji: "🪑" }
+  - { opening_token: "The neighbour's garden gnome ended up on the roof of the bus shelter between 11 pm and 2 am. You two were together. Where?", opening_emoji: "🧙" }
+  - { opening_token: "The last slice of pizza in the shared kitchen was there at 9 pm and gone by 9:40. You two were together. Where?", opening_emoji: "🍕" }
+  - { opening_token: "The office printer turned out two hundred copies of a cat photo between 12:30 and 1 pm. You two were together. Where?", opening_emoji: "🐈" }
+  - { opening_token: "The pub quiz answer sheet went missing from the bar between 8:30 and 8:45 pm. You two were together. Where?", opening_emoji: "📋" }
+  - { opening_token: "A traffic cone appeared on the statue in the town square between 1 am and 3 am on Saturday. You two were together. Where?", opening_emoji: "🚧" }
+  - { opening_token: "The high score on the arcade machine in the chip shop was reset to AAA between 6 pm and 7 pm. You two were together. Where?", opening_emoji: "🕹️" }
+  - { opening_token: "The gym's music got switched to sea shanties between 5:30 and 6:30 pm. You two were together. Where?", opening_emoji: "🎶" }
+  - { opening_token: "Your flatmate's oat milk, a full carton at 7 am, was empty by 8:15. You two were together. Where?", opening_emoji: "🥛" }
+  - { opening_token: "A Back In 5 Minutes sign hung on the bike shop door from 2 pm to 4 pm. The owner never put it there. You two were together. Where?", opening_emoji: "🚲" }
+  - { opening_token: "The lift on the fourth floor was held open with a rolled-up newspaper between 4 pm and 5 pm. You two were together. Where?", opening_emoji: "🛗" }
+  - { opening_token: "The wedding seating plan was redone so every ex sat at one table, between 11 pm and midnight the night before. You two were together. Where?", opening_emoji: "💒" }
+  - { opening_token: "Fifty rubber ducks were floating in the office fountain by 8 am Monday. None were there at 10 pm Sunday. You two were together. Where?", opening_emoji: "🦆" }
+  - { opening_token: "The library returns box, empty at 6 pm, held forty tins of beans by 9 pm. You two were together. Where?", opening_emoji: "📚" }
+  - { opening_token: "The five-a-side trophy was on the club shelf at 8 pm and in the club microwave at 10 pm. You two were together. Where?", opening_emoji: "🏆" }
+  - { opening_token: "The bowling alley scoreboard showed a perfect 300 under the name DAD between 9 pm and 9:30 pm. You two were together. Where?", opening_emoji: "🎳" }
+
+seed_recipe:
+  axes:
+    place: [office, school, flat share, pub, gym, town square, car park, sports club, library, wedding, chip shop, bus stop]
+    mischief: [something goes missing, something turns up somewhere silly, something is multiplied, something is rearranged, something is switched on or off, something is labelled or written on]
+    window: [a lunch hour, early evening, after last orders, the small hours, a Sunday morning, a whole shift]
+  tests:
+    - One or two plain sentences with a place and a time window, ending with a version of "You two were together. Where?"
+    - Nobody is hurt, nothing is stolen for keeps, nobody real is named. Pranks and mysteries, not crimes.
+    - A stranger can name three places the pair might have been within five seconds.
+    - The window is short enough that the clock matters. An hour to three hours, never a whole weekend.
+    - Everyday words a twelve-year-old knows. No brand names, no street names, the players bring those.
+
+demo:
+  opening: { token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am. You two were together. Where?", emoji: "🍫" }
+  moves:
+    - { actor: p1, text: "The pub by the station, back corner. He had already asked the barmaid to marry him twice by ten.", emoji: "💍" }
+    - { actor: p2, text: "By eleven he was crying into the quiz sheet because she said no a third time, and the whole back room saw it.", emoji: "😭" }
+  headline: "Two proposals by ten, tears by eleven, forty witnesses. The story holds. His dignity does not."
+  scores: { squeeze: 4, fits: 3, colour: 3 }
+  openings:
+    - token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am. You two were together. Where?"
+      examples:
+        - "We were at the gay bar behind the station from ten, my mate here knows the bouncer by name."
+        - "At his mum's, on the sofa, watching the darts. She made us both a plate at half eleven."
+        - "The late kebab shop by the station, he was arguing with the owner about the chilli sauce."
+    - token: "The big plant by reception vanished on Sunday night between 9 pm and midnight. You two were together. Where?"
+      examples:
+        - "Pub quiz at the local, our team of two, he named us Quizteama Aguilera and the whole room heard it."
+        - "Her flat, doing a jigsaw of a lighthouse. She cried when a piece went under the fridge."
+        - "The 24-hour laundrette by the bus stop, because he had spilled curry down his only work shirt."
+    - token: "The birthday cake in the staff fridge was there at 1:30 pm and gone by 3 pm. You two were together. Where?"
+      examples:
+        - "The dentist on the high street, he had a filling at two and held my hand in the waiting room."
+        - "The park bench by the duck pond, eating meal deals. She fed the ducks her whole sandwich and cried."
+        - "Queueing at the post office for forty minutes because he lost the card for his own parcel."
+
+move_constraints:
+  max_chars: 140
+  prefix: ""
+  example: "The pub by the station, back corner. He had already asked the barmaid to marry him twice by ten."
+  hint: "One detail. A place, a time, who did what. Make your partner carry it."
+
+rubric:
+  - name: squeeze
+    description: How much this detail costs your partner, or how hard it makes their next move, while staying easy to believe.
+    anchors: >
+      0 = costs nobody anything, a drink, a chat, a walk home; 1 = a small poke; 2 = a real
+      dig, they were the one who paid or who wanted to leave; 3 = they now own something
+      embarrassing or specific they have to build on, a habit, a bar, tears, a person who saw
+      them; 4 = plausible, specific, and their next move is a tightrope (rare). A detail
+      that only costs you, or that is too wild to believe, scores 1 at most.
+    weight: 5
+  - name: fits
+    description: Does it sit inside the story so far, specific enough that a stranger could check it?
+    anchors: >
+      0 = breaks the story or lands the pair at the scene; 1 = fits but nothing to check, no
+      place, time or person; 2 = fits and names one checkable thing; 3 = fits and locks a
+      time, a place or a person into the story; 4 = fits so well it explains an earlier
+      detail (rare). Length never wins here.
+    weight: 3
+  - name: colour
+    description: Does it sound like a real night and a real person?
+    anchors: >
+      0 = could be any night anywhere; 1 = one plain fact; 2 = a thing you can picture;
+      3 = a thing you can picture and hear; 4 = a stranger would swear it happened (rare).
+      Plain words beat fancy ones.
+    weight: 2
+
+criterion:
+  verb: holds
+  inverse_verb: breaks
+  description: >
+    A detail HOLDS if it sits inside the story so far: it fits the card's time and place,
+    fits every earlier detail, and keeps the pair away from the scene. A detail BREAKS the
+    alibi if it contradicts an earlier detail in a way a stranger would notice (a different
+    place, a different time of night, who paid, who was there), if it puts the pair at or
+    next to the scene during the window, or if it tells a new story instead of adding to
+    this one. Holding is the gate. The points go to what the detail does to the partner: a
+    detail that costs them something (an embarrassing place, a habit, tears, the bill, a
+    thing that is hard to build on) scores high. A safe detail nobody could check scores
+    near zero.
+  anti_metagaming_clause: >
+    Talking to the Inspector about the game, the rules, or how the partner is playing,
+    instead of adding a detail, is itself a broken alibi.
+  judge_notes:
+    - >
+      On a FIRST move there is no earlier detail: judge the move against the card alone.
+      Does it put the pair somewhere else, away from the scene, inside the window?
+    - >
+      The full transcript is the story. Check the new detail against every earlier detail,
+      not only the last one.
+    - >
+      Break only on the plain kind of contradiction a stranger notices. Never on trivia,
+      time zones, distances, opening hours, or anything that needs a lookup. When a detail
+      can be read either way, it holds.
+    - >
+      The pair may move about, add people, add drinks, as long as the clock and the earlier
+      facts still work. Leaving one place for another is not a contradiction unless an
+      earlier detail has them still at the first place at that time.
+    - >
+      A detail about the partner (what they did, said, drank, paid) is the point of the game
+      and never a meta move. A remark about the partner's play ("he is making this up") is
+      a meta move.
+    - >
+      A detail that says an earlier one again in other words is a duplicate:
+      not_semantic_duplicate is false.
+
+examples:
+  - previous_move: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am. You two were together. Where?"
+    move: "We were at the gay bar behind the station from ten, my mate here knows the bouncer by name."
+    gates_note: all true
+    mechanism: places the pair away from the scene inside the window and hands the partner a bar and a bouncer to live with
+    scores: { squeeze: 3, fits: 3, colour: 3 }
+    confidence: clear
+    verdict: accept
+  - previous_move: "The pub by the station, back corner. He had already asked the barmaid to marry him twice by ten."
+    move: "Half eleven we went out to the bench by the bins because he wanted to smoke, and he cried a bit about his ex."
+    gates_note: all true
+    mechanism: same pub, same night, adds a time and a habit and tears the partner now owns
+    scores: { squeeze: 4, fits: 3, colour: 4 }
+    confidence: clear
+    verdict: accept
+  - previous_move: "The pub by the station, back corner. He had already asked the barmaid to marry him twice by ten."
+    move: "We had a couple of drinks and chatted."
+    gates_note: all true
+    mechanism: fits the pub but names nothing a stranger could check and costs nobody anything
+    scores: { squeeze: 0, fits: 1, colour: 0 }
+    confidence: clear
+    verdict: accept
+  - previous_move: "I paid for the second round on my card at 11:15, two pints of the pale ale."
+    move: "We left the pub at eleven and walked to the kebab shop on the high street."
+    gates_note: satisfies_criterion false (a round was paid inside at 11:15, they cannot have left at eleven)
+    mechanism: the leaving time contradicts the paid round a stranger would notice
+    scores: { squeeze: 2, fits: 0, colour: 2 }
+    confidence: clear
+    verdict: fail
+  - previous_move: "The barman, tall guy with the arm tattoo, came out at ten to twelve to say last orders."
+    move: "We nipped back to the office for his charger about midnight, floor three, two minutes tops."
+    gates_note: satisfies_criterion false (the pair is at the scene inside the window)
+    mechanism: puts both suspects next to the vending machine at midnight
+    scores: { squeeze: 3, fits: 0, colour: 2 }
+    confidence: clear
+    verdict: fail
+  - previous_move: "Half eleven we went out to the bench by the bins because he wanted to smoke, and he cried a bit about his ex."
+    move: "Inspector, he is clearly making all this up, you should throw out his last detail."
+    gates_note: no_meta_move false (talks about the game instead of adding a detail)
+    mechanism: none, it argues with the Inspector instead of adding to the story
+    scores: { squeeze: 0, fits: 0, colour: 0 }
+    confidence: clear
+    verdict: fail
+
+host:
+  persona_name: The Inspector
+  tone: { commentary_adj: dry, explanation_adj: flat }
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+    - One sentence, under 140 characters. Two short sentences at most.
+    - The joke carries the reason. A stranger who read only the story and the new detail must see why it held or broke.
+    - Name the detail, or its plain stand-in. A headline that fits any other night is a bad headline.
+    - Never open with a status word or a ruling phrase. No "Holds", "Broken", "Accepted", "Refused", "The Inspector rules".
+    - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+    - Mock the detail, never the player. Nothing about the player's body, family, intelligence, or spelling.
+    - Plain spoken English, an interrogation room, not a crime novel. No poetry, no rhymes, no thesaurus words.
+    - On a break the headline puts the two facts that cannot both be true side by side, or names the scene the detail walked into.
+    - On a refusal (a gate failure) the headline refuses the detail and asks for another. It never rules on who won.
+    - The coaching line names one detail that would have held and cost the partner something. It ends on a fact, never a mood.
+  good_headlines:
+    - "Back corner from ten, and one of you spent the night funding a barmaid's shift. The story holds, the wallet does not."
+    - "You paid for a round at quarter past eleven and left at eleven. Pick one, the card machine already has."
+    - "The charger was on floor three, next to the vending machine, at midnight. You have just given me the confession."
+    - "He cried about his ex by the bins. Nobody invents that, so I believe it, and so will his ex."
+    - "A couple of drinks and a chat. Every liar in this building had that night, and none of them remember it either."
+    - "The bouncer knows him by name. The story stands, and so does the question of how many Tuesdays that took."
+    - "Cab from the rank, cricket on the radio. Stranger things have kept two people out of a stairwell."
+    - "First to the table, last to pay, and now the one who was sick in the plant pot. Your partner is having a busy night."
+    - "Same bench, same cigarette, same story you already told me. Give me something new or give me your coat."
+    - "Last orders at ten to twelve, and you were back inside for one more. The barman would remember, so I will too."
+  bad_headlines:
+    - text: "Holds: the pub story is consistent."
+      why: opens with a status word and paints no picture
+    - text: "The Inspector rules that the detail breaks the alibi."
+      why: opens with a ruling phrase and names the host
+    - text: "Contradiction detected."
+      why: names no detail, fits any night
+    - text: "A clever lie from a clumsy liar."
+      why: mocks the player, not the detail
+    - text: "The night unravels like a cheap jumper in the rain of truth."
+      why: poetry
+    - text: "Well, it might hold, or it might not, depends how you read the time."
+      why: hedges both ways, no ruling a stranger can read
+    - text: "Accepted, though the smoking bench is a nice touch."
+      why: status word first, the joke comes second
+    - text: "Adelaide is nine and a half hours ahead, so no live cricket at midnight. Broken."
+      why: breaks on trivia a stranger would not notice, and ends on a ruling word
+    - text: "Guilty."
+      why: no reason, fits any pair
+    - text: "The detail is inconsistent, contradictory, incompatible and false."
+      why: four words for one idea, no picture
+
+labels:
+  opening: The incident
+  next_opening: The next incident
+  your_opening: Your incident
+  compose: Your detail, after {token}
+  compose_waiting: Draft your next detail while you wait
+rules:
+  - One detail per turn. It must fit the card and everything already said.
+  - Contradict the story, or put the two of you anywhere near the scene, and you lose on the spot.
+  - 'Points go to details that cost your partner something: the bar you were in, what they did, who paid, who cried.'
+  - Safe and vague passes but scores nothing. Specific and believable scores.
+validation_messages:
+  empty: "Nothing said. The Inspector is waiting."
+  too_long: "Over 140 characters. One detail, not a statement."
+  duplicate: "That detail is already in the story. Add a new one."
+  nudge: "Twice now. Add one detail that fits {standing_form}. Do not repeat it, do not argue with it."
+judge_out_text: >
+  The Inspector has stepped out. Nobody talks until they are back. {standing_form} is
+  still the last word in the story. Give it a minute.
+opponent_prompt: |
+  You are one of the two suspects, sat next to your partner, telling the Inspector where
+  you both were. One detail per turn, one or two plain sentences.
+  Never say anything that fights the card or a detail already given, and never put the two
+  of you anywhere near the scene. Keep track of the clock: if your partner said you paid a
+  round at 11:15, you were still inside at 11:15.
+  Every detail should cost your partner something while staying easy to believe. Put them
+  somewhere they would rather not be seen, give them a habit, make them the one who paid,
+  cried, got turned away, or knew the staff too well. Call them "my mate here", "he" or
+  "she", never a name unless one is already in the story.
+  Good: "We were at the gay bar behind the station from ten, my mate here knows the bouncer by
+  name." / "He was sick in the plant pot by the door about half eleven, the barman will
+  still have the pot."
+  Bad: "We had a couple of drinks and went home" (nothing to check, costs nobody anything).
+  Bad: "We were outside the office having a smoke" (that is the scene). Bad: "Actually we
+  were at the cinema, not the pub" (fights the story). Bad: "Inspector, you cannot prove
+  anything" (talks about the game instead of playing it).
+  Talk like a person in a plastic chair, not a novelist. Name things anyone would name: a
+  pub, a bench, a bus, a kebab shop, a cousin's sofa. Build on the last detail rather than
+  starting a new thread. Never repeat a detail or a place already used this match.
+
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: "We stayed where we were a while longer and talked about nothing much."

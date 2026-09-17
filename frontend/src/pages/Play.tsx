@@ -122,33 +122,22 @@ export function Play({ slug }: { slug: string }) {
 function EscalationRules({ template }: { template: TemplateView }) {
   return (
     <>
-      <p className="kicker">Two minutes to learn. A lifetime to master, allegedly.</p>
-      <ol className="steps">
-        <li>
-          <div>
-            <b>Something is standing.</b>
-            <p>The opening form is waiting for you. Your job is to beat it, not to be it.</p>
-          </div>
-        </li>
-        <li>
-          <div>
-            <b>Become the thing that beats it.</b>
-            <p>Say what you are and why it wins. Plain words. Under {template.max_chars} characters.</p>
-            <p className="example">
-              For example: <span>{template.move_example}</span>
-            </p>
-          </div>
-        </li>
-        <li>
-          <div>
-            <b>The judge rules every move.</b>
-            <p>
-              One move that fails ends the match. {template.move_budget} moves with nobody
-              falling goes to points. A muddled move comes back to you, no harm done.
-            </p>
-          </div>
-        </li>
-      </ol>
+      <p className="kicker">{template.tagline}</p>
+      <ul className="rules-text">
+        {template.rules.map((rule) => (
+          <li key={rule}>{rule}</li>
+        ))}
+      </ul>
+      <div className="word-card entry-card">
+        <p className="headword">{template.demo.opening.token}</p>
+        <p className="example">
+          You might write: <span>{template.move_example}</span>
+        </p>
+      </div>
+      <p className="rules-foot">
+        One move that fails ends the match. {template.move_budget} moves with nobody falling goes to points. A muddled
+        move comes back to you, no harm done. Under {template.max_chars} characters a move.
+      </p>
     </>
   );
 }
@@ -166,17 +155,19 @@ function ShowcaseRules({ template }: { template: TemplateView }) {
       </ul>
       <div className="word-card entry-card">
         <p className="headword">{demo.token}</p>
-        <p className="detail">{demo.detail}</p>
+        {demo.detail && <p className="detail">{demo.detail}</p>}
         <p className="example">
           You might write: <span>{sample}</span>
         </p>
-        <p className="reveal-line">
-          <b>What {demo.token} really means:</b> {demo.reveal}.
-        </p>
+        {demo.reveal && (
+          <p className="reveal-line">
+            <b>What {demo.token} really means:</b> {demo.reveal}.
+          </p>
+        )}
       </div>
       <p className="rules-foot">
-        {HOUSE} plays the same word, hidden until the Judge has scored you both. Under {template.max_chars} characters a
-        bluff.
+        {HOUSE} answers the same card, hidden until the Judge has scored you both. Under {template.max_chars} characters
+        a move.
       </p>
     </>
   );

@@ -1,0 +1,278 @@
+schema_version: 1
+slug: front-page
+title: Front Page
+emblem: "🗞️"
+accent: "#b3392b"
+tagline: "Keep the fact. Lose the perspective."
+mode: showcase
+premise: >
+  Three rounds. Each round deals one dull true fact. Both players write a tabloid
+  headline for it. The fact must survive inside the headline: a reader who knows only
+  the headline can still read the fact as true. Everything else is fair game, motives,
+  villains, national crisis, quotes from sources, outrage. The Editor scores how far
+  each headline gets from the dull fact while the fact still holds.
+
+seed_pool:
+  - { opening_token: "A man returned a library book three days late.", opening_emoji: "📚" }
+  - { opening_token: "A woman's cat came back after two days.", opening_emoji: "🐈" }
+  - { opening_token: "The council fixed a pothole.", opening_emoji: "🕳️" }
+  - { opening_token: "A bus arrived four minutes early.", opening_emoji: "🚌" }
+  - { opening_token: "A bakery sold out of bread by noon.", opening_emoji: "🍞" }
+  - { opening_token: "A man repainted his front door blue.", opening_emoji: "🚪" }
+  - { opening_token: "A school moved its lunch break forward by ten minutes.", opening_emoji: "🏫" }
+  - { opening_token: "A shop changed its opening hours for the winter.", opening_emoji: "🕰️" }
+  - { opening_token: "A woman found a coin in a car park.", opening_emoji: "🪙" }
+  - { opening_token: "A pigeon walked into a supermarket.", opening_emoji: "🐦" }
+  - { opening_token: "A village hall replaced its kettle.", opening_emoji: "🫖" }
+  - { opening_token: "A man mowed his lawn on a Sunday.", opening_emoji: "🌱" }
+  - { opening_token: "A cafe put its coffee price up by ten pence.", opening_emoji: "☕" }
+  - { opening_token: "A boy lost a tooth at school.", opening_emoji: "🦷" }
+  - { opening_token: "A train was held at a station for six minutes.", opening_emoji: "🚆" }
+  - { opening_token: "A neighbour borrowed a ladder and gave it back.", opening_emoji: "🪜" }
+  - { opening_token: "A dog dug a hole in a public park.", opening_emoji: "🐕" }
+  - { opening_token: "A woman wore odd socks to work.", opening_emoji: "🧦" }
+  - { opening_token: "A post office ran out of stamps for an afternoon.", opening_emoji: "✉️" }
+  - { opening_token: "A man ate the last slice of office cake.", opening_emoji: "🍰" }
+  - { opening_token: "A pub quiz ended in a tie.", opening_emoji: "🍻" }
+  - { opening_token: "A traffic light stayed red for two minutes.", opening_emoji: "🚦" }
+  - { opening_token: "A woman grew a very large marrow.", opening_emoji: "🥒" }
+  - { opening_token: "A hotel moved its breakfast from seven to half past.", opening_emoji: "🥐" }
+  - { opening_token: "A duck crossed the high street.", opening_emoji: "🦆" }
+  - { opening_token: "The council planted twelve trees along a road.", opening_emoji: "🌳" }
+  - { opening_token: "A man left his umbrella on a bus.", opening_emoji: "☂️" }
+  - { opening_token: "A gym raised its monthly fee by two pounds.", opening_emoji: "🏋️" }
+
+seed_recipe:
+  axes:
+    actor: [a man, a woman, a boy, a girl, a neighbour, a shop, a cafe, a school, the council, a bus company, an animal]
+    event: [returned something, lost something, found something, moved a time, changed a price, fixed something, painted something, ran out of something, arrived early or late, crossed a road]
+    scale: [a few minutes, a few days, a few pence, one item, one street, one room]
+  tests:
+    - One sentence, past tense, under sixty characters. A stranger pictures it at once.
+    - Nobody is hurt, robbed, sacked or ill. No real people, no brands, no place names.
+    - So dull that saying it aloud gets a shrug. If it is already a story, it is not a card.
+    - It has at least two nouns a headline can turn into a villain or a victim.
+    - It names a checkable detail (a number, a colour, a day) a headline can keep or break.
+
+demo:
+  opening: { token: "A man returned a library book three days late.", emoji: "📚" }
+  moves:
+    - { actor: p1, text: "LIBRARY SYSTEM IN CRISIS AS BORROWER DEFIES DUE DATE", emoji: "🚨" }
+    - { actor: p2, text: "LOCAL MAN HOLDS PUBLIC PROPERTY HOSTAGE FOR 72 HOURS", emoji: "🔒" }
+  headline: "The hostage was a paperback and the ransom was forty pence, and the fact never left the room."
+  scores: { stretch: 4, funny: 3, headline_shaped: 4 }
+  openings:
+    - token: "The council fixed a pothole."
+      examples:
+        - "TAXPAYERS FUND HOLE"
+        - "COUNCIL ADMITS ROAD WAS BROKEN"
+        - "OFFICIALS POUR MONEY INTO THE GROUND, CALL IT PROGRESS"
+    - token: "A woman's cat came back after two days."
+      examples:
+        - "MISSING PET ENDS SILENCE, DECLINES TO EXPLAIN ABSENCE"
+        - "CAT RETURNS TO WOMAN WHO FAILED TO KEEP IT"
+        - "48 HOURS OF TERROR END AS FUGITIVE WALKS BACK IN"
+    - token: "A pigeon walked into a supermarket."
+      examples:
+        - "UNVETTED BIRD BREACHES FOOD SUPPLY"
+        - "PIGEON ENTERS STORE WITHOUT A BASKET, STAFF POWERLESS"
+        - "SHOPPERS SHARE AISLES WITH WILDLIFE AS SECURITY LOOKS ON"
+
+move_constraints:
+  max_chars: 90
+  prefix: ""
+  example: "TAXPAYERS FUND HOLE"
+  hint: "One headline. Keep the fact true, then go as far as you dare."
+
+rubric:
+  - name: stretch
+    description: How far does the headline get from the dull fact while the fact still holds?
+    anchors: >
+      0 = restates the card, nothing added; 1 = one louder word; 2 = a new angle, a motive
+      or a villain; 3 = a whole story the card never told, and the card is still in it;
+      4 = a national scandal built on a shrug, every word traceable back to the card (rare).
+    weight: 5
+  - name: funny
+    description: Does the headline land a laugh?
+    anchors: >
+      0 = flat; 1 = a flicker; 2 = a smile; 3 = a laugh; 4 = a laugh you would read out to
+      the room (rare). Outrage played straight is usually funnier than a wink.
+    weight: 3
+  - name: headline_shaped
+    description: Does it read like a real front page, tight, present tense, no padding?
+    anchors: >
+      0 = not a headline, a sentence or a paragraph; 1 = a headline buried in hedges and
+      filler; 2 = a headline with slack in it; 3 = tight, present tense, every word earns
+      its place; 4 = you could paste it above the fold unchanged (rare).
+    weight: 2
+
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: >
+    A headline PLAYS if a reader who knows only the headline can still read the card's
+    fact as true. Beyond that it may add anything: motives, villains, a national crisis,
+    numbers, quotes from sources, outrage. It fails when the fact is dropped (the cat
+    never comes back), contradicted (the book comes back early, the man becomes a woman)
+    or made false (the pothole was never fixed), or when it is not a headline at all but
+    a comment, a question to the Judge or a sentence about the game. A dull restatement
+    of the card plays and scores near zero on stretch.
+  anti_metagaming_clause: >
+    Speaking to the Judge, about the game, or about rules is itself a losing headline.
+  judge_notes:
+    - >
+      Test the gate one way only: could the fact be true given this headline? "TAXPAYERS
+      FUND HOLE" for a fixed pothole passes, taxes paid for the repair. Do not ask whether
+      the headline is fair, likely or in good taste. Ask whether it makes the card false.
+    - >
+      Invented detail is not a contradiction. A ransom, a source, a crisis, a number the
+      card never gave, all play, as long as they do not overwrite a detail the card did
+      give. "72 hours" for three days holds. "Two days late" for three does not.
+    - >
+      Both players answer the same card. Judge each headline on its own; the other
+      player's headline is not the standard.
+    - >
+      Score stretch by distance from the card, not by volume. A quiet headline that turns
+      a kettle into a budget scandal beats a loud one that only adds SHOCK.
+    - >
+      Lower case, no caps, a missing full stop, none of that costs anything. A headline
+      is judged by its words.
+
+examples:
+  - previous_move: "A man returned a library book three days late."
+    move: "LOCAL MAN HOLDS PUBLIC PROPERTY HOSTAGE FOR 72 HOURS"
+    gates_note: all true
+    mechanism: the book becomes a hostage and the three days a siege, yet late return still reads as true
+    scores: { stretch: 4, funny: 3, headline_shaped: 4 }
+    confidence: clear
+    verdict: accept
+  - previous_move: "The council fixed a pothole."
+    move: "Council fixes pothole"
+    gates_note: all true
+    mechanism: the card in present tense, nothing added
+    scores: { stretch: 0, funny: 0, headline_shaped: 3 }
+    confidence: clear
+    verdict: accept
+  - previous_move: "A woman's cat came back after two days."
+    move: "WOMAN IN TEARS AS BELOVED PET VANISHES WITHOUT TRACE"
+    gates_note: satisfies_criterion false (the return is dropped, the reader thinks the cat is still gone)
+    mechanism: none, it tells the first half of the card and hides the fact
+    scores: { stretch: 2, funny: 1, headline_shaped: 3 }
+    confidence: clear
+    verdict: fail
+  - previous_move: "A man returned a library book three days late."
+    move: "MODEL CITIZEN RETURNS BOOK EARLY, LIBRARY STUNNED"
+    gates_note: satisfies_criterion false (early contradicts three days late)
+    mechanism: none, the headline makes the card false
+    scores: { stretch: 1, funny: 2, headline_shaped: 3 }
+    confidence: clear
+    verdict: fail
+  - previous_move: "A bus arrived four minutes early."
+    move: "honestly what am I meant to do with a bus, judge, give me a better card"
+    gates_note: no_meta_move false, satisfies_criterion false (a complaint to the Judge)
+    mechanism: none, it talks about the game instead of writing a headline
+    scores: { stretch: 0, funny: 0, headline_shaped: 0 }
+    confidence: clear
+    verdict: fail
+  - previous_move: "A pigeon walked into a supermarket."
+    move: "Reports suggest that a pigeon may possibly have walked into a local supermarket"
+    gates_note: all true (length is free; only the character limit binds)
+    mechanism: the fact is there, wrapped in hedges that no front page would print
+    scores: { stretch: 1, funny: 1, headline_shaped: 1 }
+    confidence: lean
+    verdict: accept
+
+host:
+  persona_name: The Editor
+  tone: { commentary_adj: dry, explanation_adj: exact }
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+    - One sentence, under 140 characters. Two short sentences at most.
+    - The joke carries the reason. A stranger who read only the card and the headline must see why it scored.
+    - Name the headline's key noun, the hostage, the hole, the pigeon. A line that fits any other headline is a bad line.
+    - Never open with a status word or a ruling phrase. No "Accepted", "Rejected", "Refused", "Move refused", "The Editor refuses".
+    - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+    - Mock the headline, never the player. Nothing about the player's body, family, intelligence, or spelling.
+    - Plain spoken English. No poetry, no rhymes, no newsroom jargon, no thesaurus words.
+    - On a fail, say which fact went missing or got broken, in the words of the card.
+    - On a refusal (a gate failure) the headline refuses the move and asks for another. It never rules on who won.
+    - The coaching line names one headline that would have scored. It ends on a fact or an action, never a mood or a verdict.
+  good_headlines:
+    - "The hostage was a paperback and the ransom was forty pence, and the fact never left the room."
+    - "Taxpayers did fund the hole, and the hole is gone, so the outrage holds and so does the card."
+    - "Council fixes pothole. The card, read back to it, in a slightly louder voice."
+    - "The cat came back on the card and never came back in the headline. Put the return in."
+    - "Early is not late. The library got its book on day three and the headline got it on day zero."
+    - "Four hedges around one pigeon. Somewhere in there is a bird that walked into a shop."
+    - "A fugitive who walks back in is still a cat that came home, and the two days are the terror."
+    - "The bird had no basket, and the paper found its front page in a fact nobody wanted."
+    - "The kettle became a spending review, and the village hall still has its new kettle."
+    - "Nobody in the card is stunned. The fee still went up by two pounds, so the stunning is free."
+  bad_headlines:
+    - text: "Accepted: the hostage line is a fine stretch."
+      why: opens with a status word
+    - text: "The Editor refuses: that is not a headline."
+      why: opens with a ruling phrase and names the host
+    - text: "Move refused, write a headline instead."
+      why: opens with a ruling phrase
+    - text: "Wrong, the fact is missing."
+      why: does not say which fact went missing
+    - text: "Great spin."
+      why: no reason, fits any headline
+    - text: "A bold effort from someone who clearly never reads a newspaper."
+      why: mocks the player, not the headline
+    - text: "O pigeon, what aisles hast thou wandered, what bread hast thou eyed?"
+      why: poetry
+    - text: "It is bold, daring, outrageous and provocative."
+      why: four words for one idea, no picture
+    - text: "Better than the other player's headline this round."
+      why: judges the pair, not the headline on its own
+    - text: "Above the fold, below the line, a real splash with legs."
+      why: newsroom jargon
+
+labels:
+  opening: The fact
+  next_opening: The next fact
+  your_opening: Your fact
+  compose: Your headline for {token}
+  compose_waiting: Draft your headline while you wait
+rules:
+  - Three rounds, one dull true fact each.
+  - Write a tabloid headline for it, under 90 characters. The House writes its own, unseen, and the Editor scores both.
+  - The fact must still be true to someone who reads only your headline. Drop it, flip it or break it and the round is lost.
+  - Everything else is yours to invent. The further you get from the fact while it still holds, the more you score. Most points after three rounds wins.
+validation_messages:
+  empty: "Blank page. Write the headline."
+  too_long: "Over 90 characters. A headline, not a column."
+  duplicate: "That headline has already run this match. Find another angle."
+  nudge: "Twice now. One headline that keeps this true: {standing_form}."
+judge_out_text: >
+  The Editor has stepped out. Nobody moves until they are back. {standing_form} sits on
+  the desk. Give it a minute.
+opponent_prompt: |
+  You are a tabloid sub-editor with a dull fact and a front page to fill. Write one
+  headline.
+  THE FACT MUST SURVIVE. A reader who sees only your headline must still be able to read
+  the card as true. Never drop a piece of it, never flip it, never overwrite a detail the
+  card gave (three days stays three days, or 72 hours; a return stays a return).
+  Then go as far as you dare. Invent the villain, the motive, the crisis, the source, the
+  cost to the taxpayer. The points are for distance from the card while the card holds.
+  Good: "TAXPAYERS FUND HOLE" for a fixed pothole. "LOCAL MAN HOLDS PUBLIC PROPERTY
+  HOSTAGE FOR 72 HOURS" for a book three days late. "UNVETTED BIRD BREACHES FOOD SUPPLY"
+  for a pigeon in a supermarket.
+  Bad: "Council fixes pothole" (the card again, no distance). "BOOK RETURNED EARLY" (the
+  card flipped). "CAT STILL MISSING" (the return dropped). "SHOCK AS MAN DOES THING" (loud,
+  but the fact is not in it).
+  Tabloid rhythm: present tense, short plain words, no hedges, no "reportedly", no
+  "may have". Under 90 characters. Capitals are fine but not required. Do not use a
+  colon or a dash. Do not explain the joke.
+  Vary the angle from round to round: a villain one round, a victim the next, a cost, a
+  cover-up, a quote from a source. Never the same shape twice in a match.
+  No quotation marks around the headline. Reply with the headline only.
+
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: "Local man does ordinary thing, sources confirm"

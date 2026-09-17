@@ -50,12 +50,19 @@ function turnOf(r: Ruling): TurnView {
   };
 }
 
+/** A short form fits on the stamp; a sentence-length move leaves the verb alone. */
+function stampText(verb: string, move: string, prefix: string): string {
+  const name = formName(move, prefix);
+  return name.length > 28 ? verb : `${verb}: ${name}`;
+}
+
 function withRulings(s: MatchSnapshot, rulings: Ruling[]): MatchSnapshot {
   const fresh = rulings.filter((r) => !s.transcript.some((t) => t.seq === r.seq));
   const last = rulings[rulings.length - 1];
   if (!last) return s;
   return {
     ...s,
+    status: "active",
     state_version: last.state_version,
     to_move: last.to_move,
     points_p1: last.points_p1,
@@ -141,7 +148,7 @@ export function Duel({ matchId, spectator = false }: Props) {
           setThinking(false);
           setPending(false);
           setReturned(event.data);
-          setSnap((s) => s && { ...s, state_version: s.state_version + 1 });
+          setSnap((s) => s && { ...s, status: "active", state_version: s.state_version + 1 });
           return;
         case "move_token":
           setStreaming((s) => s + event.data.text);
@@ -218,7 +225,7 @@ export function Duel({ matchId, spectator = false }: Props) {
           setStreaming("");
           setSnap((s) => s && { ...s, status: "ended", winner: e.winner, end_reason: e.end_reason, points_p1: e.points_p1, points_p2: e.points_p2 });
           setEnded(e);
-          setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), 3200);
+          setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), e.end_reason === "resign" ? 0 : 3200);
           return;
         }
         case "state_resync":
@@ -339,17 +346,17 @@ export function Duel({ matchId, spectator = false }: Props) {
       ? `${me} had the last word`
       : `${HOUSE} had the last word`
     : streaming
-    ? `${HOUSE} is becoming`
+    ? `${HOUSE} is writing`
     : standingIsMine
-      ? `${me} became`
+      ? `${me} wrote`
       : standing
-        ? `Beat this, from ${HOUSE}`
-        : "Beat this, the opening";
+        ? `From ${HOUSE}`
+        : template.labels.opening;
   const composerLabel = paused
-    ? "Draft your next move while you wait"
+    ? template.labels.compose_waiting
     : returned
       ? "Your move, still yours"
-      : `Your move, beat ${formName(standingText, prefix)}`;
+      : template.labels.compose.replace("{token}", formName(standingText, prefix));
   const hostLine = finished
     ? parting!.text
     : fell
@@ -364,7 +371,7 @@ export function Duel({ matchId, spectator = false }: Props) {
           : "The judge is reading."
         : spectator
           ? `${capitalize(formName(standingText, prefix))} stands. ${snap.stage_name} to move.`
-          : `${capitalize(formName(standingText, prefix))}. Beat it, do not become it.`;
+          : `${capitalize(formName(standingText, prefix))}. ${template.move_hint}`;
 
   return (
     <>
@@ -464,7 +471,7 @@ export function Duel({ matchId, spectator = false }: Props) {
             {paused && <span className="tag">Awaiting ruling</span>}
             {shown && !streaming && !paused && (
               <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>
-                {fell ? `Fell: ${formName(fell.move_text, prefix)}` : shown.outcome === "semantic_uncertain" ? "Close call" : `Point: ${formName(shown.move_text, prefix)}`}
+                {fell ? stampText("Fell", fell.move_text, prefix) : shown.outcome === "semantic_uncertain" ? "Close call" : stampText("Point", shown.move_text, prefix)}
               </span>
             )}
             <p className="last-move">{paused ? fullMove(prefix, text) : fell ? fell.move_text : standingText}</p>
@@ -756,7 +763,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                       {round.emoji}
                     </span>
                     <span>
-                      <b>{round.token}</b> <em>{round.truth}</em>
+                      <b>{round.token}</b> {round.truth && <em>{round.truth}</em>}
                     </span>
                     <span className="tally-line">
                       {won === "mine" ? <b>{totals.mine}</b> : totals.mine}

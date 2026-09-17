@@ -264,7 +264,7 @@ function Chain({ replay, prefix }: { replay: Replay; prefix: string }) {
           <span className="chain-link">→</span>
           <figure>
             <span className="medallion more">+{hidden}</span>
-            <figcaption>more forms</figcaption>
+            <figcaption>more moves</figcaption>
           </figure>
         </span>
       )}

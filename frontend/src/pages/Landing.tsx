@@ -355,7 +355,7 @@ function Stage({ template }: { template: TemplateView }) {
             ))}
           </p>
         )}
-        {step >= 7 && !showcase && <p className="headline on">{demo.headline}</p>}
+        {step >= 7 && (!showcase || !demo.opening.reveal) && <p className="headline on">{demo.headline}</p>}
         {step >= 7 && showcase && demo.opening.reveal && (
           <div className="demo-call on">
             <p className="who">Your call: which one is the real entry?</p>

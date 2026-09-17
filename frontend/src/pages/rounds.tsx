@@ -16,7 +16,7 @@ export function WordCard({ round, compact = false, children }: WordCardProps) {
     <div className={`torn word-card${compact ? " compact" : ""}`}>
       {children}
       <p className="headword">{round.token}</p>
-      <p className="detail">{round.detail}</p>
+      {round.detail && <p className="detail">{round.detail}</p>}
     </div>
   );
 }
@@ -36,6 +36,7 @@ const POS_SHORT: Record<string, string> = {
 
 /** The reveal, set as the real dictionary entry for the round's word. */
 export function TruthLine({ round }: { round: RoundView }) {
+  if (!round.truth) return null;
   return (
     <p className="entry">
       <span className="medallion sm" role="img" aria-label={round.token}>
@@ -143,7 +144,7 @@ export function RoundLedger({ groups, me }: LedgerProps) {
               <b className="word">{round.token}</b>
               {revealed ? (
                 <>
-                  <span className="truth">{round.truth}</span>
+                  {round.truth && <span className="truth">{round.truth}</span>}
                   <span className="tally-line">
                     <span className={won === "mine" ? "took" : undefined}>{totals.mine}</span>
                     {" : "}
@@ -240,7 +241,7 @@ export function Bluff({ turn, round, who, you = false, won = false, template }: 
         {won && <span className="stamp point">Point</span>}
       </p>
       <p className="said">
-        <b>{round.token}</b> <i>{POS_SHORT[pos] ?? pos}</i> {turn.move_text}
+        <b>{round.token}</b> {pos && <i>{POS_SHORT[pos] ?? pos}</i>} {turn.move_text}
       </p>
       <p className="marks">
         {template.rubric.map((entry) => {

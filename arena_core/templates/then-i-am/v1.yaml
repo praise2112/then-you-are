@@ -643,6 +643,16 @@ criterion:
       Strength is measured against the standing form, never in the abstract. A form with
       no way to act on what stands (a blade against a rumour) is a failed counter however
       impressive it is on its own: satisfies_criterion is false.
+    - >
+      The mechanism must be literal: something the new form does to the standing form that
+      a stranger could watch happen. A figure of speech is not a mechanism (paperwork
+      burying a storm, a field absorbing an earthquake, a cold box slowing entropy). If the
+      only mechanism you can name is a figure of speech, rule fail, not a lean accept.
+    - >
+      Surviving, ignoring, being immune to, or waiting for the standing form is dodging,
+      not overcoming (a goat unbothered by an itch, a drain that swallows the dragonfly if
+      it happens to land there, a wall the wind cannot move). The new form must act on what
+      stands: satisfies_criterion is false.
 
 examples:
   - previous_move: "I am a wildfire, hungry, spreading."
@@ -680,6 +690,20 @@ examples:
     scores: { counter_strength: 3, coherence: 4, novelty: 3 }
     confidence: lean
     verdict: accept
+  - previous_move: "I am a thunderstorm, roof-rattling, street-flooding."
+    move: "I am the tax office, storm-auditing, cloud-fining."
+    gates_note: satisfies_criterion false (the mechanism is a figure of speech, an office cannot act on weather)
+    mechanism: none a stranger could watch, auditing a storm is a joke not an action
+    scores: { counter_strength: 0, coherence: 3, novelty: 3 }
+    confidence: clear
+    verdict: fail
+  - previous_move: "I am a tidal wave, harbour-swallowing, unstoppable."
+    move: "I am a sponge, wave-absorbing, patient."
+    gates_note: satisfies_criterion false (survives or soaks a little, does nothing to the wave)
+    mechanism: none, a sponge in a tidal wave is wet, the wave is unchanged
+    scores: { counter_strength: 0, coherence: 3, novelty: 2 }
+    confidence: clear
+    verdict: fail
   - previous_move: "I am the vaccine, life-saving, social-reconnecting."
     move: "I am the cure, life-saving, social-reconnecting."
     gates_note: not_semantic_duplicate false (a rephrase of an earlier form, same attributes)
