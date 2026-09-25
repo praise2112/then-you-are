@@ -118,7 +118,7 @@ class Ledger:
     def add_call(self, row: CallRow) -> None:
         with self.conn:
             self.conn.execute(
-                "insert into calls values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "insert or replace into calls values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     row.match_id,
                     row.idx,
@@ -200,7 +200,11 @@ class Tape:
     def __init__(self, ledger: Ledger, key: str):
         self.ledger = ledger
         self.key = key
-        self.recorded = ledger.calls(key)
+        recorded = ledger.calls(key)
+        # A match that stopped on an unanswered verdict asks for that verdict again.
+        if recorded and recorded[-1].role == "judge" and recorded[-1].payload["response"] is None:
+            recorded = recorded[:-1]
+        self.recorded = recorded
         self.idx = 0
 
     async def step(

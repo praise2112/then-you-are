@@ -136,6 +136,19 @@ def test_a_judge_that_stays_down_abandons_the_match(tmp_path: Path, monkeypatch)
     assert ledger.calls(row["match_id"])[-1].payload["response"] is None
 
 
+def test_a_match_abandoned_on_an_unanswered_verdict_resumes_and_asks_again(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    match = duel_match()
+    down = ScriptedCaller(rulings=[None] * 4, moves=["I am a hammer, rock-splitting."])
+    with pytest.raises(MatchAbandoned):
+        asyncio.run(play_match(DUEL, match, SIDES, down, ledger, JUDGE))
+    back = ScriptedCaller(rulings=[judge_response(verdict="fail")], moves=[])
+    match = asyncio.run(play_match(DUEL, duel_match_with_id(match.id), SIDES, back, ledger, JUDGE))
+    assert match.status == "ended" and back.completed == 0
+    assert [c.role for c in ledger.calls(match.id)] == ["move", "judge"]
+    assert ledger.calls(match.id)[-1].payload["response"] is not None
+
+
 def test_a_replayed_row_that_is_not_the_expected_call_stops_the_run(tmp_path: Path):
     ledger = Ledger(tmp_path / "run.db")
     caller = ScriptedCaller(

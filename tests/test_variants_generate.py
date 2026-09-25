@@ -4,7 +4,6 @@ import random
 from pathlib import Path
 
 import pytest
-import yaml
 
 from arena_core.template import load_template, load_template_file
 from arena_evals.grow_seeds import append_to_pool
@@ -33,7 +32,7 @@ CELL = Cell(
 
 
 def body_for(slug: str, premise: str) -> dict:
-    body = yaml.safe_load(parent_shape(DOMINO, SPEC))
+    body = json.loads(parent_shape(DOMINO, SPEC))
     body["slug"] = slug
     body["title"] = slug.title()
     body["premise"] = premise
@@ -101,7 +100,7 @@ class FakeLuna:
             slug = user.split("The slug is ")[1].strip(".")
             premise = "Game beta." if slug == "gamma" else f"Game {slug}."
             body = body_for(slug, premise)
-            text = yaml.safe_dump(body, allow_unicode=True)
+            text = json.dumps(body, ensure_ascii=False)
             return CallResult(text=text, latency_ms=1, cost_usd=0.02)
         score = 4 if "Game alpha." in user else 1
         return CallResult(

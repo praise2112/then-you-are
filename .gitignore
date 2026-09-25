@@ -21,3 +21,6 @@ frontend/dist/
 .env.local
 *.db
 arena_evals/datagen/corpus/
+.claude/runs/
+*.db-shm
+*.db-wal

@@ -10,9 +10,9 @@ uv run python -m arena_evals.variants.generate demote <slug>
 import argparse
 import asyncio
 import hashlib
+import json
 import math
 import random
-import re
 import shutil
 import sys
 from collections import Counter
@@ -120,14 +120,16 @@ def sample_cells(spec: ClassSpec, rng: random.Random) -> list[Cell]:
 
 
 def parent_shape(parent: Template, spec: ClassSpec) -> str:
-    """The example's YAML with the fixed fields, the demo and most seeds and examples removed."""
+    """The example as JSON with the fixed fields and the demo removed, seeds, examples and
+    recipe axes trimmed so the shape shows without the bulk."""
     body = parent.model_dump(exclude={"demo", "schema_version"})
     for path in spec.fixed:
         del_path(body, path)
     body["seed_pool"] = body["seed_pool"][:3]
     body["examples"] = body["examples"][:4]
-    body.pop("seed_recipe", None)
-    return yaml.safe_dump(body, sort_keys=False, allow_unicode=True, width=100)
+    if body.get("seed_recipe"):
+        body["seed_recipe"]["axes"] = {k: v[:3] for k, v in body["seed_recipe"]["axes"].items()}
+    return json.dumps(body, indent=1, ensure_ascii=False)
 
 
 def del_path(body: dict, path: str) -> None:
@@ -175,10 +177,10 @@ def sketch_messages(spec: ClassSpec, parent: Template, cell: Cell) -> list[dict]
 def write_messages(spec: ClassSpec, parent: Template, cell: Cell, sketch: Sketch) -> list[dict]:
     names = ", ".join(r.name for r in parent.rubric)
     system = (
-        "You write the full YAML template for a two-player word game judged by a language "
-        f"model. Imitate the shape and length of this template for {parent.title}. Its "
-        "mechanic fields are removed because they are set for you; do not write them.\n\n"
-        f"```yaml\n{parent_shape(parent, spec)}```\n\n"
+        "You write the full template, as JSON, for a two-player word game judged by a "
+        f"language model. Imitate the shape and length of this template for {parent.title}. "
+        "Its mechanic fields are removed because they are set for you; do not write them.\n\n"
+        f"```json\n{parent_shape(parent, spec)}\n```\n\n"
         "Write every key shown, for the new game. Rules:\n"
         f"- rubric names and order are exactly: {names}. Rewrite descriptions and anchors.\n"
         "- host.tone, host.bite and host.ruling_generosity are set for you. Write voice_rules, "
@@ -193,14 +195,15 @@ def write_messages(spec: ClassSpec, parent: Template, cell: Cell, sketch: Sketch
             if parent.guess
             else ".\n"
         )
-        + "- seed_recipe: card_shape (short_form for a noun phrase with an article, sentence "
-        "otherwise), max_words for one card, three axes of at least eight values each, and "
-        "five tests a card must pass, in the style of the example's tests.\n"
+        + '- seed_recipe: card_shape is exactly "short_form" (a noun phrase with an article) or '
+        '"sentence"; max_words for one card; axes is an object of three axis names, each a list '
+        "of at least eight values (the example shows three per axis, write eight or more); tests "
+        "is five sentences a card must pass, in the style of the example's tests.\n"
         "- keep the {standing_form} slot in judge_out_text and validation_messages.nudge, and "
         "the {token} slot in labels.compose.\n"
         "- criterion.judge_notes cover the first move and every failure the criterion names.\n"
         "- plain spoken English throughout, no dashes as punctuation.\n"
-        "Reply with YAML only, no fences, no commentary."
+        "Reply with one JSON object only, no fences, no commentary."
     )
     user = (
         f"Theme: {cell.theme}.\nSketch to build:\n{sketch.model_dump_json(indent=1)}\n"
@@ -272,15 +275,6 @@ def dump_template(template: Template) -> str:
     text = yaml.safe_dump(body, sort_keys=False, allow_unicode=True, width=100)
     lines = "".join(seed_line(s) for s in template.seed_pool)
     return f"{text}seed_pool:\n{lines}"
-
-
-def parse_yaml(raw: str) -> dict | None:
-    text = re.sub(r"^```[a-z]*\n|\n```\s*$", "", raw.strip())
-    try:
-        body = yaml.safe_load(text)
-    except yaml.YAMLError:
-        return None
-    return body if isinstance(body, dict) else None
 
 
 INDEX = TypeAdapter(dict[str, Entry])
@@ -362,17 +356,18 @@ class Generator:
             return None
         try:
             raw = await self._cached(
-                RAW_DIR / cell.klass / f"{cell.id}.{k}.yaml",
+                RAW_DIR / cell.klass / f"{cell.id}.{k}.json",
                 self.luna,
                 write_messages(self.spec, parent, cell, sketch),
                 max_tokens=7000,
+                response_format={"type": "json_object"},
             )
         except CallError:
             self.tally.rejects["call_error"] += 1
             return None
-        body = parse_yaml(raw)
-        if body is None:
-            self.tally.rejects["yaml unparsable"] += 1
+        body = extract_json(raw)
+        if not body:
+            self.tally.rejects["json unparsable"] += 1
             return None
         slug = str(body.get("slug") or sketch.slug)
         taken = slug in self.shipped or (slug in self.index and self.index[slug].cell != cell)
