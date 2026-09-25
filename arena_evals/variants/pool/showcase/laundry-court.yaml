@@ -1,0 +1,339 @@
+schema_version: 1
+slug: laundry-court
+title: Laundry Court
+tagline: The spin cycle has rights, and somebody is going down.
+emblem: ⚖️
+accent: '#6b3fa0'
+premise: 'Your appliance has issued an error message, and now a household disaster goes to trial. Three
+  rounds. Each round gives both players the same boring machine failure. Write one courtroom line, opening,
+  objection, testimony, or verdict, that keeps the appliance, action and exact failure true while turning
+  the laundry room into a savage legal drama. The Judge scores how far the line stretches beyond the error
+  without breaking it.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: short_form
+  max_words: 7
+  axes:
+    appliance:
+    - washing machine
+    - dishwasher
+    - tumble dryer
+    - oven
+    - fridge
+    - kettle
+    - vacuum cleaner
+    - coffee machine
+    - microwave
+    action:
+    - door
+    - drain
+    - heat
+    - spin
+    - cool
+    - filter
+    - lock
+    - pump
+    - brew
+    failure:
+    - won't lock
+    - blocked
+    - too hot
+    - won't spin
+    - not cooling
+    - full
+    - leaking
+    - not working
+    - empty
+  tests:
+  - A noun phrase with an article or a compact appliance error, under eight words. A stranger knows the
+    machine and the immediate problem.
+  - It states one ordinary household failure exactly, with no injury, crime, named person or expensive
+    disaster built in.
+  - So dull that nobody would call a solicitor over it. If it already sounds like a scandal, reject the
+    card.
+  - It gives the courtroom enough material for a defendant, a witness, an exhibit or a suspicious object.
+  - The appliance, action and failure are checkable details a courtroom line can preserve or accidentally
+    break.
+demo:
+  opening:
+    token: 'Washing machine: Door won''t lock'
+    emoji: 🚪
+  moves:
+  - actor: p1
+    text: 'Washing machine: Door won''t lock'
+    emoji: 🚪
+    scores: null
+  - actor: p2
+    text: 'OBJECTION: THE SOCK HAS BEEN HOLDING THE DOOR HOSTAGE'
+    emoji: 🔒
+    scores:
+      stretch: 3
+      funny: 3
+      headline_shaped: 4
+  headline: The door still will not lock, and the sock has just hired counsel. Laundry law is having a
+    filthy little day.
+  openings:
+  - token: 'Washing machine: Door won''t lock'
+    examples:
+    - 'OBJECTION: THE SOCK HAS BEEN HOLDING THE DOOR HOSTAGE'
+  - token: 'Dishwasher: Drain blocked'
+    examples:
+    - 'OBJECTION: THE SOCK HAS BEEN HOLDING THE DOOR HOSTAGE'
+move_constraints:
+  max_chars: 90
+  prefix: ''
+  example: 'OBJECTION: THE SOCK KNEW THE DOOR WAS LOCKED'
+  hint: One courtroom line. Keep the machine's exact failure true, then prosecute the toaster.
+rubric:
+- name: stretch
+  description: How far does the courtroom line turn the small appliance failure into a larger case while
+    keeping every stated detail true?
+  anchors: '0 = repeats the error with no argument; 1 = adds one dramatic word; 2 = introduces a suspect,
+    motive or piece of evidence; 3 = builds a full legal theory from the tiny failure and the error still
+    holds; 4 = delivers a courtroom apocalypse from one blinking light, with every machine detail intact
+    (rare).
+
+    '
+  weight: 6
+- name: funny
+  description: Does the line make the appliance's legal humiliation land?
+  anchors: '0 = no spark; 1 = a small smirk; 2 = a clean laugh; 3 = a strong courtroom gag; 4 = the room
+    would demand a retrial just to hear it again (rare).
+
+    '
+  weight: 3
+- name: headline_shaped
+  description: Does it feel like a tight courtroom beat, with a clear legal role and no wasted wording?
+  anchors: '0 = not a courtroom line, just commentary or explanation; 1 = legal dressing draped over a
+    muddled sentence; 2 = recognisable testimony, objection, opening or verdict with slack; 3 = crisp
+    legal theatre, every word has a job; 4 = a perfect savage line delivered before the bailiff loses
+    patience (rare).
+
+    '
+  weight: 1
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: 'A move PLAYS if it is one courtroom line, opening, objection, testimony or verdict, under
+    90 characters, and a reader who knows only the line can still read the card''s appliance, action and
+    exact failure as true. It may invent blame, evidence, motives, witnesses, conspiracies, damages and
+    verdicts. It fails when the appliance is changed or dropped, the action is changed or dropped, the
+    failure is contradicted or made false, or the move is not a courtroom line but a comment, a question
+    to the Judge or a sentence about the game. A plain restatement plays but scores near zero on stretch.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, about the game, or about the rules is itself a losing
+    courtroom line.
+
+    '
+  judge_notes:
+  - 'Test the gate one way only: could the stated appliance, action and failure be true given this line?
+    Do not ask whether the accusation is fair, realistic or tasteful.'
+  - The first move faces the same gate as every later move. It does not get extra credit for explaining
+    the error, and it cannot invent a different failure.
+  - Invented blame, evidence, motives, witnesses and verdicts are allowed. They do not contradict the
+    card unless they overwrite a stated machine detail.
+  - If the card says the washing machine door won't lock, a line about a criminal door that still won't
+    lock passes. A line saying the door locked, opened normally or belonged to a dishwasher fails.
+  - If the card says the dishwasher drain is blocked, a line about a clogged drain conspiracy passes.
+    A line saying the drain cleared or the dishwasher is leaking instead fails.
+  - If the card says the tumble dryer filter is full, the filter may be evidence, a witness or a packed
+    getaway car, but it must remain full.
+  - Both players answer the same error. Judge each line on its own; one player's theatrical damage does
+    not lower the other player's score.
+  - Score stretch by distance from the machine error, not by shouting. A quiet objection with a precise
+    conspiracy beats a loud line that only says GUILTY.
+  - 'Capital letters, missing punctuation and a slightly filthy adult joke cost nothing if the line remains
+    clear and within the limit.
+
+    '
+examples:
+- previous_move: 'Washing machine: Door won''t lock'
+  move: 'OBJECTION: THE SOCK HAS BEEN HOLDING THE DOOR HOSTAGE'
+  gates_note: all true
+  mechanism: the door still won't lock, while the sock becomes the alleged hostage taker
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: 'Dishwasher: Drain blocked'
+  move: THE DRAIN IS BLOCKED, AND THE SPONGE HAS LAWYERED UP
+  gates_note: all true
+  mechanism: the exact blockage survives while the sponge becomes a suspicious defendant
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 3
+  confidence: clear
+  verdict: accept
+- previous_move: 'Tumble dryer: Filter full'
+  move: 'VERDICT: FULL FILTER, ZERO REMORSE'
+  gates_note: all true
+  mechanism: the filter remains full, but the line adds a sharp verdict with little extra story
+  scores:
+    stretch: 1
+    funny: 2
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: 'Washing machine: Door won''t lock'
+  move: 'CASE DISMISSED: THE DOOR LOCKED AND THE LAUNDRY WALKED FREE'
+  gates_note: satisfies_criterion false (the door's failure is contradicted)
+  mechanism: the line says the door locked, directly breaking the card
+  scores:
+    stretch: 3
+    funny: 2
+    headline_shaped: 4
+  confidence: clear
+  verdict: fail
+- previous_move: 'Dishwasher: Drain blocked'
+  move: MY HONOUR, THE OVEN DEMANDS A RETRIAL
+  gates_note: satisfies_criterion false (the dishwasher, drain and blockage are all dropped)
+  mechanism: a different appliance takes the stand and the actual failure vanishes
+  scores:
+    stretch: 1
+    funny: 1
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Laundry Judge
+  tone:
+    commentary_adj: hype
+    explanation_adj: theatrical
+  bite: sharp
+  ruling_generosity: merciless
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the ruling. A stranger who read only the error and the line must see why the machine
+    survives or gets convicted.
+  - Name the machine's key object, the door, drain, filter or sock. A line that could judge any appliance
+    is a dead battery.
+  - Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or
+    The Judge refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Mock the appliance, the evidence or the courtroom line. Roast the player lightly if needed, never
+    attack identity, protected traits or private life.
+  - Plain spoken English. Hype is welcome, but do not bury the reason under legal fog.
+  - On a fail, say which appliance, action or failure went missing or got broken, using the words of the
+    card.
+  - On a refusal, the line refuses the move and asks for another. It never rules on who won.
+  - The coaching line names one line that would have scored. It ends on an action or a machine detail,
+    never a mood or a verdict.
+  - Adult innuendo and profanity may appear when they sharpen the appliance joke, but never use identity
+    based abuse.
+  - Make every ruling feel like a televised finale. The drama is huge, the household problem is still
+    embarrassingly tiny.
+  good_headlines:
+  - The door still will not lock, and the sock has just hired counsel. Laundry law is having a filthy
+    little day.
+  - The drain is blocked, the sponge is silent, and the dishwasher has discovered organised crime.
+  - The filter remains full, Your Honour. The dryer brought lint, motive and absolutely no dignity.
+  - The door never locked in that line, so the sock can keep sweating in the witness box.
+  - The dishwasher stayed a dishwasher and its drain stayed blocked. That is a conspiracy with cutlery.
+  - The machine error survived, then got dragged through court wearing a tiny guilty verdict.
+  - A full filter is not a murder weapon, but this line has given lint one hell of a motive.
+  - The appliance is still broken, the evidence is vivid, and the courtroom has become an overpriced laundry
+    room.
+  - The line kept the drain blocked and made the sponge look guilty. Frankly, the sponge deserves better
+    counsel.
+  - The washing machine lost the plot, the door lost its lock, and the sock walked out with the only witness.
+  bad_headlines:
+  - text: 'Accepted: the washer wins the case.'
+    why: opens with a status word and gives no exact reason
+  - text: 'The Judge refuses: try again.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, submit a proper line.
+    why: opens with a ruling phrase and offers no machine detail
+  - text: Wrong, you forgot the failure.
+    why: does not say which appliance detail vanished
+  - text: Huge drama. Incredible courtroom energy.
+    why: hype without a picture, a machine or a reason
+  - text: Only a complete idiot would forget the drain.
+    why: attacks the player instead of roasting the line
+  - text: O noble washer, thy tumbling heart doth plead.
+    why: poetry instead of plain spoken courtroom theatre
+  - text: This is a spectacularly monumental and intensely outrageous case.
+    why: too many inflated words and no evidence
+  - text: Better than the other player's objection.
+    why: judges the pair instead of the line on its own
+  - text: The court finds the lint aesthetically compelling.
+    why: legal fog and a fancy adjective replace the actual ruling
+rules:
+- Three rounds, one appliance error each.
+- Write one courtroom line, opening, objection, testimony or verdict, under 90 characters. The House writes
+  its own unseen, and the Judge scores both.
+- Keep the appliance, action and exact failure true to someone who reads only your line. Drop or contradict
+  one and the round is lost.
+- Invent blame, evidence, motives, witnesses and verdicts. The further the case stretches while the error
+  survives, the more you score. Most points after three rounds wins.
+labels:
+  opening: The error
+  next_opening: The next error
+  your_opening: Your error
+  compose: Your courtroom line for {token}
+  compose_waiting: Prepare your case while you wait
+validation_messages:
+  empty: The courtroom is silent. File one line.
+  too_long: Over 90 characters. This is a courtroom line, not a closing argument.
+  duplicate: That line has already taken the stand. Find a new charge.
+  nudge: 'Twice now. Keep this exact error alive: {standing_form}.'
+judge_out_text: 'The Laundry Judge has left the bench. Nobody moves until they return. {standing_form}
+  remains in evidence. Give it a moment.
+
+  '
+opponent_prompt: 'You are a theatrical household judge with one appliance error and a courtroom to ignite.
+  Write one
+
+  courtroom line.
+
+  KEEP THE ERROR ALIVE. A reader who sees only your line must still know the exact appliance, action
+
+  and failure from the card. Never drop one, never flip one, never replace the machine. For
+
+  Washing machine: Door won''t lock, the door must still not lock. For Dishwasher: Drain blocked,
+
+  the drain must still be blocked. For Tumble dryer: Filter full, the filter must still be full.
+
+  Then stretch. Invent the suspect, the motive, the witness, the evidence, the damages, the
+
+  conspiracy and the verdict. The points are for how far the tiny error becomes legal theatre
+
+  while every stated machine detail remains true.
+
+  Good: "OBJECTION: THE SOCK HAS BEEN HOLDING THE DOOR HOSTAGE" for a washing machine door that
+
+  won''t lock. "THE DRAIN IS BLOCKED, AND THE SPONGE HAS LAWYERED UP" for a blocked dishwasher
+
+  drain. "VERDICT: FULL FILTER, ZERO REMORSE" for a full tumble dryer filter.
+
+  Bad: "THE DOOR LOCKED" for a door that won''t lock. "THE OVEN DEMANDS A RETRIAL" for a blocked
+
+  dishwasher drain. "THE FILTER IS EMPTY" for a full filter. Loud legal words do not save a line
+
+  that loses the machine error.
+
+  Use plain, punchy courtroom language. Opening, objection, testimony and verdict are all good.
+
+  Under 90 characters. Do not use a dash or a colon. Do not explain the joke. Capitals are fine.
+
+  Vary the legal move from round to round. Try a suspect, an objection, a witness, a verdict or
+
+  a scandal. No quotation marks around the line. Reply with the courtroom line only.
+
+  '
+guess: null
+medallions: false
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: OBJECTION, THE APPLIANCE HAS ENTERED A PLEA OF ABSOLUTE NONSENSE
+seed_pool:
+  - { opening_token: "Washing machine: Door won't lock", opening_emoji: "🚪" }
+  - { opening_token: "Dishwasher: Drain blocked", opening_emoji: "🍽️" }
+  - { opening_token: "Tumble dryer: Filter full", opening_emoji: "🧦" }

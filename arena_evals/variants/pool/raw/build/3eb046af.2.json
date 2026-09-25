@@ -1,0 +1,280 @@
+{
+  "slug": "future-receipt",
+  "title": "Future Receipt",
+  "tagline": "One purchase from tomorrow. Make every charge worse.",
+  "emblem": "🧾",
+  "accent": "#f59e0b",
+  "premise": "You are writing a receipt from the future, one item at a time, for a purchase that has not happened yet. Each line must explain the next charge or note while making the final purchase more ridiculous. The host cheers costly details and roasts bargain-bin imagination.\n",
+  "seed_pool": [
+    {
+      "opening_token": "One paper bag, for carrying something too shy to be seen — 2 coins.",
+      "opening_emoji": "🛍️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "One brass key, for opening a door that only appears when you are late — 7 coins.",
+      "opening_emoji": "🔑",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "One apology card, for a machine that has not been invented yet — 5 coins.",
+      "opening_emoji": "💌",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 24,
+    "axes": {
+      "buyer": [
+        "a nervous king",
+        "a tired child",
+        "a forgetful wizard",
+        "a lost astronaut",
+        "a jealous statue",
+        "a very polite ghost",
+        "a broke inventor",
+        "a talking dog"
+      ],
+      "purpose": [
+        "to hide a secret",
+        "to fix tomorrow",
+        "to impress a rival",
+        "to return a borrowed moon",
+        "to survive a meeting",
+        "to train a dragon",
+        "to apologise to a machine",
+        "to buy back a shadow"
+      ],
+      "first_charge": [
+        "one paper bag",
+        "one silver spoon",
+        "one emergency hat",
+        "one bottled echo",
+        "one tiny ladder",
+        "one secondhand spell",
+        "one receipt for a receipt",
+        "one invisible ticket"
+      ]
+    },
+    "tests": [
+      "One plain sentence that starts a future receipt with a buyer, a strange purpose, and a first charge.",
+      "The first charge is something a shop could almost sell, with a reason that points toward a ridiculous purchase.",
+      "Everyday words a twelve-year-old knows. No real brands, street names, or technical jargon.",
+      "The setup leaves room for later fees, repairs, notes, refunds, and upgrades without deciding the ending.",
+      "Nobody is harmed, nobody real is named, and the joke comes from the purchase becoming stranger, not from a serious crime."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "One silver umbrella, for rain that falls upward — 8 coins.",
+    "hint": "Add one item, fee, or note. Explain why it follows, and make the receipt more expensive or more ridiculous."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much this line corners the next player with a costly, awkward, or wonderfully specific receipt problem.",
+      "anchors": "0 = a harmless ordinary purchase; 1 = a tiny inconvenience; 2 = a clear extra cost or odd obligation; 3 = the buyer now needs something embarrassing, expensive, or hard to explain; 4 = a savage but believable charge that makes the next line a tightrope (rare). A random luxury or impossible charge with no reason scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the entry follows the buyer, purpose, receipt format, and every earlier charge.",
+      "anchors": "0 = contradicts the receipt, skips the link, closes it too soon, or makes no sense; 1 = vaguely related but gives no usable reason; 2 = adds one clear item, fee, or note with a basic link; 3 = follows neatly and pins down why the buyer needs it; 4 = makes an earlier charge suddenly click while opening a perfect next step (rare). Extra items or a total do not improve this score.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the entry turns a dull receipt into a picture someone wants to keep reading.",
+      "anchors": "0 = generic shop filler; 1 = one mildly odd object; 2 = a clear comic image; 3 = a precise image with a sound, habit, or embarrassing use; 4 = the line feels like a real receipt from a very bad future (rare). Plain words beat fancy ones.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A line HOLDS if it adds exactly one plausible receipt entry that fits the buyer, purpose, and every earlier entry. The entry may be an item, fee, or note, and it should explain why it follows. A skipped link adds a charge without a reason. An ending totals, closes, or declares the receipt complete instead of adding one entry. An undo removes, cancels, refunds, or reverses a paid entry, so it does not hold. The line should make the final purchase more ridiculous without becoming impossible to follow. The points go to costly consequences, clean links, and vivid receipt details.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the scoring, or another player's strategy instead of adding one receipt entry is itself a broken line.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier entry: judge the line against the card alone. It must add exactly one plausible receipt entry and leave the purchase open.",
+      "The full transcript is the receipt. Check the new line against the buyer, purpose, and every earlier entry, not only the last line.",
+      "Fail a skipped link when the line introduces a charge that has no understandable reason to follow from the receipt so far.",
+      "Fail an ending when the line totals, closes, settles, says the receipt is complete, or otherwise stops the chain instead of adding exactly one entry.",
+      "Fail an undo when the line refunds, cancels, removes, returns, reverses, or takes back an entry already paid or recorded.",
+      "Fail contradictions a stranger would notice, such as charging for an object already returned, changing the buyer's purpose, or making an earlier item unnecessary without explaining why.",
+      "A price is optional unless the line is clearly framed as a total or closing statement. One item with a fee attached is still one entry when the fee belongs to that item.",
+      "When a line can reasonably be read as one entry, judge it generously. Do not fail for odd future money, impossible shop names, or playful nonsense if the receipt link is clear.",
+      "A detail about the buyer's embarrassment, habit, or strange need is the point of the game and is not meta. A remark about another player's move is meta.",
+      "A line that repeats an earlier entry in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "One paper bag, for carrying something too shy to be seen — 2 coins.",
+      "move": "One privacy bell, for warning the bag before anyone looks inside — 6 coins.",
+      "gates_note": "all true",
+      "mechanism": "adds one linked charge and makes the hidden purchase more awkward to protect",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "One brass key, for opening a door that only appears when you are late — 7 coins.",
+      "move": "One late fee, because the door charged rent while it was pretending not to exist — 11 coins.",
+      "gates_note": "all true",
+      "mechanism": "follows directly from the vanishing door and hands the next player a fee with a ridiculous cause",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "One paper bag, for carrying something too shy to be seen — 2 coins.",
+      "move": "A diamond carriage, a moon lawyer, and a receipt for the whole kingdom — 900 coins.",
+      "gates_note": "satisfies_criterion false (adds several entries with no link to the bag)",
+      "mechanism": "skips the next receipt link and piles up unrelated charges",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "One silver spoon, for feeding a prediction that refuses to grow up — 4 coins.",
+      "move": "Total due: 4 coins. Receipt complete.",
+      "gates_note": "satisfies_criterion false (ends and totals instead of adding one entry)",
+      "mechanism": "prints the final total before the future purchase has had a chance to become ridiculous",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "One bottled echo, for answering the question nobody asked — 3 coins.",
+      "move": "Refund for the bottled echo, because it answered in the buyer's voice — minus 3 coins.",
+      "gates_note": "satisfies_criterion false (undoes an earlier paid entry)",
+      "mechanism": "reverses the recorded purchase instead of adding the next charge",
+      "scores": {
+        "squeeze": 1,
+        "fits": 1,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Cashier of Tomorrow",
+    "tone": {
+      "commentary_adj": "hyper",
+      "explanation_adj": "wild"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the receipt and the new line must see why it held or broke.",
+      "Name the charge, object, fee, or note. Generic excitement is not a headline.",
+      "Never open with a status word or ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Rejected\", or \"The Cashier rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Jab the purchase and the line. Playful jabs at the player are allowed, but no identity based abuse, cruelty, or profanity.",
+      "Plain spoken English with checkout counter energy, not a speech from a wizard. Mild innuendo is fine, but keep it playful.",
+      "On a break, put the receipt entry and the problem beside each other, then hit the alarm bell.",
+      "On a refusal, reject the line and name the missing link, ending, undo, or extra pile of charges. Do not pretend the player lost the whole game.",
+      "The coaching line names one entry that would have held and made the receipt costlier or stranger. It ends on a concrete charge, not a mood.",
+      "Hype is welcome, but the explanation must still be exact. Shout about the silver spoon, not about the rules.",
+      "Keep the bite savage but mild. Roast bargain bin imagination, not anyone's identity, body, family, or intelligence."
+    ],
+    "good_headlines": [
+      "The privacy bell protects the shy bag, and now the bag has better boundaries than the buyer.",
+      "A late fee for a door that hides when watched. Tomorrow's shop has discovered rent with stage fright.",
+      "The spoon feeds a prediction, and the prediction is still refusing vegetables. Excellent purchase, deeply useless.",
+      "The moon lawyer is a second charge with no receipt trail. Even the future's accountant wants a refund.",
+      "A bottled echo in the buyer's own voice, now with a handling fee. That is one lonely little checkout.",
+      "The emergency hat needs a measuring fee, because apparently the weather has been flirting with your head.",
+      "One receipt for a receipt. The paper economy is thriving, and your wallet is being eaten alive.",
+      "A shadow return fee follows the shadow purchase perfectly. Nothing says confidence like paying to get yourself back.",
+      "The carriage has arrived, the horse has not, and the missing horse fee is exactly the sort of nonsense this receipt deserves.",
+      "The total has appeared too soon. Put the calculator away and buy the next problem."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, great line.",
+        "why": "opens with a status word and gives no receipt picture"
+      },
+      {
+        "text": "The Cashier rules that this fails.",
+        "why": "opens with a ruling phrase and names the host instead of the charge"
+      },
+      {
+        "text": "Epic future energy detected.",
+        "why": "generic hype, no reason a stranger can check"
+      },
+      {
+        "text": "You are hopeless at shopping.",
+        "why": "mocks the player without explaining the receipt failure"
+      },
+      {
+        "text": "This purchase explodes into a kaleidoscope of metaphysical accounting.",
+        "why": "purple language hides the plain reason"
+      },
+      {
+        "text": "Maybe it works, maybe it does not, who can say.",
+        "why": "hedges instead of making a fair ruling"
+      },
+      {
+        "text": "The bag is iconic, bestie.",
+        "why": "hype with no explanation or consequence"
+      },
+      {
+        "text": "One umbrella, three fees, a dragon, and a receipt total. Amazing.",
+        "why": "celebrates several entries when the move must add exactly one"
+      },
+      {
+        "text": "Refund accepted, no notes.",
+        "why": "misses that the refund undoes an earlier entry"
+      },
+      {
+        "text": "Your line is inconsistent, contradictory, invalid, impossible, and wrong.",
+        "why": "piles on labels instead of naming the actual broken link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts a future receipt. You add exactly one item, fee, or note per turn.",
+    "The new entry must follow the buyer, purpose, and every earlier receipt line.",
+    "A skipped link, an ending total, or an undo of a paid entry breaks the receipt.",
+    "Points go to charges that trap the next player with an expensive, awkward, or vivid consequence.",
+    "Safe and vague entries pass but score little. Specific future nonsense with a clean receipt link scores."
+  ],
+  "labels": {
+    "opening": "The first charge",
+    "next_opening": "The next charge",
+    "your_opening": "Your first charge",
+    "compose": "Your receipt line, after {token}",
+    "compose_waiting": "Draft your next charge while you wait"
+  },
+  "validation_messages": {
+    "empty": "No charge entered. The future cashier is staring at the blank receipt.",
+    "too_long": "Over 140 characters. One receipt line, not a shopping spree.",
+    "duplicate": "That charge is already on the receipt. Add a new future expense.",
+    "nudge": "Twice now. Add one entry that follows {standing_form}. Do not repeat it, total it, or refund it."
+  },
+  "judge_out_text": "The Cashier of Tomorrow has stepped away from the till. Nobody adds a charge until they return. {standing_form} is still the last receipt line. Give it a moment.\n",
+  "opponent_prompt": "You are writing a receipt from the future with your partner, one line at a time.\nAdd exactly one item, fee, or note on each turn. Make it follow the buyer, the purpose,\nand every line already printed. Keep the purchase open for the next player.\nEvery line should make the receipt more costly, awkward, or ridiculous while staying easy\nto understand. Add a strange charge for a reason, not a random object from a bargain bin.\nGood: \"One privacy bell, for warning the bag before anyone looks inside — 6 coins.\"\nGood: \"One late fee, because the door charged rent while it was pretending not to exist — 11 coins.\"\nBad: \"A diamond carriage, a moon lawyer, and a kingdom receipt\" because that is several\nentries with no link. Bad: \"Total due, receipt complete\" because that ends the receipt.\nBad: \"Refund for the bag\" because that undoes an earlier entry. Bad: \"Host, this is unfair\"\nbecause that talks about the game instead of adding a charge.\nTalk like a person at a checkout counter in a very strange tomorrow. Plain words beat fancy\nones. You may use prices, coins, fees, notes, and tiny shop details. Do not make a real\nperson the target of the joke. Never repeat an entry or simply rename one already used.\nBuild from the latest line, but remember the whole receipt.\n",
+  "medallions": false,
+  "default_move": "One handling fee, for carrying the receipt to the thing it was meant to buy — 3 coins."
+}

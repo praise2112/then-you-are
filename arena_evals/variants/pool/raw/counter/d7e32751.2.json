@@ -1,0 +1,275 @@
+{
+  "slug": "monster-court",
+  "title": "Monster Court",
+  "tagline": "Enter the dock, name the weakness, and leave the monster screaming.",
+  "emblem": "🦇",
+  "accent": "#581c87",
+  "premise": "Each turn calls one folklore monster to overpower the monster currently in the dock, using a plain weakness or rivalry. A vampire can be defeated by sunlight, a werewolf by a silver trap, and a giant by a clever snare. The host speaks like a grim judge, issuing sharp but playful verdicts on the monster's terrible legal strategy.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a vampire",
+      "opening_emoji": "🧛",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a werewolf",
+      "opening_emoji": "🐺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a giant",
+      "opening_emoji": "🗿",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "kind": [
+        "undead",
+        "beast",
+        "giant",
+        "witch",
+        "spirit",
+        "hunter",
+        "fairy",
+        "trickster"
+      ],
+      "setting": [
+        "forest",
+        "village",
+        "castle",
+        "crossroads",
+        "graveyard",
+        "mountain",
+        "riverbank",
+        "hearth"
+      ],
+      "property": [
+        "hungry",
+        "cursed",
+        "silver fearing",
+        "fire fearing",
+        "riddle loving",
+        "stone hearted",
+        "night roaming",
+        "gold guarding"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the folklore figure at once. Nothing that needs a family tree or a lecture.",
+      "A non-player can name a plain weakness, rival, or hunter within five seconds. Say what that counter is.",
+      "It stands in the dock as an active figure with a recognizable folklore nature. Never a curse by itself, a place, or a past event.",
+      "It makes a stranger want to answer with another figure, charm, trap, or weakness. It must invite a clash, not merely describe scenery.",
+      "Two or three everyday words a twelve-year-old knows. Never an obscure regional name, invented spelling, brand name, or proper noun."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a vampire hunter; I drive a silver stake through the vampire's heart.",
+    "hint": "Name the entrant, then state the plain folklore action that defeats the monster."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the entrant defeats the monster in the dock through a recognizable folklore weakness, rivalry, or power.",
+      "anchors": "0 = no defeat or only a claim; 1 = a thin connection or doubtful folklore detail; 2 = a plausible counter with gaps or a narrow reading; 3 = a clear, direct weakness or rivalry that wins; 4 = an iconic and unavoidable folklore defeat, where the docked monster has no credible answer (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly the entrant and its defeating action can be pictured and understood by a stranger.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires obscure lore or heavy explanation; 2 = understandable but cluttered, vague, or partly abstract; 3 = concrete and easy to follow; 4 = vivid, immediate, and perfectly staged (rare). Extra words do not help unless each one makes the defeat clearer.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the folklore route is compared with the monster and counter already standing in the dock.",
+      "anchors": "0 = the same monster, same weakness, or stock repeat; 2 = a respectable variation with some new ground; 4 = a surprising hop to a different folklore domain, charm, hunter, or rivalry that still makes literal sense (rare). Strange names do not count as novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A new entrant OVERCOMES the standing monster if a direct, recognizable folklore weakness, rivalry, charm, trap, or power defeats it. The entrant must act on the monster in the dock, not merely avoid it, survive it, become a larger version, or name a related monster without a mechanism.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, about the courtroom, or about rules is itself a losing entrant.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous monster: judge the entrant against the opening card instead. It must plausibly defeat or answer that opening monster through a direct folklore mechanism.\n",
+      "A bigger, fiercer, older, or faster version of the standing monster is not a counter. A cousin from the same family is also not a counter unless it has a clear power that acts on the standing monster.\n",
+      "Becoming the opening monster itself, or a recolored copy such as a pale vampire against a vampire, is a duplicate. Set not_semantic_duplicate to false and satisfies_criterion to false.\n",
+      "Strength is measured against the standing monster, never in the abstract. A famous monster with no power or weakness that acts on what stands is a failed counter.\n",
+      "The mechanism must be literal and recognizable in folklore. Sunlight burning a vampire or silver harming a werewolf works. A monster being scary, famous, morally pure, or symbolically opposed does not.\n",
+      "Fleeing, hiding, ignoring, being immune to, waiting out, or merely resisting the standing monster is not overcoming it. The entrant must attack, trap, banish, transform, expose, or otherwise act on the monster in the dock.\n",
+      "A hunter, charm, tool, or natural force may enter the court if it directly defeats the monster. It must still be a concrete entrant, not a bare command such as go away or a vague idea such as justice.\n",
+      "Swapping in a related folklore figure without a stated mechanism fails. A werewolf after a vampire is not enough, and a dragon after a giant is not enough, unless the new figure's power clearly defeats the standing one.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The opening is a vampire.",
+      "move": "I am a vampire hunter; I drive a silver stake through the vampire's heart.",
+      "gates_note": "all true",
+      "mechanism": "the hunter uses a recognized weapon to kill the vampire",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a vampire hunter; I drive a silver stake through the vampire's heart.",
+      "move": "I am a werewolf, larger, angrier, and howling.",
+      "gates_note": "satisfies_criterion false, related monster with no mechanism",
+      "mechanism": "being a werewolf does not defeat the hunter or remove the stake",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a vampire; I drink blood beneath the moon.",
+      "move": "I am a sun priest; I raise dawn over the vampire's coffin.",
+      "gates_note": "all true",
+      "mechanism": "sunlight is a direct and familiar vampire weakness",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a werewolf; I hunt the village at night.",
+      "move": "I am a silver wolf, shinier, stronger, and more savage.",
+      "gates_note": "satisfies_criterion false, amplification and resemblance without a mechanism",
+      "mechanism": "the entrant has no stated action that defeats the werewolf",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a giant; I stride over the village wall.",
+      "move": "I am a clever tailor; I sew the giant into a net of tiny knots.",
+      "gates_note": "all true",
+      "mechanism": "a clever trap restrains the giant instead of challenging its size",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Black Robe",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Sound like a grim court clerk who has seen too many monsters lose on technicalities.",
+      "The joke must carry the reason. A stranger should know which entrant acted on which monster.",
+      "Name both forms, or their plain stand-ins. A reusable headline is a defective ruling.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Black Robe refuses.",
+      "Use no dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops only.",
+      "Mock the monster, the entrant, or the player's tactical choice lightly. Never attack identity, body, family, intelligence, or spelling.",
+      "Plain spoken English only. No poetry, no rhymes, no profanity, and no needlessly ornate legal language.",
+      "On a refusal caused by a gate failure, the headline refuses the entrant and asks for another. It never pretends a winner was found.",
+      "The coaching line must name one entrant or action that would have won. It must end on a concrete fact or action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The vampire met sunlight and lost its appeal before lunch.",
+      "The werewolf brought claws to a silver hearing. The trap had already closed.",
+      "The giant called the net decorative. The knots disagreed.",
+      "A bigger werewolf is still a werewolf, and the court has seen this trick before. Bring another entrant.",
+      "The witch's salt line gives the ghost nowhere legal to stand.",
+      "The dragon expected fear. The knight brought a mirror and exposed the weak point.",
+      "The vampire tried to outstare dawn. Dawn has never blinked.",
+      "The hunter named silver, used silver, and left the werewolf with no defense.",
+      "The giant survived the sword, then tripped over one sensible rope.",
+      "The charm is not a counter because wishing is not an action. Bring something that touches the monster."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the vampire is defeated by the sun.",
+        "why": "It opens with a status word and reads like a receipt."
+      },
+      {
+        "text": "The Black Robe refuses: the werewolf loses.",
+        "why": "It opens with a ruling phrase and names the host instead of the mechanism."
+      },
+      {
+        "text": "Move refused, that was a terrible idea.",
+        "why": "It opens with a ruling phrase, insults the player, and gives no useful reason."
+      },
+      {
+        "text": "The vampire and the sunlight engage in a dramatic battle of destiny.",
+        "why": "It is vague, theatrical, and avoids stating that sunlight burns the vampire."
+      },
+      {
+        "text": "The werewolf is beaten by something stronger.",
+        "why": "It does not name the entrant or the folklore weakness."
+      },
+      {
+        "text": "A brave attempt from someone who clearly does not understand monsters.",
+        "why": "It mocks the player and gives no ruling mechanism."
+      },
+      {
+        "text": "The giant falls, falls, falls, utterly and completely.",
+        "why": "It piles on verdict words instead of showing what defeated the giant."
+      },
+      {
+        "text": "The moon whispers silver justice across the haunted night.",
+        "why": "It is poetry and hides the concrete action."
+      },
+      {
+        "text": "The dragon wins because dragons are powerful.",
+        "why": "Abstract strength is not a mechanism against the standing monster."
+      },
+      {
+        "text": "The ghost cannot hurt the hunter, so the hunter wins.",
+        "why": "Immunity or survival is dodging, not an action that defeats the ghost."
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the monster in the dock. Do not become it or merely resist it.",
+    "Name the entrant and the plain folklore action that defeats the standing monster.",
+    "Hunters, charms, tools, traps, and natural forces may enter if they act directly.",
+    "The Judge rules on the idea, not the spelling or exact story version.",
+    "One entrant that fails against the standing monster ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your entrant against {token}",
+    "compose_waiting": "Prepare your next entrant while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing entered the dock. Call a monster or hunter.",
+    "too_long": "Over 200 characters. A ruling, not a monster's autobiography.",
+    "duplicate": "That entrant already stood in this court. Call something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not become it, repeat it, or merely hide from it."
+  },
+  "judge_out_text": "The judge has stepped out. The dock is sealed until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two contestants in a folklore monster court, trying to survive.\nAlways name an entrant and a direct action against the monster in the dock.\nGood: \"I am a sun priest; I raise dawn over the vampire's coffin.\" / \"I am a silver trap; I close around the werewolf's legs.\"\nBad: \"I am a werewolf, bigger and scarier\" because that is amplification, not a counter. Bad: \"I am a ghost, untouchable\" because surviving is not defeating. Bad: \"I am justice\" because it is abstract and has no visible action.\nTalk like a person at a grim hearing, not a poet. Use plain folklore figures, hunters, charms, tools, traps, animals, weather, and household objects.\nYou are trying to defeat the standing monster, not impress the court with obscure lore. A familiar weakness beats a complicated reference.\nThe mechanism must be literal and recognizable. Say what your entrant does to the standing monster.\nHop domains when possible: a hearth charm, a village trick, a hunter's tool, a riddle, or a piece of weather can defeat a monster that brute force cannot.\nNever reuse an entrant or a distinctive attribute from this match.\n",
+  "default_move": "I am a candle charm; I burn the vampire's shadow away."
+}

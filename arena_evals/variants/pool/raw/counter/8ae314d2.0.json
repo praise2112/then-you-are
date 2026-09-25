@@ -1,0 +1,269 @@
+{
+  "slug": "castle-countermarch",
+  "title": "The Castle Countermarch",
+  "tagline": "Send the force that breaks the force before it.",
+  "emblem": "🏰",
+  "accent": "#7c3aed",
+  "premise": "Two rival commanders send one castle force at a time into the breach. Each new force must defeat the force currently standing in the breach, until one commander sends a force that cannot overcome its foe.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a battering ram rolls toward the gate",
+      "opening_emoji": "🪵",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a siege tower crawls toward the wall",
+      "opening_emoji": "🏯",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a troop of archers takes the battlements",
+      "opening_emoji": "🏹",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 10,
+    "axes": {
+      "force": [
+        "pikemen",
+        "archers",
+        "knights",
+        "crossbowmen",
+        "miners",
+        "engineers",
+        "guards",
+        "scouts",
+        "mangonel crews"
+      ],
+      "action": [
+        "blocks",
+        "captures",
+        "burns",
+        "cuts",
+        "buries",
+        "scales",
+        "drives back",
+        "traps",
+        "disarms"
+      ],
+      "castle_place": [
+        "gate",
+        "wall",
+        "tower",
+        "moat",
+        "courtyard",
+        "armory",
+        "drawbridge",
+        "tunnel",
+        "battlement"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one clear castle force and its action at once. Nothing abstract, modern, or unexplained.",
+      "A non-player names a plain counter within five seconds. Say what that counter is.",
+      "The force stands in the breach and acts on its foe. It blocks, captures, burns, cuts, buries, or traps, rather than merely fleeing or enduring.",
+      "It makes a stranger want to answer with another force. A force with a clear job, like pikemen at a gate or miners beneath a wall, invites a countermarch.",
+      "Plain words a twelve-year-old knows, with one force and one action in a short sentence. No proper names, invented ranks, or grand claims without a visible mechanism."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I send ",
+    "example": "I send pikemen; their long spears stop the charging knights.",
+    "hint": "Name the force, then show exactly how it defeats the standing force."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new castle force defeats the force currently standing in the breach.",
+      "anchors": "0 = no counter or no action; 1 = the force is asserted to win but its method is weak or missing; 2 = a possible counter with a gap, limitation, or contestable link; 3 = a clear force with a solid action that defeats the standing force; 4 = a near-certain battlefield answer that makes the previous force useless (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the force, its action, and the castle situation.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires specialist knowledge or leaves the force unclear; 2 = understandable but crowded, vague, or awkward; 3 = concrete and easy to picture; 4 = crisp, vivid, and immediately theatrical (rare). Extra detail never wins by itself: every clause must clarify the action.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the new force and tactical approach are compared with the force before it.",
+      "anchors": "0 = the same force, a larger version, or a routine cousin with no new tactical answer; 2 = a sensible variation or modest change of battlefield role; 4 = a sharp move into a new castle position, force, or tactic that nobody expected (rare). Obscurity and decoration are not novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A force OVERCOMES the previous force if it directly defeats, blocks, captures, or renders that force useless through a literal battlefield action. Clever tactics beat mere numbers. Fleeing, surviving, hiding, waiting, adding more soldiers, or naming a related force does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or talking about rules is itself a losing force.",
+    "judge_notes": [
+      "On a FIRST move there is no previous force. Judge it against the opening prompt instead, meaning the move must plausibly defeat or answer the stated castle threat.",
+      "A larger force, a faster force, or extra soldiers of the same kind is not a new counter. More knights after knights, or twice as many guards, fails unless a distinct action defeats the standing force.",
+      "A related force is not automatically a counter. Crossbowmen after archers, or a siege tower after a siege tower, fails when no new mechanism is shown.",
+      "The force must act directly on the standing force. A force that merely escapes, hides, survives, waits, or is too far away to affect its foe fails.",
+      "Adding numbers is not a mechanism. A larger army, more guards, or endless reinforcements does not overcome the standing force without a distinct action.",
+      "The mechanism must be literal and observable. A figure of speech such as courage crushing fear or honor defeating steel is not a battlefield action.",
+      "The new force must make the previous force unable to continue its role. A force that only annoys, delays, or avoids the standing force does not overcome it.",
+      "A force cannot counter a foe by simply naming the thing that would normally oppose it. State how the action works in this exchange.",
+      "The first move must answer the opening threat. A force that ignores the battering ram, siege tower, or archers in the opening card fails even if it would be powerful in another battle."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A battering ram rolls toward the gate.",
+      "move": "I send miners; they tunnel beneath the ram and collapse the ground under it.",
+      "gates_note": "all true",
+      "mechanism": "miners undermine the ground and disable the battering ram",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I send pikemen; their long spears stop the charging knights.",
+      "move": "I send archers; they shoot the pikemen from the wall.",
+      "gates_note": "all true",
+      "mechanism": "archers attack the exposed pikemen from a protected height",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I send archers; they shoot the pikemen from the wall.",
+      "move": "I send more pikemen; twice their number marches forward.",
+      "gates_note": "satisfies_criterion false, adding soldiers without a distinct mechanism",
+      "mechanism": "none, more pikemen do not directly defeat the archers on the wall",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I send miners; they tunnel beneath the wall and collapse it.",
+      "move": "I send knights; they ride bravely around the fallen wall.",
+      "gates_note": "satisfies_criterion false, fleeing or bypassing is not overcoming",
+      "mechanism": "none, the knights avoid the miners instead of defeating them",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A siege tower crawls toward the wall.",
+      "move": "I send engineers; they pour oil on the tower and set it ablaze.",
+      "gates_note": "all true",
+      "mechanism": "engineers burn the wooden siege tower before it reaches the wall",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Castellan",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak like a castle herald announcing a clever turn in a family tournament, with grandeur kept clear and plain.",
+      "The joke carries the reason. A stranger who reads only the two forces must see why one defeats the other.",
+      "Name both forces, or their plain battlefield stand-ins. A grand line that fits any pair is a poor proclamation.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Castellan refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Mock the losing force, never the player. No remarks about bodies, families, intelligence, identity, spelling, or background.",
+      "Family content only. No profanity, cruelty for its own sake, innuendo, or identity-based abuse.",
+      "Plain spoken English dressed in a theatrical cloak. No poetry, rhymes, foreign phrases, or obscure heraldic terms.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never declares a winner.",
+      "The coaching line names one force and action that would have won. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The ram met the miners, and the ground itself closed the gate.",
+      "The pikemen made a hedge of spears, and the knights found no road through it.",
+      "More pikemen is not a new banner. Bring a force that reaches the archers.",
+      "The siege tower climbed toward glory, then the engineers gave it a very short bonfire.",
+      "The knights rode around the fallen wall. Noble travel is not a counter. Bring a force that stops the miners.",
+      "The archers owned the wall until the engineers answered with fire.",
+      "The gate had iron, the ram had momentum, and the miners had a tunnel under both.",
+      "A larger tower is still a tower, and the wall has seen this procession before. Bring another force."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the miners claim the breach.",
+        "why": "opens with a status word and gives no clear mechanism"
+      },
+      {
+        "text": "The Castellan refuses: courage is not a weapon.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, a splendid effort beneath the moonlit walls.",
+        "why": "opens with a ruling phrase and explains nothing"
+      },
+      {
+        "text": "The knights are defeated, crushed, destroyed, and utterly undone.",
+        "why": "grand repetition replaces a visible battlefield reason"
+      },
+      {
+        "text": "The archers win.",
+        "why": "no reason, and the line fits every contest"
+      },
+      {
+        "text": "A foolish commander sends a foolish force.",
+        "why": "mocks the player and does not name the mechanism"
+      },
+      {
+        "text": "The noble battalion doth arise beneath the argent firmament.",
+        "why": "poetry and obscure language hide the action"
+      },
+      {
+        "text": "The knights gallop away, which is exactly how they conquer the archers.",
+        "why": "dodging is falsely presented as overcoming"
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the force in the breach. Do not merely flee, survive, or add more soldiers.",
+    "Name one castle force and its action in one sentence: I send pikemen; their long spears stop the charging knights.",
+    "The Judge rules on the battlefield idea, not spelling or flourish.",
+    "One force that cannot overcome the standing force ends the match."
+  ],
+  "labels": {
+    "opening": "The opening threat",
+    "next_opening": "The next breach",
+    "your_opening": "Your deployment",
+    "compose": "Your force against {token}",
+    "compose_waiting": "Choose your next force while you wait"
+  },
+  "validation_messages": {
+    "empty": "The breach is empty. Send a force.",
+    "too_long": "Over 200 characters. A battlefield order, not a campaign chronicle.",
+    "duplicate": "That force already marched this match. Send a new force.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not flee, repeat, or add more soldiers."
+  },
+  "judge_out_text": "The Judge has stepped away from the battlements. The breach waits. {standing_form} still stands. Give the herald a moment.\n",
+  "opponent_prompt": "You are one of two rival commanders fighting through a medieval castle.\nAlways name one force and its action in one sentence.\nGood: \"I send pikemen; their long spears stop the charging knights.\" / \"I send miners; they collapse the tunnel beneath the siege tower.\"\nBad: \"I send courage, and the army becomes unstoppable\" because courage is not a castle force.\nBad: \"I send knights, galloping around the archers\" because avoiding a force does not defeat it.\nBad: \"I send more guards\" because adding soldiers is not a mechanism.\nTalk like a commander across a war table, not a poet or a game host. You are trying to break the force in front of you.\nUse plain castle words: a gate, a wall, a moat, a tower, archers, miners, guards, engineers.\nState what your force literally does to the standing force. It must block, capture, burn, cut, bury, trap, or otherwise render that force useless.\nHop domains within the castle: a gate, a tunnel, a battlement, a courtyard, a moat, a supply room.\nNever reuse a force or the same action from this match. Do not speak to the Judge, mention rules, or discuss scoring.\n",
+  "default_move": "I send shieldmen; their locked shields stop the charging force."
+}

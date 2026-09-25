@@ -1,0 +1,293 @@
+{
+  "slug": "ceremony-chain",
+  "title": "The Ceremony That Almost Worked",
+  "tagline": "One hitch at the altar. One fix that makes the next hitch inevitable.",
+  "emblem": "💍",
+  "accent": "#be185d",
+  "premise": "A wedding day begins with one small hitch, and the host turns it into a growing chain of fixes. Take turns adding the next thing someone does to keep the ceremony moving; make it clever, costly, and wonderfully overconfident.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The music starts, but the groom is still outside.",
+      "opening_emoji": "🎻",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The bride reaches the altar, but the ring is still in the taxi.",
+      "opening_emoji": "💍",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The registrar opens the book, but the couple's names are spelled wrong.",
+      "opening_emoji": "📖",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "ceremony_stage": [
+        "the music begins",
+        "the guests sit down",
+        "the bride arrives",
+        "the groom arrives",
+        "the vows begin",
+        "the rings are brought out",
+        "the registrar opens the book",
+        "the photographs start",
+        "the cake is carried in"
+      ],
+      "first_hitch": [
+        "the groom is missing",
+        "the ring is elsewhere",
+        "a name is wrong",
+        "the music stops",
+        "the flowers fall apart",
+        "the vows are unreadable",
+        "the cake is upside down",
+        "the doors will not open",
+        "the photographer is trapped outside"
+      ],
+      "wedding_place": [
+        "a small church",
+        "a town hall",
+        "a garden marquee",
+        "a hotel ballroom",
+        "a village hall",
+        "a beach shelter",
+        "a country house",
+        "a registry office",
+        "a glasshouse"
+      ]
+    },
+    "tests": [
+      "One short sentence with a clear wedding moment and one immediate problem.",
+      "The problem is harmless and comic, with no injury, cruelty, real person, or serious accusation.",
+      "A stranger can see who needs to act, what is wrong, and where the ceremony is happening.",
+      "The hitch is small enough for an immediate fix, but awkward enough to start a chain of new problems.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or private wedding details, the players supply those."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The best man borrows the choir sheet, so the pianist plays from the back while the bride holds the door open.",
+    "hint": "One immediate fix and its result. Keep the ceremony moving, and leave the next player a fresh problem."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much trouble, pride, blame, or awkward responsibility this fix puts on the other player while remaining usable.",
+      "anchors": "0 = fixes nothing or burdens nobody; 1 = a mild inconvenience; 2 = someone must carry an embarrassing task or accept a visible mistake; 3 = the other player inherits a specific public problem, a blameworthy choice, or a promise that may fail; 4 = the fix is plausible but leaves the other player balancing a spectacularly awkward consequence (rare). A move that burdens only its author, or invents impossible drama, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How precisely the move continues the existing chain without skipping, resetting, or contradicting what has already happened.",
+      "anchors": "0 = skips the needed link, contradicts a fact, undoes a fix, or ends the ceremony; 1 = vaguely related but leaves the cause or result unclear; 2 = adds a workable next step with one checkable detail; 3 = clearly shows the immediate fix and its result; 4 = makes the new result feel inevitable and sets up the next hitch beautifully (rare). Length and decoration never win here.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How vividly the move makes the wedding mishap visible, while staying plain and family friendly.",
+      "anchors": "0 = generic action with no picture; 1 = one plain wedding detail; 2 = a clear object, person, or public reaction; 3 = a scene a stranger can see and hear; 4 = a precise little disaster that feels instantly performable (rare). Fancy language does not count as colour.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly the next cause and fix step, fits every named person, object, time, and problem, and does not skip the needed link, declare the ceremony finished, or undo an earlier fix. The move must name an immediate action and its result, not merely announce another mishap. A move BREAKS the chain if it jumps past the consequence of the current problem, contradicts an earlier fact, removes a problem that was not fixed, undoes an earlier fix, ends the ceremony, or changes the wedding into a different story. The points go to what the move does to the other player: trouble, pride, blame, public awkwardness, or a responsibility they must now carry. A smooth move that costs nobody anything scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, or the partner's play instead of adding the next fix is itself a broken chain.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier move: judge it against the card alone. It must address the stated hitch with one immediate fix and show what that fix causes.",
+      "The full transcript is the chain. Check the new move against every earlier person, object, problem, time, and result, not only the last move.",
+      "Break only when the move clearly skips the needed link, contradicts a named fact, declares the ceremony finished, or undoes an earlier fix. When a harmless reading is possible, the move holds.",
+      "A move must contain both an immediate action and its result. A new problem without a fix, or a fix with no consequence, is not the next chain link.",
+      "The players may add helpers, objects, delays, and public reactions if these fit the wedding already described. A new person must not erase the responsibility of someone already named.",
+      "Once a problem has been fixed, it remains fixed unless the transcript plainly says the fix failed. Do not treat a later complication as an undo unless it directly reverses the earlier result.",
+      "The ceremony may be kept moving, but it must not be declared complete. A final kiss, signing, departure, or statement that everything worked is a break.",
+      "A detail about what the other player must carry, explain, fetch, apologise for, or perform is the point of the game and never a meta move. A remark about the partner's play is a meta move.",
+      "A move that repeats the same fix and result in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The music starts, but the groom is still outside.",
+      "move": "The best man waves through the window, so the groom climbs in through the side door and knocks over the welcome sign.",
+      "gates_note": "all true",
+      "mechanism": "fixes the missing groom immediately and leaves him responsible for a public new mess",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The bride reaches the altar, but the ring is still in the taxi.",
+      "move": "The maid of honour calls the driver, so he turns back and parks across the photographs while everyone waits.",
+      "gates_note": "all true",
+      "mechanism": "retrieves the ring through a direct action and makes the maid of honour own the delay and blocked pictures",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The registrar opens the book, but the couple's names are spelled wrong.",
+      "move": "The bride writes the names correctly on a napkin, so the registrar copies them while the groom holds the book flat with both hands.",
+      "gates_note": "all true",
+      "mechanism": "makes a practical correction and gives the groom a visible, awkward job that keeps the book open",
+      "scores": {
+        "squeeze": 2,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The best man waves through the window, so the groom climbs in through the side door and knocks over the welcome sign.",
+      "move": "The bride kisses him, so the ceremony is finally over and everyone goes to the cake.",
+      "gates_note": "satisfies_criterion false (declares the ceremony finished and skips the welcome sign)",
+      "mechanism": "ends the chain and abandons the consequence that still needs handling",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The maid of honour calls the driver, so he turns back and parks across the photographs while everyone waits.",
+      "move": "The ring is already on the bride's finger, so the photographer starts the first dance.",
+      "gates_note": "satisfies_criterion false (contradicts the unresolved taxi problem and skips the needed link)",
+      "mechanism": "pretends the missing ring has been solved and jumps past the taxi blocking the photographs",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The bride writes the names correctly on a napkin, so the registrar copies them while the groom holds the book flat with both hands.",
+      "move": "The groom lets go, so the book falls open to the wrong page and the spelling problem returns.",
+      "gates_note": "satisfies_criterion false (undoes an earlier fix without completing the current result)",
+      "mechanism": "reverses the corrected book and brings back a problem the chain had already fixed",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Master of Ceremonies",
+    "tone": {
+      "commentary_adj": "theatrical",
+      "explanation_adj": "grandiose"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who reads only the chain and the new move must see why it held or broke.",
+      "Name the object, person, hitch, or fix. A grand announcement that could fit any wedding is a poor announcement.",
+      "Never open with a status word or ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", \"The Master rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the move, never the player. No jokes about identity, bodies, family, intelligence, spelling, or background.",
+      "Use plain spoken English with the manner of a theatrical announcer. No profanity, innuendo, cruelty, or identity based abuse.",
+      "On a break, place the skipped link, contradiction, finished ceremony, or undone fix beside the move that caused it.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not rule on who won.",
+      "The coaching line names one immediate fix and one consequence that would have held and burdened the other player. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "The groom enters through a window and murders the welcome sign. The ceremony advances, under siege.",
+      "The taxi returns, the photographs lose their parking space, and the ring approaches like a royal envoy.",
+      "A napkin saves the names while the groom pins down the book. Romance now depends on stationery.",
+      "The pianist has the wrong page, so the bride conducts with a flower. The aisle marches on.",
+      "The veil catches the door handle, and the maid of honour inherits the entire doorway.",
+      "The cake arrives upside down, so the ushers carry it flat. A noble rescue, with crumbs in command.",
+      "The best man borrows a shoe for the ring box. The missing ring is found, and his dignity is not.",
+      "The registrar gets a new page, while the groom holds the old mistake like a historical document.",
+      "You sent the bride for the ring, but the taxi is still blocking the photographs. The grand chain has lost its link.",
+      "The kiss ends the wedding before the fallen sign is dealt with. Curtain call denied."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds, splendidly.",
+        "why": "opens with a status word and gives no theatrical picture"
+      },
+      {
+        "text": "The Grand Master rules that the move is invalid.",
+        "why": "opens with a ruling phrase and names the host instead of the reason"
+      },
+      {
+        "text": "A disaster of epic proportions unfolds.",
+        "why": "grand but vague, with no named wedding detail"
+      },
+      {
+        "text": "What a foolish player.",
+        "why": "mocks the player rather than the move"
+      },
+      {
+        "text": "The wedding blooms beneath the silver moon of destiny.",
+        "why": "poetry replaces the plain cause and fix"
+      },
+      {
+        "text": "Perhaps it works, perhaps it does not, depending on one's interpretation.",
+        "why": "hedges instead of giving a fair ruling"
+      },
+      {
+        "text": "Accepted, and what a charming little fix.",
+        "why": "starts with a status word and adds no reason"
+      },
+      {
+        "text": "The ceremony is over, so everybody wins.",
+        "why": "declares completion and ignores the chain"
+      },
+      {
+        "text": "Guilty.",
+        "why": "gives no named action, consequence, or ruling reason"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible and incorrect.",
+        "why": "uses several grand labels instead of showing the broken link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card begins with one wedding hitch. Take turns adding the next fix and what that fix causes.",
+    "One immediate cause and fix per turn. The move must continue the chain already on the page.",
+    "Do not skip the needed link, contradict a named fact, undo a fix, or declare the ceremony finished.",
+    "Points go to moves that burden the other player with trouble, pride, blame, or a public responsibility.",
+    "A safe and vague move may hold but scores little. A precise fix with an awkward result scores."
+  ],
+  "labels": {
+    "opening": "The first hitch",
+    "next_opening": "The next wedding hitch",
+    "your_opening": "Your wedding hitch",
+    "compose": "Your next fix, after {token}",
+    "compose_waiting": "Plan your next fix while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing added. The wedding party awaits its first rescue.",
+    "too_long": "Over 140 characters. One fix and its result, not a wedding speech.",
+    "duplicate": "That fix is already in the chain. Add a new consequence.",
+    "nudge": "Twice now. Add the next fix after {standing_form}. Do not repeat it, skip it, or declare the ceremony finished."
+  },
+  "judge_out_text": "The Grand Master of Ceremonies has stepped away. No one moves the wedding forward until they return. {standing_form} remains the last link. Give it a moment.\n",
+  "opponent_prompt": "You are one of two people trying to keep a wedding ceremony moving while the Grand Master of Ceremonies watches.\nOne move per turn, one or two plain sentences.\nYour move must name one immediate fix and its result. Continue directly from the latest problem. Do not skip the needed link, contradict a named person or object, undo an earlier fix, or declare the ceremony finished.\nMake each fix cost your partner something while staying believable. Give them a public job, a blameworthy choice, a borrowed object, a promise to explain, or a responsibility that looks worse as the guests watch. Keep the wedding harmless and family friendly.\nGood: \"The best man waves through the window, so the groom climbs in through the side door and knocks over the welcome sign.\" / \"The maid of honour calls the driver, so he returns with the ring and blocks the photographer's only clear view.\"\nBad: \"The groom arrives and everything is fine\" because it skips the fix and ends the chain. Bad: \"The ceremony is over\" because the ceremony must keep moving. Bad: \"The ring was never missing\" because it undoes the opening hitch. Bad: \"Grand Master, that move is unfair\" because it talks about the game instead of playing it.\nTalk like a person in a busy wedding hall, not a novelist. Name common things such as a shoe, a napkin, a chair, a flower, a taxi, a door, or a cake. Build on the latest result and do not start a separate story.\nNever repeat a fix and result already used this match. Keep the next problem visible, and leave your partner a consequence to carry.\n",
+  "medallions": false,
+  "default_move": "The nearest helper makes a quick fix, so the ceremony continues with one more awkward task for someone to explain."
+}

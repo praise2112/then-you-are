@@ -1,0 +1,263 @@
+{
+  "slug": "wrong-trailer",
+  "title": "Wrong Trailer",
+  "tagline": "Pitch the film. Respect the fact. Blame the noun.",
+  "emblem": "🎬",
+  "accent": "#c56b4f",
+  "premise": "Three rounds. Each round gives both players one everyday noun and a small event with a hidden trailer fact, such as its setting, audience, or practical problem. Write a film title and tagline that stretch the noun without contradicting the fact. The Judge scores each pitch, then each player calls which pitch respected the hidden trailer. The fact is revealed after the call.\n",
+  "seed_pool": [
+    {
+      "opening_token": "ladder",
+      "opening_emoji": "🪜",
+      "detail": "a rooftop film night for an audience that hates heights",
+      "hidden": "The event is held on a low indoor ground floor because the audience is afraid of heights."
+    },
+    {
+      "opening_token": "teapot",
+      "opening_emoji": "🫖",
+      "detail": "a midnight screening in a room where no hot drinks are allowed",
+      "hidden": "The venue has a strict no liquids rule because its projector equipment is exposed and easily damaged."
+    },
+    {
+      "opening_token": "umbrella",
+      "opening_emoji": "☂️",
+      "detail": "a sunny outdoor matinee for children who must stay seated",
+      "hidden": "The event is in a fenced courtyard during a heatwave, and the children cannot leave their marked seats."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 14,
+    "axes": {
+      "setting": [
+        "rooftop",
+        "basement",
+        "courtyard",
+        "train platform",
+        "school hall",
+        "laundrette",
+        "museum",
+        "car park"
+      ],
+      "audience": [
+        "children",
+        "insomniacs",
+        "tourists",
+        "retirees",
+        "hikers",
+        "office workers",
+        "people afraid of heights",
+        "people with strict allergies"
+      ],
+      "problem": [
+        "no liquids allowed",
+        "everyone must remain seated",
+        "the lights cannot be dimmed",
+        "the sound must stay quiet",
+        "rain cannot be relied on",
+        "the doors cannot be locked",
+        "the screen is unusually small",
+        "the event must end before sunset"
+      ]
+    },
+    "tests": [
+      "The event setting is clear from the public line.",
+      "The audience or practical problem creates a checkable constraint.",
+      "The hidden fact does not require specialist knowledge to judge.",
+      "The card can support several film pitches using the given noun.",
+      "The public line does not reveal the hidden fact directly."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "LADDER TO NOWHERE — A rooftop romance for an audience that hates heights.",
+    "hint": "Title, then tagline. Stretch the noun, but do not break the trailer fact."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does this sound like a real film pitch for the event, rather than a noun forced into a costume?",
+      "anchors": "0 = incoherent or plainly impossible; 1 = technically a pitch, but the noun and event barely meet; 2 = workable with a generous reading; 3 = a stranger would accept it as a plausible small event film; 4 = crisp enough to print on the programme without apology (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the pitch find a comic clash between the noun, the film, and the event?",
+      "anchors": "0 = no comic charge; 1 = a faint twitch; 2 = a neat smile; 3 = a proper laugh; 4 = sharply funny while still sounding like a pitch (rare). Adult innuendo is allowed, but lazy filth is not a punchline.\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does it obey the requested title and tagline form with clean, economical wording?",
+      "anchors": "0 = missing a title or tagline, or unreadable; 1 = recognisable attempt buried in clutter; 2 = complete but padded or awkward; 3 = clean title and useful tagline; 4 = concise enough for a poster and clear at a glance (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A pitch PLAYS if it contains a film title and a tagline, uses the given noun in a meaningful way, and remains compatible with the card's hidden, checkable trailer fact. It fails when it contradicts the setting, audience, or practical problem, ignores the noun entirely, omits either part, or offers commentary instead of a pitch. A strange or unlikely film idea still plays if it does not contradict the fact.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or explaining the rules instead of pitching a film is a losing move.\n",
+    "judge_notes": [
+      "Read the hidden fact as a hard production constraint, not a suggestion. A pitch can be silly, but it cannot require the event to work differently from the fact.\n",
+      "Both players answer the same noun and event. Judge each pitch alone; one player's cleverness is not the standard for the other.\n",
+      "The first move must contain both a distinct title and a tagline. A bare title, bare slogan, review, question, or explanation fails even if it mentions the noun.\n",
+      "A pitch fails if it contradicts the setting, audience, or practical problem. Do not rescue a direct contradiction as metaphor unless the pitch clearly works without that contradiction.\n",
+      "A pitch fails if it ignores the given noun. The noun need not appear literally, but its object, action, shape, or familiar association must do visible work.\n",
+      "A pitch that is merely odd, cheap, melodramatic, or difficult to make still plays if it remains compatible with the hidden fact. Score those weaknesses on the rubric, not at the gate.\n",
+      "A title and tagline separated by a dash or line break both count. Do not require title case or a particular punctuation mark.\n",
+      "A tagline may be a fragment rather than a full sentence, provided it clearly sells the film and does not become a comment about the game.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "ladder, a rooftop film night for an audience that hates heights",
+      "move": "LADDER TO NOWHERE — A vertigo comedy for people who refuse to look up.",
+      "gates_note": "all true",
+      "mechanism": "The ladder drives the title and the tagline directly respects the height-shy audience.",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "teapot, a midnight screening in a room where no hot drinks are allowed",
+      "move": "THE TEA PARTY — Bring your own kettle and spill the secrets after the interval.",
+      "gates_note": "satisfies_criterion false, it requires hot drinks in a venue where they are forbidden",
+      "mechanism": "The noun is present, but the pitch orders the event to break its central rule.",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "umbrella, a sunny outdoor matinee for children who must stay seated",
+      "move": "UNDER COVER — A bright little thriller about one umbrella, three suspects, and absolutely no running.",
+      "gates_note": "all true",
+      "mechanism": "The umbrella becomes a prop and the no running line fits the seated children without pretending it will rain.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "ladder, a rooftop film night for an audience that hates heights",
+      "move": "THE ESCAPE LADDER — A thrilling climb above the city for daredevils racing to the roof.",
+      "gates_note": "satisfies_criterion false, it contradicts the height-shy audience and turns the event into a climb",
+      "mechanism": "The noun works, but the proposed audience is the exact opposite of the trailer fact.",
+      "scores": {
+        "believable": 1,
+        "funny": 0,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Trailer Editor",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the pitch must see why it scored.",
+      "Name the noun, title, or event constraint. A headline that fits any pitch is dead footage.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Trailer Editor refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the pitch, never identity, protected traits, or the player's body, family, intelligence, or spelling.",
+      "Edgy innuendo and profanity are allowed when the pitch invites them, but do not turn a weak move into abuse.",
+      "Plain spoken English. No poetry, no rhymes, no French, no thesaurus words.",
+      "Never reveal or hint at the hidden fact in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline rejects the pitch and asks for another. It never decides which pitch won.",
+      "The coaching line names one concrete change that would have made the pitch compatible. It ends on a fact or an action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "A ladder to nowhere, finally a route the audience can survive.",
+      "The teapot wants a scene, but the venue has banned the entire beverage department.",
+      "Bright sun, seated children, and one umbrella doing unpaid security work.",
+      "A rooftop escape for people who hate heights is less thriller than lawsuit.",
+      "The title sells tea, the tagline sells a puddle, and the room sells neither.",
+      "No running is a strong note from the venue and a weak one from this chase film.",
+      "The umbrella is doing plot duty, shade duty, and most of the cast's work.",
+      "A small screen can still carry a big romance, provided nobody demands an IMAX.",
+      "The kettle is sexy until the projector meets it.",
+      "This pitch climbs confidently into the one constraint it was told not to touch."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a clever ladder title.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Trailer Editor refuses: this breaks the rule.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try another pitch.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The audience hates heights, so this is impossible.",
+        "why": "reveals the hidden fact in the headline"
+      },
+      {
+        "text": "Funny.",
+        "why": "no reason, no noun, no pitch detail"
+      },
+      {
+        "text": "Only an idiot would pitch that.",
+        "why": "mocks the player instead of the pitch"
+      },
+      {
+        "text": "O ladder, ascend through cinema's tragic heavens.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "It is plausible, credible, believable, and convincing.",
+        "why": "repeats a judgment without showing why"
+      },
+      {
+        "text": "Better than the other player's pitch.",
+        "why": "judges the pair instead of this pitch on its own"
+      },
+      {
+        "text": "Nice title.",
+        "why": "too vague and gives no useful reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one noun and one small event each.",
+    "Write a film title and tagline in the requested form, using the noun without contradicting the event's hidden trailer fact. The House writes its own pitch unseen, and the Judge scores both.",
+    "Then call which pitch respected the hidden trailer. Right, and the points are yours. Fooled, and they go to the House.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The trailer",
+    "next_opening": "The next trailer",
+    "your_opening": "Your trailer",
+    "compose": "Your film pitch for {token}",
+    "compose_waiting": "Draft your film pitch while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the poster. Give us a title and tagline.",
+    "too_long": "Over 160 characters. A trailer pitch, not the screenplay.",
+    "duplicate": "That pitch has already played this match. Cut a different trailer.",
+    "nudge": "Twice now. Give {standing_form} a title and a tagline that obey the trailer."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} waits on the poster. Give it a minute.\n",
+  "opponent_prompt": "You are the rival trailer editor. Write one film title and tagline using the given noun.\nKeep the exact shape: TITLE — tagline. The pitch must fit the public event line and avoid contradicting the hidden trailer fact.\nStretch the noun through its object, action, shape, sound, or familiar association. Do not merely paste the noun into a generic title.\nThe event fact is a hard production constraint. Do not make the audience, setting, weather, seating, equipment, timing, or venue behave in a forbidden way.\nMake the pitch sound like a small film people might actually programme. A strange premise is fine. A direct contradiction is not.\nUse one title and one tagline only. Do not explain the joke, mention the game, address the Judge, or say that the pitch is fictional.\nAvoid filler such as a movie about, coming soon, you will never believe, and based on a true story. Keep it compact enough for a poster.\nYou are bluffing. The hidden fact is given to you so you can steer clear of it. Never state the fact or paraphrase it in the pitch.\nDo not reuse the same kind of film, setting, or joke from an earlier round. Vary the genre and the way the noun does its work.\n",
+  "medallions": true,
+  "default_move": "LADDER TO NOWHERE — A rooftop romance for an audience that hates heights."
+}

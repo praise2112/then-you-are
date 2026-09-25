@@ -1,0 +1,268 @@
+{
+  "slug": "the-leak-line",
+  "title": "The Leak Line",
+  "tagline": "One small leak finds one new thing, and the house keeps making worse decisions.",
+  "emblem": "💧",
+  "accent": "#2563eb",
+  "premise": "At home, one small leak spreads through rooms, objects, and bad choices. Two players take turns naming one new place or item the water reaches next, while the host offers earnest safety notes that become less useful by the turn. The Judge checks that every spread follows from the last wet thing. Skip a connection, dry the house, reverse the flow, or add an unreachable person and the chain stops with you.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A loose pipe beneath the kitchen sink starts dripping.",
+      "opening_emoji": "🚰",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Rain slips through a tiny hole in the spare room roof.",
+      "opening_emoji": "🌧️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The washing machine hose begins leaking beside the hallway.",
+      "opening_emoji": "🧺",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 14,
+    "axes": {
+      "source": [
+        "a loose sink pipe",
+        "a washing machine hose",
+        "a roof tile",
+        "a bath plug",
+        "a radiator valve",
+        "a fridge line",
+        "a toilet seal",
+        "a boiler pipe"
+      ],
+      "place": [
+        "kitchen",
+        "hallway",
+        "bathroom",
+        "spare room",
+        "utility room",
+        "bedroom",
+        "laundry corner",
+        "downstairs cupboard"
+      ],
+      "first_sign": [
+        "a bead of water",
+        "a dark patch",
+        "a thin trickle",
+        "a growing puddle",
+        "a damp sock",
+        "a drip on the floor",
+        "a wet cardboard box",
+        "a shining trail"
+      ]
+    },
+    "tests": [
+      "A small household leak is visible at once, and a stranger can picture where it starts. Present tense, one sentence, plain words.",
+      "A non-player names two reachable things the water could touch next within five seconds. The card must leave more than one good path.",
+      "Nothing on the card is already a flood, a collapse, or a full repair. A drip is a start, not the end of the house.",
+      "No person is hurt or trapped on the card, no real people, no brands, and no crime is needed to understand the mishap.",
+      "The card gives the first player a connected thing to spread toward, such as a mat, box, wire, stair, or cupboard. It must not feel like a list of plumbing parts."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the puddle runs under the mat, soaking the keys hidden beneath it.",
+    "hint": "Name one new thing the water reaches because of the standing wetness."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much more of the home or how many more important objects the leak threatens in this step.",
+      "anchors": "0 = the water stays in the same place or the threat shrinks; 1 = it reaches a nearby edge or small object; 2 = it reaches one new useful object or a new patch of floor; 3 = it reaches a new room, larger object, or fragile system through one clear spread; 4 = it opens a much larger household problem in one convincing step, rare. Reach is earned only when the connection holds. A dramatic jump with no visible path scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new wet thing is connected to the standing wet thing.",
+      "anchors": "0 = no path is given; 1 = the move merely claims the water got there; 2 = the path is possible but thin or partly hidden; 3 = a stranger sees the water's route at once; 4 = the spread feels natural and unavoidable, rare. A move that bundles several unseen spreads into one scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the water reaching one new thing.",
+      "anchors": "0 = unclear, abstract, or only a warning; 1 = the image is muddled or mostly explained; 2 = clear but ordinary; 3 = easy to picture in the room; 4 = one exact detail makes the wet damage real, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if the water reaches exactly one new connected place or item because of the standing wetness, the visible link is plain, and the new target leaves something else for the next player to reach. Bigger spread is better, but only through the path shown. A move fails when it jumps to an unconnected room or object, skips links, ends with a full repair or a dry house, reverses the flow or makes the water leave what it reached, repeats the same target without adding anything new, or adds a person or event that could not be reached from the standing wetness. The move should describe a visible spread, not a warning, feeling, plan, or moral.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or referring to rules instead of showing the leak is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge the move against the card and the first drip shown there. The new target must be reachable from that starting wetness.",
+      "A new room is allowed only when the water has a visible route into it, such as under a door, through a ceiling, down stairs, or across a connected floor. Naming a distant room with no route is a skipped link and satisfies_criterion is false.",
+      "A person may enter only when the standing wetness plainly gives them a reason to be there, such as a resident hearing a drip or someone stepping into a flooded hallway. A person who appears without a reachable reason is an added event or newcomer and satisfies_criterion is false.",
+      "A full repair, dry floor, successful cleanup, or calm ending leaves no fresh target. Endings fail satisfies_criterion even when they follow from the standing wetness.",
+      "The water may not reverse its spread by drying, draining away, returning to an earlier target, or undoing damage. Reversal or restoration fails satisfies_criterion.",
+      "Restating the same puddle, pipe, mat, or wet object without naming a new reach is a duplicate. It does not satisfy the fresh target requirement.",
+      "One move may mention the route and the new target, but it must not hide several separate reaches. If it packs multiple spreads into one move, satisfies_criterion may still be true when every link is plain, but link and picture score no higher than 2.",
+      "A same-size spread, such as water reaching the next inch of floor, can follow and pass the gate. Score it low on reach rather than failing it for being dull."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Then a bead of water slips from the loose pipe beneath the kitchen sink.",
+      "move": "Then it runs under the mat, soaking the keys hidden beneath it.",
+      "gates_note": "all true",
+      "mechanism": "water from the sink reaches the nearby mat and the keys beneath it",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the puddle soaks the keys hidden beneath the mat.",
+      "move": "Then the wet keys slide against the wall and the water reaches the hallway skirting board.",
+      "gates_note": "all true",
+      "mechanism": "the wet mat and keys sit beside the wall, giving the leak a new edge to reach",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the puddle runs under the mat.",
+      "move": "Then water fills the upstairs bedroom and ruins the mattress.",
+      "gates_note": "satisfies_criterion false, the upstairs room has no shown route",
+      "mechanism": "the move skips the hall, stairs, and upstairs path",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the water reaches the hallway skirting board.",
+      "move": "Then a plumber arrives, fixes the pipe, and the whole house is dry.",
+      "gates_note": "satisfies_criterion false, an unreachable event and a dry ending",
+      "mechanism": "the repair closes the story instead of leaving a fresh wet target",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the water reaches the cardboard box beside the washing machine.",
+      "move": "Then the box dries out and the water goes back under the machine.",
+      "gates_note": "satisfies_criterion false, the move reverses the spread",
+      "mechanism": "the leak is undone and sent back to an earlier place",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Household Safety Officer",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters. Two short sentences at most.",
+      "The reason should be easy to understand from the two moves alone. Mention the actual wet thing and the next target.",
+      "Be earnest about safety, but let the house and the player's questionable plumbing instincts provide the joke.",
+      "Never open with a status word or ruling phrase. Do not start with Accepted, Rejected, Refused, or The Safety Officer refuses.",
+      "Use no dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops only.",
+      "A roast may tease the move or the player's brave relationship with basic household maintenance. Never use identity based abuse or attack protected traits.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when natural, but keep the reason clear and do not make the joke carry the whole ruling.",
+      "On a skipped link, name the missing route. On an ending, say the leak is dry and the chain stops here.",
+      "On a refusal, reject the step and ask for another. Do not declare who won.",
+      "The coaching line gives one reachable next target. End on a thing that happens, not a mood, rule, or verdict."
+    ],
+    "good_headlines": [
+      "The mat is beside the sink, so the water gets it. A modest disaster, properly connected.",
+      "The keys are wet because the puddle reached under the mat. Please stop storing important things on the floor.",
+      "The upstairs bedroom needs stairs, a hallway, and a little patience. Show the water getting there first.",
+      "A plumber fixes the pipe and the house dries out. That is a safety success and a game ending.",
+      "The water backs up to an earlier spot. Even leaks are not allowed to reverse time.",
+      "The box is next to the machine, so it takes the hit. Cardboard remains bravely useless.",
+      "The resident can hear a drip and come looking. The leak has finally acquired an audience.",
+      "The pipe did not teleport to the bedroom. Give the water a hallway before it ruins the mattress.",
+      "The puddle reaches the skirting board, and the wall is now involved. This is how houses collect paperwork.",
+      "The floor is still wet, and the next thing is close by. Keep the chain moving before someone finds a towel."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the water spreads.",
+        "why": "opens with a status word and gives no specific reason"
+      },
+      {
+        "text": "The Safety Officer refuses this leap.",
+        "why": "opens with a ruling phrase and names the host instead of the missing path"
+      },
+      {
+        "text": "A damp and complicated situation develops.",
+        "why": "could describe any move and shows no actual connection"
+      },
+      {
+        "text": "The hydrostatic calamity proliferates magnificently.",
+        "why": "uses inflated words instead of plain household language"
+      },
+      {
+        "text": "Only an idiot would put keys under a mat.",
+        "why": "mocks the player directly instead of explaining the leak"
+      },
+      {
+        "text": "Maybe the water gets there, maybe it does not.",
+        "why": "hedges instead of making a clear ruling"
+      },
+      {
+        "text": "The puddle whispers through the house...",
+        "why": "uses poetry and an ellipsis without naming a visible link"
+      },
+      {
+        "text": "Wet floor. Big problem.",
+        "why": "is too vague and gives no reason for the ruling"
+      }
+    ]
+  },
+  "rules": [
+    "One new place or item gets wet next because of the standing wetness. Start with Then.",
+    "Show the visible route. The water cannot teleport through the house.",
+    "Make the spread bigger when you can, but never skip a connection.",
+    "Do not repair, dry, reverse, or end the leak. Leave a fresh target.",
+    "The Judge rules on the water's path, not spelling or plumbing expertise."
+  ],
+  "labels": {
+    "opening": "The first leak",
+    "next_opening": "The next wet target",
+    "your_opening": "Your wet target",
+    "compose": "Where does the leak go next, after {token}",
+    "compose_waiting": "Plan your next spread while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing gets wet. Give the leak one new target.",
+    "too_long": "Over 140 characters. One spread, not a home insurance report.",
+    "duplicate": "That thing is already wet this match. Reach something new.",
+    "nudge": "The water is still at {standing_form}. Show one connected thing it reaches next."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands, and the water has not reached anything new yet.\n",
+  "opponent_prompt": "You are one of two players making a small home leak worse, one connected target at a time.\nAlways write: \"Then X.\" Name one new place or item the water reaches, and show the visible link.\nTake the standing wetness and spread it to something nearby: under a mat, into a box, along a wall, down stairs, or through a doorway.\nGood: \"Then the puddle runs under the mat, soaking the keys hidden beneath it.\" / \"Then water follows the skirting board and reaches the open cupboard.\"\nBad: \"Then the upstairs bedroom floods\" if no route is shown. Bad: \"Then a plumber fixes everything\" because the leak ends. Bad: \"Then the water goes back under the sink\" because the spread reverses.\nDo not teleport the leak, repair the house, dry the floor, rewind the water, or finish the story.\nA person may appear only when the wetness gives them a clear reason to arrive. Keep the step to one new target, with one plain link.\nTalk like a person explaining a household mishap, not a novelist. Use simple words a twelve-year-old anywhere knows: a mat, a box, a wall, a stair.\nNever reuse a target from this match. Leave the next player something fresh to reach.\n",
+  "medallions": false,
+  "default_move": "Then the puddle reaches the edge of the nearest mat."
+}

@@ -1,0 +1,283 @@
+{
+  "slug": "side-effect-society",
+  "title": "Side-Effect Society",
+  "tagline": "Harmless things. Unhelpful consequences.",
+  "emblem": "⚠️",
+  "accent": "#d88762",
+  "premise": "Three rounds. Each round deals a harmless thing, and both players write one warning label for a ridiculous sounding side effect that could genuinely happen when someone uses, handles, sees, hears, or stands near it. The Judge scores each warning for believable surprise, comic force, and label shape. Then the most convincing nuisance takes the round.\n",
+  "seed_pool": [
+    {
+      "opening_token": "bubble",
+      "opening_emoji": "🫧",
+      "detail": "a bubble",
+      "hidden": "May cause a person to stop what they are doing to watch it drift and pop"
+    },
+    {
+      "opening_token": "whistle",
+      "opening_emoji": "🎵",
+      "detail": "a whistle",
+      "hidden": "May cause every nearby dog to investigate or answer"
+    },
+    {
+      "opening_token": "sunflower",
+      "opening_emoji": "🌻",
+      "detail": "a sunflower",
+      "hidden": "May cause passersby to turn their heads toward an unexpectedly bright patch of colour"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "object": [
+        "a bubble",
+        "a whistle",
+        "a sunflower",
+        "a squeaky toy",
+        "a paper fan",
+        "a wind chime",
+        "a rubber duck",
+        "a magnifying glass",
+        "a balloon",
+        "a spinning top"
+      ],
+      "setting": [
+        "indoors",
+        "in a garden",
+        "at a bus stop",
+        "in a classroom",
+        "on a beach",
+        "in a kitchen",
+        "at a picnic",
+        "in a hallway",
+        "on a train",
+        "beside a pond"
+      ],
+      "consequence": [
+        "a small interruption",
+        "an animal reaction",
+        "a mistaken assumption",
+        "a brief distraction",
+        "a change of direction",
+        "an awkward pause",
+        "a sudden comparison",
+        "a minor household problem",
+        "an unnecessary investigation",
+        "a short-lived argument"
+      ]
+    },
+    "tests": [
+      "The card is a harmless ordinary thing, not a medicine, weapon, hazard, or person.",
+      "The card is a noun phrase with an article and no more than three words.",
+      "The card can be used, handled, seen, heard, or encountered nearby.",
+      "The card invites a consequence that is surprising but physically or socially possible.",
+      "The card does not already state its side effect or require specialist knowledge."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "May cause ",
+    "example": "May cause every nearby dog to join the conversation.",
+    "hint": "One sentence. Make the warning sound silly, then make it possible."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this genuinely happen as a result of the harmless thing, even if it is an unusually funny consequence?",
+      "anchors": "Score the consequence, not the seriousness of the warning. 0 = impossible or unrelated; 1 = a very loose association; 2 = possible with some explanation; 3 = plainly possible once noticed; 4 = so true to life it feels like a warning people should have printed (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the harmless thing produce a consequence that is amusingly disproportionate, awkward, or unexpected?",
+      "anchors": "0 = no comic turn; 1 = a faintly amusing nuisance; 2 = a good little smile; 3 = a clear laugh from the mismatch; 4 = wonderfully specific and funny while remaining possible (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does it sound like a concise warning label, with one clear consequence and no extra explanation?",
+      "anchors": "0 = not a warning at all; 1 = buried in a story or commentary; 2 = understandable but padded; 3 = clean, direct, and label-like; 4 = ready to print beside a tiny caution symbol (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A warning PLAYS if it is one sentence beginning with the required warning form and gives a real or reasonably possible consequence of using, handling, seeing, hearing, or being near the card. It fails when the consequence is impossible, unrelated to the card, merely comments on the game or answer, or gives no consequence at all. An ordinary consequence still plays and may score low on funny. A consequence that is harmlessly exaggerated but remains possible also plays.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, about scoring, or about the other player is itself a losing warning.\n",
+    "judge_notes": [
+      "On the first move, judge the warning against the dealt card alone. Do not require the other player's warning as a comparison or explanation.\n",
+      "A warning must name a consequence that can follow from using, handling, seeing, hearing, or being near the card. A joke about the word, a comment on the prompt, or a sentence with no consequence fails.\n",
+      "The card need not directly cause the consequence every time. A plausible chain through attention, noise, mess, habit, animals, or social behaviour is enough.\n",
+      "A warning that is merely unlikely still plays if it is reasonably possible. Score its believable quality low if the connection needs too much charity.\n",
+      "A warning that says the card causes magic, impossible physics, or an event with no plausible connection fails, even if the sentence is funny.\n",
+      "A sentence that only praises, insults, questions, or describes the card without naming a consequence fails. A bare consequence without the required warning form may fail the shape gate unless it clearly functions as the requested label.\n",
+      "The warning must concern the harmless card, not the player's body, identity, intelligence, family, or spelling. Personal abuse is never a side effect.\n",
+      "Judge each warning on its own. The other player's warning is not the standard and cannot rescue an unrelated one.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "a whistle",
+      "move": "May cause every nearby dog to join the conversation.",
+      "gates_note": "all true",
+      "mechanism": "a familiar animal reaction is stretched into a tidy little public nuisance",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "a bubble",
+      "move": "May cause someone to follow it across the room with the solemnity of a scientist.",
+      "gates_note": "all true",
+      "mechanism": "ordinary distraction is dressed up as a laboratory emergency",
+      "scores": {
+        "believable": 4,
+        "funny": 4,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "a rubber duck",
+      "move": "May cause the Judge to award me the round.",
+      "gates_note": "satisfies_criterion false, a comment about scoring rather than a consequence of the card",
+      "mechanism": "the duck has been asked to operate the scoreboard, which is a charming but irrelevant job",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "a paper fan",
+      "move": "May cause the moon to fall into the garden.",
+      "gates_note": "satisfies_criterion false, an impossible consequence with no grounded connection",
+      "mechanism": "the fan has been promoted beyond its modest air moving duties",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "a sunflower",
+      "move": "May cause a passerby to wonder whether the garden has always been that yellow.",
+      "gates_note": "all true",
+      "mechanism": "a bright ordinary object creates a small, believable pause in someone else's day",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Cautionary Clerk",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke should point to the harmless thing and its consequence, so the ruling feels earned rather than rubber stamped.",
+      "Name the card or the warning's key consequence. A headline that could fit any warning needs another look.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Warning approved\", or \"The Clerk refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Tease the warning, never attack the player. Light personal play is allowed, but no identity based abuse, cruelty, or comments about bodies, families, intelligence, or spelling.",
+      "Plain spoken English. Keep the affection visible, even when the warning has wandered into the shrubbery.",
+      "Never reveal or hint at a hidden truth in the headline. The card and the played warning are enough.",
+      "On a refusal, the headline explains why the warning has no grounded consequence and asks for another. It never rules on who won.",
+      "The coaching line names one kind of consequence that would have played. It ends on a fact or an action, never a mood or a verdict.",
+      "Light innuendo is acceptable when it stays harmless and does not become explicit.",
+      "Avoid making the card sound dangerous. The joke is about a small nuisance, not a medical emergency."
+    ],
+    "good_headlines": [
+      "The whistle has recruited the neighbourhood dogs, and they appear ready for questions.",
+      "A bubble that stops a grown adult in their tracks, the smallest possible traffic jam.",
+      "The paper fan moved air, not the moon, but ambition is a side effect too.",
+      "That duck is excellent company, though it has no authority over the scoreboard.",
+      "The sunflower turns a garden into a yellow interruption, very politely.",
+      "A warning label for a squeaky toy should include one nearby adult losing the plot.",
+      "The magnifying glass finds a crumb and gives it a career.",
+      "The wind chime has caused a pause, a glance, and possibly one very serious nod.",
+      "A balloon can start a conversation with a ceiling, which is rarely prepared to answer.",
+      "The harmless object has produced a tiny social disaster, exactly as the label requested."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the dogs are joining in.",
+        "why": "opens with a status word and gives no playful explanation"
+      },
+      {
+        "text": "The Cautionary Clerk refuses: that is not a warning.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again with a consequence.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The bubble really causes people to stop and watch.",
+        "why": "reveals or confirms a hidden truth instead of discussing the played warning"
+      },
+      {
+        "text": "Funny.",
+        "why": "no reason, no card, and no consequence"
+      },
+      {
+        "text": "Only a fool would write that.",
+        "why": "mocks the player and uses an identity based insult"
+      },
+      {
+        "text": "O tiny bubble, what calamity dost thou unleash?",
+        "why": "poetry and an inflated sense of danger"
+      },
+      {
+        "text": "It is plausible, credible, believable, and convincing.",
+        "why": "repeats the verdict without showing what made the warning work"
+      },
+      {
+        "text": "Better than the other player's warning.",
+        "why": "judges the pair instead of the warning on its own"
+      },
+      {
+        "text": "Nice one.",
+        "why": "kind, but too vague to be useful"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one harmless thing each.",
+    "Write one sentence beginning with the warning form, naming a ridiculous sounding consequence that could genuinely happen because of the card.",
+    "The Judge scores each warning for believable surprise, comic force, and clean warning label shape.",
+    "The highest scoring warning takes the round. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The harmless thing",
+    "next_opening": "The next harmless thing",
+    "your_opening": "Your harmless thing",
+    "compose": "Your warning for {token}",
+    "compose_waiting": "Draft your warning while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the label. Give the harmless thing a consequence.",
+    "too_long": "Over 160 characters. A warning label, not a household saga.",
+    "duplicate": "That warning has already been played this match. Find a fresh nuisance.",
+    "nudge": "Twice now. One grounded warning beginning with the required form for {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody waves the warning flag until they are back. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are the warning label writer. Write one sentence beginning with the required warning form, giving a ridiculous sounding side effect of the harmless thing.\n\nThe consequence must be real or reasonably possible. It may follow from using, handling, seeing, hearing, or being near the thing. Make it surprising, but keep its feet on the ground. A dog answering a whistle works. The moon falling into the garden does not.\n\nSound like a warning label, not a story, explanation, question, or comment on the game. Name one clear consequence and stop. Keep the sentence concise, with no hedge and no explanation.\n\nDo not claim magic, impossible physics, serious danger, or a consequence unrelated to the card. Do not write about the Judge, scoring, the other player, or winning. Do not reuse a consequence pattern from an earlier round. Vary the kind of nuisance: an animal reaction, a distraction, a mistaken assumption, a small mess, an awkward pause, a change of direction, or a minor social inconvenience.\n\nThe card is harmless, so keep the result harmless too. Light innuendo is allowed, but nothing explicit. Do not attack a person or an identity. You are writing a playful caution, not an emergency notice.\n",
+  "medallions": true,
+  "default_move": "May cause someone nearby to look up and forget why they came into the room."
+}

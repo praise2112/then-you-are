@@ -1,0 +1,269 @@
+{
+  "slug": "fragile-but-honest",
+  "title": "Please Do Not Shake the Future",
+  "tagline": "Move one box at a time, and let each ordinary thing tell an awkward truth.",
+  "emblem": "📦",
+  "accent": "#b45309",
+  "premise": "You are moving a house full of ordinary boxes, and each one reveals a true but awkward detail about the people who lived there. Take the move from packing to unpacking without inventing a whole new life in one leap. The truth may be kind, rude, or both.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A small box marked MISC. is opened, and inside is a neatly wrapped silver spoon.",
+      "opening_emoji": "🥄",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A box marked WINTER CLOTHES is opened, and every coat has the same hotel key in its pocket.",
+      "opening_emoji": "🧥",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A taped box marked BOOKS is opened, and all the novels have their last pages folded down.",
+      "opening_emoji": "📚",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "box_label": [
+        "MISC.",
+        "WINTER CLOTHES",
+        "BOOKS",
+        "KITCHEN",
+        "OLD PHOTOS",
+        "BATHROOM",
+        "CABLES",
+        "DO NOT OPEN"
+      ],
+      "object_or_clue": [
+        "a silver spoon",
+        "a hotel key",
+        "a folded last page",
+        "a second wedding ring",
+        "a receipt from a late-night diner",
+        "a child's drawing",
+        "a single red glove",
+        "a letter with no envelope"
+      ],
+      "handling": [
+        "is opened",
+        "is lifted",
+        "is unpacked",
+        "is shaken gently",
+        "is carried upstairs",
+        "is labelled again",
+        "is opened at the new house",
+        "is found under another box"
+      ]
+    },
+    "tests": [
+      "One ordinary moving box is handled and one awkward but believable clue appears. Present tense, one sentence, plain words.",
+      "A stranger can picture the box and wonder about the people who packed it. It invites one next reveal without demanding a whole confession.",
+      "Nothing on the card explains the entire past, ends the move, or solves every relationship. A clue is a start, not a life story.",
+      "The card contains no real person, protected-group insult, graphic sexual detail, serious crime accusation, or dangerous instruction.",
+      "The truth feels human and specific, with room for kindness, embarrassment, or a laugh. Never write a list that feels like an inventory."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the box marked WINTER CLOTHES is opened, and every coat has the same hotel key in its pocket.",
+    "hint": "Handle one box, then show one immediate clue that reveals one new fact."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much the new clue deepens the awkward truth without leaping past what the box can show.",
+      "anchors": "0 = no new fact or the move only repeats the scene; 1 = a small extra detail; 2 = a clear new piece of history or tension; 3 = the clue opens a wider relationship or question while staying grounded in the box; 4 = a striking new layer that still arrives naturally from one handling of one box, rare. A huge confession with no visible support scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the box action causes or exposes the fact that follows.",
+      "anchors": "0 = the clue has no connection to the box; 1 = the connection is merely claimed; 2 = plausible but partly hidden; 3 = a stranger can see why handling this box reveals it; 4 = the object and truth fit with quiet inevitability, rare. Packing several discoveries into one move cannot score above 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the box, the object, and the awkward human detail.",
+      "anchors": "0 = unclear, abstract, or only an opinion; 1 = vague or cluttered; 2 = understandable but ordinary; 3 = sharply visible and easy to imagine; 4 = one precise detail makes the scene and the people feel real, rare. Extra length does not earn points by itself.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if it handles or opens one box and the immediate result reveals one new fact about the people or their life. The fact must be caused or exposed by that handling, fit everything already revealed, and leave another box or question for the next player. The move fails when it skips from a small clue to a complete confession, invents a whole new life in one leap, ends the move or solves every problem, erases or contradicts a fact already learned, handles no box, or gives a feeling, opinion, or moral instead of a visible clue.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing step: judge the move against the opening card and ask whether one box action exposes one immediate new fact.",
+      "A box may be moved, opened, labelled, carried, or unpacked if the action plainly reveals the clue. The action must be named, not merely implied.",
+      "A new person may be mentioned if the box or clue gives them a clear reason to be present, such as a neighbour helping carry boxes or a child recognising a drawing. A whole new cast or life history without a link is a skipped step.",
+      "A complete confession, full explanation, divorce, reconciliation, or solved family dispute is an ending or a leap when the boxes have not earned it. Endings and total solutions fail even when they follow emotionally.",
+      "A move that reveals no new fact, such as simply opening an empty box or repeating that the spoon is silver, does not pass the criterion. Do not fail a small but real clue for being quiet.",
+      "The clue must fit facts already learned. If an earlier box established that the spoon belonged to the grandmother, a later move cannot say it was stolen from a restaurant unless the story plainly explains the change.",
+      "A move that contradicts an established fact, erases a clue, or declares that an earlier object was never there fails. The move cannot undo what the chain has learned.",
+      "A feeling, judgement, or moral is not a clue by itself. The box may show a letter, receipt, photograph, or object that lets the feeling be inferred.",
+      "Two facts packed into one move may pass only when the second is plainly caused by the first visible clue. Score link at 2 or below and picture low when the move is crowded.",
+      "A move can be modest and still pass. One box, one object, and one honest new fact is enough."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Then a small box marked MISC. is opened, and inside is a neatly wrapped silver spoon.",
+      "move": "Then the spoon is lifted, and its handle is engraved with the initials of someone who never lived in the house.",
+      "gates_note": "all true",
+      "mechanism": "lifting the spoon exposes an engraving that adds a new person without explaining everything",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the spoon is lifted, and its handle is engraved with the initials of someone who never lived in the house.",
+      "move": "Then a box marked KITCHEN is opened, and beneath the plates is a restaurant receipt dated the night before the wedding.",
+      "gates_note": "all true",
+      "mechanism": "opening the kitchen box reveals a dated object that adds an awkward question",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then a box marked KITCHEN is opened, and beneath the plates is a restaurant receipt dated the night before the wedding.",
+      "move": "Then the receipt proves that the couple secretly separated for three years, changed their names, moved abroad, and returned with a child.",
+      "gates_note": "satisfies_criterion false, one receipt is carrying a whole new life",
+      "mechanism": "the move skips from one receipt to a complete biography",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the spoon is lifted, and its handle is engraved with the initials of someone who never lived in the house.",
+      "move": "Then the spoon was never engraved, the box was empty, and nobody remembers seeing it.",
+      "gates_note": "satisfies_criterion false, the move erases established facts",
+      "mechanism": "it rewinds and contradicts the spoon and its engraving",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then a box marked OLD PHOTOS is opened, and one picture shows the two owners standing far apart.",
+      "move": "Then the movers unpack the last box, everyone apologises, and the family finally feels whole.",
+      "gates_note": "satisfies_criterion false, the move ends the story and solves the problem",
+      "mechanism": "the move closes the emotional question instead of revealing another clue",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Moving-Day Witness",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke should carry the reason. A stranger reading only the two moves should see why the clue held or snapped.",
+      "Name the box, object, and new fact when possible. A headline that fits any awkward family story is too thin.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Moving-Day Witness refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Tease the move, not identity or protected traits. A gentle roast of a dramatic confession is fine, but never attack the player's body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no French, and no inflated thesaurus words.",
+      "On a skipped link, name the missing box action or clue. On an ending, say the move is finished and the chain stops here.",
+      "On a refusal, the headline refuses the move and asks for another. It never decides who won.",
+      "The coaching line names one box action and one clue that would have followed. It ends on a visible thing, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The spoon earns its initials before anyone earns an explanation.",
+      "A hotel key is a clue, not a complete marriage history.",
+      "The receipt opens a question neatly, unlike the box.",
+      "That confession needed three boxes and possibly a solicitor.",
+      "The old photo shows distance, so give us the next object, not the whole family memoir.",
+      "The box was opened, the fact appeared, and nobody had to invent a secret tunnel.",
+      "The clue fits the spoon and leaves the house pleasantly uncomfortable.",
+      "A family mystery can walk. It does not need to sprint through the removal van.",
+      "The receipt says where dinner happened. It does not yet say who cried.",
+      "The box has done its small honest job, and the next one is waiting."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a touching reveal.",
+        "why": "opens with a ruling phrase and gives no useful reason"
+      },
+      {
+        "text": "The Moving-Day Witness refuses this.",
+        "why": "opens with a ruling phrase and names the host instead of explaining the broken link"
+      },
+      {
+        "text": "Secrets, boxes, feelings, wow.",
+        "why": "generic reaction with no box or clue"
+      },
+      {
+        "text": "The revelation is profoundly momentous and emotionally labyrinthine.",
+        "why": "uses inflated words instead of plain speech"
+      },
+      {
+        "text": "You are terrible at moving house.",
+        "why": "mocks the player rather than the move"
+      },
+      {
+        "text": "The box proves everything about everyone forever.",
+        "why": "claims a leap without naming the missing links"
+      },
+      {
+        "text": "And then the truth danced...",
+        "why": "uses poetry and an ellipsis"
+      },
+      {
+        "text": "It is fine, probably.",
+        "why": "hedges and gives neither a ruling nor a reason"
+      }
+    ]
+  },
+  "rules": [
+    "Handle or open one box, then reveal one immediate new fact. Start with Then.",
+    "Make the truth deeper, not wider than the box can support.",
+    "Do not skip from a clue to a full confession, end the move, solve every problem, or erase an established fact.",
+    "The Judge rules on the box action and the clue, never the spelling."
+  ],
+  "labels": {
+    "opening": "The first box",
+    "next_opening": "The next box",
+    "your_opening": "Your box",
+    "compose": "What does the box reveal, after {token}",
+    "compose_waiting": "Draft your next box reveal while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing is revealed. Open a box and show us one clue.",
+    "too_long": "Over 140 characters. One box and one awkward fact, not the whole family archive.",
+    "duplicate": "That clue is already in the house. Open another box.",
+    "nudge": "Twice now. Handle a box and reveal one new fact that follows from {standing_form}."
+  },
+  "judge_out_text": "The Judge has stepped out. Nobody opens another box until they return. {standing_form} still stands, and the packing tape remains suspiciously quiet.\n",
+  "opponent_prompt": "You are one of two people moving house, and every box contains an awkward but believable truth.\nAlways start with Then. Handle or open one box, then show one immediate clue.\nLet the clue deepen what is already known. Do not jump from a receipt to a complete confession, a secret child, and a twenty year biography.\nGood: Then the box marked BOOKS is opened, and one novel has a train ticket tucked inside its last page.\nGood: Then the receipt is turned over, and the back has a phone number written in the same ink as the wedding invitation.\nBad: Then everyone admits what really happened and the family forgives each other. That ends the move.\nBad: Then the spoon proves the owners lied about everything. That skips the evidence.\nBad: Then the truth is painful. A feeling is not a clue.\nNever erase a fact already revealed. Never solve every problem. Never invent a whole new life in one leap.\nUse plain words a twelve-year-old anywhere knows. Name a box, an object, a receipt, a photograph, a neighbour, or a room. Adult awkwardness is allowed, but no graphic sex, identity-based abuse, or serious accusation without evidence.\nMake each move one clear box action followed by one visible clue. Leave the next box or question waiting.\nNever reuse a clue from this match.\n",
+  "medallions": false,
+  "default_move": "Then a box marked OLD PHOTOS is opened, and one picture has been carefully cut to remove a person."
+}

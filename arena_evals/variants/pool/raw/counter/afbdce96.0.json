@@ -1,0 +1,276 @@
+{
+  "slug": "ringmaster-rebuttal",
+  "title": "Ringmaster Rebuttal",
+  "tagline": "Stop the act before it stops you.",
+  "emblem": "🎪",
+  "accent": "#b91c1c",
+  "premise": "You and your rival run a circus where every act must shut down the act before it. Put a new act in the ring, explain how it stops the last one, and keep the show moving until someone offers a stunt that folds faster than a cheap tent.\n",
+  "seed_pool": [
+    {
+      "opening_token": "the cannon",
+      "opening_emoji": "🎪",
+      "detail": "firing a clown across the ring",
+      "hidden": ""
+    },
+    {
+      "opening_token": "the flying trapeze",
+      "opening_emoji": "🤸",
+      "detail": "swinging above the sawdust",
+      "hidden": ""
+    },
+    {
+      "opening_token": "the lion tamer",
+      "opening_emoji": "🦁",
+      "detail": "standing in the cage with a chair",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "act": [
+        "cannon launch",
+        "flying trapeze",
+        "lion taming",
+        "tightrope walk",
+        "knife throwing",
+        "juggling",
+        "clown parade",
+        "fire eating",
+        "contortion"
+      ],
+      "prop": [
+        "safety net",
+        "high wire",
+        "rubber ball",
+        "red nose",
+        "wooden chair",
+        "bucket of water",
+        "spotlight",
+        "trapdoor",
+        "velvet curtain"
+      ],
+      "failure_point": [
+        "misses the landing",
+        "loses the rope",
+        "drops the prop",
+        "gets stuck above the ring",
+        "sets the curtain smoking",
+        "startles the audience",
+        "blocks the exit",
+        "forgets the cue",
+        "lands in the orchestra"
+      ]
+    },
+    "tests": [
+      "A stranger sees one present-tense circus act at once, with no backstory or abstract trickery.",
+      "A stranger can name the previous act and say exactly how the new act stops it within five seconds.",
+      "The new act directly blocks, cancels, traps, exposes, or safely ends the previous act, rather than merely waiting it out.",
+      "The act has a performer, prop, animal, stunt, or ring consequence with enough character to invite a reply, not just a piece of circus inventory.",
+      "The sentence uses plain everyday words and names one clear action, never a bigger copy, a cousin act, or a vague claim of being more impressive."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am the safety net, catching the flying trapeze before it reaches the other bar.",
+    "hint": "Name the act, then name the thing it does to stop the act before it."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and reliably the new circus act shuts down the act standing before it.",
+      "anchors": "0 = no counter or only a dodge; 1 = a weak claim with no clear action; 2 = a possible interruption but the old act may still work; 3 = a clear, practical counter that stops the exchange; 4 = an immediate and unavoidable shutdown, with the old act having nowhere useful to go (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How easily a stranger can picture the act, the target, and the stopping action as one clean circus moment.",
+      "anchors": "0 = confused, contradictory, or unreadable; 1 = understandable only after explanation; 2 = mostly clear but crowded or awkward; 3 = concrete and easy to follow; 4 = instantly visual, with every detail earning its place (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the new act's route is compared with the previous act, not how flashy its wording sounds.",
+      "anchors": "0 = the same act, a bigger version, or the obvious family cousin; 2 = a reasonable change of circus territory; 4 = a surprising jump to a different kind of act that still cleanly counters the previous one (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A new standing act OVERCOMES the previous act if it directly blocks, cancels, traps, exposes, or safely ends that act in the present tense. It must act on what is standing in the ring. Dodging, merely surviving, waiting, being immune, using a bigger copy, or naming a cousin from the same act family does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or blaming the audience is itself a losing act.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player act: judge the move against the opening card instead. It must directly counter the opening act, not simply name an unrelated circus act.\n",
+      "A bigger cannon, faster trapeze, louder clown, or more dangerous version of the standing act is mere amplification and fails. A cousin from the same act family, such as a different aerial stunt against an aerial stunt, also fails unless it has a direct counter mechanism.\n",
+      "Becoming the opening act itself, or making only a cosmetic change to it, is a duplicate and fails.\n",
+      "The new act must have a literal way to affect the standing act. A spotlight revealing a hidden performer can count, but applause, confidence, fame, or being more entertaining cannot.\n",
+      "Surviving the act is not stopping it. A clown who is not afraid of the lion, a net placed somewhere the cannon does not fire, or an audience member looking away is a dodge and fails.\n",
+      "The mechanism must be something a stranger could watch happen in the ring. Wordplay, metaphor, reputation, and claims that one act symbolically defeats another are not mechanisms.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am the cannon, firing a clown across the ring.",
+      "move": "I am the safety net, catching the clown before he hits the seats.",
+      "gates_note": "all true",
+      "mechanism": "the net catches the launched clown and safely ends the flight",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am the flying trapeze, swinging above the ring.",
+      "move": "I am the safety net, stopping the flyer below the bars.",
+      "gates_note": "all true",
+      "mechanism": "the net catches the performer and ends the aerial act",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am the lion tamer, waving a chair at the lion.",
+      "move": "I am a bigger lion, roaring louder and opening wider.",
+      "gates_note": "satisfies_criterion false, bigger cousin from the same act family with no counter",
+      "mechanism": "none, the new lion does not directly stop the lion tamer",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am the knife thrower, sending blades around the assistant.",
+      "move": "I am the audience, closing its eyes.",
+      "gates_note": "satisfies_criterion false, dodging the act rather than stopping it",
+      "mechanism": "none, the knives still fly around the assistant",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am the fire eater, swallowing a torch in the center ring.",
+      "move": "I am the bucket brigade, soaking the torch before it reaches the mouth.",
+      "gates_note": "all true",
+      "mechanism": "water extinguishes the torch and safely ends the fire eating act",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Ringmaster",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "deadpan"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke must explain the circus mechanism. A stranger should know why one act stopped the other.",
+      "Name both acts, or plain stand-ins for them. Do not use a generic verdict that could fit any ring.",
+      "Never open with a status word or ruling phrase. Do not begin with Accepted, Rejected, Refused, Move refused, or The Ringmaster refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Roast the act or the move, not identity, disability, appearance, family, or protected traits. A little adult innuendo is allowed, but keep it about the circus.",
+      "Plain spoken English. Deadpan delivery, playful bite, no poetry, no grand speeches, and no fake Latin.",
+      "On a refusal caused by a gate failure, reject the move and ask for another. Do not declare a winner.",
+      "The coaching line names one act that would have won. It ends on a visible fact or action, not a mood or ruling.",
+      "Do not praise a failed act for effort. The tent has insurance, not feelings."
+    ],
+    "good_headlines": [
+      "The cannon launched a clown, and the net filed the landing paperwork.",
+      "The trapeze wanted applause. The net wanted gravity, and got it.",
+      "The lion brought teeth. The chair brought a legal department.",
+      "The bucket met the fire eater before the torch reached the mouth.",
+      "The knife thrower aimed for danger, but the curtain ended the appointment.",
+      "A bigger cannon is still a cannon. Bring an act that stops it.",
+      "The spotlight catches the invisible clown. Hiding was the whole act.",
+      "The tightrope had height, and the net had a simple plan.",
+      "The audience closing its eyes does not stop the knives. It just makes the paperwork worse.",
+      "The clown tried to outrun the trapdoor. The trapdoor had been waiting all evening."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the net wins.",
+        "why": "opens with a status word and gives no circus mechanism"
+      },
+      {
+        "text": "The Ringmaster refuses: nice try.",
+        "why": "opens with a ruling phrase, names the host, and explains nothing"
+      },
+      {
+        "text": "Move refused, your clown was bad.",
+        "why": "opens with a ruling phrase and mocks the player rather than the act"
+      },
+      {
+        "text": "The lion is defeated by superior vibes.",
+        "why": "uses an abstract claim instead of a visible counter"
+      },
+      {
+        "text": "The trapeze falls, falls, falls, and the net wins forever.",
+        "why": "overwritten and unclear about what physically happens"
+      },
+      {
+        "text": "The performer is an idiot for trying that stunt.",
+        "why": "mocks the player or performer instead of explaining the mechanism"
+      },
+      {
+        "text": "The cannon is horny for the sky, but the net has daddy issues.",
+        "why": "the innuendo replaces the counter and turns the line into noise"
+      },
+      {
+        "text": "A truly magnificent and devastatingly superior rebuttal has occurred.",
+        "why": "grandiose, generic, and missing both circus acts"
+      },
+      {
+        "text": "The fire eater loses because water is better.",
+        "why": "too vague, with no stated action against the torch"
+      },
+      {
+        "text": "The audience survives the knives, so that is basically a win.",
+        "why": "survival is a dodge, not a counter"
+      }
+    ]
+  },
+  "rules": [
+    "Stop the act in front of you. Do not become it.",
+    "Name one present tense circus act and the clear action that stops the previous act.",
+    "The Judge rules on the idea, not spelling or performance style.",
+    "A bigger copy, a cousin act, a dodge, or mere survival does not count.",
+    "One act that folds against the standing act ends the match."
+  ],
+  "labels": {
+    "opening": "The opening act",
+    "next_opening": "The next opening act",
+    "your_opening": "Your opening act",
+    "compose": "Your act against {token}",
+    "compose_waiting": "Draft your next act while you wait"
+  },
+  "validation_messages": {
+    "empty": "The ring is empty. Put an act in it.",
+    "too_long": "Over 200 characters. It is an act, not a three act tragedy.",
+    "duplicate": "That act already appeared this match. Book something else.",
+    "nudge": "Twice now. Stop {standing_form}. Do not become it, repeat it, or hide in the cheap seats."
+  },
+  "judge_out_text": "The judge has stepped out for a suspiciously long snack break. Nobody moves until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two rival circus operators trying to keep your act alive.\nAlways name one present tense act and its direct counter in plain language.\nGood: \"I am the safety net, catching the flying trapeze before it reaches the other bar.\"\nGood: \"I am the bucket brigade, soaking the torch before the fire eater can swallow it.\"\nBad: \"I am more exciting than your act.\" That is a claim, not a mechanism.\nBad: \"I am a bigger cannon.\" That is amplification, not a counter.\nBad: \"I am the audience, looking away.\" That is dodging, not stopping.\nTalk like a person across the ring, not a poet or a marketing department.\nUse ordinary circus things: nets, ropes, curtains, buckets, spotlights, cages, props,\nperformers, animals, and exits. Make the action visible to a stranger.\nThe new act must directly block, cancel, trap, expose, or safely end the act before it.\nA cousin from the same act family does not count unless it has a literal stopping action.\nNever reuse an act or attribute from this match.\nYou are trying to survive, not deliver a speech. If the move is funny, it is because\nthe circus logic is funny, not because you announced that it is funny.\n",
+  "default_move": "I am the safety net, catching the act before it reaches the audience."
+}

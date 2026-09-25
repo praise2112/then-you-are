@@ -1,0 +1,275 @@
+{
+  "slug": "right-of-way",
+  "title": "Right of Way",
+  "tagline": "Take the lane, take the signal, take the turn.",
+  "emblem": "🚦",
+  "accent": "#166534",
+  "premise": "You and your opponent build a traffic scene one road user at a time. Each turn, your entrant must legally and physically force the thing at the front to yield or stop. The Judge checks who controls the next movement.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a stalled bicycle",
+      "opening_emoji": "🚲",
+      "detail": "blocking the lane",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a delivery van",
+      "opening_emoji": "🚐",
+      "detail": "backing into traffic",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a jaywalking pedestrian",
+      "opening_emoji": "🚶",
+      "detail": "crossing against the signal",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "road_user": [
+        "car",
+        "truck",
+        "bus",
+        "bicycle",
+        "pedestrian",
+        "motorcycle",
+        "ambulance",
+        "police car",
+        "taxi"
+      ],
+      "traffic_place": [
+        "crosswalk",
+        "intersection",
+        "highway",
+        "school zone",
+        "roundabout",
+        "parking lot",
+        "bridge",
+        "bike lane",
+        "tunnel"
+      ],
+      "condition": [
+        "blocking a lane",
+        "running a light",
+        "backing up",
+        "stalled",
+        "turning left",
+        "merging",
+        "crossing",
+        "parked badly",
+        "speeding"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one road user in one traffic situation at once. Nothing abstract, technical, or dependent on a map.",
+      "A non-player can name a plain traffic counter within five seconds. Say what legal signal, position, or action gives it priority.",
+      "It stands in the road scene and can force the current road user to yield or stop. A vehicle merely avoiding danger, waiting longer, or being difficult to hit does not qualify.",
+      "It makes a stranger want to answer with another road user. A thing with traffic character, like a bus, crossing guard, or tow truck. Never a painted line or a general traffic condition.",
+      "Two to four everyday words, with an article where needed. Never a brand, proper name, obscure vehicle term, or rulebook phrase that needs explaining."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a police car, lights flashing; the truck pulls over.",
+    "hint": "Name the road user, then the signal or action that takes priority."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How clearly the new road user legally and physically makes the standing one yield or stop.",
+      "anchors": "0 = no traffic mechanism; 1 = claims priority without showing how; 2 = a possible signal or position, but the standing user could reasonably continue; 3 = a clear rule or action forces the standing user to yield; 4 = the new arrival controls the next movement so completely that refusal would be plainly illegal or impossible (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How quickly a stranger can picture the road user, its position, and the action that gives it priority.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires specialist traffic knowledge; 2 = understandable but missing a useful detail; 3 = concrete and easy to stage; 4 = instantly vivid, with the priority action visible (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How far the entrant moves the traffic scene into a fresh kind of road user, authority, or traffic setting.",
+      "anchors": "0 = the same road-user type or a routine copy; 2 = a sensible change with some freshness; 4 = a sharp hop into a new traffic role or setting that still controls the standing user (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move OVERCOMES the standing road user if its path, signal, authority, or position forces that road user to yield or stop before the next movement. The mechanism must be legal or physically unavoidable in the described scene. Dodging, waiting it out, being harder to hit, surviving a crash, or using a larger or faster copy of the same road user does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or citing the rules instead of entering a road user is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous road user: judge it against the opening card. The entrant must plausibly make the stalled, crossing, backing, or blocking user yield or stop.",
+      "A larger, faster, heavier, or more expensive version of the standing road user is not a counter. A bus after a truck or a sports car after a car is a failed copy unless a distinct traffic mechanism forces the standing user to yield.",
+      "Becoming the opening road user itself, or a cosmetic variation of it, is a duplicate. A red bicycle against a bicycle is still the same entrant.",
+      "Strength is measured against the standing road user. A road user with no signal, authority, path, or position that can make that specific user yield fails, however impressive it sounds.",
+      "The mechanism must be literal and visible. A police car with flashing lights can make traffic pull over, but a car that is more important, more intimidating, or symbolically in charge has no sufficient mechanism.",
+      "Surviving, avoiding, waiting for, or being immune to the standing road user's movement is dodging, not overcoming. A tank that is not damaged by a bicycle, a parked car that waits for a bus, and a pedestrian who steps aside all fail.",
+      "A claimed traffic rule cannot override the scene without support. A normal sedan does not gain priority merely by announcing it, and a private car does not become an emergency vehicle by using dramatic adjectives.",
+      "The new entrant must control the next movement. A road user that could eventually create a jam, call someone, or wait for permission does not beat the standing user now."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A stalled bicycle blocking the lane.",
+      "move": "I am a tow truck, winch extended; the bicycle is dragged clear.",
+      "gates_note": "all true",
+      "mechanism": "the tow truck physically removes the bicycle from the lane",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a delivery van, backing into traffic.",
+      "move": "I am a police car, lights flashing; the van pulls over.",
+      "gates_note": "all true",
+      "mechanism": "emergency lights give the police car authority to make the van yield",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a police car, lights flashing; the van pulls over.",
+      "move": "I am a faster police car, siren louder; the first car moves aside.",
+      "gates_note": "satisfies_criterion false, same road-user type and mere amplification",
+      "mechanism": "none beyond being a louder, faster police car",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a jaywalking pedestrian, crossing against the signal.",
+      "move": "I am a car, driver annoyed; the pedestrian gets out of the way.",
+      "gates_note": "satisfies_criterion false, intimidation is not a traffic mechanism",
+      "mechanism": "none stated, the car merely pressures the pedestrian",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a delivery van, backing into traffic.",
+      "move": "I am an ambulance, siren on; the van stops backing.",
+      "gates_note": "all true",
+      "mechanism": "an approaching emergency vehicle's siren requires the van to yield",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Traffic Warden",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. The road user that won and the road user that failed must be visible in the sentence.",
+      "Name both road users, or plain stand-ins. A headline that fits any traffic dispute is diagnostically useless.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Traffic Warden refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the losing road user and its pathetic traffic logic. Roast-level jabs at the player are allowed, but never attack identity, disability, body, family, or protected traits.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the traffic joke. Do not become poetic.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never declares a winner.",
+      "The coaching line names one road user that would have won. That form ends on a visible traffic fact or action, never a mood or verdict.",
+      "Keep the menace clinical. Treat weak priority claims like a preventable collision in a lab report."
+    ],
+    "good_headlines": [
+      "The bicycle blocked the lane, then the tow truck removed its little empire.",
+      "The van was backing blind. The police lights turned confidence into a legal stop.",
+      "A sedan cannot bully a pedestrian into having right of way. Try an actual signal.",
+      "The ambulance arrived with a siren, and the van discovered consequences.",
+      "The police car was already in uniform. Painting another one louder changes nothing.",
+      "The truck brought weight. The fire engine brought authority. Weight lost the argument.",
+      "The bicycle is still blocking traffic, and your car is only waiting beside it. Bring a form that acts.",
+      "A parked car does not win by being boring. It wins nothing and moves nowhere."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the ambulance wins.",
+        "why": "Opens with a status word and gives no traffic mechanism."
+      },
+      {
+        "text": "The Traffic Warden refuses: your car is pathetic.",
+        "why": "Opens with a ruling phrase, names the host, and attacks the player instead of explaining the move."
+      },
+      {
+        "text": "Move refused, try harder.",
+        "why": "Opens with a ruling phrase and supplies no road-specific reason."
+      },
+      {
+        "text": "The car is more powerful, so it has priority.",
+        "why": "Treats size and power as legal authority without naming a signal, path, or position."
+      },
+      {
+        "text": "The bus beats the bike because buses are better.",
+        "why": "Uses a verdict and a vague hierarchy instead of a visible traffic action."
+      },
+      {
+        "text": "The pedestrian loses, lol.",
+        "why": "No mechanism, no explanation, and the tone is childish rather than clinical."
+      },
+      {
+        "text": "You are an idiot who cannot drive.",
+        "why": "Attacks the player and supplies no ruling about the road users."
+      },
+      {
+        "text": "The sedan seduces the intersection into surrender.",
+        "why": "Adult innuendo replaces a literal traffic mechanism."
+      },
+      {
+        "text": "The truck may yield, unless it does not, depending on circumstances.",
+        "why": "Hedges until the ruling disappears."
+      },
+      {
+        "text": "A car waits patiently for the van to leave.",
+        "why": "Waiting is dodging, not taking priority over the standing road user."
+      }
+    ]
+  },
+  "rules": [
+    "Beat the road user in front of you. Do not merely avoid it.",
+    "Name one road user and the signal, authority, path, or position that makes it yield.",
+    "The Judge checks the described traffic scene, not your confidence or spelling.",
+    "One move that cannot control the next movement ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your road user against {token}",
+    "compose_waiting": "Draft your next road user while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing entered the road. Name a road user.",
+    "too_long": "Over 200 characters. This is a traffic move, not a police report.",
+    "duplicate": "That road user already entered this scene. Send something new.",
+    "nudge": "Twice now. Beat {standing_form}. Do not dodge it, copy it, or wait for it to disappear."
+  },
+  "judge_out_text": "The judge has stepped out to inspect the intersection. Nobody moves until they return. {standing_form} still controls the scene. Give it a minute.\n",
+  "opponent_prompt": "You are one of two road users fighting for priority in a worsening traffic scene.\nAlways write one compact move in this shape: \"I am X, signal or action; the other road user yields.\"\nName one ordinary road user, then give a literal signal, legal authority, path, or position that makes the standing road user stop or yield.\nGood: \"I am a police car, lights flashing; the truck pulls over.\" / \"I am a tow truck, winch extended; the bicycle is dragged clear.\"\nBad: \"I am a faster car\" because speed alone is not priority. Bad: \"I am a tank, unbreakable\" because surviving is not taking the lane. Bad: \"I am important\" because the road does not obey moods.\nTalk like a person across a dashboard, not a lawyer writing a traffic code. Use plain things anyone can picture: a bus, a siren, a crosswalk, a tow truck, a school crossing guard.\nYou are not performing for a crowd and you are not joking. You are trying to take the next movement. If the move sounds funny, it is because the road user genuinely controls the scene.\nStay concrete and jargon-free. Hop domains when useful: emergency response, school traffic, a roundabout, a parking garage, a bridge, rush hour.\nNever reuse a road user or a defining signal from this match. Do not speak to the Judge or mention the game.\n",
+  "default_move": "I am a crossing guard, stop sign raised; traffic halts."
+}

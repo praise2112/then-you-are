@@ -1,0 +1,266 @@
+{
+  "slug": "escape-route-tangle",
+  "title": "Exit Strategy, Unfortunately",
+  "tagline": "The plan was simple. Then someone added a tunnel, a costume, and a problem with goats.",
+  "emblem": "🗺️",
+  "accent": "#7c3aed",
+  "premise": "Build the getaway plan from the inside out. Start with a simple heist and add the next exit choice, backup, delay, or disguise. Two players keep making the route more dramatic without ever finishing it. The Judge checks that each new turn grows from the exact plan already on the table.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The crew plans to take a jewel from a hotel display and leave through the lobby before dinner.",
+      "opening_emoji": "💎",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The crew plans to lift a painting from a museum and escape through the staff corridor at closing time.",
+      "opening_emoji": "🖼️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The crew plans to take a rare watch from a shop and reach the van before the lunch crowd arrives.",
+      "opening_emoji": "⌚",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 20,
+    "axes": {
+      "crew": [
+        "a nervous crew",
+        "three cousins",
+        "a retired magician",
+        "a chef and two helpers",
+        "a pair of twins",
+        "a theatre troupe",
+        "a quiet team",
+        "a group of unlucky experts"
+      ],
+      "target": [
+        "a jewel",
+        "a painting",
+        "a rare watch",
+        "a golden mask",
+        "a silver trophy",
+        "a locked case",
+        "a famous necklace",
+        "a tiny statue"
+      ],
+      "place": [
+        "hotel display",
+        "museum gallery",
+        "watch shop",
+        "auction room",
+        "country house",
+        "theatre lobby",
+        "department store",
+        "city archive"
+      ]
+    },
+    "tests": [
+      "A stranger can picture the simple heist and its intended first exit at once. Present tense, one sentence, plain words.",
+      "A non-player can add at least two sensible route problems or choices within five seconds. The card must leave room for the plan to grow.",
+      "Nothing on the card is already a completed escape, a police chase, or a final disaster. It is a plan waiting to become awkward.",
+      "No real people, brands, graphic harm, or instructions detailed enough to help a real crime. Keep the trouble playful and fictional.",
+      "The card names one target, one place, and one first route. It must feel like a heist setup, not an inventory list or a full story."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then the getaway goes ",
+    "example": "Then the getaway goes through the laundry room, because the front doors now have a birthday crowd outside them.",
+    "hint": "Add one route step or route problem caused by the exact plan already standing."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much new route trouble or choice this move creates.",
+      "anchors": "0 = the route stays the same or becomes smaller; 1 = a tiny detour or extra detail; 2 = one fresh obstacle, backup, disguise, or choice; 3 = the plan reaches a new area or adds a serious new complication through one clear step; 4 = the route balloons into a wonderfully tangled new scale while still following plainly, rare. Reach is earned only when the route link holds."
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new route step grows from the exact plan already made.",
+      "anchors": "0 = unrelated route or no cause; 1 = the connection is merely claimed; 2 = plausible but loose; 3 = a stranger immediately sees why the route changes; 4 = the change feels inevitable, as if the plan itself tripped into it, rare. Packing several hidden turns into one move keeps this at 2 or below."
+    },
+    {
+      "name": "picture",
+      "description": "How easily a stranger can see the route, problem, or choice.",
+      "anchors": "0 = unclear, abstract, or only a mood; 1 = fuzzy or overloaded; 2 = understandable but plain; 3 = a clear place and action appear; 4 = one sharp detail makes the ridiculous route easy to picture, rare. Extra words alone earn nothing."
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it extends the getaway from the exact situation already planned, gives a plain reason for the change, and creates a fresh route problem or choice. The route may become longer, stranger, or more crowded, but it must remain one honest next step. A step fails when it skips an escape, reaches safety, reverses or cancels the plan, repeats a route step without adding anything, swaps to an unrelated scene, or introduces a person or place the established route cannot contain.",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or talking about rules instead of extending the getaway is itself a broken step.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge the move against the card. It must extend the card's target, place, intended exit, or immediate route problem.",
+      "A newcomer may appear when the established place could plainly contain them, such as a waiter in a hotel, a guard in a museum, or a driver near a van. A person who requires a skipped route, such as a helicopter pilot appearing inside a locked cupboard, makes satisfies_criterion false.",
+      "A new place may appear when the route plainly reaches it, such as a laundry room behind a hotel corridor or an alley beside a shop. A distant city, secret bunker, or mountain tunnel without a connecting step is a skipped escape and fails.",
+      "A safe arrival, successful handoff, quiet departure, or statement that the crew got away ends the plan. Endings fail satisfies_criterion even when they follow from the standing route.",
+      "A reversal cancels or undoes the established plan, such as returning the jewel to the display or deciding not to steal anything. Reversals fail satisfies_criterion.",
+      "A duplicate repeats the same corridor, disguise, backup, or delay without creating a new route problem or choice. Restating the standing move is not an extension.",
+      "A step of the same size still passes the gate if it clearly follows and leaves a fresh choice. Do not fail it merely because the route grows only a little.",
+      "Several events packed into one move may pass if every link is plain. Keep link at 2 or below when the route hides multiple turns, and lower picture if the plan becomes crowded."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The crew plans to take a jewel from a hotel display and leave through the lobby before dinner.",
+      "move": "Then the getaway goes through the kitchen, because a wedding party now fills the lobby.",
+      "gates_note": "all true",
+      "mechanism": "the crowded lobby blocks the planned exit, and the hotel kitchen offers a nearby alternate route",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the getaway goes through the kitchen, because a wedding party now fills the lobby.",
+      "move": "Then the getaway goes under the dessert cart, because the chef has parked it across the back door.",
+      "gates_note": "all true",
+      "mechanism": "the kitchen route meets a blocked back door, creating a cramped new choice",
+      "scores": {
+        "reach": 2,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the getaway goes through the kitchen, because a wedding party now fills the lobby.",
+      "move": "Then the getaway goes straight to a quiet beach in another country.",
+      "gates_note": "satisfies_criterion false, the route skips every escape between the kitchen and the beach",
+      "mechanism": "none shown, the plan teleports past the building and the journey",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the getaway goes under the dessert cart, because the chef has parked it across the back door.",
+      "move": "Then the getaway goes safely into the waiting van and everyone relaxes.",
+      "gates_note": "satisfies_criterion false, the plan ends in a safe arrival",
+      "mechanism": "the crew reaches safety and leaves no fresh route problem",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the getaway goes through the kitchen, because a wedding party now fills the lobby.",
+      "move": "Then the getaway goes back through the lobby as if the wedding party was never there.",
+      "gates_note": "satisfies_criterion false, the move reverses the standing route problem",
+      "mechanism": "the blocked lobby is simply undone",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Route Goblin",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hype"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Bring the energy. The route should sound like it just kicked open a cupboard and found another cupboard inside.",
+      "Name both the standing route and the new route, or their plain stand-ins. A joke that fits any heist is dead on arrival.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Route Goblin refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Give the step a savage playful jab, never attack identity, body, family, intelligence, spelling, or any protected trait.",
+      "Light innuendo is fine. Keep it mild, clean enough for a crowded train, and never use profanity.",
+      "Plain spoken English. Hype is welcome, but do not bury the reason under glitter.",
+      "On a skipped link, name the missing route. On an ending, say the plan is finished and the chain stops here.",
+      "On a refusal, the headline rejects the route step and asks for another. It never declares a winner.",
+      "The coaching line names one next route step with a clear cause. End on an event, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The lobby is packed, so the jewel plan squeezes into the kitchen. Gorgeous, terrible, deeply on brand.",
+      "Under the dessert cart? Bold. The back door just became a boss fight with wheels.",
+      "From a hotel kitchen to a beach abroad in one breath. The missing route is doing all the work.",
+      "They reached the van, relaxed, and killed the plan. Even the getaway needs a little bad news.",
+      "The lobby was blocked, then magically unblocked. That is not strategy, that is selective memory wearing shoes.",
+      "A cart blocks the door, so the route gets lower. Excellent. The plan has discovered knees.",
+      "The crew found a new door and immediately invented a worse corridor. Now that is professional nonsense.",
+      "The guard belongs in the museum, not inside the locked cupboard. Add the hallway before summoning help.",
+      "The same kitchen again, with no fresh choice. The route is circling the drain and calling it a map.",
+      "The van is close, the plan is not finished, and someone has definitely forgotten the keys."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the route grows.",
+        "why": "opens with a status word and gives no useful reason"
+      },
+      {
+        "text": "The Route Goblin refuses this foolish leap.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "What a wild heist, what a route, what a night.",
+        "why": "generic hype with no connection between the two steps"
+      },
+      {
+        "text": "The operation demonstrates an implausible logistical discontinuity.",
+        "why": "stiff thesaurus language hides the missing route"
+      },
+      {
+        "text": "Only an idiot would plan this.",
+        "why": "attacks the player instead of the move"
+      },
+      {
+        "text": "It might work, maybe, perhaps, who knows.",
+        "why": "hedges instead of ruling clearly"
+      },
+      {
+        "text": "The corridor sang, the moon winked, and the plan wandered...",
+        "why": "poetry, vague imagery, and an ellipsis"
+      },
+      {
+        "text": "Safe. Done. Great.",
+        "why": "declares an ending without explaining why the chain stops"
+      }
+    ]
+  },
+  "rules": [
+    "Write one next route step beginning with Then the getaway goes.",
+    "Extend the exact route already planned and give the change a plain cause.",
+    "Create a fresh route problem or choice. Make the plan more tangled without finishing it.",
+    "Skip an escape, reach safety, reverse the plan, repeat yourself, or summon an impossible person or place and the chain stops with you.",
+    "The Judge rules on the route link, not spelling or fancy wording."
+  ],
+  "labels": {
+    "opening": "The heist setup",
+    "next_opening": "The next route problem",
+    "your_opening": "Your route problem",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Plot your next route while you wait"
+  },
+  "validation_messages": {
+    "empty": "No route, no trouble, no plan. Add the next getaway step.",
+    "too_long": "Over 140 characters. This is a route step, not the director's cut.",
+    "duplicate": "That route already happened this match. Make the plan sweat somewhere new.",
+    "nudge": "Twice now. Something has to grow from {standing_form}. Add one clear turn, problem, or choice."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody changes the route until they return. {standing_form} still stands, and the getaway is waiting.\n",
+  "opponent_prompt": "You are one of two players building a heist getaway that keeps getting worse.\nAlways begin: \"Then the getaway goes...\" One route step, one plain cause, present tense.\nStart from the exact standing plan and add a fresh exit choice, delay, backup, disguise, or route problem.\nGood: \"Then the getaway goes through the laundry room, because the lobby fills with wedding guests.\" / \"Then the getaway goes under the dessert cart, because the back door is blocked.\"\nBad: \"Then the crew reaches a beach abroad\" because the escape was skipped. Bad: \"Then they get safely to the van\" because the plan ends. Bad: \"Then they return the jewel\" because the route is reversed.\nNever finish the plan, never rescue it, never undo it, never teleport across the map.\nTalk like a friend describing a ridiculous route, not a crime manual. Keep it fictional and playful. Do not give real operational instructions, real targets, brand names, or graphic harm.\nName ordinary things a twelve year old knows: a kitchen, a cart, a curtain, a wet floor, a neighbour. Use plain words.\nNever reuse a route step from this match.\n",
+  "medallions": false,
+  "default_move": "Then the getaway goes through the nearest side door, because the planned exit suddenly has a queue."
+}

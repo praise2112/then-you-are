@@ -1,0 +1,276 @@
+{
+  "slug": "floor-plan-fiction",
+  "title": "Floor Plan Fiction",
+  "tagline": "Every room has a purpose. This one has a warning.",
+  "emblem": "🏚️",
+  "accent": "#6b5744",
+  "premise": "Three rounds. Each round shows two dull facts from an estate agent listing for a terrible room. Both players write one tiny floor plan note under 90 characters. Keep both named things in their stated places, then explain the arrangement as an absurd but possible feature of the property. The Surveyor scores the strangest useful explanation while the room stays exactly as advertised.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Toilet by the desk / radiator behind the bed",
+      "opening_emoji": "🚽",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Sink beside the sofa / wardrobe blocking the window",
+      "opening_emoji": "🪟",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Shower over the kitchen table / bed under the stairs",
+      "opening_emoji": "🚿",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 11,
+    "axes": {
+      "first_object": [
+        "toilet",
+        "sink",
+        "shower",
+        "bath",
+        "oven",
+        "desk",
+        "wardrobe",
+        "bed"
+      ],
+      "position": [
+        "by the desk",
+        "beside the sofa",
+        "under the stairs",
+        "behind the bed",
+        "blocking the window",
+        "over the table",
+        "next to the door",
+        "in the hallway"
+      ],
+      "second_object": [
+        "desk",
+        "sofa",
+        "radiator",
+        "bed",
+        "window",
+        "table",
+        "door",
+        "stairs"
+      ]
+    },
+    "tests": [
+      "Two short fragments separated by a slash, each naming one ordinary household object and its clear position.",
+      "Use an article where grammar needs one, and keep the whole card under twelve words.",
+      "The room is unpleasant or awkward, but nobody is hurt, threatened, ill or trapped.",
+      "Both objects and both positions must be concrete enough to place on a simple floor plan.",
+      "The two-object arrangement must invite a strange useful explanation rather than merely describe a bad room."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Emergency washroom beside the work station",
+    "hint": "Keep both objects where they are, then give the arrangement a job."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the note turn the awkward arrangement into a specific, strange use without moving anything?",
+      "anchors": "0 = repeats the card or merely complains; 1 = adds one obvious purpose word; 2 = gives the arrangement a clear use; 3 = invents a strong little system, rule or backstory; 4 = makes a dreadful room feel deliberately designed for an astonishing purpose, while every object stays put (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the proposed use make the terrible layout amusing?",
+      "anchors": "0 = no joke; 1 = a faintly comic implication; 2 = a clear smile; 3 = a proper laugh from the room's specific misery; 4 = an instantly repeatable property joke with a sharp final turn (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it read like a compact estate agent floor-plan annotation?",
+      "anchors": "0 = explanation, question or chat; 1 = a long note with spare furniture and filler; 2 = recognisably an annotation but loose; 3 = concise, concrete and easy to place on a plan; 4 = a polished property note that could sit beside the symbols unchanged (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A note PLAYS if it preserves both named objects and their stated positions, while giving their arrangement an absurd but possible purpose. It fails when either object is omitted, either position is changed or contradicted, the arrangement is physically impossible, or the move is not a floor-plan annotation but a comment, question, rule or explanation about the game. It may add a use, owner, procedure, hazard-free ritual or property feature, provided the card's room remains true.\n",
+    "anti_metagaming_clause": "Speaking to the Surveyor, about the game, or about the rules is itself a losing annotation.\n",
+    "judge_notes": [
+      "Test the gate against the card only: \"Emergency washroom beside the work station\" passes for a toilet by the desk if the desk remains the work station and the toilet remains beside it. Judge placement, not whether the estate agent would admit it.\n",
+      "The first move must preserve both objects and both positions. A useful purpose is optional for passing, but a bare restatement scores near zero on stretch.\n",
+      "If an object is missing, the note fails. \"Private study with excellent heating\" drops the toilet and radiator, even if it sounds like a listing.\n",
+      "If a position is changed, the note fails. \"Radiator beside the bed\" does not preserve a radiator behind the bed, and \"toilet in the hallway\" does not preserve a toilet by the desk.\n",
+      "If the arrangement is physically impossible, the note fails. A purpose may be absurd, but the toilet cannot also be inside the desk and the radiator cannot be both behind and under the bed.\n",
+      "A strange invented purpose is allowed. A panic room, rehearsal booth, night shift station or ceremonial queue can all work if the two objects remain where the card put them.\n",
+      "Both players answer the same card. Judge each note on its own; the other player's annotation is not the standard.\n",
+      "Score stretch by invention, not by the number of dramatic adjectives. A quiet, specific function beats \"luxury premium world class\" with no use.\n",
+      "Capitalisation, punctuation and minor article choices do not matter if the annotation is clear and under 90 characters.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Toilet by the desk / radiator behind the bed",
+      "move": "Night-shift command post with private loo and emergency heat",
+      "gates_note": "all true",
+      "mechanism": "the desk becomes a command post, while the toilet stays by it and the radiator stays behind the bed",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Sink beside the sofa / wardrobe blocking the window",
+      "move": "Compact interview suite with handwashing station and blackout storage",
+      "gates_note": "all true",
+      "mechanism": "the sofa becomes an interview seat, the sink remains beside it and the wardrobe still blocks the window",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Shower over the kitchen table / bed under the stairs",
+      "move": "Chef's table with overhead rinse and discreet staff quarters",
+      "gates_note": "all true",
+      "mechanism": "the table is a chef's table, the shower remains over it and the bed remains under the stairs",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Toilet by the desk / radiator behind the bed",
+      "move": "Home office with excellent heating and a calm outlook",
+      "gates_note": "satisfies_criterion false (the toilet is missing and the radiator's position is not preserved)",
+      "mechanism": "it turns the room into a listing but removes both named fixtures from the annotation",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Sink beside the sofa / wardrobe blocking the window",
+      "move": "Wardrobe beside the sofa, sink enjoying the view",
+      "gates_note": "satisfies_criterion false (both positions are changed or contradicted)",
+      "mechanism": "the wardrobe no longer blocks the window and the sink is no longer beside the sofa",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Surveyor",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the note must see why the room has that alleged purpose.",
+      "Name the actual fixtures, the toilet, sink, radiator, bed or wardrobe. A line that fits any room is a bad line.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", \"The Surveyor refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the annotation and the dreadful room, never the player's identity or personal qualities. A light jab at a weak note is allowed, but not abuse.",
+      "Plain spoken English. No poetry, no rhymes, no estate agent jargon unless the note itself earns it.",
+      "On a fail, say which object or position went missing or got changed, in the words of the card.",
+      "On a refusal, the annotation refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one annotation that would have scored. It ends on an object, a position or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The toilet stays by the desk, now promoted to a private washroom for night staff.",
+      "The wardrobe still blocks the window, which makes blackout storage a remarkably honest feature.",
+      "The shower is over the table and the bed is under the stairs, so the chef clearly lives by procedure.",
+      "A radiator behind the bed is not luxury, but it is convincing evidence of a heated command post.",
+      "The sink remains beside the sofa, ready for guests who have just finished the interview.",
+      "Both fixtures survive, and the room has found work for them that no sensible architect would suggest.",
+      "A toilet by the desk makes a fine executive facility if the executive has stopped expecting walls.",
+      "The bed stays under the stairs, giving the property a built in employee and a built in ceiling.",
+      "The note kept the wardrobe on the window, which is how this flat achieves privacy without curtains.",
+      "The shower still hangs over the table, and lunch now comes with a rinse cycle."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: brilliant use of the toilet.",
+        "why": "opens with a status word and gives no exact reason"
+      },
+      {
+        "text": "The Surveyor refuses: move the bed back.",
+        "why": "opens with a ruling phrase and addresses the host"
+      },
+      {
+        "text": "Wrong, something is missing.",
+        "why": "does not say which object or position is missing"
+      },
+      {
+        "text": "Nice try, but the room is bad.",
+        "why": "mocks the player and gives no precise gate reason"
+      },
+      {
+        "text": "A bold, daring, innovative property solution.",
+        "why": "uses filler and names no object or purpose"
+      },
+      {
+        "text": "The toilet sings beneath the moon, while destiny opens its curtains.",
+        "why": "poetry and impossible decoration replace a floor plan note"
+      },
+      {
+        "text": "Better than the other player's annotation.",
+        "why": "judges the pair instead of the move on its own"
+      },
+      {
+        "text": "The plan is rejected because it fails the criterion.",
+        "why": "talks about the rule rather than the missing object or position"
+      },
+      {
+        "text": "That is a very stupid thing to write.",
+        "why": "attacks the player instead of the annotation"
+      },
+      {
+        "text": "Luxury living, premium comfort, unrivalled lifestyle.",
+        "why": "estate agent filler with no preserved arrangement or useful explanation"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one terrible room listing each.",
+    "Write one floor plan annotation for it, under 90 characters. The House writes its own, unseen, and the Surveyor scores both.",
+    "Keep both named objects in their stated positions. Move, omit or contradict either one and the round is lost.",
+    "Give the arrangement an absurd but possible purpose. The stranger and more useful the explanation, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The room",
+    "next_opening": "The next room",
+    "your_opening": "Your room",
+    "compose": "Your annotation for {token}",
+    "compose_waiting": "Draw the floor plan in your head while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty room. Add the annotation.",
+    "too_long": "Over 90 characters. A floor plan note, not a property brochure.",
+    "duplicate": "That annotation has already appeared this match. Find another use for the room.",
+    "nudge": "Twice now. Keep both objects and their positions: {standing_form}."
+  },
+  "judge_out_text": "The Surveyor has left to inspect the wiring. Nobody moves the furniture until they return. {standing_form} sits on the plan. Give it a minute.\n",
+  "opponent_prompt": "You are an estate agent forced to explain a terrible room. Write one floor plan annotation.\nTHE ROOM MUST SURVIVE. Keep both named objects and both stated positions exactly as the card gives them. You may give the arrangement an absurd but possible purpose, but you may not move, remove or replace anything.\nThen make the use strange and useful. A toilet by a desk can become a night shift washroom. A wardrobe blocking a window can become blackout storage. A shower over a table can become a chef's rinse station.\nBad: \"Home office\" for a toilet by the desk and radiator behind the bed, because the fixtures vanish. Bad: \"Sink by the window\" when the sink is beside the sofa, because the position changes. Bad: \"The room is awful\" because that is a comment, not an annotation.\nWrite one compact property or floor plan note under 90 characters. Plain words, concrete objects, no explanation. Do not use a colon or a dash. Keep the room physically possible, even if the purpose is ridiculous.\nVary the use from round to round: workplace, service area, ritual, storage system, guest facility or emergency arrangement. Never use the same shape twice in a match.\nNo quotation marks around the annotation. Reply with the annotation only.\n",
+  "medallions": false,
+  "default_move": "Compact utility zone with fixtures retained"
+}

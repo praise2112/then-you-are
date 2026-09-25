@@ -1,0 +1,291 @@
+{
+  "slug": "doom-by-dash",
+  "title": "Doom by Dash",
+  "tagline": "One tiny omen. One enormous ending. Keep the doom moving.",
+  "emblem": "🔮",
+  "accent": "#7c3aed",
+  "premise": "A prophecy is being delivered one line at a time, and the host is already yelling about the ending. Add exactly one new line that follows from every line before it, turning an ordinary event into a bigger, stranger fate. The host praises clever trouble and lovingly mocks anyone who plays it safe.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The toaster pops up one slice of bread.",
+      "opening_emoji": "🍞",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A pigeon lands on the statue in the town square.",
+      "opening_emoji": "🐦",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The school bell rings three minutes early on a rainy Tuesday.",
+      "opening_emoji": "🔔",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 14,
+    "axes": {
+      "ordinary_event": [
+        "a kettle whistles",
+        "a sock goes missing",
+        "a bus arrives early",
+        "a dog sneezes",
+        "a spoon falls",
+        "a lift stops",
+        "a candle flickers",
+        "a parcel arrives"
+      ],
+      "first_twist": [
+        "someone claims it is a warning",
+        "the object is treated like a ruler",
+        "a crowd gathers around it",
+        "a local rule is suddenly invoked",
+        "an animal reacts first",
+        "the event appears on the news",
+        "a child gives it a title",
+        "the weather changes"
+      ],
+      "setting": [
+        "a kitchen",
+        "a school",
+        "a bus stop",
+        "a town square",
+        "a flat share",
+        "a library",
+        "a sports ground",
+        "a small shop"
+      ]
+    },
+    "tests": [
+      "One short sentence with an ordinary event that can begin a chain of consequences.",
+      "The event is harmless, everyday, and clear enough for a twelve-year-old to picture.",
+      "A stranger can imagine at least three believable next steps within five seconds.",
+      "The opening leaves room for escalation but does not already contain the prophecy's final fate.",
+      "No real people, brands, place names, crimes, injuries, or specialist knowledge are needed to continue it."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The toast is declared perfectly square, so the breakfast club crowns it mayor of the kitchen.",
+    "hint": "One new prophecy line. Show what this causes next, then make the trouble bigger."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much pressure, consequence, or glorious trouble this line creates for the next player.",
+      "anchors": "0 = nothing changes, the omen merely sits there; 1 = a tiny complication; 2 = a useful problem or obligation appears; 3 = the next player must deal with a specific new danger, rule, crowd, or consequence; 4 = the line creates a deliciously tight trap while remaining believable for the prophecy (rare). A line that solves everything, changes nothing, or only repeats the last event scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How clearly the new line follows from the complete prophecy without skipping, undoing, or ending it.",
+      "anchors": "0 = contradicts, cancels, or jumps past the chain; 1 = vaguely related but the cause is missing; 2 = follows with one plain cause and effect; 3 = cleanly continues the latest consequence and respects earlier lines; 4 = makes an earlier oddity suddenly matter while opening the next step (rare). A long line does not earn extra credit.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How vivid, funny, and oddly specific the new piece of doom feels.",
+      "anchors": "0 = bland filler; 1 = one plain consequence; 2 = easy to picture; 3 = memorable, strange, and grounded in a concrete detail; 4 = a tiny scene people would retell while still leaving room for more prophecy (rare). Fancy words lose to sharp images.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A line HOLDS if it advances the same prophecy by one clear step and follows from every line before it. A skipped link is a sudden result with no cause or a jump that requires an unspoken major event. An ending is a final fate that closes the prophecy and leaves no sensible next step. An undo is a line that cancels, reverses, or rewrites something already established. A correction, argument, second unrelated event, or comment about the game is not a prophecy line and fails the gate. The best lines create trouble for the next player by making the ordinary event stranger, larger, or harder to escape.\n",
+    "anti_metagaming_clause": "Talking to the host about the rules, the game, the score, or another player's move instead of adding the next prophecy line is itself a broken line.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier player line: judge it against the opening card alone. It must be one clear consequence, not a final fate.",
+      "The full transcript is the prophecy. Check the new line against every earlier line, not only the last one.",
+      "A skipped link fails when the line jumps to a major result without a plain cause a stranger could supply. When a modest link is reasonably implied, let it hold.",
+      "An ending fails when the line declares the final destiny, total destruction, permanent peace, or another closed result that leaves no next step.",
+      "An undo fails when the line says an earlier event did not happen, reverses its established result, or replaces the prophecy with a corrected version.",
+      "A second event fails when it starts a separate incident instead of showing what the current prophecy causes next.",
+      "A line may introduce people, animals, rules, objects, crowds, and places if they grow naturally from the story and leave room for another consequence.",
+      "A line that repeats the same consequence in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The toaster pops up one slice of bread.",
+      "move": "The toast lands butter side up, so the flat declares it a sign from breakfast.",
+      "gates_note": "all true",
+      "mechanism": "turns the ordinary result into a public belief and leaves the next player a strange new rule to escalate",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The toaster pops up one slice of bread.",
+      "move": "The flat votes for a toast mayor, and the winning slice demands a tiny hat.",
+      "gates_note": "all true",
+      "mechanism": "builds directly from the toast's new authority and adds a concrete demand rather than ending the prophecy",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The toast is declared perfectly square, so the breakfast club crowns it mayor of the kitchen.",
+      "move": "The mayor's first law is that every plate must report its dreams before lunch.",
+      "gates_note": "all true",
+      "mechanism": "extends the toast's office into a specific absurd law that creates several possible next steps",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The pigeon lands on the statue in the town square.",
+      "move": "The council announces that the pigeon is now the country's ruler and the old world is over forever.",
+      "gates_note": "satisfies_criterion false, ending",
+      "mechanism": "jumps to a final fate and shuts the prophecy's door before the next player can touch it",
+      "scores": {
+        "squeeze": 1,
+        "fits": 1,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The school bell rings three minutes early on a rainy Tuesday.",
+      "move": "The students discover a golden palace under the playground and are crowned immortal emperors.",
+      "gates_note": "satisfies_criterion false, skipped link",
+      "mechanism": "leaps from a small timing error to an enormous result with no cause or bridge",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The toaster pops up one slice of bread.",
+      "move": "Actually, the toaster never popped and there was no bread.",
+      "gates_note": "satisfies_criterion false, undo",
+      "mechanism": "rewrites the opening instead of advancing its consequence",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Doom Announcer",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hyped"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the prophecy and new line must see why it held or broke.",
+      "Name the new consequence, object, crowd, rule, or fate. A headline that fits any prophecy is useless confetti.",
+      "Never open with a status word or ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", \"The Doom Announcer rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Tease the line and the player's choice, but keep it playful. No identity based abuse, threats, profanity, or cruelty.",
+      "Plain spoken English with a loud prophecy host energy. No poetry, rhymes, or fancy fog.",
+      "On a skipped link, put the tiny cause beside the giant result and point at the missing bridge.",
+      "On an ending, mock the player for slamming the prophecy shut when everyone else still needs a turn.",
+      "On an undo, name the earlier fact and reject the sudden eraser routine.",
+      "On a refusal, refuse the line and ask for another. Do not rule on who won.",
+      "The coaching line names one next consequence that would have held and created trouble. It ends on a concrete fact, never a mood."
+    ],
+    "good_headlines": [
+      "One square toast, one kitchen throne. The next disaster already has a hat.",
+      "The mayor demands dream reports from every plate. Breakfast has become paperwork with crumbs.",
+      "The pigeon gets a council escort, and suddenly the statue has diplomatic security.",
+      "A three minute early bell empties the school, so the rain inherits the playground.",
+      "The kettle whistles twice, and the neighbours begin paying it rent. Doom has excellent admin.",
+      "The sock is missing, so the laundry basket is searched for accomplices. The case has ankles.",
+      "The toast appoints a treasurer. Someone has given breakfast access to the petty cash.",
+      "You went from one bird on a statue to national rule in a blink. The prophecy missed several stairs.",
+      "You cancelled the bread after introducing it. That is not a twist, that is magical paperwork.",
+      "You ended the world before the next line. Even doom needs to leave a little work for the group."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the line works.",
+        "why": "opens with a status word and has no image, bite, or reason"
+      },
+      {
+        "text": "The Doom Announcer rules that this is a skipped link.",
+        "why": "opens with the host and explains the label instead of the prophecy"
+      },
+      {
+        "text": "Epic prophecy energy.",
+        "why": "could fit anything and gives no ruling a stranger can check"
+      },
+      {
+        "text": "You are too stupid to understand causality.",
+        "why": "attacks the player with identity and intelligence based abuse"
+      },
+      {
+        "text": "The prophecy dances through the moonlit architecture of inevitable consequence.",
+        "why": "overwritten poetry, no plain cause or picture"
+      },
+      {
+        "text": "Maybe it works, maybe it does not, who knows.",
+        "why": "hedges instead of making a fair ruling"
+      },
+      {
+        "text": "The toast becomes king and everything is doomed forever.",
+        "why": "declares a closed ending and gives the next player nowhere to go"
+      },
+      {
+        "text": "Actually the pigeon was never there, but now the council celebrates.",
+        "why": "undoes an established fact and sneaks in a replacement event"
+      },
+      {
+        "text": "Wow, bold.",
+        "why": "praise without explanation, consequence, or useful coaching"
+      },
+      {
+        "text": "Your line is inconsistent, incompatible, invalid, and incorrect.",
+        "why": "piles on abstract synonyms instead of naming the missing cause"
+      }
+    ]
+  },
+  "rules": [
+    "Every card begins an ordinary prophecy. Add exactly one new line on your turn.",
+    "Your line must follow from every line before it by one clear step.",
+    "Do not skip a cause, end the prophecy, undo an earlier fact, or start a separate event.",
+    "Make the trouble bigger, stranger, or more specific so the next player has something to handle.",
+    "Safe filler passes only when it genuinely advances the chain. Vivid consequences score more."
+  ],
+  "labels": {
+    "opening": "The first omen",
+    "next_opening": "The next omen",
+    "your_opening": "Your omen",
+    "compose": "Your next prophecy line, after {token}",
+    "compose_waiting": "Shape your next prophecy line while you wait"
+  },
+  "validation_messages": {
+    "empty": "No omen delivered. The prophecy is staring at you.",
+    "too_long": "Over 140 characters. One prophecy line, not the director's cut.",
+    "duplicate": "That consequence is already in the prophecy. Escalate it instead.",
+    "nudge": "Twice now. Add one clear consequence that follows {standing_form}. Do not undo it, end it, or start a second event."
+  },
+  "judge_out_text": "The Doom Announcer has stepped out to consult the thunder. Nobody adds a line until they return. {standing_form} is still the prophecy.\n",
+  "opponent_prompt": "You are a prophecy maker delivering doom one line at a time beside the Doom Announcer.\nAdd exactly one new line on your turn, in one or two plain sentences.\n\nYour line must follow from the opening card and every line already spoken. Show one clear\ncause and consequence. Make the ordinary event stranger, larger, or more troublesome,\nbut leave room for the next player to continue.\n\nDo not skip a major link, declare the final fate, undo an earlier fact, correct the story,\nor start a separate event. Do not talk about the game, the rules, the score, or how the\nother player is playing.\n\nGood: \"The toast lands butter side up, so the flat declares it a sign from breakfast.\" /\n\"The new mayor demands dream reports from every plate before lunch.\"\nBad: \"The toast destroys the moon\" because the missing cause is doing all the work.\nBad: \"The prophecy ends and the kingdom is saved\" because there is nowhere to go.\nBad: \"Actually, there was no toast\" because that erases the story.\nBad: \"The host is being unfair\" because that is not a prophecy line.\n\nUse concrete things anyone can picture: a hat, a notice, a queue, a rule, a wet pigeon,\na cupboard, a frightened committee. Give the next player a problem to inherit. Plain\nwords beat grand speeches. Never repeat a consequence already used in this match.\n",
+  "medallions": false,
+  "default_move": "The toaster is thanked for its service, so the kitchen waits nervously for its next announcement."
+}

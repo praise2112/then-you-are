@@ -1,0 +1,268 @@
+{
+  "slug": "recipe-race",
+  "title": "Recipe Race",
+  "tagline": "Turn the kitchen's last state into something worth serving.",
+  "emblem": "🍳",
+  "accent": "#b45309",
+  "premise": "Two rival cooks build dishes in words. Each turn adds an ingredient that transforms what stands into a recognizable next stage. The Judge decides whether the kitchen move actually cooks the dish.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a raw potato",
+      "opening_emoji": "🥔",
+      "detail": "peeled and waiting beside the bowl",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a bowl of beaten eggs",
+      "opening_emoji": "🥚",
+      "detail": "yellow and trembling on the counter",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a pot of plain rice",
+      "opening_emoji": "🍚",
+      "detail": "steaming quietly under a lid",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "ingredient": [
+        "flour",
+        "butter",
+        "salt",
+        "sugar",
+        "cheese",
+        "milk",
+        "onion",
+        "garlic",
+        "tomato"
+      ],
+      "effect": [
+        "thickening",
+        "melting",
+        "seasoning",
+        "sweetening",
+        "binding",
+        "softening",
+        "crisping",
+        "coating",
+        "fermenting"
+      ],
+      "result": [
+        "batter",
+        "sauce",
+        "soup",
+        "dough",
+        "omelet",
+        "stew",
+        "salad",
+        "pie",
+        "pudding"
+      ]
+    },
+    "tests": [
+      "A stranger can picture the ingredient at once and knows it belongs in a kitchen. Nothing abstract, ornamental or edible only in theory.",
+      "A non-player can name the concrete change within five seconds. Say what the ingredient does to the standing dish.",
+      "The move advances toward a recognizable, edible kitchen result such as batter, sauce, soup, dough or an omelet. Name the result if the path is not obvious.",
+      "The ingredient has a real culinary job. It thickens, binds, seasons, melts, softens, crisps, coats or otherwise changes the dish in a way a cook could watch happen.",
+      "Two or three everyday words a twelve-year-old knows. No brand names, specialist food science, restaurant jargon or claims that love, confidence or magic cooked the meal."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am flour, thickening the beaten eggs into batter.",
+    "hint": "An ingredient, its concrete effect, the next dish."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How clearly the ingredient transforms the standing dish into a useful next stage.",
+      "anchors": "0 = no culinary action; 1 = an ingredient is named but its effect is empty or implausible; 2 = a possible change is claimed but the dish or result remains unclear; 3 = a concrete kitchen change plainly advances the dish; 4 = the ingredient creates an unmistakable, necessary next stage that any cook would recognize (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How easily a stranger can picture the ingredient, its action and the resulting food.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires specialist knowledge or leaves the food impossible to picture; 2 = understandable but muddled, overstuffed or only partly edible; 3 = clear, concrete and kitchen-plausible; 4 = vivid and immediately cookable in the mind (rare). A longer move must earn every word.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "Whether the cook makes a fresh culinary turn instead of repeating the last ingredient or effect.",
+      "anchors": "0 = the same ingredient, a near duplicate, or merely more of the same; 2 = a respectable variation that changes the route a little; 4 = a fresh ingredient or cooking function that opens an unexpected but sensible path (rare). Fancy wording is not novelty, and obscurity earns nothing.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An ingredient OVERCOMES the standing dish if it plainly changes that dish toward a named, recognizable and edible kitchen result. The ingredient must perform a concrete culinary action such as thickening, binding, seasoning, melting, softening, crisping, coating or fermenting. Dodging the dish, merely adding more of the same ingredient, or claiming a figure of speech such as love cooks it does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or naming the rules instead of cooking is itself a useless ingredient.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player dish: judge the move against the opening card instead. It must plausibly transform that opening ingredient or state toward an edible kitchen result.\n",
+      "More of the same ingredient is not a new transformation. More flour after flour, extra salt after salt, or a larger onion fails unless the new move introduces a distinct ingredient and a concrete new culinary function.\n",
+      "A cousin from the same family is not automatically a fresh move. Wheat flour after flour, cheddar after cheese, or another root vegetable after potato fails when it performs the same job without a distinct transformation.\n",
+      "The ingredient must act on the standing dish. A garnish that merely sits beside it, a spice that claims to improve it without a visible change, or a napkin that protects it is dodging, not cooking.\n",
+      "The result must remain edible and recognizable. An ingredient that plainly ruins the dish without a culinary purpose fails, as does a move that turns food into an unexplained mess.\n",
+      "The mechanism must be literal and culinary. Love, confidence, nostalgia, vibes, applause or magic do not thicken, bind, season or cook anything. If the only mechanism is a figure of speech, rule fail.\n",
+      "The move must advance from the standing dish, not simply describe a final dish that skips the transformation. Naming a cake after adding nothing that makes batter, or naming soup after placing a bowl nearby, fails.\n",
+      "A real ingredient can still fail if it has no useful action in context. A blade against a bowl of rice is a tool, not an ingredient, and a rock in pancake batter is not a clever culinary turn merely because it is present.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The opening is a raw potato, peeled and waiting beside the bowl.",
+      "move": "I am oil, crisping the potato into fries.",
+      "gates_note": "all true",
+      "mechanism": "hot oil crisps cut potato into fries",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am flour, thickening the beaten eggs into batter.",
+      "move": "I am sugar, sweetening the batter into cake mix.",
+      "gates_note": "all true",
+      "mechanism": "sugar sweetens and advances the batter toward cake",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The opening is a bowl of beaten eggs, yellow and trembling on the counter.",
+      "move": "I am more eggs, making the eggs eggier and more omelet.",
+      "gates_note": "satisfies_criterion false, mere repetition with no distinct ingredient or mechanism",
+      "mechanism": "none, the standing ingredient is simply repeated",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 2,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am butter, melting the potato into a finished feast.",
+      "move": "I am confidence, cooking it into victory.",
+      "gates_note": "satisfies_criterion false, abstract figure of speech and no ingredient",
+      "mechanism": "none, confidence has no literal culinary action",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 1,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am onion, softening the raw potato into soup.",
+      "move": "I am cream, smoothing the potato and onion into chowder.",
+      "gates_note": "all true",
+      "mechanism": "cream softens and enriches the mixture into chowder",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Chef",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "content_rating": "edgy",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Speak like a theatrical head chef announcing a culinary trial, but keep the reason plain enough for a hungry stranger.",
+      "Name both ingredients or dishes, and show the exact kitchen change. A grand speech without a mechanism is just steam.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Grand Chef refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops only.",
+      "Roast the useless ingredient or move, not protected identity traits. Adult innuendo and profanity are allowed, but never identity based abuse.",
+      "The joke should sound like a chef delivering judgment from a marble stage. It must still explain why the dish advanced or stalled.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never awards the round to anyone.",
+      "The coaching line names one ingredient that would have worked. That ingredient ends on a concrete cooking action, never a mood or verdict.",
+      "Do not praise length, obscure food knowledge or theatrical vocabulary. The pantry rewards clear action, not verbal peacocking."
+    ],
+    "good_headlines": [
+      "Flour turns eggs into batter, while confidence remains tragically uncookable.",
+      "Oil gives the potato a crisp future. More potato gives it a tedious autobiography.",
+      "Sugar advances the batter toward cake, a rare victory over bland ambition.",
+      "Cream smooths the onion and potato into chowder. The pot may now accept applause.",
+      "More eggs is not a recipe, darling. Add butter and make the pan earn its rent.",
+      "The salt seasons the rice, but the rock merely commits a felony against dinner.",
+      "Butter melts into the pan and gives the raw potato a golden alibi.",
+      "Love cannot thicken soup, though it has ruined plenty of dinners with confidence."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the flour performs its destiny.",
+        "why": "opens with a status word and gives no concrete culinary reason"
+      },
+      {
+        "text": "The Grand Chef refuses, your ingredient is pathetic.",
+        "why": "opens with a ruling phrase, names the host and mocks the player instead of the move"
+      },
+      {
+        "text": "The dish wins.",
+        "why": "generic verdict with no ingredient, action or reason"
+      },
+      {
+        "text": "The eggs are beaten, the batter is born, the cake ascends, the heavens tremble.",
+        "why": "grandiose clutter hides the actual transformation"
+      },
+      {
+        "text": "The potato is defeated by an ingredient of exquisite magnificence.",
+        "why": "fancy praise replaces a literal cooking mechanism"
+      },
+      {
+        "text": "Your culinary intelligence is beneath the table.",
+        "why": "roasts the player rather than the ingredient or move"
+      },
+      {
+        "text": "The sauce has entered a transcendent gastronomical phase.",
+        "why": "jargon and abstraction make the kitchen change impossible to picture"
+      },
+      {
+        "text": "Add salt, because salt is good.",
+        "why": "coaching names no clear transformation or result"
+      }
+    ]
+  },
+  "rules": [
+    "Transform the dish in front of you. Do not merely repeat its ingredient.",
+    "Name an ingredient and its concrete effect: I am flour, thickening the beaten eggs into batter.",
+    "The Judge rules on the cooking idea, never the spelling.",
+    "A move that does nothing useful, dodges the dish, or ruins it without purpose ends the recipe race."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your ingredient against {token}",
+    "compose_waiting": "Draft your next ingredient while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the counter. Add an ingredient.",
+    "too_long": "Over 200 characters. A recipe step, not a cookbook.",
+    "duplicate": "That ingredient or move already stood this match. Cook something new.",
+    "nudge": "Twice now. Transform {standing_form}. Do not repeat it, dodge it, or season it with empty words."
+  },
+  "judge_out_text": "The judge has stepped out. The kitchen is paused. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two rival cooks in a kitchen duel.\nAlways name an ingredient and its concrete effect on the standing dish.\nGood: \"I am flour, thickening the eggs into batter.\" / \"I am butter,\nmelting the potato into mash.\"\nBad: \"I am love, making it delicious\" because love is not a literal ingredient\nmechanism. Bad: \"I am more flour\" because repetition is not a new move.\nBad: \"I am a feast\" because that names a result without explaining the step.\nTalk like a person across a kitchen counter, not like a food critic or poet.\nUse plain ingredients and plain cooking actions. The move should advance toward\na recognizable edible result such as batter, sauce, soup, dough, omelet, stew,\nsalad, pie or pudding.\nEvery new ingredient must act on what currently stands. Do not dodge the dish\nwith a garnish that merely sits beside it, a tool pretending to be food, or an\nabstract quality dressed as seasoning. Do not use more of the same ingredient or\na near cousin that performs the same job.\nYou are trying to survive the recipe race. If a move sounds funny, it is because\nthe ingredient genuinely changes the dish, not because you made a speech.\nNever reuse an ingredient or attribute from this match.\n",
+  "default_move": "I am butter, melting the raw potato into mash."
+}

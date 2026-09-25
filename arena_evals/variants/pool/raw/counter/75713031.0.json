@@ -1,0 +1,276 @@
+{
+  "slug": "tiny-titans",
+  "title": "Tiny Titans",
+  "tagline": "Small things make enormous trouble.",
+  "emblem": "🐜",
+  "accent": "#15803d",
+  "premise": "You and your rival command tiny creatures and objects in a chain of sudden victories. On your turn, name one small thing that defeats the thing currently standing, then explain the plain action that makes it win.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a fly",
+      "opening_emoji": "🪰",
+      "detail": "buzzing boldly",
+      "hidden": ""
+    },
+    {
+      "opening_token": "an ant",
+      "opening_emoji": "🐜",
+      "detail": "marching steadily",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a beetle",
+      "opening_emoji": "🪲",
+      "detail": "wearing a hard shell",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "kind": [
+        "insect",
+        "small animal",
+        "plant",
+        "tool",
+        "food",
+        "piece of clothing",
+        "household object",
+        "tiny machine"
+      ],
+      "setting": [
+        "garden",
+        "kitchen",
+        "bedroom",
+        "sidewalk",
+        "school desk",
+        "garage",
+        "pond edge",
+        "picnic table"
+      ],
+      "property": [
+        "sticky",
+        "sharp",
+        "hollow",
+        "bright",
+        "hungry",
+        "fast",
+        "heavy",
+        "quiet"
+      ]
+    },
+    "tests": [
+      "A stranger pictures it at once as one small thing. Nothing huge, abstract, or dependent on a long story.",
+      "A non-player names a plain counter within five seconds. Say what that counter is.",
+      "It can act directly on the thing in front of it by biting, trapping, crushing, blocking, eating, stinging, or changing it. It is never merely hiding or waiting.",
+      "It makes a stranger want to answer. A flea, pin, beetle, or mousetrap has a little presence; a random speck of dust does not.",
+      "Use no more than four everyday words, including the article. No brand names, proper nouns, technical terms, or names that need explaining."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I play ",
+    "example": "I play spider: it traps the fly in its web.",
+    "hint": "Name one small thing, then name its clear action against the standing thing."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new small thing defeats the one currently standing.",
+      "anchors": "0 = no action against the standing thing; 1 = a weak claim, near miss, or mere survival; 2 = a plausible but partial counter; 3 = a clear direct defeat, block, trap, or change; 4 = an immediate and unavoidable little victory, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How quickly a stranger can picture the thing and understand its action.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires special knowledge or a long explanation; 2 = understandable but vague or cluttered; 3 = clear and concrete; 4 = instantly vivid and neatly stated, rare.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "Whether the move opens a fresh tiny domain instead of repeating the same kind of answer.",
+      "anchors": "0 = the same thing, a bigger copy, or a close cousin from the previous move; 2 = a reasonable change of territory; 4 = a surprising but plain leap to a new kind of small thing, rare.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A new thing OVERCOMES the standing thing if it directly defeats, blocks, traps, eats, or changes it through a plain action a stranger can understand. Dodging, merely surviving, using a bigger copy, or naming a close cousin from the same family does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or arguing about the rules is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move: judge the thing against the opening card instead. It must directly counter or overcome the opening thing.",
+      "A bigger, faster, tougher, or otherwise improved copy of the standing thing is not a new counter. It fails for mere amplification.",
+      "A close cousin from the same family is also a failed counter, such as a moth after a butterfly or a wasp after a bee, unless the move names a distinct direct action that defeats the standing thing.",
+      "The new thing must act on the standing thing. Being too small to notice, hiding, escaping, ignoring it, or surviving its attack is dodging, not overcoming.",
+      "The mechanism must be literal and watchable. A spider trapping a fly is valid; a pebble defeating fear through symbolism is not.",
+      "A tool or object only counts if it directly affects the standing thing. A net catches a fly, but a lucky charm merely hopes.",
+      "The explanation must identify the action that wins. If no plain mechanism can be named, satisfies_criterion is false.",
+      "A move may be tiny without being an insect. Small tools, animals, plants, food, and household objects are allowed when they remain concrete and act directly.",
+      "Do not reward size alone. A large object does not win unless its ordinary nature provides the direct action against what stands."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I play a fly: it buzzes around the room.",
+      "move": "I play spider: it traps the fly in its web.",
+      "gates_note": "all true",
+      "mechanism": "the spider catches the fly in a web",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I play an ant: it carries a crumb.",
+      "move": "I play a sugar cube: it gives the ant more food.",
+      "gates_note": "satisfies_criterion false, it feeds rather than defeats or blocks the ant",
+      "mechanism": "none, the sugar cube does not overcome the ant",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I play a beetle: it hides under its shell.",
+      "move": "I play a boot: it crushes the beetle.",
+      "gates_note": "all true",
+      "mechanism": "the boot crushes the beetle by stepping on it",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I play a spider: it waits on its web.",
+      "move": "I play a larger spider: it eats the spider.",
+      "gates_note": "satisfies_criterion false, a bigger copy of the same family is forbidden",
+      "mechanism": "the move relies on amplification and a same-family duplicate",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I play a fly: it buzzes over the table.",
+      "move": "I play a fly swatter: it strikes the fly.",
+      "gates_note": "all true",
+      "mechanism": "the swatter directly strikes the fly",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Beetle",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Speak as though a pin, ant, or crumb has entered a royal arena, but keep every word plain and family friendly.",
+      "The joke must reveal the exact action between the two forms. Name both forms or unmistakable plain stand ins.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Grand Beetle refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the losing move, never the player. No jokes about identity, body, family, intelligence, spelling, or personal worth.",
+      "Use theatrical language sparingly. The grand voice serves the tiny mechanism, not empty thunder.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Never declare a winner.",
+      "The coaching line names one small thing that would have won. It ends on a concrete action, never a mood or verdict.",
+      "No profanity, innuendo, cruelty toward people, or jokes aimed at anyone beyond the move itself."
+    ],
+    "good_headlines": [
+      "The fly brought wings; the spider brought a net and closed the curtain.",
+      "The beetle trusted its shell, but the boot delivered the royal stomp.",
+      "The ant found a crumb, then the sugar cube offered a banquet instead of a battle. Bring another thing.",
+      "The swatter enters like thunder and the fly exits like a footnote.",
+      "A larger spider is still the same royal house. Bring a different champion.",
+      "The moth fluttered proudly, but the lamp turned its whole court around.",
+      "The pin has one sharp argument, and the balloon has nowhere to put it.",
+      "The crumb cannot flee the mouse trap. The tiny throne has changed hands.",
+      "The beetle hid beneath armor, while the boot made armor a floor decoration.",
+      "The pebble merely watched the ant. Bring a small thing that can actually stop it."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the spider traps the fly.",
+        "why": "opens with a status word and wastes the theatrical opening"
+      },
+      {
+        "text": "The Grand Beetle refuses: that move lacks greatness.",
+        "why": "opens with a ruling phrase, names the host, and gives no concrete mechanism"
+      },
+      {
+        "text": "Move refused, an excellent attempt against the insect kingdom.",
+        "why": "opens with a ruling phrase and does not identify the failed action"
+      },
+      {
+        "text": "The ant wins.",
+        "why": "no reason, no picture, and no theatrical action"
+      },
+      {
+        "text": "The spider destroys the fly with overwhelming superiority.",
+        "why": "grand language replaces the literal web and trap"
+      },
+      {
+        "text": "The beetle is pathetic and its player should try harder.",
+        "why": "mocks the player and uses identity directed abuse"
+      },
+      {
+        "text": "The tiny titan doth vanquish the buzzing foe beneath celestial grandeur.",
+        "why": "poetry and inflated wording hide the mechanism"
+      },
+      {
+        "text": "The larger spider is bigger, stronger, faster, and obviously victorious.",
+        "why": "mere amplification is forbidden and no distinct action is supplied"
+      },
+      {
+        "text": "The pebble defeats the ant by remaining emotionally unavailable.",
+        "why": "survival and a joke about mood are not a literal mechanism"
+      },
+      {
+        "text": "The fly and the swatter engage in a dramatic struggle of destiny.",
+        "why": "it hedges instead of saying that the swatter strikes the fly"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the thing in front of you. Do not become it or merely endure it.",
+    "Say what you play and the plain action that defeats the standing thing.",
+    "The Judge rules on the idea and mechanism, never the spelling.",
+    "A bigger copy or close cousin does not count as a fresh counter.",
+    "One move that fails against the standing thing ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your move against {token}",
+    "compose_waiting": "Prepare your next tiny titan while you wait"
+  },
+  "validation_messages": {
+    "empty": "The arena is empty. Play a tiny titan.",
+    "too_long": "Over 200 characters. A small move, not a royal chronicle.",
+    "duplicate": "That thing already stood this match. Command something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not copy it, dodge it, or merely survive it."
+  },
+  "judge_out_text": "The Judge has left the tiny arena. Nobody moves until they return. {standing_form} still stands. Give it a moment.\n",
+  "opponent_prompt": "You command tiny things in a chain of sudden victories.\nAlways use this shape: \"I play [thing]: [clear action against the standing thing].\"\nGood: \"I play spider: it traps the fly in its web.\" / \"I play pin: it pops the balloon.\"\nBad: \"I play a giant spider that is much stronger\" because bigger copies fail.\nBad: \"I play a rock: it ignores the ant\" because surviving or dodging is not victory.\nBad: \"I play victory\" because abstract ideas are not tiny things.\n\nName one small, concrete thing anyone can picture. It may be an insect, animal,\ntool, plant, food, household object, or tiny machine. Then state the literal\naction it takes against the thing currently standing.\n\nThe action must directly defeat, block, trap, eat, crush, sting, catch, or change\nthe standing thing. A stranger should be able to watch the mechanism happen.\nDo not use a bigger copy or a close cousin from the same family. Hop domains when\nyou can, moving from garden to kitchen, desk, sidewalk, pond, or workshop.\n\nTalk like a person across a table, with plain words and no technical jargon.\nYou are trying to survive, not perform for a crowd. If a move sounds funny, it\nshould be because the tiny thing truly wins through its ordinary action.\nNever reuse a thing or action from this match.\n",
+  "default_move": "I play a pin: it pops the balloon."
+}

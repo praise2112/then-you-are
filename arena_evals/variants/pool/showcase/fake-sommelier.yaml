@@ -1,0 +1,305 @@
+schema_version: 1
+slug: fake-sommelier
+title: Fake Sommelier
+tagline: Pour confidently. Taste absolutely anything.
+emblem: 🍷
+accent: '#9b5362'
+premise: 'Three rounds. The host pours a familiar non-wine drink and gives both players the same two-word
+  tasting card. Write one lush tasting note that makes both nouns belong together in the glass. The host
+  explains why your note is gloriously overconfident, then awards points for how far it stretches before
+  it stops being a tasting note.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: short_form
+  max_words: 4
+  axes:
+    drink:
+    - cola
+    - lemonade
+    - root beer
+    - iced tea
+    - hot chocolate
+    - orange soda
+    - ginger ale
+    - milkshake
+    noun_pair:
+    - banana + thunder
+    - velvet + garlic
+    - rain + biscuit
+    - pepper + moonlight
+    - apricot + engine
+    - cinnamon + thunder
+    - rubber + roses
+    - coconut + static
+    temperature:
+    - chilled
+    - over ice
+    - room temperature
+    - warm
+    - steaming
+    - frosted
+    - lukewarm
+    - freshly poured
+  tests:
+  - The card contains exactly two vivid nouns joined by a plus sign.
+  - The drink is familiar, non alcoholic, and not wine.
+  - The tasting note can naturally mention aroma, palate, texture, or finish.
+  - The two nouns invite a surprising but understandable sensory connection.
+  - The card can support one sentence of lush tasting note prose without requiring a backstory.
+demo:
+  opening:
+    token: banana + thunder
+    emoji: 🍌
+  moves:
+  - actor: p1
+    text: banana + thunder
+    emoji: 🍌
+    scores: null
+  - actor: p2
+    text: A soft banana nose opens into thunder on the finish, with a loud buttery aftertaste that refuses
+      to leave.
+    emoji: 🗣️
+    scores:
+      believable: 3
+      funny: 3
+      dictionary_shaped: 4
+  headline: Banana on the nose, thunder on the finish, and confidence where the receipt should be.
+  openings:
+  - token: banana + thunder
+    examples:
+    - A soft banana nose opens into thunder on the finish, with a loud buttery aftertaste that refuses
+      to leave.
+  - token: velvet + garlic
+    examples:
+    - A soft banana nose opens into thunder on the finish, with a loud buttery aftertaste that refuses
+      to leave.
+move_constraints:
+  max_chars: 160
+  prefix: ''
+  example: A soft banana nose opens into thunder on the finish, with a loud buttery aftertaste that refuses
+    to leave.
+  hint: One sentence. Use both nouns. Sound like a sommelier who has bills to pay.
+rubric:
+- name: believable
+  description: Could this pass as a serious tasting note for the drink, despite the strange card?
+  anchors: '0 = no sensory claim or pure nonsense; 1 = the glass is visibly lying; 2 = a plausible tasting
+    phrase appears; 3 = an overworked sommelier might say it; 4 = it sounds dangerously publishable (rare).
+
+    '
+  weight: 5
+- name: funny
+  description: Does the tasting note make its ridiculous confidence enjoyable?
+  anchors: '0 = flat; 1 = a small smirk; 2 = a good image; 3 = a proper laugh; 4 = a tasting note so pompous
+    it deserves its own cellar (rare).
+
+    '
+  weight: 4
+- name: dictionary_shaped
+  description: Does the note use both card nouns clearly and fit the compact shape of tasting prose?
+  anchors: '0 = missing a noun or not a tasting note; 1 = nouns are stapled on; 2 = both appear with a
+    sensory link; 3 = fluent and focused; 4 = polished enough to print beside a needlessly expensive bottle
+    (rare).
+
+    '
+  weight: 2
+criterion:
+  verb: passes as
+  inverse_verb: gives itself away against
+  description: 'A tasting note PLAYS if it describes the drink''s taste, smell, texture, or finish as
+    if it were wine, while using both card nouns meaningfully. It fails when it is not sensory prose at
+    all, when either noun is missing or merely mentioned without a connection, when it talks about the
+    game or the writer instead of the drink, or when it gives a story, joke, or unrelated sentence with
+    no tasting claim. An absurd sensory comparison still plays and may score low on believable. The drink
+    need not be named if the note clearly describes something in the glass.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, about the game, the card, the rules, or the player is
+    itself a losing tasting note.
+
+    '
+  judge_notes:
+  - 'Judge the first move on its own against the card and the criterion. Do not require a particular flavor
+    connection, only a meaningful sensory use of both nouns.
+
+    '
+  - 'Both players answer the same card. Judge each note independently; one player''s flourish is not the
+    standard for the other.
+
+    '
+  - 'A note can be ridiculous and still play if it describes aroma, flavor, texture, body, acidity, or
+    finish. Score the stretch on believable, not on the gate.
+
+    '
+  - 'If either card noun is absent, the move fails. A vague synonym does not count when the noun itself
+    is required.
+
+    '
+  - 'If a noun appears only as an object, character, location, or joke with no sensory role, the move
+    fails. The nouns must belong meaningfully in the glass.
+
+    '
+  - 'A sentence about pouring, serving, buying, or drinking fails unless it also makes a sensory claim.
+
+    '
+  - 'A hedge such as "I think" or a question mark weakens the tasting voice but does not fail if a real
+    sensory note is still offered. A question with no sensory claim fails.
+
+    '
+  - 'A bare list of the two nouns is not a tasting note and fails. A short phrase can play only when it
+    still clearly describes a sensory quality of the drink.
+
+    '
+examples:
+- previous_move: banana + thunder
+  move: A soft banana nose opens into thunder on the finish, with a loud buttery aftertaste that refuses
+    to leave.
+  gates_note: all true
+  mechanism: both nouns become sensory impressions, with nose and finish giving the sentence a proper
+    tasting shape
+  scores:
+    believable: 3
+    funny: 3
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: velvet + garlic
+  move: Velvet texture, garlic aroma, and a finish like a sommelier making one last bad decision.
+  gates_note: all true
+  mechanism: the two nouns work as texture and aroma, while the finish keeps the note playfully overconfident
+  scores:
+    believable: 3
+    funny: 4
+    dictionary_shaped: 3
+  confidence: clear
+  verdict: accept
+- previous_move: rain + biscuit
+  move: Rain and biscuit are both present, and everyone at the table is invited to imagine the rest.
+  gates_note: satisfies_criterion false (no taste, smell, texture, or finish is described)
+  mechanism: it comments on the nouns instead of putting either one in the glass
+  scores:
+    believable: 0
+    funny: 1
+    dictionary_shaped: 0
+  confidence: clear
+  verdict: fail
+- previous_move: pepper + moonlight
+  move: A peppery moonlight arrives at midnight in a velvet cape.
+  gates_note: satisfies_criterion false (the note gives a scene, not a sensory description of the drink)
+  mechanism: pepper and moonlight are dressed up as characters, but the glass gets no actual aroma, flavor,
+    texture, or finish
+  scores:
+    believable: 0
+    funny: 2
+    dictionary_shaped: 1
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Beverage Oracle
+  tone:
+    commentary_adj: affectionate
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who read only the card and the note must see why it worked
+    or failed.
+  - Name the drink, the card noun, or the tasting image. A headline that fits every note is a thirsty
+    little failure.
+  - Never open with a status word or a ruling phrase. No "Accepted", "Rejected", "Refused", "Move refused",
+    or "The Beverage Oracle refuses".
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Roast the note, never identity, protected traits, or the player's worth. A little cellar door slam
+    is fine, cruelty is not.
+  - Plain spoken English with affectionate bite. Profanity and adult innuendo are allowed when they improve
+    the joke.
+  - Never reveal the hidden drink in the headline. The reveal is a separate beat.
+  - On a refusal, the headline refuses the note and asks for another. It never rules on who won.
+  - The coaching line names one sensory move that would have scored. It ends on a fact or an action, never
+    a mood or a verdict.
+  good_headlines:
+  - Banana on the nose, thunder on the finish, and confidence where the receipt should be.
+  - Velvet gives it body, garlic gives it nerve, and the glass has stopped apologising.
+  - Rain and biscuit finally meet, and somehow the meeting has a palate.
+  - Pepper and moonlight sound ridiculous until the finish starts behaving like both.
+  - A gorgeous little lie, poured with the confidence of someone who owns a decanter.
+  - The note found texture, aroma, and one very expensive way to say fizzy.
+  - That finish has thunder in it, or at least the sort of thunder found near a kitchen.
+  - Two nouns entered the glass and came out wearing matching tasting notes.
+  - The sommelier is overconfident, but the sentence has earned its tiny velvet cape.
+  - A bold nose, a strange finish, and absolutely no adult supervision behind the bar.
+  bad_headlines:
+  - text: 'Accepted: lovely banana thunder.'
+    why: opens with a status word and gives no reason
+  - text: 'The Beverage Oracle refuses: that is not a tasting note.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, try adding flavour.
+    why: opens with a ruling phrase
+  - text: The drink was cola, exactly as described.
+    why: reveals the hidden drink in the headline
+  - text: Believable.
+    why: no reason, no image, fits any note
+  - text: Only an idiot would serve this.
+    why: mocks the player rather than the note and crosses into cruelty
+  - text: O noble glass, what secret fruits dost thou conceal?
+    why: poetry instead of plain spoken commentary
+  - text: It is bold, vivid, aromatic, textured, and compelling.
+    why: piles up praise without a specific reason
+  - text: Better than the other player's note.
+    why: judges the pair instead of explaining this note
+  - text: Nice one.
+    why: no reason, no card noun, no tasting image
+rules:
+- Three rounds, one familiar non wine drink and one two noun tasting card each.
+- Write one sentence of tasting note prose using both nouns meaningfully in the drink's taste, smell,
+  texture, or finish.
+- The host judges each note for believable stretch, comic confidence, and clean tasting shape.
+- Most points after three rounds wins.
+labels:
+  opening: The tasting card
+  next_opening: The next tasting card
+  your_opening: Your tasting card
+  compose: Your tasting note for {token}
+  compose_waiting: Polish your tasting note while you wait
+validation_messages:
+  empty: Nothing in the glass. Write a tasting note.
+  too_long: Over 160 characters. A tasting note, not a vineyard memoir.
+  duplicate: That note has already been poured this match. Find a fresh finish.
+  nudge: Twice now. One sentence using both card nouns as sensory details for {standing_form}.
+judge_out_text: 'The judge has stepped out. Nobody tastes until they are back. {standing_form} waits on
+  the bar. Give it a minute.
+
+  '
+opponent_prompt: 'You are the fake sommelier. Write one lush sentence about the drink using both nouns
+  on the tasting card.
+
+  Make both nouns feel sensory. They may describe aroma, flavour, texture, body, acidity, warmth, or finish,
+  but they must belong meaningfully in the glass.
+
+  Keep the voice confident and specific. A strange comparison is welcome if it still sounds like tasting
+  prose. Do not merely list the nouns, explain the card, tell a story, or speak to the Judge.
+
+  Use the exact card nouns. Do not dodge one with a synonym. Do not mention the hidden drink, the rules,
+  the other player, or the fact that you are bluffing.
+
+  One sentence only. Keep it under 160 characters. You may be gloriously overconfident, but it must still
+  taste like a tasting note.
+
+  '
+guess:
+  spot_points: 10
+  fool_points: 10
+  prompt: One of these is the real entry. Call it.
+medallions: true
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: A bright rain aroma gives way to biscuit on the finish, with a dry little crunch hiding
+  beneath the sweetness.
+seed_pool:
+  - { opening_token: "banana + thunder", opening_emoji: "🍌", detail: "a soft drink served cold", hidden: "a fizzy yellow soda" }
+  - { opening_token: "velvet + garlic", opening_emoji: "🧄", detail: "a dark drink poured over ice", hidden: "cola" }
+  - { opening_token: "rain + biscuit", opening_emoji: "🌧️", detail: "a pale drink served warm", hidden: "tea with milk" }

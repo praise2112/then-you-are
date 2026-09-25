@@ -1,0 +1,299 @@
+schema_version: 1
+slug: pressure-court
+title: Pressure Court
+tagline: Answer the pipe's demand before the walls begin to sweat.
+emblem: 🚰
+accent: '#0369a1'
+premise: 'Welcome to the grand trial of the pipes: each turn, one plumbing condition makes a demand, and
+  the next fixture or device must answer it. The courtroom advances from the standing pressure problem,
+  not from what anyone hoped would happen. The Judge decides whether the answer controls the pressure
+  in a believable way.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: short_form
+  max_words: 4
+  axes:
+    condition:
+    - water hammer
+    - blocked drain
+    - burst pipe
+    - high pressure
+    - low pressure
+    - frozen pipe
+    - sewer gas
+    - backflow
+    location:
+    - kitchen
+    - bathroom
+    - basement
+    - laundry room
+    - street
+    - boiler room
+    - apartment wall
+    - roof
+    behavior:
+    - slamming
+    - backing up
+    - leaking
+    - freezing
+    - surging
+    - gurgling
+    - overflowing
+    - dripping
+  tests:
+  - A stranger pictures one plain plumbing condition at once, with no manual or trade lesson required.
+  - A plumber or careful homeowner can name a device that would answer it. Say what that device would
+    do.
+  - It creates a demand in the pipes. It surges, blocks, leaks, freezes, backs up, or threatens to contaminate,
+    rather than merely sitting there looking damp.
+  - It makes the next device answerable. A pressure regulator can tame a surge, but a decorative faucet
+    has no ruling to deliver.
+  - Use two to four everyday words a twelve-year-old knows. No brand names, trade codes, unexplained abbreviations,
+    or poetic plumbing disasters.
+demo:
+  opening:
+    token: water hammer
+    emoji: 🔨
+  moves:
+  - actor: p1
+    text: I am water hammer, slamming through the pipes.
+    emoji: 🔨
+    scores: null
+  - actor: p2
+    text: I am a pressure regulator, surge-taming, pipe-saving.
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 2
+  headline: Water hammer raised the roof, but the regulator lowered its voice and the whole court survived.
+  openings:
+  - token: water hammer
+    examples:
+    - I am a pressure regulator, surge-taming, pipe-saving.
+  - token: a blocked drain
+    examples:
+    - I am a pressure regulator, surge-taming, pipe-saving.
+move_constraints:
+  max_chars: 200
+  prefix: 'I am '
+  example: I am a pressure regulator, surge-taming, pipe-saving.
+  hint: Name the device, its control, and the pressure problem it answers.
+rubric:
+- name: counter_strength
+  description: How directly and reliably the device controls the standing plumbing condition.
+  anchors: '0 = no control mechanism; 1 = the device is merely nearby or its effect is asserted; 2 = it
+    helps somewhat but leaves the main pressure problem standing; 3 = it clearly reduces, releases, measures,
+    redirects, or safely contains the condition; 4 = it is the obvious working answer and the condition
+    loses its bite at once, rare.
+
+    '
+  weight: 6
+- name: coherence
+  description: How clearly a stranger can picture the device and understand its plumbing action.
+  anchors: '0 = contradictory or unreadable; 1 = requires specialist knowledge or has no stable device;
+    2 = understandable but vague, overloaded, or partly abstract; 3 = concrete and clear; 4 = vivid, exact,
+    and instantly usable in the scene, rare. Extra words never substitute for a working mechanism.
+
+    '
+  weight: 3
+- name: novelty
+  description: How fresh the answer is while remaining a genuine plumbing response.
+  anchors: '0 = the same device, a larger version, or the stock answer already implied; 2 = a sensible
+    but familiar shift; 4 = a sharp hop to a different plumbing role that answers the condition cleanly,
+    rare. Oddness without control is not novelty.
+
+    '
+  weight: 1
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: 'A move beats the standing condition when its plumbing action reduces, releases, measures,
+    redirects, or safely contains that pressure problem. Merely hiding from it, tolerating it, waiting
+    it out, or using a bigger version of the same pressure loses. The device must act on the standing
+    condition in a believable way a careful homeowner could understand.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, describing the game, or arguing about the rules is itself
+    a failed plumbing answer.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no previous move: judge the device against the opening condition instead.
+    It must plausibly control that opening pressure problem.'
+  - A larger, stronger, or faster version of the standing device is not a new answer. A bigger pressure
+    regulator after a pressure regulator is repetition, not control.
+  - A device that merely shares the same plumbing family does not win. A faucet after a faucet, or a pipe
+    after a pipe, needs a real action against the standing condition.
+  - A device that cannot act on the condition fails even if it is useful in plumbing generally. A clean
+    towel does not control water hammer, and a new pipe does not measure high pressure.
+  - The mechanism must be literal and observable. A pressure regulator can lower pressure, an air chamber
+    can cushion a shock, and a shutoff valve can stop flow. A pipe calming its nerves or a drain swallowing
+    a problem is not a mechanism.
+  - Surviving, ignoring, waiting for, or being unaffected by the condition is dodging, not overcoming.
+    A waterproof floor does not beat a burst pipe, and an empty room does not beat a sewer backup.
+  - The move must name a device or fixture, not a hoped-for outcome. Calm pipes, no more flooding, and
+    a plumbing miracle are not devices.
+  - A device that worsens, redirects danger toward people, or merely conceals the leak fails unless it
+    safely contains or controls the standing condition.
+examples:
+- previous_move: I am water hammer, slamming through the pipes.
+  move: I am a pressure regulator, surge-taming, pipe-saving.
+  gates_note: all true
+  mechanism: the regulator lowers incoming pressure and reduces the force of the surge
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: accept
+- previous_move: I am a burst pipe, flooding everything below.
+  move: I am a shutoff valve, flow-stopping, flood-halting.
+  gates_note: all true
+  mechanism: the valve stops water entering the broken section
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: accept
+- previous_move: I am a blocked drain, backing water into the room.
+  move: I am a larger drain, wider, more draining.
+  gates_note: satisfies_criterion false, mere amplification with no action on the existing blockage
+  mechanism: none, a larger drain does not remove the blockage already standing
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 0
+  confidence: clear
+  verdict: fail
+- previous_move: I am high water pressure, straining every joint.
+  move: I am a waterproof cabinet, dry, dignified, unbothered.
+  gates_note: satisfies_criterion false, survival and insulation are not pressure control
+  mechanism: none, the cabinet does not reduce, release, measure, redirect, or contain the pressure
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 2
+  confidence: clear
+  verdict: fail
+- previous_move: I am a blocked drain, backing water into the room.
+  move: I am a drain snake, blockage-breaking, flow-restoring.
+  gates_note: all true
+  mechanism: the snake physically breaks through or removes the obstruction
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 4
+  confidence: clear
+  verdict: accept
+host:
+  persona_name: The Grand Plumber
+  tone:
+    commentary_adj: grandiose
+    explanation_adj: theatrical
+  bite: sharp
+  ruling_generosity: merciless
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - Speak as though a leaking elbow has brought down an empire, but keep the plumbing reason plain.
+  - Name both forms, or their plain stand-ins. A headline that fits any pipe in the kingdom is a failed
+    proclamation.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Grand Plumber refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.
+  - Mock the losing device or its grand failure, not identity, protected traits, or the player's body
+    or family.
+  - Edgy wit is allowed, including mild profanity and adult innuendo, but the joke must stay about the
+    forms and never become abuse.
+  - Plain spoken English with theatrical grandeur. No poetry, fake Shakespeare, or trade jargon that hides
+    the ruling.
+  - On a refusal, the headline refuses the move and asks for another. It never declares a winner.
+  - The coaching line names one device that would have won. That device ends on a real plumbing action,
+    never a mood or verdict.
+  good_headlines:
+  - Water hammer raised the roof, but the regulator lowered its voice and the whole court survived.
+  - The burst pipe wanted a flood. The shutoff valve slammed the door in its wet face.
+  - A bigger drain is not a hero, it is the same clogged alibi with broader shoulders. Bring another device.
+  - The drain snake entered the blocked drain's kingdom and removed the obstruction by force.
+  - The waterproof cabinet watched the pressure rise like a coward in expensive furniture. Bring a regulator.
+  - The air chamber caught water hammer before the pipes could perform their percussion solo.
+  - The valve does not negotiate with the leak. It ends the supply.
+  - That faucet flirted with the blockage, but a plunger would have broken the seal.
+  bad_headlines:
+  - text: 'Accepted: the valve has triumphed over the flood.'
+    why: It opens with a status word and gives a generic ruling instead of a plumbing picture.
+  - text: 'The Grand Plumber refuses: your pipe is pathetic.'
+    why: It opens with a ruling phrase, names the host, and mocks the player rather than the form.
+  - text: Move refused, behold the majesty of drainage.
+    why: It opens with a ruling phrase and offers theatrical fog instead of a reason.
+  - text: The regulator wins, obviously.
+    why: It gives no mechanism and could describe almost any device.
+  - text: The pipe was screwed, and the valve gave it a hard lesson.
+    why: The innuendo overwhelms the plumbing action and does not clearly name what the valve does.
+  - text: The cabinet remains dry while the pressure rages elsewhere.
+    why: It praises dodging and fails to rule that surviving is not controlling pressure.
+  - text: A grand and magnificent apparatus of aqueous dominion has prevailed.
+    why: It is inflated jargon, with no plain device or visible mechanism.
+  - text: The blockage meets its destiny beneath the moonlit porcelain throne.
+    why: It is poetry and avoids saying what actually removes the blockage.
+rules:
+- Answer the standing plumbing condition. Do not merely endure it.
+- 'Name one device and what it does: I am a pressure regulator, surge-taming, pipe-saving.'
+- The Judge rules on the plumbing action, never the spelling.
+- A move that cannot control the standing condition ends the match.
+labels:
+  opening: The opening
+  next_opening: The next opening
+  your_opening: Your opening
+  compose: Your device against {token}
+  compose_waiting: Draft your next device while you wait
+validation_messages:
+  empty: The courtroom hears nothing. Name a device.
+  too_long: Over 200 characters. A ruling, not a plumbing manual.
+  duplicate: That device already stood this match. Install something new.
+  nudge: Twice now. Control {standing_form}. Do not become it, do not repeat it.
+judge_out_text: 'The Judge has stepped out to inspect the mains. Nobody moves until they return. {standing_form}
+  still stands. Give it a minute.
+
+  '
+opponent_prompt: 'You are one of the plumbing advocates in a grand pressure trial, trying to survive.
+
+  Always write: "I am X, attribute, attribute." X is one plain plumbing device or fixture. Attributes
+  are 1 to 4 word fragments, never clauses, and at least one must name what the device does to the standing
+  condition.
+
+  Good: "I am a pressure regulator, surge-taming, pipe-saving." / "I am a drain snake, blockage-breaking,
+  flow-restoring."
+
+  Bad: "I am a regulator because it would lower the pressure and save the pipes" because that is a sentence
+  in a costume. Bad: "I am a valve, elegant, victorious" because moods and verdicts are not plumbing actions.
+  Bad: "I am calm water" because that names an outcome, not a device.
+
+  Talk like a person across a courtroom table, not a poet or a manual. Name devices anyone can picture:
+  a valve, a plunger, a trap, a gauge, a pressure tank. Plain words beat impressive jargon.
+
+  You are not performing for a crowd and you are not joking. You are trying to control the standing plumbing
+  condition. If a move lands funny, it is because the device truly answers the pressure problem.
+
+  Stay literal and believable: fixtures, tools, valves, tanks, drains, pipes, gauges, and common plumbing
+  equipment. Hop domains within plumbing: a kitchen fixture, a basement device, a street main, or a boiler
+  room answer can beat a standing condition.
+
+  Never reuse a device or an attribute from this match. Do not speak to the Judge or discuss the game.
+  Control the condition itself, not merely your exposure to it.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I am a shutoff valve, flow-stopping, leak-halting.
+seed_pool:
+  - { opening_token: "water hammer", opening_emoji: "🔨", detail: "I am water hammer, slamming through the pipes.", hidden: "" }
+  - { opening_token: "a blocked drain", opening_emoji: "🪠", detail: "I am a blocked drain, backing water into the room.", hidden: "" }
+  - { opening_token: "a burst pipe", opening_emoji: "💥", detail: "I am a burst pipe, flooding everything below.", hidden: "" }

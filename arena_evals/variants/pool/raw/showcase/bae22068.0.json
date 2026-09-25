@@ -1,0 +1,279 @@
+{
+  "slug": "emotional-barometer",
+  "title": "Emotional Barometer",
+  "tagline": "Forecast the feeling. Keep the clouds technically credible.",
+  "emblem": "🌦️",
+  "accent": "#6689a8",
+  "premise": "Three rounds. Each round announces an ordinary weather term and a mood target. Both players write one forecast sentence that makes the mood feel inevitable without naming it. The Judge scores each forecast for plausibility, comic charge, and dictionary clean shape. Then the House forecast faces the player's forecast, and the stronger front advances.\n",
+  "seed_pool": [
+    {
+      "opening_token": "fog",
+      "opening_emoji": "🌫️",
+      "detail": "Weather term: fog. Mood target: jealousy.",
+      "hidden": "Low cloud and poor visibility, carrying the quiet suspicion that someone else has found the better view."
+    },
+    {
+      "opening_token": "heatwave",
+      "opening_emoji": "🌡️",
+      "detail": "Weather term: heatwave. Mood target: lust.",
+      "hidden": "A prolonged spell of excessive heat, with close air, restless nights, and an atmosphere that makes bad decisions feel seasonal."
+    },
+    {
+      "opening_token": "drizzle",
+      "opening_emoji": "🌧️",
+      "detail": "Weather term: drizzle. Mood target: resignation.",
+      "hidden": "Light, persistent rain that never becomes dramatic enough to justify changing one's plans."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 19,
+    "axes": {
+      "weather_term": [
+        "fog",
+        "drizzle",
+        "heatwave",
+        "hail",
+        "mist",
+        "thunderstorm",
+        "frost",
+        "crosswind",
+        "downpour"
+      ],
+      "mood_target": [
+        "jealousy",
+        "lust",
+        "resignation",
+        "euphoria",
+        "dread",
+        "shame",
+        "relief",
+        "resentment",
+        "longing"
+      ],
+      "forecast_register": [
+        "morning bulletin",
+        "coastal warning",
+        "traffic report",
+        "farm advisory",
+        "evening news",
+        "aviation notice",
+        "school closure",
+        "public service announcement",
+        "romantic weekend outlook"
+      ]
+    },
+    "tests": [
+      "The card names one ordinary weather term and one mood target.",
+      "The forecast can be read as a plausible weather report without becoming a weather lecture.",
+      "The mood is strongly suggested through consequences, timing, or atmosphere, but is not named directly.",
+      "The forecast is one sentence and no longer than nineteen words.",
+      "The card gives players enough room for wit without requiring a particular person, place, or private event."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "A warm front arrives at noon, bringing sticky hope and a ninety percent chance of texting your ex",
+    "hint": "One sentence. Keep the weather possible and the feeling unavoidable."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this pass as a compact forecast, with weather behaving in a way the report permits?",
+      "anchors": "0 = weather has been abandoned; 1 = a forecast-shaped confession; 2 = possible with generous supervision; 3 = credible on a strange news day; 4 = clean enough to issue without a correction.\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the emotional weather produce a sharp laugh, a wicked image, or a pleasingly bad omen?",
+      "anchors": "0 = no charge; 1 = a small gust; 2 = a grin; 3 = a proper laugh; 4 = a laugh that leaves the umbrella open indoors, rare. Adult innuendo and profanity may score here when they serve the forecast.\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the line define the mood through a concise, recognizable pattern of forecast language?",
+      "anchors": "0 = a personal anecdote or random joke; 1 = weather words pasted onto a feeling; 2 = a readable forecast with clutter; 3 = compact, clear, and structurally sound; 4 = a line that could headline the mood's weather entry, rare.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A forecast PLAYS if it remains a plausible weather report while clearly carrying the assigned mood. It must name or describe weather in a forecast-like way and imply the target mood without simply naming it. It fails when it is only a confession, a joke unrelated to weather, a comment about the game, or a line whose weather cannot plausibly occur. A forecast may use human behavior, metaphor, profanity, or adult innuendo if the weather frame remains intact.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the rules, or announcing one's own cleverness is a failed forecast, however atmospheric the punctuation.",
+    "judge_notes": [
+      "On the first move, judge the line against the announced weather term and mood target. The player need not repeat the weather term if the forecast unmistakably uses it or its direct meteorological consequences.\n",
+      "A line must contain a weather report or forecast, not merely a mood dressed in weather vocabulary. A breakup, confession, insult, or anecdote with one cloud in it fails unless it still reports plausible conditions.\n",
+      "The mood target must be carried by implication, imagery, consequence, or social behavior. Naming the mood directly does not automatically fail, but it makes the emotional forecast blunt and should score low on dictionary_shaped and funny unless the line remains unusually effective.\n",
+      "Impossible weather fails the criterion when the impossibility is the point rather than a clear comic exaggeration inside an otherwise recognizable forecast. A rain of lawyers is not meteorology merely because it has a percentage.\n",
+      "A question, hedge, or explanation may still play if it contains a complete forecast, but scores low on dictionary_shaped. A question with no weather condition or no mood-bearing meaning fails.\n",
+      "A bare weather phrase or mood phrase does not play. The line needs a forecast-shaped relationship between atmospheric conditions and the assigned feeling.\n",
+      "Both players answer the same card. Judge each forecast on its own, and do not use the other player's line as the standard.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Weather term: fog. Mood target: jealousy.",
+      "move": "Dense fog settles by breakfast, with visibility reduced wherever somebody else is smiling.",
+      "gates_note": "all true",
+      "mechanism": "a credible visibility report turns social comparison into an atmospheric hazard",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Weather term: heatwave. Mood target: lust.",
+      "move": "Temperatures rise overnight, and exposed surfaces may become difficult to leave alone.",
+      "gates_note": "all true",
+      "mechanism": "a possible heat warning carries its adult charge through exposed surfaces",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Weather term: drizzle. Mood target: resignation.",
+      "move": "It is raining because I am sad and nothing ever changes.",
+      "gates_note": "satisfies_criterion false, a confession rather than a forecast",
+      "mechanism": "the sentence reports a feeling and gives weather no independent forecast function",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Weather term: hail. Mood target: shame.",
+      "move": "Hailstones made entirely of unpaid parking tickets will strike the guilty at noon.",
+      "gates_note": "satisfies_criterion false, impossible weather is the whole line",
+      "mechanism": "a civic punishment has replaced meteorology",
+      "scores": {
+        "believable": 0,
+        "funny": 3,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Weather term: thunderstorm. Mood target: dread.",
+      "move": "Severe storms arrive after dark, with thunder whenever the hallway goes quiet.",
+      "gates_note": "all true",
+      "mechanism": "a plausible storm bulletin lets silence become the warning signal",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Ceremonial Meteorologist",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak as though issuing an official bulletin from a ministry with excellent stationery and poor emotional boundaries.",
+      "The joke carries the reason. A reader who sees only the card and the forecast must understand the weather and the feeling.",
+      "Name the weather term or the forecast's key image. A headline that fits every cloud is atmospheric malpractice.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Forecast accepted, or The Meteorologist rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the forecast, and on occasion the forecaster's terrible choice of umbrella, but never attack identity, protected traits, body, family, or intelligence.",
+      "Plain spoken English with ceremonial gravity. No poetry, no rhymes, no French, no thesaurus fog.",
+      "Never reveal the mood target in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline rejects the atmospheric report and asks for another. It never decides the round's winner.",
+      "The coaching line names one forecast feature that would have scored. It ends on a fact or an action, never a mood or a verdict.",
+      "Profanity and adult innuendo may appear when they sharpen the weather image, not as decorative thunder."
+    ],
+    "good_headlines": [
+      "The fog has located jealousy and placed it over every smiling stranger.",
+      "A heatwave with exposed surfaces, and the barometer has filed a complaint.",
+      "The drizzle is persistent, the resignation is accurate, and nobody is reaching for a coat.",
+      "Hail made of parking tickets is civic fantasy, not a forecast.",
+      "Thunder after silence is a respectable warning, and a deeply rude one.",
+      "The front arrives with ninety percent humidity and one hundred percent bad judgment.",
+      "The cloud cover is credible, the emotional pressure is criminally clear.",
+      "A forecast with an erection is still a forecast, provided the air mass remains plausible.",
+      "The wind has changed direction, which is more than the speaker appears willing to do.",
+      "This is not weather, it is a confession wearing a raincoat."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the fog finds jealousy.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Ceremonial Meteorologist refuses: that is not weather.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, issue another forecast.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The forecast captures jealousy perfectly.",
+        "why": "reveals the mood target in the headline"
+      },
+      {
+        "text": "Believable.",
+        "why": "gives no reason and fits any forecast"
+      },
+      {
+        "text": "Only an idiot would predict this.",
+        "why": "mocks the player rather than the forecast"
+      },
+      {
+        "text": "O merciless heavens, unveil thy damp and trembling heart.",
+        "why": "uses poetry instead of plain ceremonial speech"
+      },
+      {
+        "text": "The cloud is cloudy, the feeling is feeling, and the weather is weather.",
+        "why": "offers repetition without clinical explanation"
+      },
+      {
+        "text": "The real answer is resignation, and this one misses it.",
+        "why": "reveals the target and judges by hidden truth"
+      },
+      {
+        "text": "A bold atmospheric performance.",
+        "why": "no specific weather image or reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one weather term and one mood target each.",
+    "Write one forecast sentence that keeps the weather plausible and makes the target feeling clear without naming it.",
+    "The House writes its own forecast unseen. The Judge scores both for believability, comedy, and dictionary shaped form.",
+    "The stronger forecast takes the round. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The forecast",
+    "next_opening": "The next forecast",
+    "your_opening": "Your forecast",
+    "compose": "Forecast {token}",
+    "compose_waiting": "Draft your forecast while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing in the sky. Issue a forecast.",
+    "too_long": "Over 160 characters. A bulletin, not a memoir.",
+    "duplicate": "That forecast has already passed through this match. Find another front.",
+    "nudge": "Twice now. One sentence that could stand under {standing_form} in a weather bulletin."
+  },
+  "judge_out_text": "The judge has stepped out. The clouds remain under observation. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are the rival forecaster. Write one forecast sentence for the weather term and mood target below.\nKeep the weather meteorologically possible, or use only a small comic exaggeration inside a recognizable forecast.\nCarry the mood through consequence, atmosphere, timing, human behavior, or a sharp image. Do not name the mood directly unless the line remains elegant enough to survive the announcement.\nOne sentence only, no more than nineteen words. Sound like a bulletin, warning, outlook, or report.\nDo not explain the joke, address the Judge, mention the game, or hedge about your forecast.\nAvoid a private anecdote that merely wears a cloud as a hat. The line must still report weather.\nDo not reuse the same emotional image or forecast structure from an earlier round. Vary the register and the kind of weather consequence.\nProfanity and adult innuendo are allowed when they belong to the forecast and improve the image. Do not attack protected identity groups.\nThe target mood is given so you can imply it without naming it. Never write the target mood, a paraphrase of it, or a direct instruction to feel it.\n",
+  "medallions": true,
+  "default_move": "A warm front arrives at noon, bringing sticky hope and a ninety percent chance of texting your ex"
+}

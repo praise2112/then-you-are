@@ -1,0 +1,276 @@
+{
+  "slug": "hall-pass-chain",
+  "title": "Hall Pass Chain",
+  "tagline": "Beat the obstacle before it sends you to detention.",
+  "emblem": "🎒",
+  "accent": "#2563eb",
+  "premise": "You are students trying to cross a school corridor while every player adds one obstacle that defeats the last obstacle. The corridor gets nastier until someone proposes a move that cannot plausibly stop what stands.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a locked classroom door",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a toppled lunch tray",
+      "opening_emoji": "🍱",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a hall monitor",
+      "opening_emoji": "🧑‍🏫",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "obstacle": [
+        "door",
+        "spill",
+        "cart",
+        "crowd",
+        "bell",
+        "teacher",
+        "backpack",
+        "alarm"
+      ],
+      "school_place": [
+        "classroom",
+        "locker row",
+        "stairwell",
+        "cafeteria",
+        "office",
+        "gym",
+        "library",
+        "science lab"
+      ],
+      "effect": [
+        "blocks passage",
+        "makes floor slippery",
+        "hides the route",
+        "calls an adult",
+        "starts a crowd",
+        "locks a gate",
+        "makes noise",
+        "forces a detour"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one plain obstacle in a school corridor at once. Nothing abstract, technical, or dependent on a long story.",
+      "A non-player names a direct counter within five seconds. Say what that counter blocks, removes, exposes, or neutralizes.",
+      "It stands in the corridor and does something to passage, attention, footing, noise, or authority. It is not merely a place, a mood, or a student's complaint.",
+      "It makes a stranger want to answer with another school-corridor obstacle. A thing with an obvious effect, like a wet floor sign or a locked gate.",
+      "Two to four everyday words a twelve-year-old knows, with an article and a clear noun phrase. No brand names, proper nouns, invented jargon, or explanations hidden in the card."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a janitor's mop bucket, spilling across the floor to stop the charging bully.",
+    "hint": "Name the obstacle and state its direct counter."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the proposed obstacle defeats the one standing in the corridor.",
+      "anchors": "0 = no counter or only a claim; 1 = weak connection, partial effect, or simple avoidance; 2 = plausible but incomplete or debatable; 3 = clear direct counter that blocks, removes, exposes, or neutralizes the standing obstacle; 4 = ruthless and unavoidable, the standing obstacle loses its function immediately (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the obstacle, its effect, and the direct interaction.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires explanation or specialist knowledge; 2 = understandable but vague, crowded, or awkward; 3 = concrete and easy to picture; 4 = sharply visual and instantly clear (rare). Extra words do not help unless each one makes the corridor action clearer.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How far the move shifts to a fresh school-corridor domain instead of copying the previous obstacle.",
+      "anchors": "0 = same obstacle, same function, or a larger copy; 2 = a reasonable change with familiar territory; 4 = a fresh school setting or mechanism that changes the kind of problem entirely (rare). Novel wording is not novelty, and obscure objects do not earn points.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move OVERCOMES the standing obstacle if it directly blocks, removes, exposes, or neutralizes the obstacle's effect on crossing the corridor. The move must act on what stands. Merely going around it, enduring it, making a larger copy, or claiming it is harmless does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or invoking rules as an obstacle is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous obstacle. Judge it against the opening card instead, asking whether the proposed obstacle directly defeats or neutralizes that opening obstacle.\n",
+      "A larger, louder, faster, or more official version of the standing obstacle is not a counter. A second locked door after a locked door, or a bigger spill after a spill, is repetition or amplification and fails.\n",
+      "Becoming the opening obstacle itself, or giving it a superficial change such as a red locked door against a locked classroom door, is a duplicate. not_semantic_duplicate is false and satisfies_criterion is false.\n",
+      "The mechanism must be literal and visible in the corridor. A thing must block, remove, expose, or neutralize the standing obstacle. A clever phrase, legal technicality, or metaphor is not a mechanism.\n",
+      "Going around the obstacle is not overcoming it. A side door, a shortcut, or a student who slips past the crowd does not directly act on the standing obstacle and fails.\n",
+      "Enduring or ignoring the obstacle is not overcoming it. A student who is not bothered by noise, waits for a bell, or claims the locked door does not matter has not defeated it.\n",
+      "Claiming the obstacle is harmless is not a counter. A calm student against a shouting teacher, or a brave student against a scary hallway, does not remove the effect.\n",
+      "A counter must be able to act on the exact standing obstacle. A fire alarm does not defeat a backpack unless it removes or neutralizes the backpack's blocking effect. Strength in the abstract is irrelevant.\n",
+      "The new obstacle may be inconvenient or dangerous, but inconvenience alone is not victory. It must directly stop, remove, expose, or neutralize the standing obstacle.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a locked classroom door.",
+      "move": "I am a fire alarm, unlocking the emergency release.",
+      "gates_note": "all true",
+      "mechanism": "the alarm triggers the emergency release and removes the door's locked barrier",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a toppled lunch tray, slippery across the floor.",
+      "move": "I am a wet floor sign, warning everyone away from the spill.",
+      "gates_note": "satisfies_criterion false, it warns about the spill but does not remove or neutralize its slippery effect",
+      "mechanism": "warning is not a direct counter to the slippery floor",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 4,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a hall monitor, stopping students for passes.",
+      "move": "I am the principal's office, summoning the monitor away.",
+      "gates_note": "all true",
+      "mechanism": "the office summons the hall monitor and removes the checkpoint from the route",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a locked classroom door.",
+      "move": "I am a stronger locked classroom door, impossible to open.",
+      "gates_note": "not_semantic_duplicate is false or satisfies_criterion false, this is the same obstacle amplified",
+      "mechanism": "none, the new door does not defeat the standing door",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a rolling library cart, blocking the corridor.",
+      "move": "I am a wall, standing beside it so nobody can see the cart.",
+      "gates_note": "satisfies_criterion false, hiding the cart does not remove or neutralize its blockage",
+      "mechanism": "the wall adds another barrier and leaves the cart blocking the corridor",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Corridor Warden",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Make the joke sound like a security report with teeth. The reason must be visible from both obstacles.",
+      "Name both obstacles or their plain stand-ins. A generic insult is a defective ruling.",
+      "Never open with a status word or ruling phrase. Do not begin with Accepted, Rejected, Refused, Move refused, or The Corridor Warden.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the losing obstacle or the move, not protected identity traits. Roast-level jabs at the player are allowed, but never target body, family, disability, race, religion, gender, sexuality, or nationality.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when useful, but do not let them replace the mechanism.",
+      "On a refusal caused by a gate failure, reject the move and request another. Do not rule on who won the exchange.",
+      "The coaching line names one obstacle that would have won. End on a concrete action or fact, never a mood or verdict.",
+      "Keep the menace clinical. The corridor is not impressed by confidence, theatrics, or a teenager's legal brief."
+    ],
+    "good_headlines": [
+      "The locked door met an emergency release. Its career ended at the hinges.",
+      "The lunch tray left a skating rink, and the mop erased the evidence.",
+      "The hall monitor demanded a pass until the principal's office summoned the checkpoint.",
+      "A bigger locked door is still a locked door, just with more useless confidence. Bring another obstacle.",
+      "The library cart blocked the corridor until the custodian rolled it into storage.",
+      "The wet floor sign observed the spill and did absolutely nothing about the floor. Bring another obstacle.",
+      "The alarm opened the classroom door. The lock has been administratively neutralized.",
+      "The side door did not defeat the crowd. It merely fled the scene with you.",
+      "The backpack blocked the hall until a locker swallowed it whole.",
+      "The shouting teacher met the fire alarm, and the entire corridor evacuated the argument."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the mop defeats the spill.",
+        "why": "opens with a status word and gives a thin, interchangeable ruling"
+      },
+      {
+        "text": "The Corridor Warden refuses: that was pathetic.",
+        "why": "opens with a ruling phrase, names the host, and gives no mechanism"
+      },
+      {
+        "text": "Move refused, try harder next time.",
+        "why": "opens with a ruling phrase and attacks the player without explaining the obstacle"
+      },
+      {
+        "text": "The door is defeated, destroyed, obliterated, and absolutely cooked.",
+        "why": "lists verdict words instead of showing how the door was defeated"
+      },
+      {
+        "text": "The crowd wins because crowds are powerful.",
+        "why": "generic claim with no direct interaction"
+      },
+      {
+        "text": "The student was too stupid to understand the lock.",
+        "why": "mocks the player and supplies no mechanism"
+      },
+      {
+        "text": "The backpack sidesteps the cart and calls that victory.",
+        "why": "correctly identifies avoidance but does not name a replacement action or coaching move"
+      },
+      {
+        "text": "The wet floor sign has entered a sensual relationship with the mop.",
+        "why": "adult innuendo replaces the ruling and does not explain the counter"
+      },
+      {
+        "text": "A door, a bell, and a corridor of destiny.",
+        "why": "poetic, vague, and clinically useless"
+      },
+      {
+        "text": "The alarm probably beats the teacher, unless the teacher ignores it.",
+        "why": "hedges instead of issuing a readable ruling"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the obstacle in front of you. Do not become it.",
+    "Name one corridor obstacle and state its direct counter: \"I am a janitor's mop bucket, spilling across the floor to stop the charging bully.\"",
+    "The Judge rules on the interaction, not spelling, style, or confidence.",
+    "Going around, enduring, enlarging, or declaring the obstacle harmless does not count.",
+    "One move that cannot stop the standing obstacle ends the chain."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your obstacle against {token}",
+    "compose_waiting": "Draft your next obstacle while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put an obstacle in the corridor.",
+    "too_long": "Over 200 characters. This is a corridor move, not a disciplinary hearing.",
+    "duplicate": "That obstacle already stood this match. Produce something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not become it, dodge it, or repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are a student trying to cross a school corridor while the other student keeps adding obstacles.\nAlways name one obstacle and state its direct counter in plain language.\nGood: \"I am a janitor's mop bucket, spilling across the floor to stop the charging bully.\"\nBad: \"I am freedom\" because it is abstract. Bad: \"I am a side door\" because it merely goes around the obstacle. Bad: \"I am a bigger crowd\" because it is only amplification.\nTalk like a person in a hallway, not a poet, lawyer, or game announcer. Use things anyone knows: a lock, a bell, a cart, a teacher, a spill, a locker.\nYour obstacle must directly block, remove, expose, or neutralize what stands. Say the action clearly enough that a stranger could watch it happen.\nDo not claim an obstacle is harmless. Do not survive it, ignore it, wait it out, or slip around it. The corridor does not award points for evasive nonsense.\nHop domains through school places and functions: classrooms, lockers, stairs, cafeteria, gym, office, library, alarms, crowds, and staff.\nNever reuse an obstacle or an attribute from this match. Do not speak to the Judge, discuss rules, or describe the game as your move.\n",
+  "default_move": "I am a fire alarm, clearing the corridor."
+}

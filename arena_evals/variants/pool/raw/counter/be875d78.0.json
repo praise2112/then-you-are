@@ -1,0 +1,277 @@
+{
+  "slug": "flush-chain",
+  "title": "Flush Chain",
+  "tagline": "Name the bathroom thing that destroys what came before.",
+  "emblem": "🚽",
+  "accent": "#0f766e",
+  "premise": "Two bathroom forces fight for control of the bowl. On your turn, name one standing bathroom thing that defeats the previous one, then describe the contact in a single sharp sentence.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a hair clog",
+      "opening_emoji": "🕳️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a toilet brush",
+      "opening_emoji": "🪥",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a dripping tap",
+      "opening_emoji": "🚰",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "fixture": [
+        "toilet",
+        "sink",
+        "shower",
+        "bathtub",
+        "mirror",
+        "drain",
+        "tap",
+        "cabinet"
+      ],
+      "force": [
+        "water",
+        "soap",
+        "steam",
+        "rust",
+        "hair",
+        "mould",
+        "bleach",
+        "pressure"
+      ],
+      "condition": [
+        "blocked",
+        "leaking",
+        "stained",
+        "slippery",
+        "flooded",
+        "cracked",
+        "smelly",
+        "empty"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one ordinary bathroom thing at once. Nothing abstract, technical, or dependent on a brand.",
+      "A non-player names a plain bathroom counter within five seconds. Say what that counter is.",
+      "It can directly act on another bathroom thing by blocking, dissolving, absorbing, trapping, cleaning, breaking, or otherwise overcoming it.",
+      "It creates a clear contact scene in a bathroom. Never a person merely feeling disgust, a room merely looking bad, or a thing simply surviving.",
+      "Use two or three everyday words a twelve-year-old knows. No proper names, product names, medical jargon, or ornate descriptions."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am drain cleaner: I eat through the hair clog.",
+    "hint": "Name one bathroom thing, then state the direct contact that defeats the standing thing."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new bathroom thing overcomes the one standing before it.",
+      "anchors": "0 = no contact or mechanism; 1 = a vague claim, weak nuisance, or mere survival; 2 = a plausible but incomplete or debatable counter; 3 = a clear direct action that defeats the standing thing; 4 = an immediate, unavoidable bathroom execution, where the old form has no practical answer (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the bathroom thing and the contact between the two forms.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires specialist knowledge or leaves the objects unclear; 2 = understandable but awkward, vague, or partly abstract; 3 = concrete and easy to picture; 4 = brutally vivid, with the whole contact visible at once (rare). Long explanations do not earn points by existing.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the new bathroom domain or tactic is compared with the previous move.",
+      "anchors": "0 = the same object, same tactic, or obvious stock answer; 2 = a respectable change of bathroom territory; 4 = a sharp hop from plumbing to cleaning, storage, heat, tools, or another unexpected bathroom domain (rare). Fancy wording is not novelty, and a cousin object is still a cousin.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A bathroom thing OVERCOMES the previous thing if it directly blocks, dissolves, absorbs, traps, cleans, breaks, contains, or otherwise acts on it in a way that defeats it. The new thing must be a standing bathroom form, not a past event or an escape route. Merely enduring, avoiding, ignoring, or being immune to the previous thing does not count. A bigger copy, stronger version, or related cousin is not a counter.",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or hiding behind the rules is itself a losing form.",
+    "judge_notes": [
+      "On a FIRST move there is no previous bathroom form. Judge it against the opening card: the move must directly answer or overcome the opening thing.",
+      "A bigger, faster, thicker, or stronger version of the standing thing is not a counter. A toilet after a toilet, or a larger hair clog after a hair clog, fails unless a distinct mechanism acts on the standing form.",
+      "A related cousin is also not enough. A sink against a toilet, or a shower head against a tap, does not defeat the standing thing merely because both belong in a bathroom.",
+      "Becoming the opening form itself, or making only a colour, size, scent, or material change, is a duplicate and fails.",
+      "The mechanism must be literal and observable. Soap dissolving grime or a plunger dislodging a clog counts. Saying that paperwork, shame, or cleanliness defeats something is not a bathroom mechanism unless a stranger could watch the physical action happen.",
+      "Surviving, avoiding, ignoring, waiting out, or being immune to the standing form is dodging, not overcoming. A waterproof towel against water, an empty tub against a flood, or a person stepping away from mould fails.",
+      "The new form must act on the form that stands, not on a consequence around it. A mop drying the floor does not defeat a blocked drain unless it directly changes or removes the blockage.",
+      "A form that cannot plausibly touch, contain, alter, or stop the standing bathroom thing fails, however impressive it sounds in isolation.",
+      "The move must remain a bathroom thing. A general weapon, abstract law, or unrelated disaster is not rescued by adding a bathroom adjective."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a hair clog: I pack the drain shut.",
+      "move": "I am drain cleaner: I eat through the hair clog.",
+      "gates_note": "all true",
+      "mechanism": "the chemical dissolves the hair blocking the drain",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a dripping tap: I waste water all night.",
+      "move": "I am a wrench: I tighten the tap shut.",
+      "gates_note": "all true",
+      "mechanism": "the wrench directly tightens the leaking fitting",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a toilet brush: I scrape the bowl.",
+      "move": "I am a bigger toilet brush: I scrape harder.",
+      "gates_note": "satisfies_criterion false, mere amplification and same form",
+      "mechanism": "none, it is the same brush made larger",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am mould: I spread across the grout.",
+      "move": "I am a waterproof towel: I do not care about mould.",
+      "gates_note": "satisfies_criterion false, survival and indifference are dodging",
+      "mechanism": "none, the towel does not act on or remove the mould",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a flooded tub: I cover the bathroom floor.",
+      "move": "I am a mop: I drink the water from the floor.",
+      "gates_note": "all true",
+      "mechanism": "the mop absorbs the water that escaped the tub",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Bathroom Warden",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "strict",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke must carry the mechanism. A stranger should see the bathroom contact and the reason for the ruling.",
+      "Name both forms, or use plain stand-ins. A headline that fits any pair is defective equipment.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Warden refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the losing form and, when useful, the player's choice, but never attack identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. Profanity and adult innuendo are allowed, but every line must remain understandable.",
+      "On a gate refusal, the headline refuses the move and asks for another. It never pretends the failed form won.",
+      "The coaching line names one bathroom form that would have won. It ends on a physical fact or action, never a mood or verdict.",
+      "Use clinical language for the explanation, as if documenting a small and humiliating bathroom failure.",
+      "Bite hard, but keep the insult aimed at the form or the move. No identity based abuse."
+    ],
+    "good_headlines": [
+      "Drain cleaner dissolves the hair clog. The blockage has been chemically evicted.",
+      "The wrench closes the dripping tap, while the leak dies in its own puddle.",
+      "The mop absorbs the flood. At last, a useful rag instead of a wet confession.",
+      "The bigger toilet brush is still the same dirty stick. Bring an actual counter.",
+      "Bleach attacks the mould directly. The grout has received its hostile treatment.",
+      "The waterproof towel survives the mould, which is medically irrelevant. Survival is not murder.",
+      "The plunger hits the clog head on. The drain loses its little bowel obstruction.",
+      "A fresh toilet is not a weapon against a blocked sink. It is just porcelain with ambition.",
+      "The soap strips the grease away. The slime has been processed and discarded.",
+      "The mirror does not defeat the steam by looking confident. Bring something that removes it."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: drain cleaner kills the clog.",
+        "why": "opens with a status word and gives a blunt ruling before the joke"
+      },
+      {
+        "text": "The Bathroom Warden refuses: that is not a counter.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, your toilet has no future.",
+        "why": "opens with a ruling phrase and fails to explain the physical mechanism"
+      },
+      {
+        "text": "The towel is immune to mould, so it wins.",
+        "why": "confuses survival with direct defeat"
+      },
+      {
+        "text": "The sink beats the toilet because bathrooms are complicated.",
+        "why": "names related fixtures without a mechanism"
+      },
+      {
+        "text": "The hair clog is defeated by superior bathroom energy.",
+        "why": "abstract claim, no observable contact"
+      },
+      {
+        "text": "A brave effort from someone who clearly has shit for brains.",
+        "why": "attacks the player with a personal insult instead of the form"
+      },
+      {
+        "text": "The drain cleaner clinically and comprehensively demonstrates total chemical superiority.",
+        "why": "clinical fog replaces a plain picture of dissolving the clog"
+      },
+      {
+        "text": "The brush enters the bowl and destiny makes a noise.",
+        "why": "poetic nonsense hides the missing mechanism"
+      },
+      {
+        "text": "The mould loses, but perhaps it wins in another sense.",
+        "why": "hedges instead of giving a ruling a stranger can understand"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the bathroom thing in front of you. Do not become it.",
+    "Name one bathroom thing and state the direct contact that defeats the standing thing.",
+    "The Judge rules on the physical idea, not spelling or style.",
+    "A bigger copy, related cousin, escape, or mere survival does not count.",
+    "One form that breaks against the standing one ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your form against {token}",
+    "compose_waiting": "Draft your next form while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put a bathroom weapon in your hand.",
+    "too_long": "Over 200 characters. This is a counter, not a plumbing incident report.",
+    "duplicate": "That form already stood this match. Bring in something new.",
+    "nudge": "Twice now. Beat {standing_form}. Do not become it, do not repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two bathroom forces fighting to survive.\nAlways write: \"I am X: I do Y to their form.\" X must be one ordinary bathroom thing. Y must be a direct physical action.\nGood: \"I am drain cleaner: I eat through the hair clog.\" / \"I am a wrench: I tighten the dripping tap shut.\"\nBad: \"I am a towel: I ignore the flood\" because ignoring is not defeat. Bad: \"I am a bigger toilet\" because size is not a mechanism. Bad: \"I am cleanliness\" because that is abstract.\nTalk like a person across a bathroom, not a poet. Use plain things anyone can name: soap, bleach, a plunger, a mop, a mirror, a tap.\nYou are not performing for a crowd. You are trying to survive. If the move is funny, the bathroom action must still be real.\nYour form must directly block, dissolve, absorb, trap, clean, break, contain, or stop the standing form. Do not merely escape it, outlast it, or claim immunity.\nHop domains when useful: plumbing, cleaning, fixtures, storage, heat, tools, water, stains, and smells. A new mechanism beats a louder version of the old one.\nNever reuse a form or an attribute from this match. Do not mention the Judge, rules, scoring, or the game in your move.\n",
+  "default_move": "I am a plunger: I drive the clog through the drain."
+}

@@ -1,0 +1,259 @@
+{
+  "slug": "pet-crime-scene-caption",
+  "title": "Pet Crime-Scene Caption",
+  "tagline": "Every household object has a motive.",
+  "emblem": "🐾",
+  "accent": "#9b5c5c",
+  "premise": "Three rounds. Each round shows a pet habit and two dull nouns from a wanted poster scene. Both players write one caption that uses both nouns and makes the pictured evidence support the pet’s habit. The Judge rewards the funniest criminal leap that still connects the object, the habit, and the clue.\n",
+  "seed_pool": [
+    {
+      "opening_token": "sock and bowl",
+      "opening_emoji": "🧦",
+      "detail": "PET HABIT: steals socks • OBJECT: bowl and sock",
+      "hidden": "one sock was found inside the food bowl"
+    },
+    {
+      "opening_token": "spoon and cushion",
+      "opening_emoji": "🥄",
+      "detail": "PET HABIT: hides shiny things • OBJECT: spoon and cushion",
+      "hidden": "a teaspoon was discovered beneath the sofa cushion"
+    },
+    {
+      "opening_token": "leash and plant",
+      "opening_emoji": "🪴",
+      "detail": "PET HABIT: escapes whenever possible • OBJECT: leash and plant",
+      "hidden": "the loose leash was wrapped around the tallest houseplant"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "pet_habits": [
+        "steals socks",
+        "hides shiny things",
+        "escapes whenever possible",
+        "opens cupboards",
+        "guards empty boxes",
+        "collects bottle caps",
+        "pretends not to hear",
+        "interrupts phone calls"
+      ],
+      "object_pairs": [
+        "bowl and sock",
+        "spoon and cushion",
+        "leash and plant",
+        "key and slipper",
+        "mug and blanket",
+        "receipt and basket",
+        "brush and curtain",
+        "button and shoe"
+      ],
+      "clue_patterns": [
+        "one object was found inside the other",
+        "one object was hidden beneath the other",
+        "one object was wrapped around the other",
+        "one object was placed beside the other",
+        "one object was caught behind the other",
+        "one object was balanced on the other",
+        "one object was missing from the other",
+        "one object was marked with the other"
+      ]
+    },
+    "tests": [
+      "The card names one specific pet habit.",
+      "The card gives exactly two ordinary nouns for the scene.",
+      "The hidden clue explains a physical connection between the two nouns.",
+      "The habit and the clue can support a playful criminal theory.",
+      "The card does not require specialist knowledge or a named real person."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The sock beside the bowl proves Biscuit was not eating dinner, he was hiding the mayor’s missing cake receipt.",
+    "hint": "One caption. Use both nouns. Make the evidence incriminating."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does the caption make the pet’s habit and the scene look like convincing evidence of one ridiculous crime?",
+      "anchors": "0 = the objects or habit are ignored; 1 = a connection is barely visible; 2 = the theory holds together with tape; 3 = the scene could almost support the accusation; 4 = the evidence feels suspiciously airtight for a pet crime (rare).\n",
+      "weight": 4
+    },
+    {
+      "name": "funny",
+      "description": "Does the caption turn a boring household detail into a comic criminal revelation?",
+      "anchors": "0 = no joke; 1 = a faint smirk; 2 = a pleasingly silly charge; 3 = a clear laugh with a sharp image; 4 = a tiny masterpiece of pet tabloid nonsense (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the caption stay compact, clear, and shaped like a confident report rather than a ramble?",
+      "anchors": "0 = fragments, confusion, or a list; 1 = a caption buried under explanation; 2 = understandable but padded; 3 = clean and caption ready; 4 = every word points at the crime scene (rare).\n",
+      "weight": 1
+    }
+  ],
+  "criterion": {
+    "description": "A caption PLAYS if it uses both given nouns and makes the pictured object evidence of the pet’s stated habit. It fails when either noun is missing, when it merely says the pet is guilty without building a connection, or when it talks about the game instead of captioning the scene. A wild theory plays if the objects, habit, and accusation are still connected.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing caption.\n",
+    "judge_notes": [
+      "The habit and hidden clue are given to you. Check that both displayed nouns appear in the caption, or clear forms of them, and that the caption turns their relationship into evidence of the habit.\n",
+      "Both players answer the same card. Judge each caption on its own; one player’s leap is not the standard for the other.\n",
+      "A caption that only says guilty, criminal, or caught fails unless it supplies a reason involving both nouns and the stated habit.\n",
+      "A caption may invent a victim, motive, accomplice, or absurd charge, but it must still make the object and the pet’s habit part of the same theory.\n",
+      "A caption that uses only one noun fails even if it is funny. A caption that names both nouns without connecting them to the habit also fails.\n",
+      "A bare accusation or a description of the photo without a criminal inference fails. A short caption with a clear theory plays and can score well.\n",
+      "Speaking to the Judge, discussing the rules, or explaining why the caption should win is not a caption and fails.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "PET HABIT: steals socks • OBJECT: bowl and sock",
+      "move": "The sock in the bowl proves Biscuit was laundering evidence between meals.",
+      "gates_note": "all true",
+      "mechanism": "both nouns become evidence of a theft habit, with laundering as the criminal leap",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "PET HABIT: hides shiny things • OBJECT: spoon and cushion",
+      "move": "The cushion and spoon show that Miso has opened a low budget jewellery vault.",
+      "gates_note": "all true",
+      "mechanism": "the spoon is treated as hidden treasure and the cushion as the vault, tied to the hiding habit",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "PET HABIT: escapes whenever possible • OBJECT: leash and plant",
+      "move": "The leash proves the plant is guilty.",
+      "gates_note": "satisfies_criterion false, no connection to the pet’s habit",
+      "mechanism": "both nouns appear, but the caption abandons the pet and offers no escape theory",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "PET HABIT: steals socks • OBJECT: bowl and sock",
+      "move": "Guilty, obviously.",
+      "gates_note": "satisfies_criterion false, neither noun is used and no evidence is offered",
+      "mechanism": "a verdict has been shouted where a caption was requested",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Neighborhood Crime Reporter",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "playfully exact"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A reader who sees only the card and caption should know why the pet looks suspicious.",
+      "Name the pet habit, one key noun, or the charge. A headline that fits every caption has no bite.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Reporter refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the caption or the tiny alleged crime, never identity, disability, body, family, or protected traits.",
+      "Plain spoken English. Affectionate, cheeky, and lightly tabloid. Profanity and adult innuendo are allowed when they improve the joke.",
+      "Never reveal the hidden clue in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline refuses the caption and asks for another. It never rules on who won.",
+      "The coaching line names one missing ingredient, such as the second noun or the pet’s habit. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The sock has an alibi, but the bowl is singing like a witness.",
+      "A cushion vault for one spoon. Miso is running a very small but shiny empire.",
+      "The leash and plant make escape look less like an accident and more like gardening with intent.",
+      "That is not a caption, it is a guilty verdict wearing no trousers.",
+      "The bowl gets both nouns, and Biscuit gets a laundering charge before breakfast.",
+      "A fine theory, though the plant is now seeking legal advice.",
+      "The evidence is tidy, the crime is tiny, and the pet remains annoyingly plausible.",
+      "You found the motive, the witness, and the household object that should have kept quiet."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: this is a funny caption.",
+        "why": "opens with a status word and gives no specific reason"
+      },
+      {
+        "text": "The Reporter refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, use both nouns.",
+        "why": "opens with a ruling phrase and gives no playful explanation"
+      },
+      {
+        "text": "The real clue was a sock inside the bowl.",
+        "why": "reveals the hidden clue in the headline"
+      },
+      {
+        "text": "Funny.",
+        "why": "no reason and no connection to the card"
+      },
+      {
+        "text": "Only an idiot would accuse a pet like that.",
+        "why": "roasts the player and adds no useful joke"
+      },
+      {
+        "text": "O tiny criminal, beneath the moon, thy whiskers plot and scheme.",
+        "why": "poetry instead of plain spoken reporting"
+      },
+      {
+        "text": "The caption is plausible, amusing, concise, and effective.",
+        "why": "generic praise with no image"
+      },
+      {
+        "text": "Better than the other player’s caption.",
+        "why": "judges the pair instead of explaining this caption"
+      },
+      {
+        "text": "The pet is guilty because the evidence says so.",
+        "why": "circular, generic, and not funny"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one wanted poster scene each.",
+    "Use both dull nouns from the card and write one caption that makes the pictured object evidence of the pet’s stated habit.",
+    "The Judge scores each caption for believable crime logic, funny tabloid nonsense, and clean caption shape.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The scene",
+    "next_opening": "The next scene",
+    "your_opening": "Your scene",
+    "compose": "Caption {token}",
+    "compose_waiting": "Draft your caption while you wait"
+  },
+  "validation_messages": {
+    "empty": "No caption at the scene. Give the pet a crime.",
+    "too_long": "Over 160 characters. This is a caption, not a witness statement.",
+    "duplicate": "That caption has already been played this match. Find the pet a fresher charge.",
+    "nudge": "Twice now. Use both nouns and connect them to {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} waits at the scene. Give it a minute.\n",
+  "opponent_prompt": "You are writing the rival caption for a pet wanted poster.\nWrite one caption that uses both given nouns and makes the pictured object evidence of the pet’s stated habit.\nKeep it short, usually one sentence and no more than 160 characters. Make the crime theory funny, but keep the object, the habit, and the accusation connected.\nDo not merely write guilty, caught, criminal, or arrest the pet. Explain what the evidence proves.\nUse both nouns exactly or in a clear form. Do not replace one with a vague pronoun.\nYou may invent a victim, motive, accomplice, cover story, secret job, or absurd charge. The pet can be a mastermind, a petty thief, or a spectacularly bad criminal.\nDo not mention the game, the Judge, the rules, scoring, or the other player. Do not explain your caption outside the caption.\nThe real clue is given so you can build a theory around it. Do not simply repeat the clue as a dull report. Turn it into evidence of the pet’s habit.\n",
+  "medallions": true,
+  "default_move": "The bowl and sock prove the dog was not hungry, he was hiding the evidence."
+}

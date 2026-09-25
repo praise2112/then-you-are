@@ -1,0 +1,264 @@
+{
+  "slug": "site-sabotage",
+  "title": "Site Sabotage",
+  "tagline": "Break the problem before it breaks the build.",
+  "emblem": "🏗️",
+  "accent": "#b45309",
+  "premise": "You are a building site trying to finish a job while your rival keeps throwing hazards at the plan. On each turn, place one site problem that directly wrecks the problem now on top. The chain ends when your fix fails.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a concrete mixer",
+      "opening_emoji": "🚧",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a tower crane",
+      "opening_emoji": "🏗️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a trench",
+      "opening_emoji": "🕳️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "site_area": [
+        "road",
+        "floor",
+        "roof",
+        "trench",
+        "scaffold",
+        "warehouse",
+        "office",
+        "gate"
+      ],
+      "hazard": [
+        "mud",
+        "rain",
+        "dust",
+        "fire",
+        "leak",
+        "jam",
+        "hole",
+        "noise"
+      ],
+      "agent": [
+        "worker",
+        "inspector",
+        "driver",
+        "guard",
+        "engineer",
+        "thief",
+        "foreman",
+        "neighbor"
+      ]
+    },
+    "tests": [
+      "A stranger pictures a real building site at once. Nothing abstract, magical or dependent on specialist jargon.",
+      "A non-player names a plain site problem within five seconds. Say what that problem is.",
+      "It can directly cause, block, break or make impossible the problem before it, like a flood stopping a trench or a power cut stopping a drill. It is never merely nearby.",
+      "It makes a stranger want to answer. A thing with a practical snag or a little menace, not a catalog item sitting politely in storage.",
+      "Two or three everyday words a twelve-year-old knows. Never a brand name, proper noun or technical term that needs a hard hat and a glossary."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a power cut: I shut down the drill that is boring through my floor.",
+    "hint": "Name one site thing and the direct damage it does."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new site problem wrecks the problem immediately before it.",
+      "anchors": "0 = no connection or only a claim; 1 = a weak inconvenience or distant relation; 2 = a plausible block with an opening to argue; 3 = a clear direct cause, block or break; 4 = the previous problem is plainly impossible to continue (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the site thing and the damage it does.",
+      "anchors": "0 = unreadable or self contradicting; 1 = depends on jargon or missing context; 2 = understandable but vague or crowded; 3 = clear and concrete; 4 = immediate, specific and easy to picture (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "Whether the move shifts to a fresh kind of site problem instead of repeating the same trade, tool or failure.",
+      "anchors": "0 = a stock repeat, larger copy or same problem in a new hat; 2 = a reasonable change with familiar site logic; 4 = a sharp hop to a new part of the build that still directly wrecks the standing problem (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A site problem OVERCOMES the previous site problem if it directly causes, blocks, breaks, or makes impossible what the previous problem is doing. The new thing must act on the standing problem, not merely exist beside it. Avoiding it, waiting it out, making a larger copy, or naming a related nuisance does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a losing site problem.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous site problem: judge the move against the opening prompt instead. It must directly answer or overcome the opening problem.",
+      "A bigger, faster or heavier version of the standing problem is not a counter. A larger crane after a crane, or deeper mud after mud, is failed escalation unless it has a distinct literal action that wrecks the standing problem.",
+      "Becoming the opening problem itself, or a recoloured copy of it, is a duplicate and fails the semantic duplicate gate.",
+      "Strength is measured against the standing problem, never in the abstract. A dramatic site hazard with no way to act on what stands is a failed counter.",
+      "The mechanism must be literal and watchable. A power cut stopping a drill works. Paperwork burying a foundation or a bad mood crushing a crane is figurative, so rule fail.",
+      "Surviving, ignoring, being immune to, or waiting for the standing problem is avoidance, not overcoming. A raincoat against rain, a worker ignoring noise, or a locked box waiting out a thief does not act on the problem.",
+      "A related nuisance is not enough. Dust beside mud, a different drill beside a drill, or a foreman complaining about a delay must directly cause, block, break or make impossible the standing problem.",
+      "The move must name one site thing and a direct action in one sentence. A list of hazards, a speech to the Judge or a vague promise to ruin everything fails the move gate."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a concrete mixer, churning across the access road.",
+      "move": "I am a road flood: I stop the mixer from reaching the pour.",
+      "gates_note": "all true",
+      "mechanism": "floodwater blocks the mixer on the access road",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a tower crane: I lift steel over the roof.",
+      "move": "I am a power cut: I stop the crane from lifting its load.",
+      "gates_note": "all true",
+      "mechanism": "loss of power stops the crane's lifting operation",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a trench: I swallow the pipe crew's path.",
+      "move": "I am a deeper trench: I swallow more path.",
+      "gates_note": "satisfies_criterion false, mere amplification and no distinct mechanism",
+      "mechanism": "the new trench is only a larger copy of the standing trench",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a cement truck: I block the site gate.",
+      "move": "I am a hard hat: I stay safe behind the truck.",
+      "gates_note": "satisfies_criterion false, survival and avoidance are not direct action",
+      "mechanism": "the hard hat does not move or stop the truck",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a jackhammer: I shake the unfinished floor.",
+      "move": "I am a loud radio: I make the noise worse.",
+      "gates_note": "satisfies_criterion false, related nuisance with no direct block or break",
+      "mechanism": "the radio adds noise but does not stop the jackhammer",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 4,
+        "novelty": 0
+      },
+      "confidence": "lean",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Site Clerk",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the two forms should see the site failure.",
+      "Name both site problems, or plain stand ins for them. Do not use a reusable headline.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused or The Site Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Use commas and full stops.",
+      "Roast the form and, when useful, the player lightly. No identity based abuse, threats or comments about bodies, families or protected traits.",
+      "Plain spoken English. Adult innuendo and mild profanity are allowed, but the joke must stay about the site problem.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never declares a winner.",
+      "The coaching line names one site problem that would have won. End on a fact or action, not a mood or verdict."
+    ],
+    "good_headlines": [
+      "The mixer owns the road until the flood turns its commute into soup.",
+      "The crane needs power, and the blackout has filed the only paperwork that matters.",
+      "The trench was deep. The pump made it irrelevant.",
+      "The scaffold wanted height. The loose bolt preferred gravity.",
+      "The drill had a job. The broken cable gave it unpaid leave."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the flood beats the mixer.",
+        "why": "opens with a status word and gives too little reason"
+      },
+      {
+        "text": "The Site Clerk refuses: nice try.",
+        "why": "opens with a ruling phrase, names the host and explains nothing"
+      },
+      {
+        "text": "Rejected, the crane loses.",
+        "why": "opens with a ruling phrase and gives no mechanism"
+      },
+      {
+        "text": "The rain and the mud have a complicated relationship.",
+        "why": "hedges instead of ruling on a direct site action"
+      },
+      {
+        "text": "A bigger trench is still a trench, now with extra cheek.",
+        "why": "it is closer, but it does not say what directly fails"
+      },
+      {
+        "text": "The player clearly has no idea how construction works.",
+        "why": "attacks the player instead of the move"
+      },
+      {
+        "text": "The scaffold doth crumble beneath the moonlit hammer.",
+        "why": "poetry and unnatural language"
+      },
+      {
+        "text": "The flood wins.",
+        "why": "no reason and no named interaction"
+      },
+      {
+        "text": "The hard hat bravely survives the cement truck.",
+        "why": "survival is not a counter, and the headline accidentally praises the failure"
+      }
+    ]
+  },
+  "rules": [
+    "Break the site problem in front of you. Do not merely avoid it.",
+    "Name one site thing and its direct action in one sentence.",
+    "The Judge rules on the idea, not spelling or trade credentials.",
+    "One problem that fails to wreck the standing problem ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your site problem against {token}",
+    "compose_waiting": "Draft your next site problem while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put a problem on the site.",
+    "too_long": "Over 200 characters. A site problem, not a planning meeting.",
+    "duplicate": "That site problem already stood this match. Break ground somewhere else.",
+    "nudge": "Twice now. Wreck {standing_form}. Do not dodge it, copy it or merely stand nearby."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one building site trying to survive.\nAlways name one site thing and its direct action in one sentence.\nGood: \"I am a power cut: I stop the drill.\" / \"I am a road flood: I trap the concrete mixer.\"\nBad: \"I am a hard hat: I stay safe\" because survival is not a counter.\nBad: \"I am more mud\" because a larger copy is not a new mechanism.\nBad: \"I am a delay\" because it is vague and abstract.\nTalk like a person on a real building site, not a poet or a project manager writing a report.\nUse plain things anyone can picture: rain, a truck, a loose bolt, a locked gate, a broken cable, a fire.\nEvery move must directly cause, block, break or make impossible the form before it.\nDo not merely avoid it, wait it out, become immune to it or name a related nuisance.\nHop between site areas and kinds of trouble when you can, but keep the mechanism literal.\nNever reuse a form or attribute from this match.\nYou are trying to survive. If a move sounds funny, it is because the site problem genuinely wrecks the other one.\n",
+  "default_move": "I am a locked gate: I stop the next delivery."
+}

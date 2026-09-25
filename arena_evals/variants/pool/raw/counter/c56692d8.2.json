@@ -1,0 +1,272 @@
+{
+  "slug": "stamp-standoff",
+  "title": "Stamp Standoff",
+  "tagline": "Make the last mark legally meaningless.",
+  "emblem": "🗂️",
+  "accent": "#1d4ed8",
+  "premise": "Two office workers duel with official stamps. Each turn, choose one standing stamp or seal that defeats the mark before it: an approval can be voided, a date can expire a permit, and a court seal can force a decision. The winner is the worker whose ink makes the previous ink meaningless.\n",
+  "seed_pool": [
+    {
+      "opening_token": "an approval stamp",
+      "opening_emoji": "✅",
+      "detail": "I make this request officially allowed.",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a deadline stamp",
+      "opening_emoji": "⏰",
+      "detail": "I make this permission end on a fixed date.",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a council seal",
+      "opening_emoji": "🏛️",
+      "detail": "I make this decision carry official authority.",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "mark_type": [
+        "approval stamp",
+        "denial stamp",
+        "cancellation stamp",
+        "deadline stamp",
+        "warning seal",
+        "court seal",
+        "inspection mark",
+        "appeal stamp"
+      ],
+      "authority": [
+        "office clerk",
+        "city council",
+        "court",
+        "tax office",
+        "building inspector",
+        "election board",
+        "licensing desk",
+        "public records office"
+      ],
+      "effect": [
+        "allows",
+        "denies",
+        "ends",
+        "delays",
+        "orders",
+        "warns",
+        "reopens",
+        "confirms"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the mark and its office job at once. Nothing that needs a filing manual, nothing abstract.",
+      "A non-player names a plain official counter within five seconds. Say what that counter does to this mark.",
+      "It stands on a document and changes what the document can legally do. Never a worker's mood or a pile of paper with no official force.",
+      "It makes a stranger want to answer with another office mark. A cancellation, deadline, appeal or court order has a handle to grab.",
+      "Two to four everyday words with an article. Never a made-up agency, brand name or proper noun, and never a stamp that wins only because it is bigger."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a cancellation stamp; I cross out the approval.",
+    "hint": "Name the mark, then say what official effect it has on the mark before it."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly the new official mark invalidates, limits, replaces or ends the authority of the previous mark.",
+      "anchors": "0 = no official effect on the previous mark; 1 = a vague office connection or forced claim; 2 = a plausible but incomplete counter; 3 = a clear official mechanism that defeats the mark; 4 = the new mark makes the previous authority plainly impossible to use (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the mark, its issuing authority and its effect.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires specialist paperwork knowledge; 2 = understandable but muddled or overly broad; 3 = concrete and easy to picture; 4 = crisp, vivid and instantly legible (rare). Length never fixes a cloudy office job.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "Whether the move introduces a fresh kind of official power instead of repainting the previous mark.",
+      "anchors": "0 = same mark, same function or a bigger version; 2 = a decent procedural twist; 4 = a fresh office, legal or civic function that changes the battlefield (rare). Novel wording is not novelty, and obscure bureaucracy does not earn points.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A mark OVERCOMES the previous mark when its official function directly invalidates, limits, replaces or ends the authority of that mark. The mechanism must be something the new mark officially does to the previous mark's standing. Avoiding the document, waiting for time to pass, using a larger or nearly identical stamp, or merely claiming superiority does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a losing mark.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous mark: judge whether the move answers or overcomes the opening mark by naming a direct official counter to its function.\n",
+      "A bigger, darker or more official-looking version of the standing mark is not a counter, and neither is a near relative with the same job. A larger approval after an approval is still approval.\n",
+      "Becoming the opening mark itself, or giving it a new color, office or adjective, is a duplicate and fails the novelty gate.\n",
+      "Strength is measured against the standing mark, not against paperwork in general. A mark that has no official way to affect the previous mark fails even if it sounds powerful.\n",
+      "The mechanism must be literal and administrative: a cancellation crosses out an approval, an expiry ends a permit, an appeal reopens a decision, or a court order compels action. A stamp that merely sounds stern has no mechanism.\n",
+      "Surviving, ignoring, delaying until the other mark is forgotten, or refusing to use the document is dodging, not overcoming. The new mark must act on the previous mark's authority.\n",
+      "A seal from a related office is not automatically a counter. It must explain the specific legal or procedural effect that defeats the standing mark.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am an approval stamp; I make this request officially allowed.",
+      "move": "I am a cancellation stamp; I make that approval void.",
+      "gates_note": "all true",
+      "mechanism": "the cancellation mark removes the approval's official force",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a deadline stamp; I make this permit end on Friday.",
+      "move": "I am an appeal stamp; I reopen the permit before the deadline.",
+      "gates_note": "all true",
+      "mechanism": "an accepted appeal suspends or reopens the deadline's effect",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a council seal; I make this decision official.",
+      "move": "I am a bigger council seal; I make the decision extra official.",
+      "gates_note": "satisfies_criterion false, mere amplification with no new official function",
+      "mechanism": "none, it repeats the same authority",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a denial stamp; I reject this permit request.",
+      "move": "I am an inspection mark; I look very serious beside the denial.",
+      "gates_note": "satisfies_criterion false, no stated effect on the denial",
+      "mechanism": "none, looking official does not reverse a decision",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a deadline stamp; I make this permit expire today.",
+      "move": "I am a court seal; I order the office to extend the permit.",
+      "gates_note": "all true",
+      "mechanism": "the court order overrides the deadline by compelling an extension",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Clerk",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two marks must see why one changed the other's authority.",
+      "Name both marks, or their plain office stand-ins. A headline that fits any paperwork fight is a bad headline.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the losing mark or its flimsy office job, never the player's body, identity, family, intelligence or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no legal Latin and no fancy bureaucrat fog.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one mark that would have won. That mark ends on a concrete office action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The approval opened the door, then cancellation changed the locks.",
+      "A deadline tried to close the file, but the court seal reopened it.",
+      "The bigger approval is still approval, just wearing a wider rubber coat. Bring another mark.",
+      "The inspection mark looked official, but the denial was not impressed.",
+      "The appeal stamp gave the expired permit one more trip around the desk.",
+      "A council seal cannot defeat a council seal by adding more council.",
+      "The court order does not argue with the deadline, it orders the deadline aside.",
+      "The warning stamp brought concern to a cancellation fight. Bring a mark that can void it.",
+      "The denial shut the gate, but the appeal found the release form.",
+      "The approval has ink, the cancellation has a crossout, and the crossout has the final say."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the cancellation stamp wins.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Clerk refuses: that stamp is nonsense.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring something stronger.",
+        "why": "opens with a ruling phrase and explains nothing"
+      },
+      {
+        "text": "The approval is defeated by the cancellation, legally and officially and completely.",
+        "why": "repeats the result instead of showing the office mechanism"
+      },
+      {
+        "text": "The seal feels powerful, but perhaps the deadline might possibly matter.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Paperwork wins.",
+        "why": "fits every pair and names no mechanism"
+      },
+      {
+        "text": "Only an idiot would submit that form.",
+        "why": "mocks the player and uses identity unsafe language"
+      },
+      {
+        "text": "The approval doth yield before the cancellation's mighty quill.",
+        "why": "poetry and theatrical language obscure the plain office action"
+      },
+      {
+        "text": "The denial is rejected, defeated, cancelled, overturned, and undone.",
+        "why": "piles up synonyms without showing what mark does what"
+      },
+      {
+        "text": "The warning stamp wins because it is very official.",
+        "why": "authority is asserted, not explained as a direct counter"
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the standing mark with an official function. Do not merely look more important.",
+    "Name the mark and what it does to the previous mark: I am a cancellation stamp; I make that approval void.",
+    "The Judge rules on the office effect, never the spelling or the dramatic seriousness of the seal.",
+    "One mark that fails against the standing mark ends the match."
+  ],
+  "labels": {
+    "opening": "The opening mark",
+    "next_opening": "The next opening mark",
+    "your_opening": "Your opening mark",
+    "compose": "Your mark against {token}",
+    "compose_waiting": "Draft your next mark while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the form. Stamp a mark.",
+    "too_long": "Over 200 characters. An official mark, not a council transcript.",
+    "duplicate": "That mark already stood this match. File something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not copy it, dodge it, or make it louder."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two office workers trying to survive a stamp standoff.\nAlways name a mark and its direct official effect: \"I am a cancellation stamp; I make that approval void.\"\nYour move should be a short form with an article, followed by a plain explanation of what it does to their mark.\nGood: \"I am an appeal stamp; I reopen the denial.\" / \"I am a court seal; I order the deadline extended.\"\nBad: \"I am a mighty dragon seal\" because a dragon is not an office function.\nBad: \"I am a bigger approval\" because size does not change authority.\nBad: \"I am a warning stamp\" if you never say how the warning affects the standing mark.\nTalk like a person across a public counter, not a legal textbook and not a poet.\nUse ordinary marks and offices anyone can picture: an approval, a denial, a permit, an appeal, a council seal, a court order.\nYour mark must directly invalidate, limit, replace or end the standing mark.\nDo not dodge it, ignore it, wait for it to expire, or hope the clerk loses the file.\nHop domains when useful: a permit desk, a court, an election office, a building inspection or a council meeting.\nNever reuse a mark or key effect from this match.\n",
+  "default_move": "I am a cancellation stamp; I make the standing mark void."
+}

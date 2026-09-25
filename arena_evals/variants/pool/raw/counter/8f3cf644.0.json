@@ -1,0 +1,274 @@
+{
+  "slug": "campfire-chain",
+  "title": "Campfire Chain",
+  "tagline": "Keep the fire alive by making the next thing matter.",
+  "emblem": "🔥",
+  "accent": "#b45309",
+  "premise": "Two campers build one campfire in words. Each turn, name a campfire thing that actively deals with what your opponent just added. The Judge decides whether your object actually matters.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a lit campfire",
+      "opening_emoji": "🔥",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a soaked tent",
+      "opening_emoji": "⛺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a pile of dry logs",
+      "opening_emoji": "🪵",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "thing": [
+        "tool",
+        "weather",
+        "animal",
+        "plant",
+        "camp supply",
+        "camp furniture",
+        "trail hazard",
+        "person or role"
+      ],
+      "action": [
+        "douse",
+        "bury",
+        "split",
+        "burn",
+        "carry",
+        "trap",
+        "cover",
+        "feed"
+      ],
+      "camp_area": [
+        "fire ring",
+        "tent",
+        "sleeping bag",
+        "cooler",
+        "trail",
+        "woodpile",
+        "stream",
+        "picnic table"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the camp thing at once. Nothing abstract, technical, or dependent on a long explanation.",
+      "The thing can directly change, contain, use, or destroy another camp thing. Say what plain action it takes.",
+      "It belongs in or around a campsite, not merely because someone could carry it there. A useful object beats a random household prop.",
+      "It gives the next camper something to answer. A thing with a job, danger, appetite, or stubbornness beats dead scenery.",
+      "The card uses no more than four everyday words, starts as a noun phrase with an article, and contains no brand name or proper noun."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am rain, and I drown the fire.",
+    "hint": "Name the thing and the plain action it takes on the previous thing."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and convincingly the new camp thing acts on the previous camp thing.",
+      "anchors": "0 = no action or only nearby scenery; 1 = an action is claimed but barely works; 2 = plausible but weak, indirect, or arguable; 3 = clear camp logic that changes, contains, uses, or destroys the previous thing; 4 = immediate and decisive, the previous thing has no useful reply (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the thing and its action at a campsite.",
+      "anchors": "0 = unreadable or self contradicting; 1 = understandable only after explanation; 2 = mostly clear but muddled or oddly phrased; 3 = plain, concrete, and easy to picture; 4 = crisp enough to watch happen beside the fire (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the response is within the campfire chain, rather than a repeat or lazy cousin of the previous move.",
+      "anchors": "0 = repeats the same thing, action, or obvious answer; 2 = a reasonable camp twist; 4 = a fresh shift in camp domain that still directly works (rare). Novelty rewards a new useful angle, not strange wording or obscure gear.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A new move overcomes the previous move only when it is a standing campsite object or force that directly changes, contains, uses, or destroys the previous one. The action must be literal and watchable. Merely sitting nearby, surviving it, hiding from it, ignoring it, waiting it out, or making a bigger copy fails.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or talking about the rules is itself a useless camp prop and loses.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player move. Judge it against the opening card instead. It must directly deal with the opening camp thing, such as rain dousing a lit campfire or a shovel burying it.\n",
+      "The new thing must be a standing camp object or force, not a past event, a plan, or a scene description.\n",
+      "A bigger, hotter, wetter, or otherwise amplified copy of the previous thing is not a counter. It remains the same kind of camp thing and has no new mechanism.\n",
+      "A cousin from the same narrow family is not enough by itself. A larger shovel after a shovel, or a brighter fire after a fire, fails unless it has a distinct literal action that changes the previous thing.\n",
+      "The mechanism must be literal and observable. A shovel buries embers, water douses flame, and roots split a shovel handle. A campfire inspiring courage or a tent burying a problem is figurative and fails.\n",
+      "Surviving, ignoring, hiding from, being immune to, or waiting out the previous thing is dodging, not overcoming. A bear that is not scared of smoke does not defeat smoke, and a dry bag that stays dry beside rain does not act on rain.\n",
+      "A thing that merely sits near the previous thing is not a counter. A lantern beside a fire, a cooler beside a tent, or a moon above a camp fails unless it directly acts on what stands.\n",
+      "The move must remain a campfire object or force. A rule, explanation, insult, or claim about victory is not allowed to enter the campsite.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a lit campfire, crackling in the dark.",
+      "move": "I am rain, and I drown the fire.",
+      "gates_note": "all true",
+      "mechanism": "rain puts out the campfire",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am rain, and I drown the fire.",
+      "move": "I am a shovel, and I bury the puddle.",
+      "gates_note": "satisfies_criterion false, the shovel does not meaningfully defeat the standing rain",
+      "mechanism": "it has no clear literal action against rain",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a shovel, and I bury the embers.",
+      "move": "I am roots, and I split the shovel handle.",
+      "gates_note": "all true",
+      "mechanism": "roots grow through and break the wooden handle",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am roots, and I split the shovel handle.",
+      "move": "I am a bigger shovel, and I dig harder.",
+      "gates_note": "satisfies_criterion false, mere amplification and no distinct action against roots",
+      "mechanism": "it is still a shovel and does not directly deal with the roots",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a soaked tent, and I sag in the rain.",
+      "move": "I am a clothesline, and I hang the tent to dry.",
+      "gates_note": "all true",
+      "mechanism": "the clothesline holds the tent up so air can dry it",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Tired Camp Host",
+    "tone": {
+      "commentary_adj": "world weary",
+      "explanation_adj": "dry"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Sound like a camp host who has seen three generations misuse firewood and has stopped expecting miracles.",
+      "The joke must also explain the result. A stranger should see why the new camp thing did or did not act on the old one.",
+      "Name both camp things, or use plain stand ins. Do not use a generic slogan that fits every move.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The host refuses.",
+      "Use commas and full stops only. No dashes as punctuation, no colons after a verdict, and no ellipses.",
+      "Roast the useless camp thing or the move, not identity traits. Edgy profanity and adult innuendo are allowed, but never identity based abuse.",
+      "On a refusal, ask for another useful camp thing. Do not pretend the failed move won anything.",
+      "The coaching line names one thing that would have worked. It ends on a plain action or fact, not a mood or ruling.",
+      "Keep the language plain and dry. No poetry, grand speeches, or fake wilderness wisdom."
+    ],
+    "good_headlines": [
+      "Rain drowns the campfire, which is more useful than most guests.",
+      "The roots split the shovel handle. Nature has filed its complaint.",
+      "The clothesline lifts the soaked tent, finally giving wet canvas a job.",
+      "The lantern sits beside the fire and contributes absolutely fuck all. Bring a useful thing.",
+      "The shovel buries the embers, because apparently dirt had to solve this.",
+      "The bigger shovel is still a shovel. More metal does not make a new idea.",
+      "The bear eats the food bag, and the campsite loses dinner with impressive efficiency.",
+      "Smoke drives off the mosquitoes. Nobody is happy, but everyone is less bitten.",
+      "The cooler chills the beer, not the campfire. Nice priorities, useless answer.",
+      "The tarp covers the woodpile, so the rain can stop ruining tomorrow's kindling."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: rain beats fire.",
+        "why": "Opens with a status word and gives a thin, generic reason."
+      },
+      {
+        "text": "The Tired Camp Host refuses: that lantern is pointless.",
+        "why": "Opens with a ruling phrase and names the host."
+      },
+      {
+        "text": "Move refused, the cooler is irrelevant.",
+        "why": "Opens with a ruling phrase and offers no useful picture."
+      },
+      {
+        "text": "The fire feels the ancient call of the rain.",
+        "why": "Poetic fog replaces the literal dousing mechanism."
+      },
+      {
+        "text": "The lantern wins.",
+        "why": "No reason, and it could describe any pair."
+      },
+      {
+        "text": "The shovel is a stupid little idiot, just like the person who played it.",
+        "why": "Roasts the player instead of explaining the camp mechanism."
+      },
+      {
+        "text": "The tarp may cover the wood, unless the wind removes it, unless the rain changes direction.",
+        "why": "Hedges until the ruling disappears."
+      },
+      {
+        "text": "The fire has been extinguished, defeated, overcome, and utterly destroyed.",
+        "why": "Repeats one idea without adding a picture."
+      },
+      {
+        "text": "The cooler cools the fire through its chill.",
+        "why": "Claims a vague effect with no believable literal action."
+      },
+      {
+        "text": "A larger shovel brings larger digging energy to the shovel situation.",
+        "why": "Mocks the wording instead of naming a distinct counter."
+      }
+    ]
+  },
+  "rules": [
+    "Deal directly with the camp thing in front of you. Do not merely sit beside it.",
+    "Say what you are and what you do to it: I am rain, and I drown the fire.",
+    "The Judge rules on the camp action, not spelling or fancy phrasing.",
+    "A useless prop breaks the chain and ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your camp thing against {token}",
+    "compose_waiting": "Draft your next camp thing while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put something useful by the fire.",
+    "too_long": "Over 200 characters. It is a camp thing, not a memoir.",
+    "duplicate": "That camp thing already stood this match. Find new gear.",
+    "nudge": "Twice now. Deal directly with {standing_form}. Do not sit nearby, hide, or repeat it."
+  },
+  "judge_out_text": "The judge has stepped away to check the fire ring. Nobody moves until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two campers building a campfire chain in words.\nAlways use this shape: \"I am [thing], and I [plain action] the [previous thing].\"\nYour thing must be a standing campsite object or force. Your action must directly change,\ncontain, use, or destroy the previous thing.\nGood: \"I am rain, and I drown the fire.\" / \"I am roots, and I split the shovel handle.\"\nBad: \"I am a lantern, and I sit beside the fire\" because nearby is not useful.\nBad: \"I am a bigger fire, and I burn harder\" because amplification is not a new counter.\nBad: \"I am confidence, and I defeat your tent\" because abstract nonsense has no place by the fire.\nTalk like a person who has camped before, not a poet or a rules lawyer. Use plain things:\nrain, a shovel, a bear, a tarp, a cooler, roots, smoke, a boot.\nYou are trying to keep the chain alive. A move should give the next camper a concrete thing\nto answer, not merely look clever on the page.\nStay within the campsite: fire, weather, tools, food, shelter, wildlife, trails, and camp chores.\nHop domains when useful. A shovel can bury embers, roots can split the shovel, and rain can\nwash mud into the tent. Do not repeat a thing or recycle an attribute from this match.\nThe Judge cares about literal action. Surviving, ignoring, hiding from, or waiting out the\nprevious thing does not count. Speak plainly and make the campsite do something.\n",
+  "default_move": "I am rain, and I drown the fire."
+}

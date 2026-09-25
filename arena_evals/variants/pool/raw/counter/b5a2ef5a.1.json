@@ -1,0 +1,293 @@
+{
+  "slug": "shed-lockdown",
+  "title": "Shed Lockdown",
+  "tagline": "Turn the garden into a fortress, one ordinary object at a time.",
+  "emblem": "🔒",
+  "accent": "#166534",
+  "premise": "The garden shed is under siege. Players alternate placing one ordinary garden object into a growing defense or attack plan, and each object must directly defeat the one before it. The Judge treats the chain like a tiny tactical battle, not a poetry contest with muddy boots.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a key",
+      "opening_emoji": "🔑",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a wheelbarrow",
+      "opening_emoji": "🛒",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a garden hose",
+      "opening_emoji": " hose",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "object": [
+        "key",
+        "padlock",
+        "shovel",
+        "rake",
+        "wheelbarrow",
+        "garden hose",
+        "flowerpot",
+        "tarp",
+        "ladder",
+        "shears"
+      ],
+      "location": [
+        "shed door",
+        "toolbox",
+        "potting bench",
+        "compost bin",
+        "fence gate",
+        "rain barrel",
+        "greenhouse",
+        "garden path",
+        "woodpile",
+        "side gate"
+      ],
+      "job": [
+        "locking out",
+        "cutting off",
+        "breaking",
+        "blocking",
+        "pinning",
+        "covering",
+        "draining",
+        "trapping",
+        "severing",
+        "making useless"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one ordinary object in a back garden at once. Nothing abstract, technical, or invented.",
+      "A non-player can name the previous object's plain weakness within five seconds. Say exactly how the new object exploits it.",
+      "The object has a direct job in the shed situation. It locks out, cuts off, breaks, blocks, removes, or makes the previous object useless.",
+      "The move creates a tiny tactical scene that makes someone want to answer. A hose flooding a fuse box works; a flowerpot feeling defensive does not.",
+      "Use two or three everyday words a twelve-year-old knows. No brands, proper nouns, grand strategies, or objects that need a garden manual."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a padlock, sealing the toolbox so the screwdriver is useless.",
+    "hint": "One object, one direct job, one defeated target."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new garden object defeats the object before it in the shed situation.",
+      "anchors": "0 = no direct job or only a story about surviving; 1 = a weak connection that leaves the previous object fully useful; 2 = a plausible but incomplete counter; 3 = a clear object and job that disables the previous object; 4 = an exact tactical answer that leaves the previous object with no useful move (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How quickly a stranger can picture the object, its position, and the action that defeats the previous object.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires specialist knowledge or several guesses; 2 = understandable but cluttered, vague, or slightly abstract; 3 = concrete and easy to follow; 4 = crisp, vivid, and immediately playable (rare). Extra words never help unless each one explains the garden action.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How freshly the move changes the garden battle instead of repeating the same object, method, or corner of the shed.",
+      "anchors": "0 = the obvious repeat, a larger version, or the same tactic in a new hat; 2 = a sound change of object or angle; 4 = a surprising ordinary garden answer from a genuinely different tactical domain (rare). Strange wording is not novelty, and obscure equipment earns no bonus.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "The new object OVERCOMES the previous object if, in the back garden or shed situation, it directly prevents, disables, removes, breaks, or overpowers that object. The move must name or clearly show a literal job the new object performs on the standing object. Dodging it, merely enduring it, using a larger version, or naming a related cousin does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or citing a rule is itself a losing object and does not enter the shed plan.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player object. Judge it against the opening card instead. The move must plausibly answer or defeat that opening object in the garden situation.\n",
+      "A bigger, heavier, sharper, or faster version of the standing object is not a counter by itself. A larger padlock after a padlock, or a stronger shovel after a shovel, is failed amplification unless it has a distinct direct job.\n",
+      "A related cousin is not enough. A rake after a hoe, or a key after another key, does not win merely because it belongs to the same tool family. The new object must do something that defeats the standing object.\n",
+      "Becoming the opening object itself, or a recoloured copy such as a red hose against a hose, is a duplicate. Mark not_semantic_duplicate false and satisfies_criterion false.\n",
+      "The mechanism must be literal and visible. A tarp covering a wheelbarrow, a padlock sealing a box, or shears cutting a hose works. A flowerpot ruining someone's plans or a fence discouraging danger is not a mechanism.\n",
+      "Surviving, ignoring, waiting out, or being immune to the standing object is dodging, not overcoming. A rain barrel enduring a hose, a stone sitting near a shovel, or gloves ignoring nettles does not act on the standing object.\n",
+      "The new object must have a way to act on the standing object in the shed situation. A label against a falling tree, or a spoon against a locked door, fails unless the move supplies a plain, literal disabling action.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a key, opening the shed door.",
+      "move": "I am a padlock, sealing the hasp so the key is useless.",
+      "gates_note": "all true",
+      "mechanism": "the padlock blocks the key from opening the secured shed door",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a garden hose, flooding the shed floor.",
+      "move": "I am a spade, digging a drain beneath the doorway.",
+      "gates_note": "all true",
+      "mechanism": "the drain carries the hose water away and removes the flooding threat",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a wheelbarrow, hauling the tools away.",
+      "move": "I am a rope, tying the wheel so the barrow cannot move.",
+      "gates_note": "all true",
+      "mechanism": "the rope pins the wheelbarrow in place and stops its transport job",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a rake, blocking the shed door.",
+      "move": "I am a bigger rake, blocking it even harder.",
+      "gates_note": "satisfies_criterion false, mere amplification with no distinct mechanism",
+      "mechanism": "none, the new rake repeats the standing object's job",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a padlock, sealing the toolbox.",
+      "move": "I am a key, confident and ready.",
+      "gates_note": "satisfies_criterion false, the move names no direct action and repeats the opening object",
+      "mechanism": "none, confidence does not disable the padlock",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 2,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a garden hose, spraying the shed door.",
+      "move": "I am a rain barrel, waiting out the water.",
+      "gates_note": "satisfies_criterion false, survival and endurance are dodging",
+      "mechanism": "none, the rain barrel does not act on or disable the hose",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Groundskeeper General",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Sound like a commander announcing the fate of a tiny garden war, with enough ceremony to make a wheelbarrow feel decorated.",
+      "The joke carries the reason. A stranger who reads only the two forms must see exactly how one object defeated the other.",
+      "Name both objects, or use plain stand ins. A headline that could fit any garden fight is a tactical failure.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Groundskeeper General refuses.",
+      "Use commas and full stops only. No dashes as punctuation, no colons after a verdict, no ellipses.",
+      "Mock the losing object or its ridiculous plan. A pointed roast of the player is allowed, but never attack identity, protected traits, disability, or real world vulnerability.",
+      "Plain spoken English with a grand coat thrown over it. No poetry, antique speech, Latin, or thesaurus fog.",
+      "On a refusal caused by a gate failure, the headline rejects the move and asks for another. It never declares a winner from an invalid move.",
+      "The coaching line names one object and one direct job that would have won. End on an action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The key stormed the door, then the padlock closed parliament.",
+      "The hose brought a flood. The spade answered with a drain and buried the coup.",
+      "The wheelbarrow planned an escape, but the rope tied its only wheel to treason.",
+      "The rake called itself a barricade until the shears turned its teeth into garden confetti.",
+      "The tarp covered the toolbox so completely that the screwdriver became unemployed.",
+      "A larger rake is not a new strategy. Bring an object that actually ruins the rake's day.",
+      "The rain barrel stood there bravely while the hose kept working. That is not warfare, it is furniture.",
+      "The key against the padlock has returned for its rematch. Bring a crowbar or cut the hasp.",
+      "The flowerpot did not defeat the shovel. It merely watched from a safe distance like a cowardly vase.",
+      "The hose met the shears and lost the argument in one clean bite."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the padlock has triumphed over the key.",
+        "why": "Opens with a status word and wastes the theatrical reason."
+      },
+      {
+        "text": "The Groundskeeper General refuses, the rake is pathetic.",
+        "why": "Opens with a ruling phrase, names the host, and gives no mechanism."
+      },
+      {
+        "text": "Move refused, splendid effort from a garden genius.",
+        "why": "Opens with a ruling phrase and mocks the player without explaining the failure."
+      },
+      {
+        "text": "The hose is defeated.",
+        "why": "Too bland, too short, and missing the object that defeated it."
+      },
+      {
+        "text": "The bucket has superior tactical energy and wins on vibes.",
+        "why": "Vibes are not a literal garden mechanism."
+      },
+      {
+        "text": "The shovel, the mighty shovel, the shovel of destiny, conquers all.",
+        "why": "Grand language replaces a direct action and repeats the object."
+      },
+      {
+        "text": "The player clearly has the strategic depth of wet compost.",
+        "why": "A personal insult without a useful ruling, and the compost has done nothing to deserve this."
+      },
+      {
+        "text": "Verily, the humble spade doth vanquish the villainous hose.",
+        "why": "Antique poetry is not plain spoken English."
+      },
+      {
+        "text": "The tarp defeats the rain barrel because it is more prepared.",
+        "why": "Preparedness is a claim, not a visible action against the rain barrel."
+      },
+      {
+        "text": "The rope wins, triumphs, dominates, annihilates, and absolutely wrecks the wheelbarrow.",
+        "why": "A pile of victory words is not a reason. Say what the rope does."
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the object in front of you. Do not merely survive it.",
+    "Name one ordinary garden object and its direct job against the standing object.",
+    "Make the job literal and visible. Lock it out, cut it off, break it, block it, remove it, or make it useless.",
+    "The Judge rules on the tactical idea, not spelling or grand delivery.",
+    "One object that cannot defeat the standing object ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your object against {token}",
+    "compose_waiting": "Draft your next garden maneuver while you wait"
+  },
+  "validation_messages": {
+    "empty": "The shed hears nothing. Deploy an object.",
+    "too_long": "Over 200 characters. This is a garden maneuver, not a military memoir.",
+    "duplicate": "That object already served this match. Bring a fresh tool.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not repeat it, outsize it, or stand politely nearby."
+  },
+  "judge_out_text": "The judge has stepped out to inspect the shed. Nobody moves until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two commanders fighting over a back garden shed.\nAlways write one ordinary object and its direct job against the opponent's object.\nGood: \"I am a padlock, sealing the toolbox so the key is useless.\" / \"I am shears, cutting the hose so the flood stops.\"\nBad: \"I am a bigger shovel, stronger and more determined\" because size and mood are not a mechanism. Bad: \"I am a tarp, waiting out the rain\" because survival is dodging. Bad: \"I am victory\" because victory is not an object.\nTalk like a person across a garden gate, not a poet or a military historian. Use objects anyone can picture: keys, ropes, pots, hoses, spades, tarps, gates, bins, and tools.\nYour object must act directly on the standing object. Lock it, block it, cut it, cover it, drain it, pin it, break it, remove it, or make it useless. Do not cite a vague plan or a clever metaphor.\nHop domains when possible. A shed door, a compost bin, a fence, a muddy path, and a rain barrel are all fair ground. Do not keep swapping one nearly identical tool for another.\nNever reuse an object or attribute from this match. Do not speak to the Judge, mention the rules, or explain that you are playing a game.\nYou are trying to win a small, serious garden war. Keep the move plain enough for a stranger to judge in seconds.\n",
+  "default_move": "I am a padlock, sealing the shed so the key is useless."
+}

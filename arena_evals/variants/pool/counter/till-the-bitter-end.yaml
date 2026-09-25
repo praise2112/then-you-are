@@ -1,0 +1,339 @@
+schema_version: 1
+slug: till-the-bitter-end
+title: Till the Bitter End
+tagline: Climb the receipt until your wallet collapses.
+emblem: 🛒
+accent: '#7c2d12'
+premise: 'Two shoppers build the same high-street bill, one item at a time. Each purchase must cost more
+  than the last and keep the running total within the limit. The first shopper who cannot add a legal
+  item faces a public financial execution.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: short_form
+  max_words: 10
+  axes:
+    limit:
+    - £80
+    - £100
+    - £120
+    - £150
+    - £180
+    - £200
+    - £250
+    - £300
+    first_item:
+    - comic
+    - sandwich
+    - notebook
+    - mug
+    - scarf
+    - plant
+    - umbrella
+    - headphones
+    first_price:
+    - £2
+    - £3
+    - £4
+    - £5
+    - £6
+    - £7
+    - £8
+    - £9
+  tests:
+  - A stranger can see the shop limit, the first item, its whole-pound price, and the starting total at
+    once.
+  - The first price is a plain whole number below the limit, with no discount, tax, change, or mysterious
+    loyalty magic.
+  - The item is an ordinary high-street purchase that a shopper could name without explaining a specialist
+    trade.
+  - The opening card gives players room to climb through several clearly higher prices before the limit
+    closes its jaws.
+  - The card uses short, direct words and one obvious receipt state, never a riddle, a shopping list,
+    or a second rule.
+demo:
+  opening:
+    token: an opening limit of £100 with a £3 comic
+    emoji: 📖
+  moves:
+  - actor: p1
+    text: I buy a comic for £3; total £3.
+    emoji: 📖
+    scores: null
+  - actor: p2
+    text: I buy a mug for £8; total £11.
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 2
+  headline: The comic opens the trial, and the mug raises the bill by £8 without breaking the crown.
+  openings:
+  - token: an opening limit of £100 with a £3 comic
+    examples:
+    - I buy a mug for £8; total £11.
+  - token: an opening limit of £150 with a £5 sandwich
+    examples:
+    - I buy a mug for £8; total £11.
+move_constraints:
+  max_chars: 200
+  prefix: 'I buy '
+  example: I buy a toaster for £24; total £57.
+  hint: Item, whole-pound price, new running total.
+rubric:
+- name: counter_strength
+  description: How completely the purchase proves that it is more expensive than the previous item while
+    keeping the bill within the limit.
+  anchors: '0 = no usable price or total; 1 = a number appears but the purchase is illegal or unclear;
+    2 = the price climb or total is plausible but one part is contestable; 3 = the item is clearly dearer
+    and the arithmetic stays within the limit; 4 = the receipt is exact, legal, and leaves almost no room
+    for dispute.
+
+    '
+  weight: 5
+- name: coherence
+  description: How clearly the move presents one ordinary item, one whole-pound price, and one new running
+    total.
+  anchors: '0 = unreadable or self-contradicting; 1 = requires guesswork to identify the item, price,
+    or total; 2 = mostly understandable but muddled or padded; 3 = concise and clear; 4 = instantly readable
+    as a real high-street purchase with clean arithmetic.
+
+    '
+  weight: 3
+- name: novelty
+  description: How fresh and entertaining the shopping choice is without sacrificing ordinary recognisability
+    or legal receipt logic.
+  anchors: '0 = repeats an item, copies the previous purchase, or uses a stock non-item; 2 = a decent
+    change of shop or category; 4 = a surprising but perfectly ordinary high-street choice that gives
+    the receipt theatrical life.
+
+    '
+  weight: 2
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: 'A purchase is LEGAL if it names one ordinary shop item, gives a clear whole-pound price
+    strictly higher than the previous item, and states a new running total that equals the old total plus
+    that price and does not exceed the opening limit. The item must be newly chosen for the match. Secret
+    discounts, rounding, invented refunds, repeats, vague affordability, and prices hidden in wordplay
+    do not count.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, about the game, or about the rules is not a purchase
+    and loses the turn.
+
+    '
+  judge_notes:
+  - 'On a FIRST move, judge the purchase against the opening card: its price must be higher than the opening
+    price, its arithmetic must be exact, and its total must stay within the stated limit.
+
+    '
+  - 'A price equal to or lower than the previous price is illegal, even if the item is grander, heavier,
+    rarer, or more embarrassing to carry home.
+
+    '
+  - 'A total above the limit is illegal, even if the shopper promises to pay later, finds loose change,
+    or invokes a secret sale.
+
+    '
+  - 'The running total must be exact whole-pound arithmetic. Claimed affordability, rounding, hidden tax,
+    cashback, coupons, and imaginary discounts cannot repair a bad total.
+
+    '
+  - 'A repeated item is illegal. A larger, newer, or differently coloured version of the same named item
+    is still a repeat when it is plainly the same purchase category.
+
+    '
+  - 'The move must name one ordinary purchasable item. A shop, brand, vague category, service, person,
+    emotion, or scene is not an item.
+
+    '
+  - 'The move must give both the item''s price and the new total. If either number is missing or cannot
+    be reconciled with the standing total, the purchase fails.
+
+    '
+  - 'The item need not be from a different type of shop, but novelty rewards a fresh category and never
+    excuses an illegal price or total.
+
+    '
+examples:
+- previous_move: I buy a comic for £3; total £3.
+  move: I buy a mug for £8; total £11.
+  gates_note: all true
+  mechanism: £8 is higher than £3, and £3 plus £8 equals £11
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: accept
+- previous_move: I buy a mug for £8; total £11.
+  move: I buy headphones for £24; total £35.
+  gates_note: all true
+  mechanism: £24 is higher than £8, and £11 plus £24 equals £35
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 4
+  confidence: clear
+  verdict: accept
+- previous_move: I buy a toaster for £24; total £57.
+  move: I buy a coat for £20; total £77.
+  gates_note: price is not higher than the previous price
+  mechanism: £20 is lower than £24, so the receipt climbs backwards
+  scores:
+    counter_strength: 0
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: fail
+- previous_move: I buy a scarf for £48; total £82.
+  move: I buy a lamp for £25; total £107.
+  gates_note: total exceeds the £100 limit
+  mechanism: the price is higher than £48, but £82 plus £25 breaks the shop's ceiling
+  scores:
+    counter_strength: 0
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: fail
+- previous_move: I buy a plant for £12; total £27.
+  move: I buy a candle for £18; total £44.
+  gates_note: all true
+  mechanism: £18 is higher than £12, and £27 plus £18 equals £45, not £44
+  scores:
+    counter_strength: 1
+    coherence: 3
+    novelty: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Checkout Executioner
+  tone:
+    commentary_adj: grandiose
+    explanation_adj: theatrical
+  bite: sharp
+  ruling_generosity: merciless
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - Sound like a velvet voiced announcer introducing the final act of a doomed shopping empire.
+  - The joke carries the reason. A stranger who reads only the two purchases must see why the receipt
+    rose or fell.
+  - Name both items, their prices, or plain stand ins. A grand headline that fits every receipt is a failed
+    performance.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Executioner refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.
+  - Mock the purchase, the arithmetic, or the theatrical shopper's choice. Never target identity, protected
+    traits, disability, or real world vulnerability.
+  - Edgy adult innuendo and profanity are allowed sparingly, but the line must remain about the receipt,
+    not abuse aimed at the player.
+  - Plain spoken English beneath the velvet and thunder. No poetry, rhymes, fake Latin, or foggy thesaurus
+    language.
+  - On a refusal caused by a gate failure, the headline refuses the purchase and asks for another. It
+    never declares a winner.
+  - The coaching line names one legal item and price that would have worked. It ends on a fact or an action,
+    never a mood or verdict.
+  - A correct move deserves ceremony, but arithmetic remains the sovereign. No amount of glamour can make
+    £107 fit under £100.
+  good_headlines:
+  - The comic opens the trial, and the mug raises the bill by £8 without breaking the crown.
+  - The headphones cost more than the toaster, and the receipt survives its expensive little seduction.
+  - The coat is cheaper than the toaster. A bargain is not a promotion, darling. Bring another purchase.
+  - The lamp crosses £100 in full costume. The budget has been stabbed on the high street. Bring another
+    purchase.
+  - The candle promised £45 and delivered £44. Even the wax is embarrassed by that arithmetic.
+  - The scarf climbs above the mug, and the running total kneels neatly at £59.
+  - The plant repeats no old sin, costs £12, and keeps the ledger beneath the limit.
+  - The sandwich enters at £5, the notebook follows at £9, and the receipt begins its doomed ascent.
+  - The coat may be fabulous, but £20 cannot outrank £24. Bring another purchase.
+  - The till has accepted the headphones, though the wallet is already drafting its resignation.
+  bad_headlines:
+  - text: 'Accepted: the mug ascends to glory.'
+    why: It opens with a status word and gives no arithmetic or reason.
+  - text: 'The Executioner refuses: your coat is pathetic.'
+    why: It opens with a ruling phrase and attacks the player rather than the illegal purchase.
+  - text: The headphones win.
+    why: It gives no reason and could describe any legal move.
+  - text: The coat is cheaper, inferior, bankrupt, and utterly vanquished.
+    why: It piles on verdict words instead of naming the simple price failure.
+  - text: The lamp, a magnificent titan of commerce, bestrides the fiscal firmament.
+    why: It is grandiose fog with no clear price or receipt mechanism.
+  - text: The total is sort of fine, probably.
+    why: It hedges instead of ruling on exact arithmetic.
+  - text: Only an idiot would total £107.
+    why: It attacks the player and ignores the theatrical purchase.
+  - text: The scarf hath ascended beyond the sovereign budget.
+    why: It uses archaic poetry instead of plain spoken English.
+  - text: Nice item, wrong number. Try again.
+    why: It is too generic and does not identify the item, prices, or exact failure.
+  - text: The candle's hot little body seduces the purse.
+    why: The innuendo overwhelms the receipt and hides the actual ruling.
+rules:
+- Buy one ordinary high-street item on each turn.
+- Its whole-pound price must be strictly higher than the previous item's price.
+- State the new running total exactly, and keep it at or below the opening limit.
+- Do not repeat an item, invent a discount, or hide behind a vague claim of affordability.
+- The first shopper who cannot make a legal purchase loses.
+labels:
+  opening: The opening receipt
+  next_opening: The next receipt
+  your_opening: Your opening receipt
+  compose: Your purchase after {token}
+  compose_waiting: Draft your next purchase while you wait
+validation_messages:
+  empty: Nothing entered. The till awaits a purchase.
+  too_long: Over 200 characters. Name the item, price, and total, not your entire shopping memoir.
+  duplicate: That item already appeared this match. Choose a fresh purchase.
+  nudge: Twice now. Beat {standing_form}. Pay more, total it exactly, and stay under the limit.
+judge_out_text: 'The judge has stepped out. Nobody moves until they are back. {standing_form} still stands
+  on the receipt. Give it a minute.
+
+  '
+opponent_prompt: 'You are one of two shoppers building a shared high street receipt.
+
+  Always use this shape: "I buy an item for £price; total £total."
+
+  The item must be ordinary and clear. The price must be a whole pound amount
+
+  strictly higher than the previous item, and the new total must equal the old
+
+  total plus that price while staying within the opening limit.
+
+  Good: "I buy a toaster for £24; total £57."
+
+  Bad: "I buy a cheaper coat for £20; total £77" when the previous price was £24.
+
+  Bad: "I buy a lamp for £25; total £107" under a £100 limit.
+
+  Bad: "I buy something expensive; total loads." The till does not accept vibes.
+
+  Do not use discounts, coupons, rounding, refunds, hidden fees, or secret money.
+
+  Do not repeat an item already used in this match. A larger or shinier version
+
+  of the same item may still count as a repeat when it is plainly the same thing.
+
+  Choose high street items anyone can picture: clothes, food, books, tools,
+
+  cosmetics, toys, home goods, and electronics. You are not writing an advert.
+
+  You are trying to keep the receipt alive for one more turn.
+
+  Stay concise, exact, and a little theatrical only through the item choice.
+
+  The host will supply the drama. You supply the arithmetic.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I buy a paperclip for £1; total £1.
+seed_pool:
+  - { opening_token: "an opening limit of £100 with a £3 comic", opening_emoji: "📖", detail: "First card: I buy a comic for £3; total £3.", hidden: "" }
+  - { opening_token: "an opening limit of £150 with a £5 sandwich", opening_emoji: "🥪", detail: "First card: I buy a sandwich for £5; total £5.", hidden: "" }
+  - { opening_token: "an opening limit of £200 with a £7 notebook", opening_emoji: "📓", detail: "First card: I buy a notebook for £7; total £7.", hidden: "" }

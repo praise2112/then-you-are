@@ -1,0 +1,291 @@
+{
+  "slug": "excuse-chain",
+  "title": "Excuse Chain",
+  "tagline": "One late report. One shared lie. Keep the chain alive.",
+  "emblem": "⛓️",
+  "accent": "#7c3aed",
+  "premise": "The teacher asks why your science report is three days late. You and a classmate have one excuse between you. Take turns adding exactly one believable link: the reason, what caused it, then the proof or result. Every link must fit the card and everything already said. Skip a needed link, finish the excuse, undo a fact, or contradict the story and you break it. Make your partner look gloriously guilty.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The teacher asks why your science report is three days late.",
+      "opening_emoji": "🧪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The teacher asks why your history presentation is missing on the morning you must give it.",
+      "opening_emoji": "🏛️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The teacher asks why your maths project was handed in with three blank pages.",
+      "opening_emoji": "📐",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 19,
+    "axes": {
+      "assignment": [
+        "science report",
+        "history presentation",
+        "maths project",
+        "book review",
+        "art portfolio",
+        "geography poster",
+        "music recording",
+        "computer task"
+      ],
+      "problem": [
+        "a printer jam",
+        "a lost file",
+        "a broken charger",
+        "a spilled drink",
+        "a sick pet",
+        "a locked classroom",
+        "a missing notebook",
+        "a power cut"
+      ],
+      "deadline": [
+        "three days late",
+        "due this morning",
+        "missing after lunch",
+        "late since Monday",
+        "due before registration",
+        "overdue by one week",
+        "missing at the presentation",
+        "handed in with pages blank"
+      ]
+    },
+    "tests": [
+      "One plain sentence in which a teacher asks about a late, missing, or damaged school assignment.",
+      "The problem is awkward but harmless. Nobody is hurt, threatened, robbed, or blamed for a serious crime.",
+      "A player can begin with a simple reason and then build toward its cause and proof or result.",
+      "The excuse has room for at least three links, but the card does not require a whole family saga or a disaster movie.",
+      "Everyday school words a twelve-year-old knows. No real teacher names, school names, brands, or street names."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The printer jammed while my mate here was copying the last page.",
+    "hint": "Add one link only. Give the reason, its cause, or the proof or result. Make your partner carry the mess."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much this link burdens your partner with a specific, awkward fact they must keep explaining.",
+      "anchors": "0 = burdens nobody, a plain delay or missing file; 1 = a small inconvenience; 2 = your partner owns a clear mistake or awkward choice; 3 = they now have to defend a vivid habit, witness, object, or suspicious action; 4 = believable and brutally specific, their next link is a tightrope (rare). A link that only embarrasses you, skips the chain, or sounds absurd scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the link follows the required chain and agrees with the card and every earlier fact.",
+      "anchors": "0 = skips a cause, finishes the excuse, undoes a fact, or clashes with the story; 1 = technically related but vague or poorly connected; 2 = adds the next sensible link; 3 = clearly connects the reason to its cause or proof; 4 = makes an earlier link click into place while leaving the next link obvious (rare). Specificity cannot rescue a broken chain.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How easily a stranger can picture the classroom disaster and hear the excuse being kept alive.",
+      "anchors": "0 = generic school fog; 1 = one ordinary fact; 2 = a concrete object or action; 3 = a small sound, sight, or reaction makes it memorable; 4 = painfully real, like the teacher has already found the wet notebook (rare). Plain details beat melodrama.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly the next needed link to the shared excuse. The link must fit the card and every earlier move. A normal chain starts with the reason, then gives what caused that reason, then gives the proof or result. A move BREAKS if it skips a needed link, jumps from a reason straight to proof, finishes the excuse before the other player can add a link, or takes back, replaces, or contradicts an established fact. It also breaks if it puts the pair somewhere impossible for the card or talks about the game instead of the excuse. Holding is the gate. Points go to details that make the partner look specifically and plausibly responsible. Safe links that cost nobody anything score low.\n",
+    "anti_metagaming_clause": "Talking to the teacher about the rules, the score, the partner's strategy, or whether a move counts, instead of adding the next excuse link, is itself a broken excuse.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier link: accept a clear reason for the late or damaged assignment, not its cause, proof, or final result.",
+      "The full transcript is the excuse. Check the new link against the card and every earlier link, not only the last sentence.",
+      "The required order is reason, then cause, then proof or result. If a move jumps over a needed cause or proof, it breaks even when the overall story sounds possible.",
+      "A move that declares the excuse complete, says the work was finally handed in, or gives the teacher a final explanation before the chain has been built is a finished excuse and breaks.",
+      "A move that changes the object, time, person, place, or event already established is an undo or contradiction and breaks.",
+      "When a move can reasonably be read as the next link, accept it. Do not demand technical school policy, exact travel times, printer models, medical facts, or outside research.",
+      "A detail about the partner's mistake, habit, panic, or suspicious behaviour is the point of the game and is not meta. A remark about how the partner is playing is meta.",
+      "A move that merely repeats an earlier link in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The teacher asks why your science report is three days late.",
+      "move": "The printer jammed while my mate here was copying the last page.",
+      "gates_note": "all true",
+      "mechanism": "opens with the reason and gives the partner a clear role without jumping to the cause or proof",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The printer jammed while my mate here was copying the last page.",
+      "move": "He kept feeding it the same bent page because he said he could beat the machine.",
+      "gates_note": "all true",
+      "mechanism": "supplies the cause and makes the partner responsible for a stupid, believable choice",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "He kept feeding it the same bent page because he said he could beat the machine.",
+      "move": "That is why the ink marks are still across his sleeve.",
+      "gates_note": "all true",
+      "mechanism": "adds the proof or result and pins the partner to a visible classroom disaster",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The printer jammed while my mate here was copying the last page.",
+      "move": "The printer jammed because he forgot the report at home.",
+      "gates_note": "satisfies_criterion false, skips the needed cause of the jam and gives a conflicting cause",
+      "mechanism": "tries to teleport from the printer problem to a different excuse, leaving the chain face down in traffic",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "He kept feeding it the same bent page because he said he could beat the machine.",
+      "move": "So the teacher can see the ink on his sleeve and the report is late because of the printer.",
+      "gates_note": "satisfies_criterion false, jumps to proof and finishes the excuse in one move",
+      "mechanism": "throws the cause, evidence, and tidy ending into one bucket like a panicked student",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The printer jammed while my mate here was copying the last page.",
+      "move": "Actually he was not copying it, he had already emailed the report.",
+      "gates_note": "satisfies_criterion false, takes back the established action and changes the excuse",
+      "mechanism": "undoes the only fact holding the chain together and replaces it with a fresh escape hatch",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Chalkboard Prosecutor",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hyped"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "content_rating": "edgy",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Lead with the funny concrete image, then make the ruling clear. The joke should expose the exact link that held or broke.",
+      "Name the object, action, or guilty little choice. Generic hype is useless.",
+      "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Prosecutor rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Roast the excuse and the move, and allow mild profanity or adult innuendo, but never attack identity, disability, protected traits, body, family, or intelligence.",
+      "Plain spoken English with classroom chaos. No legal speeches, poetry, rhymes, or fancy vocabulary.",
+      "On a break, put the missing link, finished ending, or two clashing facts beside each other so the collapse is obvious.",
+      "On a gate refusal, reject the move and demand the next link. Do not pretend the player has lost the whole game.",
+      "The coaching line names one next link that would have held and made the partner look worse. End on a fact, never a mood.",
+      "Keep the energy loud, but the reason must remain fair enough for a stranger to check from the transcript."
+    ],
+    "good_headlines": [
+      "He fed the bent page to the printer again because he could beat it. The machine won, and your partner looks spectacularly stupid.",
+      "Ink on his sleeve is excellent proof. His shirt has entered the witness box.",
+      "The charger died, then his phone became a warm little paperweight. The chain holds, and he owns the tragedy.",
+      "You gave the reason, then made him cause it. One more link and his dignity is officially overdue.",
+      "He locked the notebook in the classroom and kept the key in his pocket. That is not an excuse, that is premium idiot evidence.",
+      "The cat sat on the keyboard, and your partner still blamed the cat after three days. Plausible, humiliating, beautiful.",
+      "You jumped from printer jam to proof in one breath. The chain needed a cause, not a panic sprint.",
+      "He emailed the report already, after saying it was still trapped in the printer. Pick a lie, champ, the paper cannot be in two places.",
+      "The teacher asked for the reason, and you handed over the final answer like a kid throwing a smoke bomb in maths.",
+      "A missing notebook is fine. A missing notebook that your partner used as a lunch tray is glorious."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Broken, you skipped the cause.",
+        "why": "opens with a ruling word and gives no picture"
+      },
+      {
+        "text": "The chain is inconsistent, contradictory, incompatible and false.",
+        "why": "piles on synonyms instead of naming the missing link"
+      },
+      {
+        "text": "What a dumb player.",
+        "why": "attacks the player directly and offers no reason"
+      },
+      {
+        "text": "The excuse collapsed like a beautiful moonlit tower of sorrow.",
+        "why": "poetry and melodrama instead of classroom plain speech"
+      },
+      {
+        "text": "Maybe it holds, maybe it breaks, who knows.",
+        "why": "hedges instead of making a fair ruling"
+      },
+      {
+        "text": "He was at the printer, then he was not, and perhaps time is fake.",
+        "why": "mocks the situation without identifying the exact contradiction"
+      },
+      {
+        "text": "Accepted, nice detail.",
+        "why": "status word first and no concrete explanation"
+      },
+      {
+        "text": "The printer model requires a special cartridge, so this fails.",
+        "why": "uses outside technical trivia a stranger cannot reasonably check"
+      },
+      {
+        "text": "Guilty as charged.",
+        "why": "generic verdict, no chain link, no joke"
+      },
+      {
+        "text": "You finished the excuse, but that is bad because rules.",
+        "why": "mentions rules vaguely and fails to explain what needed link was skipped"
+      }
+    ]
+  },
+  "rules": [
+    "The teacher asks why the assignment is late, missing, or damaged. You share one excuse.",
+    "Add exactly one link per turn, in order: the reason, what caused it, then the proof or result.",
+    "Skip a needed link, finish the excuse early, undo a fact, or contradict the story and the chain breaks.",
+    "Points go to links that make your partner specifically and plausibly responsible for the mess.",
+    "A safe, vague link can hold but scores little. A vivid link that fits can make your partner sweat."
+  ],
+  "labels": {
+    "opening": "The teacher's question",
+    "next_opening": "The next teacher's question",
+    "your_opening": "Your teacher's question",
+    "compose": "Your next link, after {token}",
+    "compose_waiting": "Build your next link while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing said. The teacher is holding the late slip.",
+    "too_long": "Over 140 characters. One link, not the director's cut.",
+    "duplicate": "That link is already on the board. Add a new one.",
+    "nudge": "Twice now. Add the next link after {standing_form}. Do not skip it, finish early, or undo it."
+  },
+  "judge_out_text": "The Chalkboard Prosecutor has left the room. Nobody adds a link until they return. {standing_form} is still on the board.\n",
+  "opponent_prompt": "You are one of two classmates trying to keep a shared lie alive in front of a teacher.\nThe card tells you which assignment is late, missing, or damaged. Add exactly one link per turn,\none or two plain sentences.\n\nBuild the excuse in order. Start with the reason, then explain what caused that reason,\nthen give the proof or result. Never skip a needed link. Never finish the whole excuse in one\nmove. Never take back, replace, or contradict a fact already said.\n\nMake your partner look gloriously guilty while staying believable. Give them the bent page,\nthe locked room, the dead charger, the suspicious text, the spilled drink, or the terrible\nchoice they made five minutes before disaster. Call them my mate here, he, or she. Never use\na name unless one is already in the story.\n\nGood: The printer jammed while my mate here was copying the last page. / He kept feeding it\nthe same bent page because he said he could beat the machine. / That is why the ink marks are\nstill across his sleeve.\nBad: The printer jammed, so the teacher can see the ink on his sleeve. That skips the cause.\nBad: The report was late because the printer jammed, and now the teacher knows everything.\nThat finishes the excuse too soon. Bad: Actually he had already emailed it. That undoes the\nstory. Bad: Teacher, this game is unfair. That talks about the game instead of playing it.\n\nTalk like a real student in trouble, not a novelist. Use ordinary school objects and actions.\nBuild from the full transcript, not just the last move. Never repeat a link. Keep the chain\nalive, keep the facts straight, and make your partner carry the ugliest believable part.\n",
+  "medallions": false,
+  "default_move": "The problem got worse while my mate here was trying to fix it."
+}

@@ -1,0 +1,313 @@
+schema_version: 1
+slug: locker-room-temperature
+title: Locker Room Temperature
+tagline: Change the hallway before it changes you.
+emblem: 🏫
+accent: '#4f46e5'
+premise: 'Every turn changes the corridor''s standing mood, rumor, or social pressure, and the next player
+  must defeat that pressure with a new school hall reality. The host records each failed mood swing like
+  a failed experiment in human misery.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: short_form
+  max_words: 8
+  axes:
+    school_place:
+    - locker bay
+    - stairwell
+    - science wing
+    - cafeteria line
+    - gym entrance
+    - library door
+    - bus loop
+    - principal's office
+    pressure:
+    - rumor
+    - crowd
+    - deadline
+    - embarrassment
+    - jealousy
+    - suspicion
+    - detention
+    - wrong accusation
+    turning_force:
+    - teacher
+    - bell
+    - note
+    - camera
+    - friend
+    - schedule
+    - locked door
+    - fire drill
+  tests:
+  - A stranger sees one concrete school corridor situation immediately, with no explanation needed.
+  - A non-player can name the pressure in plain words within five seconds, and the card gives them something
+    that can actually be changed.
+  - It stands in the hallway as a social or physical condition. Never a private feeling, a vague theme,
+    or a whole plot.
+  - It makes another player want to answer because someone can expose it, interrupt it, redirect it, or
+    make it collapse.
+  - It uses a short noun phrase with an article and familiar school words. No proper names, slang that
+    needs decoding, or poetic fog.
+demo:
+  opening:
+    token: a whisper that everyone heard the test is cancelled
+    emoji: 🤫
+  moves:
+  - actor: p1
+    text: I am a whisper that everyone heard the test is cancelled.
+    emoji: 🤫
+    scores: null
+  - actor: p2
+    text: I am a teacher's posted notice, restoring the real test time.
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 2
+  headline: The cancellation whisper met a teacher's notice and died in public.
+  openings:
+  - token: a whisper that everyone heard the test is cancelled
+    examples:
+    - I am a teacher's posted notice, restoring the real test time.
+  - token: a crowd blocking the only open locker
+    examples:
+    - I am a teacher's posted notice, restoring the real test time.
+move_constraints:
+  max_chars: 200
+  prefix: 'I am '
+  example: I am a teacher's clipboard, naming the rumor and ending the hallway trial.
+  hint: Name the corridor reality, then name exactly how it breaks the standing pressure.
+rubric:
+- name: counter_strength
+  description: How directly the new school hall reality breaks, reveals, redirects, or neutralizes the
+    pressure before it.
+  anchors: '0 = no contact with the pressure; 1 = claims a change without a usable mechanism; 2 = partly
+    disrupts it but leaves the main pressure standing; 3 = clearly changes the situation and removes its
+    force; 4 = the pressure is exposed, redirected, or stopped so completely that it has nowhere useful
+    left to go (rare).
+
+    '
+  weight: 5
+- name: coherence
+  description: How quickly a stranger can picture the corridor condition and the action that changes it.
+  anchors: '0 = contradictory or unreadable; 1 = requires insider knowledge or several explanations; 2
+    = understandable but cluttered, vague, or partly abstract; 3 = concrete and easy to follow; 4 = sharply
+    visual, with the pressure and its change obvious at once (rare).
+
+    '
+  weight: 4
+- name: novelty
+  description: How far the move shifts the hallway into a fresh kind of school reality instead of repeating
+    the same social pressure.
+  anchors: '0 = repeats the prior pressure, setting, or obvious stock response; 2 = a workable change
+    with some fresh detail; 4 = moves into an unexpected school domain while still making a direct counter
+    (rare).
+
+    '
+  weight: 2
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: 'A move OVERCOMES the standing corridor condition if its social or physical reality directly
+    breaks, reveals, redirects, or neutralizes the pressure before it. It must change what is happening
+    in the hall, not merely endure the discomfort. Ignoring the pressure, hiding from it, being unaffected
+    by it, or making the same pressure louder does not count.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, describing the game, or invoking rules is itself a losing
+    corridor condition.
+
+    '
+  judge_notes:
+  - On a FIRST move there is no previous move. Judge it against the opening card instead. It must directly
+    break, reveal, redirect, or neutralize the opening condition.
+  - A louder rumor, larger crowd, harsher punishment, or more embarrassing version of the standing condition
+    is not a counter. It is the same pressure with fresh makeup, and satisfies_criterion is false.
+  - Becoming the opening condition itself, or a cosmetic rewrite of it, is a semantic duplicate. not_semantic_duplicate
+    is false.
+  - The new form must act on the standing condition. A student who simply ignores a rumor, a person who
+    is not embarrassed by a crowd, or an empty hallway that happens to avoid the crowd is dodging, not
+    overcoming.
+  - The mechanism must be literal and visible in school life. A teacher reading the attendance sheet can
+    expose a false absence. A vague appeal to truth, karma, or confidence cannot.
+  - A move that merely survives the pressure fails. Staying calm, waiting for the bell, or refusing to
+    care leaves the standing condition intact.
+  - The mechanism must target the pressure before it, not an unrelated consequence afterward. Cleaning
+    up spilled milk does not defeat a cheating rumor unless it changes that rumor.
+  - A move that intensifies the same social pressure fails even if it sounds dramatic. Public humiliation
+    is not a counter to embarrassment, and a bigger rumor is not a counter to a rumor.
+examples:
+- previous_move: I am a whisper that everyone heard the test is cancelled.
+  move: I am a teacher's posted notice, restoring the real test time.
+  gates_note: all true
+  mechanism: the official notice exposes and ends the false cancellation rumor
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: accept
+- previous_move: I am a crowd blocking the only open locker.
+  move: I am the fire bell, sending everyone toward the exit.
+  gates_note: all true
+  mechanism: the alarm physically disperses the crowd and clears the locker
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 4
+  confidence: clear
+  verdict: accept
+- previous_move: I am a rumor that someone is getting expelled.
+  move: I am a bigger rumor, naming three students instead.
+  gates_note: satisfies_criterion false, same pressure amplified with no counter mechanism
+  mechanism: none, the rumor has only been made uglier
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 0
+  confidence: clear
+  verdict: fail
+- previous_move: I am a crowd blocking the only open locker.
+  move: I am a student who does not mind waiting.
+  gates_note: satisfies_criterion false, the crowd and blocked locker remain
+  mechanism: none, tolerance is not redirection or removal
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 1
+  confidence: clear
+  verdict: fail
+- previous_move: I am a rumor that someone is getting expelled.
+  move: I am the principal's signed letter, naming the actual rule violation.
+  gates_note: all true
+  mechanism: the letter replaces anonymous rumor with an official, specific account
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 3
+  confidence: lean
+  verdict: accept
+host:
+  persona_name: The Hall Monitor
+  tone:
+    commentary_adj: menacing
+    explanation_adj: clinical
+  bite: savage
+  ruling_generosity: merciless
+  voice_rules:
+  - One sentence under 140 characters. Two short sentences at most.
+  - Make the joke sound like a lab result from a hostile school nurse. The reason must be visible in the
+    two forms.
+  - Name both forms, or use their plain school equivalents. A reusable insult is a failed observation.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Hall Monitor refuses.
+  - Use no dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops only.
+  - Roast the losing form or its mechanism, not identity, body, family, intelligence, spelling, or protected
+    traits. Profanity and adult innuendo are allowed when they sharpen the form.
+  - Plain spoken English. No poetry, fake Latin, ornate threats, or thesaurus sludge.
+  - On a gate failure, refuse the move and demand another. Do not declare a winner from a move that never
+    entered the trial.
+  - The coaching line names one form that would have won. It ends on a concrete action or fact, never
+    a mood or verdict.
+  good_headlines:
+  - The cancellation whisper met a teacher's notice and died in public.
+  - The crowd owned the locker until the fire bell evacuated its little kingdom.
+  - The anonymous expulsion rumor got dissected by a signed letter.
+  - The gossip brought fog, the attendance sheet brought names.
+  - The blocked locker was not a social crisis after the bell emptied the corridor.
+  bad_headlines:
+  - text: Accepted, the notice defeats the rumor.
+    why: Opens with a status word and explains too little.
+  - text: The Hall Monitor refuses, that was weak.
+    why: Opens with a ruling phrase, names the host, and gives no mechanism.
+  - text: The rumor is defeated by administrative excellence.
+    why: Abstract language hides what physically or socially changed.
+  - text: The crowd wins and the bell loses, probably.
+    why: Hedges instead of making a clear ruling.
+  - text: Nice try, idiot. Bring something better.
+    why: Attacks the player and offers no form based reason.
+  - text: The rumor was annihilated, obliterated, destroyed, and owned.
+    why: Stacked verdict words replace one concrete observation.
+  - text: The student waits calmly while the crowd remains in place.
+    why: Reports endurance as victory even though nothing was changed.
+rules:
+- Break the corridor condition in front of you. Do not merely survive it.
+- 'Name the standing reality and the mechanism that changes it: I am a teacher''s clipboard, turning the
+  whispered cheating rumor into names and consequences.'
+- The Judge rules on the school reality, not spelling or performance.
+- One move that fails to change the standing pressure ends the match.
+labels:
+  opening: The opening
+  next_opening: The next opening
+  your_opening: Your opening
+  compose: Your form against {token}
+  compose_waiting: Draft your next corridor reality while you wait
+validation_messages:
+  empty: Nothing on the page. Put a condition in the corridor.
+  too_long: Over 200 characters. This is a hallway incident, not a disciplinary file.
+  duplicate: That condition already stood this match. Produce a new reality.
+  nudge: Twice now. Break {standing_form}. Do not ignore it, repeat it, or make it louder.
+judge_out_text: 'The judge has stepped out. Nobody changes the hallway until they return. {standing_form}
+  still stands. Give it a minute.
+
+  '
+opponent_prompt: 'You are one of two students changing the temperature of a school corridor.
+
+  Always write: "I am X, attribute, attribute." X is a concrete school reality.
+
+  Attributes are short fragments, never full clauses, and at least one must name
+
+  what X does to the standing condition.
+
+  Good: "I am a teacher''s clipboard, naming the rumor, ending the trial."
+
+  Good: "I am the fire bell, crowd-scattering, locker-clearing."
+
+  Bad: "I am confidence, because I refuse to care". That is a feeling and a
+
+  sentence, not a corridor reality. Bad: "I am a bigger rumor, louder, nastier."
+
+  That is the same pressure with cheap lipstick.
+
+
+  You must directly break, reveal, redirect, or neutralize what the other form
+
+  stands for. Ignoring it, waiting it out, enduring it, or making it more intense
+
+  fails. The mechanism must be literal and visible in school life. A notice can
+
+  correct a rumor, a bell can scatter a crowd, and a locked door can redirect a
+
+  line. Vibes, moral lessons, and clever speeches do not count.
+
+
+  Speak like a person across a school hallway, not a poet or a lawyer. Use plain
+
+  things anyone can picture: a teacher, a pass, a bell, a locker, a note, a nurse,
+
+  a schedule. Hop domains when possible. A cafeteria system can answer a rumor,
+
+  and a fire drill can answer a crowd. Do not reuse a form or attribute from this
+
+  match.
+
+
+  You are trying to survive the next ruling. Do not joke for its own sake. If the
+
+  move is funny, the school reality itself should make it funny.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I am a late bell, ending the hallway argument.
+seed_pool:
+  - { opening_token: "a whisper that everyone heard the test is cancelled", opening_emoji: "🤫" }
+  - { opening_token: "a crowd blocking the only open locker", opening_emoji: "🧍" }
+  - { opening_token: "a rumor that someone is getting expelled", opening_emoji: "📣" }

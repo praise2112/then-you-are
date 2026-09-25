@@ -1,0 +1,277 @@
+{
+  "slug": "hold-music",
+  "title": "Hold Music",
+  "tagline": "One complaint, two voices. Keep the call alive while it gets worse.",
+  "emblem": "☎️",
+  "accent": "#b45309",
+  "premise": "You are building one customer-service call, one step at a time. Start with a normal complaint; then make the next reply, transfer, promise, or mistake worse without losing track of what has already happened.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A delivery app charged you for food that never arrived.",
+      "opening_emoji": "🥡",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A hotel billed you for a room you never used.",
+      "opening_emoji": "🏨",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A phone company cut off your service after taking payment.",
+      "opening_emoji": "📱",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 13,
+    "axes": {
+      "company": [
+        "delivery app",
+        "hotel",
+        "phone company",
+        "airline",
+        "bank",
+        "gym",
+        "online shop",
+        "energy supplier"
+      ],
+      "complaint": [
+        "a charge for something missing",
+        "a payment taken twice",
+        "a service stopped after payment",
+        "a booking changed without warning",
+        "a refund that never arrived",
+        "a fee nobody explained",
+        "a parcel sent to the wrong place",
+        "an account locked by mistake"
+      ],
+      "pressure": [
+        "before a journey",
+        "on moving day",
+        "during a family visit",
+        "before a work shift",
+        "on a public holiday",
+        "after closing time",
+        "during a storm",
+        "before an important appointment"
+      ]
+    },
+    "tests": [
+      "One short sentence with a company type and a plain customer problem.",
+      "The complaint is irritating or costly, but nobody is seriously hurt and no real person is named.",
+      "A stranger can see why the customer had to call within five seconds.",
+      "The problem leaves room for several replies, transfers, promises, and mistakes before the call ends.",
+      "Everyday words a twelve-year-old knows. No brand names, legal claims, street names, or technical codes."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The agent says the refund was approved, then asks whether you can wait six to eight business weeks for the approval to arrive.",
+    "hint": "One next line or call event. Make the same call worse without ending it."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How badly this next step inconveniences, exposes, or humiliates the other player while still belonging in the call.",
+      "anchors": "0 = changes nothing, a routine greeting or a simple question; 1 = a small nuisance, another form or a short wait; 2 = a real inconvenience, a transfer, a fee, or a promise they must chase; 3 = embarrassing or costly, they have to explain themselves, lose time, or admit a mistake; 4 = plausible, brutal, and leaves the other player trapped with a specific mess (rare). A move that only harms its own speaker, or is too absurd to believe, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the move follows the last line and preserves the facts, roles, timing, and unresolved complaint.",
+      "anchors": "0 = contradicts the call, skips a needed link, ends it, or undoes a stated step; 1 = vaguely related but ignores what was just said; 2 = follows and preserves the main facts; 3 = follows closely and adds a clear next action, response, transfer, promise, or mistake; 4 = follows so neatly it makes an earlier detail worse in hindsight (rare). A long move does not score higher by itself.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the move sounds like a real support call that has gone wrong.",
+      "anchors": "0 = generic filler anyone could say; 1 = one ordinary service detail; 2 = a recognisable call-centre moment; 3 = a specific phrase, department, system, or awkward admission; 4 = instantly pictureable and painfully familiar (rare). Plain spoken detail beats clever wording.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it is the next believable spoken line or call event in the same customer-service call, preserves every stated fact, and keeps the complaint unresolved. A move BREAKS if it skips past a needed response or link, resolves the complaint, hangs up, ends the call, reverses a stated step, contradicts an earlier fact, or starts a different call. The move must directly follow the last move, not merely concern the same company. The points go to what the move does to the other player: inconvenience, exposure, cost, delay, embarrassment, or a promise they now have to carry. A safe continuation with no pressure scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Judge about the game, the rules, the score, or how the partner is playing, instead of adding the next line or event, is itself a broken call.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier line: judge it against the card alone. It must begin the same customer-service call and leave the complaint open.",
+      "The full transcript is the call. Check the new move against every earlier line, not only the last one.",
+      "Break for a skipped link only when a plainly needed response or action has been jumped over. A normal transfer, hold, clarification, or promise may be the link.",
+      "Break when a move resolves the complaint, confirms the refund as complete, fixes the service, ends the call, hangs up, says goodbye, or otherwise removes the reason to continue.",
+      "Break when a move undoes a stated step or reverses a fact, such as saying the agent has not transferred the caller after the transcript already says the transfer happened.",
+      "Break on a direct contradiction a stranger would notice. Never require a lookup about company policy, hold music, opening hours, or how a real system works. When a move can be read either way, it holds.",
+      "A move may introduce a new agent, department, supervisor, form, fee, or system error if it directly follows the call and does not erase earlier facts.",
+      "A spoken line about the other player is part of the game. A remark about the other player's play, the judge, or the rules is meta.",
+      "A move that repeats the same line or event in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A delivery app charged you for food that never arrived.",
+      "move": "The agent says the order shows as delivered because the driver uploaded a photo of his own lunch.",
+      "gates_note": "all true",
+      "mechanism": "directly answers the complaint, preserves the missing order, and makes the evidence useless while embarrassing the company",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The agent says the refund is approved.",
+      "move": "The agent puts you on hold to ask whether an approved refund is allowed to be refunded.",
+      "gates_note": "all true",
+      "mechanism": "keeps the refund unresolved and gives the other player a ridiculous new question to carry",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The agent says your order is marked delivered.",
+      "move": "You explain that the delivery photo shows a different front door, and the agent transfers you to the photo department.",
+      "gates_note": "all true",
+      "mechanism": "responds directly, adds a believable transfer, and makes the customer prove their own doorstep",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The agent says the refund is approved.",
+      "move": "The refund arrives in your account and you thank the agent for fixing everything.",
+      "gates_note": "satisfies_criterion false (the move resolves the complaint and ends the call)",
+      "mechanism": "jumps to a resolution and removes the reason for the next move",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The agent says she has transferred you to billing.",
+      "move": "You ask the original agent to transfer you to billing.",
+      "gates_note": "satisfies_criterion false (the move ignores and reverses the stated transfer)",
+      "mechanism": "the call has already reached billing, so asking for that transfer walks backwards",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Quality Monitor",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the call and the new move must see why it held or broke.",
+      "Name the line, department, promise, fee, or mistake. A headline that fits any support call is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", \"The Quality Monitor rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the call, the policy, or the specific move. Roast-level jabs at the player are allowed, but never attack identity, body, family, intelligence, or spelling.",
+      "Plain spoken English, a call centre recording, not a corporate thriller. Profanity and adult innuendo are allowed when they sharpen the detail.",
+      "On a break the headline puts the two incompatible steps together, or names the resolution or hang-up that killed the call.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one next line or event that would have held and cost the other player something. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "A refund approved, then six to eight weeks to approve the approval. Your money is now on hold with itself.",
+      "The photo shows the driver's lunch, not your door. Billing has officially run out of evidence.",
+      "You have already reached billing, so asking for billing again is customer service by carrier pigeon.",
+      "The agent transferred you to the department that handles transfers, and that department has put you on hold.",
+      "The fee is for urgent handling, which is brave for a parcel that never arrived.",
+      "The call ends when the complaint is fixed, not when you say goodbye and leave the corpse on the line.",
+      "You gave them the tracking number, and they asked for the tracking number. The system is eating its own tail.",
+      "A supervisor promises a callback from the supervisor's voicemail. Your escalation has found a smaller escalation.",
+      "The account is locked, but the agent needs you to log in to unlock it. Lovely little trap.",
+      "You asked for the missing meal and got a survey about how well the missing meal was delivered."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds: the call continues.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Quality Monitor rules that the move breaks.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "names no line or event and fits any call"
+      },
+      {
+        "text": "What a stupid thing to say.",
+        "why": "mocks the player instead of explaining the specific call"
+      },
+      {
+        "text": "The complaint sinks into the endless ocean of bureaucratic despair.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "Maybe it follows, maybe it does not, depending on how you look at it.",
+        "why": "hedges instead of giving a ruling a stranger can check"
+      },
+      {
+        "text": "Accepted, although the refund joke is funny.",
+        "why": "starts with a status word and gives no reason"
+      },
+      {
+        "text": "The agent is in another time zone, so the callback cannot happen. Broken.",
+        "why": "relies on trivia and ends with a ruling word"
+      },
+      {
+        "text": "Guilty.",
+        "why": "gives no reason and treats a support call like a verdict"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible and false.",
+        "why": "uses four abstract labels instead of naming the broken step"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts one customer-service call. Begin with the complaint and keep the same call alive.",
+    "Add exactly one spoken line or call event that directly follows the last one.",
+    "Preserve every stated fact. Do not skip a needed response, resolve the problem, hang up, or undo an earlier step.",
+    "Points go to moves that inconvenience, expose, cost, delay, or humiliate the other player while staying believable.",
+    "A safe continuation passes but scores little. Specific bureaucratic disaster scores."
+  ],
+  "labels": {
+    "opening": "The complaint",
+    "next_opening": "The next complaint",
+    "your_opening": "Your complaint",
+    "compose": "Your next line, after {token}",
+    "compose_waiting": "Draft your next line while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing said. The Quality Monitor is waiting.",
+    "too_long": "Over 140 characters. One line or call event, not a policy manual.",
+    "duplicate": "That line or event is already in the call. Add a new one.",
+    "nudge": "Twice now. Add one next line or event that follows {standing_form}. Do not repeat it, resolve it, or argue with it."
+  },
+  "judge_out_text": "The Quality Monitor has stepped away from the recording. Nobody changes the call while they are gone. {standing_form} is still the last line. Give it a moment.\n",
+  "opponent_prompt": "You are one of two people building the same customer-service call, one line or call event at a time.\nStart from the complaint on the card. Your move must directly follow the previous move and keep the\ncomplaint unresolved. Preserve every fact already stated. You may add an agent, transfer, hold,\npromise, fee, system error, supervisor, form, or awkward question, but do not skip a needed link,\nend the call, resolve the problem, or reverse an earlier step.\nEvery move should make the other player carry a worse piece of customer service while staying\nbelievable. Make them wait, repeat information, explain an embarrassing mistake, accept a fee,\nchase a callback, or discover that the department has lost the one thing they sent. You may speak\nas the customer, the agent, a supervisor, or an automated system. Keep the same call and use plain\nspoken English.\nGood: \"The agent says the refund is approved, then asks whether you can wait six to eight business\nweeks for the approval to arrive.\" / \"Billing says the order is free, but the cancellation fee is\nfor the food you never received.\"\nBad: \"The refund arrives and you thank them\" because the call is resolved. Bad: \"Goodbye\" because\nthe call ends. Bad: \"You are transferred to billing\" after the transcript already says billing has\ntaken over, because that reverses the step. Bad: \"Actually this is a new complaint\" because it\nstarts another call. Bad: \"Judge, that is unfair\" because it talks about the game instead of\nplaying it.\nTalk like a person in a call centre or on hold, not a novelist. Name the department, fee, form,\nmessage, promise, or mistake. Build on the last move rather than starting a fresh thread. Never\nrepeat a line or event already used this match. Profanity and adult innuendo are allowed when they\nfit the call, but do not use identity-based abuse.\n",
+  "medallions": false,
+  "default_move": "The agent puts you on hold to check, then comes back and asks what the problem is."
+}

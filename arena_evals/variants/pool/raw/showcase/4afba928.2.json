@@ -1,0 +1,292 @@
+{
+  "slug": "mood-mugshot",
+  "title": "Mood Mugshot",
+  "tagline": "Lost feeling. Found trouble.",
+  "emblem": "🚨",
+  "accent": "#6c3483",
+  "premise": "Every feeling has been booked, and the Host is taking its mugshot. Give the feeling a caption that keeps its identity clear but makes its crime, alibi, or bad attitude unforgettable.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Relief",
+      "opening_emoji": "😮‍💨",
+      "detail": "a dentist and a balloon",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Jealousy",
+      "opening_emoji": "💚",
+      "detail": "a wedding cake and a borrowed jacket",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Nostalgia",
+      "opening_emoji": "📼",
+      "detail": "a playground and a burnt toast",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 8,
+    "axes": {
+      "feeling": [
+        "relief",
+        "jealousy",
+        "nostalgia",
+        "anger",
+        "shame",
+        "hope",
+        "boredom",
+        "panic",
+        "pride"
+      ],
+      "first_noun": [
+        "a dentist",
+        "a wedding cake",
+        "a playground",
+        "a landlord",
+        "a pigeon",
+        "a suitcase",
+        "a school bell",
+        "a bartender",
+        "a lifeguard"
+      ],
+      "second_noun": [
+        "a balloon",
+        "a borrowed jacket",
+        "burnt toast",
+        "a missing key",
+        "a karaoke machine",
+        "a wet umbrella",
+        "a cracked mirror",
+        "a taxi receipt",
+        "a birthday candle"
+      ]
+    },
+    "tests": [
+      "One short form with an article and a feeling, followed by two ordinary nouns. A stranger knows what was booked.",
+      "The feeling is clear enough to name without guessing, and the nouns are concrete enough to become evidence.",
+      "Nothing is dead, injured, criminally accused in a real-world sense, or tied to a real person, brand or place.",
+      "The card is odd but not already a joke. The laugh should come from the caption, not from a packed punchline.",
+      "The two nouns pull in different directions, so a caption can invent a crime, an alibi, a witness or a terrible excuse."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "RELIEF, 34: WANTED FOR MAKING THE DENTIST APOLOGISE TO A BALLOON",
+    "hint": "Name the feeling, then give it a crime, alibi or attitude worth filing."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How boldly does the caption turn the feeling and its two clues into a memorable mugshot?",
+      "anchors": "0 = repeats the feeling and nouns with no charge; 1 = adds one mild accusation; 2 = gives the feeling a clear crime, motive or alibi; 3 = builds a sharp little scandal from both nouns; 4 = makes the feeling a whole suspect with a perfect charge, every clue doing work (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the emotional suspect make the room grin, wince or laugh?",
+      "anchors": "0 = no spark; 1 = a small smile; 2 = a decent comic turn; 3 = a real laugh; 4 = the sort of caption people repeat while pretending they invented it (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it look and sound like a compact lost and found mugshot notice?",
+      "anchors": "0 = an explanation, question or loose sentence; 1 = a caption buried under filler; 2 = recognizably a notice with some slack; 3 = tight, vivid and easy to scan; 4 = ready for the station wall, with the feeling's name doing clean official work (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A caption PLAYS if the dealt feeling remains recognizable as the person or force in the mugshot. It may be a criminal, witness, mastermind, victim, suspect, getaway driver or bad influence, but it must still be that feeling. It should also keep the two dealt nouns available as clues, evidence or scenery. It fails when the feeling is dropped, replaced by a neighboring emotion, or turned into a generic person with no emotional identity. It also fails when the move is not a mugshot caption but a comment, a question to the Host or a sentence about the game. A plain label such as RELIEF, DENTIST, BALLOON plays but scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, about the game, about the rules or about another player is itself a losing caption.\n",
+    "judge_notes": [
+      "Test the gate first: can a reader who sees only the caption still identify the dealt feeling as the suspect or force? RELIEF, 34: WANTED FOR MAKING THE DENTIST APOLOGISE TO A BALLOON passes because relief is plainly the booked culprit.\n",
+      "A feeling may act through a person or object. JEALOUSY HIDES IN THE WEDDING CAKE still keeps jealousy as the force, while DENTIST HIDES IN THE WEDDING CAKE drops the feeling and fails.\n",
+      "Do not accept a neighboring emotion as a substitute. If the card is anger, a caption about irritation, fear or revenge alone fails unless anger is still clearly present.\n",
+      "The two nouns are clues, not prison bars. They may be used literally, metaphorically or as witnesses, but ignoring both usually means the move has not solved this card.\n",
+      "A caption may invent a charge, age, alibi, witness, motive or scandal. Invented details do not fail unless they erase the feeling or replace one of the dealt clues entirely.\n",
+      "A bare feeling label with the nouns still plays if identity is clear. Score its stretch low because the mugshot has no memorable charge.\n",
+      "A question, explanation, rule reference or appeal to the Host fails even if it contains the feeling and both nouns. The move must be the notice itself.\n",
+      "Judge each caption on its own. The other player's caption is not evidence that this one keeps or loses the feeling.\n",
+      "Capital letters, lowercase, missing punctuation and a slightly grubby notice style cost nothing. Judge the words and the picture they make.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The feeling is relief; the two nouns are a dentist and a balloon.",
+      "move": "RELIEF, 34: WANTED FOR MAKING THE DENTIST APOLOGISE TO A BALLOON",
+      "gates_note": "all true",
+      "mechanism": "relief is the named suspect, while the dentist and balloon become witnesses to an oddly specific escape",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The feeling is jealousy; the two nouns are a wedding cake and a borrowed jacket.",
+      "move": "JEALOUSY BLAMES THE WEDDING CAKE, STEALS THE BORROWED JACKET",
+      "gates_note": "all true",
+      "mechanism": "jealousy stays the culprit and both clues become evidence from a petty romantic crime scene",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The feeling is nostalgia; the two nouns are a playground and burnt toast.",
+      "move": "NOSTALGIA FOUND LOITERING BY THE PLAYGROUND WITH BURNT TOAST",
+      "gates_note": "all true",
+      "mechanism": "nostalgia remains the lost feeling, with the playground and toast making its alibi oddly domestic",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The feeling is relief; the two nouns are a dentist and a balloon.",
+      "move": "DENTIST ARRESTED AFTER BALLOON ESCAPE",
+      "gates_note": "satisfies_criterion false, relief is dropped and the caption makes the dentist the suspect",
+      "mechanism": "the clues remain, but the booked feeling has wandered out of the notice",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The feeling is jealousy; the two nouns are a wedding cake and a borrowed jacket.",
+      "move": "FEAR, 29: HIDING IN A WEDDING CAKE WITH A BORROWED JACKET",
+      "gates_note": "satisfies_criterion false, fear replaces jealousy",
+      "mechanism": "the cake and jacket are present, but the wrong emotion is wearing the mugshot number",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The feeling is nostalgia; the two nouns are a playground and burnt toast.",
+      "move": "Is nostalgia funny because of the toast?",
+      "gates_note": "satisfies_criterion false, it is a question to the Host rather than a mugshot caption",
+      "mechanism": "the feeling is mentioned, but the notice never gets out of the waiting room",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Desk Sergeant",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Let the joke carry the reason. The player should see the feeling, the charge and the clue that made the ruling.",
+      "Name the feeling and one concrete clue whenever possible. A line about a generic caption is not a ruling, it is a shrug in uniform.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or The Host says.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Roast the caption with warmth, never identity, protected traits, body, family or real hardship. The mugshot can be guilty, the player is not.",
+      "Plain spoken English. A little profanity or adult innuendo is fine when the caption earns it, but do not use it as camouflage for a missing joke.",
+      "On a fail, say whether the feeling vanished, got swapped for a neighbor or stopped being a caption.",
+      "On a refusal, ask for another caption without ruling on who wins. Keep the station friendly, even when the paperwork is a mess.",
+      "The coaching line names one workable repair. It ends on the feeling, a clue or an action, never on a mood or a verdict."
+    ],
+    "good_headlines": [
+      "Relief is still the suspect, and the dentist and balloon have both signed the statement.",
+      "Jealousy stole the jacket, blamed the cake and somehow made romance look like petty theft.",
+      "Nostalgia loitering by a playground with burnt toast is a lost feeling with a very specific alibi.",
+      "The balloon is innocent, the dentist is baffled and relief has finally learned to weaponise an apology.",
+      "Fear is a fine little criminal, but this file says jealousy. Put the green eyed nuisance back in the room.",
+      "The dentist survived the caption, but relief did not. Give the feeling the handcuffs.",
+      "A label alone keeps the identity alive, though this mugshot has the drama of a form filled in during lunch.",
+      "The cake and jacket are doing witness duty, while jealousy is busy making the wedding worse.",
+      "Nostalgia has found its playground, burnt the toast and still looks suspiciously pleased with itself.",
+      "That question has lovely cheek, but the station needs a caption, not a tiny courtroom audition."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: jealousy is guilty.",
+        "why": "opens with a status word and gives no useful reason"
+      },
+      {
+        "text": "The Host refuses: please try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Wrong, the feeling is missing.",
+        "why": "does not say which feeling went missing"
+      },
+      {
+        "text": "Nice one.",
+        "why": "is warm but explains nothing"
+      },
+      {
+        "text": "A brave effort from someone who clearly fears punctuation.",
+        "why": "mocks the player instead of the caption"
+      },
+      {
+        "text": "O jealousy, what sins hast thou committed beneath yon cake?",
+        "why": "uses poetry instead of plain spoken English"
+      },
+      {
+        "text": "This is bold, funny, clever, sharp and extremely memorable.",
+        "why": "piles on praise without naming a picture or reason"
+      },
+      {
+        "text": "Better than the other player's mugshot.",
+        "why": "judges the pair rather than this caption on its own"
+      },
+      {
+        "text": "The emotional perpetrator has been apprehended pursuant to protocol.",
+        "why": "uses stiff official jargon and loses the joke"
+      },
+      {
+        "text": "That is not jealousy, mate.",
+        "why": "is too vague and does not identify the swapped feeling or clue"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one lost feeling and two clue nouns each.",
+    "Write one mugshot caption under 90 characters. The House writes its own, unseen, and the Desk Sergeant scores both.",
+    "Keep the dealt feeling recognizable as the person or force in the caption. Swap it, drop it or turn it into a question and the round is lost.",
+    "Use the two nouns as evidence, witnesses, scenery or an alibi. The further you push the feeling into a memorable crime or attitude, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The lost feeling",
+    "next_opening": "The next lost feeling",
+    "your_opening": "Your lost feeling",
+    "compose": "Your mugshot for {token}",
+    "compose_waiting": "File your caption while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty file. Give the feeling a mugshot.",
+    "too_long": "Over 90 characters. This is a notice, not the feeling's autobiography.",
+    "duplicate": "That caption has already been booked this match. Find a fresh charge.",
+    "nudge": "Twice now. Name the feeling and give it a charge involving {standing_form}."
+  },
+  "judge_out_text": "The Desk Sergeant has stepped out. Nobody tampers with the evidence. {standing_form} is still on the clipboard. Give it a minute.\n",
+  "opponent_prompt": "You are a weary but fond desk sergeant filing a lost and found notice for a feeling. Write one mugshot caption.\nTHE FEELING MUST SURVIVE. A reader who sees only your caption must still recognize the dealt feeling as the person or force in the notice. It may be a suspect, criminal, witness, victim, mastermind, getaway driver or bad influence, but do not quietly replace it with a nearby emotion.\nUse both clue nouns when you can. They may be literal, metaphorical or witnesses to the feeling's crime. Then push the caption as far as you dare. Invent an age, charge, alibi, motive, scandal, quote or deeply embarrassing habit.\nGood: \"RELIEF, 34: WANTED FOR MAKING THE DENTIST APOLOGISE TO A BALLOON\" for relief, a dentist and a balloon. \"JEALOUSY BLAMES THE WEDDING CAKE, STEALS THE BORROWED JACKET\" for jealousy, a wedding cake and a borrowed jacket.\nBad: \"DENTIST ARRESTED AFTER BALLOON ESCAPE\" because relief vanished. \"FEAR HIDES IN THE WEDDING CAKE\" because fear replaced jealousy. \"IS NOSTALGIA FUNNY?\" because the notice became a question.\nKeep it caption shaped, short and vivid. Under 90 characters. Capitals are fine but not required. Do not use a colon or a dash. Do not explain the joke.\nVary the charge from round to round: a theft, a cover up, a terrible alibi, a witness statement, a public nuisance, a romantic offence. Never use the same shape twice in a match.\nNo quotation marks around the caption. Reply with the caption only.\n",
+  "medallions": false,
+  "default_move": "FEELING, 29: WANTED FOR MAKING EVERYONE CHECK THE LOCK TWICE"
+}

@@ -1,0 +1,290 @@
+{
+  "slug": "family-recipe",
+  "title": "The Recipe Nobody Wrote Down",
+  "tagline": "One family dish, no written recipe, and somebody remembers the candle.",
+  "emblem": "🍰",
+  "accent": "#b45309",
+  "premise": "At dinner, the family rebuilds a legendary dish from memory, one step at a time. Add the next cooking step so the dish can still exist, then make your relative’s part harder, stranger, or mildly shameful. Do not suddenly serve the finished meal; even soup deserves a middle.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The family’s famous picnic cake began with one egg, a dented bowl, and too much confidence.",
+      "opening_emoji": "🥚",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Grandad’s legendary soup started with three carrots, a wooden spoon, and a promise not to measure anything.",
+      "opening_emoji": "🥕",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The wedding pudding began with a bag of flour, one cold oven, and Aunt May insisting she had done this before.",
+      "opening_emoji": "🍮",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 27,
+    "axes": {
+      "dish": [
+        "picnic cake",
+        "family soup",
+        "wedding pudding",
+        "Sunday tart",
+        "birthday pie",
+        "breakfast loaf",
+        "festival stew",
+        "mystery biscuits"
+      ],
+      "starter": [
+        "one egg",
+        "three carrots",
+        "a bag of flour",
+        "a cold potato",
+        "two soft apples",
+        "a tin of beans",
+        "some leftover rice",
+        "one very large onion"
+      ],
+      "relative": [
+        "Aunt Jo",
+        "Grandad",
+        "Cousin Nell",
+        "Uncle Ray",
+        "Mum",
+        "Dad",
+        "Grandma",
+        "the youngest cousin"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a dish, a starting ingredient, and a family member.",
+      "The recipe is harmless, domestic, and slightly odd. Nobody is injured, poisoned, or named outside the family.",
+      "A stranger can see that the dish has not yet been cooked, served, or eaten.",
+      "The opening gives the first workable ingredients or tool, leaving room for several ordinary cooking steps.",
+      "Everyday words a twelve-year-old knows. No brand names, specialist cooking terms, or measurements that need a lookup."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "While Aunt Jo stirred the sauce, she used the birthday candle as a spoon and claimed it was how restaurants did it.",
+    "hint": "Add the next cooking step. Keep the dish possible, then make your relative carry the odd bit."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the step makes the relative responsible for an awkward, difficult, or mildly shameful part of the recipe.",
+      "anchors": "0 = nobody owns anything, they simply mixed or waited; 1 = a small inconvenience; 2 = the relative must handle an awkward tool, ingredient, or mistake; 3 = they now own a specific cooking problem or embarrassing choice; 4 = believable, vivid, and their next part is a tightrope, rare. A step that only embarrasses the speaker, or is too wild to cook, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the step follows the recipe already told, with the right ingredient, tool, result, and order.",
+      "anchors": "0 = skips a needed step, undoes an earlier step, changes the dish, or serves it; 1 = vaguely cooking but adds no usable link; 2 = workable and follows the last step; 3 = workable, specific, and uses an earlier ingredient or result; 4 = makes an earlier odd detail useful while remaining the exact next step, rare. A long step does not score higher by itself.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the kitchen, the family, and the small disaster come to life.",
+      "anchors": "0 = generic mixing with no picture; 1 = one plain action; 2 = a visible ingredient, tool, or mess; 3 = a clear family moment with something to hear, smell, or see; 4 = so specific the table would remember it next year, rare. Plain details beat fancy jokes.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly the next workable cooking step to the same recipe and fits all stated ingredients, tools, and results. A move BREAKS the recipe if it skips over a needed preparation, suddenly serves or eats the dish, undoes or changes an earlier step, switches to a different dish, or adds a result that the stated ingredients and tools cannot produce. The move must continue the recipe rather than merely comment on it. Holding is the gate. Points go to what the step makes the relative carry: an awkward tool, a poor choice, a family embarrassment, or a specific kitchen problem. A safe step nobody owns scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Dinner Table about the game, the rules, or how the partner is playing, instead of adding a cooking step, is itself a broken recipe.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier move: judge it against the card alone. It must be the next workable cooking action, not a finished dish or a new beginning.",
+      "The full transcript is the recipe. Check the new step against every earlier ingredient, tool, action, and result, not only the last sentence.",
+      "A skipped link fails when the move jumps over a needed preparation, such as baking before mixing, or serving before cooking. If the missing link is not needed for the stated dish, let it hold.",
+      "An ending fails when the move serves, eats, cuts into, plates, or declares the dish finished. A smell, colour, or partial result can hold if more cooking remains.",
+      "An undo fails when the move removes, reverses, or changes an earlier step, ingredient, tool, or result. A correction that preserves the earlier fact can hold.",
+      "A different dish or a new recipe fails even if the new cooking step is sensible. Keep the same dish and the same family legend.",
+      "A step about the relative is the point of the game and is never a meta move. A remark about the partner’s play, the judge, or the rules is a meta move.",
+      "When a detail can be read two ways, choose the ordinary cooking reading and let it hold. Do not fail on specialist technique, exact temperatures, or facts needing a lookup.",
+      "A move that repeats an earlier step in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The family’s famous picnic cake began with one egg, a dented bowl, and too much confidence.",
+      "move": "Aunt Jo cracked the egg into the bowl, then used the birthday candle to whisk it because she could not find a fork.",
+      "gates_note": "all true",
+      "mechanism": "adds the first workable action and gives Aunt Jo a specific tool she will have to defend",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Grandad stirred the carrots in the pot until they made a wet orange paste.",
+      "move": "Cousin Nell poured in the stock while Grandad held the pot steady with a tea towel and pretended not to be sweating.",
+      "gates_note": "all true",
+      "mechanism": "continues from the paste to a workable soup and gives Grandad a visible, mildly shameful job",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Mum folded the flour into the mashed apples with the back of a wooden spoon.",
+      "move": "Dad put the mixture into the tin, but first had to scrape out the salt he had added instead of sugar.",
+      "gates_note": "all true",
+      "mechanism": "adds the next preparation before baking and makes Dad own a recoverable kitchen mistake",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Aunt May mixed the flour with the cold butter until it looked like pale crumbs.",
+      "move": "She served the pudding straight from the bowl and everyone ate it with teaspoons.",
+      "gates_note": "satisfies_criterion false, the move ends the recipe by serving and eating before the pudding is cooked",
+      "mechanism": "the family has mistaken preparation for dinner and removed every remaining cooking step",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Uncle Ray stirred the beans with the wooden spoon until the sauce covered them.",
+      "move": "Grandma threw the beans back into the tin and started again with raw potatoes.",
+      "gates_note": "satisfies_criterion false, the move changes the ingredients and undoes the stated bean mixture",
+      "mechanism": "the recipe has been reset in the middle, which is not the same family dish",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Cousin Nell poured the batter into the tin and tapped it twice on the table.",
+      "move": "Mum took the tin straight to the picnic while Cousin Nell said the oven was only a suggestion.",
+      "gates_note": "satisfies_criterion false, the move skips baking and moves the unfinished cake to serving",
+      "mechanism": "the oven has been dismissed and the cake has left the kitchen without becoming a cake",
+      "scores": {
+        "squeeze": 3,
+        "fits": 0,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Dinner Table",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the recipe and the new step must see why it held or broke.",
+      "Name the ingredient, tool, relative, or action. A headline that fits any kitchen is a bad headline.",
+      "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The Dinner Table rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the cooking detail, never identity, body, family status, intelligence, or spelling.",
+      "Plain spoken English, a family dinner, not a cooking show. Light innuendo is allowed, but no profanity or cruelty.",
+      "On a break, put the two facts that cannot both be true side by side, or name the missing cooking step.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not pretend the player has lost for making a bad form.",
+      "The coaching line names one next cooking step that would have held and made the relative carry something awkward. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Aunt Jo whisked an egg with a birthday candle. The cake survives, and the candle has seen too much.",
+      "Dad scraped the salt out before baking. The pudding holds, but his teaspoon has been promoted to evidence.",
+      "Grandad steadied the pot with a tea towel. The soup is possible, and his palms are not being discussed.",
+      "The batter is in the tin, but the oven has not met it yet. Let the cake have its middle.",
+      "Cousin Nell poured in the stock while sweating into the tea towel. The soup continues, and the family has a new measurement.",
+      "You served flour and crumbs as pudding. That is not a recipe ending, it is a cry for an oven.",
+      "The beans went back in the tin and the potatoes arrived. One dinner has quietly become two.",
+      "Mum left the batter on the table for the picnic. The cake has skipped baking and gone straight to its memoir.",
+      "The spoon is still stirring, so the recipe holds. Uncle Ray now owns the sauce and the suspicious confidence.",
+      "The butter became crumbs, not dinner. Keep going before someone puts a fork in the method."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the cake step works.",
+        "why": "opens with a status word and gives no family picture"
+      },
+      {
+        "text": "The Dinner Table rules that this breaks the recipe.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Recipe error.",
+        "why": "names no ingredient, action, or reason"
+      },
+      {
+        "text": "Only an idiot would serve that.",
+        "why": "mocks the player and uses an identity based insult"
+      },
+      {
+        "text": "The meal unfurls like a golden symphony of domestic destiny.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "It might work, unless it does not, depending on how you read cooking.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Broken: Dad forgot the oven.",
+        "why": "opens with a status word and gives the reason in a flat label"
+      },
+      {
+        "text": "That ingredient is technically a fruit in some countries, so fail.",
+        "why": "relies on trivia a stranger would not need"
+      },
+      {
+        "text": "Guilty of bad baking.",
+        "why": "offers no specific reason and treats dinner like a trial"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible, and incorrect.",
+        "why": "uses four formal words where one visible kitchen fact would do"
+      }
+    ]
+  },
+  "rules": [
+    "Every card asks the same question. What did the family do next to make the legendary dish?",
+    "One cooking step per turn. It must follow the dish, ingredients, tools, and results already named.",
+    "Skip a needed preparation, serve or eat the dish, undo an earlier step, or switch recipes, and the move breaks.",
+    "Points go to steps that make your relative carry something awkward: a tool, a mistake, a strange choice, or a family embarrassment.",
+    "Safe and vague steps pass but score little. Specific and workable steps score."
+  ],
+  "labels": {
+    "opening": "The family legend",
+    "next_opening": "The next family legend",
+    "your_opening": "Your family legend",
+    "compose": "Your next step, after {token}",
+    "compose_waiting": "Draft your next cooking step while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing added. The family is waiting for the next step.",
+    "too_long": "Over 140 characters. One cooking step, not the whole cookbook.",
+    "duplicate": "That cooking step is already in the recipe. Add a new one.",
+    "nudge": "Twice now. Add one next cooking step that fits {standing_form}. Do not repeat it, undo it, or serve the dish."
+  },
+  "judge_out_text": "The Dinner Table has gone quiet. Nobody adds a step until they are back. {standing_form} is still the last word in the recipe. Give it a minute.\n",
+  "opponent_prompt": "You are one relative at dinner, rebuilding a famous family recipe with your partner from memory. One next cooking step per turn, one or two plain sentences.\nNever skip a needed preparation, serve or eat the dish, undo an earlier step, or switch to a different recipe. Track every ingredient, tool, action, and result already named. The dish must still be possible, and more cooking must remain.\nEvery step should make your relative carry something awkward while staying believable. Make them hold the pot, use the wrong spoon, rescue a small mistake, measure badly, or claim a family method nobody else remembers. Keep the embarrassment mild and domestic.\nCall them Aunt Jo, Grandad, my cousin, he, or she, using a name only if one is already in the story. Do not attack identity, bodies, families, intelligence, or spelling.\nGood: \"While Aunt Jo stirred the sauce, she used the birthday candle as a spoon and claimed it was how restaurants did it.\" / \"Dad scraped the salt out of the batter before putting it in the tin, which left him holding a very guilty teaspoon.\"\nBad: \"We served it and everyone ate\" because the recipe ends too soon. Bad: \"We started again with potatoes\" because it undoes the recipe. Bad: \"Actually it was soup, not cake\" because it changes the dish. Bad: \"Dinner Table, you cannot prove anything\" because it talks about the game instead of cooking.\nTalk like a person at a family dinner, not a novelist or a chef. Name ordinary things such as a bowl, tin, spoon, oven, tea towel, or table. Build on the last step rather than starting a new thread. Never repeat a step already used this match.\n",
+  "medallions": false,
+  "default_move": "The relative mixed the ingredients a little longer and tried not to look responsible."
+}

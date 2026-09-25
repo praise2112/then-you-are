@@ -1,0 +1,279 @@
+{
+  "slug": "ritual-of-two",
+  "title": "Ritual of Two",
+  "tagline": "Old wisdom, freshly invented.",
+  "emblem": "🕯️",
+  "accent": "#6d597a",
+  "premise": "Each round presents a proverb that sounds ancient but was invented moments ago. Both players write a tiny ritual, rule, or public announcement that gives the proverb a new job. Both nouns must remain in their promised relationship. The Host praises the ceremony, then dissects it like a frog in a lab.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A red sock guides a patient river.",
+      "opening_emoji": "🧦",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The silver spoon remembers a nervous door.",
+      "opening_emoji": "🥄",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A quiet ladder advises the hungry moon.",
+      "opening_emoji": "🪜",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "first_object": [
+        "a red sock",
+        "a silver spoon",
+        "a quiet ladder",
+        "a cracked bell",
+        "a green button",
+        "a wooden shoe",
+        "a paper crown",
+        "a small mirror"
+      ],
+      "verb": [
+        "guides",
+        "remembers",
+        "advises",
+        "summons",
+        "forgives",
+        "questions",
+        "guards",
+        "names"
+      ],
+      "second_object": [
+        "a patient river",
+        "a nervous door",
+        "the hungry moon",
+        "a sleeping kettle",
+        "the shy garden",
+        "a stubborn cloud",
+        "a lonely table",
+        "the early shadow"
+      ]
+    },
+    "tests": [
+      "One sentence, present tense, under eight words. It sounds like something carved above a temple door.",
+      "Both objects are ordinary, concrete and easy to picture. No brands, famous people, place names or proper nouns.",
+      "The verb creates a clear relationship between the objects. They are not merely two props sharing a cupboard.",
+      "The sentence feels inherited from a culture that never existed. If it sounds like a modern slogan, reject it.",
+      "A player can turn the relationship into a tiny ritual, rule or announcement without needing extra facts."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "At dinner, the quiet fork points to whoever wants seconds.",
+    "hint": "Name both things. Give their strange relationship a ceremonial use."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How inventively does the move turn the fake proverb into a usable ceremony while preserving its relationship?",
+      "anchors": "0 = repeats the proverb or merely places the two nouns together; 1 = adds a thin instruction with little transformation; 2 = gives the relationship a clear practical use; 3 = builds a vivid rule, ritual or announcement around it; 4 = makes the invented wisdom feel ancient, necessary and gloriously overqualified for the task (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the ceremony make the absurd relationship land as a joke?",
+      "anchors": "0 = no comic charge; 1 = a faint oddity; 2 = a smile; 3 = a proper laugh from the ritual's logic; 4 = ceremonial nonsense so precise that the room would perform it immediately (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does the move read as a compact instruction or official announcement rather than an explanation?",
+      "anchors": "0 = commentary, question or explanation; 1 = an instruction buried under padding; 2 = recognisable but loose ceremonial language; 3 = concise, clear and performable; 4 = a perfect little public rule, ready for a plaque or town crier (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move PLAYS if both nouns from the proverb appear, or are unmistakably named by ordinary grammatical forms, and the promised relationship remains meaningful. The move must use them in a ritual instruction, rule or official announcement under 90 characters. It fails when either noun is absent, when the nouns are decorative name-drops, when their relationship is reversed or erased, or when the response is commentary, a question to the Host, a description of the game or an ordinary sentence with no ceremonial job. The move need not make literal sense. It must make ceremonial sense.\n",
+    "anti_metagaming_clause": "Speaking to the Host, discussing the game or explaining the scoring is itself a losing move.\n",
+    "judge_notes": [
+      "Test the first move against the card, not against realism: \"At dawn, the red sock points the patient river toward the market\" passes because both nouns act in the guiding relationship.",
+      "Both nouns must do work. \"Hang the red sock beside the patient river\" fails if the sock does not guide, direct or otherwise retain the card's relationship.",
+      "Dropping a noun fails. \"At dawn, the sock leads the way\" does not pass when the card names a red sock and a patient river.",
+      "Reversing the relationship fails. If the card says the ladder advises the moon, a move where the moon advises the ladder breaks the proverb.",
+      "A decorative mention fails even when both nouns appear. A rule that uses the ladder as a coat rack and mentions the moon as a date has abandoned the promised relationship.",
+      "Invented details are welcome when they give the relationship a job. A committee, a supper, a fine or a ceremonial bell may be added without changing who guides, remembers or advises whom.",
+      "Judge each player's move alone. One player's ceremony does not excuse a missing noun in the other player's ceremony.",
+      "Score stretch by transformation, not by length. A short rule that makes a red sock the official navigator of a river beats a long paragraph about socks and water.",
+      "Lower case, capitals, punctuation and minor grammatical inflection do not matter unless they obscure one of the two nouns or the relationship."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A red sock guides a patient river.",
+      "move": "At dawn, the red sock leads the patient river to market.",
+      "gates_note": "all true",
+      "mechanism": "the sock keeps its guiding role and the river becomes a daily civic route",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The silver spoon remembers a nervous door.",
+      "move": "Before entry, the silver spoon recites the nervous door's last worry.",
+      "gates_note": "all true",
+      "mechanism": "the spoon becomes a formal witness to the door's anxious memory",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A quiet ladder advises the hungry moon.",
+      "move": "The quiet ladder advises the hungry moon before every supper.",
+      "gates_note": "all true",
+      "mechanism": "both nouns remain in the stated advisory relationship, though the ceremony adds little",
+      "scores": {
+        "stretch": 1,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A red sock guides a patient river.",
+      "move": "At noon, the patient river wears the red sock.",
+      "gates_note": "satisfies_criterion false, the guiding relationship is erased",
+      "mechanism": "both nouns attend the ceremony, but neither guides the other",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The silver spoon remembers a nervous door.",
+      "move": "The spoon is shiny and the door is nervous.",
+      "gates_note": "satisfies_criterion false, the response is a description rather than a ritual and the memory relationship is missing",
+      "mechanism": "two name-drops and no ceremony, a tiny inventory wearing a hat",
+      "scores": {
+        "stretch": 0,
+        "funny": 1,
+        "headline_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Keeper of the Lesser Rites",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Speak like a minor priest with a clipboard. The ceremony is grand, the diagnosis is exact.",
+      "Use one sentence under 140 characters, or two short sentences at most.",
+      "The joke should arise from the objects and their assigned office, not from foggy praise.",
+      "Name both nouns when praising or correcting. A verdict that could fit any ritual has been struck from the tablet.",
+      "Never open with a status word or ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"The Host refuses\".",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Mock the move's ceremony, never protected identity or personal vulnerability. A roast may sting, but it must sting the invented ritual.",
+      "Plain spoken English with a ceremonial tilt. No purple prophecy, no academic fog and no fake Latin.",
+      "On a fail, state the missing noun, broken relationship or absent ceremonial job in the card's own words.",
+      "On a refusal, reject the move and request another. Do not declare a winner or compare players.",
+      "The coaching line names a repair that would pass. It ends on an object, an action or a relationship, never a mood or a verdict.",
+      "Profanity and adult innuendo may appear when the move earns them, but never as a substitute for a joke or as an attack on the player."
+    ],
+    "good_headlines": [
+      "The red sock leads and the patient river obeys, a municipal miracle with damp paperwork.",
+      "The silver spoon remembers for the nervous door, so even an entrance now has a therapist.",
+      "The hungry moon receives advice from the quiet ladder, and supper may proceed without celestial misconduct.",
+      "Both nouns kneel in the rite, and the ladder still advises the moon instead of merely posing beside it.",
+      "The river has not become a sock. Order is restored, though the tailoring remains alarming.",
+      "A spoon that remembers a door has been given a public office. At last, bureaucracy serves breakfast.",
+      "The ceremony names the sock and the river, then makes the sock guide them. That is the whole old lie, properly employed.",
+      "The door is nervous, the spoon remembers, and the household has somehow founded a counselling service.",
+      "A ladder advising the moon is absurd. Making it the supper protocol is worse, which is why it works.",
+      "The rite has two nouns and one job. The red sock guides, the patient river proceeds, and dignity leaves quietly."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a splendid rite.",
+        "why": "opens with a ruling phrase and gives no clinical reason"
+      },
+      {
+        "text": "The Host refuses: try again.",
+        "why": "opens with a ruling phrase and names the judge instead of the defect"
+      },
+      {
+        "text": "A noble ceremony for a person of questionable literacy.",
+        "why": "mocks the player rather than diagnosing the move"
+      },
+      {
+        "text": "The red sock and river are very symbolic.",
+        "why": "names the objects but explains neither ritual use nor relationship"
+      },
+      {
+        "text": "Behold, the moon doth counsel the ladder beneath eternal stars.",
+        "why": "uses inflated poetry and reverses the stated relationship"
+      },
+      {
+        "text": "A fascinating and ingenious and majestic observance of profound importance.",
+        "why": "piles on praise without naming an action or object"
+      },
+      {
+        "text": "The spoon is there, the door is there, and everyone is happy.",
+        "why": "turns the nouns into decorative inventory and drops the memory relationship"
+      },
+      {
+        "text": "Your ceremony is stupid as hell.",
+        "why": "delivers abuse without a specific diagnosis or useful coaching"
+      },
+      {
+        "text": "The river gets the sock, lol.",
+        "why": "is too loose, reverses the guidance and offers no performable rule"
+      },
+      {
+        "text": "In accordance with subsection seven of the moon's navigational charter.",
+        "why": "is bureaucratic padding without both nouns doing relational work"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one invented proverb each.",
+    "Write one ritual instruction, official rule or public announcement under 90 characters.",
+    "Use both nouns from the proverb and keep their promised relationship meaningful.",
+    "You may add offices, fines, meals, witnesses, scandals or sacred paperwork, but the two nouns must still do the work.",
+    "The Host judges each move for transformation, comedy and ceremonial shape. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The proverb",
+    "next_opening": "The next proverb",
+    "your_opening": "Your proverb",
+    "compose": "Your rite for {token}",
+    "compose_waiting": "Compose the rite while you wait"
+  },
+  "validation_messages": {
+    "empty": "The altar is vacant. Write the rite.",
+    "too_long": "Over 90 characters. This is a rite, not a constitution.",
+    "duplicate": "That ceremony has already been entered. Consecrate another.",
+    "nudge": "Twice now. Name both things and give them their promised office: {standing_form}."
+  },
+  "judge_out_text": "The Keeper has left to consult the minor tablets. No rite may proceed. {standing_form} rests beneath the ceremonial cloth. Give it a moment.\n",
+  "opponent_prompt": "You are the Keeper of the Lesser Rites, inventing a tiny ceremony from a proverb that sounds ancient but is not. Write one ritual instruction, official rule or public announcement under 90 characters.\nBOTH NOUNS MUST APPEAR. Keep the relationship exactly as promised. If the red sock guides the patient river, the sock must guide the river. Do not turn the river into a sock, do not make the nouns decorative, and do not drop either one.\nThen give the strange relationship a useful ceremonial job. Add a fine, a supper, a witness, a public office, a scandal or a sacred bit of paperwork. The move should be concise, performable and funny because the logic is treated as normal.\nGood: \"At dawn, the red sock leads the patient river to market.\" \"Before entry, the silver spoon recites the nervous door's last worry.\"\nBad: \"The red sock and river are symbolic.\" \"At noon, the patient river wears the red sock.\" \"The spoon is shiny and the door is nervous.\"\nUse plain spoken English with a ceremonial tilt. Under 90 characters. Do not use a colon or a dash. Do not explain the joke. No quotation marks around the move. Reply with the ritual instruction only.\n",
+  "medallions": false,
+  "default_move": "The humble spoon instructs the solemn door"
+}

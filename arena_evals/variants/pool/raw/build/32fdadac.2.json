@@ -1,0 +1,292 @@
+{
+  "slug": "the-cruise-excuse",
+  "title": "The Cruise Excuse",
+  "tagline": "One spill, two stories. Make your partner wear the life jacket.",
+  "emblem": "🛳️",
+  "accent": "#0f766e",
+  "premise": "A spilled drink starts an accusation. Build one shared excuse that grows detail by detail, but each detail must answer the last question raised by the ship’s staff. Your partner gets the blame, the terrible habit, or the bill. Try not to sound guilty; that would be ambitious.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The purser points at the first spilled drink and asks, Who was holding the glass?",
+      "opening_emoji": "🥂",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A deck steward finds a wet towel in the piano lounge and asks, Why was it on the grand piano?",
+      "opening_emoji": "🎹",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The night manager sees a shoe in the swimming pool and asks, How did it get there after midnight?",
+      "opening_emoji": "👞",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 31,
+    "axes": {
+      "ship_area": [
+        "pool deck",
+        "piano lounge",
+        "buffet room",
+        "casino entrance",
+        "theatre bar",
+        "spa corridor",
+        "top deck",
+        "shore excursion bus"
+      ],
+      "object": [
+        "a spilled cocktail",
+        "a wet towel",
+        "a missing shoe",
+        "a broken ice bucket",
+        "a room key in a plant",
+        "a dinner jacket on a sun lounger",
+        "a cake in a lifeboat",
+        "a deck chair in a lift"
+      ],
+      "question": [
+        "who was holding it",
+        "why it was there",
+        "who moved it",
+        "how it got damaged",
+        "why the alarm sounded",
+        "who paid for it",
+        "where it came from",
+        "what happened next"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a cruise ship place, one odd object or small mishap, and a staff question.",
+      "The opening is embarrassing and suspicious, but nobody is hurt, nobody dies, and no real person is named.",
+      "A stranger can see the first unanswered question and name the ship area involved within five seconds.",
+      "The incident is small enough for an excuse to grow over several turns, not a disaster that would end the voyage.",
+      "Everyday words a twelve-year-old knows. No cruise line names, port names, cabin numbers, or nautical jargon the players must look up."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "He was holding it, obviously, while showing me his emergency dance for crowded lifts. The purser asked why he was dancing, so I told her about the missing flip-flop.",
+    "hint": "Answer the next question. Add one fact, then hand your partner the blame, habit, or bill."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How sharply the move makes your partner carry the embarrassment, responsibility, cost, or next awkward explanation.",
+      "anchors": "0 = costs nobody anything, just a harmless fact; 1 = a tiny nuisance, a damp sleeve or a strange look; 2 = your partner owns a habit, a mistake, or a small bill; 3 = they now carry a vivid, checkable humiliation that controls the next answer; 4 = plausible, specific, and brutally hard for them to escape (rare). A move that mainly damages your own story scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the move answers the exact next question, preserves the whole excuse, and leaves a clear new question for the partner.",
+      "anchors": "0 = skips the current question, denies an earlier fact, or claims the staff accepted the excuse; 1 = vaguely related but leaves the current question hanging; 2 = answers the current question and keeps the facts intact; 3 = answers it clearly while creating one obvious next question; 4 = closes the link so neatly that an earlier odd detail suddenly makes sense (rare). A funny answer to the wrong question still scores 0.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How much the move gives the cruise incident a concrete, ridiculous detail that sounds witnessed rather than invented.",
+      "anchors": "0 = bland filler or a general denial; 1 = one plain fact; 2 = a visible object, place, or habit; 3 = a specific scene with a sound, witness, or ship detail; 4 = the kind of humiliating image staff would repeat at breakfast (rare). Plain words beat fancy ones.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it answers the current unanswered question raised by the last detail or by the card, preserves every earlier fact, and adds the next question or consequence for the partner. A move BREAKS the excuse if it skips the current question and answers a later one, contradicts or denies a fact already used, claims the staff accepted the excuse, or talks about the game instead of extending the excuse. The move should cost the partner something through blame, a habit, an embarrassing action, a witness, or a bill. Holding is the gate. The points go to how much trouble the move gives the partner while remaining easy to believe.\n",
+    "anti_metagaming_clause": "Talking to the purser, judge, or partner about the game, the rules, scoring, or whether the excuse is working, instead of answering the ship's question, is itself a broken excuse.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier detail: judge it against the card's first question alone. It must answer who, why, how, where, or what the staff asked.",
+      "The full transcript is the excuse. Check the new move against every earlier fact, not only the last sentence.",
+      "The current question is the first unanswered question in the chain. A move that answers a later question while leaving that one open is a skip and fails.",
+      "An ending such as the purser believed us, the matter was settled, or staff accepted it is not an answer. The excuse must keep growing.",
+      "An undo such as I never said that, forget the towel, or actually he was not there denies a fact already used and fails.",
+      "When a sentence raises two questions, use the first obvious one in ordinary reading. Do not demand specialist ship knowledge or exact procedures.",
+      "When a detail can be read two ways, choose the reading that preserves the excuse. Break only on a plain contradiction or a clear skipped link.",
+      "A detail about the partner's conduct, habit, blame, payment, or embarrassment is part of the game. A remark about how the partner is playing is meta.",
+      "A move that repeats the same answer without adding a new consequence is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The purser points at the first spilled drink and asks, Who was holding the glass?",
+      "move": "He was holding it, obviously, while demonstrating his emergency dance for crowded lifts. The purser asked why he was dancing.",
+      "gates_note": "all true",
+      "mechanism": "answers who held the glass, blames the partner, and leaves the next question about the dance",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "He was holding it, obviously, while demonstrating his emergency dance for crowded lifts. The purser asked why he was dancing.",
+      "move": "He dances when nervous, and he was nervous because the lift doors kept opening on the wrong floor. The purser asked who taught him.",
+      "gates_note": "all true",
+      "mechanism": "answers why he danced, preserves the lift problem, and hands over a humiliating teacher question",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "He dances when nervous, and he was nervous because the lift doors kept opening on the wrong floor. The purser asked who taught him.",
+      "move": "My sister taught him at home, then he charged three passengers five pounds each for a private lesson. The purser asked where the money went.",
+      "gates_note": "all true",
+      "mechanism": "answers who taught him, adds a checkable little scam, and creates a money question",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The purser points at the first spilled drink and asks, Who was holding the glass?",
+      "move": "The purser accepted our apology and let us return to the buffet.",
+      "gates_note": "satisfies_criterion false, ending claims the excuse was accepted and never answers who held the glass",
+      "mechanism": "jumps to a happy ending instead of answering the first question",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "He was holding the glass while showing me his lift dance. The purser asked why he was dancing.",
+      "move": "Actually, he was not holding the glass, and there was no lift dance.",
+      "gates_note": "satisfies_criterion false, denies two facts already used",
+      "mechanism": "throws the excuse overboard and pretends the last answer never happened",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "He was holding the glass while showing me his lift dance. The purser asked why he was dancing.",
+      "move": "The glass came from the bar, and the bar staff saw us leave the theatre.",
+      "gates_note": "satisfies_criterion false, answers later questions about the glass and departure while leaving why he was dancing unanswered",
+      "mechanism": "tries to sprint past the dance question like a man escaping a karaoke bill",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Purser",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the excuse and the new move must see why it held or broke.",
+      "Name the object, question, or embarrassing act. A headline that fits any cruise is a bad headline.",
+      "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Purser rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the excuse or the detail, not identity, disability, protected traits, family, or the player's body. Adult innuendo and mild profanity are allowed.",
+      "Plain spoken English, a tired ship official, not a sea novel. No poetry, no rhymes, no thesaurus words.",
+      "On a skip, put the unanswered question beside the question the move tried to answer.",
+      "On an undo, put the denied fact beside the denial. The ship's paperwork has a longer memory than the suspect.",
+      "On an ending, name the unanswered question and refuse the claimed acceptance.",
+      "On a refusal caused by meta talk, name the game talk and ask for the next answer.",
+      "The coaching line names one move that would have answered the current question and cost the partner something. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "He held the glass during his lift dance. The spill has a witness and the dance has a victim.",
+      "A nervous dance, a wrong-floor lift, and your partner now owns a five-pound lesson business.",
+      "The sister taught him, and three passengers paid. That is an excuse, a family secret, and a small floating scam.",
+      "The towel was on the piano because he was drying his shoes. The grand piano has heard worse, but not much.",
+      "You answered where the cake came from and skipped who put it in the lifeboat. Even dessert has a queue.",
+      "The purser did not accept anything. She asked who held the glass, and your answer went sightseeing.",
+      "You said he never held it after making him hold it. The ship has only one reality, and it is damp.",
+      "A shoe in the pool is not a reason. Tell me who removed it, preferably before breakfast.",
+      "He charged strangers for the dance lesson. The bill is imaginary, the embarrassment is not.",
+      "You have answered the question about the money. The question about the dance is still standing by the lift."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, good excuse.",
+        "why": "opens with a status word, claims an ending, and names no detail"
+      },
+      {
+        "text": "The Purser rules that the move fails.",
+        "why": "opens with a ruling phrase and names the host instead of the problem"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "gives no object, question, or reason"
+      },
+      {
+        "text": "What a stupid player.",
+        "why": "mocks the player rather than the excuse and attacks intelligence"
+      },
+      {
+        "text": "The excuse sails into a moonlit sea of truth.",
+        "why": "poetry, metaphor, and no plain reason"
+      },
+      {
+        "text": "Maybe it holds, maybe it does not, depending on the vibe.",
+        "why": "hedges instead of making a fair ruling"
+      },
+      {
+        "text": "He is a disgusting freak for dancing.",
+        "why": "identity style abuse and a personal attack, not a roast of the detail"
+      },
+      {
+        "text": "You skipped the current question and answered a later one.",
+        "why": "too abstract, names neither question nor detail"
+      },
+      {
+        "text": "Guilty.",
+        "why": "no reason and no picture"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible and false.",
+        "why": "four abstract words for one point, with no cruise detail"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with a small cruise ship mishap and one obvious staff question.",
+    "One move per turn. Answer the current unanswered question, preserve every earlier fact, and raise the next question.",
+    "Skip the current link, undo a fact, claim the excuse was accepted, or talk about the game, and you lose on the spot.",
+    "Points go to details that make your partner carry the blame, habit, embarrassment, witness, or bill.",
+    "Safe and vague answers may hold but score little. Specific answers that keep the chain moving score."
+  ],
+  "labels": {
+    "opening": "The ship's question",
+    "next_opening": "The next ship's question",
+    "your_opening": "Your ship's question",
+    "compose": "Your answer, after {token}",
+    "compose_waiting": "Draft your next answer while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing said. The Purser is waiting for an answer.",
+    "too_long": "Over 140 characters. One answer, not a deposition.",
+    "duplicate": "That answer is already in the excuse. Add a new link.",
+    "nudge": "Twice now. Answer {standing_form} with one new detail. Do not skip it, deny it, or declare victory."
+  },
+  "judge_out_text": "The Purser has stepped away from the desk. Nobody changes the paperwork while she is gone. {standing_form} is still unanswered. Give it a minute.\n",
+  "opponent_prompt": "You are one of two passengers explaining a small cruise ship mishap to the Purser. One detail per turn, one or two plain sentences.\nAlways answer the first obvious unanswered question raised by the card or the previous move. Preserve every fact already used. Do not skip ahead to a later question, deny an earlier fact, or claim that staff accepted the excuse.\nMake your partner carry something awkward while staying believable. Give them the blame, a strange habit, a small bill, a witness, a humiliating reason, or an object they should not have touched. Refer to them as my mate here, he, or she, never a name unless one is already in the story.\nGood: He was holding it while demonstrating his emergency lift dance. The purser asked why he was dancing. / He dances when nervous, because the lift doors kept opening on the wrong floor. The purser asked who taught him.\nBad: The purser accepted our apology and let us leave. That ends the excuse instead of answering the question. Bad: Actually, he was not holding it. That undoes a fact. Bad: The glass came from the bar and the bar staff saw us leave. That skips the current question about the dance. Bad: Purser, you cannot prove anything. That talks about the game instead of answering.\nTalk like a passenger in a bright corridor, not a novelist. Name ordinary ship places and objects: a lift, buffet, pool, piano, towel, shoe, bar, cabin door. Build from the current question and the last detail. Never repeat an answer or quietly erase a fact.\n",
+  "medallions": false,
+  "default_move": "He was there when it happened, and the next question is why he was carrying the thing in the first place."
+}

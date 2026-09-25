@@ -1,0 +1,277 @@
+{
+  "slug": "spellcheck-out",
+  "title": "The Enchanted Receipt",
+  "tagline": "Pay the bill. Wake the magic.",
+  "emblem": "🧾",
+  "accent": "#6b4ca1",
+  "premise": "Three rounds. Each round gives you a weekday errand, two mundane nouns and an object's everyday job. Write one fairy tale item-card line that gives the object a magical power while keeping its job useful. Both nouns must enter the enchantment. The Host scores the charm, clarity and distance from the checkout queue.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Object: grocery receipt; job: prove what you bought; nouns: onions and moon.",
+      "opening_emoji": "🧅",
+      "detail": "A grocery receipt must prove what was bought.",
+      "hidden": "onions and moon"
+    },
+    {
+      "opening_token": "Object: bus pass; job: let you board; nouns: pigeons and thunder.",
+      "opening_emoji": "🚌",
+      "detail": "A bus pass must let its holder board.",
+      "hidden": "pigeons and thunder"
+    },
+    {
+      "opening_token": "Object: pharmacy bag; job: carry medicine home; nouns: roses and wolves.",
+      "opening_emoji": "🌹",
+      "detail": "A pharmacy bag must carry medicine home.",
+      "hidden": "roses and wolves"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 15,
+    "axes": {
+      "object": [
+        "grocery receipt",
+        "bus pass",
+        "pharmacy bag",
+        "laundry ticket",
+        "parking ticket",
+        "library card",
+        "queue token",
+        "parcel label"
+      ],
+      "job": [
+        "prove what you bought",
+        "let you board",
+        "carry medicine home",
+        "show where clothes belong",
+        "prove you paid to park",
+        "let you borrow a book",
+        "hold your place in line",
+        "send a parcel to its address"
+      ],
+      "noun_pair": [
+        "onions and moon",
+        "pigeons and thunder",
+        "roses and wolves",
+        "socks and starlight",
+        "coins and mermaids",
+        "bread and dragonfire",
+        "keys and rain",
+        "apples and ghosts"
+      ]
+    },
+    "tests": [
+      "One short sentence, past or present tense, under sixty characters. A tired shopper pictures the object at once.",
+      "The object has an ordinary weekday job that can still be useful after the magic arrives.",
+      "Both nouns are concrete or vivid enough to become part of a spell, curse, witness or ingredient.",
+      "Nothing requires injury, theft, real brands, famous people or a named place. The errand stays small.",
+      "The card feels like the start of a fairy tale, but the object still belongs in a pocket, bag or queue."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "A receipt that proves onion tribute was paid to the moon",
+    "hint": "One item-card line. Keep the errand useful, then let the magic misbehave."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How boldly does the line turn a plain errand object into a fairy-tale artefact?",
+      "anchors": "0 = merely repeats the card; 1 = adds one small sparkle; 2 = gives the object a clear magical twist; 3 = builds a strange little legend around the errand; 4 = makes a full fairy-tale problem from a receipt-sized chore, with both nouns doing real work (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the enchanted errand earn a grin, a giggle or a fond little snort?",
+      "anchors": "0 = no comic spark; 1 = mildly amusing; 2 = a neat smile; 3 = a proper laugh; 4 = the kind of tiny magical disaster you tell someone about over coffee (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it read like a crisp item-card description rather than an explanation of the joke?",
+      "anchors": "0 = a paragraph, question or chatty note; 1 = the object is buried under setup; 2 = recognisable item-card shape with spare words; 3 = clean, vivid and compact; 4 = it could sit in a spellbook catalogue without changing a word (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An entry PLAYS if it is one item-card sentence under 90 characters, preserves the object's stated everyday job, and gives both supplied nouns a clear place in the enchantment. The magical power may be useful, troublesome, ridiculous or slightly rude. It fails if the object is missing, the everyday job is abandoned or contradicted, either noun is dropped or merely pasted on without a role, or the entry is a comment, a question to the Judge, an explanation of the game or not an item description. A plain description that keeps the job and names both nouns plays but scores low on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the rules or describing your score is not an item-card line and loses the move.\n",
+    "judge_notes": [
+      "Check the gate before scoring style: could this still be the named object doing its stated weekday job, given the enchantment?",
+      "The first move must describe the grocery receipt, keep its job of proving what was bought, and give onions and moon clear roles.",
+      "A magical upgrade is fine if the ordinary job remains. A receipt that reveals moon onions still proves the purchase.",
+      "If the line says the object no longer does its job, the gate fails. A bus pass that summons dragons but cannot let anyone board has left the card behind.",
+      "Both nouns need a job in the magic. A moon that merely appears as decoration or onions tacked on as an afterthought do not count as clear placement.",
+      "Do not demand realism. Cursed ink, royal pigeons, a rude moon or a bag that howls can all play if the object and errand survive.",
+      "A title, fragment or compact catalogue phrase can play if it clearly describes the item. A question, explanation or message to the Judge cannot.",
+      "Judge each entry against its own card, not against the other player's invention. A quieter spell can still be precise and funny.",
+      "Punctuation, capital letters and a missing full stop do not matter. The image and the preserved job matter."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Object: grocery receipt; job: prove what you bought; nouns: onions and moon.",
+      "move": "A receipt that proves the moon bought onions from you",
+      "gates_note": "all true",
+      "mechanism": "the receipt still proves a purchase while the moon becomes the suspicious customer",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Object: bus pass; job: let you board; nouns: pigeons and thunder.",
+      "move": "A bus pass that boards pigeons whenever thunder stamps it",
+      "gates_note": "all true",
+      "mechanism": "the pass still enables boarding, with thunder as the stamp and pigeons as passengers",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Object: pharmacy bag; job: carry medicine home; nouns: roses and wolves.",
+      "move": "A pharmacy bag that carries wolf medicine home through roses",
+      "gates_note": "all true",
+      "mechanism": "the bag still carries medicine home, while roses become the route and wolves the patients",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Object: grocery receipt; job: prove what you bought; nouns: onions and moon.",
+      "move": "A receipt that makes onions glow beneath the moon",
+      "gates_note": "satisfies_criterion false (it does not prove what was bought)",
+      "mechanism": "pretty moonlight, but the receipt has forgotten its actual office",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Object: bus pass; job: let you board; nouns: pigeons and thunder.",
+      "move": "Thunder pigeons demand a bus pass",
+      "gates_note": "satisfies_criterion false (the object does not let anyone board)",
+      "mechanism": "the pigeons have become a queue, but the pass itself has vanished from duty",
+      "scores": {
+        "stretch": 2,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Kindly Spellchecker",
+    "tone": {
+      "commentary_adj": "warm",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "generous",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and line should see the spell and the errand.",
+      "Name the object and one vivid noun, the receipt, the moon, the pigeons or the wolf medicine. Make the comment belong to this line.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused or The Host refuses.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Roast the enchanted object or its tiny problem, never identity, disability, appearance, family, intelligence or spelling. A gentle jab at the player's choice is fine, but keep it affectionate.",
+      "Plain spoken English. A little fairy-tale warmth is welcome, but do not turn the ruling into a poem.",
+      "On a fail, say which object, job or noun went missing, using the card's own words.",
+      "On a refusal caused by a gate failure, the line refuses the move and asks for another. It never decides who won.",
+      "The coaching line names one change that would preserve the errand. It ends on an object, noun or action, never a mood or verdict.",
+      "Adult innuendo and mild profanity may appear when the line invites it, but never use identity-based abuse or cruelty.",
+      "Do not praise a line with empty words such as magical, brilliant or lovely unless you also name what it made happen."
+    ],
+    "good_headlines": [
+      "The receipt still proves the purchase, while the moon has become the customer. Onion accounting has gone celestial.",
+      "Pigeons board, thunder stamps and the pass keeps its day job. Public transport has acquired feathers.",
+      "The bag carries wolf medicine home through roses, which is a lot of drama for one prescription.",
+      "The receipt has left proving purchases to become a moonlit onion lamp. Pretty, but the till is unimpressed.",
+      "A bus pass that boards pigeons still knows what a bus pass is. The thunder simply handles validation.",
+      "The wolves get medicine, the roses get a route and the bag gets promoted to forest nurse.",
+      "The magic is clear, the errand survives and the moon has somehow signed the receipt.",
+      "That tiny card has turned a queue into a legend without losing the part where someone actually boards."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, a gorgeous little spell.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Host refuses, please try again.",
+        "why": "opens with a ruling phrase and talks about the host"
+      },
+      {
+        "text": "Cute magic.",
+        "why": "does not name the object, job or failing"
+      },
+      {
+        "text": "The receipt is stupid and you clearly cannot write.",
+        "why": "mocks the player instead of the enchanted object"
+      },
+      {
+        "text": "The moon weeps, the onions sigh, the receipt dreams beneath the stars.",
+        "why": "poetry replaces a plain explanation"
+      },
+      {
+        "text": "It is magical, enchanting, wonderful and delightful.",
+        "why": "piles on praise without saying what the line does"
+      },
+      {
+        "text": "The entry has a strong narrative arc and excellent semantic integration.",
+        "why": "uses stiff jargon instead of a clear image"
+      },
+      {
+        "text": "The job is gone, but perhaps that is the point.",
+        "why": "does not plainly say which everyday function failed"
+      },
+      {
+        "text": "Better than the other player's weird little bus nonsense.",
+        "why": "judges the pair and takes a swipe at the other player"
+      },
+      {
+        "text": "Try harder, you absolute goblin.",
+        "why": "a personal insult with no useful coaching"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one weekday errand card each.",
+    "Write one item-card sentence under 90 characters. The House writes its own, unseen, and the Host scores both.",
+    "Keep the object's stated everyday job useful, even after the enchantment.",
+    "Give both supplied nouns a clear role in the magic. Drop one, abandon the job or talk about the game and the round is lost.",
+    "Stretch the ordinary object into a fairy tale while keeping the errand recognisable. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The errand",
+    "next_opening": "The next errand",
+    "your_opening": "Your errand",
+    "compose": "Enchant {token}",
+    "compose_waiting": "Write the item card while you wait"
+  },
+  "validation_messages": {
+    "empty": "The spellbook is blank. Write the item-card line.",
+    "too_long": "Over 90 characters. Even a fairy tale needs to catch the bus.",
+    "duplicate": "That enchantment has already been cast this match. Find another charm.",
+    "nudge": "Twice now. Keep the job and both nouns in one line: {standing_form}."
+  },
+  "judge_out_text": "The Kindly Spellchecker has stepped away to calm a receipt. Nobody moves until they return. {standing_form} sits beside the wand. Give it a moment.\n",
+  "opponent_prompt": "You are a warm fairy-tale copy editor with a weekday errand and a tiny object to enchant. Write one item-card line.\nTHE ERRAND MUST SURVIVE. Keep the object's stated everyday job useful, even after the magic arrives. Give both supplied nouns a clear role in the enchantment. A receipt must still prove what was bought. A bus pass must still let someone board. A pharmacy bag must still carry medicine home.\nThen go as far as you dare. Turn a queue into a quest, a pigeon into a witness or a moon into the world's most annoying customer. The points reward distance from the plain errand while the job still holds.\nGood: \"A receipt that proves the moon bought onions from you\" for a grocery receipt proving a purchase with onions and moon. \"A bus pass that boards pigeons whenever thunder stamps it\" for a pass that lets people board with pigeons and thunder. \"A pharmacy bag that carries wolf medicine home through roses\" for a bag carrying medicine home with roses and wolves.\nBad: \"A receipt that makes onions glow beneath the moon\" because it forgets to prove what was bought. \"Thunder pigeons demand a bus pass\" because the pass no longer lets anyone board. Do not write a comment, a question, a rule or an explanation of the joke.\nItem-card rhythm: start with A or The when useful, use plain vivid words and keep the object visible. Under 90 characters. No quotation marks around the line. No colon or dash as punctuation. Mild profanity or adult innuendo is allowed when it is genuinely funny, but do not use identity-based abuse.\nVary the magic from round to round: a bargain, a curse, a witness, a transformation, a route, a royal duty. Do not repeat the same shape twice in a match. Reply with the item-card line only.\n",
+  "medallions": false,
+  "default_move": "A receipt that proves the moon paid for onions"
+}

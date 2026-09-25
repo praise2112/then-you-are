@@ -1,0 +1,264 @@
+{
+  "slug": "utensil-green-flags",
+  "title": "Utensil Green Flags",
+  "tagline": "Date the clues. Do not spoon feed the answer.",
+  "emblem": "🥄",
+  "accent": "#d97745",
+  "premise": "Each round gives you a painfully ordinary kitchen utensil and two ordinary nouns from its world. Turn both nouns into dating profile green flags without naming the utensil or giving away the obvious answer. The host scores how wildly charming you get before the utensil's real identity becomes clear.\n",
+  "seed_pool": [
+    {
+      "opening_token": "ladle",
+      "opening_emoji": "🍲",
+      "detail": "soup, handle",
+      "hidden": "a large long handled spoon used for serving soup or other liquid food"
+    },
+    {
+      "opening_token": "whisk",
+      "opening_emoji": "🥚",
+      "detail": "egg, beat",
+      "hidden": "a kitchen utensil made of loops of wire used for beating eggs or mixing ingredients"
+    },
+    {
+      "opening_token": "colander",
+      "opening_emoji": "🍝",
+      "detail": "pasta, drain",
+      "hidden": "a bowl shaped kitchen utensil with holes used for draining food"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "utensil": [
+        "ladle",
+        "whisk",
+        "colander",
+        "tongs",
+        "grater",
+        "peeler",
+        "spatula",
+        "rolling pin"
+      ],
+      "noun_pair": [
+        "soup, handle",
+        "egg, beat",
+        "pasta, drain",
+        "salad, grip",
+        "cheese, shred",
+        "potato, peel",
+        "flip, pan",
+        "dough, roll"
+      ],
+      "emoji": [
+        "🍲",
+        "🥚",
+        "🍝",
+        "🥗",
+        "🧀",
+        "🥔",
+        "🍳",
+        "🥐"
+      ]
+    },
+    "tests": [
+      "The card names one ordinary kitchen utensil and gives exactly two ordinary nouns from its world.",
+      "The two nouns are useful clues but do not make the utensil's identity unavoidable.",
+      "The utensil is common enough that a player can write a dating profile without specialist knowledge.",
+      "The card can support a charming or funny sentence without requiring a pun.",
+      "The public line is short enough to read as a dating prompt rather than a recipe."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Green flag:",
+    "example": "I handle soup with confidence, keep things together, and never make a scene when the heat rises",
+    "hint": "One sentence, up to 160 characters. Use both nouns. Do not name the utensil."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does this sound like a genuine dating profile green flag rather than a forced clue wearing perfume?",
+      "anchors": "0 = random or incoherent; 1 = the clues are visibly stapled on; 2 = plausible with a hard sell; 3 = a believable green flag with both clues doing work; 4 = charmingly natural, as if the utensil wrote it after therapy (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the line earn a laugh through its romantic spin on ordinary kitchen life?",
+      "anchors": "0 = flat; 1 = a faint smile; 2 = a grin; 3 = a proper laugh; 4 = memorable enough to get screenshotted by someone with terrible dating standards (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Are both supplied nouns used clearly and economically, without naming the utensil or explaining the trick?",
+      "anchors": "0 = missing both clues or gives away the utensil; 1 = one clue is vague or the utensil is nearly named; 2 = both clues appear but one is awkward; 3 = both clues are cleanly woven in and the identity stays hidden; 4 = concise, unmistakable, and discreet (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A profile PLAYS if it is one sentence that uses both supplied nouns as genuine dating green flags while keeping the utensil's identity concealed. It fails when it omits either noun, merely mentions a noun without making it a clue, names the utensil, gives an unmistakable synonym that effectively names it, or offers no dating profile meaning at all. A weak or obvious profile still plays if both nouns genuinely function as clues and the utensil remains technically unnamed.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or commenting on the rules is itself a losing profile.\n",
+    "judge_notes": [
+      "The first move must use both public nouns as meaningful green flags. Do not demand a perfect joke or a fully disguised utensil, only a real profile sentence with two working clues.\n",
+      "Judge each profile on its own. The other player's line is not the standard and cannot rescue a missing clue.\n",
+      "A noun used only as a dangling object, a random ingredient, or a copied card detail is not a genuine clue unless the sentence gives it a dating quality or behavior.\n",
+      "Naming the utensil fails even if the line is funny. A direct synonym that leaves no reasonable doubt also fails when it effectively names the utensil.\n",
+      "A sentence that talks about writing, guessing, scoring, or the Judge instead of presenting a dating green flag fails.\n",
+      "A line may be sincere, absurd, flirtatious, or mildly suggestive. Adult innuendo is allowed when the two nouns still do genuine work and the utensil stays concealed.\n",
+      "Do not fail a line merely because the identity is easy to infer. Score obviousness under dictionary_shaped and believable unless the utensil is actually named or unmistakably identified.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "ladle, soup, handle",
+      "move": "I handle soup with confidence, keep things warm, and never leave you carrying the whole relationship.",
+      "gates_note": "all true",
+      "mechanism": "both nouns become relationship qualities, while the utensil remains unnamed",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "whisk, egg, beat",
+      "move": "I beat every egg, enjoy getting tangled, and call that emotional availability.",
+      "gates_note": "all true",
+      "mechanism": "egg and beat carry a double meaning without naming the utensil",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "colander, pasta, drain",
+      "move": "Pasta drain, lol.",
+      "gates_note": "satisfies_criterion false, not a dating profile and neither noun becomes a genuine green flag",
+      "mechanism": "a fragment with the clues dumped in like leftovers",
+      "scores": {
+        "believable": 0,
+        "funny": 0,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "spatula, flip, pan",
+      "move": "I am a spatula who can flip anything in a pan.",
+      "gates_note": "satisfies_criterion false, names the utensil directly",
+      "mechanism": "the profile removes the mystery before the date starts",
+      "scores": {
+        "believable": 2,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "ladle, soup, handle",
+      "move": "I have a handle and like soup.",
+      "gates_note": "all true",
+      "mechanism": "both nouns are present as preferences, though the profile is painfully undercooked",
+      "scores": {
+        "believable": 2,
+        "funny": 0,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Dating Appraiser",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger should see how the two nouns became green flags.",
+      "Name the utensil or one of the supplied nouns. A headline that fits every profile is lazy swiping.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Appraiser refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the profile, never identity, disability, appearance, family, or anything protected. The line may be a bad date, not a bad human.",
+      "Plain spoken English. Adult innuendo is fine, but do not turn every spoon into a sex toy and call it wit.",
+      "Never reveal the utensil's identity in the headline unless the move itself already named it and the headline is explaining the refusal.",
+      "On a refusal, the headline rejects the profile and asks for another. It never rules on who won.",
+      "The coaching line names one missing noun or one clearer green flag. It ends on an action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The handle has boundaries, the soup has warmth, and this profile has a pulse.",
+      "A beat, an egg, and one dangerously confident application.",
+      "The pasta drains, the feelings do not, and somehow that is attractive.",
+      "Both clues showed up for the date. One even brought a personality.",
+      "The pan got flipped, the red flags did not, and nobody had to call an Uber.",
+      "A handle with commitment issues would not write this cleanly.",
+      "The egg is beaten, the joke is not, and the profile still gets a second date.",
+      "This is less a green flag than a small banner, but both nouns are doing honest work."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: great profile.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Dating Appraiser refuses: you forgot the noun.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and offers no useful picture"
+      },
+      {
+        "text": "You are a terrible writer and probably undateable.",
+        "why": "mocks the player rather than the profile"
+      },
+      {
+        "text": "The ladle is a large spoon for serving soup.",
+        "why": "reveals the hidden truth instead of judging the profile"
+      },
+      {
+        "text": "Nice.",
+        "why": "no reason, no clue, no bite"
+      },
+      {
+        "text": "The nouns are plausible, credible, believable, and convincing.",
+        "why": "repeats the rubric instead of making a joke"
+      },
+      {
+        "text": "O utensil, thou art the fork of my longing.",
+        "why": "poetry, and also the wrong utensil"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one kitchen utensil and two ordinary nouns each.",
+    "Write one dating profile green flag in one sentence of up to 160 characters, using both nouns without naming the utensil.",
+    "The host scores how believable, funny, and cleanly disguised the profile is.",
+    "Most points after three rounds wins, unless everyone has been ghosted by their own cookware."
+  ],
+  "labels": {
+    "opening": "The utensil",
+    "next_opening": "The next utensil",
+    "your_opening": "Your utensil",
+    "compose": "Your green flag for {token}",
+    "compose_waiting": "Draft your green flag while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the profile. Even a colander has holes, but this has no content.",
+    "too_long": "Over 160 characters. It is a dating profile, not a memoir.",
+    "duplicate": "That green flag has already been played this match. Try a different form of emotional cookware.",
+    "nudge": "Twice now. Use both clues in one green flag for {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody swipes until they are back. {standing_form} waits on the counter. Give it a minute.\n",
+  "opponent_prompt": "You are writing the House's dating profile. Use both supplied nouns as genuine green flags,\nwithout naming the kitchen utensil.\nWrite one sentence of up to 160 characters. The sentence should sound like a dating profile,\nnot a recipe, a clue list, or a hostage note from a chopping board.\nBoth nouns must do real work. Turn them into habits, qualities, boundaries, or flirtation.\nDo not merely repeat the nouns as ingredients. A line such as \"I like soup and have a handle\"\nis technically alive but romantically deceased.\nDo not name the utensil or use an unmistakable synonym for it. You may make the identity\ninferable. The game needs a trail of crumbs, not witness protection.\nKeep the tone charming, funny, or mildly suggestive. Do not rely on profanity alone, and do not\nmake every line a sexual joke. Vary the green flag from round to round: reliability, warmth,\ncommunication, resilience, generosity, patience, competence, or a pleasingly specific habit.\nDo not mention the Judge, the game, scoring, guessing, or these instructions.\nUse one sentence only. Do not use quotation marks around the profile.\n",
+  "medallions": true,
+  "default_move": "I handle soup with confidence, keep things warm, and never leave you carrying the whole relationship"
+}

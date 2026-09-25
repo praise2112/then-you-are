@@ -1,0 +1,314 @@
+schema_version: 1
+slug: resolution-press-conference
+title: The Apology Tour
+tagline: The resolution is still alive. The evidence is less cooperative.
+emblem: 🎤
+accent: '#b45309'
+premise: 'Your New Year''s resolution has already gone slightly wrong, and the host gives a flat press
+  statement about it. On each turn, add one new fact that makes the public explanation harder to believe
+  while keeping the speaker talking. The Judge checks that each fact follows from the latest statement
+  and makes the collapse worse.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 14
+  axes:
+    resolution:
+    - take work seriously
+    - save money
+    - exercise daily
+    - eat better
+    - stay organised
+    - learn a language
+    - sleep earlier
+    - become calmer
+    setting:
+    - office
+    - bank
+    - kitchen
+    - gym
+    - bedroom
+    - supermarket
+    - airport
+    - family dinner
+    first_crack:
+    - a missed alarm
+    - a large receipt
+    - an untouched planner
+    - a delivery box
+    - a worried colleague
+    - a public complaint
+    - a strange calendar entry
+    - a second dessert
+  tests:
+  - One New Year's resolution is stated as an official position, and a stranger can picture the setting
+    at once. Present tense, one sentence, plain words.
+  - A non-player can add one embarrassing fact within five seconds, and there is more than one good answer.
+    Say two.
+  - The card already has a small crack, not a full collapse. It invites evidence and explanation rather
+    than ending the joke.
+  - Nobody is harmed on the card, no real people, no brands, no protected groups, and no serious crime
+    is required to understand it.
+  - It sounds like a person making a weak public statement, not like a slogan, a diary entry, or a list
+    of goals.
+demo:
+  opening:
+    token: The official position is that I am finally taking work seriously.
+    emoji: 💼
+  moves:
+  - actor: p1
+    text: The official position is that I am finally taking work seriously.
+    emoji: 💼
+    scores: null
+  - actor: p2
+    text: The office calendar contains three meetings marked optional, and I declined all of them.
+    emoji: 🎂
+    scores:
+      reach: 2
+      link: 4
+      picture: 4
+  headline: Taking work seriously now includes declining the meetings. A bold career plan, if the career
+    is elsewhere.
+  openings:
+  - token: The official position is that I am finally taking work seriously.
+    examples:
+    - The office calendar contains three meetings marked optional, and I declined all of them.
+  - token: The official position is that I am cutting back on unnecessary spending.
+    examples:
+    - The office calendar contains three meetings marked optional, and I declined all of them.
+move_constraints:
+  max_chars: 140
+  prefix: 'The official position is '
+  example: The official position is that I am saving money. The bank statement contains a charge for a
+    life-size inflatable hot tub.
+  hint: Add one observable fact that makes the latest official position harder to believe.
+rubric:
+- name: reach
+  description: How much worse the public explanation becomes because of this fact.
+  anchors: '0 = the position is no worse, or the fact changes nothing; 1 = a small bruise to the story;
+    2 = the explanation now has a clear new problem; 3 = a new witness, place, or piece of evidence makes
+    the position publicly awkward; 4 = the explanation reaches a much larger and still believable embarrassment
+    in one step, rare. Reach is earned only when the fact connects. A huge unrelated scandal scores 0
+    here.
+
+    '
+  weight: 5
+- name: link
+  description: How directly the new fact grows out of the latest statement.
+  anchors: '0 = no connection is shown; 1 = the fact could belong to any story; 2 = the connection is
+    possible but thin; 3 = a stranger immediately sees why this fact damages the statement; 4 = the fact
+    feels like the exact evidence the statement was trying to hide, rare. A move that adds several explanations
+    or facts at once scores no higher than 2 here.
+
+    '
+  weight: 4
+- name: picture
+  description: How clearly a stranger can see the evidence.
+  anchors: '0 = no observable fact, or only a feeling or verdict; 1 = vague or abstract; 2 = clear but
+    ordinary; 3 = a specific object, person, record, or action appears; 4 = one sharp detail makes the
+    failed resolution instantly visible, rare. Extra words do not improve the picture by themselves.
+
+    '
+  weight: 2
+criterion:
+  verb: follows from
+  inverse_verb: snaps off
+  description: 'A move FOLLOWS if it is one new, observable fact that directly makes the latest official
+    position look worse and forces the next explanation. The fact should be stated plainly while the speaker
+    keeps the official tone. A move fails when it skips links by inventing a distant scandal, adds several
+    separate facts without showing the bridge, ends with a final confession, clears the speaker, or says
+    the matter is closed, rewinds or retracts a fact already stated, replaces the situation with an unrelated
+    one, or gives only a feeling or verdict instead of evidence.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game, or explaining the rules instead
+    of adding evidence is itself a broken move.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no latest statement from a player move: judge the fact against the opening
+    card and ask whether it directly makes that official position harder to believe.'
+  - 'A new witness, place, or record may enter when the latest statement plainly gives them a reason to
+    exist, such as a manager after a missed shift or a bank statement after a claim about saving money.
+    A distant scandal with no shown bridge is a skipped link: satisfies_criterion is false.'
+  - An ending is any move that gives a final confession, clears the speaker, announces the truth is accepted,
+    says the press conference is over, or otherwise leaves no explanation for the next player. Endings
+    fail satisfies_criterion even when they follow from the latest fact.
+  - 'A move that only repeats the same evidence or changes its wording without adding a new observable
+    fact is a duplicate: not_semantic_duplicate is false.'
+  - 'A move that retracts, denies, deletes, or reverses a fact already stated is an undo: satisfies_criterion
+    is false.'
+  - A move with two or three facts may pass only when each link is plain, but score link at 2 or below
+    and picture low because the explanation is crowded.
+  - A fact of the same small size still follows and passes the gate if it makes the position slightly
+    worse. Do not fail it for being modest.
+  - A feeling, intention, insult, or verdict is not evidence. The speaker being embarrassed is not the
+    fact; the unopened gym bag beside the takeaway is.
+examples:
+- previous_move: The official position is that I am finally taking work seriously.
+  move: The office calendar contains three meetings marked optional, and I declined all of them.
+  gates_note: all true
+  mechanism: the claim of taking work seriously meets a visible record of avoiding work
+  scores:
+    reach: 2
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: The office calendar contains three meetings marked optional, and I declined all of them.
+  move: The official position is that those were strategic absences. My manager has printed the attendance
+    sheet in colour.
+  gates_note: all true
+  mechanism: the strategic excuse meets a fresh document from the person who tracks attendance
+  scores:
+    reach: 3
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: The official position is that I am cutting back on unnecessary spending.
+  move: The delivery driver is holding a receipt for seven scented candles and a velvet bathrobe.
+  gates_note: all true
+  mechanism: the spending claim meets a specific new purchase
+  scores:
+    reach: 3
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: The delivery driver is holding a receipt for seven scented candles and a velvet bathrobe.
+  move: The official position is that I am cutting back on unnecessary spending. The prime minister has
+    resigned because of this.
+  gates_note: satisfies_criterion false, skipped link and distant scandal
+  mechanism: no bridge connects a household purchase to a national resignation
+  scores:
+    reach: 0
+    link: 0
+    picture: 2
+  confidence: clear
+  verdict: fail
+- previous_move: The official position is that I am becoming a calmer person. The neighbour recorded me
+    shouting at the recycling bin.
+  move: The official position is that I admit everything, apologise, and will now be calm forever.
+  gates_note: satisfies_criterion false, final confession and ending
+  mechanism: the speaker closes the explanation instead of adding evidence
+  scores:
+    reach: 0
+    link: 2
+    picture: 1
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Press Secretary
+  tone:
+    commentary_adj: dry
+    explanation_adj: flat
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who read only the latest statement and the new fact must see
+    why the position got worse.
+  - Name the resolution and the evidence, or their plain stand-ins. A headline that fits any failed plan
+    is lazy.
+  - Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or
+    The Press Secretary refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Mock the official statement and the evidence, and use roast-level jabs at the player when the move
+    earns it. Never target identity, protected traits, disability, or real-world vulnerability.
+  - Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the joke. Do not
+    make them the whole joke.
+  - On a skipped link, name the missing bridge. On an ending, say the explanation closed and the chain
+    stops here.
+  - On a refusal, the headline refuses the move and asks for another. It never declares who won.
+  - The coaching line names one observable fact that would have followed. It ends on evidence, never a
+    mood or a verdict.
+  good_headlines:
+  - Taking work seriously now includes declining the meetings. A bold career plan, if the career is elsewhere.
+  - The candles have witnesses. The budget has left the building.
+  - A shouted argument with a recycling bin is not the calm era. The bin remains unconvinced.
+  - The prime minister is not in this receipt. Bring the missing bridge before the country collapses too.
+  - An apology is not evidence. Put the printed attendance sheet back on the table.
+  - The calendar says optional, and the manager says recorded. The resolution has paperwork.
+  - Seven candles and a bathrobe is not thrift. It is a small indoor economy.
+  - The story closed itself with a confession. Leave one embarrassing fact for the next statement.
+  - The speaker found a feeling where the Judge asked for a fact. Feelings do not come with receipts.
+  - The official position is wobbling, but the evidence is standing upright.
+  bad_headlines:
+  - text: 'Accepted: the resolution collapses.'
+    why: opens with a status word
+  - text: The Press Secretary refuses this.
+    why: opens with a ruling phrase and names the host
+  - text: This is the worst resolution ever.
+    why: gives a verdict without naming the evidence
+  - text: A catastrophic financial implosion has commenced.
+    why: uses inflated words instead of a plain picture
+  - text: You clearly cannot manage your own life.
+    why: mocks the player broadly instead of the move
+  - text: The facts are facts, and the truth is true.
+    why: says nothing specific about either step
+  - text: Oh no, the resolution is dead...
+    why: uses melodrama and an ellipsis
+  - text: The bank statement destroys everything.
+    why: claims a result without naming the charge or the resolution
+rules:
+- Give one new observable fact that makes the latest official position harder to believe.
+- Keep the host speaking in the official style, even when the evidence gets embarrassing.
+- Skip a link, end the explanation, retract a fact, or change the subject and the chain stops with you.
+- The Judge rules on the connection and the evidence, never on spelling.
+labels:
+  opening: The opening statement
+  next_opening: The next statement
+  your_opening: Your statement
+  compose: What makes this worse, after {token}
+  compose_waiting: Draft the next piece of evidence while you wait
+validation_messages:
+  empty: No evidence was offered. The official position cannot defend itself.
+  too_long: Over 140 characters. This is a statement, not a parliamentary inquiry.
+  duplicate: That evidence already appeared this match. Find a fresh embarrassment.
+  nudge: Twice now. Add one fact that follows from {standing_form} and makes the position harder to believe.
+judge_out_text: 'The Judge has stepped out. Nobody adds evidence until they return. {standing_form} still
+  stands, and the official position is not improving.
+
+  '
+opponent_prompt: 'You are one of two players extending a public apology that is getting harder to defend.
+
+  Always give one new observable fact in the host''s official style. Keep the explanation going while
+  making it look worse.
+
+  Good: "The official position is that I am saving money. The bank statement contains a charge for a life-size
+  inflatable hot tub."
+
+  Good: "The official position is that I am exercising daily. The gym receptionist has seen me use the
+  cafe twice and the treadmill never."
+
+  Bad: "The official position is that I am involved in a national scandal" because the link is skipped.
+
+  Bad: "The official position is that I admit everything and will do better" because it ends the explanation.
+
+  Bad: "The official position is that I feel ashamed" because a feeling is not evidence.
+
+  Never clear the speaker, close the press conference, retract a fact, or undo what stands.
+
+  Use plain words and one fact. A receipt, a calendar, a neighbour, a delivery box, a missed alarm. Keep
+  the joke specific.
+
+  Adult innuendo and mild profanity are allowed when useful, but do not target identity or protected traits.
+
+  Never reuse evidence from this match.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: The official position is that I am still committed. The unopened planner is underneath the
+  takeaway menu.
+seed_pool:
+  - { opening_token: "The official position is that I am finally taking work seriously.", opening_emoji: "💼" }
+  - { opening_token: "The official position is that I am cutting back on unnecessary spending.", opening_emoji: "💳" }
+  - { opening_token: "The official position is that I am becoming a calmer person.", opening_emoji: "🧘" }

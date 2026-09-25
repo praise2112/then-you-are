@@ -1,0 +1,262 @@
+{
+  "slug": "ghost-trap-trial",
+  "title": "Ghost Trap Trial",
+  "tagline": "Leave one clue standing, then make the next one explain it away.",
+  "emblem": "👻",
+  "accent": "#6d5cae",
+  "premise": "A ghost is on trial. Each player adds one plain piece of evidence about the haunting, and the next clue must expose, explain, or trap the clue before it. The Judge decides whether the evidence holds.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A door opens by itself",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A cold handprint appears",
+      "opening_emoji": "🖐️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A voice calls from upstairs",
+      "opening_emoji": "🗣️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "evidence": [
+        "a door",
+        "a footprint",
+        "a handprint",
+        "a voice",
+        "a light",
+        "a shadow",
+        "a photograph",
+        "a cold spot"
+      ],
+      "setting": [
+        "an attic",
+        "a bedroom",
+        "a hallway",
+        "a kitchen",
+        "a cellar",
+        "a school",
+        "a hotel",
+        "a cemetery"
+      ],
+      "effect": [
+        "opens",
+        "moves",
+        "vanishes",
+        "appears",
+        "whispers",
+        "flickers",
+        "points",
+        "freezes"
+      ]
+    },
+    "tests": [
+      "A stranger can picture the clue at once, with no ghost lore or detective jargon needed.",
+      "The clue directly explains, exposes, or traps the clue before it. Say exactly what changes.",
+      "It supplies evidence, not a mood, a theory, or a claim that the ghost is simply stronger.",
+      "It makes the haunting feel like a case someone could investigate, such as a draft, a hidden speaker, a footprint, or a locked room.",
+      "It uses plain words a twelve-year-old knows. No proper names, technical terms, long backstory, or jokes that replace the evidence."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am muddy footprints; they show the invisible ghost is not flying.",
+    "hint": "One clue, then how it defeats the clue before it."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly the new evidence defeats, exposes, explains, or traps the evidence before it.",
+      "anchors": "0 = no connection or no effect; 1 = a weak suggestion that leaves the old clue untouched; 2 = a possible explanation but incomplete or easy to dispute; 3 = a clear explanation, exposure, or trap that makes the old clue lose force; 4 = the old clue is caught or fully explained by the new evidence, with almost no room left for it (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the evidence and understand its effect.",
+      "anchors": "0 = confusing, contradictory, or unreadable; 1 = understandable only after guesswork; 2 = clear enough but vague, crowded, or partly abstract; 3 = plain and concrete, with a visible link between the clues; 4 = crisp evidence that feels ready for a case file (rare). Length never wins by itself: extra words must clarify the evidence or they hurt this score.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the new kind of evidence is compared with the clue before it.",
+      "anchors": "Novelty measures a change in evidence or investigative angle, not fancy wording. 0 = repeats the same clue or merely makes it louder; 2 = a sensible variation or modest new angle; 4 = shifts cleanly into an unexpected kind of evidence that still does real work (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A clue DEFEATS the previous clue if it directly reveals its cause, proves it false, or makes it useless as evidence. The new clue must act on the clue already on the table. Dodging it, surviving it, waiting it out, or repeating it more dramatically does not count. The clue must be evidence about the haunting, not a scene, a feeling, or a claim that needs a speech to support it.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or talking about rules is not evidence and loses the trial.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous clue from the opponent. Judge the move against the opening card instead, asking whether it directly explains, exposes, or traps the opening evidence.\n",
+      "A bigger, louder, colder, or more dramatic version of the standing clue is not a counter. A second door opening does not defeat a door opening, and a louder voice does not defeat a voice.\n",
+      "Repeating the same evidence with new adjectives is a duplicate. A red footprint after a footprint, or a colder handprint after a handprint, does not create a new investigative angle.\n",
+      "The new clue must act on the standing clue. A clue that merely avoids it, hides from it, waits for it to stop, or says the ghost is immune does not defeat it.\n",
+      "The mechanism must be literal and observable. A loose hinge can explain a door, a hidden speaker can expose a voice, and a copied mark can weaken a handprint. A clue that only says the haunting feels fake or confusing is not enough.\n",
+      "Survival is not defeat. A locked box that the ghost cannot open, a person who ignores the whisper, or a witness who leaves the room has not explained or trapped the standing clue.\n",
+      "The new clue must remain evidence, not a past event, a plan, or a whole story. The Judge needs to see what was found and how it changes the clue before it.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A door opens by itself.",
+      "move": "I am a loose hinge; it opens the door when the floor shakes.",
+      "gates_note": "all true",
+      "mechanism": "the loose hinge and shaking floor explain the opening",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A cold handprint appears.",
+      "move": "I am flour on the handle; it shows the mark came from a living hand.",
+      "gates_note": "all true",
+      "mechanism": "flour exposes the hand as physical evidence rather than a ghostly touch",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A voice calls from upstairs.",
+      "move": "I am a louder voice, calling from the attic.",
+      "gates_note": "satisfies_criterion false, repetition and amplification do not defeat the clue",
+      "mechanism": "none, it is still only a voice",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A shadow crosses the hallway.",
+      "move": "I am a locked bedroom; the shadow cannot enter.",
+      "gates_note": "satisfies_criterion false, blocking the ghost without explaining or trapping the evidence is dodging",
+      "mechanism": "none, the locked room only avoids the shadow",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A photograph shows a pale figure.",
+      "move": "I am a cracked camera lens; it doubles the lamp into a person-shaped blur.",
+      "gates_note": "all true",
+      "mechanism": "the lens flaw explains the figure in the photograph",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Clerk",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the two clues should see why the evidence held or failed.",
+      "Name both clues, or their plain stand-ins. A headline that fits any haunting is not doing its paperwork.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the clue, not the player. Light teasing is fine. No comments about identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, rhymes, spooky grand speeches, or specialist ghost terms.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never announces who won.",
+      "The coaching line names one clue that would have worked. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The door had a loose hinge. The haunting has misplaced its alibi.",
+      "Flour on the handprint is bad news for a ghost with fingerprints.",
+      "The attic voice got louder, which is not the same as getting evidence. Bring another clue.",
+      "The locked room avoids the shadow. It does not explain it. Bring another clue.",
+      "The camera lens made a ghost out of a lamp, an efficient little fraud.",
+      "The cold spot is impressive, but the open freezer has a better case.",
+      "A second footprint is still a footprint. The trial needs a reason.",
+      "The photograph shows a figure, and the cracked lens shows why."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the hinge explains the door.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Clerk refuses: nice try.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "The ghost loses.",
+        "why": "gives no reason and could fit any pair"
+      },
+      {
+        "text": "The voice is spooky, eerie, haunting, and very mysterious.",
+        "why": "uses mood words instead of explaining the evidence"
+      },
+      {
+        "text": "The player clearly does not understand doors.",
+        "why": "mocks the player rather than the clue"
+      },
+      {
+        "text": "The shadow retreats into the darkness, defeated by the mighty chamber.",
+        "why": "poetry and dramatic language replace a mechanism"
+      },
+      {
+        "text": "The cold handprint may be real, or it may be fake, or perhaps both.",
+        "why": "hedges instead of giving a readable ruling"
+      },
+      {
+        "text": "The door is defeated, overcome, explained, exposed, and ruined.",
+        "why": "piles up synonyms instead of naming the hinge"
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the clue in front of you. Do not merely avoid it.",
+    "Give one plain clue and say exactly how it explains, exposes, or traps the clue before it.",
+    "The Judge rules on the evidence and its connection, never on spooky style.",
+    "One clue that fails to defeat the standing clue ends the trial."
+  ],
+  "labels": {
+    "opening": "The opening evidence",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your clue against {token}",
+    "compose_waiting": "Draft your next clue while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Submit a clue.",
+    "too_long": "Over 200 characters. Evidence, not a case history.",
+    "duplicate": "That clue already stood this trial. Find a new piece of evidence.",
+    "nudge": "Twice now. Defeat {standing_form}. Explain it, expose it, or trap it."
+  },
+  "judge_out_text": "The judge has stepped out. The evidence waits. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two witnesses building a ghost case.\nAlways give one plain clue and its effect on the clue before it.\nGood: \"I am flour on the handle; it shows the mark came from a living hand.\"\nGood: \"I am a loose hinge; it opens the door when the floor shakes.\"\nBad: \"I am a scarier door, rattling harder.\" That repeats and amplifies the clue.\nBad: \"I am not afraid of the shadow.\" That dodges it.\nBad: \"I am a strange feeling in the air.\" That is a mood, not evidence.\nTalk like a person at a quiet trial, not a poet or a horror narrator.\nName things anyone can picture: a hinge, flour, a speaker, a draft, a footprint,\na camera lens. The new clue must directly explain, expose, or trap the standing clue.\nA hidden cause, a physical test, or a useful obstruction can work when it acts on the clue.\nDo not merely survive the clue, ignore it, wait for it, or make it louder.\nKeep each move short, concrete, and fresh. Never reuse a clue or its exact evidence angle.\n",
+  "default_move": "I am a draft; it moves the door without a ghost."
+}

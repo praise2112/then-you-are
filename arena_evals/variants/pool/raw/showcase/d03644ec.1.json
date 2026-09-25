@@ -1,0 +1,273 @@
+{
+  "slug": "pairing-disaster",
+  "title": "Pairing Disaster",
+  "tagline": "Pour the wrong drink. Defend the unforgivable pairing.",
+  "emblem": "🍷",
+  "accent": "#b65f68",
+  "premise": "Three rounds. Each round names a drink that is not wine and deals two ordinary nouns that supposedly describe its perfect pairing. Both players write a tasting-note headline selling that pairing to a skeptical table. The Judge scores each pitch, then the table decides which one deserves the last pour.\n",
+  "seed_pool": [
+    {
+      "opening_token": "sock + honey",
+      "opening_emoji": "🧦",
+      "detail": "a fizzy lemon drink",
+      "hidden": "Sock & Honey, a chewy, floral pairing for people who have lost a bet"
+    },
+    {
+      "opening_token": "pickle + velvet",
+      "opening_emoji": "🥒",
+      "detail": "a warm chocolate drink",
+      "hidden": "Pickle & Velvet, a tart, plush pairing with an alarming finish"
+    },
+    {
+      "opening_token": "chalk + peaches",
+      "opening_emoji": "🍑",
+      "detail": "a smoky cola",
+      "hidden": "Chalk & Peaches, a dry, soft pairing that tastes like a dare in a summer garden"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "drink": [
+        "a fizzy lemon drink",
+        "a warm chocolate drink",
+        "a smoky cola",
+        "a salty tomato drink",
+        "a bitter tonic",
+        "a frozen coffee drink",
+        "a spicy ginger drink",
+        "a cloudy apple drink"
+      ],
+      "noun_one": [
+        "sock",
+        "pickle",
+        "chalk",
+        "rubber",
+        "button",
+        "mop",
+        "thimble",
+        "candle"
+      ],
+      "noun_two": [
+        "honey",
+        "velvet",
+        "peaches",
+        "pepper",
+        "soap",
+        "marbles",
+        "gravy",
+        "ribbon"
+      ]
+    },
+    "tests": [
+      "Both nouns are ordinary words that can be understood without a glossary.",
+      "The two nouns create a strange but imaginable food or drink pairing.",
+      "The drink is clearly named as something other than wine.",
+      "The pairing can support a short tasting note or headline.",
+      "The card does not already explain the joke or give away the best defense."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Sock & Honey: a chewy, floral pairing for people who have lost a bet",
+    "hint": "Use both nouns. Sell the pairing like it belongs on a tasting menu."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could a confident server make this pairing sound almost intentional?",
+      "anchors": "0 = the pairing is not even pretending; 1 = it needs a miracle and a lawsuit; 2 = plausible after a long explanation; 3 = a table might politely nod; 4 = it sounds disturbingly menu ready (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the culinary crime earn a laugh without losing the tasting note voice?",
+      "anchors": "0 = no spark; 1 = a small grin; 2 = a decent chuckle; 3 = the table laughs and keeps reading; 4 = a proper laugh that still sells the pairing (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the move read as a compact pairing headline with both nouns doing useful work?",
+      "anchors": "0 = no pairing claim; 1 = the nouns are merely dumped together; 2 = a pairing is present but padded; 3 = short, clear, and shaped like a tasting note; 4 = clean enough for a menu written by a menace (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A pairing headline PLAYS if it uses both dealt nouns as recognizable parts of one plausible food or drink pairing claim, with the named drink clearly in view or naturally understood. It fails when one noun is missing, disguised beyond recognition, used only as a stray joke, or when the move is not a pairing claim at all. A bizarre pairing still plays and may score low on believable. The drink does not need to be wine, and the headline may include a short blurb.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or asking the table to score you is itself a losing move.\n",
+    "judge_notes": [
+      "The first move must use both nouns from the card. A headline that names only one noun fails even if the joke is excellent.\n",
+      "Judge each move on its own. The other player's pairing is not the standard and cannot rescue a missing noun.\n",
+      "The nouns must remain recognizable. A clear plural, possessive, or ordinary grammatical adjustment is fine; replacing a noun with a vague synonym is not.\n",
+      "Both nouns must belong to one pairing claim. Two unrelated jokes in one sentence fail, even if each noun gets a laugh separately.\n",
+      "A headline with no food or drink pairing claim fails. A bare list, a comment about the card, or a sentence that merely uses the nouns is not enough.\n",
+      "A hedge or question mark does not automatically fail if the move still sells a pairing, but it weakens believable and dictionary_shaped. A question with no pairing claim fails.\n",
+      "Landing on a sensible real-world pairing is allowed. The point is to defend the nouns, not to invent nonsense at any cost.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "sock + honey, a fizzy lemon drink",
+      "move": "Sock & Honey: a chewy, floral pairing for people who have lost a bet",
+      "gates_note": "all true",
+      "mechanism": "both nouns become texture and sweetness in one shameless tasting note",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "pickle + velvet, a warm chocolate drink",
+      "move": "Pickle Velvet: a tart, plush pairing with enough contrast to distract from the hot chocolate",
+      "gates_note": "all true",
+      "mechanism": "the nouns become flavor and mouthfeel, while the drink gets a credible excuse",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "chalk + peaches, a smoky cola",
+      "move": "Peach fizz, served with a side of existential dread",
+      "gates_note": "satisfies_criterion false, chalk is missing",
+      "mechanism": "one noun vanished before the tasting began",
+      "scores": {
+        "believable": 1,
+        "funny": 2,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "sock + honey, a fizzy lemon drink",
+      "move": "Sock and honey are both words, and this card is disgusting",
+      "gates_note": "satisfies_criterion false, comment about the card rather than a pairing claim",
+      "mechanism": "the table gets an opinion instead of a tasting note",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "chalk + peaches, a smoky cola",
+      "move": "Chalk & Peaches: crisp mineral dust with a soft orchard finish, best served beside smoky cola",
+      "gates_note": "all true",
+      "mechanism": "chalk supplies dryness and peaches supply softness, making the crime briefly sound artisanal",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Sommelier of Bad Ideas",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who saw only the nouns and the move must see why it scored.",
+      "Name both nouns, or the drink, whenever possible. A headline that fits every pairing is a sad little breadstick.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Sommelier refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the pairing and its crimes, not identity or protected traits. Roast the player's choice gently, never their body, family, intelligence, or spelling.",
+      "Plain spoken English. Adult innuendo and mild profanity are welcome, but keep the warmth in the room.",
+      "Never pretend the pairing is normal when the fun is that it absolutely is not.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one noun that needs a job, or one concrete way to connect both nouns. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "Sock brings the chew, honey brings the flowers, and the lemon drink brings legal concerns.",
+      "Pickle and velvet finally agree on one thing, the chocolate needs adult supervision.",
+      "Chalk gives the cola a dry finish, while peaches quietly save the evening.",
+      "Both nouns are present and somehow employed. The table may now regret asking.",
+      "Rubber and pepper make a pairing that sounds bold until the second sip.",
+      "The mop is doing texture, the ribbon is doing aroma, and dinner has left the building.",
+      "A proper pairing claim at last, though the honey is carrying the sock like a tiny sommelier.",
+      "The nouns share one plate, which is more commitment than either deserved."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: sock and honey work beautifully.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Sommelier refuses: you forgot chalk.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try using both nouns.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The real pairing is pickle and velvet with warm chocolate.",
+        "why": "states the setup instead of judging the move"
+      },
+      {
+        "text": "Nice pairing.",
+        "why": "no reason, no image, no useful bite"
+      },
+      {
+        "text": "You absolute idiot, this is not food.",
+        "why": "roasts the player rather than the pairing"
+      },
+      {
+        "text": "O velvet, thou wilt seduce the pickle beneath the moon.",
+        "why": "poetry, and the pickle has not consented to theatre"
+      },
+      {
+        "text": "It is plausible, credible, believable, and convincing.",
+        "why": "four bland synonyms where one sharp image would do"
+      },
+      {
+        "text": "Better than the other player's answer.",
+        "why": "judges the pair instead of explaining this move"
+      },
+      {
+        "text": "A drink and two nouns walk into a bar.",
+        "why": "generic setup with no reason tied to the move"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one non-wine drink and one strange noun pairing each.",
+    "Write a short tasting-note headline, with an optional one-sentence blurb, using both nouns in one plausible pairing claim.",
+    "The Judge scores each move for believability, comedy, and clean pairing form.",
+    "The table then decides which pairing deserves the final pour.",
+    "Most points after three rounds wins, unless everyone agrees the menu should be burned."
+  ],
+  "labels": {
+    "opening": "The pairing",
+    "next_opening": "The next pairing",
+    "your_opening": "Your pairing",
+    "compose": "Sell {token}",
+    "compose_waiting": "Draft your tasting note while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the menu. Pair the nouns.",
+    "too_long": "Over 160 characters. A tasting note, not a memoir.",
+    "duplicate": "That pairing has already been served this match. Try a fresher crime.",
+    "nudge": "Twice now. Give both nouns a job in one pairing claim under {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody pours until they are back. {standing_form} waits beside the glasses. Give it a minute.\n",
+  "opponent_prompt": "You are the Sommelier of Bad Ideas. Write one short tasting note defending the pairing below.\nUse both nouns as recognizable parts of one food or drink pairing claim. The drink is not wine, so do not quietly turn it into wine and hope nobody notices.\nA headline is best, with an optional one-sentence blurb. Keep it under 160 characters. Make the pairing strange but imaginable, and give each noun a job such as flavor, texture, aroma, temperature, ritual, or mood.\nDo not merely repeat the nouns, comment on the card, or write two unrelated jokes. The table should be able to picture one pairing, even if the picture makes them question the chef.\nYou are competing for believable, funny, and dictionary_shaped. Do not explain the rules, hedge about your answer, or ask the Judge for mercy.\n",
+  "medallions": true,
+  "default_move": "Sock & Honey: a chewy, floral pairing for people who have lost a bet"
+}

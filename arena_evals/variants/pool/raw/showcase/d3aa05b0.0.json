@@ -1,0 +1,277 @@
+{
+  "slug": "last-screening-standing",
+  "title": "Last Screening Standing",
+  "tagline": "Make a film out of almost nothing.",
+  "emblem": "🎬",
+  "accent": "#b45f4d",
+  "premise": "Three rounds. Each round deals both players the same ordinary noun and one hidden fact about it. Turn the noun into a film title and a tagline for a tiny event. The Judge rewards the biggest leap from the noun while the title still sounds like a film and the tagline still sells that exact film. Then each player sees the rival pitch and calls which one best fits the hidden fact. Then the fact is revealed.\n",
+  "seed_pool": [
+    {
+      "opening_token": "spoon",
+      "opening_emoji": "🥄",
+      "detail": "a small utensil for lifting, stirring, or serving food",
+      "hidden": "The spoon is one of the oldest and most widely used eating utensils."
+    },
+    {
+      "opening_token": "button",
+      "opening_emoji": "🔘",
+      "detail": "a small fastener passed through a hole in clothing",
+      "hidden": "Buttons were first used mainly as ornaments before they became practical fasteners."
+    },
+    {
+      "opening_token": "shadow",
+      "opening_emoji": "🌑",
+      "detail": "a dark shape made where light is blocked",
+      "hidden": "A shadow can appear to move faster than light across a distant surface."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 1,
+    "axes": {
+      "object_type": [
+        "kitchen object",
+        "clothing item",
+        "piece of furniture",
+        "school supply",
+        "garden tool",
+        "bathroom object",
+        "travel item",
+        "office object"
+      ],
+      "film_genre": [
+        "thriller",
+        "romance",
+        "horror",
+        "comedy",
+        "western",
+        "heist film",
+        "courtroom drama",
+        "science fiction"
+      ],
+      "event_scale": [
+        "one room",
+        "a village hall",
+        "a rooftop",
+        "a back garden",
+        "a closed shop",
+        "a basement",
+        "a school gym",
+        "a ferry terminal"
+      ]
+    },
+    "tests": [
+      "The card is an ordinary concrete noun that can be pictured without explanation.",
+      "The card does not already sound like a film title or a dramatic abstract concept.",
+      "The hidden fact is true, specific, and useful for judging a surprising film pitch.",
+      "The hidden fact does not make the intended title or tagline obvious before the reveal.",
+      "The noun can support several film genres and event settings without becoming gibberish."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Write ",
+    "example": "SPOON — One small utensil, one very large betrayal.",
+    "hint": "One film title, one tagline, one line. Make the noun earn its billing."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this title and tagline appear on a real poster for a real tiny film event?",
+      "anchors": "0 = random words or no usable pitch; 1 = a premise barely hangs together; 2 = plausible with obvious strain; 3 = a stranger could accept the poster at a glance; 4 = it feels genuinely bookable, despite the leap (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the pitch get a laugh from the collision between the plain noun and the grand film treatment?",
+      "anchors": "0 = no comic charge; 1 = a faint smirk; 2 = a neat joke; 3 = a proper laugh; 4 = the joke is excellent and still sells the film (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the line follow the requested title and tagline shape, with clean wording and a distinct film voice?",
+      "anchors": "0 = missing a title, a tagline, or a readable connection; 1 = the shape is buried or cluttered; 2 = recognisable but loose; 3 = crisp title and tagline with clear separation; 4 = poster ready, economical, and unmistakably a film pitch (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A pitch PLAYS if its title and tagline together form a coherent film and event pitch built around the card's noun. It must offer a recognisable title, a tagline that sells that exact film, and a connection to the noun. It fails when it is only a joke about the prompt, a comment about the game, unrelated words, a tagline with no film, a title with no tagline, or a line whose parts contradict each other. An unlikely film still plays and scores low on believable. A pitch that happens to fit the hidden fact is not a failure.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the rules, or reviewing the other player's performance instead of pitching a film is a losing move.\n",
+    "judge_notes": [
+      "The first move must contain both a film title and a tagline in the requested one line shape. Do not demand a literal title case style if the two parts are unmistakable.\n",
+      "Judge each pitch on its own. The rival pitch is not the standard, and a more realistic rival does not make a weak pitch coherent.\n",
+      "A title that merely repeats the noun can still play, but it should score low on leap and believable unless the tagline creates a strong film premise.\n",
+      "A tagline that uses the noun but does not sell the named film is a failure, not merely a weak joke.\n",
+      "A title without a tagline, or a tagline without a title, fails even if the missing half is easy to imagine.\n",
+      "A sentence about the game, the Judge, the other player, or the act of guessing fails because it is not a film and event pitch.\n",
+      "A string of unrelated film sounding words fails. Coherence requires that the title and tagline point to the same imagined film.\n",
+      "A pitch may be absurd, grim, rude, or melodramatic. It plays if the two parts still form one film concept built around the noun.\n",
+      "Landing close to the hidden fact is allowed and does not automatically score well. Use the hidden fact only for truth proximity and the later call.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "spoon",
+      "move": "SPOON — One small utensil, one very large betrayal.",
+      "gates_note": "all true",
+      "mechanism": "A clean title and tagline turn a table object into a domestic thriller.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "button",
+      "move": "THE LAST BUTTON — At the village hall, one fastener decides who gets dressed.",
+      "gates_note": "all true",
+      "mechanism": "The tiny object gets an absurdly serious survival premise, and the event setting is concrete.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "shadow",
+      "move": "SHADOW — Guess which one is real, Judge.",
+      "gates_note": "satisfies_criterion false, a comment about the game rather than a film tagline",
+      "mechanism": "It addresses the Judge and never pitches a film or event.",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "spoon",
+      "move": "The Spoon, a spoon, food, betrayal, funny movie night",
+      "gates_note": "satisfies_criterion false, no coherent title and tagline pair",
+      "mechanism": "It lists ingredients for a poster instead of making a film pitch.",
+      "scores": {
+        "believable": 0,
+        "funny": 0,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "button",
+      "move": "BUTTON — A tiny fastener becomes the hero of a very serious wardrobe emergency.",
+      "gates_note": "all true",
+      "mechanism": "The title is plain but the tagline gives it a specific comic disaster.",
+      "scores": {
+        "believable": 3,
+        "funny": 2,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Festival Director",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who saw only the noun and the pitch must see why it scored.",
+      "Name the noun, the title, or the tagline's sharpest image. A headline that fits any pitch is a bad headline.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, or Move refused.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the pitch, never identity, protected traits, disability, or real personal circumstances. Adult innuendo and profanity are allowed when aimed at the pitch.",
+      "Plain spoken English. No poetry, rhymes, fake film critic fog, or thesaurus sludge.",
+      "Never reveal or hint at the hidden fact in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline refuses the pitch and asks for another. It never rules on which rival best fits the hidden fact.",
+      "The coaching line names one concrete change that would have made the pitch work. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The spoon has betrayal, a premise, and apparently a budget of four pounds.",
+      "A button gets one last chance to hold the trousers together, cinema survives.",
+      "The shadow is cast, the event is tiny, and the tagline knows where to stand.",
+      "That title promises a thriller, then the tagline supplies the wardrobe crisis.",
+      "A film about a spoon should not work this well, but the cutlery has motive.",
+      "The village hall has become a battlefield, and the button is wearing the whole production.",
+      "A clean title, a nasty little hook, and not one unnecessary explosion.",
+      "This is less a movie than a threat issued by a household object, which is still a pitch.",
+      "The tagline sells the same film as the title, a rare outbreak of professionalism.",
+      "The noun arrived ordinary and left with a poster, a grudge, and a screening slot."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the spoon pitch works.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Festival Director refuses: that is not a film.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and gives no specific reason"
+      },
+      {
+        "text": "The button really was first used as decoration.",
+        "why": "reveals the hidden fact in the headline"
+      },
+      {
+        "text": "Good.",
+        "why": "no reason, no noun, no image"
+      },
+      {
+        "text": "Only an idiot would call that a tagline.",
+        "why": "mocks the player instead of the pitch"
+      },
+      {
+        "text": "O humble spoon, thy silver destiny awaits.",
+        "why": "poetry and theatrical language"
+      },
+      {
+        "text": "It is plausible, credible, believable, and convincing.",
+        "why": "four vague adjectives replace a reason"
+      },
+      {
+        "text": "Better than the other player's answer.",
+        "why": "judges the pair instead of the pitch on its own"
+      },
+      {
+        "text": "Nice one.",
+        "why": "no reason, no noun, no comic image"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one ordinary noun each.",
+    "Write one line in the form Title — tagline. Make it a film and a tiny event built around the noun.",
+    "The House writes its own pitch unseen, and the Judge scores both for believability, comedy, and clean poster shape.",
+    "Then call which pitch best fits the hidden fact. Right, and the points are yours. Fooled, and they go to the House.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The noun",
+    "next_opening": "The next noun",
+    "your_opening": "Your noun",
+    "compose": "Your film pitch for {token}",
+    "compose_waiting": "Draft your pitch while you wait"
+  },
+  "validation_messages": {
+    "empty": "No poster, no screening. Write a title and tagline.",
+    "too_long": "Over 160 characters. It is a tiny event, not a franchise bible.",
+    "duplicate": "That pitch has already screened this match. Find a new angle.",
+    "nudge": "Twice now. Give {standing_form} a title, then sell that exact film in a tagline."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} waits on the programme. Give it a minute.\n",
+  "opponent_prompt": "You are the rival filmmaker. Write one film title and tagline for the noun below.\nUse exactly one line in this shape: TITLE — tagline. The title should sound like a film, and the tagline should sell that exact film as a tiny event.\n\nMake the leap large. Do not merely describe the noun or turn it into a generic pun. Give the object a genre, a conflict, a desire, a crime, a romance, or a ridiculous amount of importance.\n\nThe pitch must remain coherent. The title and tagline must clearly belong to the same film, and the noun must still be the engine of the idea. Do not mention the Judge, the game, the other player, scoring, guessing, or the hidden fact.\n\nKeep it concise and poster shaped. No explanation before or after the line. Do not reuse the same genre, setting, or basic joke from an earlier round. Avoid padding, list-like wording, and vague claims such as the movie that changes everything.\n\nYou are writing a rival pitch. The hidden fact is given to you so you can avoid making it obvious. Do not state the fact, paraphrase it, or build the same literal premise. You may accidentally fit it, but do not aim at it.\n",
+  "medallions": true,
+  "default_move": "THE LAST SPOON — One small utensil, one very large betrayal."
+}

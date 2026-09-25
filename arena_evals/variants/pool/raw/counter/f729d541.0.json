@@ -1,0 +1,264 @@
+{
+  "slug": "barnyard-chain-reaction",
+  "title": "Barnyard Chain Reaction",
+  "tagline": "Cause the next farmyard problem.",
+  "emblem": "🐔",
+  "accent": "#92400e",
+  "premise": "The farmyard is having a bad day. Each turn, become one standing farmyard thing that directly defeats what came before. The Judge decides whether the trouble really moves.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a chicken",
+      "opening_emoji": "🐔",
+      "detail": "pecking spilled grain",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a muddy trough",
+      "opening_emoji": "🪣",
+      "detail": "blocking the pigpen gate",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a loose hay bale",
+      "opening_emoji": "🌾",
+      "detail": "rolling down the barn floor",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "kind": [
+        "animal",
+        "person or role",
+        "tool",
+        "vehicle",
+        "plant",
+        "weather",
+        "food",
+        "farm building"
+      ],
+      "place": [
+        "barn",
+        "coop",
+        "pigpen",
+        "field",
+        "pasture",
+        "pond",
+        "orchard",
+        "farm road"
+      ],
+      "trouble": [
+        "chasing",
+        "blocking",
+        "spilling",
+        "stomping",
+        "eating",
+        "soaking",
+        "snapping",
+        "scattering"
+      ]
+    },
+    "tests": [
+      "A stranger pictures it at once as one plain thing from a working farm. Nothing abstract, technical or wildly out of place.",
+      "A non-player can name a simple farmyard counter within five seconds. Say what that counter is.",
+      "It stands in the trouble. It can chase, block, spill, stomp, eat, soak, snap or scatter something, rather than merely watch or endure.",
+      "It makes the next player want to answer with another farmyard cause. A cow, gate or rain barrel has a job in the mess; a patch of brown is just scenery.",
+      "Two or three everyday words a twelve-year-old knows, with an article where needed. No brand names, proper names, obscure breeds or words that need explaining."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a muddy boot; I squash the worm.",
+    "hint": "A farmyard thing, then the simple trouble it causes."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new farmyard thing defeats the thing standing before it.",
+      "anchors": "0 = no action or no connection; 1 = a weak claim, near miss or mere inconvenience; 2 = a plausible farmyard cause but partial or debatable; 3 = clear, direct defeat that a stranger can picture; 4 = immediate and unavoidable, the previous thing has no sensible answer (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly the move presents one ordinary farmyard thing and one understandable cause.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = needs unusual knowledge or guesswork; 2 = understandable but cluttered, vague or oddly phrased; 3 = plain and clear; 4 = crisp, vivid and instantly pictureable (rare). Extra words do not help unless each one clarifies the farmyard action.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How freshly the move changes the kind of farmyard trouble instead of repeating the same answer.",
+      "anchors": "0 = the same thing, a bigger copy or the obvious repeat; 2 = a reasonable change with a familiar connection; 4 = a clean hop to a different part of farm life that still defeats the standing thing (rare). Strange wording is not novelty, and a related thing without a new action scores low.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A new farmyard thing OVERCOMES the previous thing if it directly acts on it and makes it fail through a plain, believable farmyard cause. The new thing must be a standing state, not a past event. Chasing, trapping, eating, crushing, soaking, blocking, scattering or otherwise stopping what stands counts. Merely avoiding it, surviving it, waiting it out, making a bigger copy or naming a related farmyard thing does not.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or arguing about the rules is itself a losing form.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move. Judge it against the opening card instead, and ask whether the proposed thing directly causes the opening farmyard thing to fail.\n",
+      "A bigger, louder or tougher version of the standing thing is not a counter. A related thing from the same family without a new action, such as a rooster after a chicken, also fails.\n",
+      "Becoming the opening thing itself, or a lightly changed copy of it, is a duplicate and fails the distinctness gate.\n",
+      "The strength must be against the thing actually standing, not against farmyard trouble in general. A shovel does not beat a chicken unless the move gives a plain way the shovel acts on that chicken.\n",
+      "The cause must be literal and watchable. A farmer burying a problem, a cloud crushing bad luck or a pig ruining a plan is not enough unless the words name a real action on the standing thing.\n",
+      "Surviving, ignoring, hiding from or being unaffected by the standing thing is not overcoming it. A hen that ignores rain, a fence the fox cannot reach or a cow that simply waits does not cause the previous thing to fail.\n",
+      "A move that only changes the setting or adds decoration does not count. Mud near a fox, hay beside a gate or a red barn after a chicken has no direct action unless the move explains how it defeats what stands.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A chicken, pecking spilled grain.",
+      "move": "I am a fox; I catch the chicken.",
+      "gates_note": "all true",
+      "mechanism": "a fox directly catches and defeats the chicken",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a fox; I catch the chicken.",
+      "move": "I am a farmer; I chase the fox away.",
+      "gates_note": "all true",
+      "mechanism": "the farmer directly drives the fox from the yard",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a farmer; I chase the fox away.",
+      "move": "I am a larger farmer; I chase harder.",
+      "gates_note": "satisfies_criterion false (mere amplification and same form)",
+      "mechanism": "no new cause, only a stronger version of the standing role",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a fox; I catch the chicken.",
+      "move": "I am a fence; the fox cannot get through.",
+      "gates_note": "all true",
+      "mechanism": "the fence blocks the fox and stops its attack",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a fence; I block the fox.",
+      "move": "I am a gate; I am also near the fence.",
+      "gates_note": "satisfies_criterion false (related object, no action against the fence)",
+      "mechanism": "being nearby does not defeat or change the fence",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Yard Clerk",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain",
+      "bite": "playful",
+      "ruling_generosity": "fair"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the two forms should see the farmyard cause.",
+      "Name both forms, or plain stand ins for them. A headline that fits any pair has not done its chores.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Yard Clerk refuses.",
+      "Use commas and full stops only. No dashes as punctuation, no colons after a verdict, no ellipses.",
+      "Use mild playful jabs at the move, never identity based abuse. Do not attack the player's body, family, intelligence or spelling.",
+      "Plain spoken English. No poetry, rhymes, fancy insults or farm jargon that needs a glossary.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not rule on who won.",
+      "The coaching line names one farmyard form that would have won. End on a concrete action or fact, not a mood or verdict."
+    ],
+    "good_headlines": [
+      "The chicken had grain, the fox had a lunch plan.",
+      "The farmer sends the fox home before it can inspect the menu.",
+      "A bigger farmer is still the same farmer. Bring a new farmyard problem.",
+      "The fence has one job and the fox has just met it.",
+      "The gate stood nearby and contributed absolutely nothing. Bring another form.",
+      "The muddy boot meets the worm, and farm fashion takes a direct turn.",
+      "The rain soaks the hay, which is a poor day for both hay and storage.",
+      "The pig blocks the gate, but the farmer brings hinges and bad news."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the fox catches the chicken.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Yard Clerk refuses: the gate did nothing.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, excellent against fences, useless against this fence.",
+        "why": "opens with a ruling phrase and gives no useful picture"
+      },
+      {
+        "text": "The chicken loses.",
+        "why": "no cause, and it fits nearly any pair"
+      },
+      {
+        "text": "The fence bravely defeats the fox.",
+        "why": "personifies the objects and does not name the blocking action clearly"
+      },
+      {
+        "text": "A bold effort from someone who should know better.",
+        "why": "mocks the player instead of explaining the farmyard result"
+      },
+      {
+        "text": "The tractor, magnificent and inevitable, bestrides the pastoral cosmos.",
+        "why": "poetry and inflated language replace the plain cause"
+      },
+      {
+        "text": "The gate defeats, destroys, conquers and annihilates the fox.",
+        "why": "four grand words for one simple blocking action"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the farmyard thing in front of you. Do not become it.",
+    "Say what you are and the simple trouble you cause: I am a muddy boot; I squash the worm.",
+    "The Judge rules on the plain farmyard cause, not spelling or dramatic wording.",
+    "One form that fails to beat the standing thing ends the chain."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your form against {token}",
+    "compose_waiting": "Draft your next farmyard problem while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Add a farmyard thing.",
+    "too_long": "Over 200 characters. A farmyard cause, not a hayloft diary.",
+    "duplicate": "That farmyard thing already stood this match. Bring in something new.",
+    "nudge": "Twice now. Beat {standing_form}. Do not become it, do not repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two players in a farmyard chain reaction.\nAlways give a plain move in this shape: \"I am X; I do Y to their form.\"\nX must be one concrete farmyard thing, and Y must be a direct action that makes the standing thing fail.\nGood: \"I am a fox; I catch the chicken.\" / \"I am a fence; I block the fox.\"\nBad: \"I am a bigger fox; I catch harder.\" That is amplification.\nBad: \"I am a gate near the fence.\" Being related or nearby is not an action.\nBad: \"I am patience; I outlast the storm.\" Abstract ideas and mere survival do not count.\nSpeak like a person across a farmyard gate, not a poet. Use common things such as animals, tools, weather, crops, people, buildings and vehicles.\nKeep the cause literal and easy to watch. A chicken scatters grain, a fox catches a chicken, a farmer chases a fox, and a fence blocks a fox.\nHop to a fresh part of farm life when possible. Do not reuse a form or quietly become the thing already standing.\nYou are trying to survive the chain. The Judge cares about the direct farmyard action, not a clever speech.\n",
+  "default_move": "I am a fence; I block the path."
+}

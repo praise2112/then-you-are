@@ -1,0 +1,271 @@
+{
+  "slug": "field-tool-lock",
+  "title": "Field Tool Lock",
+  "tagline": "Answer the farm job with the tool that undoes it.",
+  "emblem": "🧰",
+  "accent": "#65a30d",
+  "premise": "Two players build a farm job one tool at a time. Your tool must stop, undo, or make useless the job done by the tool before it, so the chain jumps from shovel to hose to wheelbarrow to gate and onward.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a shovel",
+      "opening_emoji": "🪣",
+      "detail": "digging a hole",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a hose",
+      "opening_emoji": "💧",
+      "detail": "flooding a furrow",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a wheelbarrow",
+      "opening_emoji": "🛒",
+      "detail": "moving a heap of soil",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "tool": [
+        "shovel",
+        "rake",
+        "hoe",
+        "bucket",
+        "hose",
+        "gate",
+        "wheelbarrow",
+        "pitchfork",
+        "scarecrow"
+      ],
+      "farm_job": [
+        "digging a hole",
+        "flattening a mound",
+        "moving hay",
+        "watering a row",
+        "blocking a path",
+        "gathering leaves",
+        "feeding a trough",
+        "fixing a fence",
+        "chasing birds"
+      ],
+      "material": [
+        "soil",
+        "mud",
+        "hay",
+        "water",
+        "wood",
+        "stone",
+        "grain",
+        "leaves",
+        "manure"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the tool and its farm job at once. Nothing abstract and nothing that needs explaining.",
+      "A non-player names a plain farm tool that could answer the job within five seconds. Say what that answer is.",
+      "The tool stands in the field. It blocks, undoes, redirects, gathers, spreads or takes over the previous job. It is never merely nearby or protected from the job.",
+      "It makes a stranger want to answer with another tool. A stubborn gate or greedy pitchfork has more use than a silent object with no work to do.",
+      "Two or three everyday words a twelve-year-old knows. No brand names, proper nouns, specialist machinery or poetic farm scenes."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a rake; I pull apart the pile the shovel made.",
+    "hint": "Name the tool and its direct answer."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How plainly the new tool stops, undoes, or takes over the previous tool's current farm job.",
+      "anchors": "0 = no answer to the previous job; 1 = a tool is named but the connection is weak; 2 = a possible answer with a gap or contestable step; 3 = a clear direct counter; 4 = the new tool makes the previous job plainly useless or reverses it completely, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the tool, the previous job, and the new tool's direct response.",
+      "anchors": "0 = unreadable or contradictory; 1 = needs farm expertise to follow; 2 = understandable but vague or crowded; 3 = clear and concrete; 4 = instantly vivid and neatly stated, rare. Extra words do not help unless they clarify the farm job.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the next tool and farm job are compared with the previous move.",
+      "anchors": "0 = repeats the tool, material, or ordinary answer without a new turn; 2 = a sound but familiar answer; 4 = shifts to a fresh farm task or tool family while still answering directly, rare. Strange machinery is not novelty if the counter is unclear.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A tool OVERCOMES the previous tool if it plainly defeats, undoes, blocks, redirects, or takes over the previous tool's current farm job. The answer must act on that job, not merely survive beside it. A similar tool, a larger tool, or a tool that hides from the work is not a counter.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player move. Judge the tool against the opening card, such as whether it plainly answers a shovel digging a hole.",
+      "A bigger, faster, or heavier version of the previous tool is not a counter. A similar farm tool with no direct answer also fails.",
+      "Repeating the same tool, or naming the opening tool again with a new adjective, is a duplicate and fails.",
+      "The new tool must answer the previous tool's current farm job. A tool that has no way to block, undo, redirect, or take over that work fails even if it is useful on a farm.",
+      "The mechanism must be literal and watchable. A gate blocking a wheelbarrow is a mechanism. Saying that a rake defeats a bad mood is not.",
+      "Hiding from the previous tool, waiting for it to stop, or being unaffected by it is not overcoming it. The new tool must act on the tool's job or make that job useless.",
+      "The named tool must be a recognizable farm tool, structure, or farm implement. A whole farm, an abstract idea, or a weather event is not a tool.",
+      "The move must state or plainly imply a direct answer. A bare tool name with no relation to the previous job fails when the connection is not obvious."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The opening is a shovel, digging a hole.",
+      "move": "I am a wheelbarrow; I carry the dug soil away.",
+      "gates_note": "all true",
+      "mechanism": "the wheelbarrow takes over the shovel's soil moving job and removes the spoil",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a hose; I am flooding a furrow.",
+      "move": "I am a gate; I block the water at the furrow.",
+      "gates_note": "all true",
+      "mechanism": "the gate stops the hose's water from reaching the furrow",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a shovel; I am digging a hole.",
+      "move": "I am a bigger shovel; I dig a bigger hole.",
+      "gates_note": "satisfies_criterion false, mere amplification with no direct counter",
+      "mechanism": "none, the second shovel continues the same job",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a rake; I am gathering leaves.",
+      "move": "I am a hoe; I am also a farm tool.",
+      "gates_note": "satisfies_criterion false, no mechanism against gathering leaves",
+      "mechanism": "none, naming another tool does not undo the rake's job",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a pitchfork; I am moving hay.",
+      "move": "I am a barn; I keep the hay inside.",
+      "gates_note": "all true",
+      "mechanism": "the barn contains the hay and makes the pitchfork's loose pile less useful to move",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Quiet Foreman",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two tools must see why one answered the farm job.",
+      "Name both tools, or their plain stand-ins. A headline that fits any pair is a bad headline.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Foreman refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the tool or the move, never the player's identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no profanity, and no specialist farm terms unless the form explains them.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one farm tool that would have answered the standing job. That tool ends on a fact or an action, never a mood or a verdict.",
+      "Light innuendo is allowed only when it stays harmless and clearly about the tool."
+    ],
+    "good_headlines": [
+      "The shovel made a hole, and the wheelbarrow gave the dirt somewhere else to be.",
+      "The hose brought water, but the gate had already closed the argument.",
+      "A bigger shovel is still digging. Bring a tool that changes the job.",
+      "The rake gathered leaves, and the bin took them off the field.",
+      "The pitchfork moved hay, while the barn quietly made moving it less urgent.",
+      "The hoe is a farm tool, yes. It still has not answered the rake.",
+      "The wheelbarrow had the soil, and the gate stopped its little journey.",
+      "The shovel worked hard. The bucket made the hole's dirt disappear."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the gate stops the hose.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Foreman refuses: that hoe has no answer.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring a better tool.",
+        "why": "opens with a ruling phrase and gives no specific reason"
+      },
+      {
+        "text": "The shovel and rake have different energies.",
+        "why": "vague and does not name the farm mechanism"
+      },
+      {
+        "text": "The pitchfork wins.",
+        "why": "no reason and fits any pair"
+      },
+      {
+        "text": "Your farm knowledge is embarrassing.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "The rake doth scatter what the spade hath wrought.",
+        "why": "poetry and old fashioned wording"
+      },
+      {
+        "text": "The gate blocks the water, stops the water, and prevents the water from going through.",
+        "why": "repeats one idea instead of making a picture"
+      },
+      {
+        "text": "The hose gets turned on, if you know what I mean.",
+        "why": "innuendo replaces the farm mechanism"
+      }
+    ]
+  },
+  "rules": [
+    "Answer the farm job done by the tool in front of you.",
+    "Name a tool and its direct answer, such as I am a rake; I pull apart the pile the shovel made.",
+    "The Judge rules on the idea, not spelling or punctuation.",
+    "A tool that does not directly block, undo, redirect, or take over the previous job ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your tool against {token}",
+    "compose_waiting": "Draft your next farm tool while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Pick a tool and give it a job.",
+    "too_long": "Over 200 characters. A farm move, not a harvest report.",
+    "duplicate": "That tool already stood this match. Choose a new tool.",
+    "nudge": "Twice now. Answer {standing_form}. Do not hide from it, repeat it, or merely stand nearby."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two farm workers building a chain of tools.\nAlways name a tool and its direct answer to the previous farm job.\nGood: \"I am a rake; I pull apart the pile the shovel made.\" / \"I am a gate; I stop the hose water at the row.\"\nBad: \"I am a bigger shovel; I dig harder\" because it is amplification, not a counter. Bad: \"I am a barn\" when you do not say how it answers the previous job.\nTalk like a person across a field, not a poet or a machine manual. Use plain farm words such as a bucket, a rake, a gate, a cart, a fence, or a trough.\nYour tool must act on the previous tool's current job. It may block, undo, redirect, gather, contain, or take over that work. Do not hide from it or merely survive beside it.\nKeep the move short and concrete. A recognizable tool, structure, or farm implement is best. Do not become the previous tool, a larger version of it, or a vague farm scene.\nHop to a fresh farm task when you can, but keep the counter literal. Never reuse a tool from this match.\nYou are trying to survive the chain, not entertain a crowd. If a move sounds funny, it is because the farm tool truly answers the job.\n",
+  "default_move": "I am a gate; I block the path the shovel opened."
+}

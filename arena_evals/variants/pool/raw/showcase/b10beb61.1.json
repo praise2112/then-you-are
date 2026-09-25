@@ -1,0 +1,277 @@
+{
+  "slug": "the-apology-tour",
+  "title": "Sorry About the Gift",
+  "tagline": "Thank them warmly. Blame the present.",
+  "emblem": "💌",
+  "accent": "#7a3f58",
+  "premise": "A thank-you note nobody wanted to write becomes an apology nobody asked for. You must thank the giver while making the unwanted gift sound like the cause of a tiny personal disaster. The host scores the distance between the plain fact and your excuse-riddled masterpiece.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Nora gave Sam a hat that was two sizes too small.",
+      "opening_emoji": "🎩",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Leo gave Priya a loud toy.",
+      "opening_emoji": "📢",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Mina gave Jules a mug with a cracked handle.",
+      "opening_emoji": "☕",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 15,
+    "axes": {
+      "giver": [
+        "Nora",
+        "Leo",
+        "Mina",
+        "Uncle Ray",
+        "Priya",
+        "Sam",
+        "Jules",
+        "the neighbour"
+      ],
+      "gift": [
+        "a hat",
+        "a mug",
+        "a toy",
+        "a scarf",
+        "a lamp",
+        "a book",
+        "a vase",
+        "a clock"
+      ],
+      "defect": [
+        "two sizes too small",
+        "far too loud",
+        "with a cracked handle",
+        "covered in glitter",
+        "missing one button",
+        "with a strange smell",
+        "that leaks everywhere",
+        "that plays one song"
+      ]
+    },
+    "tests": [
+      "One plain sentence, past tense, under sixty characters. A stranger sees the giver, receiver and gift at once.",
+      "Nobody is dead, robbed, sacked or seriously ill. No real people, brands or place names.",
+      "It feels like a gift someone could actually hand over, followed by a problem someone could politely hide.",
+      "It names a giver, a receiver and a specific gift with one awkward detail.",
+      "The defect gives the note something to apologise for without turning the card into a full story."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Thanks, Nora. Sorry the hat has declared war on my forehead.",
+    "hint": "Thank the giver, keep the gift, then apologise like it ruined your week."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the note turn the small gift problem into a personal catastrophe while keeping the thank-you true?",
+      "anchors": "0 = repeats the card with a thank-you; 1 = adds one mild complaint; 2 = gives the gift a motive, consequence or suspicious history; 3 = builds a vivid little disaster from the unwanted gift; 4 = turns a tiny defect into an outrageous personal saga while every required fact survives (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the apology make the unwanted gift funny rather than merely defective?",
+      "anchors": "0 = no joke; 1 = a faintly amusing complaint; 2 = a decent comic angle; 3 = a clear laugh; 4 = the kind of thank-you that gets read aloud and makes the giver regret having a postal address (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it fit the requested form, short, direct and recognisably an apologetic thank-you note?",
+      "anchors": "0 = not a note or missing the basic act; 1 = a bloated explanation with a thank-you stapled on; 2 = recognisable but loose or overstuffed; 3 = tight, natural and clearly apologetic; 4 = every word sounds like a polished note written by someone fleeing a family gathering (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A note PLAYS if it still shows that the receiver got the stated gift from the stated giver and is thanking that giver for it. It may add any excuse, consequence, accusation, disaster or suspicious interpretation. It fails when the giver is dropped or changed, the receiver is dropped or changed, the gift is dropped or changed, the thanks disappear, or the note says the gift was not received. It also fails when it is only a complaint, a question to the Judge, a comment about the game or an explanation instead of a note. A plain thank-you that preserves everything plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game or about the rules is itself a losing note.\n",
+    "judge_notes": [
+      "Test the first move the same way as every later move. The card is not a free pass. A plain note such as \"Thanks, Nora, for the tiny hat\" plays, but has little stretch.\n",
+      "The giver must remain the giver. \"Thanks, Nora\" works for Nora, but \"Thanks, Sam\" changes the fact and fails.\n",
+      "The receiver must remain the receiver, even if the note speaks in first person. A note written by Sam can say \"Thanks, Nora\" because the card identifies Sam as the receiver.\n",
+      "The gift must remain the gift. A hat can become a helmet, a crown or a forehead trap, but it cannot become a mug or vanish entirely.\n",
+      "The thanks must be present. \"Nora, your hat has ruined my morning\" is a complaint, not a thank-you note.\n",
+      "The note may exaggerate the consequence. A two sizes too small hat may cause a workplace evacuation, as long as the hat is still Nora's gift to Sam and Sam is thanking Nora for it.\n",
+      "Invented detail is allowed unless it overwrites a card detail. A hat can be itchy, cursed or legally questionable, but it cannot be two sizes too large when the card says too small.\n",
+      "A note that says the gift was refused, returned or never received fails because the stated gift no longer reached the receiver.\n",
+      "Judge each note on its own. The other player's note is not the standard for truth or fun.\n",
+      "Lower case, missing punctuation and informal spelling do not matter if the required thank-you and facts are clear.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Nora gave Sam a hat that was two sizes too small.",
+      "move": "Thanks, Nora. Sorry the hat has declared war on my forehead.",
+      "gates_note": "all true",
+      "mechanism": "the too-small hat becomes a hostile campaign while Sam still thanks Nora for giving it",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Leo gave Priya a loud toy.",
+      "move": "Thanks, Leo. Sorry the toy has taught my dog three new swear words.",
+      "gates_note": "all true",
+      "mechanism": "the loud toy becomes an accidental language tutor and the apology keeps the gift and giver intact",
+      "scores": {
+        "stretch": 4,
+        "funny": 4,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Mina gave Jules a mug with a cracked handle.",
+      "move": "Thanks, Mina, for the mug. Sorry it has betrayed my entire right hand.",
+      "gates_note": "all true",
+      "mechanism": "the cracked handle becomes a personal betrayal while the mug, giver and thanks remain",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Nora gave Sam a hat that was two sizes too small.",
+      "move": "Thanks, Sam, for the perfect hat. Sorry it never arrived.",
+      "gates_note": "satisfies_criterion false (the giver changes from Nora to Sam and the gift is said not to arrive)",
+      "mechanism": "the note thanks the wrong person and denies receipt of the hat",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Leo gave Priya a loud toy.",
+      "move": "Leo, why would anyone give a child this noise machine?",
+      "gates_note": "satisfies_criterion false (it is a complaint and question, with no thanks)",
+      "mechanism": "the toy survives, but the promised thank-you has been replaced by an accusation",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Reluctant Recipient",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the note must see why it scored.",
+      "Name the gift's key trouble, the hat, the noise, the cracked handle. A line that fits any present is lazy paperwork.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", or \"The host refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the note or the gift, never identity, protected traits, body, family, intelligence or spelling. The present can be humiliated. The player cannot.",
+      "Plain spoken English. No poetry, no formal apology jargon and no thesaurus parade.",
+      "On a fail, say which giver, receiver, gift or thanks went missing or got broken, using the card's words.",
+      "On a refusal, the note refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one note that would have scored. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The hat still came from Nora, and Sam still thanked her, while his forehead filed a complaint.",
+      "A loud toy teaching the dog swear words is exactly the kind of gratitude nobody can return.",
+      "The mug's cracked handle became a betrayal, but Mina still got thanked for the weapon.",
+      "Thanks, Nora, for the tiny hat. The apology is doing more work than the hat ever could.",
+      "The toy stayed loud, Priya stayed grateful, and the dog acquired vocabulary nobody ordered.",
+      "A gift can be a mug, a trap and a reason to apologise, provided Mina still gets the credit.",
+      "The note thanked Leo and blamed the toy, which is the family peacekeeping strategy we deserve.",
+      "Sam received Nora's hat, then apparently entered negotiations with his own forehead.",
+      "The cracked handle is still attached to Mina's mug, barely, like the note's remaining dignity.",
+      "A proper thank-you with a small disaster attached. The gift survives and so does the etiquette."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the hat apology works.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The host refuses: thank the giver properly.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, write a note instead.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "Wrong, the fact is missing.",
+        "why": "does not say which giver, receiver, gift or thanks went missing"
+      },
+      {
+        "text": "Nice apology.",
+        "why": "has no reason and could fit any gift"
+      },
+      {
+        "text": "A brave attempt from someone who clearly cannot receive presents.",
+        "why": "mocks the player instead of the note or gift"
+      },
+      {
+        "text": "O cursed hat, what forehead hast thou doomed?",
+        "why": "poetry instead of plain spoken commentary"
+      },
+      {
+        "text": "The gift is bad, unfortunate, tragic and extremely problematic.",
+        "why": "piles up adjectives without a picture or joke"
+      },
+      {
+        "text": "Better than the other player's thank-you.",
+        "why": "judges the pair instead of this note"
+      },
+      {
+        "text": "A premium gratitude reversal with apology architecture.",
+        "why": "formal jargon where a human would mention the mug or hat"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one unwanted gift each.",
+    "Write one apologetic thank-you note for it, under 90 characters. The House writes its own, unseen, and the host scores both.",
+    "The note must still show that the receiver got the stated gift from the stated giver and is thanking that giver for it. Drop or contradict any of that and the round is lost.",
+    "Everything else is yours to invent. Turn the gift's small problem into the biggest polite disaster you can fit. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The gift",
+    "next_opening": "The next gift",
+    "your_opening": "Your gift",
+    "compose": "Your note for {token}",
+    "compose_waiting": "Write your apology while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank card. Write the thank-you.",
+    "too_long": "Over 90 characters. A note, not a memoir.",
+    "duplicate": "That note has already been sent this match. Find another apology.",
+    "nudge": "Twice now. Thank the stated giver for the stated gift: {standing_form}."
+  },
+  "judge_out_text": "The reluctant recipient has stepped away from the stationery. Nobody sends anything until they are back. {standing_form} sits beside the cursed gift. Give it a minute.\n",
+  "opponent_prompt": "You are writing a thank-you note for a gift nobody wanted to discuss. Write one apologetic thank-you note.\nTHE FACT MUST SURVIVE. A reader who sees only your note must still know that the receiver got the stated gift from the stated giver and is thanking that giver for it. Never drop the giver, receiver, gift or thanks. Never say the gift was refused, returned or never received.\nThen make the gift responsible for a tiny personal disaster. Invent the embarrassment, the domestic crisis, the suspicious motive, the ruined morning or the legally questionable consequence. The points are for distance from the plain card while the required facts hold.\nGood: \"Thanks, Nora. Sorry the hat has declared war on my forehead.\" \"Thanks, Leo. Sorry the toy taught my dog three new swear words.\" \"Thanks, Mina, for the mug. Sorry it betrayed my entire right hand.\"\nBad: \"Nice hat\" (the thanks and giver are unclear). \"Thanks, Sam, for the hat\" (the giver changed). \"Sorry the hat never arrived\" (receipt is denied). \"Leo, why send this noise?\" (a complaint, not a thank-you).\nWrite like a short human note, direct and apologetic. Under 90 characters. Do not use a colon or a dash. Do not explain the joke. Keep the required gift detail intact, though you may exaggerate what it caused.\nVary the disaster from round to round: bodily inconvenience, social embarrassment, household chaos, public panic or a suspicious accusation. Never use the same shape twice in a match.\nNo quotation marks around the note. Reply with the note only.\n",
+  "medallions": false,
+  "default_move": "Thanks for the gift. Sorry it has made everything worse"
+}

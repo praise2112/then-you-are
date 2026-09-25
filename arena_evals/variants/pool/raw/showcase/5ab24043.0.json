@@ -1,0 +1,276 @@
+{
+  "slug": "loophole-lottery",
+  "title": "Loophole Lottery",
+  "tagline": "Keep the law. Break everything around it.",
+  "emblem": "⚖️",
+  "accent": "#6b4ca1",
+  "premise": "Three rounds. Each round deals one painfully dull law from a real country. Both players write a loophole claim for it. The law must remain true inside the claim: a reader who knows only the claim can still tell what the rule says. Everything around it is fair game, black markets, bureaucratic scams, bizarre industries, furious lawyers and consequences nobody intended. The Judge scores how far each claim travels while the law stays on the books.\n",
+  "seed_pool": [
+    {
+      "opening_token": "In Japan, cars must have a safety inspection.",
+      "opening_emoji": "🚗",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "In Norway, shops must offer receipts.",
+      "opening_emoji": "🧾",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "In Germany, landlords must provide heating in rented homes.",
+      "opening_emoji": "🏠",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 15,
+    "axes": {
+      "country": [
+        "Japan",
+        "Norway",
+        "Germany",
+        "France",
+        "Canada",
+        "Australia",
+        "Spain",
+        "South Korea"
+      ],
+      "subject": [
+        "shops",
+        "drivers",
+        "landlords",
+        "restaurants",
+        "employers",
+        "schools",
+        "hotels",
+        "airlines"
+      ],
+      "rule": [
+        "must offer receipts",
+        "must provide heating",
+        "must display prices",
+        "must inspect vehicles",
+        "must provide breaks",
+        "must label allergens",
+        "must keep records",
+        "must give written notice"
+      ]
+    },
+    "tests": [
+      "One sentence, present tense, under sixty characters. A stranger knows who must do what.",
+      "It names a real country but no politician, company, private citizen or invented ministry.",
+      "It describes a plausible ordinary law, not a criminal ban, a constitutional principle or a joke dressed as legislation.",
+      "The rule is specific enough to exploit, with a duty, object or condition a loophole can twist.",
+      "It is dull enough to make a lawyer yawn, but clear enough that a reader can tell when a move has broken it."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "RECEIPT LAW FUELS BLACK MARKET FOR EMPTY BAGS",
+    "hint": "One loophole claim. Keep the law true, then exploit the wording."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the claim travel from the ordinary law into a clever legal loophole?",
+      "anchors": "0 = repeats the law with no twist; 1 = adds one obvious consequence; 2 = finds a usable loophole or odd incentive; 3 = builds a vivid scheme, market or scandal from the wording; 4 = turns a tiny rule into an irresistible legal nightmare while the rule stays true (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the loophole make the law look accidentally ridiculous?",
+      "anchors": "0 = no comic spark; 1 = mildly amusing; 2 = a good grin; 3 = a clear laugh; 4 = the sort of legal nonsense people repeat at dinner (rare). Smart absurdity beats random chaos.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it read like a tight claim about a legal absurdity rather than an explanation?",
+      "anchors": "0 = a paragraph, question or legal essay; 1 = a claim buried under padding; 2 = recognisable but loose; 3 = compact, vivid and immediately legible; 4 = a perfect scandalous headline with the loophole visible at once (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A claim PLAYS if a reader who knows only the claim can still read the card's law as true. It may invent cases, motives, loopholes, businesses, punishments and consequences. It fails when the law is dropped, contradicted or made false, or when the move is not a loophole claim but a comment, a question to the Judge or a sentence about the game. A dull restatement of the law plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game or about the rules is itself a losing claim.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the law still be true given this claim? Do not ask whether the loophole is likely, ethical, officially recognised or good policy.\n",
+      "The first move must keep the card's duty visible. \"JAPAN INSPECTION INDUSTRY DEMANDS ANNUAL CAR DISASSEMBLY\" passes because cars still undergo safety inspection. A claim that says cars skip inspection fails.\n",
+      "Invented consequences are allowed. A black market, a fake receipt, a legal cult or a billionaire's scheme can all play if the card's rule survives underneath.\n",
+      "If the card says shops must offer receipts, \"RECEIPT LAW ENDS CASH SALES\" fails if shops no longer offer receipts. \"SHOPS SELL RECEIPTS BEFORE GOODS\" can pass if the offer still happens.\n",
+      "If the card says cars must have a safety inspection, \"DRIVERS BUY INSPECTIONS FOR BICYCLES\" fails if the move quietly abandons cars. The subject and duty must remain intact.\n",
+      "If the card says landlords must provide heating, \"TENANTS RENT THE RADIATORS BACK TO LANDLORDS\" passes only if rented homes still receive heating. A claim saying landlords remove all heating fails.\n",
+      "Both players answer the same law. Judge each claim on its own; the other player's claim is not the standard.\n",
+      "Score stretch by the quality of the loophole, not by shouting. LEGAL CHAOS adds noise. A precise loophole that creates a strange business beats three empty words about scandal.\n",
+      "Lower case, capitals, missing punctuation and imperfect legal terminology do not matter. Judge the claim's meaning.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "In Norway, shops must offer receipts.",
+      "move": "RECEIPT LAW FUELS BLACK MARKET FOR PROOF YOU BOUGHT NOTHING",
+      "gates_note": "all true",
+      "mechanism": "shops still offer receipts, while the receipt itself becomes a product for people proving an empty purchase",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "In Japan, cars must have a safety inspection.",
+      "move": "JAPAN INSPECTION INDUSTRY DEMANDS ANNUAL CAR DISASSEMBLY",
+      "gates_note": "all true",
+      "mechanism": "the safety inspection remains, but the wording supports an absurd industry that dismantles cars to perform it",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "In Germany, landlords must provide heating in rented homes.",
+      "move": "LANDLORDS RENT OUT HEATED HOUSES, THEN CHARGE FOR THE HEAT",
+      "gates_note": "all true",
+      "mechanism": "the homes still receive heating, while the duty becomes a fresh fee stream for landlords",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "In Norway, shops must offer receipts.",
+      "move": "NORWAY BANS RECEIPTS, CASHIERS SENT TO PRISON",
+      "gates_note": "satisfies_criterion false, the move says the required receipts are banned",
+      "mechanism": "none, it replaces the law with its opposite",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "In Japan, cars must have a safety inspection.",
+      "move": "JAPAN'S CAR INSPECTION LAW CREATES A BOOMING BICYCLE ECONOMY",
+      "gates_note": "satisfies_criterion false, the move gives no way for the car inspection duty to remain relevant",
+      "mechanism": "the bicycle economy is invented, but the card's car duty has vanished",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Loophole Clerk",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the law and the claim must see why it scored.",
+      "Name the loophole's key object, the receipt, radiator, inspection or empty bag. Generic praise is legal filler.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", or \"The Clerk refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the claim, the bureaucracy or the imaginary scam, never the player's identity, body, family or intelligence.",
+      "Plain spoken English. Adult innuendo and mild profanity are fine when they sharpen the joke, not when they replace it.",
+      "On a fail, say which law, duty, subject or condition went missing or got broken, in the words of the card.",
+      "On a refusal, the claim refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one claim that would have scored. It ends on a law, loophole or action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The receipt survived, then got a black market and a fake alibi. Norway has paperwork with criminal ambition.",
+      "Cars still get inspected. Japan has simply discovered that a safety check can cosplay as an auto dismantling cult.",
+      "The heaters are on, and the landlord has found a second rent hiding inside the first.",
+      "A receipt for nothing is still a receipt, which is how empty shopping became a cottage industry.",
+      "The law asked for a car inspection and received an annual strip search for vehicles.",
+      "The radiator is warm, the tenant is poorer, and the loophole has learned basic accounting.",
+      "The shop offers the receipt, then apparently sells the receipt back. Capitalism has found the till drawer.",
+      "The inspection stays on the books. The cars merely fear the appointment more than the owners do.",
+      "A bicycle boom is not a car loophole. Put the inspected car back in the room.",
+      "Banning the receipt breaks the law, however dramatically the cashier may enjoy the prison sentence."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a delicious loophole.",
+        "why": "opens with a status word and explains nothing"
+      },
+      {
+        "text": "The Clerk refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Wrong, the law is missing.",
+        "why": "does not say which duty disappeared"
+      },
+      {
+        "text": "Great legal creativity.",
+        "why": "generic praise that could fit any move"
+      },
+      {
+        "text": "You clearly do not understand how countries work.",
+        "why": "mocks the player and not the claim"
+      },
+      {
+        "text": "The statute weeps beneath the moon, betrayed by its own wording.",
+        "why": "poetry where a plain legal joke was needed"
+      },
+      {
+        "text": "Huge, insane, shocking, outrageous loophole.",
+        "why": "four empty adjectives wearing a fake moustache"
+      },
+      {
+        "text": "A bold jurisprudential circumvention of regulatory architecture.",
+        "why": "legal jargon, padding and no picture"
+      },
+      {
+        "text": "Better than the other player's loophole.",
+        "why": "judges the pair instead of this claim"
+      },
+      {
+        "text": "The law remains true, and therefore this is acceptable.",
+        "why": "technically correct, dramatically dead"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one plausible law from a real country each.",
+    "Write one loophole claim for it, under 90 characters. The House writes its own, unseen, and the Judge scores both.",
+    "The law must still be true to someone who reads only your claim. Drop it, reverse it or replace its subject and the round is lost.",
+    "Everything around the law is yours to invent. The further you travel into a clever loophole while the law holds, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The law",
+    "next_opening": "The next law",
+    "your_opening": "Your law",
+    "compose": "Your loophole for {token}",
+    "compose_waiting": "Draft your loophole while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty statute book. Write the loophole.",
+    "too_long": "Over 90 characters. A loophole claim, not a legal memoir.",
+    "duplicate": "That loophole has already been filed this match. Find another way around it.",
+    "nudge": "Twice now. Keep the law true and exploit one visible word: {standing_form}."
+  },
+  "judge_out_text": "The Loophole Clerk has stepped out. Nobody exploits the statute until they return. {standing_form} sits in the file. Give it a minute.\n",
+  "opponent_prompt": "You are a sharp legal clerk with a dull law and an unhealthy interest in loopholes. Write one\nloophole claim.\nTHE LAW MUST SURVIVE. A reader who sees only your claim must still be able to read the card's\nlaw as true. Keep its country, subject and duty intact. Never quietly reverse the rule or\nreplace the object it governs.\nThen exploit the wording. Invent the market, motive, scam, bureaucracy, punishment or\nconsequence. The points are for distance from the ordinary law while the law remains true.\nGood: \"RECEIPT LAW FUELS BLACK MARKET FOR PROOF YOU BOUGHT NOTHING\" for shops offering\nreceipts. \"JAPAN'S INSPECTION LAW DEMANDS ANNUAL CAR DISASSEMBLY\" for cars requiring a\nsafety inspection. \"LANDLORDS CHARGE RENT ON THE HEAT THEY MUST PROVIDE\" for heated rented\nhomes.\nBad: \"NORWAY BANS RECEIPTS\" because the rule is reversed. \"BICYCLES RULE JAPAN'S INSPECTION\nECONOMY\" because the cars vanished. \"LANDLORDS REMOVE HEATING\" because the required heat\nis gone. A plain repeat of the law plays but scores near zero on stretch.\nUse short plain words and a strong claim. Under 90 characters. Capitals are fine but not\nrequired. Do not use a colon or a dash. Do not explain the joke.\nVary the angle from round to round: a black market, a fee, a cover-up, a new job, a legal\nfight, a bizarre consumer product. Never use the same shape twice in a match.\nNo quotation marks around the claim. Reply with the loophole claim only.\n",
+  "medallions": false,
+  "default_move": "LAWYERS FIND PROFIT HIDING IN ORDINARY PAPERWORK"
+}

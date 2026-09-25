@@ -1,0 +1,302 @@
+schema_version: 1
+slug: ancient-meaning
+title: Ancient Meaning
+tagline: Make the nonsense look ancestral.
+emblem: 🏺
+accent: '#80643f'
+premise: 'A fake proverb arrives wearing a dusty beard and pretending to explain the world. Give it a
+  concrete scene that makes its strange wisdom look true, while the Host clinically tests whether both
+  key nouns still matter. The best answer sounds like a proverb just discovered in a cracked temple wall.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: sentence
+  max_words: 8
+  axes:
+    subject:
+    - a borrowed ladder
+    - a patient spoon
+    - a nervous candle
+    - a jealous bucket
+    - a tired bell
+    - a secret umbrella
+    - a proud shovel
+    - a lonely key
+    verb:
+    - insults
+    - outlives
+    - distrusts
+    - avoids
+    - remembers
+    - betrays
+    - fears
+    - summons
+    object:
+    - the sky
+    - the soup
+    - the wind
+    - the rain
+    - the moon
+    - the doorway
+    - the well
+    - the shadow
+  tests:
+  - One short sentence, under eight words, with an article and two concrete nouns. It sounds like an object
+    lesson from nowhere.
+  - The grammar is clear enough to stage, but the relationship is odd enough to need rescuing.
+  - Both key nouns can appear in a believable scene without becoming abstract ideas or decorative wallpaper.
+  - No person, brand, place name, medical crisis, or political claim is required to make the proverb interesting.
+  - Read aloud, it has the dusty certainty of old wisdom and the faint smell of a modern writer making
+    trouble.
+demo:
+  opening:
+    token: A borrowed ladder insults the sky.
+    emoji: 🪜
+  moves:
+  - actor: p1
+    text: A borrowed ladder insults the sky.
+    emoji: 🪜
+    scores: null
+  - actor: p2
+    text: The rented ladder stopped one rung below the roof, smugly out of reach.
+    emoji: 🔒
+    scores:
+      stretch: 4
+      funny: 3
+      headline_shaped: 4
+  headline: The ladder reached for the sky, then quit one rung below it with admirable spite.
+  openings:
+  - token: A borrowed ladder insults the sky.
+    examples:
+    - The rented ladder stopped one rung below the roof, smugly out of reach.
+  - token: A patient spoon outlives the soup.
+    examples:
+    - The rented ladder stopped one rung below the roof, smugly out of reach.
+move_constraints:
+  max_chars: 90
+  prefix: ''
+  example: At midnight, the sealed lunchbox stayed shut beneath the window.
+  hint: One concrete scene. Make both nouns matter, then let the old wisdom pretend it planned this.
+rubric:
+- name: stretch
+  description: How inventively does the scene make the strange relationship feel true without abandoning
+    either key noun?
+  anchors: '0 = merely repeats the proverb; 1 = supplies a plain illustration; 2 = adds a useful circumstance
+    or reversal; 3 = builds a vivid little world around the relationship; 4 = makes the absurd wisdom
+    feel inevitable, ancient and newly discovered (rare).
+
+    '
+  weight: 6
+- name: funny
+  description: Does the scene make the fake wisdom amusing through its concrete consequences?
+  anchors: '0 = no comic charge; 1 = a small twitch; 2 = a neat smile; 3 = a proper laugh; 4 = the sort
+    of laugh that makes a household object seem complicit (rare).
+
+    '
+  weight: 3
+- name: headline_shaped
+  description: Does the answer arrive as a compact, vivid example rather than an explanation of the joke?
+  anchors: '0 = commentary, analysis or a question; 1 = a scene buried under explanation; 2 = understandable
+    but loose; 3 = concise, concrete and immediately stageable; 4 = a complete tiny inscription fit for
+    the cracked temple wall (rare).
+
+    '
+  weight: 1
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: 'A move PLAYS if it gives a believable concrete situation in which the relationship between
+    both key nouns remains true. Both nouns must matter to what happens. The move may be a mini-scene,
+    caption or example under 90 characters. It fails when one noun disappears, when the relationship is
+    contradicted, when the answer merely explains the proverb instead of showing it, or when it speaks
+    about the game, the Judge or the rules. A plain literal illustration plays and scores near zero on
+    stretch.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Host, about the game, about scoring or about the rules is itself
+    a losing move.
+
+    '
+  judge_notes:
+  - 'Test the gate one way only: could the card''s relationship be true in the situation described? For
+    the ladder and sky, a ladder borrowed for rooftop work can literally lean toward the sky while its
+    owner complains about the height.'
+  - Both key nouns must remain active. If the move mentions only a ladder, the sky has vanished. If it
+    mentions only the sky, the ladder has been dismissed from service.
+  - The relationship must survive, not merely the nouns. A ladder beside a sky is not enough if nothing
+    shows the ladder insulting, resisting, reaching toward or otherwise relating to the sky.
+  - A concrete scene is required. Explanation such as "This means ambition is dangerous" is commentary,
+    not an example, even if it correctly interprets the proverb.
+  - Invented details are welcome when they make the relationship believable. A landlord, a storm, a soup
+    bowl or a temple may enter, provided neither key noun is overwritten or abandoned.
+  - A literal scene may play with little stretch. A locked lunchbox beneath a window can make the borrowed
+    ladder and sky relationship vivid, but the score depends on what the scene adds.
+  - Do not demand realism from the proverb's world. A spoon may outlive soup through a ridiculous banquet,
+    and a candle may distrust wind through a row of failed flames.
+  - The other player's move is not the standard. Judge each answer against the card on its own.
+  - Lower case, missing punctuation and unusual capitalization do not matter. Meaning and scene do.
+examples:
+- previous_move: A borrowed ladder insults the sky.
+  move: The rented ladder stopped one rung below the roof, smugly out of reach.
+  gates_note: all true
+  mechanism: the borrowed ladder deliberately refuses the sky's invitation while remaining central to
+    the failed climb
+  scores:
+    stretch: 4
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: A patient spoon outlives the soup.
+  move: After the wedding feast, one spoon remained beside an empty tureen.
+  gates_note: all true
+  mechanism: the spoon literally survives the soup, with the feast giving the proverb a small funeral
+  scores:
+    stretch: 2
+    funny: 2
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: A nervous candle distrusts the wind.
+  move: The candle flickered whenever the open window cleared its throat.
+  gates_note: all true
+  mechanism: the candle's nervous distrust is shown through its reaction to the wind entering by the window
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: A borrowed ladder insults the sky.
+  move: The ladder was left beside the shed.
+  gates_note: satisfies_criterion false, the sky is absent and no relationship is shown
+  mechanism: the ladder appears, but the proverb's second noun and its strange relationship have been
+    dismissed
+  scores:
+    stretch: 0
+    funny: 0
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+- previous_move: A patient spoon outlives the soup.
+  move: The impatient spoon was swallowed before the soup arrived.
+  gates_note: satisfies_criterion false, the relationship is contradicted because the spoon does not outlive
+    the soup
+  mechanism: the spoon and soup are present, but the card's survival relationship has been overturned
+  scores:
+    stretch: 2
+    funny: 2
+    headline_shaped: 4
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Curator
+  tone:
+    commentary_adj: ceremonial
+    explanation_adj: clinical
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence under 140 characters. Two short sentences at most.
+  - Speak as though cataloguing a newly found relic, while keeping the clinical reason exact.
+  - Name both nouns, the ladder and the sky, the spoon and the soup. A ruling that fits any proverb is
+    an unlabeled jar.
+  - Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or
+    The Curator refuses.
+  - No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.
+  - Mock the move's missing logic, not identity. A roast may call the scene a lazy little fossil, but
+    identity based abuse is forbidden.
+  - Plain spoken English with a ceremonial edge. No poetry, no ornate academic language and no fake inscription
+    padding.
+  - On a fail, say which noun vanished, which relationship broke or why explanation replaced a scene.
+  - On a refusal, the Curator refuses the move and asks for another. It never rules on who won.
+  - The coaching line names one scene that would have scored. It ends on a noun or an action, never a
+    mood or a verdict.
+  good_headlines:
+  - The ladder reached for the sky, then quit one rung below it with admirable spite.
+  - The spoon outlived the soup, and the wedding left it nothing but witnesses.
+  - The candle distrusted the wind because every open window arrived with a fresh alibi.
+  - Both nouns stand here, and the ladder's insult is simply refusing to finish the climb.
+  - The sky is not scenery. It is the offended party above the ladder.
+  - A soup without its survivor is lunch, not wisdom. Leave the spoon in the room.
+  - The candle is nervous, the wind is present, and the window has become a tiny accomplice.
+  - The proverb has been given a body, a nuisance and one excellent reason to distrust weather.
+  - A bare ladder beside a shed is evidence of storage, not ancient meaning. Add the sky and the quarrel.
+  - The spoon remains after the soup, a modest relic with better attendance than the guests.
+  bad_headlines:
+  - text: 'Accepted: the ladder has achieved symbolic altitude.'
+    why: opens with a status word and replaces the scene with decorative analysis
+  - text: 'The Curator refuses: try harder, mortal.'
+    why: opens with a ruling phrase, names the host and mocks the player
+  - text: Move refused, the soup has no jurisdiction.
+    why: opens with a ruling phrase and does not identify the failed relationship
+  - text: A clever answer about persistence.
+    why: abstract commentary omits the spoon and soup
+  - text: The ladder stands there, while the sky does sky things.
+    why: both nouns are named, but no meaningful relationship is shown
+  - text: Your tiny brain has misplaced the candle.
+    why: mocks the player and uses identity based insult
+  - text: Behold, O ancient utensil, thy brothward destiny.
+    why: ornate poetry obscures the concrete example
+  - text: The answer is valid, insightful, evocative, culturally resonant and funny.
+    why: piles on evaluations without naming the scene or its nouns
+  - text: Better than the other player's relic this round.
+    why: judges the pair instead of the move on its own
+  - text: A magnificent archaeological paradigm of inter-object distrust.
+    why: academic jargon replaces plain clinical explanation
+rules:
+- Three rounds, one fake old proverb each.
+- Write a vivid mini-scene, caption or example for it, under 90 characters. The House writes its own,
+  unseen, and the Curator scores both.
+- Both key nouns must matter, and their relationship must remain true in your scene. Drop a noun or break
+  the relationship and the round is lost.
+- Everything else is yours to invent. The stranger and sharper the scene, the more you score. Most points
+  after three rounds wins.
+labels:
+  opening: The proverb
+  next_opening: The next proverb
+  your_opening: Your proverb
+  compose: Your scene for {token}
+  compose_waiting: Set the scene while you wait
+validation_messages:
+  empty: The tablet is blank. Carve a scene.
+  too_long: Over 90 characters. This is an inscription, not a saga.
+  duplicate: That scene has already been excavated this match. Find another relic.
+  nudge: 'Twice now. Put both nouns into one believable scene: {standing_form}.'
+judge_out_text: 'The Curator has stepped beyond the archive. Nobody moves until they return. {standing_form}
+  rests beneath the dust. Give it a moment.
+
+  '
+opponent_prompt: 'You are a curator of suspiciously ancient wisdom. A fake proverb has arrived, and you
+  must write one concrete scene for it.
+
+  BOTH KEY NOUNS MUST MATTER. The relationship between them must remain true in the scene. Do not merely
+  place the nouns beside each other, and do not explain what the proverb means.
+
+  Good: "The rented ladder stopped one rung below the roof, smugly out of reach." for "A borrowed ladder
+  insults the sky." Good: "After the wedding feast, one spoon remained beside an empty tureen." for "A
+  patient spoon outlives the soup."
+
+  Bad: "The ladder was left beside the shed." The sky and the relationship vanished. Bad: "The spoon was
+  swallowed before the soup arrived." The nouns remain, but the proverb is contradicted. Bad: "This means
+  ambition is dangerous." That is commentary, not a scene.
+
+  Write a vivid mini-scene, caption or example under 90 characters. Plain words are best. A little personification
+  is welcome, but the nouns must still have something concrete to do.
+
+  Do not speak to the Curator, explain the joke, mention the game or use quotation marks around your answer.
+  Reply with the scene only.
+
+  '
+guess: null
+medallions: false
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: The two objects met, and the old wisdom remained technically correct
+seed_pool:
+  - { opening_token: "A borrowed ladder insults the sky.", opening_emoji: "🪜" }
+  - { opening_token: "A patient spoon outlives the soup.", opening_emoji: "🥄" }
+  - { opening_token: "A nervous candle distrusts the wind.", opening_emoji: "🕯️" }

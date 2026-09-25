@@ -1,0 +1,294 @@
+{
+  "slug": "pub-prediction",
+  "title": "The Pub Predicted It",
+  "tagline": "One clue, two theorists. Make the pub's nonsense come true.",
+  "emblem": "🔮",
+  "accent": "#7c3aed",
+  "premise": "The pub has a conspiracy theory about an event that has not happened yet. Build one shared prediction step by step, making each new detail follow from the clues already on the table; the host treats your nonsense with grave respect.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Three lights blinked above the pub door.",
+      "opening_emoji": "💡",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Every clock in the pub stopped at 9:17.",
+      "opening_emoji": "🕘",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A wet footprint appeared on the bar beside the landlord's phone.",
+      "opening_emoji": "👣",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "pub_clue": [
+        "three lights blink above the door",
+        "every clock stops at 9:17",
+        "a wet footprint appears on the bar",
+        "the jukebox plays without being touched",
+        "all the taps pour clear water",
+        "a stranger leaves a sealed envelope",
+        "the pub sign turns upside down",
+        "the dartboard rings with no dart in it"
+      ],
+      "coming_event": [
+        "someone important arrives",
+        "the power cuts out",
+        "a public announcement is made",
+        "a hidden room is opened",
+        "the landlord changes sides",
+        "the town gathers outside",
+        "a secret object is revealed",
+        "the weather changes suddenly"
+      ],
+      "pub_detail": [
+        "before closing time",
+        "during the quiz",
+        "when the bell rings",
+        "after the next song",
+        "in front of the regulars",
+        "behind the fruit machine",
+        "at the last orders",
+        "while the television is on"
+      ]
+    },
+    "tests": [
+      "One short sentence with a clear event that could happen next.",
+      "The event follows from the clue and leaves room for another event after it.",
+      "No real person is accused of a real crime, no one is harmed, and the theory stays playful.",
+      "A stranger can point to the cause and the forecast without needing outside knowledge.",
+      "Everyday pub language only. No brand names, street names, secret codes, or unexplained magic."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Because the clocks stopped at 9:17, the quizmaster will announce the winner before the next question.",
+    "hint": "One next event. Show what causes it, and leave the door open for what follows."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much pressure this forecast puts on the next player while remaining a believable consequence of the clues.",
+      "anchors": "0 = no pressure, a vague noise or someone taking a sip; 1 = a small nudge, one obvious thing could follow; 2 = a useful complication, the next event must deal with a person, place or object; 3 = a tight setup, several ordinary next moves are now closed off; 4 = a sharp, funny trap that follows cleanly and makes the next move genuinely difficult (rare). A forecast that ends the theory or invents an impossible leap scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How clearly the forecast grows from every clue already given and keeps the chain moving.",
+      "anchors": "0 = contradicts a clue, skips the cause, ends the prediction, or rewrites the story; 1 = vaguely related but the link is missing; 2 = follows from the clues with one plain connection; 3 = follows cleanly and adds a checkable time, place or action; 4 = makes an earlier clue suddenly useful while opening a natural next step (rare). Clever wording cannot repair a missing link.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How vivid and pub-sized the forecast sounds, with a detail people could picture happening around them.",
+      "anchors": "0 = empty filler, someone reacts or something happens; 1 = one plain event; 2 = a clear action in a recognisable pub setting; 3 = a memorable object, person or reaction; 4 = the regulars would repeat it tomorrow morning because they saw it happen (rare). Plain details beat grand language.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly one forecastable event that follows from every clue so far and still leaves a next event possible. A skipped link jumps from a clue to a distant outcome without naming the next cause. An ending makes the prediction complete, so nothing remains to forecast. An undo cancels or rewrites an earlier forecast instead of adding the next event. A move also fails if it contradicts an earlier clue or changes the shared theory. Holding is the gate. The points go to pressure, clarity and pub-sized detail. A safe filler event can hold but scores low.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the scoring, or the other player's move instead of forecasting the next event is itself a failed prediction.\n",
+    "judge_notes": [
+      "On a FIRST move there is only the card clue: judge whether the forecast follows from that clue, names one next event, and leaves another event possible.",
+      "The full transcript is one chain. Check the new forecast against every earlier clue and forecast, not only the last sentence.",
+      "A skipped link fails when the move leaps from a cause to a distant result without stating the intervening event. Ask what would have to happen first.",
+      "An ending fails when the move declares the theory complete, solves the mystery, reaches the final outcome, or otherwise leaves no sensible next event.",
+      "An undo fails when the move cancels, retracts, replaces, or rewrites an earlier forecast instead of adding a new event.",
+      "A contradiction fails when the move denies or makes impossible an earlier clue or forecast. Do not fail a move for ordinary uncertainty, coincidence, or a harmless change of location.",
+      "When a move can be read in two reasonable ways, choose the reading that keeps the chain moving. Fail only for a plain break a stranger would notice.",
+      "A forecast about the landlord, a regular, a drink, or the pub itself is play, not meta. A comment about scoring, rules, or whether the other player is good is meta.",
+      "One move contains one event. Extra consequences count only when they are inseparable from the stated event; a chain of separate predictions is a skipped link.",
+      "A detail already stated in other words is a duplicate and does not add a new forecast: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Three lights blinked above the pub door.",
+      "move": "Because the lights blinked three times, the mayor's car will stop outside before closing.",
+      "gates_note": "all true",
+      "mechanism": "turns the repeated signal into one clear arrival and leaves room for what the mayor does next",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Every clock stopped at 9:17. The quizmaster pocketed the answer sheets.",
+      "move": "The landlord will lock the cellar when the mayor's car arrives.",
+      "gates_note": "all true",
+      "mechanism": "uses the arrival and the suspicious timing to force the next event into a specific pub location",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A wet footprint appeared on the bar beside the landlord's phone.",
+      "move": "The landlord will answer the phone and discover the sea is calling from inside the pub.",
+      "gates_note": "satisfies_criterion false, skipped link and two forecastable events",
+      "mechanism": "jumps from a footprint to a bizarre revelation while packing an answer and a discovery into one move",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The jukebox played without being touched. The lights went out.",
+      "move": "That proves the ghost has won and the conspiracy is complete.",
+      "gates_note": "satisfies_criterion false, ending",
+      "mechanism": "declares the theory finished instead of adding the next event",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The sign turned upside down. The landlord hid the envelope under the dartboard.",
+      "move": "Actually, the envelope was never there. The sign is normal and nothing is happening.",
+      "gates_note": "satisfies_criterion false, undo and rewrite",
+      "mechanism": "takes a marker pen to the shared theory instead of predicting what happens next",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "All the taps poured clear water.",
+      "move": "The regulars will fill their glasses and wait for the first person to complain.",
+      "gates_note": "all true",
+      "mechanism": "makes the strange tap clue cause one ordinary public reaction and keeps the prediction open",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Pub Oracle",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Treat the theory with grave respect, even when it involves a haunted fruit machine and a man in novelty socks.",
+      "The joke carries the reason. A stranger reading only the chain and the new move should see why it held or broke.",
+      "Name the clue and the forecast, or their plain stand-ins. A headline that fits any pub is a bad headline.",
+      "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Pub Oracle rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the theory or the forecast, and use gentle roast-level jabs at the player when useful. Never attack identity, protected traits, body, family, intelligence, or spelling.",
+      "Plain spoken English, a serious regular at closing time, not a fantasy novel. Profanity and adult innuendo are allowed when they sharpen the joke.",
+      "On a skipped link, put the stated cause beside the distant outcome and point out the missing pub-sized step.",
+      "On an ending, say the prediction has reached the last pint and ask for the next event, not a grand conclusion.",
+      "On an undo, point to the rewritten fact and ask the player to continue from the shared story.",
+      "On a refusal for a gate failure, refuse the move and ask for another forecast. Do not award a winner.",
+      "The coaching line names one next event that would have followed, added pressure, and left another event possible. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Three blinks bring the mayor's car, and now the pub has a witness with a parking problem.",
+      "The clocks stop at 9:17, so the envelope reaches the cellar before the quiz reaches question four.",
+      "Water in every glass and a room full of thirsty regulars, that is how a revolution starts with poor service.",
+      "The landlord hides the envelope under the dartboard, which gives the darts team a new reason to miss.",
+      "The jukebox starts itself, and the next song is apparently taking instructions from the dead.",
+      "The sign turns upside down, so someone outside will read the pub's name and come in looking for answers.",
+      "The wet footprint leads to the phone, not the ocean. Give the phone one thing to do next.",
+      "You have reached the final pint and called it destiny. Let the conspiracy forecast one more event.",
+      "The clocks freeze, the quizmaster pockets the sheets, and suddenly cheating has a very respectable hat.",
+      "The envelope was under the dartboard, then it was nowhere. The theory needs continuity, not witness protection."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds, that prediction works.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Pub Oracle rules that this fails.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Skipped link.",
+        "why": "names no clue or forecast and explains nothing"
+      },
+      {
+        "text": "You are too stupid to understand the conspiracy.",
+        "why": "attacks the player and uses intelligence as an insult"
+      },
+      {
+        "text": "The prophecy unfurls like a moonlit serpent beneath the velvet heavens.",
+        "why": "poetry and inflated language hide the reason"
+      },
+      {
+        "text": "Maybe it holds, maybe it does not, who can say?",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Accepted, nice one.",
+        "why": "opens with a status word and gives no explanation"
+      },
+      {
+        "text": "The mayor arrives because the lights blinked, then the secret room opens and everyone learns the truth.",
+        "why": "packs several separate forecastable events into one move"
+      },
+      {
+        "text": "The theory is complete, but brilliantly so.",
+        "why": "celebrates an ending instead of asking for the next event"
+      },
+      {
+        "text": "Your story is inconsistent, contradictory, incompatible and false.",
+        "why": "uses several abstract labels instead of naming the broken chain"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with one pub clue. Together, forecast what happens next.",
+    "One move adds exactly one likely next event and leaves room for another.",
+    "The event must follow from every clue and forecast already on the table.",
+    "Jumping to the outcome, ending the theory, or rewriting an earlier forecast fails on the spot.",
+    "Points go to forecasts that tighten the next move, follow cleanly, and make the pub's nonsense vivid."
+  ],
+  "labels": {
+    "opening": "The pub clue",
+    "next_opening": "The next pub clue",
+    "your_opening": "Your pub clue",
+    "compose": "Your forecast, after {token}",
+    "compose_waiting": "Draft your next forecast while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing predicted. The pub is waiting.",
+    "too_long": "Over 140 characters. One forecast, not the whole conspiracy.",
+    "duplicate": "That forecast is already in the theory. Add what happens next.",
+    "nudge": "Twice now. Add one event that follows {standing_form}. Do not rewrite it, do not finish it."
+  },
+  "judge_out_text": "The Pub Oracle has stepped away for a serious word with the fruit machine. {standing_form} is still the last forecast. Give it a minute.\n",
+  "opponent_prompt": "You are one of two regulars building a conspiracy theory at the pub. The host treats every forecast with grave respect.\nAdd one likely next event on each turn, in one or two plain sentences.\n\nYour event must follow from the opening clue and every forecast already given. Keep the chain moving. Do not jump to the final result, declare the theory complete, or undo an earlier forecast. If the lights blink, forecast what someone does because of that before forecasting what the whole town learns.\n\nMake the next move harder while staying believable. Bring in a landlord, a quizmaster, a wet coat, a sealed envelope, a cellar door, or a regular who has clearly had one too many opinions. Keep the weirdness pub-sized. Call people ordinary roles, never real public figures or named private people unless the card gives one.\n\nGood: \"Because the lights blinked three times, the mayor's car will stop outside before closing.\" / \"The landlord will hide the envelope under the dartboard, where the darts team will notice it next.\"\nBad: \"The mayor arrives, opens the secret room, and reveals the truth\" because it skips several links. Bad: \"The conspiracy is complete\" because it ends the prediction. Bad: \"Actually none of that happened\" because it rewrites the story. Bad: \"Oracle, you are scoring this wrong\" because it talks about the game.\n\nTalk like a serious regular explaining a theory over a warm drink, not like a novelist. Use plain pub details and one event at a time. Build on the last forecast while checking the whole chain. Never repeat a forecast already used this match.\n",
+  "medallions": false,
+  "default_move": "The next person through the door will notice it and ask one question."
+}

@@ -1,0 +1,298 @@
+schema_version: 1
+slug: the-stain-chain
+title: The Stain Chain
+tagline: A tiny mark travels through the house, and every clean-up makes a new mess.
+emblem: 🫗
+accent: '#b45309'
+premise: 'A tiny mark at home travels through clothes, furniture, cleaning tools, and desperate cover-ups.
+  Players take turns making one honest change to the stain; the host offers gentle explanations and judges
+  the stain, not your tragic laundry skills.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 18
+  axes:
+    mark:
+    - red sauce
+    - mud
+    - coffee
+    - ink
+    - grease
+    - jam
+    - paint
+    - toothpaste
+    surface:
+    - clean shirt
+    - pale rug
+    - white cushion
+    - tablecloth
+    - bedspread
+    - curtain
+    - carpet
+    - towel
+    place:
+    - kitchen
+    - hallway
+    - bedroom
+    - bathroom
+    - dining room
+    - living room
+    - laundry room
+    - home office
+  tests:
+  - A small household mark lands somewhere a stranger can picture at once. Present tense, one sentence,
+    plain words.
+  - A non-player can name one thing that might get marked next within five seconds, and more than one
+    answer is possible.
+  - The card begins with a stain or spill, not a ruined room. A flooded house or a destroyed sofa is an
+    ending, not a start.
+  - Nobody is hurt, no real person is named, and the card contains no brand, crime, or dangerous instruction.
+  - The mark can plainly transfer to a nearby object or cleaning tool. It should invite a push, not read
+    like a list of household items.
+demo:
+  opening:
+    token: A spoonful of red sauce lands on the clean shirt hanging over the chair.
+    emoji: 🍝
+  moves:
+  - actor: p1
+    text: A spoonful of red sauce lands on the clean shirt hanging over the chair.
+    emoji: 🍝
+    scores: null
+  - actor: p2
+    text: Then the wet shirt sleeve brushes the pale wall, leaving a red stripe above the skirting board.
+    emoji: 🎂
+    scores:
+      reach: 2
+      link: 4
+      picture: 4
+  headline: The sleeve touched the wall, and now the house has a red border. Bold decorating.
+  openings:
+  - token: A spoonful of red sauce lands on the clean shirt hanging over the chair.
+    examples:
+    - Then the wet shirt sleeve brushes the pale wall, leaving a red stripe above the skirting board.
+  - token: A muddy sock drops onto the pale rug beside the front door.
+    examples:
+    - Then the wet shirt sleeve brushes the pale wall, leaving a red stripe above the skirting board.
+move_constraints:
+  max_chars: 140
+  prefix: 'Then '
+  example: Then the wet sleeve brushes the sofa, leaving a dark hand-shaped patch.
+  hint: Name one visible stain or cleaning effect that comes directly from the last mark.
+rubric:
+- name: reach
+  description: How much farther the stain problem travels or how much more of the home it affects.
+  anchors: 0 = the mark stays the same or becomes less important; 1 = a tiny spread on the same object;
+    2 = one new object or surface is visibly marked; 3 = the stain reaches a new room, person, garment,
+    or cleaning tool through one clear transfer; 4 = one clear step sends the mess into a striking new
+    scale while the cause still holds, rare. Reach is earned only when the transfer is real.
+  weight: 5
+- name: link
+  description: How plainly the new mark or cleaning effect comes from the standing mark.
+  anchors: 0 = no cause is shown; 1 = the move merely claims a result; 2 = the result is possible but
+    the transfer is thin; 3 = a stranger can see what touched what and why the mark moved; 4 = the result
+    feels unavoidable, as if the stain had chosen its next victim, rare. A move that skips a transfer
+    scores no higher than 2.
+  weight: 3
+- name: picture
+  description: How clearly a stranger can see the new mark, surface, or failed clean-up.
+  anchors: 0 = no visible event or the sentence is unreadable; 1 = vague, abstract, or mostly a feeling;
+    2 = clear but ordinary; 3 = easy to picture in one glance; 4 = one sharp household detail makes the
+    mess memorable, rare. Extra words alone do not earn picture.
+  weight: 2
+criterion:
+  verb: follows from
+  inverse_verb: snaps off
+  description: A move follows if one new stain or cleaning effect results directly from the standing mark
+    and gives the next player something visible to worsen, while a missing transfer, a spotless ending,
+    a reversal that removes the mark, or an unrelated person or place fails. The move should begin with
+    Then, name what transfers and where, and show one honest next change. Bigger spread is better only
+    when the link is plain.
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game, or referring to rules instead of
+    making a stain event is itself a broken move.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no standing move: judge the move against the card and ask whether the new
+    stain or cleaning effect follows from the opening mark.'
+  - A person may enter if the marked object gives them a plain reason to touch, move, wear, wash, or inspect
+    it. An unrelated visitor or a new place with no route from the standing mark is a skipped link, so
+    satisfies_criterion is false.
+  - A spotless ending includes a perfect wash, a replacement that leaves no mark, a professional clean-up,
+    or any step after which nothing visible remains to worsen. It fails satisfies_criterion even if the
+    clean-up follows.
+  - A reversal that removes, returns, or pretends away the standing mark fails. Do not accept a shirt
+    becoming clean again, a rug being restored, or the spill being put back in its cup.
+  - A move that only repeats the same mark in the same place is a duplicate or a no-change move. It should
+    not pass as a new stain event.
+  - A cleaning attempt can follow when it is visible and leaves something new, such as a wet smear, a
+    coloured cloth, or a larger damp patch. A cleaning attempt that removes the stain completely is an
+    ending.
+  - A same-size transfer still follows if the cause is plain. Score it 0 or 1 on reach rather than failing
+    it for being modest.
+  - A move may contain two linked effects, such as a stained sleeve wiping a wall and the wall marking
+    a mop. Score link at 2 or below if the sentence packs several transfers and becomes crowded.
+  - An unrelated person or place fails even if the move would be amusing. The chain needs a household
+    route from the standing mark, not a sudden jump to a stranger's wedding or a distant city.
+examples:
+- previous_move: A spoonful of red sauce lands on the clean shirt hanging over the chair.
+  move: Then the wet shirt sleeve brushes the pale wall, leaving a red stripe above the skirting board.
+  gates_note: all true
+  mechanism: the wet sleeve touches the wall and transfers sauce
+  scores:
+    reach: 2
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Then the wet shirt sleeve brushes the pale wall, leaving a red stripe above the skirting
+    board.
+  move: Then the mop wipes the stripe and carries a pink trail across the kitchen tiles.
+  gates_note: all true
+  mechanism: the mop contacts the wet sauce and spreads it across the floor
+  scores:
+    reach: 3
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Then the mop wipes the stripe and carries a pink trail across the kitchen tiles.
+  move: Then the mayor's limousine splashes through the kitchen and stains the street.
+  gates_note: satisfies_criterion false, unrelated place and skipped links
+  mechanism: no household route from the mop to a limousine or street
+  scores:
+    reach: 0
+    link: 0
+    picture: 2
+  confidence: clear
+  verdict: fail
+- previous_move: Then a pink trail crosses the kitchen tiles.
+  move: Then the cleaner scrubs every surface spotless and the house looks perfect.
+  gates_note: satisfies_criterion false, spotless ending
+  mechanism: the clean-up removes the mark and leaves nothing to worsen
+  scores:
+    reach: 0
+    link: 3
+    picture: 2
+  confidence: clear
+  verdict: fail
+- previous_move: Then the wet shirt sleeve brushes the pale wall, leaving a red stripe above the skirting
+    board.
+  move: Then the red sauce slides neatly back into the spoon and the wall is clean again.
+  gates_note: satisfies_criterion false, reversal removes the standing mark
+  mechanism: the move undoes the stain instead of transferring it
+  scores:
+    reach: 0
+    link: 0
+    picture: 1
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Laundry Witness
+  tone:
+    commentary_adj: earnest
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - Use one sentence under 140 characters. Two short sentences are allowed.
+  - Give the reason plainly. A stranger should see what touched what and why the stain moved.
+  - Name both moves or their plain stand-ins. Do not use a headline that could fit any household disaster.
+  - Never open with a status word or ruling phrase. Do not start with Accepted, Rejected, Refused, or
+    Move refused.
+  - Use commas and full stops only. No dashes as punctuation, no colons after a verdict, and no ellipses.
+  - Roast the move with gentle playfulness, not the player's identity. A small jab at tragic laundry technique
+    is fine.
+  - Plain spoken English. Profanity and adult innuendo are allowed when useful, but never use identity-based
+    abuse.
+  - On a missing transfer, name the object or contact that was skipped. On an ending, say the mark is
+    gone and the chain stops here.
+  - On a refusal, explain the broken link and ask for another move. Do not decide who won.
+  - The coaching line suggests one visible stain event that could have followed. End on an object or action,
+    never on a mood or verdict.
+  good_headlines:
+  - The sleeve touched the wall, and now the house has a red border. Bold decorating.
+  - The mop found the sauce and gave the tiles a pink little career.
+  - The mark vanished completely. Lovely cleaning, terrible chain, and the story stops here.
+  - The sauce cannot teleport to a limousine. Give it a shirt, a cloth, or a floor first.
+  - The same patch is still sitting there, waiting for a proper victim.
+  - The cloth spread the stain across the table. An ambitious rag with poor judgment.
+  - The shirt marked the wall, but the move jumped straight to the street. The missing step is the doorway.
+  - A spotless ending is still an ending. The stain needs to leave one more visible mess.
+  - That mop had one job and made the floor part of the problem. Fair transfer.
+  - The sauce went back into the spoon. Sweet attempt, but the chain does not run backwards.
+  bad_headlines:
+  - text: Accepted, nice stain.
+    why: opens with a ruling phrase and gives no reason
+  - text: The player is hopeless at cleaning.
+    why: mocks the player instead of explaining the move
+  - text: The sauce teleports to the street, apparently.
+    why: jokes about the result without naming the missing household link
+  - text: A magnificent chromatic catastrophe unfolds.
+    why: uses inflated words instead of plain household language
+  - text: The stain is bad, the chain is sad, the mop is mad.
+    why: rhymes instead of giving a clear reason
+  - text: 'Rejected: try harder.'
+    why: opens with a ruling phrase and offers no coaching
+  - text: The move is technically acceptable, though perhaps not entirely impossible.
+    why: hedges instead of making a clear ruling
+  - text: Then the stain spread everywhere...
+    why: uses an ellipsis and names no visible transfer
+rules:
+- Make one visible stain event that follows directly from the last one. Start with Then.
+- Name what transfers and where it lands.
+- Make the mess bigger when you can, but never skip the household link.
+- A spotless ending or a reversal removes the chain and stops play.
+- The Judge rules on the stain and its transfer, not your spelling.
+labels:
+  opening: The first stain
+  next_opening: The next stain
+  your_opening: Your stain
+  compose: What gets marked next, after {token}
+  compose_waiting: Plan your next stain while you wait
+validation_messages:
+  empty: Nothing gets marked. Give the stain somewhere to go.
+  too_long: Over 140 characters. One transfer, not a full cleaning disaster.
+  duplicate: That mark already happened this match. Let it touch something new.
+  nudge: Twice now. Something has to follow from {standing_form}. Name the next surface it marks.
+judge_out_text: 'The judge has stepped out. Nobody moves until they are back. {standing_form} still stands,
+  and the stain is waiting.
+
+  '
+opponent_prompt: 'You are one of two players making a household stain worse, and you want the mark to
+  travel.
+
+  Always write Then X. Name one visible stain or cleaning effect, one transfer, and one place it lands.
+
+  Take the standing move and let the mark touch something new: a sleeve, a cushion, a wall, a mop, a towel,
+  or a floor.
+
+  Good: Then the wet sleeve brushes the sofa, leaving a dark hand shaped patch.
+
+  Good: Then the mop picks up the red sauce and paints a pink trail across the tiles.
+
+  Bad: Then the whole house is ruined. That skips the transfer.
+
+  Bad: Then a cleaner makes everything perfect. That ends the story and you lose.
+
+  Bad: Then the cat feels ashamed. A feeling is not a visible stain event.
+
+  Never make the mark disappear, never rewind it, and never jump to an unrelated person or place.
+
+  Talk like a person describing a minor home disaster to a mate. Use plain words and present tense.
+
+  Keep the move under 140 characters. Never reuse a move from this match.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: Then the damp cloth wipes the mark and leaves a wider smear.
+seed_pool:
+  - { opening_token: "A spoonful of red sauce lands on the clean shirt hanging over the chair.", opening_emoji: "🍝" }
+  - { opening_token: "A muddy sock drops onto the pale rug beside the front door.", opening_emoji: "🧦" }
+  - { opening_token: "A cup of coffee tips onto the white cushion during breakfast.", opening_emoji: "☕" }

@@ -1,0 +1,276 @@
+{
+  "slug": "laundry-legend",
+  "title": "Laundry Legend",
+  "tagline": "Turn the hamper into a heroic calling.",
+  "emblem": "🧺",
+  "accent": "#c47f91",
+  "premise": "Three rounds. Each round names an ordinary chore and gives it two prompt nouns. Both players write one motivational poster headline that makes the chore feel heroic, tender, or gloriously overdramatic. The Judge scores each line, then the players choose which headline the House wrote. The laundry may be folded, but the stakes are enormous.\n",
+  "seed_pool": [
+    {
+      "opening_token": "wash dishes",
+      "opening_emoji": "🍽️",
+      "detail": "sink",
+      "hidden": "A motivational poster headline urging someone to wash dishes, using the prompt noun sink."
+    },
+    {
+      "opening_token": "fold socks",
+      "opening_emoji": "🧦",
+      "detail": "lost pair",
+      "hidden": "A motivational poster headline urging someone to fold socks, using the prompt noun lost pair."
+    },
+    {
+      "opening_token": "sort laundry",
+      "opening_emoji": "👕",
+      "detail": "hamper",
+      "hidden": "A motivational poster headline urging someone to sort laundry, using the prompt noun hamper."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "chore": [
+        "wash dishes",
+        "fold socks",
+        "sort laundry",
+        "wipe counters",
+        "vacuum floors",
+        "take out rubbish",
+        "change sheets",
+        "clean the fridge"
+      ],
+      "prompt_noun": [
+        "sink",
+        "lost pair",
+        "hamper",
+        "crumbs",
+        "dust",
+        "bin",
+        "pillow",
+        "leftovers"
+      ],
+      "poster_mood": [
+        "heroic",
+        "tender",
+        "glorious",
+        "dramatic",
+        "brave",
+        "hopeful",
+        "triumphant",
+        "warm"
+      ]
+    },
+    "tests": [
+      "The card names one ordinary household chore clearly.",
+      "The card supplies two short prompt nouns that can fit naturally into a headline.",
+      "The prompt nouns suggest a small domestic conflict, goal, or image.",
+      "The chore is practical enough that a player can motivate someone to do it.",
+      "The wording is short enough to read like a poster rather than an instruction manual."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "WASH DISHES: face the sink, defeat the grease, and leave the kingdom shining.",
+    "hint": "One poster headline, up to 160 characters. Use both prompt nouns."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this genuinely work as a motivational poster for doing the chore?",
+      "anchors": "Score the promise of the poster, not whether anyone would frame it. 0 = unrelated or impossible to act on; 1 = the chore is barely present; 2 = it motivates in a familiar way; 3 = it could honestly make someone begin; 4 = it makes the chore feel briefly noble (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the headline make the humble chore feel amusingly larger than life?",
+      "anchors": "0 = no spark; 1 = a mild grin; 2 = a good little joke; 3 = a proper laugh; 4 = the chore has become a comic epic without losing its purpose (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Is it compact, clear, and shaped like a poster headline rather than a rambling pep talk?",
+      "anchors": "0 = not a headline; 1 = a slogan buried in clutter; 2 = usable but padded; 3 = crisp and poster ready; 4 = clean enough to print above a very judgmental washing machine (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A headline PLAYS if it clearly encourages someone to do the named chore and uses both prompt nouns in a meaningful way. It may be sincere, comic, tender, or wildly dramatic, but the chore must remain recognizable. It fails when it does not motivate action, does not identify the chore, ignores the prompt nouns, or merely comments on the game instead of writing a poster headline.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or asking the reader to score the line is itself a losing headline.\n",
+    "judge_notes": [
+      "The first move must name or unmistakably evoke the named chore, include both prompt nouns, and give the reader a reason or emotional push to do it.\n",
+      "Judge each headline on its own. The other player's line is not the standard and cannot rescue a weak one.\n",
+      "A headline can be indirect if the action is still clear, such as turning the sink into a battlefield while plainly urging the dishes to be washed.\n",
+      "A line that uses only one prompt noun fails the criterion, even if it is funny or beautifully written.\n",
+      "A line that mentions the chore but gives no encouragement can fail. A description of dirty dishes is not a motivational poster.\n",
+      "A joke about the word, a comment about the game, or a request for applause is not a headline and fails.\n",
+      "A command, sentence fragment, or short slogan can play if it motivates the chore and uses both prompt nouns. Full grammar is not required.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "wash dishes / sink",
+      "move": "WASH DISHES: face the sink, defeat the grease, and leave the kingdom shining.",
+      "gates_note": "all true",
+      "mechanism": "turns the sink into a small kingdom and gives the chore a clear heroic mission",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "fold socks / lost pair",
+      "move": "FOLD SOCKS: reunite the lost pair before loneliness makes them roommates with the dust.",
+      "gates_note": "all true",
+      "mechanism": "uses both prompts to give a tiny domestic tragedy a happy ending",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "sort laundry / hamper",
+      "move": "The hamper has clothes in it. Very observant of us.",
+      "gates_note": "satisfies_criterion false, it comments on the mess but does not motivate the chore",
+      "mechanism": "none, observation has arrived but encouragement has not",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "wash dishes / sink",
+      "move": "SINK: rise, sparkle, and conquer.",
+      "gates_note": "satisfies_criterion false, it omits the named chore and the second prompt noun",
+      "mechanism": "none, a heroic mood without dishes is just a very shiny mystery",
+      "scores": {
+        "believable": 1,
+        "funny": 1,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "fold socks / lost pair",
+      "move": "FOLD SOCKS: find the lost pair and give your feet the reunion tour they deserve.",
+      "gates_note": "all true",
+      "mechanism": "makes the socks into touring celebrities while keeping the action unmistakable",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Choreographer",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "gently exact"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. Someone who reads only the chore, prompts, and headline should see why it scored.",
+      "Name the chore or one prompt noun. A headline that fits any chore is a mop with no handle.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, or Move refused.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Tease the headline or the tiny domestic drama, never identity, body, family, intelligence, spelling, or personal circumstances.",
+      "Plain spoken English. Warm, brisk, and mildly silly. No poetry contest, no rhymes, no profanity.",
+      "Do not reveal or hint at the other player's headline when commenting on one line.",
+      "Never claim a chore is complete when the headline only promises to begin it.",
+      "On a refusal, explain what the headline failed to motivate or which prompt it left behind, then ask for another.",
+      "The coaching line names one concrete ingredient that would have scored, such as the chore, the missing prompt, or a reason to act. It ends on an action or fact, never a verdict.",
+      "Light innuendo is allowed only when it stays harmless and clearly concerns the chore."
+    ],
+    "good_headlines": [
+      "The sink has met its match, and the dishes have been cast as the villains.",
+      "A lost pair, a noble reunion, and two socks finally facing their feelings.",
+      "The hamper is not a throne, but this line has given it a royal problem.",
+      "The crumbs were small, the mission was enormous, and the counter never saw it coming.",
+      "A proper call to arms, with the sponge bravely volunteering for frontline duty.",
+      "The pillow gets a fresh start, and somehow the whole bedroom feels promoted.",
+      "That bin has been given a destiny, which is more than most bins receive before breakfast.",
+      "A little tender, a little ridiculous, and pointed directly at the washing basket.",
+      "The fridge has leftovers, the headline has stakes, and dinner may yet be rescued.",
+      "This is how a sock becomes a citizen and a chore becomes public service."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: wash dishes is inspiring.",
+        "why": "opens with a status word and gives no specific reason"
+      },
+      {
+        "text": "The Choreographer refuses: try harder.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring back the dishes.",
+        "why": "opens with a ruling phrase and does not explain the failure"
+      },
+      {
+        "text": "Wash dishes: clean the sink and become a better person.",
+        "why": "reveals nothing useful about the missing prompt noun and overpromises moral transformation"
+      },
+      {
+        "text": "Funny.",
+        "why": "no reason, no chore, and no useful coaching"
+      },
+      {
+        "text": "A feeble effort from someone who cannot cope with socks.",
+        "why": "mocks the player instead of the headline"
+      },
+      {
+        "text": "O brave sink, arise beneath the moon and sing.",
+        "why": "too poetic and does not clearly motivate washing dishes"
+      },
+      {
+        "text": "It is motivational, inspirational, uplifting, and encouraging.",
+        "why": "lists praise instead of showing what the headline did"
+      },
+      {
+        "text": "Better than the other player's answer.",
+        "why": "judges the pair instead of explaining this headline"
+      },
+      {
+        "text": "Nice one.",
+        "why": "warm but empty, with no chore or reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one ordinary chore and two prompt nouns each.",
+    "Write one motivational poster headline of up to 160 characters. Name the chore and use both prompt nouns.",
+    "Then choose which of two headlines was written by the House. Right, and the points are yours. Fooled, and they go to the House.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The chore",
+    "next_opening": "The next chore",
+    "your_opening": "Your chore",
+    "compose": "Your poster for {token}",
+    "compose_waiting": "Draft your poster while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the poster. Give the chore a reason to rise.",
+    "too_long": "Over 160 characters. A poster, not a memoir from the hamper.",
+    "duplicate": "That headline has already marched past this chore. Try a fresh battle cry.",
+    "nudge": "Twice now. Name the chore, use both prompts, and give {standing_form} a reason to begin."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody charges the sink until they are back. {standing_form} waits on the poster board. Give it a minute.\n",
+  "opponent_prompt": "You are the House poster writer. Write one motivational headline for the named chore.\nUse both prompt nouns exactly or unmistakably, and keep the chore clear. The line may be heroic, tender, dramatic, or funny, but it must make someone want to do the chore.\nKeep it under 160 characters and shaped like a poster headline, not an explanation of your joke. A command, slogan, or compact sentence is fine.\nDo not talk about the game, the Judge, scoring, or your writing process. Do not compare your line with the player's line.\nMake the prompt nouns matter. Do not merely list them. Turn the sink into a challenge, the lost pair into a reunion, or the hamper into a place where action is needed.\nAvoid generic praise that could fit any chore. Do not reuse the same image or emotional trick from an earlier round. Vary the scale of the drama: a tiny rescue, a royal decree, a tender reunion, a domestic expedition.\nThe real aim is simple: someone should read the poster and feel ready to begin the named chore.\n",
+  "medallions": true,
+  "default_move": "WASH DISHES: face the sink, defeat the grease, and leave the kingdom shining."
+}

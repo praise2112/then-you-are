@@ -1,0 +1,272 @@
+{
+  "slug": "spin-cycle",
+  "title": "Spin Cycle",
+  "tagline": "Make the laundry worse until it comes out clean.",
+  "emblem": "🧺",
+  "accent": "#2563eb",
+  "premise": "Two laundrette disasters fight by making each other's mess worse in a way that also fixes it. Put down one machine, substance, or laundry problem that directly transforms what came before. The Judge decides whether the mess got laundered.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a red sock",
+      "opening_emoji": "🧦",
+      "detail": "bleeding dye",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a greasy work shirt",
+      "opening_emoji": "👕",
+      "detail": "wearing a dark stain",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a soaking duvet",
+      "opening_emoji": "🛏️",
+      "detail": "heavy with water",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "laundry_item": [
+        "a red sock",
+        "a white shirt",
+        "a greasy towel",
+        "a muddy sheet",
+        "a stained uniform",
+        "a wet duvet",
+        "a torn pair of jeans",
+        "a shrunken sweater"
+      ],
+      "problem": [
+        "bleeding dye",
+        "grease",
+        "mud",
+        "too much water",
+        "bad smell",
+        "loose threads",
+        "deep wrinkles",
+        "stubborn lint"
+      ],
+      "setting": [
+        "a laundrette",
+        "a washroom",
+        "a shared basement",
+        "a hotel laundry",
+        "a sports club",
+        "a hospital laundry",
+        "a student dorm",
+        "a dry cleaner"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the laundry problem at once. Nothing abstract, technical, or in need of a user manual.",
+      "A non-player names a plain laundering action within five seconds. Say what removes, sorts, dries, presses, or otherwise changes it.",
+      "It acts on fabric, water, dirt, dye, smell, heat, or a laundry machine. Never a person being humiliated or a scene that merely happens near a washing machine.",
+      "It makes a stranger want to answer. A thing with a bit of trouble or character, like a jammed washer, a bleach bottle, or a furious sock.",
+      "Two to four everyday words a twelve-year-old knows. Never a brand name, specialist solvent, proper noun, or phrase that needs a glossary."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am detergent, and I dissolve the grease in that oil stain.",
+    "hint": "Name the laundry thing, then the direct action that changes the standing mess."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the move transforms the standing laundry problem into a cleaner, sorted, dried, pressed, or otherwise laundered state.",
+      "anchors": "0 = no action on the standing problem; 1 = claims a result without a workable laundry action; 2 = changes part of it but leaves the main mess or depends on a stretch; 3 = clearly performs a useful laundering transformation; 4 = the standing mess is cleanly and decisively converted by the new form, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the laundry thing and the action it takes.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires specialist knowledge or guesswork; 2 = understandable but vague, cluttered, or partly abstract; 3 = plain and concrete; 4 = instantly visual and exact, rare. Extra words do not help unless they clarify the laundering action.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the laundering route is compared with the previous move, not how fancy the wording sounds.",
+      "anchors": "0 = repeats the same tool, substance, or transformation route; 2 = a reasonable variation in the laundry domain; 4 = shifts to an unexpected but literal laundry method that still changes the standing mess, rare. Obscure chemistry is not novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A form OVERCOMES the standing laundry problem if it directly changes that thing into a cleaner, sorted, dried, pressed, or otherwise laundered state. The action must be literal and observable. Merely avoiding it, surviving it, making a bigger version of it, or naming a nearby laundry item does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing laundry move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move. Judge it against the opening card and require a direct laundry action that transforms the opening problem.\n",
+      "A larger, hotter, stronger, or more concentrated version of the same standing problem is not a new laundering route. Bigger grease, wetter fabric, and a redder sock fail unless they directly change the standing mess.\n",
+      "Naming the same item again, or a nearby laundry item with no action, is a duplicate or failed counter. A dryer after a dryer does not count merely because it is louder.\n",
+      "The new form must act on the standing thing. A clean basket that waits beside a stain, a person who avoids the washer, or fabric that is simply immune to bleach is dodging, not laundering.\n",
+      "The mechanism must be literal. Detergent dissolving grease, a dryer removing water, and an iron flattening wrinkles count. Paperwork cleaning a shirt, an apology washing socks, or shame pressing trousers are figures of speech and fail.\n",
+      "A result that happens only by luck, coincidence, or the standing item wandering away is not a direct transformation. The new form must do the laundry work.\n",
+      "The move must change the standing problem rather than merely damage it. Burning a shirt, tearing out a stain with the whole sleeve, or hiding dirty clothes in a cupboard is not a clean laundry result.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a red sock, and I bleed dye into the white shirt.",
+      "move": "I am bleach, and I strips the dye from the shirt.",
+      "gates_note": "all true, minor grammar ignored",
+      "mechanism": "bleach removes the red dye from the white shirt",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am bleach, and I strip the dye from the shirt.",
+      "move": "I am a dryer, and I evaporate the bleach water from the shirt.",
+      "gates_note": "all true",
+      "mechanism": "heat and tumbling remove water after the bleach treatment",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a greasy work shirt, and I wear an oil stain.",
+      "move": "I am detergent, and I dissolve the grease in the fabric.",
+      "gates_note": "all true",
+      "mechanism": "detergent lifts and disperses oil so it can wash away",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a soaking duvet, and I hold a gallon of water.",
+      "move": "I am a bigger duvet, and I hold two gallons of water.",
+      "gates_note": "satisfies_criterion false, amplification makes the laundry problem worse",
+      "mechanism": "none, it adds absorbent fabric without removing water",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a muddy sheet, and I carry a yard across the washer.",
+      "move": "I am a laundry basket, and I sit beside the sheet.",
+      "gates_note": "satisfies_criterion false, avoidance without transformation",
+      "mechanism": "none, the basket does not remove or change the mud",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Attendant",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger should see what changed in the laundry.",
+      "Name both forms, or use their plain laundry stand-ins.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Attendant refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the losing form and its laundry logic, not identity or protected traits. A mild roast of the player's choice is allowed, but never abuse.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when useful, but do not let them replace the reason.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not rule on who won.",
+      "The coaching line names one form that would have won. It ends on a concrete laundry action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "Bleach removes the red sock's alibi from the white shirt.",
+      "The dryer takes the water out, which is its entire job for once.",
+      "Detergent breaks up the grease. The shirt gets its weekend back.",
+      "The iron flattens the wrinkles, while the crumpled shirt contributes nothing.",
+      "A bigger duvet is just a larger wet problem. Bring something that dries it.",
+      "The basket offers storage, not washing. Bring detergent or a machine.",
+      "The lint roller picks up the fuzz. Small tool, humiliatingly effective.",
+      "The hot wash kills the smell, and the towel loses its nightclub career.",
+      "The bleach fixes the dye and possibly starts a new argument with the fabric.",
+      "The stain remover attacks the coffee. The shirt survives its morning."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the dryer removes the water.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Attendant refuses: that basket is useless.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring a real counter.",
+        "why": "opens with a ruling phrase and gives no laundry reason"
+      },
+      {
+        "text": "The shirt is clean, spiritually and physically.",
+        "why": "the spiritual claim is vague and not a literal laundry mechanism"
+      },
+      {
+        "text": "The basket wins.",
+        "why": "no explanation and no transformation"
+      },
+      {
+        "text": "Your move is stupid and you are bad at this.",
+        "why": "mocks the player instead of the form"
+      },
+      {
+        "text": "The washer devours the stain, behold its aqueous triumph.",
+        "why": "purple language hides the plain action"
+      },
+      {
+        "text": "The dryer kind of helps, maybe, depending on several factors.",
+        "why": "hedges instead of giving a ruling"
+      },
+      {
+        "text": "The sock is defeated, destroyed, annihilated, and utterly obliterated.",
+        "why": "repeats the verdict without showing the laundry mechanism"
+      },
+      {
+        "text": "The clean shirt seduces the dryer into emotional submission.",
+        "why": "innuendo replaces a literal laundry action"
+      }
+    ]
+  },
+  "rules": [
+    "Transform the laundry problem in front of you. Do not merely avoid it.",
+    "Say what you are and what direct action you take: I am detergent, and I dissolve the grease.",
+    "The Judge rules on the laundry idea, not spelling or grammar.",
+    "A move that cannot directly launder the standing mess ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your form against {token}",
+    "compose_waiting": "Draft your next form while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put something in the wash.",
+    "too_long": "Over 200 characters. A laundry move, not a service manual.",
+    "duplicate": "That laundry form already stood this match. Find a new way to clean the mess.",
+    "nudge": "Twice now. Transform {standing_form}. Do not dodge it, repeat it, or make it worse."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two laundrette disasters trying to survive.\nAlways use this shape: \"I am X, and I direct action to the standing laundry problem.\"\nGood: \"I am detergent, and I dissolve the grease in that stain.\"\nGood: \"I am a dryer, and I evaporate the water from the duvet.\"\nBad: \"I am a clean basket, and I wait over there\" because it avoids the problem.\nBad: \"I am a bigger stain, and I am extremely bad\" because it amplifies the mess without laundering it.\nBad: \"I am shame, and I make the shirt regret its choices\" because that is a joke, not a literal laundry mechanism.\nTalk like a person across a laundrette table, not a poet or a chemistry textbook. Name plain things anyone can picture: soap, bleach, heat, a washer, a sock, a towel, a stain.\nYour move must directly change the standing thing into something cleaner, sorted, dried, pressed, or otherwise laundered. It may do this by washing, dissolving, lifting, rinsing, sorting, drying, ironing, brushing, cutting away a bad part, or another literal laundry action.\nDo not merely survive the mess, hide it, move away from it, or make a bigger version. Do not reuse a form or an action route from this match when a fresh route is possible.\nYou are not performing for a crowd and you are not joking. You are trying to stay in the game. If a move sounds funny, it is because the laundry object genuinely does the work.\n",
+  "default_move": "I am detergent, and I dissolve the grease in the standing stain."
+}

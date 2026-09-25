@@ -1,0 +1,345 @@
+schema_version: 1
+slug: graveyard-shift-cv
+title: Graveyard Shift CV
+tagline: Apply boldly. Regret professionally.
+emblem: 🪦
+accent: '#5b496f'
+premise: 'Each round, the Host announces a real but grimly ordinary job opening. You and your rival submit
+  one line from a CV applying for it, then the Host crowns the applicant whose line wanders furthest from
+  sensible self-preservation without losing the job’s required duty. Ceremonial applause for the desperate;
+  medical concern for everyone else.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: sentence
+  max_words: 12
+  axes:
+    duty:
+    - remove chewing gum
+    - clean toilets
+    - count frozen chickens
+    - watch a boiler
+    - sort lost property
+    - empty public bins
+    - inspect empty offices
+    - wash hospital floors
+    setting:
+    - a cinema after closing
+    - a school at midnight
+    - a warehouse before dawn
+    - a basement during rain
+    - a station after the last train
+    - a hospital corridor at night
+    - an office tower on Sunday
+    - a motorway service area
+    grim_detail:
+    - after the final showing
+    - with one light working
+    - while the freezer alarms
+    - beside a locked lift
+    - until the first train
+    - with no phone signal
+    - under a leaking ceiling
+    - during the annual inspection
+  tests:
+  - One sentence, with an article and a clear duty. A stranger knows what the worker must do.
+  - The job is legal, possible and grimly ordinary. Nobody is asked to commit a crime or face certain
+    death.
+  - The setting makes the shift unattractive without turning the card into a whole adventure.
+  - It contains a duty and a setting a CV line can preserve while making the applicant look alarmingly
+    willing.
+  - It is short enough to remember and specific enough that a vague boast cannot fit every card.
+demo:
+  opening:
+    token: Remove chewing gum from cinema seats after the final showing.
+    emoji: 🎬
+  moves:
+  - actor: p1
+    text: Remove chewing gum from cinema seats after the final showing.
+    emoji: 🎬
+    scores: null
+  - actor: p2
+    text: I have removed gum from seats for six hours and call it courtship.
+    emoji: 🔒
+    scores:
+      stretch: 4
+      funny: 3
+      headline_shaped: 4
+  headline: The gum is removed after closing, and courtship has been listed as a workplace hazard.
+  openings:
+  - token: Remove chewing gum from cinema seats after the final showing.
+    examples:
+    - I have removed gum from seats for six hours and call it courtship.
+  - token: Clean the school toilets at midnight.
+    examples:
+    - I have removed gum from seats for six hours and call it courtship.
+move_constraints:
+  max_chars: 90
+  prefix: ''
+  example: I bring my own mop, a torch, and absolutely no questions.
+  hint: One CV line. Keep the duty and setting, then reveal why nobody else applied.
+rubric:
+- name: stretch
+  description: How far does the CV line depart from sane employment while still promising the named duty
+    in its named setting?
+  anchors: '0 = merely repeats the job; 1 = adds one mild qualification; 2 = shows an odd habit, sacrifice
+    or motive; 3 = reveals a troubling lifestyle built around the shift; 4 = turns the applicant into
+    a magnificent professional disaster while the duty and setting remain intact, rare.
+
+    '
+  weight: 5
+- name: funny
+  description: Does the applicant’s dreadful enthusiasm, history or self knowledge produce a laugh?
+  anchors: '0 = no comic charge; 1 = a small twitch; 2 = a clear smile; 3 = a proper laugh; 4 = the line
+    deserves to be read aloud at the ceremony, rare. A straight confession is usually funnier than a forced
+    punchline.
+
+    '
+  weight: 4
+- name: headline_shaped
+  description: Does it work as one crisp CV line, with a claim or boast rather than an explanation?
+  anchors: '0 = not a CV line, a paragraph or a question; 1 = a claim buried under padding; 2 = recognisable
+    but loose; 3 = concise, specific and employable at a glance; 4 = a recruiter could paste it into the
+    application unchanged, rare.
+
+    '
+  weight: 2
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: 'A CV line PLAYS if it still shows that the applicant will perform the card’s named duty
+    in the card’s named setting. It may add experience, motives, equipment, private rituals, terrible
+    confidence or adult innuendo. It fails when the duty is dropped, the setting is changed, the applicant
+    refuses the work, or the line makes the named task impossible. It also fails when it is not a CV line
+    but a question to the Host, a comment on the game or an unrelated sentence. A sensible restatement
+    plays and scores near zero on stretch.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Host, discussing the game or pleading for employment is itself
+    a losing CV line.
+
+    '
+  judge_notes:
+  - 'Test the gate first: could this applicant still perform the named duty in the named setting? For
+    cleaning school toilets at midnight, I bring my own mop passes because both the cleaning and the midnight
+    school setting survive.
+
+    '
+  - 'A strange added detail is allowed. A torch, a sleeping bag, a criminal record or a suspicious emotional
+    attachment may play if the named duty and setting remain possible.
+
+    '
+  - 'Dropping the duty fails. A line about enjoying empty cinemas does not show that the applicant will
+    remove chewing gum from seats.
+
+    '
+  - 'Changing the setting fails. Cleaning the school toilets in daylight, or removing gum from a dentist’s
+    chair, does not preserve the card.
+
+    '
+  - 'Refusing or dodging the work fails. I will supervise from the car does not show that the applicant
+    will clean the toilets.
+
+    '
+  - 'Making the task impossible fails. I am allergic to cleaning products cannot preserve a cleaning duty
+    unless the line still clearly promises a workable method.
+
+    '
+  - 'Both players answer the same opening. Judge each line alone, never by comparing it with the rival’s
+    line.
+
+    '
+  - 'Score stretch by distance from sensible self preservation, not by the number of alarming adjectives.
+    A quiet confession can beat a loud claim that says nothing.
+
+    '
+  - 'Lower case, capitals, a missing full stop and ordinary spelling do not affect the gate or the score.
+
+    '
+examples:
+- previous_move: Remove chewing gum from cinema seats after the final showing.
+  move: I have removed gum from seats for six hours and call it courtship.
+  gates_note: all true
+  mechanism: the duty and the post showing cinema setting survive, while the applicant reveals a romantic
+    disorder
+  scores:
+    stretch: 4
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Clean the school toilets at midnight.
+  move: I bring my own mop, a torch, and absolutely no questions.
+  gates_note: all true
+  mechanism: the line preserves cleaning, the school toilets and midnight, then makes secrecy sound like
+    a qualification
+  scores:
+    stretch: 3
+    funny: 4
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Count frozen chickens in a warehouse before dawn.
+  move: I count poultry in cold rooms before sunrise while my therapist counts the days.
+  gates_note: all true
+  mechanism: the inventory, frozen warehouse and pre dawn setting remain, with a bleak second tally
+  scores:
+    stretch: 4
+    funny: 3
+    headline_shaped: 3
+  confidence: clear
+  verdict: accept
+- previous_move: Remove chewing gum from cinema seats after the final showing.
+  move: I love cinemas after dark and know every exit.
+  gates_note: satisfies_criterion false (the line does not show gum removal)
+  mechanism: the cinema setting remains, but the actual duty has vanished behind an alibi
+  scores:
+    stretch: 2
+    funny: 2
+    headline_shaped: 4
+  confidence: clear
+  verdict: fail
+- previous_move: Clean the school toilets at midnight.
+  move: I clean school toilets every morning before assembly.
+  gates_note: satisfies_criterion false (morning contradicts the named midnight setting)
+  mechanism: the cleaning survives, but the shift has been moved to a safer hour
+  scores:
+    stretch: 1
+    funny: 1
+    headline_shaped: 4
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Registrar of Unwanted Duties
+  tone:
+    commentary_adj: ceremonial
+    explanation_adj: clinical
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - Use one sentence under 140 characters, or two short sentences at most.
+  - Speak as though awarding a minor civic honour to a person who should perhaps be assessed by a doctor.
+  - The reason must be clinical and exact. Name the duty and setting, then identify the applicant’s alarming
+    extra commitment.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, or The Registrar declares.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Roast the CV line, not protected identity. A jab at the applicant’s choices is permitted. Identity
+    based abuse is forbidden.
+  - Plain spoken English with ceremonial flavour. Do not bury a joke in grand fog or recruitment jargon.
+  - On a fail, state which duty or setting vanished, changed or became impossible, using the card’s own
+    words.
+  - On a refusal, the line is refused and another is requested. It never rules on the rival or awards
+    the round.
+  - The coaching line must name one line that would pass. It ends on a duty or an action, never a mood
+    or a verdict.
+  good_headlines:
+  - The gum is removed after closing, and courtship has been listed as a workplace hazard.
+  - The school toilets receive their midnight attendant, along with a torch and an oath of silence.
+  - The chickens are counted before dawn, while the applicant conducts a second inventory of their remaining
+    years.
+  - The mop is present, the hour is midnight, and the applicant has made secrecy sound like a qualification.
+  - The cinema seats will be cleaned after the final showing, by a person apparently courting both gum
+    and ruin.
+  - The applicant still counts frozen chickens before dawn, which is more commitment than the chickens
+    requested.
+  - The duty survives. The setting survives. The applicant’s relationship with daylight does not.
+  - A respectable CV would mention sanitation. This one mentions a torch, which is how the ceremony acquires
+    witnesses.
+  - The gum line keeps the seats and the late hour, then adds romance where no recruiter requested it.
+  - The toilets will be cleaned at midnight, and the applicant has volunteered the final shred of common
+    sense.
+  bad_headlines:
+  - text: Accepted, a noble application.
+    why: opens with a status word and gives no clinical reason
+  - text: The Registrar refuses, kindly rewrite it.
+    why: opens with a ruling phrase and names the host
+  - text: A splendid applicant, truly.
+    why: praises without naming the duty, setting or joke
+  - text: The work is missing.
+    why: does not identify which named duty went missing
+  - text: Your line is stupid and you are hopeless.
+    why: mocks the player rather than the application
+  - text: O midnight mop, arise and cleanse the moonlit throne.
+    why: uses poetry instead of plain ceremonial speech
+  - text: The applicant demonstrates exceptional cross functional nocturnal sanitation synergies.
+    why: uses padding and recruitment jargon instead of a clear image
+  - text: This wins because it is better than the other applicant.
+    why: judges the pair rather than the line on its own
+  - text: A glorious, magnificent, unforgettable triumph of employability.
+    why: uses several grand adjectives but gives no reason
+  - text: The toilets are cleaned, the moon is crowned, and destiny signs the form.
+    why: becomes ornate fantasy and loses the plain clinical explanation
+rules:
+- Three rounds, one grimly ordinary job opening each.
+- Write one CV claim, boast or experience line under 90 characters. The House writes its own, unseen,
+  and the Registrar scores both.
+- The line must still show that the applicant will perform the named duty in the named setting. Drop,
+  move or sabotage either and the application is refused.
+- Everything else may be invented, including motives, equipment, habits, trauma and suspicious enthusiasm.
+  Most points after three rounds wins.
+labels:
+  opening: The vacancy
+  next_opening: The next vacancy
+  your_opening: Your vacancy
+  compose: Your CV line for {token}
+  compose_waiting: Draft your application while you wait
+validation_messages:
+  empty: Blank application. Write the CV line.
+  too_long: Over 90 characters. This is a CV line, not a deposition.
+  duplicate: That line has already been filed this match. Find another reason to accept the misery.
+  nudge: 'Twice now. One line that keeps this true: {standing_form}.'
+judge_out_text: 'The Registrar has left to inspect the premises. Nobody is appointed until they return.
+  {standing_form} remains under consideration. Give it a moment.
+
+  '
+opponent_prompt: 'You are applying for a job nobody wants, and your CV has one line to make the
+
+  Registrar fear your competence. Write one CV claim, boast, or experience line.
+
+  THE DUTY AND SETTING MUST SURVIVE. A reader who sees only your line must still know that
+
+  you will perform the named duty in the named setting. Never drop the work, never move
+
+  the shift, never make the task impossible.
+
+  Then go as far as you dare. Invent the applicant’s rituals, equipment, motives, history,
+
+  private bargains and appalling enthusiasm. The points are for distance from sensible
+
+  self preservation while the job remains doable.
+
+  Good: "I bring my own mop, a torch, and absolutely no questions." for cleaning school
+
+  toilets at midnight. "I have removed gum from seats for six hours and call it courtship."
+
+  for cinema seats after the final showing.
+
+  Bad: "I love empty cinemas" because it drops the gum removal. "I clean school toilets
+
+  in daylight" because it moves midnight. "I will supervise from the car" because it refuses
+
+  the duty.
+
+  Write one short CV line under 90 characters. Plain words, concrete details, no explanation.
+
+  A comma is fine. Do not use a colon or a dash. Capitals are fine but not required.
+
+  Vary the applicant’s damage from round to round: equipment, devotion, a grim history,
+
+  a private motive, a questionable skill. Never use the same shape twice in a match.
+
+  No quotation marks around the line. Reply with the CV line only.
+
+  '
+guess: null
+medallions: false
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: I remain calm in places where sensible applicants resign
+seed_pool:
+  - { opening_token: "Remove chewing gum from cinema seats after the final showing.", opening_emoji: "🎬" }
+  - { opening_token: "Clean the school toilets at midnight.", opening_emoji: "🧽" }
+  - { opening_token: "Count frozen chickens in a warehouse before dawn.", opening_emoji: "🐔" }

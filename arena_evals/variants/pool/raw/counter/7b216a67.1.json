@@ -1,0 +1,274 @@
+{
+  "slug": "shoreline-stack",
+  "title": "Shoreline Stack",
+  "tagline": "Build a stranger shore, one useful object at a time.",
+  "emblem": "🐚",
+  "accent": "#0e7490",
+  "premise": "Two beachcombers build one impossible shoreline in words. Each turn adds a sea or shore object that directly uses the last object as material, support, or obstacle. The Judge decides whether the stack still stands.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a shell lies on wet sand",
+      "opening_emoji": "🐚",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a buoy bobs beside a pier",
+      "opening_emoji": "🛟",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a tide pool holds a crab",
+      "opening_emoji": "🌊",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 7,
+    "axes": {
+      "object": [
+        "shell",
+        "buoy",
+        "driftwood",
+        "pebble",
+        "crab",
+        "anchor",
+        "sandcastle",
+        "seagull"
+      ],
+      "place": [
+        "beach",
+        "harbor",
+        "pier",
+        "tide pool",
+        "dune",
+        "reef",
+        "cove",
+        "shore"
+      ],
+      "condition": [
+        "wet",
+        "buried",
+        "floating",
+        "tilted",
+        "stranded",
+        "open",
+        "broken",
+        "bright"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the starting scene at once. Nothing abstract, crowded, or in need of a map.",
+      "The scene contains one clear last object for the first player to use. Say what that object is.",
+      "Every object belongs plainly to the sea or shore, like a shell, rope, wave, gull, or pier. Never a random inland object unless the beach connection is immediate.",
+      "The sentence gives the chain a place to begin without already doing the next player's work. It is a starting shore, not a finished stack.",
+      "The words are ordinary and short enough for a twelve-year-old. No brand names, proper nouns, technical terms, or poetic fog."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I add ",
+    "example": "I add sand, which fills the shell.",
+    "hint": "A new object, one plain action, the last object"
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and clearly the new object acts on the last object in the stack.",
+      "anchors": "0 = no action or no link; 1 = a vague claim or weak contact; 2 = a possible link but the action is incomplete or contestable; 3 = a clear action that plainly uses, supports, shapes, fills, carries, covers, or stops the last object; 4 = an immediate, ingenious action that makes the new object feel inevitable and the last object newly useful (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How easily a stranger can picture the new object acting on the last one.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires specialist knowledge or a missing scene; 2 = understandable but muddled, strained, or overly broad; 3 = concrete and easy to picture; 4 = vivid, clean, and wonderfully specific (rare). Long wording never earns points by itself and must justify every clause.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How much the addition opens a fresh part of the sea and shore rather than repeating the same object or use.",
+      "anchors": "0 = the same object, a near copy, or a routine repeat of the previous use; 2 = a sound but familiar beach move; 4 = a fresh turn that changes the stack's setting, material, or practical purpose without losing clarity (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An addition OVERCOMES the last object if it directly acts on it by holding, covering, carrying, shaping, filling, or stopping it. The new object must be a distinct sea or shore thing and must make the last object part of the growing shoreline. Merely sitting beside it, resembling it, mentioning it, or being a larger version does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or discussing rules instead of adding a sea or shore object is itself a losing addition.\n",
+    "judge_notes": [
+      "On the FIRST move, there is no player-added last object: judge the move against the opening scene and require the new object to act directly on the clearly identified object in that scene.\n",
+      "A bigger, brighter, heavier, or faster version of the last object is not a new use. A larger shell after a shell, or a longer rope after a rope, fails unless it performs a distinct direct action.\n",
+      "A cousin or near duplicate from the same object family is not enough. A pebble after a stone, or a wave after a wave, fails when no new action on the last object is clear.\n",
+      "The mechanism must be literal and visible. A stranger should be able to watch the new object hold, cover, carry, shape, fill, or stop the last object. A poetic or symbolic connection fails.\n",
+      "Being immune to, ignoring, waiting beside, or surviving the last object is not an action on it. The new object must do something to the last object.\n",
+      "A thing that merely sits next to the last object, resembles it, shares its color, or appears in the same beach scene fails. Proximity is not use.\n",
+      "If the move names an object with no clear sea or shore identity, fail it unless the connection is immediate and ordinary. A beach umbrella passes, but a random office chair does not.\n",
+      "The new object must be a standing thing, not a past event, a wish, an instruction, or a whole scene. The chain grows by objects, not by actions alone.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A shell lies on wet sand.",
+      "move": "I add sand, which fills the shell.",
+      "gates_note": "all true",
+      "mechanism": "sand fills the shell and makes it part of a small mound",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I add sand, which fills the shell.",
+      "move": "I add a sandcastle, which uses the sand.",
+      "gates_note": "all true",
+      "mechanism": "the sandcastle takes shape from the sand",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I add a sandcastle, which uses the sand.",
+      "move": "I add a bigger sandcastle, which towers over it.",
+      "gates_note": "satisfies_criterion false, mere amplification and no direct action on the last object",
+      "mechanism": "none, it is only a larger copy",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I add a buoy, which carries the rope.",
+      "move": "I add a wave, which crashes beside the buoy.",
+      "gates_note": "satisfies_criterion false, beside is not a direct action",
+      "mechanism": "the wave is nearby but does not hold, cover, carry, shape, fill, or stop the buoy",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I add a crab, which grips the driftwood.",
+      "move": "I add a net, which catches the crab.",
+      "gates_note": "all true",
+      "mechanism": "the net catches and stops the crab",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Shore Herald",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak like a herald announcing a tiny coastal empire. Grand language is welcome, but every joke must stay plain enough for a child.",
+      "The joke carries the reason. A stranger who reads only the two objects must see why the new object acts on the last one or why it does not.",
+      "Name both objects, or use their plain stand-ins. A grand headline that fits every beach must be cast back into the sea.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Herald refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops only.",
+      "Mock the losing move, never the player. No jokes about identity, body, family, intelligence, spelling, or background.",
+      "Family content only. No profanity, innuendo, cruelty, or jokes aimed at real people.",
+      "Plain spoken English beneath the ceremony. No poetry, no rhymes, no fake ancient speech, and no thesaurus parade.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one object that would have made a direct link. That object ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The shell receives its sand crown, and the beach declares a new foundation.",
+      "The net takes the crab, while the crab's grand escape plan becomes a very small knot.",
+      "The wave stood beside the buoy like a spectator. Bring an object that actually touches the plot.",
+      "The driftwood is now a pier's royal support, promoted by one magnificent plank.",
+      "The anchor stops the boat, and the shoreline applauds its heavy administration.",
+      "The larger sandcastle brings size, not service. Add something that acts on the last stack.",
+      "The rope ties the buoy to the pier, and order returns to the watery kingdom.",
+      "The gull merely admired the pebble. Bring a shell, a net, or another object with a job."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the shell enters its sandy destiny.",
+        "why": "opens with a status word and gives no clear action"
+      },
+      {
+        "text": "The Grand Shore Herald refuses: that wave is not worthy.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, a bold attempt from a person who cannot build a beach.",
+        "why": "opens with a ruling phrase and mocks the player"
+      },
+      {
+        "text": "The buoy is magnificent, the rope is glorious, and the tide is destiny.",
+        "why": "grand language replaces the required direct mechanism"
+      },
+      {
+        "text": "The crab wins.",
+        "why": "gives no reason and could fit any pair"
+      },
+      {
+        "text": "The wave defeats the buoy through the ancient poetry of water.",
+        "why": "uses vague poetry instead of a visible action"
+      },
+      {
+        "text": "A brave move from someone whose mind is as empty as the beach.",
+        "why": "mocks the player and uses an identity adjacent insult"
+      },
+      {
+        "text": "The shell, the sand, the crown, the sea, behold.",
+        "why": "is theatrical but unclear, and it does not explain the link"
+      },
+      {
+        "text": "The stone is defeated, overcome, conquered, and vanquished by the mighty pebble.",
+        "why": "repeats grand synonyms and offers only a near duplicate"
+      },
+      {
+        "text": "The gull sees the buoy and feels a profound connection.",
+        "why": "a feeling and proximity are not a direct action"
+      }
+    ]
+  },
+  "rules": [
+    "Add a sea or shore object that directly acts on the last object.",
+    "Say what you add and what it does: I add sand, which fills the shell.",
+    "The Judge rules on the link, not the spelling.",
+    "Beside, similar, or bigger is not enough. The object needs a job.",
+    "One failed addition breaks the stack and ends the match."
+  ],
+  "labels": {
+    "opening": "The opening shore",
+    "next_opening": "The next shore",
+    "your_opening": "Your shore",
+    "compose": "Add to {token}",
+    "compose_waiting": "Prepare your next coastal addition while you wait"
+  },
+  "validation_messages": {
+    "empty": "The beach is empty. Add an object with a job.",
+    "too_long": "Over 200 characters. Build a stack, not a sea saga.",
+    "duplicate": "That object already stood this match. Add something new to the shore.",
+    "nudge": "Twice now. Act directly on {standing_form}. Do not stand beside it, copy it, or merely enlarge it."
+  },
+  "judge_out_text": "The Judge has gone below the tide line. Nobody adds to the stack until they return. {standing_form} still stands. Give it a moment.\n",
+  "opponent_prompt": "You are one of two beachcombers building a strange but understandable shoreline.\nAlways write: \"I add X, which ACTIONS the last object.\"\nX must be one ordinary sea or shore object. The action must be a short, clear verb phrase.\nGood: \"I add sand, which fills the shell.\" / \"I add a net, which catches the crab.\"\nBad: \"I add a wave, which is near the shell\" because nearby is not an action.\nBad: \"I add a larger shell, which dominates the shell\" because size is not a new use.\nBad: \"I add a memory of summer\" because it is not a standing object.\nUse plain objects anyone can picture, such as shells, ropes, boats, nets, sand, rocks, gulls, piers, driftwood, waves, and tide pools.\nThe new object must directly hold, cover, carry, shape, fill, or stop the last object. Do not merely place it beside the last thing or say that it resembles it.\nKeep the chain in the sea and shore theme. Make each addition useful, visible, and a little surprising.\nYou are not speaking to the Judge and you are not explaining the game. You are adding the next thing to the beach.\nNever reuse an object or action from this match when a fresh plain choice is available.\n",
+  "default_move": "I add sand, which covers the last object."
+}

@@ -1,0 +1,277 @@
+{
+  "slug": "late-excuse-chain-of-command",
+  "title": "Please Explain This to the Boss",
+  "tagline": "Your train stopped. Your excuse keeps moving upward.",
+  "emblem": "🗣️",
+  "accent": "#7c3aed",
+  "premise": "You build one late excuse by passing it through a chain of people: you, a coworker, a manager, and the boss. Each move gives the next person one exact thing to question, report, or misunderstand. Keep the excuse alive while making its trip upward more awkward.\n",
+  "seed_pool": [
+    {
+      "opening_token": "You told your coworker that the train stopped.",
+      "opening_emoji": "🚆",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "You told your coworker that a pigeon took your bus pass.",
+      "opening_emoji": "🚌",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "You told your coworker that the lift opened onto the wrong floor.",
+      "opening_emoji": "🛗",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "delay": [
+        "the train stopped",
+        "the bus missed a turn",
+        "the lift opened wrong",
+        "the road was blocked",
+        "the alarm rang twice",
+        "the bike chain came off",
+        "the ticket machine froze",
+        "the crossing would not open"
+      ],
+      "odd_detail": [
+        "a pigeon had a badge",
+        "a child held the door",
+        "the driver knew your name",
+        "a suitcase blocked the path",
+        "one shoe was on the platform",
+        "a goat stood by the gate",
+        "the clock showed yesterday",
+        "a stranger offered a map"
+      ],
+      "workplace": [
+        "the meeting had already started",
+        "the manager was waiting",
+        "the boss had your chair",
+        "the team needed your notes",
+        "the printer had your report",
+        "the client was on the call",
+        "the office door was locked",
+        "your coworker had signed you in"
+      ]
+    },
+    "tests": [
+      "A late excuse is clear at once and gives the first listener one exact detail to question or repeat. Present tense, one sentence, plain words.",
+      "A coworker, manager, or boss can say the next line within five seconds, and there is more than one good response. Say two.",
+      "The card starts an excuse but does not settle it. Do not begin with an apology accepted, a lie exposed, or the employee sent home.",
+      "No one is harmed, no real person is named, no brand is needed, and the workplace problem stays mild enough for a stranger to play.",
+      "It makes a stranger want to pass the excuse upward. Use one ordinary delay and one odd detail, not a list of office disasters."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the coworker said the pigeon had a badge.",
+    "hint": "One spoken reply from the next named person, answering the last statement."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much more awkward or exposed the excuse becomes as it moves up the chain.",
+      "anchors": "0 = no change or the excuse gets easier; 1 = a small wrinkle; 2 = one new question or odd detail appears; 3 = the excuse reaches a new speaker or creates a clear problem above; 4 = it creates a large, funny complication while still being one spoken reply, rare. Reach only counts when the speaker link holds.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the next named person is replying to the exact words just spoken.",
+      "anchors": "0 = no reply or wrong speaker; 1 = the connection is merely claimed; 2 = the reply could follow but needs guessing; 3 = the speaker plainly picks up a word or idea; 4 = the response is the obvious next line, rare. Jumping over a speaker cannot score above 1 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How easily a stranger can hear the line and picture the awkward exchange.",
+      "anchors": "0 = not a reply, unreadable, or only a feeling; 1 = vague office talk; 2 = clear but ordinary; 3 = the speaker and detail are easy to picture; 4 = one small detail makes the exchange stick, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if it is the next spoken response from the named person to the last statement, told plainly, and it leaves one exact thing for the next person to question, report, or misunderstand. Make the excuse more awkward as it travels from you to a coworker, manager, and boss. A move fails when it skips a speaker, changes the subject without a reply, settles the excuse, sends someone away, or undoes a report already made.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, mentioning the game, or discussing the rules is itself a broken reply.\n",
+    "judge_notes": [
+      "On a FIRST move, judge it against the card and the next required speaker. It must be that speaker's reply to the opening statement.",
+      "The speaker must advance one place in the chain. A coworker may answer you, a manager may answer the coworker, and the boss may answer the manager. A manager replying directly to you skips the coworker and fails.",
+      "A reply may question, repeat, report, or misunderstand one exact detail from the standing line. If it introduces a new claim with no response to the last line, it is an unrelated excuse and fails.",
+      "An ending is any move that accepts the excuse, exposes it, sends the player home, ends the meeting, or otherwise leaves nothing for the next person to question or report. Endings fail even when they follow.",
+      "Undoing means changing, retracting, correcting, or denying a report already made. The line fails even if the new version would be funnier.",
+      "A speaker may misunderstand a detail, but the misunderstanding must be caused by words in the standing line. A random new pigeon, train, or manager is a skipped link.",
+      "One move may contain a short quoted reply and its immediate tag, but it must remain one response from one person. A full exchange between two people skips a turn.",
+      "A move that repeats the same report without adding a question, misunderstanding, or new pressure is a duplicate. It does not advance the chain."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "You told your coworker that the train stopped.",
+      "move": "Then the coworker said the train stopped because it was waiting for your manager.",
+      "gates_note": "all true",
+      "mechanism": "the coworker repeats the train detail and gives the manager a reason to ask next",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the coworker said the train stopped because it was waiting for your manager.",
+      "move": "Then the manager said the boss had been on that train since seven.",
+      "gates_note": "all true",
+      "mechanism": "the manager answers the coworker's report and puts the boss inside the excuse",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the coworker said the pigeon had a badge.",
+      "move": "Then the boss said why was a pigeon carrying an office badge.",
+      "gates_note": "all true",
+      "mechanism": "the boss questions the exact pigeon and badge detail",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "You told your coworker that the train stopped.",
+      "move": "Then the manager said the boss wanted your train ticket.",
+      "gates_note": "satisfies_criterion false, skipped the coworker",
+      "mechanism": "the manager answers you directly and the coworker disappears",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the manager said the boss had been on that train since seven.",
+      "move": "Then the boss said the train was actually a bus and the manager had reported it wrong.",
+      "gates_note": "satisfies_criterion false, undoes a report already made",
+      "mechanism": "the line changes train to bus instead of building on the manager's report",
+      "scores": {
+        "reach": 1,
+        "link": 2,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the manager said the boss had been on that train since seven.",
+      "move": "Then the boss said the excuse was fine and everyone went back to work.",
+      "gates_note": "satisfies_criterion false, ending settles the excuse",
+      "mechanism": "the boss closes the matter and leaves no question for the chain",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Office Witness",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke comes from the excuse and its next speaker. A stranger should see why the reply held or failed.",
+      "Name the speaker and the detail that was picked up. A headline that fits any office chat is a bad headline.",
+      "Never open with a status word or a ruling phrase. No accepted, rejected, refused, or move refused.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Jab at the excuse or the move, never at identity, disability, family, body, intelligence, or spelling.",
+      "Plain spoken English. Mild teasing is fine. No profanity, threats, or grand speeches.",
+      "On a skipped link, name the speaker who vanished. On an ending, say the excuse is settled and the chain stops here.",
+      "On an undo, name the detail that was changed. The report cannot be both train and bus just because the room got tense.",
+      "On a refusal, ask for another reply. Never decide who won.",
+      "The coaching line names one reply from the required next speaker. It ends on a spoken detail, not a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The coworker heard train and handed the manager a timetable.",
+      "The manager puts the boss on the train. Your excuse now has a witness.",
+      "The boss asked about the pigeon badge. The bird has reached senior staff.",
+      "The manager vanished, which is impressive because the office has three people.",
+      "You changed the train to a bus. The report noticed.",
+      "The boss accepted the excuse and closed the file. That is an ending, not a promotion.",
+      "The coworker repeats the stopped train and adds one useful problem.",
+      "A badge is a detail. A whole security hearing is several steps wearing one coat."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: nice excuse.",
+        "why": "opens with a ruling phrase and gives no reason"
+      },
+      {
+        "text": "The Narrator rejects your office saga.",
+        "why": "names the host and says nothing about the broken link"
+      },
+      {
+        "text": "Chaos in the workplace.",
+        "why": "fits any move and names no speaker or detail"
+      },
+      {
+        "text": "The employee is too stupid to lie.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "The train, the pigeon, the boss, the moon.",
+        "why": "lists images without explaining the reply"
+      },
+      {
+        "text": "Then the whole company investigates.",
+        "why": "adds skipped links instead of coaching the next spoken response"
+      },
+      {
+        "text": "The excuse was fine and everyone went home.",
+        "why": "treats an ending as a continuing move"
+      }
+    ]
+  },
+  "rules": [
+    "Reply as the next person in the chain, beginning with Then [person] said.",
+    "Answer the exact last statement with one spoken response.",
+    "Move upward from you to coworker, manager, and boss.",
+    "Make the excuse more awkward by adding one question, report, or misunderstanding.",
+    "Skip a speaker, end the excuse, or undo a report and the chain stops with you.",
+    "The Judge rules on the spoken link, not spelling or perfect office procedure."
+  ],
+  "labels": {
+    "opening": "The first excuse",
+    "next_opening": "The next reply",
+    "your_opening": "Your excuse",
+    "compose": "What does the next person say, after {token}",
+    "compose_waiting": "Draft the next reply while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nobody said anything. The excuse needs a reply.",
+    "too_long": "Over 140 characters. One office reply, not a staff meeting.",
+    "duplicate": "That report already went upstairs. Give the next speaker a new question.",
+    "nudge": "Twice now. The next person must answer {standing_form} with one exact detail."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody speaks until they are back. {standing_form} still stands, and the excuse is waiting in the corridor.\n",
+  "opponent_prompt": "You are one of two players passing a late excuse upward, and you want it to become more awkward.\nAlways write: \"Then [person] said...\" One spoken reply, one exact link, plain words, present tense.\nFollow the chain in order. You answer as the next named person, then leave one detail for the person above them to question, report, or misunderstand.\nGood: \"Then the coworker said the train was waiting for the manager.\" / \"Then the manager said the boss wanted to know why the pigeon had a badge.\"\nBad: \"Then the boss said you were late\" when the coworker has not replied. That skips a speaker. Bad: \"Then the boss said the excuse was fine and everyone went home.\" That ends the story. Bad: \"Then the coworker said the train was actually a bus.\" That undoes the report instead of answering it.\nNever settle the excuse, send anyone away, rescue the player, or change a report already made.\nTalk like a person in a mildly worried office, not a novelist. Name ordinary things: a ticket, a badge, a timetable, a manager. Only words a twelve-year-old anywhere knows.\nNever reuse a reply from this match.\n",
+  "medallions": false,
+  "default_move": "Then the coworker said the train had stopped for someone important."
+}

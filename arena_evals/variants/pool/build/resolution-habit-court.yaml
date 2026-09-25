@@ -1,0 +1,302 @@
+schema_version: 1
+slug: resolution-habit-court
+title: People v. Good Intentions
+tagline: One promise enters court. The evidence leaves it face down in a takeaway bag.
+emblem: ⚖️
+accent: '#7c3aed'
+premise: 'A resolution is on trial for collapsing in public. The host presents one piece of evidence,
+  and the other player adds the next piece, until the promise is either exposed as nonsense or somehow
+  survives. The defendant is the resolution, not you; relax, you are only the witness being mocked.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 14
+  axes:
+    resolution:
+    - wake up early
+    - run every morning
+    - cook at home
+    - read more books
+    - save money
+    - learn Spanish
+    - drink less coffee
+    - keep the flat tidy
+    evidence:
+    - a calendar reminder
+    - a pair of trainers
+    - a takeaway receipt
+    - an untouched book
+    - a banking alert
+    - a language app
+    - a coffee cup
+    - a laundry basket
+    collapse_detail:
+    - still unopened
+    - buried under snacks
+    - set for the wrong day
+    - full of dust
+    - used as a coaster
+    - covered by a bill
+    - left beside the sofa
+    - marked as ignored
+  tests:
+  - One resolution is named or plainly implied, and a stranger can picture the first exhibit at once.
+    Present tense, one sentence, plain words.
+  - A non-player can add two different pieces of evidence within five seconds, and each can make the promise
+    harder to defend.
+  - The card is not already a full collapse. It shows a suspicious object, message, or action, not the
+    final verdict.
+  - No one is seriously hurt, no real person is named, and the joke targets a bad habit or a flimsy promise.
+  - The card invites a second exhibit with a clear cause. It is a courtroom breadcrumb, not a list of
+    every failure in January.
+demo:
+  opening:
+    token: 'Exhibit A: The calendar says I planned to wake up early.'
+    emoji: ⏰
+  moves:
+  - actor: p1
+    text: 'Exhibit A: The calendar says I planned to wake up early.'
+    emoji: ⏰
+    scores: null
+  - actor: p2
+    text: 'Exhibit B: The alarm is set for six, but the phone is charging in the kitchen.'
+    emoji: 🎂
+    scores:
+      reach: 2
+      link: 4
+      picture: 4
+  headline: The alarm moved to the kitchen, so the morning needed a miracle. Then came a biscuit.
+  openings:
+  - token: 'Exhibit A: The calendar says I planned to wake up early.'
+    examples:
+    - 'Exhibit B: The alarm is set for six, but the phone is charging in the kitchen.'
+  - token: 'Exhibit A: My running shoes are still in their box.'
+    examples:
+    - 'Exhibit B: The alarm is set for six, but the phone is charging in the kitchen.'
+move_constraints:
+  max_chars: 140
+  prefix: 'Exhibit '
+  example: 'Exhibit B: The alarm is set for six, but the phone is charging in the kitchen.'
+  hint: One visible piece of evidence caused by the last exhibit, and worse for the resolution.
+rubric:
+- name: reach
+  description: How much more difficult the evidence makes it to defend the resolution.
+  anchors: 0 = no new damage or the promise looks stronger; 1 = a small stain on the case; 2 = one new
+    failure or object is now involved; 3 = the evidence reaches a new setting, person, or habit through
+    one clear step; 4 = the promise is in a much larger mess while the cause still holds, rare. Reach
+    is earned only when the evidence follows.
+  weight: 5
+- name: link
+  description: How clearly this exhibit comes from the exhibit before it.
+  anchors: 0 = unrelated evidence; 1 = the connection is merely claimed; 2 = plausible but loose; 3 =
+    a stranger sees why the new evidence appeared; 4 = it feels like the obvious next exhibit, rare. A
+    move that smuggles in several unshown events scores no higher than 2.
+  weight: 4
+- name: picture
+  description: How clearly a stranger can see the object, message, or action in the exhibit.
+  anchors: 0 = no concrete evidence or impossible to parse; 1 = vague or mostly an opinion; 2 = clear
+    but ordinary; 3 = easy to picture; 4 = one sharp detail makes the collapse visible, rare. A longer
+    exhibit does not score higher just for taking up space.
+  weight: 2
+criterion:
+  verb: follows from
+  inverse_verb: snaps off
+  description: 'A move FOLLOWS if it is one concrete piece of evidence caused by the previous exhibit
+    and makes the resolution harder to defend. Use a visible object, message, or action. Bigger damage
+    is better, but only when the evidence is connected. A move fails when it skips to a new charge without
+    showing how it arose, gives the verdict or closes the case, contradicts or removes admitted evidence,
+    swaps in an unrelated scene, or states a feeling, opinion, or moral instead of evidence.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game, or arguing about the rules is not
+    evidence and is itself a broken exhibit.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no previous exhibit: judge whether the move follows from the opening card
+    and makes the resolution harder to defend.'
+  - A new person may appear when the evidence plainly reaches them, such as a housemate finding the unpaid
+    bill, or when the previous exhibit gives them a reason to act. A stranger who appears only to deliver
+    a brand new charge skips a link, so satisfies_criterion is false.
+  - An ending is any move that gives the verdict, acquits the resolution, proves the habit fixed, closes
+    the hearing, or leaves no further evidence to add. Endings fail satisfies_criterion even when they
+    follow.
+  - A same size exhibit still follows if it is new evidence caused by the last exhibit. Score it low on
+    reach rather than failing it for being dull.
+  - 'Restating the previous exhibit, changing only its wording, or naming the exact object already shown
+    without new evidence is a duplicate: not_semantic_duplicate is false.'
+  - An undo contradicts or removes admitted evidence, such as saying the shoes were worn after showing
+    they stayed boxed, or deleting the receipt from the record. It fails satisfies_criterion.
+  - A feeling, intention, opinion, lesson, or accusation without a concrete object, message, or action
+    is not evidence and fails satisfies_criterion.
+  - Two or three evidence events packed into one move may pass if every link is plain. Keep link at 2
+    or below and picture modest because the exhibit is crowded.
+examples:
+- previous_move: 'Exhibit A: The calendar says I planned to wake up early.'
+  move: 'Exhibit B: The alarm is set for six, but the phone is charging in the kitchen.'
+  gates_note: all true
+  mechanism: the early plan requires an alarm, and the distant phone makes missing it likely
+  scores:
+    reach: 2
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: 'Exhibit B: The alarm is set for six, but the phone is charging in the kitchen.'
+  move: 'Exhibit C: The housemate moves the phone beside the bed, then leaves a biscuit on top of it.'
+  gates_note: all true
+  mechanism: the phone is moved because it is needed nearby, and the biscuit gives the morning a worse
+    distraction
+  scores:
+    reach: 3
+    link: 3
+    picture: 4
+  confidence: lean
+  verdict: accept
+- previous_move: 'Exhibit A: My running shoes are still in their box.'
+  move: 'Exhibit B: The box is being used to store crisps.'
+  gates_note: all true
+  mechanism: the unused shoe box becomes convenient snack storage
+  scores:
+    reach: 2
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: 'Exhibit A: The meal plan is pinned beneath a takeaway menu.'
+  move: 'Exhibit B: The judge orders dinner and the resolution is declared a lifestyle.'
+  gates_note: satisfies_criterion false, an ending gives the verdict and skips the evidence
+  mechanism: the meal plan may suggest takeaway, but no concrete step shows the judge ordering it or ending
+    the case
+  scores:
+    reach: 0
+    link: 1
+    picture: 2
+  confidence: clear
+  verdict: fail
+- previous_move: 'Exhibit B: The box is being used to store crisps.'
+  move: 'Exhibit C: The shoes are laced up and running through the park.'
+  gates_note: satisfies_criterion false, the move undoes admitted evidence
+  mechanism: the shoes suddenly leave the box without any evidence showing how
+  scores:
+    reach: 0
+    link: 0
+    picture: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Clerk
+  tone:
+    commentary_adj: dry
+    explanation_adj: flat
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger reading only the two exhibits must see why the evidence held
+    or failed.
+  - Name both exhibits, or their plain stand-ins. A headline that fits any case is lazy paperwork.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Clerk refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.
+  - Roast the exhibit and the collapsing promise, not protected identity or private tragedy. A player
+    can take a jab, but not abuse.
+  - Plain spoken English. Adult innuendo and mild profanity are allowed when useful. Do not sound like
+    a barrister in a powdered wig.
+  - On a skipped link, name the missing evidence. On an ending, say the case is closed and the chain stops
+    here.
+  - On an undo, name the contradiction. The record does not forget just because the resolution got nervous.
+  - On a refusal, the headline refuses the exhibit and asks for another. It never decides who won.
+  - The coaching line names one concrete object, message, or action that could follow. It ends on evidence,
+    not a mood or verdict.
+  good_headlines:
+  - The alarm moved to the kitchen, so the morning needed a miracle. Then came a biscuit.
+  - A shoe box full of crisps is strong evidence for running nowhere.
+  - The takeaway menu covered the plan, but the verdict skipped the receipt.
+  - The shoes cannot be boxed crisps and sprinting shoes in the next breath. The record is annoyingly
+    awake.
+  - The housemate moved the phone, and the biscuit moved in. A tidy little disaster.
+  - The calendar promised dawn. The charging cable filed for night shift.
+  - That is an opinion about discipline, not evidence. Put an object on the stand.
+  - The case ended before the next exhibit arrived. Even the resolution got bored and went home.
+  - The meal plan is under the menu, which is less a strategy than a burial.
+  - One receipt would connect the menu to the collapse. At present, the prosecution has vibes.
+  bad_headlines:
+  - text: 'Accepted: excellent evidence.'
+    why: opens with a status word and says nothing specific
+  - text: The Clerk refuses this nonsense.
+    why: opens with a ruling phrase and names the host
+  - text: This resolution is a total loser.
+    why: mocks the player or defendant without explaining the evidence
+  - text: The prosecution proceeds with devastating incompetence.
+    why: legal fog replaces a plain reason
+  - text: And thus the noble promise fell...
+    why: poetry and an ellipsis
+  - text: The habit fails because it fails.
+    why: circular and too vague to judge
+  - text: Then suddenly a judge, a solicitor, and the entire office arrive.
+    why: packs in newcomers and skips the evidence linking them
+  - text: You are pathetic at mornings.
+    why: a personal insult with no exhibit or reason
+rules:
+- 'State one exhibit in the form Exhibit [number]: one concrete object, message, or action.'
+- Make the resolution harder to defend through one clear piece of evidence.
+- Follow the previous exhibit, do not skip charges, close the case, or undo the record.
+- The Judge rules on the evidence and the link, not spelling or courtroom polish.
+labels:
+  opening: The opening exhibit
+  next_opening: The next exhibit
+  your_opening: Your exhibit
+  compose: What is Exhibit [number] after {token}
+  compose_waiting: Draft your next exhibit while you wait
+validation_messages:
+  empty: No evidence was entered. The promise cannot collapse by telepathy.
+  too_long: Over 140 characters. One exhibit, not the complete annual report.
+  duplicate: That evidence is already in the record. Add something new.
+  nudge: Twice now, the record has stalled. Add one concrete object, message, or action caused by {standing_form}.
+judge_out_text: 'The Judge has stepped out. The record stays open. {standing_form} still stands, and nobody
+  is allowed to invent a verdict yet.
+
+  '
+opponent_prompt: 'You are one of two witnesses building a case against a collapsing New Year''s resolution.
+
+  Always use: "Exhibit [number]: ..." One concrete object, message, or action, in plain present tense.
+
+  Take the standing exhibit and add evidence caused by it. Make the promise harder to defend without
+
+  skipping to a brand new charge.
+
+  Good: "Exhibit B: The alarm is set for six, but the phone is charging in the kitchen." / "Exhibit C:
+
+  The meal plan is pinned under a takeaway receipt from this morning."
+
+  Bad: "Exhibit B: The whole family gives up" because the missing evidence is doing all the work.
+
+  Bad: "Exhibit B: The judge finds the resolution guilty" because that closes the case.
+
+  Bad: "Exhibit B: I feel ashamed" because a feeling is not an exhibit.
+
+  Never give the verdict, rescue the resolution, tidy up the habit, or undo something already admitted.
+
+  Talk like a person reading a receipt aloud, not a grand lawyer. Name ordinary things: a phone, a sock,
+
+  a coffee cup, a message, a bin. Mild profanity and adult innuendo are allowed, but keep the joke aimed
+
+  at the promise and the evidence, not protected identity or real suffering.
+
+  Never reuse an exhibit from this match.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: 'Exhibit B: The reminder is marked ignored before breakfast.'
+seed_pool:
+  - { opening_token: "Exhibit A: The calendar says I planned to wake up early.", opening_emoji: "⏰" }
+  - { opening_token: "Exhibit A: My running shoes are still in their box.", opening_emoji: "👟" }
+  - { opening_token: "Exhibit A: The meal plan is pinned beneath a takeaway menu.", opening_emoji: "🍜" }

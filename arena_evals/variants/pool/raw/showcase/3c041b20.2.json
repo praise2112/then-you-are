@@ -1,0 +1,280 @@
+{
+  "slug": "two-word-alibi",
+  "title": "Two-Word Alibi",
+  "tagline": "Two nouns enter court. One strange word leaves with a story.",
+  "emblem": "⚖️",
+  "accent": "#6c4a7d",
+  "premise": "Three rounds. Each round gives you one obscure real word and two ordinary nouns. Connect both nouns to the word in one crisp claim, as if you are defending your guess in court. The claim must fit the word's actual meaning, not merely sound clever. The Prosecutor scores how clearly, plausibly and amusingly your alibi joins the nouns to the definition.\n",
+  "seed_pool": [
+    {
+      "opening_token": "kerfuffle",
+      "opening_emoji": "👟",
+      "detail": "nouns: shoe, crowd",
+      "hidden": "a commotion or fuss"
+    },
+    {
+      "opening_token": "gobemouche",
+      "opening_emoji": "👄",
+      "detail": "nouns: gossip, window",
+      "hidden": "a gullible person who swallows everything they hear"
+    },
+    {
+      "opening_token": "snollygoster",
+      "opening_emoji": "🦊",
+      "detail": "nouns: ladder, election",
+      "hidden": "a shrewd, unprincipled person, especially a politician"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 6,
+    "axes": {
+      "word": [
+        "kerfuffle",
+        "gobemouche",
+        "snollygoster",
+        "petrichor",
+        "susurrus",
+        "raconteur",
+        "callipygian",
+        "defenestration",
+        "ultracrepidarian",
+        "nincompoop"
+      ],
+      "noun_one": [
+        "shoe",
+        "gossip",
+        "ladder",
+        "rain",
+        "whisper",
+        "story",
+        "statue",
+        "window",
+        "lecture",
+        "hat"
+      ],
+      "noun_two": [
+        "crowd",
+        "window",
+        "election",
+        "garden",
+        "library",
+        "dinner",
+        "poster",
+        "office",
+        "podcast",
+        "parade"
+      ]
+    },
+    "tests": [
+      "One obscure real word and two ordinary nouns. A stranger can read the card without needing a private joke.",
+      "The word has a checkable dictionary meaning, but its spelling does not give the answer away too easily.",
+      "The nouns are concrete, familiar and distinct enough to make a fresh connection.",
+      "The pair can support at least one clear claim that uses both nouns without forcing either into nonsense.",
+      "The word is obscure enough to invite a guess, but its meaning is stable enough for a fair ruling."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Shoe + crowd: a kerfuffle when everyone trips at once",
+    "hint": "One claim. Use both nouns, fit the real meaning, and make your alibi sound inevitable."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How inventive and satisfying is the connection between both nouns and the word's real meaning?",
+      "anchors": "0 = repeats the nouns or gives no connection; 1 = joins them with a thin pun or obvious link; 2 = a workable relationship with one fresh turn; 3 = both nouns become useful evidence for the definition; 4 = an elegant, surprising alibi that makes the obscure word feel perfectly chosen (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the claim get a laugh or a warm little snort?",
+      "anchors": "0 = no comic spark; 1 = mildly cute; 2 = a clear smile; 3 = a proper laugh; 4 = the courtroom wants it read back, preferably with unnecessary seriousness (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Is it one crisp, readable claim that uses both nouns without padding?",
+      "anchors": "0 = fragment, lecture or unrelated sentence; 1 = understandable but tangled; 2 = clear enough with some slack; 3 = tight, plain and immediately legible; 4 = compact enough to put on the evidence board unchanged (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A claim PLAYS if it uses both supplied nouns and states a clear, plausible relationship to the obscure word's real meaning. The connection may be literal, metaphorical, situational or comic, but the word must still mean what it actually means. It fails when either noun is ignored, when the claim only defines a sound alike or spelling, when it gives a false meaning, or when it is not a claim at all but a question, explanation to the Judge or comment about the game. A plain but accurate definition plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Prosecutor, about the game or about the rules is itself a losing alibi.\n",
+    "judge_notes": [
+      "Test the gate in both directions: are both nouns present in the claim, and does the relationship fit the real dictionary meaning of the word? A clever sentence that defines the wrong word fails.\n",
+      "The nouns may be altered grammatically, such as shoes instead of shoe, but they must remain recognisable. A claim about a crowd that never uses the shoe does not pass.\n",
+      "A metaphor or invented scene is fine if it preserves the meaning. For kerfuffle, a shoe causing a crowd to panic can work because it creates a commotion. The claim need not describe the dictionary wording exactly.\n",
+      "Do not reward a connection based only on spelling, pronunciation or a hidden letter. The nouns must help explain the word's meaning.\n",
+      "Both players answer the same word and noun pair. Judge each alibi on its own; the other player's claim is not the standard.\n",
+      "Score stretch by the quality of the bridge, not by how bizarre the scene becomes. A strange but precise connection beats random surrealism.\n",
+      "Lower case, missing punctuation and modest grammar do not matter if the claim is clear. The evidence is the relationship, not the stationery.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "kerfuffle, nouns: shoe, crowd",
+      "move": "Shoe + crowd: a kerfuffle when everyone trips at once",
+      "gates_note": "all true",
+      "mechanism": "the shoe triggers a confused crowd scene, making the commotion concrete",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "gobemouche, nouns: gossip, window",
+      "move": "Gossip + window: a gobemouche swallows every tale at the open window",
+      "gates_note": "all true",
+      "mechanism": "the window provides the gossip source and the gullible listener eagerly takes it in",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "snollygoster, nouns: ladder, election",
+      "move": "Ladder + election: a snollygoster climbs whichever side wins",
+      "gates_note": "all true",
+      "mechanism": "the ladder supplies the climb and the election exposes the unprincipled political opportunist",
+      "scores": {
+        "stretch": 4,
+        "funny": 4,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "kerfuffle, nouns: shoe, crowd",
+      "move": "Shoe: footwear worn by a crowd",
+      "gates_note": "satisfies_criterion false (the crowd is present but the claim does not explain kerfuffle as a commotion)",
+      "mechanism": "it labels the objects and quietly leaves the obscure word in the corridor",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "gobemouche, nouns: gossip, window",
+      "move": "Gossip + window: a gobemouche is a broken pane",
+      "gates_note": "satisfies_criterion false (the claim gives a false meaning for gobemouche)",
+      "mechanism": "both nouns appear, but the word is not a type of glass, however confidently it enters court",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Prosecutor",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who saw the word, nouns and claim should understand the ruling.",
+      "Name both nouns and the word when useful. A line about any imaginary alibi is not evidence.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"The Prosecutor refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the alibi, never identity. A gentle jab at a flimsy claim is welcome, but no abuse aimed at protected traits.",
+      "Plain spoken English. Adult innuendo and mild profanity are allowed when they sharpen the joke, not when they replace it.",
+      "On a fail, say which noun was ignored or which meaning was broken, using the words on the card.",
+      "On a refusal, the alibi refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one connection that would have worked. It ends on a noun, an action or the word's meaning, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The shoe starts the kerfuffle, the crowd supplies the panic, and the dictionary gets a day off.",
+      "A gobemouche hears gossip through the window and swallows it whole, an impressive lack of chewing.",
+      "The ladder makes the snollygoster's climbing ambition visible, while the election supplies the moral wobble.",
+      "Both nouns are in the room, and the word gets its real meaning instead of a fake moustache.",
+      "The claim gives the crowd a shoe, then gives the shoe a crisis. That is a respectable kerfuffle.",
+      "A window full of gossip and one eager gobemouche, a perfect little buffet for bad information.",
+      "The ladder is not decoration, it is the snollygoster's route to whichever election result pays.",
+      "The nouns turned up, the definition survived, and nobody had to perjure a vowel.",
+      "A broken pane is not a gobemouche, but it is a lovely alibi for a completely different crime.",
+      "The shoe got named and the crowd got ignored, so one witness has gone missing."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: excellent alibi.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Prosecutor refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Wrong, you forgot the crowd.",
+        "why": "too bare and does not explain the word's meaning"
+      },
+      {
+        "text": "Nice try, genius.",
+        "why": "mocks the player instead of examining the claim"
+      },
+      {
+        "text": "The claim is very creative, inventive, clever and imaginative.",
+        "why": "lists praise without naming the relationship"
+      },
+      {
+        "text": "The nouns dance beneath a moonlit dictionary of destiny.",
+        "why": "poetry instead of plain explanation"
+      },
+      {
+        "text": "This is a semantic misdemeanor with jurisprudential implications.",
+        "why": "needlessly formal and hard to read"
+      },
+      {
+        "text": "Better than the other player's alibi.",
+        "why": "judges the pair, not the claim on its own"
+      },
+      {
+        "text": "You used gossip, but gobemouche means gullible listener, darling.",
+        "why": "speaks directly to the player and gives a lecture"
+      },
+      {
+        "text": "Nope.",
+        "why": "no noun, meaning or reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one obscure real word and two ordinary nouns each.",
+    "Write one claim under 90 characters using both nouns and connecting them to the word's real meaning.",
+    "The relationship may be literal, metaphorical or comic, but the word's actual meaning must survive.",
+    "Ignore a noun, define the wrong word or talk about the game and the alibi is thrown out. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The case",
+    "next_opening": "The next case",
+    "your_opening": "Your case",
+    "compose": "Your alibi for {token}",
+    "compose_waiting": "Build your alibi while you wait"
+  },
+  "validation_messages": {
+    "empty": "No alibi. Use both nouns in one claim.",
+    "too_long": "Over 90 characters. The court asked for a claim, not a closing argument.",
+    "duplicate": "That alibi has already been heard this match. Find another connection.",
+    "nudge": "Twice now. One claim using both nouns and the real meaning: {standing_form}."
+  },
+  "judge_out_text": "The Prosecutor has stepped out. The evidence stays put. {standing_form} is still on the record. Give it a moment.\n",
+  "opponent_prompt": "You are a playful word-game opponent in a small courtroom. Each round gives you one obscure real word and two ordinary nouns. Write one crisp claim under 90 characters connecting both nouns to the word's real meaning.\n\nBOTH NOUNS MUST MATTER. The claim may be literal, metaphorical, absurd or mildly rude, but a reader who sees only the word, nouns and claim must be able to follow the bridge. Do not define a sound alike or invent a meaning from the spelling.\n\nGood: \"Shoe + crowd: a kerfuffle when everyone trips at once\" for kerfuffle, meaning a commotion. \"Ladder + election: a snollygoster climbs whichever side wins\" for snollygoster, meaning an unprincipled political operator.\nBad: \"Shoe: footwear worn by a crowd\" because it does not explain kerfuffle. \"Gossip + window: a gobemouche is a broken pane\" because gobemouche means a gullible listener, not glass.\n\nUse both supplied nouns plainly. Keep the claim short and readable. One sentence or sentence fragment is fine. Do not explain the joke after it. Do not speak to the Prosecutor, mention the game or ask a question. No quotation marks around the claim. Reply with the claim only.\n",
+  "medallions": false,
+  "default_move": "Noun + noun: a suspiciously confident connection"
+}

@@ -1,0 +1,288 @@
+{
+  "slug": "viewing-withheld",
+  "title": "Viewing Withheld",
+  "tagline": "Make the damp sound desirable.",
+  "emblem": "🏚️",
+  "accent": "#6b7d52",
+  "premise": "You are estate agents listing a terrible room. Each round, the card gives one bleak feature and one ordinary object. Write a property listing that makes the feature sound like a luxury without pretending it is gone. The host awards points for the most heroic spin that leaves the bad truth standing.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The ceiling leaks / umbrella",
+      "opening_emoji": "☂️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "There is no window / chair",
+      "opening_emoji": "🪑",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The floor slopes / bathtub",
+      "opening_emoji": "🛁",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 8,
+    "axes": {
+      "feature": [
+        "the ceiling leaks",
+        "there is no window",
+        "the floor slopes",
+        "the door will not close",
+        "the walls are damp",
+        "the heating is broken",
+        "the room is underground",
+        "the roof is missing"
+      ],
+      "object": [
+        "umbrella",
+        "chair",
+        "bathtub",
+        "mirror",
+        "lamp",
+        "sofa",
+        "kettle",
+        "wardrobe"
+      ],
+      "setting": [
+        "bedroom",
+        "studio",
+        "box room",
+        "garden room",
+        "attic",
+        "basement",
+        "annexe",
+        "guest room"
+      ]
+    },
+    "tests": [
+      "A short form with an article, one terrible feature, one ordinary object, and no more than eight words.",
+      "The feature is bleak but harmless, domestic and instantly pictureable. No death, crime, illness or real address.",
+      "The object is ordinary and concrete, something a listing can praise, display or assign a role.",
+      "The feature must remain plainly true after the card is read, not softened into a repair, promise or missing detail.",
+      "A stranger should see how an agent could spin the bad feature as a benefit while keeping the object in the pitch."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Umbrella enjoys our exclusive indoor rainfall suite",
+    "hint": "One listing line. Keep the misery, sell the lifestyle."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How boldly does the listing turn the room's defect into a supposed property benefit?",
+      "anchors": "0 = repeats the card or merely names the object; 1 = adds a thin compliment; 2 = gives the defect a plausible lifestyle angle; 3 = builds a rich luxury claim from the misery while both card details remain clear; 4 = makes a truly dreadful room sound fiercely desirable, with every bad fact still standing (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the estate agent's sales spin create a clear laugh?",
+      "anchors": "0 = flat or purely factual; 1 = a small comic turn; 2 = a neat smile; 3 = a strong laugh from the mismatch between misery and marketing; 4 = a line worth repeating at the viewing (rare). Gentle property jargon is welcome, but the joke must come from the room.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as a tight estate listing line rather than an explanation?",
+      "anchors": "0 = comment, question or explanation; 1 = a listing idea buried in padding; 2 = recognisable property copy with some slack; 3 = concise, polished sales language with every word earning its place; 4 = a clipped line that could sit in a listing unchanged (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A listing PLAYS if it keeps the card's terrible feature true and makes the named object part of the sales pitch. The feature may be reframed as character, atmosphere, wellness, heritage or exclusivity, but it cannot be repaired, denied, hidden or replaced. The object must appear as a meaningful part of the listing, not as an unrelated word. It fails if the feature is dropped, contradicted or made false, if the object is absent or merely tacked on, or if the move is a question, a comment, an explanation or a message to the Judge. A plain listing that preserves both details plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game or about the rules is itself a losing listing.\n",
+    "judge_notes": [
+      "Test the gate from the card to the line: could the terrible feature still be true given the listing, and is the named object doing sales work? \"Umbrella enjoys our exclusive permanent rain feature\" passes for a leaking ceiling.",
+      "A positive spin is not a contradiction. Calling a leak a rainfall experience, a sloping floor a natural perspective or a missing window a private light retreat keeps the defect alive.",
+      "Do not reward a repair disguised as praise. \"Chair beside our newly sealed ceiling\" fails for a leaking ceiling because the leak has been removed.",
+      "Do not accept omission. \"Luxury reading nook\" fails for a card with no window and a chair if neither the absence nor the chair's role can be read from it.",
+      "The object must belong to the pitch. \"Rare indoor waterfall, chair included\" may pass if the chair is presented as part of the room, but a stray object word at the end is weak and may fail.",
+      "Both players answer the same card. Judge each listing on its own; one player's sales pitch is not the standard for the other.",
+      "A line can be absurd, inflated or shamelessly optimistic. Score stretch for the distance from the bad fact while the bad fact and object remain recoverable.",
+      "Lower case, capitals, a missing full stop and mild spelling variation do not matter. Judge the words and their meaning."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The ceiling leaks / umbrella",
+      "move": "Umbrella enjoys our exclusive permanent rain retreat",
+      "gates_note": "all true",
+      "mechanism": "the leak becomes an exclusive rainfall amenity and the umbrella is its essential furnishing",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "There is no window / chair",
+      "move": "Chair offers unrivalled privacy in our windowless reading suite",
+      "gates_note": "all true",
+      "mechanism": "the missing window becomes privacy and the chair becomes the reading suite's feature",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The floor slopes / bathtub",
+      "move": "Bathtub brings gentle natural movement to this character room",
+      "gates_note": "all true",
+      "mechanism": "the slope becomes gentle movement and the bathtub is sold as part of the experience",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The ceiling leaks / umbrella",
+      "move": "Umbrella included in bright dry room",
+      "gates_note": "satisfies_criterion false (bright dry room contradicts the leak)",
+      "mechanism": "the line removes the ceiling's leak instead of selling it",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "There is no window / chair",
+      "move": "A luxurious private retreat awaits",
+      "gates_note": "satisfies_criterion false (the windowless feature and chair are both missing)",
+      "mechanism": "it offers vague property praise with neither card detail preserved",
+      "scores": {
+        "stretch": 1,
+        "funny": 0,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The floor slopes / bathtub",
+      "move": "Does the bathtub stay level?",
+      "gates_note": "satisfies_criterion false (question to the reader, not a listing line)",
+      "mechanism": "the bathtub appears, but the move asks a question instead of selling the sloping floor",
+      "scores": {
+        "stretch": 0,
+        "funny": 1,
+        "headline_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Agent",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the listing must see how the bad room became a benefit.",
+      "Name the defect and the object when possible, the leak, the chair, the slope or the umbrella. A line that fits any property is a bad line.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", \"The Agent refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the listing, not the player. Light teasing is fine, but nothing about the player's body, family, identity, intelligence or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no heavy property jargon, no thesaurus words.",
+      "On a fail, say which feature or object went missing, got contradicted or was used wrongly, in the words of the card.",
+      "On a refusal, the listing refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one listing that would have scored. It ends on a feature or an object, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The umbrella has been promoted to a private weather system, and the ceiling still leaks.",
+      "A chair in a windowless room is not a prison cell, it is a very committed reading nook.",
+      "The slope becomes gentle movement, while the bathtub remains exactly where gravity left it.",
+      "The listing sells indoor rain and remembers to include the umbrella, a rare flash of honesty.",
+      "No window means no neighbours watching, and the chair has the best seat in the darkness.",
+      "The ceiling is leaking, the umbrella is working, and somehow this is called wellness.",
+      "The bathtub is part of the journey, since the floor has already chosen a direction.",
+      "A luxury retreat needs its defect and its object. This one has neither, only velvet fog.",
+      "The room is not dry in the line, and the umbrella is not decorative. That is the whole sale.",
+      "Privacy is a generous name for no window, but the chair has at least been given a purpose."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: excellent spin.",
+        "why": "opens with a status word and uses a colon"
+      },
+      {
+        "text": "The Agent refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, write a property listing.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "Nice estate agency work.",
+        "why": "gives no reason and fits any move"
+      },
+      {
+        "text": "You clearly do not understand property.",
+        "why": "mocks the player rather than the listing"
+      },
+      {
+        "text": "The room, a moonlit vessel, embraces its aqueous destiny.",
+        "why": "poetry and inflated language hide the actual defect"
+      },
+      {
+        "text": "It is clever, bold, luxurious and wonderfully ironic.",
+        "why": "lists praise without naming the feature or object"
+      },
+      {
+        "text": "Better than the other player's line.",
+        "why": "judges the pair instead of this listing on its own"
+      },
+      {
+        "text": "The leak is missing.",
+        "why": "does not say whether the move kept or broke the card's feature"
+      },
+      {
+        "text": "Put the chair in the listing, please.",
+        "why": "coaches vaguely without offering a concrete successful line"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one terrible room card each.",
+    "Write one estate listing line for it, under 90 characters. The House writes its own, unseen, and the Agent scores both.",
+    "Keep the terrible feature true and make the named object part of the sales pitch. Deny, repair or drop either detail and the round is lost.",
+    "Spin the misery into luxury, privacy, wellness, heritage or some other benefit. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The room",
+    "next_opening": "The next room",
+    "your_opening": "Your room",
+    "compose": "Your listing for {token}",
+    "compose_waiting": "Write your listing while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty viewing. Write the listing.",
+    "too_long": "Over 90 characters. A listing line, not a brochure.",
+    "duplicate": "That listing has already appeared this match. Find another selling point.",
+    "nudge": "Twice now. Keep the bad feature and sell the object: {standing_form}."
+  },
+  "judge_out_text": "The Agent has stepped out to inspect the damp. Nobody moves until they are back. {standing_form} sits in the particulars. Give it a minute.\n",
+  "opponent_prompt": "You are an estate agent listing a terrible room. Write one short property listing line.\nKEEP THE BAD TRUTH. The card gives one bleak feature and one ordinary object. The feature must\nstill be true to a reader who sees only your line, and the object must be part of the sales\npitch. Never repair, deny or quietly drop either detail.\nThen spin the misery as luxury. Call the leak an indoor rainfall experience, the missing window\nprivacy, the slope natural movement, the damp atmosphere, or the broken heating rustic climate\ncontrol. The points are for how far the line gets from the bad room while the bad truth holds.\nGood: \"Umbrella enjoys our exclusive permanent rain retreat\" for a leaking ceiling and umbrella.\n\"Chair offers unrivalled privacy in our windowless reading suite\" for no window and chair.\nBad: \"Bright dry room with umbrella\" for a leak, because the leak is contradicted. \"Luxury retreat\"\nfor no window and chair, because both card details are missing. A question is not a listing.\nListing rhythm: short, confident, polished and shameless. Under 90 characters. Do not use a colon or\na dash. Do not explain the joke. Make the ordinary object useful, prestigious or indispensable.\nVary the angle from round to round: wellness, privacy, heritage, exclusive access, natural design,\nor a heroic maintenance story. Never use the same shape twice in a match.\nNo quotation marks around the listing. Reply with the listing line only.\n",
+  "medallions": false,
+  "default_move": "Rare character room with object included"
+}

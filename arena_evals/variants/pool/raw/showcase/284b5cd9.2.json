@@ -1,0 +1,288 @@
+{
+  "slug": "map-lies",
+  "title": "Map Lies",
+  "tagline": "Give the place a past worth getting lost for.",
+  "emblem": "🗺️",
+  "accent": "#b06f52",
+  "premise": "Three rounds. Each round gives a real place name and a few public facts about its setting. Both players invent one plausible origin a tour guide could tell with a straight face. The Judge scores each story, then each player sees both explanations and calls which one is the real origin. Then the map tells the truth.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Dead Horse, Colorado",
+      "opening_emoji": "🐎",
+      "detail": "town in southwestern Colorado, near the Dolores River",
+      "hidden": "named for a dead horse found near the original settlement"
+    },
+    {
+      "opening_token": "Truth or Consequences, New Mexico",
+      "opening_emoji": "🎙️",
+      "detail": "city in southern New Mexico, formerly called Hot Springs",
+      "hidden": "renamed in 1950 after the radio quiz show Truth or Consequences broadcast its tenth anniversary episode there"
+    },
+    {
+      "opening_token": "Why, Arizona",
+      "opening_emoji": "❓",
+      "detail": "small community in the Sonoran Desert, near the junction of two highways",
+      "hidden": "named for a Y shaped junction, with the name changed from Y to Why for postal reasons"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 5,
+    "axes": {
+      "setting": [
+        "desert",
+        "river",
+        "mountain",
+        "coast",
+        "forest",
+        "prairie",
+        "marsh",
+        "canyon"
+      ],
+      "source": [
+        "a person",
+        "an animal",
+        "a local custom",
+        "a mistake",
+        "a landscape feature",
+        "a public event",
+        "a warning",
+        "a family story"
+      ],
+      "tone": [
+        "solemn",
+        "comic",
+        "romantic",
+        "grim",
+        "practical",
+        "superstitious",
+        "boastful",
+        "tender"
+      ]
+    },
+    "tests": [
+      "The card is a real place name, not a made up destination.",
+      "The public line gives enough setting to make a local sounding lie possible.",
+      "The hidden truth explains the exact place name rather than merely describing the area.",
+      "The card does not require specialist knowledge of a person, language, or event to bluff around.",
+      "The truth is short enough to reveal cleanly after both players have guessed."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The trail ended at a horse shaped rock where exhausted riders stopped to rest and leave offerings.",
+    "hint": "One sentence a tour guide could say with a straight face."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could a tourist hear this from a confident local guide and accept it as the ordinary story behind the name?",
+      "anchors": "Score the lie on its own, not against the other player's answer. 0 = fairy tale, contradiction, or obvious nonsense; 1 = possible only after several drinks; 2 = plausible with a little goodwill; 3 = a tourist would repeat it at dinner; 4 = it sounds like a documented local explanation (rare).",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the invented origin have a light comic spark without turning into a sketch or a punchline?",
+      "anchors": "0 = no spark; 1 = a small smile; 2 = a pleasing local oddity; 3 = a genuine laugh that still sounds like lore; 4 = wonderfully funny and still usable by a guide (rare).",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the sentence cleanly explain how the exact name arose, with one clear event, object, person, or phrase doing the work?",
+      "anchors": "0 = no origin at all; 1 = a wandering anecdote; 2 = an origin is present but padded or muddy; 3 = concise, specific, and easy to retell; 4 = neat enough for a local history plaque (rare).",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An origin PLAYS if it offers one coherent, believable explanation for the exact place name, in one sentence, without contradicting the basic geography or history supplied on the card. It fails when it does not explain the name at all, gives several unrelated origins, talks about the game or the act of guessing, or conflicts with the public facts. A fanciful local story still plays if it could fit the card. A true origin is not a failure: it plays, though it may lose the fun of the lie.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the rules, or describing the bluffing task instead of giving an origin is itself a losing answer.\n",
+    "judge_notes": [
+      "The hidden truth is given to you. Use it to set truth_proximity, and report hit when the answer gives the real origin or a plainly equivalent account; near only when it shares the same naming event or source but gets a minor detail wrong. Otherwise none. Do not reward closeness to the truth on the rubric.\n",
+      "The first move must explain the exact place name, not merely describe the landscape or offer a colorful fact about the town. A scenic story without a naming link fails.\n",
+      "Judge each answer on its own. The other player's story is not the standard, and a more polished rival does not make a coherent answer fail.\n",
+      "One sentence may contain one compact chain of events. If it lists unrelated possibilities, uses several separate explanations, or says the name came from many things, it fails for lack of one coherent origin.\n",
+      "A story that contradicts the public geography or history fails even if it sounds charming. Do not invent a coastline in a desert or move a town into another country.\n",
+      "A hedge such as \"maybe\" or \"locals say\" does not automatically fail if a clear origin is still offered, but it lowers believable and dictionary_shaped. A question with no origin in it fails.\n",
+      "A bare phrase that names an origin can play if it clearly links the exact name to a source, but it scores low on dictionary_shaped. A bare landscape description does not play.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Dead Horse, Colorado, town near the Dolores River",
+      "move": "A dead horse was found beside the first trail, and the settlers kept the name as a warning to travelers.",
+      "gates_note": "all true",
+      "mechanism": "a tidy local incident explains both words and stays within the supplied setting",
+      "scores": {
+        "believable": 4,
+        "funny": 1,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Dead Horse, Colorado, town near the Dolores River",
+      "move": "The desert became so hot that every horse in Colorado galloped into the ocean, and this was the last one.",
+      "gates_note": "satisfies_criterion false, contradicts the geography",
+      "mechanism": "a large joke replaces a possible local origin and puts an ocean where the card gives a river town",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Why, Arizona, small desert community at a highway junction",
+      "move": "Two roads met in a sharp Y, and the postal clerk wrote Why when a single letter would not pass.",
+      "gates_note": "all true",
+      "mechanism": "a practical naming mishap fits the junction and neatly accounts for the spelling",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Why, Arizona, small desert community at a highway junction",
+      "move": "I think the other player is wrong, because the Judge wants us to guess the truth.",
+      "gates_note": "satisfies_criterion false, speaks about the game instead of giving an origin",
+      "mechanism": "it comments on the round and offers no account of the place name",
+      "scores": {
+        "believable": 0,
+        "funny": 0,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Truth or Consequences, New Mexico, formerly Hot Springs",
+      "move": "A miner won a bet at the hot springs and named the town after the two choices he offered his stubborn brother.",
+      "gates_note": "all true",
+      "mechanism": "a compact family anecdote gives the phrase a plausible local life",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Truth or Consequences, New Mexico, formerly Hot Springs",
+      "move": "A radio host renamed it after broadcasting there, or perhaps the mayor did it for a bet, or maybe nobody knows.",
+      "gates_note": "satisfies_criterion false, several unrelated origins and hedging without one coherent account",
+      "mechanism": "three escape routes crowd the sentence and leave the name with no single origin",
+      "scores": {
+        "believable": 1,
+        "funny": 1,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Kindly Cartographer",
+    "tone": {
+      "commentary_adj": "warm",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the place and the answer should see why it scored.",
+      "Name the place or the answer's key image. A headline that fits every tour guide is a lost suitcase.",
+      "Never open with a status word or ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"That fails\", or \"The Kindly Cartographer says\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the story, never the player's identity. A little cheek is welcome, but no abuse about protected traits, body, family, or disability.",
+      "Plain spoken English. Affectionate, lightly cheeky, and never grander than a pub guide with a map.",
+      "Profanity and adult innuendo are allowed when they sharpen the joke, but do not make them the whole joke.",
+      "Never reveal or hint at the real origin in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline refuses the answer and asks for another origin. It never rules on who won.",
+      "The coaching line names one origin that would have scored. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "Dead Horse has a story, and yours saddled up nicely.",
+      "A Y in the desert, a postal clerk with a grudge, and one very tidy lie.",
+      "That horse story has enough dust on it to pass for local history.",
+      "The hot springs have acquired a family argument, which is exactly how towns get named.",
+      "A place name needs an origin, not a guided tour of your uncertainty.",
+      "The road junction is doing the work, and the clerk is earning a small legend.",
+      "This is charming local nonsense, the good kind with a clear address.",
+      "A tourist would buy it, then repeat it with dangerous confidence.",
+      "The map can survive a tall tale, but not three origins fighting in one sentence.",
+      "You gave the town a backstory and left the fairy dust at home."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a fine origin for Dead Horse.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Kindly Cartographer rejects this.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "That is not an origin, try again.",
+        "why": "opens with a ruling phrase and gives no specific image"
+      },
+      {
+        "text": "Why is named for a Y shaped junction.",
+        "why": "reveals the hidden truth in the headline"
+      },
+      {
+        "text": "Believable.",
+        "why": "no reason and fits any answer"
+      },
+      {
+        "text": "Only an idiot would tell that story.",
+        "why": "mocks the player instead of the answer"
+      },
+      {
+        "text": "O ancient map, reveal thy secret shores.",
+        "why": "poetry instead of plain spoken commentary"
+      },
+      {
+        "text": "It is plausible, credible, convincing, and locally authentic.",
+        "why": "four labels replace one concrete reason"
+      },
+      {
+        "text": "Better than the other player's lie.",
+        "why": "judges the pair instead of the answer on its own"
+      },
+      {
+        "text": "Nice one.",
+        "why": "no place, image, or reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one real place name each.",
+    "Write one sentence explaining how the exact name arose, using the public setting and keeping a straight tour guide face.",
+    "Then call which of two explanations is the real origin, the House's story or the dictionary's. Right, and the points are yours. Fooled, and they go to the House.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The place",
+    "next_opening": "The next place",
+    "your_opening": "Your place",
+    "compose": "Your origin for {token}",
+    "compose_waiting": "Invent an origin while you wait"
+  },
+  "validation_messages": {
+    "empty": "The guide has gone silent. Give the place an origin.",
+    "too_long": "Over 160 characters. A local explanation, not a county history.",
+    "duplicate": "That origin has already walked this map. Try a different story.",
+    "nudge": "Twice now. One sentence explaining how {standing_form} got its name."
+  },
+  "judge_out_text": "The judge has stepped out for a look at the map. Nobody names the town until they are back. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are the charming liar. Write one false origin for the real place name on the card, in one sentence a tour guide could say with a straight face.\n\nThe public line gives you the setting. Respect it. Do not put a desert town on a coast, move a river into another country, or contradict any basic history supplied on the card. Your story must explain the exact place name, not merely describe a nice view or mention an unrelated local fact.\n\nMake it sound like local lore. Use one clear source for the name, such as a person, animal, mistake, custom, landscape feature, warning, or public event. One compact chain of events is fine. Do not offer three possibilities, hedge until the story disappears, or talk about the game, the Judge, or the other player.\n\nYou are bluffing. The hidden truth is given to you so you can steer clear of it. Never write the real origin, a paraphrase of it, or the same naming event for the same purpose. A different story in the same setting is welcome. Do not use the place name itself as the explanation.\n\nWrite one sentence under 160 characters if possible. No quotation marks around the answer. Avoid a fairy tale, a travel brochure, or a damn essay. Make the lie clean enough that a tourist might repeat it.",
+  "medallions": true,
+  "default_move": "A stranded surveyor named the place after the landmark that guided him home"
+}

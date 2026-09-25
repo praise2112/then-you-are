@@ -1,0 +1,297 @@
+schema_version: 1
+slug: the-opening-act
+title: The Opening Act
+tagline: Name the noise. Book the imaginary tour.
+emblem: 🎸
+accent: '#b56d52'
+premise: 'Three rounds. Each round names an ordinary household sound and where it happens. You and the
+  House each submit a band name and debut album that make the sound feel like a musical act. The Judge
+  scores each pitch, then each player sees the other''s pitch and calls which one catches the sound best.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: sentence
+  max_words: 9
+  axes:
+    sound_source:
+    - radiator
+    - fridge
+    - window
+    - pipe
+    - floorboard
+    - kettle
+    - doorbell
+    - washing machine
+    setting:
+    - kitchen
+    - hallway
+    - bedroom
+    - bathroom
+    - front door
+    - utility room
+    - living room
+    - attic
+    character:
+    - ticking
+    - humming
+    - rattling
+    - whistling
+    - thudding
+    - dripping
+    - buzzing
+    - creaking
+  tests:
+  - The card names one ordinary household sound and gives a clear domestic setting.
+  - The sound can be recognised without specialist knowledge.
+  - The card is short enough to read as a prompt for a band and album pitch.
+  - The sound has a real maker, motion, and rough character that a pitch can retain.
+  - The card does not already suggest a band name or album title.
+demo:
+  opening:
+    token: A radiator ticking as it warms
+    emoji: ♨️
+  moves:
+  - actor: p1
+    text: A radiator ticking as it warms
+    emoji: ♨️
+    scores: null
+  - actor: p2
+    text: 'The Expanding Metals, debut album: Heat Has a Tempo'
+    emoji: 🗣️
+    scores:
+      believable: 4
+      funny: 2
+      dictionary_shaped: 4
+  headline: The radiator has found a patient drummer, and the album title keeps the heat in the room.
+  openings:
+  - token: A radiator ticking as it warms
+    examples:
+    - 'The Expanding Metals, debut album: Heat Has a Tempo'
+  - token: A fridge humming in the kitchen
+    examples:
+    - 'The Expanding Metals, debut album: Heat Has a Tempo'
+move_constraints:
+  max_chars: 160
+  prefix: ''
+  example: 'The Polite Button, debut album: Someone''s Here'
+  hint: One band name and one debut album. No explanation.
+rubric:
+- name: believable
+  description: Could this band and album plausibly be inspired by the household sound in the stated setting?
+  anchors: '0 = unrelated to the sound or setting; 1 = a loose label with little connection; 2 = the connection
+    is plausible but generic; 3 = the sound and setting clearly shape both names; 4 = the pitch feels
+    inevitable once the sound is heard, rare.
+
+    '
+  weight: 5
+- name: funny
+  description: Does the pitch make the ordinary noise amusing without losing the musical conceit?
+  anchors: '0 = no comic spark; 1 = a faint smile; 2 = a neat joke; 3 = a clear laugh; 4 = a sharp joke
+    that still sounds like a real act, rare. The joke must target the pitch or sound, never the player.
+
+    '
+  weight: 3
+- name: dictionary_shaped
+  description: Is the answer cleanly presented as one band name and one album title, with no extra explanation?
+  anchors: '0 = missing an element or not a pitch; 1 = hard to tell which is the band or album; 2 = both
+    are present but padded or unclear; 3 = concise and unmistakably formatted; 4 = clean enough for a
+    concert poster, rare.
+
+    '
+  weight: 2
+criterion:
+  verb: passes as
+  inverse_verb: gives itself away against
+  description: 'A pitch PLAYS if it gives one band name and one debut album title that make the named
+    household sound feel like a musical act. It must remain possible in the given setting and retain the
+    sound''s real maker, motion, and rough character. It fails when it is not a band and album pitch,
+    ignores the setting, or replaces the sound with an unrelated idea. A strange or weak connection still
+    plays and scores low. A plain or unfunny pitch can play if it keeps the sound and format.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, about the game, or about the rules instead of naming
+    the act is itself a losing pitch.
+
+    '
+  judge_notes:
+  - The first move must name both a band and a debut album. A move with only one title fails the criterion.
+  - Use the hidden truth to check maker, motion, and rough character. A radiator pitch should preserve
+    heating metal and its ticking expansion, not turn it into a doorbell or a song about winter in general.
+  - The setting matters. A kitchen fridge can inspire a cold or food related act, but a pitch about a
+    bathroom pipe may ignore the card even if it is household.
+  - A title can be absurd, dramatic, or grandiose and still play if the sound remains recognisable underneath
+    it.
+  - A move that merely repeats the prompt, comments on guessing, or explains the joke is not a band name
+    and album pitch and fails.
+  - Do not reward closeness to the hidden truth on the rubric. Score the pitch's own connection, wit,
+    and clean presentation.
+  - Both players answer the same sound. Judge each pitch on its own; the other player's pitch is not the
+    standard.
+  - Extra explanation is not automatically a failure, but it lowers dictionary_shaped. If the explanation
+    replaces either required title, the move fails.
+  - A question, hedge, or bare sound effect can play only when it is clearly part of a band name and album
+    title. Otherwise it fails for missing the required form.
+examples:
+- previous_move: A radiator ticking as it warms
+  move: 'The Expanding Metals, debut album: Heat Has a Tempo'
+  gates_note: all true
+  mechanism: keeps the radiator's warming metal and steady ticking while giving it a patient band identity
+  scores:
+    believable: 4
+    funny: 2
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: A fridge humming in the kitchen
+  move: 'The Cold Storage Choir, debut album: Low Notes by the Leftovers'
+  gates_note: all true
+  mechanism: turns the kitchen compressor's low hum into a restrained vocal group with a domestic album
+    title
+  scores:
+    believable: 3
+    funny: 3
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: A loose window rattling in the wind
+  move: 'The Windy Glass, debut album: Please Tighten the Screws'
+  gates_note: all true
+  mechanism: keeps the gusts and loose frame, while the album sounds like the band's only practical review
+  scores:
+    believable: 3
+    funny: 4
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: A radiator ticking as it warms
+  move: 'The Midnight Owls, debut album: Songs from the Forest'
+  gates_note: satisfies_criterion false, unrelated act and album with no radiator connection
+  mechanism: none, the pitch leaves the household sound and its setting behind
+  scores:
+    believable: 0
+    funny: 0
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: fail
+- previous_move: A fridge humming in the kitchen
+  move: That is definitely a fridge, I think
+  gates_note: satisfies_criterion false, no band name and debut album
+  mechanism: none, it identifies the sound instead of pitching an act
+  scores:
+    believable: 0
+    funny: 1
+    dictionary_shaped: 0
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Booking Agent
+  tone:
+    commentary_adj: dry
+    explanation_adj: exact
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A reader who sees only the sound and pitch must see why it scored.
+  - Name the band, album, or key household sound. A headline that fits any pitch is a bad headline.
+  - Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or
+    The Booking Agent refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Mock the pitch, never the player. No identity based insults, profanity, innuendo, or comments about
+    the player's body, family, intelligence, or spelling.
+  - Plain spoken English. No poetry, rhymes, theatrical insults, or specialist music jargon.
+  - Never reveal or hint at the hidden truth in the headline. The reveal is a separate beat.
+  - On a refusal, the headline refuses the pitch and asks for another. It never rules on which player
+    wins.
+  - The coaching line names one pitch that would have played. It ends on a fact or an action, never a
+    mood or a verdict.
+  good_headlines:
+  - The radiator has found a patient drummer, and the album title keeps the heat in the room.
+  - A fridge choir with leftovers in the front row, a perfectly serviceable kitchen residency.
+  - The window rattles, the screws complain, and the band has already written its review.
+  - The forest may have owls, but this prompt booked a radiator. Bring the household noise back.
+  - That is a sound report, not a debut act. Give the noise a band and an album.
+  - The compressor gets a low voice and the leftovers get billing. The kitchen is open.
+  - A loose frame with excellent wind support, and an album title that knows the maintenance schedule.
+  - The act has vanished into the trees. Name the sound that is actually in the room.
+  bad_headlines:
+  - text: 'Accepted: the radiator band is excellent.'
+    why: opens with a status word
+  - text: 'The Booking Agent refuses: that is not a pitch.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, try naming a band.
+    why: opens with a ruling phrase
+  - text: The radiator is really expanding metal and hot water.
+    why: reveals the hidden truth in the headline
+  - text: Believable.
+    why: no reason and fits any pitch
+  - text: Only an idiot would book this band.
+    why: attacks the player and uses identity based abuse
+  - text: This sexy little fridge act is heating up.
+    why: uses innuendo
+  - text: O rattling window, sing thy ancient song.
+    why: poetry and archaic phrasing
+  - text: Nice one.
+    why: no reason, sound, or pitch
+  - text: Better than the other player's band.
+    why: judges the pair instead of the pitch on its own
+rules:
+- Three rounds, one ordinary household sound each.
+- Write one band name and one debut album title that make the sound feel like a musical act in its stated
+  setting.
+- The House writes its own pitch, unseen, and the Judge scores both pitches.
+- Then call which pitch catches the sound best. Right, and the points are yours. Fooled, and they go to
+  the House.
+- Most points after three rounds wins.
+labels:
+  opening: The sound
+  next_opening: The next sound
+  your_opening: Your sound
+  compose: Pitch the {token}
+  compose_waiting: Draft your act while you wait
+validation_messages:
+  empty: No act on the bill. Name a band and its debut album.
+  too_long: Over 160 characters. A gig poster, not a press release.
+  duplicate: That pitch has already played this match. Book another act.
+  nudge: Twice now. Name one band and one debut album for {standing_form}.
+judge_out_text: 'The judge has stepped out. Nobody moves until they are back. {standing_form} waits on
+  the bill. Give it a minute.
+
+  '
+opponent_prompt: 'You are the House act. Write one band name and one debut album title for the household
+  sound below.
+
+  Keep the sound''s real maker, motion, and rough character in view. A radiator should still tick as it
+  warms, a fridge should still hum in the kitchen, and a loose window should still rattle in the wind.
+
+  Make the pitch bold, but do not replace the sound with a different object, setting, or unrelated band
+  concept. The band name and album title should work together, and each should help the reader hear the
+  noise.
+
+  Use no explanation. Write one clean line in this form: Band Name, debut album: Album Title.
+
+  Do not use the sound''s exact wording as both titles. Do not merely identify the object, comment on
+  the game, or explain why the joke works.
+
+  The pitch must remain suitable for a family audience. No profanity, innuendo, or insults aimed at a
+  person or group. The joke may target the noise, the household setting, or the imaginary act.
+
+  You are pitching the sound, not copying the real hidden truth word for word. Keep the connection clear
+  and invent a distinct act.
+
+  '
+guess:
+  spot_points: 10
+  fool_points: 10
+  prompt: One of these is the real entry. Call it.
+medallions: true
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: 'The Domestic Tremor, debut album: Something in the Walls'
+seed_pool:
+  - { opening_token: "A radiator ticking as it warms", opening_emoji: "♨️", detail: "a radiator ticking as it warms", hidden: "the metal casing and pipes expanding as hot water moves through them" }
+  - { opening_token: "A fridge humming in the kitchen", opening_emoji: "🧊", detail: "a fridge humming in the kitchen", hidden: "the refrigerator compressor running steadily to keep the food cold" }
+  - { opening_token: "A loose window rattling in the wind", opening_emoji: "🪟", detail: "a loose window rattling in the wind", hidden: "a window pane or frame shaking against its fitting as gusts pass" }

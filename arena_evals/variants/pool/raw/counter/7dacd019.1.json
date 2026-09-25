@@ -1,0 +1,270 @@
+{
+  "slug": "keeper-lockup",
+  "title": "Keeper Lockup",
+  "tagline": "Close the gate before the zoo gets ideas.",
+  "emblem": "🔒",
+  "accent": "#166534",
+  "premise": "The keepers have vanished, and every enclosure is trying to escape before dawn. Each turn names one zoo object, animal behavior, or simple tool that defeats the last obstacle by locking it, cutting it, blocking it, or forcing it open.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a padlock",
+      "opening_emoji": "🔒",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a zoo gate",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a sleeping guard",
+      "opening_emoji": "😴",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "kind": [
+        "zoo object",
+        "animal behavior",
+        "simple tool",
+        "keeper gear",
+        "enclosure feature",
+        "visitor object",
+        "food item",
+        "nighttime problem"
+      ],
+      "setting": [
+        "big cat house",
+        "monkey island",
+        "reptile house",
+        "bird aviary",
+        "penguin pool",
+        "elephant yard",
+        "ticket gate",
+        "keeper shed"
+      ],
+      "property": [
+        "locked",
+        "slippery",
+        "noisy",
+        "hungry",
+        "sleepy",
+        "sharp",
+        "stuck",
+        "loose"
+      ]
+    },
+    "tests": [
+      "A stranger pictures it at once in a zoo after closing. Nothing abstract, technical, or dependent on a long backstory.",
+      "A non-player names a plain obstacle it could actively stop, defeat, open, cut, or block within five seconds. Say what that obstacle is.",
+      "It belongs in the escape mess. It can latch, bite, climb, shove, distract, block, cut, or force something open, like a cage, a crowbar, or a hungry baboon. Never a vague plan or a finished escape.",
+      "It makes a stranger want to answer. A thing with trouble in it, like a loose hinge or a snake in the tool shed. Never bland inventory, like a clean bucket.",
+      "Two or three everyday words a twelve-year-old knows. Never a specialist term, brand name, proper noun, or elaborate animal breed."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a key; I turn inside the lock and open it.",
+    "hint": "Name the thing, then name the action it takes against the standing obstacle."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and reliably the new zoo thing defeats the standing obstacle's function.",
+      "anchors": "0 = no action against it; 1 = a claim with no workable contact; 2 = a possible counter but weak, indirect, or debatable; 3 = a clear action that stops, opens, cuts, blocks, or defeats it; 4 = a direct, unavoidable counter that leaves the standing obstacle unable to do its job (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How quickly a stranger can picture the thing and its action in the after hours zoo.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires specialist knowledge or a missing explanation; 2 = understandable but vague, overloaded, or awkward; 3 = concrete and easy to picture; 4 = crisp, vivid, and instantly staged (rare). Fancy detail does not rescue a muddled action.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the new move is compared with the standing obstacle and the match so far.",
+      "anchors": "0 = the same object, a bigger copy, or the obvious repeat; 2 = a sensible change of tool or zoo problem; 4 = a sharp hop into a new corner of the zoo that still has a literal way to act (rare). Strange wording is not novelty, and obscure animals do not earn points by hiding in the bushes.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A thing OVERCOMES the standing thing only when it actively stops or defeats what that thing does. Lock it, cut it, block it, force it open, or otherwise act on its function. Going around it, waiting it out, merely being tougher, or using a bigger copy of it does not count.\n",
+    "anti_metagaming_clause": "Talking to the Judge, discussing the match, or naming a rule is itself a losing move.",
+    "judge_notes": [
+      "On a FIRST move there is no previous move: judge the form against the opening card and ask whether it plausibly acts on or defeats that opening obstacle.",
+      "A bigger, stronger, faster, or more numerous version of the standing thing is not a counter. A larger padlock is still a padlock, and a tougher gate does not defeat a gate.",
+      "A close cousin from the same function is also not enough. A chain after a padlock, or another kind of gate after a gate, fails unless the new thing has a distinct action that defeats the standing thing.",
+      "The new thing must act on the standing thing itself. A key opens a lock, a saw cuts a bar, and a wedge blocks a door. A quiet mouse that slips past a fence, or a bird that flies over it, merely goes around it and fails.",
+      "Surviving, ignoring, hiding from, waiting out, or being immune to the standing thing is not overcoming. A sleepy animal does not defeat a sleeping guard, and a heavy box does not defeat a loud alarm merely by being heavy.",
+      "The mechanism must be literal and watchable. A keeper's paperwork does not lock a lion, and guilt does not cut a chain. If the only mechanism is a metaphor, rule fail.",
+      "The move must name a thing that can perform the action. A mood, rule, commentary, or vague situation cannot grab, block, cut, lock, open, or otherwise act on the standing thing.",
+      "A first move that simply becomes the opening object, or gives it a color or size change, is a duplicate and fails rather than answering the card.",
+      "If the action depends on an unstated miracle, impossible animal ability, or special equipment not named in the move, treat the counter as weak or failed rather than inventing a rescue."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a padlock; I snap shut on the gate and keep every clever little escape artist inside.",
+      "move": "I am a key; I turn inside the lock and open it.",
+      "gates_note": "all true",
+      "mechanism": "the key turns the padlock's mechanism and opens it",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a zoo gate; I swing shut across the path and stop the stampede.",
+      "move": "I am a crowbar; I wedges under the gate and forces it open.",
+      "gates_note": "all true",
+      "mechanism": "the crowbar applies leverage to force the gate open",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a rope; I loops around the monkey and holds it to the post.",
+      "move": "I am a knife; I cuts the rope and frees the monkey.",
+      "gates_note": "all true",
+      "mechanism": "the knife cuts through the rope",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 3,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a padlock; I snap shut on the gate and keep every clever little escape artist inside.",
+      "move": "I am a bigger padlock; I am even more secure.",
+      "gates_note": "satisfies_criterion false, mere amplification and semantic duplicate",
+      "mechanism": "none, it is the same locking object made larger",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a fence; I blocks the zebra from reaching the road.",
+      "move": "I am a fast cheetah; I runs around the fence before it can react.",
+      "gates_note": "satisfies_criterion false, going around the obstacle is not defeating it",
+      "mechanism": "none, speed only avoids the fence",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Night Keeper",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two forms should see why one acted on the other.",
+      "Name both forms, or their plain stand ins. A headline that fits any zoo escape is a lazy keeper.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Night Keeper refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Roast the losing form or the move, not identity, protected traits, or the player's body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no fake keeper jargon, and no thesaurus peacocking.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never pretends the failed move won.",
+      "The coaching line names one concrete thing that would have won. That thing ends on an action or fact, never a mood or verdict.",
+      "Adult innuendo and mild profanity are allowed when the joke fits, but the reason must stay clear and the roast must not become abuse."
+    ],
+    "good_headlines": [
+      "The key turns, the padlock folds, and the lion gets no appeal.",
+      "The crowbar gives the gate a rude little divorce.",
+      "The knife cuts the rope. Freedom has finally brought a useful tool.",
+      "A bigger padlock is just the same jailer in a larger hat. Bring another form.",
+      "The cheetah ran around the fence and called it victory. The fence remains embarrassingly employed.",
+      "The saw bites the bar, and the bar's whole career ends at the enclosure.",
+      "The sleepy guard is not defeated by a sleepy penguin. That is just a nap with feathers. Bring another form.",
+      "The net catches the monkey, but the scissors bring the actual solution.",
+      "The elephant is strong, but strength is not a key. Bring something that opens the lock."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the key opens the padlock.",
+        "why": "opens with a status word instead of the joke"
+      },
+      {
+        "text": "The Night Keeper refuses: nice try.",
+        "why": "opens with a ruling phrase, names the host, and gives no reason"
+      },
+      {
+        "text": "Move refused, the cheetah is fast.",
+        "why": "opens with a ruling phrase and does not explain why speed fails"
+      },
+      {
+        "text": "The fence is defeated by the cheetah's superior velocity.",
+        "why": "uses stiff jargon and mistakes going around for defeating"
+      },
+      {
+        "text": "The padlock loses.",
+        "why": "no mechanism, no joke, and it could describe any pair"
+      },
+      {
+        "text": "A bold effort from someone who clearly cannot think.",
+        "why": "mocks the player rather than the form"
+      },
+      {
+        "text": "The gate, in its tragic nocturnal solitude, yearns for liberation.",
+        "why": "poetry and melodrama hide the actual ruling"
+      },
+      {
+        "text": "The lion is more powerful, more dangerous, and more dominant than the lock.",
+        "why": "mere size and intimidation are not a mechanism"
+      },
+      {
+        "text": "The mouse avoids the gate with exquisite tactical elegance.",
+        "why": "celebrates dodging instead of showing an action against the gate"
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the thing in front of you. Do not merely avoid it or become a larger copy.",
+    "Say what you are and what you do to it: \"I am a key; I turn inside the lock and open it.\"",
+    "The Judge rules on the idea and mechanism, not spelling or grammar.",
+    "One form that breaks against the standing obstacle ends the escape attempt."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your form against {token}",
+    "compose_waiting": "Draft your next escape move while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Name a thing before the animals unionize.",
+    "too_long": "Over 200 characters. A keeper's move, not a security report.",
+    "duplicate": "That thing already prowled through this match. Pick a new tool or zoo problem.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not dodge it, copy it, or hope it gets bored."
+  },
+  "judge_out_text": "The judge has stepped out to check the night doors. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of the shapeshifters trapped in a zoo after closing, trying to stop the last move and survive until dawn.\nAlways use this shape: \"I am a [thing]; I [action] the [standing thing].\" Name a concrete thing and a literal action.\nGood: \"I am a key; I turn inside the lock and open it.\" / \"I am scissors; I cut the net around the monkey.\"\nBad: \"I am stronger than the gate\" because strength is not an action. Bad: \"I am a mouse; I sneak past the fence\" because going around it is not defeating it. Bad: \"I am clever freedom\" because it is abstract and cannot act.\nTalk like a person across a dark zoo path, not a poet or a game announcer. Plain words beat fancy animal trivia. Use objects, tools, keeper gear, animal behavior, food, and enclosure parts that a stranger can picture.\nThe new thing must actively stop, cut, block, unlock, trap, or force open the standing thing. It cannot merely survive, ignore, wait out, outrun, or hide from it. A bigger copy is not a counter.\nHop domains when useful. A tool shed, a feeding pen, a broken visitor gate, a sleepy guard, or a bird cage can all supply a fresh move. Never reuse a form or an attribute from this match.\nYou are not performing for a crowd and you are not explaining the rules. You are trying to keep the zoo locked up. If a move lands funny, it is because the mechanism is real.\n",
+  "default_move": "I am a key; I turn inside the lock and open it."
+}

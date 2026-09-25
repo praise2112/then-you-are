@@ -1,0 +1,292 @@
+{
+  "slug": "dear-mum-regarding",
+  "title": "Dear Mum, Regarding",
+  "tagline": "Your loving reply has been entered into the record.",
+  "emblem": "📱",
+  "accent": "#7b4b8a",
+  "premise": "Three rounds. Each round Mum texts one small news fact. You answer as if you are a very serious official replying to her. Make the reply oddly formal, personal or filthy minded, but do not lose the fact in the paperwork. The Registrar scores the distance between the tiny fact and the grand reply while the fact remains true.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The council repaired a broken streetlamp.",
+      "opening_emoji": "💡",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The park received two new benches.",
+      "opening_emoji": "🪑",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A bakery opened ten minutes early.",
+      "opening_emoji": "🥐",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 10,
+    "axes": {
+      "actor": [
+        "the council",
+        "a bakery",
+        "a neighbour",
+        "the park service",
+        "a school",
+        "a bus driver",
+        "a librarian",
+        "the local shop"
+      ],
+      "event": [
+        "repaired a lamp",
+        "opened early",
+        "received benches",
+        "painted a gate",
+        "found a key",
+        "closed a window",
+        "moved a bin",
+        "trimmed a hedge"
+      ],
+      "detail": [
+        "before breakfast",
+        "on Tuesday",
+        "by two metres",
+        "after a complaint",
+        "in the rain",
+        "for ten pounds",
+        "near the entrance",
+        "within one hour"
+      ]
+    },
+    "tests": [
+      "One short sentence, past tense, under ten words. A stranger understands it at once.",
+      "No one is dead, injured, arrested, sacked, sexually assaulted or seriously ill. No real people, brands or place names.",
+      "It is a small public fact, not a scandal already waiting for a television crew.",
+      "It contains at least two concrete nouns an official reply can turn into a department, a threat or a family concern.",
+      "It includes one checkable detail, such as a number, time, object or location, that the reply can preserve or distort without contradicting."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Noted. Municipal illumination has resumed; please stop undressing by the window.",
+    "hint": "One official reply. Preserve Mum's fact, then file it under something stranger."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the reply travel from Mum's small fact while leaving that fact intact?",
+      "anchors": "0 = repeats the card with no official clothing; 1 = adds one stiff phrase or mild concern; 2 = introduces a personal angle, department or suspicious motive; 3 = turns a minor update into a private memorandum, scandal or policy while the fact survives; 4 = builds a magnificent bureaucratic or filthy minded edifice on one tiny fact, with every important card detail still standing, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the solemn reply create a clear comic collision with Mum's ordinary news?",
+      "anchors": "0 = no comic charge; 1 = a faintly amusing formality; 2 = a smile or neat personal turn; 3 = a proper laugh, especially when the official voice cannot contain the family subtext; 4 = the sort of reply that gets forwarded to the family group, rare.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it look like a compact official reply rather than an explanation, chat message or sketch?",
+      "anchors": "0 = not a reply, or a paragraph; 1 = recognisably formal but baggy; 2 = concise with some unnecessary furniture; 3 = tight, official and readable in one glance; 4 = a perfect little memo that sounds stamped, signed and faintly dangerous, rare.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A reply PLAYS if a reader who knows only the reply can still understand the news fact as true. It may add solemn procedures, family history, motives, threats, double meanings, departments, witnesses or personal embarrassment. It fails when the fact is dropped, contradicted or made false, or when the entry is not an official looking reply but a question to the Judge, a comment about the game or an explanation of its own joke. A plain restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the rules or explaining the scoring is itself a losing reply.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the card still be true given this reply? \"Noted. Municipal illumination has resumed\" passes for a repaired streetlamp. Do not ask whether the reply is likely, polite or appropriate.",
+      "The first move must preserve the event and its key object. A repaired streetlamp may become an illumination matter, but it may not become an unrepaired lamp or a demolished council building.",
+      "Invented detail is not a contradiction. A department, complaint, lover, fee, witness or scandal may be invented if it does not overwrite a detail Mum supplied.",
+      "A reply fails if it drops the event entirely. For the benches card, \"Your nap campaign remains under review\" does not preserve that two benches arrived.",
+      "A reply fails if it reverses the event. For the bakery card, \"Bakery opens late\" contradicts opening ten minutes early.",
+      "A reply fails if it changes a supplied detail. Two benches cannot become one, ten minutes early cannot become ten minutes late, and a repaired lamp cannot become a broken lamp.",
+      "A reply also fails if it is a question, a note about the game, a verdict request or an explanation rather than the official looking reply itself.",
+      "Judge each entry against the card alone. The other player's reply is not a standard and does not repair a missing fact.",
+      "Score stretch by distance, not by length or profanity. A precise little memorandum can beat a louder reply stuffed with ceremonial sludge.",
+      "Capitalisation, punctuation and mild grammatical looseness do not matter unless they make the fact or the reply impossible to understand.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The council repaired a broken streetlamp.",
+      "move": "Noted. Municipal illumination has resumed; please stop undressing by the window.",
+      "gates_note": "all true",
+      "mechanism": "the repaired streetlamp becomes a public illumination order with a personal warning",
+      "scores": {
+        "stretch": 4,
+        "funny": 4,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The park received two new benches.",
+      "move": "The seating allocation is confirmed; your campaign for nap based government continues.",
+      "gates_note": "all true",
+      "mechanism": "the two benches become a formal allocation and Mum's furniture interest becomes political ambition",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A bakery opened ten minutes early.",
+      "move": "The bakery opened early. Please stop calling this a constitutional crisis.",
+      "gates_note": "all true",
+      "mechanism": "the tiny time change is preserved while Mum's reaction is promoted to national emergency",
+      "scores": {
+        "stretch": 2,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The council repaired a broken streetlamp.",
+      "move": "Your lamp remains broken, but the council has issued thoughts.",
+      "gates_note": "satisfies_criterion false, the repair is contradicted",
+      "mechanism": "the reply reverses the repaired condition and substitutes empty sympathy",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The park received two new benches.",
+      "move": "Your nap based government remains under review.",
+      "gates_note": "satisfies_criterion false, the arrival of two benches is dropped",
+      "mechanism": "the personal joke survives but the park's actual news does not",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A bakery opened ten minutes early.",
+      "move": "The bakery opened twenty minutes late, allegedly for private reasons.",
+      "gates_note": "satisfies_criterion false, both the timing and direction are contradicted",
+      "mechanism": "official fog cannot turn early into late",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Registrar",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters, or two short sentences at most.",
+      "The joke shall carry the ruling. A stranger must see both Mum's fact and the official nonsense built upon it.",
+      "Name the concrete object, the lamp, benches, bakery or other item, so the commentary cannot be reused for every filing.",
+      "Never open with a status word or a ruling phrase. Avoid Accepted, Rejected, Refused and The Registrar refuses.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops suffice.",
+      "Mock the reply and its grand machinery. Roast the player only through the wording on the page, never through identity, body, family, intelligence or spelling.",
+      "Plain spoken English is preferred, though the Registrar may wear one ceremonial phrase like a borrowed sash.",
+      "On a fail, name the exact fact that vanished or was broken, using Mum's own object, action and detail.",
+      "On a gate failure, refuse the filing and request another reply. Do not rule on who won.",
+      "Adult innuendo may pass when it is clearly aimed at the reply's situation, not at a protected class or a real private person.",
+      "The coaching line names one reply that would have worked. It ends on a fact or an action, never on a mood or a verdict.",
+      "Clinical explanations should identify the missing or changed fact before admiring the paperwork."
+    ],
+    "good_headlines": [
+      "The streetlamp is repaired, and the window policy has finally acquired a witness.",
+      "Two benches have arrived, and Mum has mistaken public seating for a coup.",
+      "Ten minutes early is still early, though the bakery now faces an inquiry into your appetite.",
+      "The lamp works, the paperwork works, and your curtains remain a separate matter.",
+      "A bench is furniture. Two benches are apparently the first sitting of Parliament.",
+      "The bakery opened early, and someone has filed your breakfast under urgent business.",
+      "The council repaired the streetlamp, then the reply made your bedroom sound like an exhibit.",
+      "Two new benches are recorded. Your proposed nap ministry has not yet been funded.",
+      "The fact survived beneath three layers of official starch and one indecent implication.",
+      "The bakery's ten minutes remain intact, while the family correspondence has become suspiciously erect."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a sound filing.",
+        "why": "opens with a status word and offers no concrete reason"
+      },
+      {
+        "text": "The Registrar refuses: rewrite the reply.",
+        "why": "opens with a ruling phrase and speaks as the host"
+      },
+      {
+        "text": "A magnificent effort from someone unable to understand a lamp.",
+        "why": "mocks the player rather than the reply"
+      },
+      {
+        "text": "The news is preserved and the formality is funny and the innuendo is bold.",
+        "why": "lists qualities instead of making a pointed observation"
+      },
+      {
+        "text": "O sacred benches, arise beneath the moon and judge our loins.",
+        "why": "uses purple poetry rather than plain ceremonial speech"
+      },
+      {
+        "text": "It is official, formal, personal, filthy and very amusing.",
+        "why": "repeats broad adjectives without identifying the card's object"
+      },
+      {
+        "text": "Better than the other player's submission.",
+        "why": "compares entries instead of judging this reply against the card"
+      },
+      {
+        "text": "The bakery fact is missing.",
+        "why": "does not explain whether the timing was dropped or contradicted"
+      },
+      {
+        "text": "You have failed to comply with the applicable procedural framework.",
+        "why": "bureaucratic fog hides the actual failure"
+      },
+      {
+        "text": "Please note that this is not a valid move because it is invalid.",
+        "why": "circular explanation with no named object or event"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one small news fact from Mum each.",
+    "Write one official looking reply under 90 characters. The House writes its own, unseen, and the Registrar scores both.",
+    "The reply must preserve what happened in the card. Drop it, reverse it or alter a supplied detail and the filing fails.",
+    "Everything else may become policy, family history, scandal, innuendo or a personal memorandum. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "Mum's news",
+    "next_opening": "Mum's next news",
+    "your_opening": "Your news",
+    "compose": "Your reply to {token}",
+    "compose_waiting": "Draft your reply while you wait"
+  },
+  "validation_messages": {
+    "empty": "The record is blank. Enter the reply.",
+    "too_long": "Over 90 characters. This is a reply, not a parliamentary inquiry.",
+    "duplicate": "That reply has already been filed this match. Submit a fresh memorandum.",
+    "nudge": "Twice now. Preserve the fact in one official reply: {standing_form}."
+  },
+  "judge_out_text": "The Registrar has stepped away from the filing desk. No ruling can be entered until their return. {standing_form} remains on the record. Allow a moment.\n",
+  "opponent_prompt": "You are the Registrar answering a small news text from your mum. Write one official looking reply.\nTHE FACT MUST SURVIVE. A reader who sees only your reply must still understand what happened in the card. Never drop the event, reverse it or overwrite a detail the card gave. A repaired lamp remains repaired, two benches remain two benches, and ten minutes early remains early.\nThen make the reply oddly formal, personal or filthy minded. Invent a department, a policy, a witness, a family concern, a cover up or an embarrassing implication. The points are for distance from the tiny fact while the fact remains true.\nGood: \"Noted. Municipal illumination has resumed; please stop undressing by the window.\" Good: \"The seating allocation is confirmed; your nap based government continues.\" Good: \"Bakery opened early; your breakfast has been escalated to urgent business.\"\nBad: \"Your lamp remains broken\" when the lamp was repaired. \"Your nap campaign continues\" when the benches are never mentioned. \"Bakery opened late\" when it opened ten minutes early. Loud official words cannot replace the news fact.\nUse a compact official rhythm, under 90 characters. No quotation marks around the reply. Do not explain the joke. Capitals are optional. Do not use a colon or a dash. Adult innuendo is allowed, but do not target a protected class or a real private person.\nVary the angle from round to round. Try a policy, a family warning, a scandal, a personal memorandum or a department notice. Never use the same shape twice in a match.\nReply with the reply only.\n",
+  "medallions": false,
+  "default_move": "Noted. The matter has been entered, and your private enthusiasm remains under review"
+}

@@ -1,0 +1,277 @@
+{
+  "slug": "harvest-broadcast",
+  "title": "Harvest Broadcast",
+  "tagline": "Keep the vegetable. Raise the alarm.",
+  "emblem": "🥕",
+  "accent": "#5f8f3d",
+  "premise": "Three rounds. Each round opens on one quiet vegetable fact. Both players write a broadcast-style slogan that makes it sound like urgent public news. The vegetable fact must remain true to a reader who sees only the slogan. Everything else may swell into a warning, a cover-up, a supply crisis, a scientific breakthrough or a national address. The Host scores how far each slogan travels while the fact stays on the record.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Potatoes grow underground.",
+      "opening_emoji": "🥔",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Peas grow inside pods.",
+      "opening_emoji": "🫛",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Carrots are orange.",
+      "opening_emoji": "🥕",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 6,
+    "axes": {
+      "vegetable": [
+        "potatoes",
+        "peas",
+        "carrots",
+        "onions",
+        "beans",
+        "corn",
+        "cabbage",
+        "radishes"
+      ],
+      "fact": [
+        "grow underground",
+        "grow inside pods",
+        "are orange",
+        "have layers",
+        "grow on stalks",
+        "have leafy tops",
+        "form heads",
+        "are harvested by hand"
+      ],
+      "setting": [
+        "in gardens",
+        "in fields",
+        "in soil",
+        "on farms",
+        "in kitchen plots",
+        "under the sun",
+        "near other crops",
+        "during harvest"
+      ]
+    },
+    "tests": [
+      "One short sentence, in plain present tense, with an article or clear subject. A stranger understands the vegetable fact at once.",
+      "The fact is harmless and checkable. No vegetable is sick, dangerous, sentient, or involved in a real disaster.",
+      "It is quiet enough to need a broadcast voice. If it already sounds like urgent news, make the fact smaller.",
+      "It contains a concrete vegetable noun and an action, colour, place, shape, or number a slogan can preserve.",
+      "It leaves room for a slogan to invent importance without changing where the vegetable grows, what it looks like, or what it does."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "POTATO UNDERGROUND NETWORK EXPANDS BENEATH DINNER TABLES",
+    "hint": "One broadcast slogan. Keep the vegetable fact true, then raise the alarm."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the slogan enlarge the quiet vegetable fact while keeping it true?",
+      "anchors": "0 = repeats the card with no added force; 1 = adds one dramatic word; 2 = gives the vegetable a public role, threat or consequence; 3 = builds a complete news event from the small fact and the fact still holds; 4 = turns a humble vegetable detail into a national broadcast without breaking a single fact, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the serious broadcast treatment make the vegetable or the move amusing?",
+      "anchors": "0 = no comic spark; 1 = a slight smile; 2 = a clear comic turn; 3 = a genuine laugh; 4 = a line worth announcing to the room, rare. The joke should target the slogan's grandness, not a person.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it sound like a compact broadcast slogan rather than an explanation?",
+      "anchors": "0 = not a slogan, a paragraph, question or comment; 1 = a slogan buried under filler; 2 = recognisable but loose; 3 = brief, forceful and broadcast-ready; 4 = it could lead a vegetable bulletin unchanged, rare.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A slogan PLAYS if a reader who knows only the slogan can still read the card's vegetable fact as true. It may exaggerate the importance, cause, scale, danger, cost or consequence. It fails when the vegetable fact is dropped, contradicted or overwritten, or when the move is not a slogan but a comment, a question to the Host, an explanation or a sentence about the game. A quiet restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, discussing the game, or describing the rules is itself a losing slogan.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the card be true given this slogan? POTATO UNDERGROUND NETWORK EXPANDS BENEATH DINNER TABLES passes because potatoes still grow underground. Do not ask whether the slogan is likely, fair or scientifically important.\n",
+      "On the first move, check the whole card before admiring the drama. A slogan must preserve the vegetable and the checkable fact, not merely mention a related crop.\n",
+      "Invented importance is not a contradiction. A crisis, agency, warning, network, broadcast source or public cost may be added when the card's fact remains intact.\n",
+      "If the card says potatoes grow underground, ABOVEGROUND POTATOES TAKE OVER fails because it flips the growing place. If it says peas grow inside pods, PODLESS PEAS FLOOD THE MARKET fails because it overwrites the pod fact.\n",
+      "If the card says carrots are orange, CARROTS TURN BLUE fails because it changes the stated colour. If the card says peas grow inside pods, PEA PODS VANISH FROM FARMS fails because it drops or contradicts the fact that the peas grow inside them.\n",
+      "Both players answer the same card. Judge each slogan on its own, not against the other player's line.\n",
+      "Score stretch by distance from the card, not by the number of alarm words. A calm line that turns a pod into a supply system beats a loud line that only says URGENT.\n",
+      "Lower case, missing punctuation, and imperfect capitalisation cost nothing. Judge the words and the preserved fact.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Potatoes grow underground.",
+      "move": "POTATO UNDERGROUND NETWORK EXPANDS BENEATH DINNER TABLES",
+      "gates_note": "all true",
+      "mechanism": "the growing place becomes a hidden network and the ordinary crop becomes a domestic expansion",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Peas grow inside pods.",
+      "move": "POD SECURITY TIGHTENS AS GREEN RESIDENTS REMAIN SEALED",
+      "gates_note": "all true",
+      "mechanism": "the pod becomes a guarded facility while the peas remain inside it",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Carrots are orange.",
+      "move": "ORANGE CARROTS CONFIRMED IN COLOUR CODE ALERT",
+      "gates_note": "all true",
+      "mechanism": "the stated colour survives, though the alert adds only a modest public frame",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Potatoes grow underground.",
+      "move": "ABOVEGROUND POTATOES SEIZE CONTROL OF THE HARVEST",
+      "gates_note": "satisfies_criterion false (the growing place is changed from underground to aboveground)",
+      "mechanism": "the slogan reverses the card's checkable location",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Peas grow inside pods.",
+      "move": "PEAS ESCAPE EMPTY PODS AS FARMERS SEEK ANSWERS",
+      "gates_note": "satisfies_criterion false (empty pods contradict peas growing inside pods)",
+      "mechanism": "the slogan removes the peas from the stated place",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Host",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters, or two short sentences at most.",
+      "Speak as though announcing a serious bulletin about a very ordinary vegetable.",
+      "The joke must carry the reason. A listener who heard only the card and slogan should understand the comic enlargement.",
+      "Name the key vegetable or fact, such as the potato, pod, colour or underground growth.",
+      "Do not begin with a status word or ruling phrase. Avoid Accepted, Rejected, Refused, Move refused and The Host refuses.",
+      "Use plain spoken English. No poetry, riddles, newsroom jargon, or grand vocabulary for its own sake.",
+      "Mock the move, never the player. No jokes about identity, body, family, intelligence, spelling, or personal ability.",
+      "On a fail, identify the vegetable fact that vanished, flipped, or was overwritten, using the card's own words where possible.",
+      "On a refusal caused by a gate failure, refuse the move and request another. Do not declare a winner.",
+      "The coaching line must name one slogan that would have scored and end on a fact or action, never a mood or verdict.",
+      "No profanity, innuendo, cruelty, or jokes aimed at protected or personal traits. Family content only.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops are sufficient."
+    ],
+    "good_headlines": [
+      "The potato remains underground, but the bulletin has promoted it to a hidden national network.",
+      "The peas are still inside pods, now apparently under a level of security fit for a royal archive.",
+      "Orange remains orange, and the slogan has given that colour a remarkably official sounding alert.",
+      "The carrot kept its colour and received a broadcast worthy of a much larger emergency.",
+      "The pod still contains its peas, while the move has appointed it guardian of the harvest.",
+      "Underground is the fact, and the slogan has furnished it with tunnels, borders, and a public warning.",
+      "The vegetable stayed humble, but the bulletin sent its ordinary growth straight into national service.",
+      "A pod is a small room, yet this line has summoned the entire security department.",
+      "The card supplies a colour, and the slogan supplies a ceremony without changing the colour.",
+      "The potato grows below ground, and the headline has made dinner sound like an intelligence report."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a splendid agricultural bulletin.",
+        "why": "opens with a ruling phrase and does not explain the move"
+      },
+      {
+        "text": "The Host refuses: submit another slogan.",
+        "why": "opens with a ruling phrase and names the Host"
+      },
+      {
+        "text": "Excellent vegetable news.",
+        "why": "offers praise without identifying the preserved fact"
+      },
+      {
+        "text": "The card is true and the slogan is funny.",
+        "why": "discusses the judgment instead of explaining the move"
+      },
+      {
+        "text": "A shameful performance by a person who cannot read.",
+        "why": "mocks the player and uses identity based personal abuse"
+      },
+      {
+        "text": "O noble carrot, arise beneath the moon and command the furrows.",
+        "why": "uses poetry rather than plain spoken commentary"
+      },
+      {
+        "text": "The vegetable sector has entered a complex paradigm of horticultural escalation.",
+        "why": "uses inflated jargon and explains too little"
+      },
+      {
+        "text": "The potato is underground, but not in the way you think.",
+        "why": "is vague, coy, and does not make the joke or reason clear"
+      },
+      {
+        "text": "This player lost because the other player was better.",
+        "why": "judges the pair rather than the slogan on its own"
+      },
+      {
+        "text": "A pod, a crisis, a nation, and several exciting developments.",
+        "why": "lists dramatic nouns without stating what the pod fact became"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one quiet vegetable fact each.",
+    "Write one broadcast-style slogan for it, under 90 characters. The House writes its own unseen slogan, and the Host scores both.",
+    "The vegetable fact must remain true to someone who reads only your slogan. Drop it, reverse it, or overwrite it and the round is lost.",
+    "Everything else may be enlarged. Add urgency, causes, consequences, officials, warnings, or public importance. The further the slogan travels while the fact holds, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The vegetable bulletin",
+    "next_opening": "The next bulletin",
+    "your_opening": "Your vegetable bulletin",
+    "compose": "Your slogan for {token}",
+    "compose_waiting": "Compose your slogan while you wait"
+  },
+  "validation_messages": {
+    "empty": "The bulletin is silent. Write the slogan.",
+    "too_long": "Over 90 characters. This is a bulletin, not a harvest report.",
+    "duplicate": "That slogan has already aired this match. Find another broadcast angle.",
+    "nudge": "Twice now. One slogan that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Host has stepped away from the vegetable desk. The bulletin is paused. {standing_form} remains on the screen. Give it a moment.\n",
+  "opponent_prompt": "You are a ceremonial broadcast host reporting on a quiet vegetable fact. Write one slogan.\nTHE VEGETABLE FACT MUST SURVIVE. A reader who sees only your slogan must still be able to read the card as true. Preserve the vegetable and every checkable fact about it. Do not reverse its location, colour, shape, container, or action.\nThen enlarge the importance as far as you dare. Invent an alert, network, shortage, department, cover-up, public consequence, or official response. The points reward distance from the card while the vegetable fact remains true.\nGood: \"POTATO UNDERGROUND NETWORK EXPANDS BENEATH DINNER TABLES\" for potatoes growing underground. \"POD SECURITY TIGHTENS AS GREEN RESIDENTS REMAIN SEALED\" for peas growing inside pods.\nBad: \"ABOVEGROUND POTATOES TAKE OVER\" for potatoes growing underground. \"EMPTY PODS LEAVE PEAS HOMELESS\" for peas growing inside pods. \"ORANGE CARROTS TURN BLUE\" for carrots being orange. \"URGENT VEGETABLE NEWS\" because the fact is absent.\nUse broadcast rhythm, short plain words, and present tense. Under 90 characters. Do not use a colon or dash. Do not explain the joke. Capitals are optional.\nVary the angle between rounds: a warning, a public service, a security report, a scientific bulletin, a market alarm, or a solemn announcement. Never repeat the same shape twice in a match.\nNo quotation marks around the slogan. Reply with the slogan only.\n",
+  "medallions": false,
+  "default_move": "URGENT VEGETABLE UPDATE REACHES DINNER TABLES"
+}

@@ -1,0 +1,260 @@
+{
+  "slug": "tiny-truth-scandal",
+  "title": "Tiny Truth Scandal: Nation Outraged by a Completely Normal Detail",
+  "tagline": "Report the ordinary. Imply the unforgivable.",
+  "emblem": "🗞️",
+  "accent": "#b44b5f",
+  "premise": "Three rounds. Each round supplies two plain nouns and one dull fact connecting them. Both players turn that fact into a one line tabloid headline. The Judge checks that the nouns and connection survive, then rewards the largest leap in outrage, innuendo, or accusation that adds no new event.\n",
+  "seed_pool": [
+    {
+      "opening_token": "bus / stop",
+      "opening_emoji": "🚌",
+      "detail": "A bus stops at a bus stop.",
+      "hidden": "The bus stops at the bus stop, with no further event."
+    },
+    {
+      "opening_token": "kettle / water",
+      "opening_emoji": "🫖",
+      "detail": "A kettle contains water.",
+      "hidden": "The kettle contains water, with no further event."
+    },
+    {
+      "opening_token": "pigeon / pavement",
+      "opening_emoji": "🐦",
+      "detail": "A pigeon stands on pavement.",
+      "hidden": "The pigeon stands on pavement, with no further event."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "ordinary_subject": [
+        "bus",
+        "kettle",
+        "pigeon",
+        "lamp",
+        "sock",
+        "bench",
+        "spoon",
+        "window"
+      ],
+      "ordinary_setting": [
+        "stop",
+        "water",
+        "pavement",
+        "room",
+        "drawer",
+        "park",
+        "cup",
+        "wall"
+      ],
+      "connection": [
+        "stops at",
+        "contains",
+        "stands on",
+        "lights",
+        "rests in",
+        "sits in",
+        "lies beside",
+        "hangs on"
+      ]
+    },
+    "tests": [
+      "The fact is dull and could appear in an ordinary report.",
+      "The sentence names two concrete nouns and one plain connection between them.",
+      "The connection can be stated in one short sentence without interpretation.",
+      "The fact contains no hidden conflict, motive, scandal, or second event.",
+      "The card gives the Judge enough information to reject a headline that changes what happened."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "BUS STOPS AT BUS STOP, COMMUTERS DEMAND ANSWERS, SNACKS, AND PERHAPS A REFUND",
+    "hint": "One line. Name both nouns. Keep the fact, then make it sound criminal."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does this sound like a tabloid headline that could print the supplied fact without being corrected?",
+      "anchors": "0 = changes or contradicts the fact; 1 = the nouns are present but the report is badly wrong; 2 = the fact survives under heavy distortion; 3 = a reckless editor could run it; 4 = it preserves the fact so neatly that the outrage feels almost official (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the headline make the ordinary fact feel scandalous, absurd, or deliciously suspicious?",
+      "anchors": "0 = no comic charge; 1 = a faint raised eyebrow; 2 = a decent tabloid flourish; 3 = a proper laugh at the tiny fact; 4 = the headline makes a harmless detail feel like the fall of civilisation (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does it read as a compact headline, with both supplied nouns clear and the original connection easy to recover?",
+      "anchors": "0 = not a headline or the nouns are missing; 1 = headline fragments obscure the fact; 2 = recognisable headline with some clutter; 3 = clean, compressed, and readable; 4 = sharp enough for a front page with no editorial repair (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A headline PLAYS if it preserves the supplied fact exactly while changing only its framing, implication, and emotional temperature. It must name both supplied nouns and preserve their real connection. It fails when it changes the event, adds a new event as fact, omits a supplied noun, reverses the connection, or merely comments on the game instead of reporting the detail. Outrage, innuendo, suspicion, and accusation are allowed when they remain framing rather than new events.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing headline.\n",
+    "judge_notes": [
+      "On the first move, check the headline against the dull fact before judging style. The supplied nouns and their connection must remain recoverable, even when the headline is loud.\n",
+      "The real fact is given to you. Use it as the exact boundary of truth. A headline may imply scandal, motive, corruption, lust, incompetence, or public outrage, but it may not assert a new action or outcome.\n",
+      "Both players answer the same card. Judge each headline on its own. One player's invention is not evidence that the other's changed the fact.\n",
+      "A headline that names only one supplied noun fails, even if its joke is strong. A headline that names both nouns but changes their relation also fails.\n",
+      "A headline that adds a new event, such as an arrest, injury, theft, argument, purchase, or public protest, fails unless that event is plainly framed as speculation, a question, or an accusation rather than reported fact. Even then, the original fact must remain clear.\n",
+      "A bare phrase that preserves the fact can play, but it scores low on dictionary_shaped if it does not sound like a headline. A question with no preserved fact fails.\n",
+      "Profanity and adult innuendo may score on funny when they sharpen the tabloid frame. They do not excuse a changed fact, and identity based abuse is never acceptable.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "bus / stop, A bus stops at a bus stop.",
+      "move": "BUS STOPS AT BUS STOP, COMMUTERS DEMAND TO KNOW WHO BENEFITS",
+      "gates_note": "all true",
+      "mechanism": "the exact connection survives while a routine arrival receives a corruption scandal",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "kettle / water, A kettle contains water.",
+      "move": "KETTLE FOUND HOLDING WATER, SOURCES ASK WHAT IT KNEW",
+      "gates_note": "all true",
+      "mechanism": "the container and its contents remain intact, while the kettle is promoted to a suspicious witness",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "pigeon / pavement, A pigeon stands on pavement.",
+      "move": "PIGEON STANDS ON PAVEMENT, CITY DENIES BIRD WAS INVITED",
+      "gates_note": "satisfies_criterion false, adds an unreported invitation and denial as events",
+      "mechanism": "the nouns and posture remain, but the denial creates a new incident instead of merely framing the fact",
+      "scores": {
+        "believable": 1,
+        "funny": 3,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "bus / stop, A bus stops at a bus stop.",
+      "move": "BUS DELAYS STOP, PASSENGERS LEFT FUMING",
+      "gates_note": "satisfies_criterion false, reverses the supplied connection and omits the bus stop as the place",
+      "mechanism": "the line reports delay and anger rather than a bus stopping at a bus stop",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Tribunal of the Front Page",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak as though a minor civic fact has entered a grand tribunal. Keep the reason clinical beneath the ceremony.",
+      "The joke carries the ruling. Name both nouns or the headline's decisive accusation so the line cannot fit every move.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Tribunal refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the headline and its swollen drama. Roast the player lightly if useful, never target identity, protected traits, or real world vulnerability.",
+      "Plain spoken English with a ceremonial lift. Profanity and adult innuendo are allowed when they serve the headline, not when they replace it.",
+      "Never invent a new event while explaining a headline that failed. State the exact fact the move changed or omitted.",
+      "Never reveal hidden card information beyond the supplied dull fact. The scandal is framing, not a second reality.",
+      "On a refusal, the headline is denied entry and another is requested. It never rules on who won.",
+      "The coaching line names one change that would have made the headline play. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The bus reached the stop, and suddenly every commuter is a stakeholder.",
+      "Water inside a kettle, the evidence is warm and the kettle declines comment.",
+      "The pigeon stands on pavement, a property dispute with feathers and no property.",
+      "A normal lamp lights a room, while the room apparently refuses to explain itself.",
+      "The spoon sits in the cup, and the household asks who authorised this arrangement.",
+      "The bench remains in the park, scandalously committed to public seating.",
+      "The sock lies in the drawer, where experts fear it has located the missing pair.",
+      "The window hangs on the wall, and standards at the wall appear to be collapsing."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: BUS STOPS AT BUS STOP.",
+        "why": "opens with a ruling phrase and supplies no tabloid framing"
+      },
+      {
+        "text": "The Tribunal refuses: you changed the fact.",
+        "why": "opens with a ruling phrase and talks about the ruling instead of the headline"
+      },
+      {
+        "text": "BUS ARRESTED AFTER STOPPING AT STOP.",
+        "why": "adds an arrest as a reported event"
+      },
+      {
+        "text": "A bus has stopped, and I think this is funny.",
+        "why": "comments on the game instead of sounding like a tabloid headline"
+      },
+      {
+        "text": "PIGEON ON PAVEMENT, GOVERNMENT COLLAPSES.",
+        "why": "reports a new collapse and does not preserve the quiet connection cleanly"
+      },
+      {
+        "text": "Nice headline.",
+        "why": "gives no reason, nouns, or image"
+      },
+      {
+        "text": "O mighty kettle, what dark waters haunt thy steaming soul?",
+        "why": "uses poetry and addresses the object instead of writing a headline"
+      },
+      {
+        "text": "BUS STOP, BUS STOPS, BUS STOPPED.",
+        "why": "repeats fragments without a clear tabloid frame"
+      },
+      {
+        "text": "The player clearly has no idea what a bus is.",
+        "why": "attacks the player rather than judging the move"
+      },
+      {
+        "text": "PIGEON AND PAVEMENT, A TRAGIC ROMANCE OF UNIMAGINABLE BETRAYAL.",
+        "why": "drops the actual standing connection and replaces it with vague melodrama"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one dull fact each.",
+    "Write one tabloid headline that names both supplied nouns and preserves their real connection.",
+    "You may add outrage, innuendo, suspicion, accusation, and public hysteria, but not a new event presented as fact.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The dull fact",
+    "next_opening": "The next dull fact",
+    "your_opening": "Your dull fact",
+    "compose": "Your headline for {token}",
+    "compose_waiting": "Draft your headline while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing for the front page. File a headline.",
+    "too_long": "Over 160 characters. A headline, not a parliamentary inquiry.",
+    "duplicate": "That headline has already appeared this match. Find a fresher scandal.",
+    "nudge": "Twice now. Keep both nouns and their connection, then raise the temperature around {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. The courtroom remains theatrically silent. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are the tabloid editor. Write one headline for the dull fact below.\nPreserve the fact exactly. Name both supplied nouns and keep their real connection, even while making the line sound outrageous.\nYou may add suspicion, innuendo, outrage, corruption language, sexual tension, public fury, or a ridiculous demand. These are framing devices, not new events.\nDo not report a new arrest, injury, theft, argument, purchase, confession, protest, or consequence. A question or accusation may suggest one, but the original fact must remain unmistakable.\nUse one line, preferably in headline case or capitals. Keep it under 160 characters.\nMake the ordinary detail sound like a scandal without changing what happened. Do not explain the joke. Do not mention the game, the Judge, the rules, or the other player.\nDo not use identity based abuse or target protected traits. Profanity and adult innuendo are allowed when they sharpen the tabloid voice.\n",
+  "medallions": true,
+  "default_move": "BUS STOPS AT BUS STOP, OFFICIALS INSIST THIS IS NORMAL"
+}

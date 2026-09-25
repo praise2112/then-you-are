@@ -1,0 +1,278 @@
+{
+  "slug": "utensil-swipe-left",
+  "title": "Utensil Swipe Left",
+  "tagline": "Find the tool. Ignore the red flags.",
+  "emblem": "🍴",
+  "accent": "#d97858",
+  "premise": "A kitchen utensil is making a dating profile, and both of you must write the one-line bio that gets it a match. The host roasts every profile, then awards points for the funniest stretch that still sounds like the utensil; no one wants to date a fork with no personality.\n",
+  "seed_pool": [
+    {
+      "opening_token": "rolling pin",
+      "opening_emoji": "🥖",
+      "detail": "a wooden rolling pin",
+      "hidden": "a cylindrical kitchen tool used to flatten and shape dough"
+    },
+    {
+      "opening_token": "slotted spoon",
+      "opening_emoji": "🥄",
+      "detail": "a slotted spoon",
+      "hidden": "a spoon with holes used to lift food while leaving liquid behind"
+    },
+    {
+      "opening_token": "box grater",
+      "opening_emoji": "🧀",
+      "detail": "a four-sided box grater",
+      "hidden": "a metal kitchen tool with sharp perforated surfaces used to shred or grate food"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 12,
+    "axes": {
+      "utensil": [
+        "rolling pin",
+        "slotted spoon",
+        "box grater",
+        "whisk",
+        "ladle",
+        "tongs",
+        "peeler",
+        "colander"
+      ],
+      "profile_angle": [
+        "charming",
+        "needy",
+        "overconfident",
+        "flirtatious",
+        "domestic",
+        "chaotic",
+        "judgmental",
+        "secretive"
+      ],
+      "red_flag": [
+        "clingy",
+        "messy",
+        "controlling",
+        "dramatic",
+        "high maintenance",
+        "emotionally unavailable",
+        "too sharp",
+        "cannot handle pressure"
+      ]
+    },
+    "tests": [
+      "Each card names one recognizable kitchen utensil.",
+      "Each hidden truth states the utensil's shape and ordinary kitchen job.",
+      "Each public line is a short noun phrase with an article.",
+      "Each utensil can support a dating bio involving its real function without requiring specialist knowledge.",
+      "The three cards vary in utensil, profile angle, and red flag."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Fast with my hands, great in a crisis, and I promise the clumps won't survive our first date.",
+    "hint": "One dating profile line, under 160 characters. Keep the utensil's job intact."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does this sound like a dating bio that plausibly belongs to the utensil, rather than any random object with a pulse?",
+      "anchors": "0 = the utensil is absent; 1 = one vague kitchen hint; 2 = the connection is visible but wobbly; 3 = the utensil's dating persona fits its real use; 4 = the profile feels inevitable, like the utensil wrote it after one disastrous brunch.\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the bio turn the utensil's traits into a joke, flirt, confession, or gloriously bad red flag?",
+      "anchors": "0 = no comic charge; 1 = a faint smile; 2 = a decent dating-app gag; 3 = a clear laugh; 4 = a sharp line with a second laugh hiding in the cutlery drawer, rare.\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the line stay compact, readable, and recognizably shaped like a dating profile rather than an explanation?",
+      "anchors": "0 = commentary or a full story; 1 = profile language buried under clutter; 2 = usable but padded; 3 = clean, compact, and profile-ready; 4 = so tight it could headline the utensil's entire romantic history, rare.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A bio PLAYS if it presents the dealt utensil as a plausible dating prospect while preserving its real shape, kitchen job, or distinctive physical behavior. It must offer a profile line, not merely name the utensil, comment on the game, or tell an unrelated joke. A strange personality is fine if the utensil's real identity remains recognizable. The bio may exaggerate or flirt, but it cannot turn a rolling pin into a toaster or a spoon into a tax accountant.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or asking for a match instead of writing the utensil's profile is itself a losing bio.\n",
+    "judge_notes": [
+      "The real utensil and its kitchen job are given to you. Use them to judge whether the bio preserves the utensil's identity, but do not reward factual detail on the rubric by itself.\n",
+      "The first move faces the same standard as every later move. There is no practice round and no free pass for being the opening bio.\n",
+      "Both players answer the same utensil. Judge each bio on its own; the other player's line is not the standard.\n",
+      "A bio that names a job, habit, hobby, preference, or red flag without mentioning the utensil directly can still play if the connection is clear from the dealt utensil.\n",
+      "A bio that is only a joke about dating, only a comment on the prompt, or only praise with no utensil connection fails because it does not present this utensil.\n",
+      "A bio that changes the utensil's core shape or kitchen job fails when the mismatch makes the prospect unrecognizable. A playful metaphor does not fail if the real utensil remains intact.\n",
+      "A bio that is a question, fragment, or slogan can play if it still functions as a profile line. A question with no profile meaning fails.\n",
+      "A long story, explanation, or message to the Judge fails when it is not a one-line dating bio. Concision supports dictionary_shaped but is not the whole criterion.\n",
+      "A bio may accidentally describe the real utensil accurately. That plays, though its comedy and originality may score lower.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "rolling pin, a wooden rolling pin",
+      "move": "I flatten every argument before dessert and prefer partners who can handle a little pressure.",
+      "gates_note": "all true",
+      "mechanism": "the flattening and pressure point to the rolling pin's job while reading as a dating confession",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "slotted spoon, a slotted spoon",
+      "move": "Emotionally unavailable, but I know how to leave the liquid behind.",
+      "gates_note": "all true",
+      "mechanism": "the red flag is welded neatly to the utensil's defining function",
+      "scores": {
+        "believable": 4,
+        "funny": 4,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "box grater, a four-sided box grater",
+      "move": "I am a bold romantic who once dated a saucepan and now review restaurants professionally.",
+      "gates_note": "satisfies_criterion false, the utensil's job and shape are absent",
+      "mechanism": "a dating anecdote with no grating, shredding, sharpness, or other box-grater identity",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "rolling pin, a wooden rolling pin",
+      "move": "Swipe right if you like tall metal tools that drain pasta and never get emotionally involved.",
+      "gates_note": "satisfies_criterion false, the bio describes a colander rather than a rolling pin",
+      "mechanism": "the line is profile-shaped but assigns another utensil's job to this one",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "box grater, a four-sided box grater",
+      "move": "Sharp, versatile, and ready to make your feelings grate.",
+      "gates_note": "all true",
+      "mechanism": "sharpness, versatility, and grating turn the tool's physical traits into a compact red flag",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Cutlery Cynic",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who saw only the utensil and the bio must know why the line works.",
+      "Name the utensil or the bio's key kitchen image. A headline that fits every profile is lazy flatware.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Cutlery Cynic refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Roast the bio, never protected identity. You may call a line needy, limp, bland, or a red flag, but do not attack the player's body, family, intelligence, spelling, or identity.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the joke, not when they replace it.",
+      "Never reveal the utensil's hidden truth in the headline if the round has not reached the reveal. Use only the public token and the submitted bio.",
+      "On a refusal, the headline rejects the bio and asks for another. It never decides which player's line wins.",
+      "The coaching line names one concrete feature that would have scored, such as the utensil's job, shape, or a specific red flag. It ends on an action or fact, never a mood or verdict.",
+      "Keep the dating frame alive. A good jab sounds like a bad date review, not a cooking lecture."
+    ],
+    "good_headlines": [
+      "The rolling pin flattens dough and, apparently, every argument worth having.",
+      "Emotionally unavailable, but the slotted spoon has finally learned to leave something behind.",
+      "Sharp, versatile, and making your feelings grate. A box grater with excellent self awareness.",
+      "That profile has chemistry, but no utensil. Even a butter knife brought more to the table.",
+      "The rolling pin wants pressure and calls it romance. Frankly, the warning label wrote itself.",
+      "A slotted spoon promising distance is the first honest profile on this app.",
+      "The grater is four sided, deeply judgmental, and somehow still less abrasive than the bio.",
+      "This line flirts with the tool's real job, then trips over its own apron strings.",
+      "A useful red flag, which is more than most dating profiles manage.",
+      "The utensil is doing the work here. The bio merely remembered to show up."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: great bio.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Cutlery Cynic refuses: this is not a profile.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and gives no utensil specific coaching"
+      },
+      {
+        "text": "The rolling pin is really a tool for flattening dough.",
+        "why": "reveals the hidden truth instead of roasting the submitted bio"
+      },
+      {
+        "text": "Believable.",
+        "why": "no joke, no reason, and it fits every profile"
+      },
+      {
+        "text": "Only an idiot would swipe right on this.",
+        "why": "roasts the player or reader instead of the bio"
+      },
+      {
+        "text": "O utensil, thou lonely instrument of culinary desire.",
+        "why": "poetry, and the dating app did not ask for Shakespeare"
+      },
+      {
+        "text": "It is plausible, funny, concise, charming, and memorable.",
+        "why": "lists judgments instead of making one sharp observation"
+      },
+      {
+        "text": "Better than the other player's profile.",
+        "why": "judges the pair rather than explaining this bio on its own"
+      },
+      {
+        "text": "Nice.",
+        "why": "too short to roast or explain anything"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one kitchen utensil each.",
+    "Write one dating profile line of up to 160 characters. Keep the utensil's real shape, job, or tell intact.",
+    "The House writes its own profile, unseen. The Judge scores both lines for believable, funny, and dictionary shaped.",
+    "After each round, the host reads the profiles, roasts the red flags, and awards the points.",
+    "Most points after three rounds wins, unless the fork has somehow lawyered its way into a tie."
+  ],
+  "labels": {
+    "opening": "The utensil",
+    "next_opening": "The next utensil",
+    "your_opening": "Your utensil",
+    "compose": "Your profile for {token}",
+    "compose_waiting": "Write your profile while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the profile. Even a colander has holes, but this has no content.",
+    "too_long": "Over 160 characters. It is a dating bio, not a memoir.",
+    "duplicate": "That profile has already been played this match. Try a different red flag.",
+    "nudge": "Twice now. Give {standing_form} a job, a habit, or a kitchen specific red flag."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody swipes until they are back. {standing_form} is waiting on the counter. Give it a minute.\n",
+  "opponent_prompt": "You are the House's rival dater. Write one fake dating profile line for the utensil.\nKeep it under 160 characters. Make it sound like a real profile, not a kitchen manual.\nThe line must preserve the utensil's recognizable shape, kitchen job, or physical behavior while turning that trait into a romantic promise, hobby, preference, or red flag.\nUse the public utensil name and avoid simply repeating its hidden definition. A good line sounds like a person wrote it, but the utensil should still be obvious after one read.\nInclude a concrete dating angle. Try a job, a hobby, a boundary, a boast, a confession, or a warning. Do not make every round a red flag. Vary the voice from charming to needy to overconfident to quietly alarming.\nDo not write a general dating joke that could belong to any object. Do not explain the game, address the Judge, ask the player to swipe, or describe your strategy.\nDo not change the utensil into another tool. A rolling pin may flatten arguments, but it cannot drain pasta. A slotted spoon may leave liquid behind, but it cannot grate cheese.\nAvoid bland praise such as useful, nice, or good without a utensil specific image. Avoid a list of unrelated traits. One strong connection beats five weak ones.\nYou are bluffing against the other profile. Do not copy its joke, structure, or exact meaning. Keep the line compact and readable.\n",
+  "medallions": true,
+  "default_move": "I bring pressure, flatten every situation, and still expect you to call it chemistry."
+}

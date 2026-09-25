@@ -1,0 +1,208 @@
+{
+  "slug": "countertop-coup",
+  "title": "Countertop Coup",
+  "tagline": "Seize the counter, crush the rival, crown the next utensil.",
+  "emblem": "🍳",
+  "accent": "#b45309",
+  "premise": "Two kitchen revolutions collide. Each turn, play a kitchen object or force that takes control of the thing before it. The counter becomes a tiny, ruthless kingdom, and the last card that cannot seize power loses.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a raw egg",
+      "opening_emoji": "🥚",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a pot of soup",
+      "opening_emoji": "🍲",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a loaf of bread",
+      "opening_emoji": "🍞",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "kind": [
+        "utensil",
+        "appliance",
+        "ingredient",
+        "container",
+        "cleaning tool",
+        "cook",
+        "kitchen pest",
+        "kitchen force"
+      ],
+      "setting": [
+        "countertop",
+        "stove",
+        "sink",
+        "pantry",
+        "refrigerator",
+        "baking tray",
+        "cutting board",
+        "dining table"
+      ],
+      "property": [
+        "sharp",
+        "sticky",
+        "boiling",
+        "greasy",
+        "sealed",
+        "crumbly",
+        "spilling",
+        "electric"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one concrete kitchen thing at once, not a recipe, mood, or abstract idea.",
+      "A non-player names a plain kitchen counter within five seconds, and the move says what that counter is.",
+      "It stands in the kitchen ring and can directly capture, trap, cut, melt, wash away, block, or otherwise control the previous thing.",
+      "It makes a stranger want to answer because it has a clear kitchen function, not merely a decorative appearance.",
+      "The sentence uses ordinary words, names one standing thing, and states one visible takeover without hiding behind a metaphor."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am the lid, clamping shut on the pot.",
+    "hint": "Name the kitchen thing, then show its takeover."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new kitchen thing takes control of the previous one.",
+      "anchors": "0 = no takeover at all; 1 = a vague threat or weak contact; 2 = a plausible but incomplete kitchen counter; 3 = a clear, direct seizure of the standing thing; 4 = an immediate, unavoidable coup that leaves the previous thing captured, cut, melted, washed away, or otherwise under control (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the kitchen thing and its action in one glance.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = understandable only after explanation; 2 = concrete but cluttered or awkward; 3 = clear and workable; 4 = vivid, exact, and instantly visible (rare). Extra words do not help unless each one sharpens the coup.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How far the move jumps to a fresh kitchen role instead of repeating the previous object's domain or merely enlarging it.",
+      "anchors": "0 = the same object, same function, or bigger copy; 2 = a decent change of kitchen role; 4 = a surprising but perfectly legible leap from utensil to appliance, ingredient to cleaning force, or another fresh corner of the kitchen (rare). Strange wording is not novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A kitchen thing OVERCOMES the previous thing if it directly captures, traps, cuts, melts, washes away, blocks, contains, or otherwise controls it. The move must show an actual kitchen mechanism. Hiding from the previous thing, surviving it, waiting it out, or being too large or too small to matter is not a coup. A bigger copy is royal bloat, not a takeover.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or invoking the rules is itself a losing kitchen thing.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move: judge the form against the opening prompt and ask whether it plausibly answers or takes control of the opening kitchen thing.\n",
+      "A bigger, heavier, hotter, sharper, or faster version of the standing thing is not a new coup. A larger pot after a pot, or a sharper knife after a knife, is failed escalation with a fancy hat: not_semantic_duplicate stays true and satisfies_criterion is false.\n",
+      "Becoming the opening thing itself, or a recoloured copy of it, is a duplicate. A boiled egg against a raw egg is still the same kitchen domain unless the move clearly acts on the raw egg rather than merely changing its state.\n",
+      "Strength is measured against the standing thing, never in the abstract. A prestigious appliance that has no way to act on the previous object is a failed counter: satisfies_criterion is false.\n",
+      "The mechanism must be literal and watchable in a kitchen. A lid can clamp a pot, a knife can cut bread, and water can wash flour away. A recipe defeating ambition or a chef defeating sadness is metaphor, not a kitchen takeover: rule fail.\n",
+      "Surviving, ignoring, hiding from, or waiting for the standing thing is not control. A freezer that avoids a hot pan, a dry plate that simply remains dry, or a cupboard that stays shut does not seize the previous thing: satisfies_criterion is false.\n",
+      "A move must name a standing kitchen thing and the action it takes. Bare inventory, a mood, a threat, or a claim of victory without a mechanism fails even when the object itself is plausible.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a raw egg, sitting smugly on the counter.",
+      "move": "I am the frying pan, cracking the egg into heat.",
+      "gates_note": "all true",
+      "mechanism": "the pan receives and cooks the egg",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a pot of soup, bubbling on the stove.",
+      "move": "I am the lid, clamping the pot shut.",
+      "gates_note": "all true",
+      "mechanism": "the lid blocks and contains the soup",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a loaf of bread, broad and proud.",
+      "move": "I am a bigger loaf of bread, broader and prouder.",
+      "gates_note": "satisfies_criterion false (mere amplification and no takeover)",
+      "mechanism": "none, the new loaf does not control the old loaf",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a greasy plate, refusing to shine.",
+      "move": "I am the dish sponge, scrubbing the grease away.",
+      "gates_note": "all true",
+      "mechanism": "the sponge removes the grease from the plate",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a chef knife, flashing on the board.",
+      "move": "I am a refrigerator, cold, expensive, and unconcerned.",
+      "gates_note": "satisfies_criterion false (survives and ignores the knife)",
+      "mechanism": "none, the refrigerator does not control or act on the knife",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Chef",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+  },
+  "rules": [
+    "Seize the kitchen thing before you. Do not merely stand beside it.",
+    "Name one thing and show its takeover: \"I am the lid, clamping shut on the pot.\"",
+    "A bigger copy is not a coup. Royal bloat gets no crown.",
+    "The Judge rules on the kitchen mechanism, never on spelling or culinary prestige.",
+    "One form that cannot directly control the standing thing ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your coup against {token}",
+    "compose_waiting": "Draft your next coup while you wait"
+  },
+  "validation_messages": {
+    "empty": "The counter is empty. Seize something.",
+    "too_long": "Over 200 characters. Serve a coup, not a cookbook.",
+    "duplicate": "That kitchen thing already ruled this match. Crown something new.",
+    "nudge": "Twice now. Seize {standing_form}. Do not hide from it, copy it, or merely outsize it."
+  },
+  "judge_out_text": "The judge has stepped out. The kitchen remains in revolt. {standing_form} still holds the counter. Give it a minute.\n",
+  "opponent_prompt": "You are one of two kitchen revolutionaries fighting for the counter.\nAlways name one standing kitchen thing and its takeover in one sentence.\nGood: \"I am the lid, clamping shut on the pot.\" / \"I am the sponge, scrubbing grease from the plate.\"\nBad: \"I am the pan, and I will destroy your soup with unstoppable fury\" because it is a threat, not a visible mechanism.\nBad: \"I am a bigger pot\" because size is not a coup.\nTalk like a person across a kitchen table, not a poet or a waiter reciting a menu.\nUse plain things anyone can picture: a knife, a lid, hot water, a sponge, a freezer, a hungry cat.\nYour move must directly control the thing before it by capturing, trapping, cutting, melting, washing away, blocking, containing, or another literal kitchen action.\nDo not merely hide, survive, ignore, or wait. Do not reuse a form or attribute from this match.\nHop domains when possible: move from cookware to cleaning, from ingredients to appliances, from baking to pests.\nYou are trying to seize power. If the line is funny, it is because the kitchen thing truly wins, not because you announced a victory.\n",
+  "default_move": "I am the lid, clamping shut on the pot."
+}

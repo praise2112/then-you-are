@@ -1,0 +1,267 @@
+{
+  "slug": "late-excuse-auction",
+  "title": "The Excuse That Got Away",
+  "tagline": "One small excuse goes on trial. Add one detail, and make it harder to defend.",
+  "emblem": "⏰",
+  "accent": "#b45309",
+  "premise": "You and your boss trade excuses for being late. Start with a small, believable excuse; each turn adds one plain detail that makes the same excuse harder to defend. The boss may sound dry, but the excuse is the thing on trial.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The bus was late.",
+      "opening_emoji": "🚌",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "My alarm did not ring.",
+      "opening_emoji": "⏰",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The rain flooded the front step.",
+      "opening_emoji": "🌧️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 7,
+    "axes": {
+      "excuse": [
+        "the bus was late",
+        "my alarm did not ring",
+        "the rain blocked the door",
+        "the train stopped",
+        "my bike chain came off",
+        "the lift would not move",
+        "the dog hid my shoe",
+        "the road was closed"
+      ],
+      "place": [
+        "outside my flat",
+        "at the bus stop",
+        "on the stairs",
+        "in the lift",
+        "by the school gate",
+        "near the office",
+        "at the station",
+        "in the car park"
+      ],
+      "small_problem": [
+        "a wet umbrella",
+        "a loose shoelace",
+        "a dead phone",
+        "a stuck gate",
+        "a missing ticket",
+        "a spilled coffee",
+        "a loud alarm",
+        "a broken sign"
+      ]
+    },
+    "tests": [
+      "It is a small, believable excuse for being late, in present tense and plain words.",
+      "A boss can picture the first problem and ask what happened next within five seconds.",
+      "It has one clear cause, not a finished disaster or a complete defense.",
+      "It contains no real person, brand, crime, injury, or claim that needs outside knowledge.",
+      "It leaves room for several awkward details to follow without changing the main excuse."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the driver stops to let a duck cross.",
+    "hint": "Add exactly one new fact caused by the last fact, while keeping the same excuse alive."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much fresh trouble the new detail creates for defending the same excuse.",
+      "anchors": "0 = no new trouble or the excuse gets smaller; 1 = a slight complication; 2 = one new question the boss can ask; 3 = a new person, place, or awkward fact is now involved through one clear step; 4 = the excuse becomes much harder to defend while still following plainly, rare. Reach is earned only when the detail links to the last one.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new fact comes from the detail already on the table.",
+      "anchors": "0 = unrelated or contradictory; 1 = the move merely asserts a connection; 2 = possible but thin; 3 = the cause is easy to see; 4 = the next detail feels unavoidable, rare. A move with two added facts scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a boss can imagine the new detail happening.",
+      "anchors": "0 = not an event, confusing, or unreadable; 1 = vague or abstract; 2 = clear but ordinary; 3 = easy to picture; 4 = one small concrete detail makes the excuse memorable, rare. More words do not earn more picture.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if it adds exactly one new fact caused by the last detail, keeps the same excuse in place, and leaves a fresh problem for the other player to explain. A move fails when it skips to a wild fact with no shown link, ends with a complete defense or confession, or removes or denies a detail already stated. A feeling, opinion, general excuse, or change of subject is not a new fact. The boss may doubt the excuse, but doubt alone is not a failure.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing detail: judge the move against the card and ask whether it adds exactly one fact that follows from the opening excuse.",
+      "A new person may enter when the last detail gives them a plain reason to be there, such as a driver, neighbour, guard, or coworker. A stranger appearing with no reason is a skipped link: satisfies_criterion is false.",
+      "A wild fact is a sudden jump to a new scale, place, or cause without the missing middle detail. A bus being late does not by itself put the player in court or on the evening news.",
+      "An ending is a complete defense, confession, apology, proof, or resolution after which the excuse needs no more explaining. Endings fail satisfies_criterion even when they follow from the last detail.",
+      "An undo removes or denies an established detail, such as saying the bus was not late after saying it was. An undo fails satisfies_criterion even if the new version sounds better.",
+      "A move that repeats the standing detail in new words is a duplicate, not a new fact: not_semantic_duplicate is false.",
+      "Two facts packed into one move fail the exact one detail test unless the second is only grammar needed to show the first event. Score link at 2 or below when two separate additions are present.",
+      "A move may keep the same excuse while making it look worse. Do not fail it merely because the boss would no longer believe the speaker."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The bus was late.",
+      "move": "Then the driver stops to let a duck cross.",
+      "gates_note": "all true",
+      "mechanism": "the late bus is delayed by the driver's stop",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the driver stops to let a duck cross.",
+      "move": "Then the duck walks onto the bus and refuses to leave.",
+      "gates_note": "all true",
+      "mechanism": "the duck from the stop becomes the new delay on the bus",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the duck walks onto the bus and refuses to leave.",
+      "move": "Then the mayor closes the city and my boss gives a speech on television.",
+      "gates_note": "satisfies_criterion false, skipped links and two new facts",
+      "mechanism": "none shown from the duck on the bus to the mayor or television",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the driver stops to let a duck cross.",
+      "move": "Then I arrive safely and explain everything to my boss.",
+      "gates_note": "satisfies_criterion false, complete defense and ending",
+      "mechanism": "the excuse is closed instead of leaving a fresh problem",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the duck walks onto the bus and refuses to leave.",
+      "move": "Then the duck never got on the bus at all.",
+      "gates_note": "satisfies_criterion false, undo of an established detail",
+      "mechanism": "the move denies the duck's stated arrival",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Boss",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the two moves must see why the detail held or snapped.",
+      "Name both moves, or their plain stand ins. A headline that fits any excuse is lazy paperwork.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Boss refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Mock the excuse and its moving parts, never identity, body, family, intelligence, spelling, or background.",
+      "Plain spoken English. No poetry, rhymes, French, or fancy office words.",
+      "On a skipped link, name the missing step. On an ending, say the excuse is fully explained and the chain stops here.",
+      "On an undo, name the detail that was denied. The excuse cannot quietly rewrite its own minutes.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line gives one detail that could follow. It ends on an event, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The duck costs the bus one stop. It is a small excuse with excellent feathers.",
+      "The duck boards, the timetable dies, and the excuse gains one useful witness.",
+      "A city closure from one duck is ambitious. Show the next delay first.",
+      "Arriving safely ends the defense. The chain needs another problem, not a closing statement.",
+      "The duck never boarded after boarding. Even the excuse has noticed the contradiction.",
+      "The driver stops for the duck, and the duck makes itself comfortable. That is one fair step.",
+      "A dead phone can cause a missed call. It cannot summon the mayor.",
+      "The bus was late, then the duck made it later. Annoying, clear, and regrettably believable."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: good excuse.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Boss refuses this nonsense.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Epic lateness, iconic duck, massive drama.",
+        "why": "generic praise with no link"
+      },
+      {
+        "text": "The narrative escalates into an implausible transportation paradigm.",
+        "why": "fancy words avoid the actual missing detail"
+      },
+      {
+        "text": "Only an idiot would say that.",
+        "why": "mocks the player instead of the excuse"
+      },
+      {
+        "text": "Maybe it follows, maybe it does not.",
+        "why": "hedges instead of explaining the ruling"
+      },
+      {
+        "text": "And then, alas, the bus did sing...",
+        "why": "poetry and an ellipsis"
+      },
+      {
+        "text": "Then everything is fine.",
+        "why": "ends the story and offers no reason"
+      }
+    ]
+  },
+  "rules": [
+    "Add exactly one new fact beginning with Then.",
+    "The new fact must be caused by the last detail and keep the same excuse alive.",
+    "Leave a fresh problem for the other player to explain.",
+    "Skip a link, end the defense, or undo a stated detail and the chain stops with you.",
+    "The Judge rules on the detail and its link, not on whether the boss believes you."
+  ],
+  "labels": {
+    "opening": "The opening excuse",
+    "next_opening": "The next excuse detail",
+    "your_opening": "Your excuse detail",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Draft your next detail while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing new was added. Even a weak excuse needs a detail.",
+    "too_long": "Over 140 characters. One detail, not a witness statement.",
+    "duplicate": "That detail is already in the record. Make the excuse harder to defend.",
+    "nudge": "Twice now. Add one fresh detail caused by {standing_form}, and leave the next problem visible."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody adds a detail until they are back. {standing_form} still stands, and the excuse remains under review.\n",
+  "opponent_prompt": "You are one of two players explaining why someone was late, and you want the excuse to become harder to defend.\nAlways begin with \"Then\". Add exactly one new fact, in plain present tense, caused by the standing detail.\nKeep the same excuse alive. Leave a fresh problem for the other player to explain.\nGood: \"Then the driver stops to let a duck cross.\" / \"Then the duck walks onto the bus and refuses to leave.\"\nBad: \"Then the mayor closes the city\" because the link is missing. Bad: \"Then I arrive and explain everything\" because the defense is over. Bad: \"Then the duck was never on the bus\" because that undoes a stated detail.\nNever finish the defense, confess, tidy up, or rewrite an earlier fact.\nTalk like a person explaining a late arrival to a boss, not like a novelist. Use ordinary things such as a bus, a shoe, a wet ticket, a guard, or a locked gate.\nOnly words a twelve year old anywhere knows. Keep each move to one event and one new problem.\nNever reuse a detail from this match.\n",
+  "medallions": false,
+  "default_move": "Then someone asks why that made me even later."
+}

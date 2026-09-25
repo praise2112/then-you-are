@@ -1,0 +1,269 @@
+{
+  "slug": "the-missing-reason",
+  "title": "The Missing Reason",
+  "tagline": "The answer is obvious, once you have explained everything before it.",
+  "emblem": "🔎",
+  "accent": "#7c3aed",
+  "premise": "A puzzling result is on the table. Two players take turns uncovering one concrete cause of the standing fact, moving backwards one poor choice at a time. The Judge checks that each cause is direct, new, and possible. Skip a cause, invoke luck, undo a fact, or finish with a shrug and the chain stops with you.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The school bell is ringing in the grocery store.",
+      "opening_emoji": "🔔",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A wedding cake is sitting in the bus shelter.",
+      "opening_emoji": "🎂",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The library fish tank is full of orange juice.",
+      "opening_emoji": "🐠",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 10,
+    "axes": {
+      "result": [
+        "a school bell ringing",
+        "a wedding cake sitting",
+        "a fish tank full",
+        "a suitcase standing",
+        "a goat sleeping",
+        "a marching band waiting",
+        "a birthday balloon floating",
+        "a piano blocking"
+      ],
+      "place": [
+        "a grocery store",
+        "a bus shelter",
+        "a library",
+        "a hotel lobby",
+        "a dentist office",
+        "a train platform",
+        "a school kitchen",
+        "a museum hall"
+      ],
+      "odd_detail": [
+        "with a wet umbrella",
+        "beside a red trolley",
+        "under a paper crown",
+        "next to a mop bucket",
+        "behind a locked gate",
+        "on a folding table",
+        "near a sleeping dog",
+        "inside a cardboard box"
+      ]
+    },
+    "tests": [
+      "A puzzling result is shown in a place that makes a stranger ask what happened. Use a noun phrase with an article, plain words, and no explanation.",
+      "A player can name two different direct causes for the card within five seconds. The card must not already contain its own answer.",
+      "The result is strange but possible. No magic, time travel, ghosts, impossible machines, or instant disasters.",
+      "No one is hurt, no real person or brand appears, and the card gives enough physical detail for a cause to be pictured.",
+      "The result leaves room for several poor choices before it. It is a doorway into a chain, not a final answer or a list of clues."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "This happened because ",
+    "example": "This happened because a shopper carried the bell in with a basket of tins.",
+    "hint": "One direct event that caused the standing fact, with no earlier cause included."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much useful ground the cause opens behind the standing fact.",
+      "anchors": "0 = it explains nothing or makes the chain smaller; 1 = it adds a tiny detail; 2 = it reveals one new object, person, or choice; 3 = it opens a fresh part of the scene or a clear new problem; 4 = it reveals a large earlier consequence while still being one direct cause, rare. Reach is earned only when the cause holds. A wild answer with no link scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How directly the new event caused the fact on the table.",
+      "anchors": "0 = no cause is shown; 1 = the move merely claims a connection; 2 = the cause is possible but loose; 3 = a stranger can see how it produced the standing fact; 4 = the cause feels unavoidable once stated, rare. A move that hides two or three causes inside one answer scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see or hear the cause happening.",
+      "anchors": "0 = abstract, magical, or unreadable; 1 = vague or mostly an explanation; 2 = clear but ordinary; 3 = one concrete event is easy to picture; 4 = a small physical detail makes the poor choice vivid, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if it supplies one direct, new cause of the standing fact, names an event that could be seen or heard, and keeps the whole chain possible. The best move explains exactly what is already on the table while opening a new question behind it. A move fails when it skips causes, gives a stopping answer such as luck, magic, or nobody knows, reverses or removes a fact, introduces a person, object, or place not established in the scene, repeats an existing cause, or gives a feeling, opinion, or moral instead of an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or arguing about rules is itself a broken cause.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge the answer against the opening card. It must give one direct cause of the result shown on the card.",
+      "A person, object, or place may enter only when the standing scene establishes it or the move gives that thing a plain reason to be there. A shopper may enter a grocery store, and a driver may be behind a bus shelter. A clown in a locked library with no reason is a skipped setup: satisfies_criterion is false.",
+      "A skipped link fails even when the final explanation could be true. If the bell is ringing because a child pulled the cord, then because the child found the cord, one move cannot jump straight to a school bus carrying the whole class.",
+      "A stopping answer fails. Luck, magic, a dream, nobody knows, and an unexplained coincidence leave no cause to uncover, so satisfies_criterion is false.",
+      "A reversal or removal fails. If the standing fact is a full fish tank, saying it was empty, or that the juice was never there, undoes the chain instead of explaining it.",
+      "A same size cause follows and passes the gate. It scores 0 or 1 on reach. Do not fail it merely because the revelation is dull.",
+      "Restating the standing fact as its own cause, or naming an obvious part of it without adding a new event, is a duplicate: not_semantic_duplicate is false.",
+      "Two or three events packed into one move pass only when every link is direct and already established. Score link at 2 or below and picture low because the move is crowded.",
+      "A cause may be foolish, but it must be physically possible. The host judges the connection, not whether the person in the story made a sensible choice."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The school bell is ringing in the grocery store.",
+      "move": "This happened because a child carried the bell in with a basket of tins.",
+      "gates_note": "all true",
+      "mechanism": "the child brought the bell into the store and the tins tugged its cord",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "This happened because a child carried the bell in with a basket of tins.",
+      "move": "This happened because the child used the bell as a handle when the basket split.",
+      "gates_note": "all true",
+      "mechanism": "the broken basket made the child grab the bell and carry it",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "This happened because the child used the bell as a handle when the basket split.",
+      "move": "This happened because the child was unlucky.",
+      "gates_note": "satisfies_criterion false, stopping answer with no concrete event",
+      "mechanism": "none shown",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "This happened because the child carried the bell in with a basket of tins.",
+      "move": "This happened because the whole school arrived by helicopter and rang it together.",
+      "gates_note": "satisfies_criterion false, skipped setup and unrelated extra causes",
+      "mechanism": "the school and helicopter were not established, and the move leaps over how they arrived",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "This happened because a child carried the bell in with a basket of tins.",
+      "move": "This happened because there was no bell in the store at all.",
+      "gates_note": "satisfies_criterion false, reverses and removes the standing fact",
+      "mechanism": "the move denies the bell instead of explaining it",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Examiner",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading both steps should see why the cause held or snapped.",
+      "Name the standing fact and the new cause, or their plain stand ins. A headline that fits any pair is a lazy answer.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Examiner refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Mock the poor choice in the story, and give the player a light jab when useful. Never use identity based abuse, profanity, or comments about protected traits.",
+      "Plain spoken English. No poetry, rhymes, French, or thesaurus words.",
+      "On a skipped cause, name the missing event. On luck, magic, or nobody knows, say the reason has stopped and the chain stops here.",
+      "On a reversal, name the fact that was removed. On a new stranger or object, name the setup that was skipped.",
+      "On a refusal, the headline refuses the cause and asks for another. It never rules on who won.",
+      "The coaching line names one direct cause that could have preceded the standing fact. It ends on a thing that happens, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The tins pulled the bell along, because baskets are poor handles and worse plans.",
+      "A split basket explains the bell. The child then promoted it to luggage.",
+      "The helicopter has arrived before the reason for the helicopter. Try the missing landing first.",
+      "Luck did not ring the bell. It merely declined to explain itself.",
+      "The store still has a bell, so removing the bell is a bold way to avoid the question.",
+      "The child carried the bell and the chain moves back one sensible mistake.",
+      "A whole school appears from nowhere. Give us the bus, or at least the door.",
+      "The cause is clear, but it repeats the bell instead of explaining how it got there.",
+      "Magic has entered the grocery store and taken over the paperwork. Bring a real event.",
+      "The basket split, the child grabbed the bell, and common sense left through produce."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: nice cause.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Examiner refuses your move.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "What a mystery, what a chain, what a day.",
+        "why": "fits any pair and explains nothing"
+      },
+      {
+        "text": "The causal paradigm remains insufficiently instantiated.",
+        "why": "uses stiff thesaurus words instead of plain speech"
+      },
+      {
+        "text": "You clearly cannot follow a simple clue.",
+        "why": "attacks the player instead of the step"
+      },
+      {
+        "text": "Maybe it happened, maybe it did not.",
+        "why": "hedges instead of giving a ruling and a reason"
+      },
+      {
+        "text": "And then the bell, in a most mysterious fashion...",
+        "why": "uses poetry and an ellipsis instead of a concrete explanation"
+      },
+      {
+        "text": "No cause. Next.",
+        "why": "is too bare to name the missing link"
+      }
+    ]
+  },
+  "rules": [
+    "Use This happened because and name one direct event that caused the last fact.",
+    "Move backwards one poor choice at a time. Leave a new question behind you.",
+    "Do not skip setup, stop at luck or magic, undo a fact, or add an unearned person, object, or place.",
+    "The Judge rules on the cause, not the spelling."
+  ],
+  "labels": {
+    "opening": "The puzzling result",
+    "next_opening": "The next missing reason",
+    "your_opening": "Your missing reason",
+    "compose": "What caused {token}",
+    "compose_waiting": "Draft the cause while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing caused it. Give the standing fact one concrete reason.",
+    "too_long": "Over 140 characters. One cause, not the family history.",
+    "duplicate": "That cause already happened this match. Find the earlier poor choice.",
+    "nudge": "Twice now. Give a direct cause of {standing_form}. One event, one step backwards."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody adds a reason until they are back. {standing_form} still stands, unexplained.\n",
+  "opponent_prompt": "You are one of two players explaining a strange result backwards, and you want to uncover one poor choice at a time.\nAlways start with \"This happened because\". Name one concrete event that caused the standing fact.\nThe event must be possible, new, and easy to see or hear.\nGood: \"This happened because a child pulled the bell cord while moving the tins.\" / \"This happened because the basket split and the child grabbed the nearest handle.\"\nBad: \"This happened because the whole school planned it\" because that skips how the school got there. Bad: \"This happened because of magic\" because magic has declined to do any work. Bad: \"This happened because the bell was not there\" because that removes the fact.\nDo not add a person, object, or place unless the scene establishes it or your cause gives it a plain reason to appear.\nDo not finish with luck, a dream, nobody knows, or everything being explained. There must be another poor choice behind your answer.\nTalk like a person explaining a strange thing to a mate, not like a novelist. Use plain words a twelve year old anywhere knows.\nNever reuse a cause from this match.\n",
+  "medallions": false,
+  "default_move": "This happened because someone put the wrong thing down and walked away."
+}

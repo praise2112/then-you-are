@@ -1,0 +1,277 @@
+{
+  "slug": "charm-chain",
+  "title": "Charm Chain",
+  "tagline": "Ward the last ward before it bites.",
+  "emblem": "🧿",
+  "accent": "#7c3aed",
+  "premise": "Build a chain of protective charms, but each new charm must defeat the danger created by the charm before it. A candle defeats darkness, a bell defeats silence, and salt defeats a ghost's crossing. The host records each charm's failure like a ward inspector finding a loose nail, never blaming the person who held the charm.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a locked door spell",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a sleeping dragon charm",
+      "opening_emoji": "🐉",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a ghost calling charm",
+      "opening_emoji": "👻",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "danger": [
+        "a monster",
+        "a ghost",
+        "a witch",
+        "a curse",
+        "a shadow",
+        "a giant",
+        "a goblin",
+        "a dragon"
+      ],
+      "place": [
+        "a cottage",
+        "a forest",
+        "a crossroads",
+        "a graveyard",
+        "a castle",
+        "a village",
+        "a bedroom",
+        "a mountain"
+      ],
+      "effect": [
+        "locks",
+        "hides",
+        "silences",
+        "calls",
+        "freezes",
+        "follows",
+        "guards",
+        "haunts"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the charm at once. Nothing abstract, scholarly, or dependent on knowing one special legend.",
+      "A non-player names a plain counter within five seconds. Say what the counter blocks, breaks, exposes, or reverses.",
+      "It stands in the ring as an active protection or threat, like a bell, a ward, a mirror, or a knot. Never a vague wish or a place with no action.",
+      "It makes a stranger want to answer. A charm with a handle, weakness, warning, or nasty little trick is better than plain inventory.",
+      "Two to four everyday words a twelve-year-old knows. No proper names, brands, invented spellings, or lore that needs a book beside the table."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a silver mirror; I send the monster's evil eye back at it.",
+    "hint": "Name the charm, then state the action that defeats the standing effect."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new charm breaks, blocks, exposes, or reverses the active effect of the charm before it.",
+      "anchors": "0 = no action against the standing effect; 1 = a decorative claim or weak connection; 2 = a possible counter with a gap or loophole; 3 = a clear charm that directly defeats the effect; 4 = the standing charm is clinically dismantled by the new one, with no useful work left for it (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How plainly a stranger can picture the charm and understand what it does.",
+      "anchors": "0 = confused or self-contradicting; 1 = requires obscure folklore or specialist knowledge; 2 = understandable but fuzzy, overloaded, or partly abstract; 3 = concrete and easy to follow; 4 = vivid, compact, and instantly visible (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How far the new charm moves into a fresh kind of folklore, object, place, or defensive idea instead of repeating the last one.",
+      "anchors": "0 = the same charm, same family, or obvious stock repeat; 2 = a respectable change with familiar machinery; 4 = a fresh domain hop that still works as a plain charm (rare). Clever wording does not raise novelty, and obscurity is not novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A charm OVERCOMES the previous charm if it directly blocks, breaks, exposes, or reverses the previous charm's active effect. The new charm must act on what the old charm does, not merely endure it, avoid it, or claim greater power. A charm is a standing protection or magical effect, never a past event.",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or invoking a rule as a charm is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move. Judge the charm against the opening prompt instead, asking whether it directly answers or defeats the danger named there.\n",
+      "A stronger copy, larger version, louder version, or more ancient version of the standing charm is not a counter. A charm from the same family, such as a second lock after a lock, also fails unless it has a distinct action that defeats the standing effect.\n",
+      "Becoming the opening charm itself, or making only a cosmetic change to it, is a duplicate and fails the novelty gate.\n",
+      "The mechanism must be literal. A charm must do something a stranger could watch happen, such as a bell breaking silence, a mirror sending an evil eye back, or salt stopping a ghost's crossing. A poetic image or symbolic claim is not enough.\n",
+      "Surviving, hiding from, ignoring, outranging, or being immune to the standing charm is dodging, not overcoming. The new charm must act on the effect that stands.\n",
+      "A charm that only protects its holder while leaving the standing effect untouched fails. Safety is not a counter when the old magic remains fully active.\n",
+      "A charm that works only because the standing charm conveniently stops acting, misses, or never reaches it fails. The new charm must provide the stopping mechanism.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The opening is a locked-door spell.",
+      "move": "I am a skeleton key; I opens the lock.",
+      "gates_note": "all true",
+      "mechanism": "a skeleton key directly opens the locked door",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a skeleton key; I opens the lock.",
+      "move": "I am a bigger key; I opens it harder.",
+      "gates_note": "satisfies_criterion false, mere amplification and same family",
+      "mechanism": "none beyond being another key",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a sleeping dragon charm; it keeps the dragon asleep.",
+      "move": "I am a cold iron bell; I wakes the dragon.",
+      "gates_note": "satisfies_criterion false, the move activates the standing danger instead of defeating it",
+      "mechanism": "the bell does not block, break, expose, or reverse the sleeping charm",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a ghost calling charm; I summons the dead.",
+      "move": "I am a church bell; I sends the ghosts back to their graves.",
+      "gates_note": "all true",
+      "mechanism": "the bell reverses the calling effect and drives the ghosts away",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a shadow cloak; I hides the wearer from every eye.",
+      "move": "I am a candle; I shows the hidden shape.",
+      "gates_note": "all true",
+      "mechanism": "light exposes what the shadow cloak conceals",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a witch's knot; I tangles every road.",
+      "move": "I am a faster horse; I outruns the curse.",
+      "gates_note": "satisfies_criterion false, survival and escape are not direct counters",
+      "mechanism": "the horse avoids the tangled roads but does not break the knot",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Ward Inspector",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Make the joke carry the reason. A stranger should see the active effect and the counter without a lecture.",
+      "Name both charms, or use plain stand ins that clearly identify them.",
+      "Never open with a status word or ruling phrase. Do not begin with Accepted, Rejected, Refused, or Move refused.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the failed charm or the move's flimsy mechanism, never identity or protected traits. A light jab at the player is allowed, but keep it playful.",
+      "Use plain spoken English. No poetry, grand prophecy, fake Latin, or obscure folklore terms.",
+      "On a gate failure, refuse the move and request another. Do not declare who won.",
+      "The coaching line names one charm that would have worked. End on a concrete action, not a mood, verdict, or insult.",
+      "Keep the menace theatrical and mild. Threaten the charm's paperwork, not the player's safety."
+    ],
+    "good_headlines": [
+      "The locked door met a skeleton key and discovered its career was temporary.",
+      "The ghost called for backup, then the church bell sent the whole department home.",
+      "The shadow cloak hid beautifully until the candle exposed its cheap stitching.",
+      "The sleeping dragon was safe from the bell, but waking it is not a counter. Bring another charm.",
+      "The witch's knot tangled the road, then the scissors cut its little empire apart.",
+      "A bigger lock is still a lock. The door remains smug and sealed. Bring another charm.",
+      "The silence tried to swallow the room, and the bell opened its throat.",
+      "The mirror sent the evil eye back with the return address attached."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the bell defeats the ghost.",
+        "why": "opens with a status word and gives no concrete mechanism"
+      },
+      {
+        "text": "The Ward Inspector refuses: your charm is pathetic.",
+        "why": "opens with a ruling phrase, names the host, and attacks the player rather than the form"
+      },
+      {
+        "text": "The player clearly does not understand folklore.",
+        "why": "mocks the player and gives no ruling reason"
+      },
+      {
+        "text": "The key is stronger, faster, older, and better.",
+        "why": "lists verdict language without naming what the key does to the standing charm"
+      },
+      {
+        "text": "The charm has been comprehensively and metaphysically neutralized.",
+        "why": "clinical fog replaces a visible action"
+      },
+      {
+        "text": "The candle wins.",
+        "why": "fits any pair and explains nothing"
+      },
+      {
+        "text": "The lock trembles, the key attacks, the darkness screams, and destiny laughs.",
+        "why": "poetic spectacle obscures the simple mechanism and uses inflated language"
+      },
+      {
+        "text": "Your little spell is not very bright.",
+        "why": "a personal jab without identifying the failed effect or a repair"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the charm in front of you. Do not become it.",
+    "Name one standing charm and state its action against the previous effect.",
+    "The Judge rules on the idea, not spelling or folklore trivia.",
+    "A charm that only hides, survives, or waits does not count as a counter.",
+    "One charm that fails against the standing effect ends the chain."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your charm against {token}",
+    "compose_waiting": "Draft your next charm while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Hang a charm before the dark notices.",
+    "too_long": "Over 200 characters. A charm, not a grimoire.",
+    "duplicate": "That charm already stood this chain. Hang something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not copy it, dodge it, or leave it untouched."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two charm keepers in a folklore duel.\nAlways name one plain charm and state its action against the other charm's active effect.\nGood: \"I am a silver mirror; I send the evil eye back.\" / \"I am a church bell; I breaks the ghost's call.\"\nBad: \"I am a stronger ward\" because strength alone is not a mechanism.\nBad: \"I am a cloak; I hide safely\" because surviving or hiding is not defeating.\nBad: \"I am ancient moonfire, destiny's answer\" because it is vague and ornamental.\nTalk like a person at a village gate, not a poet or a lore scholar. Use familiar things:\nsalt, bells, candles, keys, knots, iron, bread, mirrors, shoes, and doors.\nYour charm must directly block, break, expose, or reverse what stands before it.\nDo not become the standing charm, use a stronger copy, or rely on it missing you.\nHop domains when possible: a kitchen charm can answer a graveyard curse, and a road trick\ncan answer a monster's shadow. The charm still needs a visible action anyone can understand.\nNever reuse a charm or its defining action from this chain.\nYou are trying to survive, not perform for an audience. If the move sounds funny, it should\nbe because the folklore mechanism is genuinely sharp.\n",
+  "default_move": "I am a pinch of salt; I blocks the ghost's crossing."
+}

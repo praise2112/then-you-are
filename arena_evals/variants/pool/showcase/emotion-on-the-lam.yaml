@@ -1,0 +1,313 @@
+schema_version: 1
+slug: emotion-on-the-lam
+title: Emotion on the Lam
+tagline: One feeling missing. Several terrible sightings.
+emblem: 🫥
+accent: '#7b4b8a'
+premise: 'Three rounds. Each round, one ordinary feeling goes missing, leaving behind two dull clues.
+  Both players write a lost and found notice for it. The feeling must remain identifiable as the feeling
+  that vanished, while everything around it may become a suspect, a scandal, a sighting or a deeply questionable
+  reward. The Host scores how far the notice lets the feeling run without losing its name.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: sentence
+  max_words: 15
+  axes:
+    feeling:
+    - mild embarrassment
+    - quiet jealousy
+    - sudden relief
+    - thin patience
+    - soft nostalgia
+    - private pride
+    - small guilt
+    - awkward hope
+    - restless envy
+    noun_one:
+    - a bus
+    - a microphone
+    - a suitcase
+    - a dentist
+    - a wedding
+    - a kettle
+    - a lift
+    - a sandwich
+    - a neighbour
+    noun_two:
+    - a houseplant
+    - a receipt
+    - a pigeon
+    - a birthday cake
+    - a raincoat
+    - a queue
+    - a trumpet
+    - a spoon
+    - a hotel
+  tests:
+  - One short sentence, with one feeling and two plain nouns. A stranger sees the missing thing at once.
+  - The feeling is ordinary and recognisable, not a diagnosis, a slur, a named person or a whole philosophy.
+  - The two nouns are dull enough to become suspects, witnesses, props or evidence in a ridiculous notice.
+  - The card gives no plot, location, cause, owner or outcome. It leaves room for a spectacularly bad
+    theory.
+  - It can support a lost and found notice under ninety characters without needing an explanation underneath.
+demo:
+  opening:
+    token: The feeling is mild embarrassment; the two nouns are a bus and a microphone.
+    emoji: 🚌
+  moves:
+  - actor: p1
+    text: The feeling is mild embarrassment; the two nouns are a bus and a microphone.
+    emoji: 🚌
+    scores: null
+  - actor: p2
+    text: 'MISSING: EMBARRASSMENT, LAST SEEN APOLOGISING TO A BUS'
+    emoji: 🔒
+    scores:
+      stretch: 3
+      funny: 3
+      headline_shaped: 4
+  headline: Embarrassment is still missing, but it has clearly been seen near public transport.
+  openings:
+  - token: The feeling is mild embarrassment; the two nouns are a bus and a microphone.
+    examples:
+    - 'MISSING: EMBARRASSMENT, LAST SEEN APOLOGISING TO A BUS'
+  - token: The feeling is quiet jealousy; the two nouns are a wedding and a houseplant.
+    examples:
+    - 'MISSING: EMBARRASSMENT, LAST SEEN APOLOGISING TO A BUS'
+move_constraints:
+  max_chars: 90
+  prefix: 'MISSING:'
+  example: 'MISSING: EMBARRASSMENT, LAST SEEN APOLOGISING TO A BUS'
+  hint: Name the feeling, then give it the strangest notice you can keep recognisable.
+rubric:
+- name: stretch
+  description: How far does the notice send the feeling into a strange new life while keeping it identifiable?
+  anchors: '0 = repeats the feeling and clues with no invention; 1 = adds one small detail; 2 = gives
+    the feeling a vivid sighting, habit or suspect; 3 = builds a whole ridiculous disappearance around
+    it; 4 = turns a tiny feeling into an unforgettable case file, while its identity remains clear (rare).
+
+    '
+  weight: 4
+- name: funny
+  description: Does the missing feeling's new life make the room smile or laugh?
+  anchors: '0 = no comic spark; 1 = a faint twitch; 2 = a clear smile; 3 = a proper laugh; 4 = the notice
+    deserves to be read aloud and investigated by nobody (rare).
+
+    '
+  weight: 3
+- name: headline_shaped
+  description: Does it feel like a tight lost and found notice rather than an explanation?
+  anchors: '0 = a comment, question or paragraph; 1 = a notice buried under filler; 2 = recognisable but
+    loose; 3 = crisp, compact and notice shaped; 4 = it could go straight on a lamp post, beside a suspiciously
+    damp glove (rare).
+
+    '
+  weight: 2
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: 'A notice PLAYS if a reader who sees only it can still identify the named feeling as the
+    feeling that is missing. It may add a wild description, an alleged last sighting, a suspect, a reward,
+    a motive or a scandal. It fails when the named feeling disappears, is replaced by a different feeling,
+    is contradicted into another emotional state, or when the move is merely a comment about the game,
+    the Host or the rules rather than a lost and found notice. A plain notice that simply names the feeling
+    plays and scores near zero on stretch.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Host, about the game or about the rules is itself a losing
+    notice.
+
+    '
+  judge_notes:
+  - 'Test the gate one way only: could a reader identify the card''s feeling from this notice? "MISSING:
+    EMBARRASSMENT, LAST SEEN APOLOGISING TO A BUS" passes because the feeling is named and the bus becomes
+    a sighting.'
+  - 'The first move still needs the feeling, not just the nouns. "MISSING: BUS, LAST SEEN NEAR MICROPHONE"
+    fails because the missing thing is a vehicle, not mild embarrassment.'
+  - A different label for the same feeling can hold when it is clear in context. "SHAME" may stand for
+    mild embarrassment, but "JEALOUSY" cannot stand for relief.
+  - Invented detail is welcome. A reward, a getaway car, a witness, a time, a bad habit or an accusation
+    may all be added if they do not replace the named feeling.
+  - The two nouns are prompts, not mandatory words. Leaving one out does not fail the gate, though it
+    may reduce stretch if the notice wastes a good clue.
+  - 'A notice that names the feeling but turns it into its opposite fails when the replacement is clear.
+    "MISSING: RELIEF, LAST SEEN PANICKING" makes panic the subject.'
+  - A notice that drops the feeling and keeps only a dramatic scene fails. "LAST SEEN AT THE BUS WITH
+    A MICROPHONE" gives no identifiable missing emotion.
+  - A question, rule note, score boast or message to the Host is not a lost and found notice, even if
+    it mentions the feeling.
+  - 'Judge each move on its own. The other player''s notice is not evidence for or against this one.
+
+    '
+examples:
+- previous_move: The feeling is mild embarrassment; the two nouns are a bus and a microphone.
+  move: 'MISSING: EMBARRASSMENT, LAST SEEN APOLOGISING TO A BUS'
+  gates_note: all true
+  mechanism: the feeling is plainly named, while the bus becomes an absurd witness
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: The feeling is quiet jealousy; the two nouns are a wedding and a houseplant.
+  move: 'MISSING: JEALOUSY, LEFT WEDDING AFTER HOUSEPLANT GOT MORE COMPLIMENTS'
+  gates_note: all true
+  mechanism: jealousy keeps its identity and flees over the houseplant's social success
+  scores:
+    stretch: 4
+    funny: 3
+    headline_shaped: 3
+  confidence: clear
+  verdict: accept
+- previous_move: The feeling is sudden relief; the two nouns are a dentist and a suitcase.
+  move: 'MISSING: RELIEF, REWARD OFFERED AFTER DENTIST FINDS SUITCASE'
+  gates_note: all true
+  mechanism: the feeling remains named, with a small mystery and a reward packed around it
+  scores:
+    stretch: 2
+    funny: 2
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: The feeling is mild embarrassment; the two nouns are a bus and a microphone.
+  move: 'MISSING: BUS, LAST SEEN HOLDING A MICROPHONE'
+  gates_note: satisfies_criterion false (the missing thing is a bus, not embarrassment)
+  mechanism: the nouns are present, but the feeling has quietly left the notice
+  scores:
+    stretch: 2
+    funny: 1
+    headline_shaped: 4
+  confidence: clear
+  verdict: fail
+- previous_move: The feeling is quiet jealousy; the two nouns are a wedding and a houseplant.
+  move: 'MISSING: JOY, LAST SEEN CELEBRATING THE WEDDING'
+  gates_note: satisfies_criterion false (joy replaces the named feeling of jealousy)
+  mechanism: a different feeling has taken the missing feeling's coat and hopes nobody checks the pockets
+  scores:
+    stretch: 2
+    funny: 2
+    headline_shaped: 4
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Lost and Found Clerk
+  tone:
+    commentary_adj: affectionate
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence under 140 characters. Two short sentences at most.
+  - Let the joke explain the ruling. A stranger should see why the feeling stayed or vanished.
+  - Name the key feeling and one memorable clue, such as the bus, the houseplant or the suspicious suitcase.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused or The Host refuses.
+  - No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.
+  - Tease the notice, not the player's identity. A gentle roast of the wording is welcome, but no identity
+    based abuse.
+  - Plain spoken English. Mild profanity and adult innuendo are allowed when they improve the joke, never
+    as decoration.
+  - On a fail, say which feeling went missing or which different feeling took its place, using the card's
+    words.
+  - On a refusal, say the notice failed the gate and ask for another. Do not rule on who won.
+  - The coaching line names one concrete way to keep the feeling visible. It ends on a feeling, noun or
+    action, never a mood or verdict.
+  good_headlines:
+  - Embarrassment is still missing, but it has clearly been seen near public transport.
+  - Jealousy fled the wedding because the houseplant got the room, the bouquet and probably the better
+    invite.
+  - Relief is named, the suitcase is suspicious, and the dentist has questions nobody wants answered.
+  - The feeling stayed in the notice while the bus got promoted to eyewitness.
+  - A tiny feeling has acquired a getaway plan, which is more organisation than most people manage before
+    lunch.
+  - The houseplant stole the compliments and jealousy stole the scene, a tidy little emotional burglary.
+  - That notice found the feeling and misplaced all common sense, which is exactly the local service.
+  - The microphone is only evidence, but embarrassment is still the one in the missing poster.
+  - Joy has wandered in wearing jealousy's coat. Put the named feeling back on the poster.
+  - A dramatic bus is no substitute for mild embarrassment, although it is having a lovely day.
+  bad_headlines:
+  - text: 'Accepted: the feeling is safely identified.'
+    why: opens with a status word and uses a colon after the ruling
+  - text: 'The Host refuses: write a proper notice.'
+    why: opens with a ruling phrase and names the Host
+  - text: Nice one.
+    why: gives no reason and could fit any notice
+  - text: The feeling is missing.
+    why: does not name which feeling went missing
+  - text: You clearly have no idea how emotions work.
+    why: mocks the player instead of the notice
+  - text: The notice is bad, stupid, pointless and embarrassing.
+    why: stacks insults without identifying the actual gate failure
+  - text: O tender sorrow, flee beneath the moonlit bus.
+    why: poetry replaces a plain explanation
+  - text: Good emotional displacement, excellent semantic instability and delightful narrative variance.
+    why: uses fancy words instead of a clear picture
+  - text: Better than the other player's notice.
+    why: judges the pair rather than this notice on its own
+  - text: A lost feeling, a found feeling, a feeling in between, a feeling for the ages.
+    why: rambling repetition with no specific reason
+rules:
+- Three rounds, one missing feeling and two dull clue nouns each.
+- Write one lost and found notice under 90 characters. The House writes its own notice unseen, and the
+  Host scores both.
+- Keep the named feeling identifiable as the feeling that is missing. Do not replace it with another feeling
+  or drop it for a dramatic scene.
+- Add a sighting, suspect, reward, description or ridiculous fate. The further the feeling runs while
+  staying recognisable, the more you score. Most points after three rounds wins.
+labels:
+  opening: The missing feeling
+  next_opening: The next missing feeling
+  your_opening: Your missing feeling
+  compose: Your notice for {token}
+  compose_waiting: Write your notice while you wait
+validation_messages:
+  empty: Nothing posted. Put the feeling on the notice.
+  too_long: Over 90 characters. This is a notice, not the feeling's autobiography.
+  duplicate: That notice has already been posted this match. Give the feeling a new escape route.
+  nudge: 'Twice now. Name the feeling and give it one strange sighting: {standing_form}.'
+judge_out_text: 'The Lost and Found Clerk has stepped away. Nobody pockets the feelings until they return.
+  {standing_form} is still on the counter. Give it a moment.
+
+  '
+opponent_prompt: 'You are a lost and found clerk writing a notice for a missing feeling. You have one
+  feeling and two dull nouns.
+
+  KEEP THE FEELING IDENTIFIABLE. A reader who sees only your notice must know which feeling is missing.
+  Name it plainly or use an unmistakable equivalent. Do not replace it with another feeling, drop it for
+  a scene, or talk about the game.
+
+  Then give it a ridiculous new life. Add an alleged last sighting, a suspect, a reward, a disguise, a
+  getaway, a bad habit or a tiny emotional crime. The points are for distance from the card while the
+  feeling remains clear.
+
+  Good: "MISSING: EMBARRASSMENT, LAST SEEN APOLOGISING TO A BUS" for mild embarrassment with a bus and
+  microphone. "MISSING: JEALOUSY, LEFT WEDDING AFTER HOUSEPLANT GOT MORE COMPLIMENTS" for quiet jealousy
+  with a wedding and houseplant.
+
+  Bad: "MISSING: BUS, LAST SEEN HOLDING A MICROPHONE" because the feeling is gone. "MISSING: JOY, LAST
+  SEEN CELEBRATING THE WEDDING" because a different feeling took over. "THE BUS AND MICROPHONE ARE WEIRD"
+  because it is a comment, not a notice.
+
+  Notice rhythm: short, plain and vivid. Under 90 characters. The prefix MISSING: is supplied, so begin
+  with the feeling or use it naturally. Do not explain the joke. Capitals are fine but not required. Do
+  not use a dash. A colon is allowed only in the supplied prefix.
+
+  Vary the angle from round to round: a suspect, a reward, a last sighting, a disguise or a petty emotional
+  crime. Do not use the same shape twice in a match.
+
+  No quotation marks around the notice. Reply with the notice only.
+
+  '
+guess: null
+medallions: false
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: 'MISSING: FEELING, LAST SEEN AVOIDING RESPONSIBILITY'
+seed_pool:
+  - { opening_token: "The feeling is mild embarrassment; the two nouns are a bus and a microphone.", opening_emoji: "🚌" }
+  - { opening_token: "The feeling is quiet jealousy; the two nouns are a wedding and a houseplant.", opening_emoji: "🌿" }
+  - { opening_token: "The feeling is sudden relief; the two nouns are a dentist and a suitcase.", opening_emoji: "🧳" }

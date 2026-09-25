@@ -1,0 +1,285 @@
+{
+  "slug": "nocturnal-nonsense",
+  "title": "Nocturnal Nonsense",
+  "tagline": "After dark, every animal has a trick, and every trick needs receipts.",
+  "emblem": "🦇",
+  "accent": "#312e81",
+  "premise": "After closing, the zoo’s night shift gets weird. Each new animal must defeat the last one with a real body or behavior it actually has. The Judge will call bullshit on lazy biology.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a skunk",
+      "opening_emoji": "🦨",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a bat",
+      "opening_emoji": "🦇",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "an octopus",
+      "opening_emoji": "🐙",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "animal": [
+        "mammal",
+        "bird",
+        "reptile",
+        "amphibian",
+        "fish",
+        "insect",
+        "spider",
+        "mollusk",
+        "crustacean"
+      ],
+      "trait": [
+        "echolocation",
+        "venom",
+        "armor",
+        "camouflage",
+        "flight",
+        "spray",
+        "electric shock",
+        "ink",
+        "web"
+      ],
+      "night_role": [
+        "escape artist",
+        "ambush hunter",
+        "loud nuisance",
+        "silent stalker",
+        "locked gate guard",
+        "fence climber",
+        "pond thief",
+        "sleeping keeper"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the animal at once, including what sort of creature it is and where it might lurk after closing.",
+      "A non-player names one real trait within five seconds. Say what that trait does.",
+      "Its trait directly acts on the standing animal or on the useful ability that lets the standing animal win. A creature that merely hides, waits, or stays out of reach fails.",
+      "The move gives the animal a reason to answer. It has a physical trick with teeth, wings, poison, armor, noise, or some other visible consequence, not a vague claim that it is powerful.",
+      "The card uses two or three everyday words a twelve-year-old knows. No species nobody can picture, no brand names, no proper nouns, and no made-up biology."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a bat, echolocation-finding, darkness-beating.",
+    "hint": "Name the animal, its real trait, and the effect on the standing animal."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly the newcomer's real trait defeats the standing animal or the ability it relies on.",
+      "anchors": "0 = no real interaction; 1 = a trait is named but does not stop the standing animal; 2 = the effect is plausible but limited or debatable; 3 = the trait clearly shuts down the exchange; 4 = the standing animal's useful advantage is completely and naturally ruined, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How quickly a stranger can picture the animal, its trait, and the physical effect.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires specialist knowledge or guesswork; 2 = mostly clear but biologically muddled; 3 = concrete and easy to picture; 4 = crisp, vivid, and instantly legible, rare. Extra words do not help unless they make the effect clearer.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the animal and its method are compared with the standing form, not how fancy the wording sounds.",
+      "anchors": "0 = the same animal, a bigger copy, or the obvious stock answer; 2 = a sensible but familiar counter; 4 = a surprising hop to a different kind of animal or tactic that still has real biology, rare. Obscurity and fake powers are not novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A newcomer OVERCOMES the standing animal when one real body feature or behavior directly defeats it or the useful ability that gives it the exchange. The effect must be something a stranger could watch happen, such as venom disabling a predator, armor stopping a bite, or echolocation locating a hidden animal. Dodging, hiding, surviving, waiting, being larger, being faster without an effect, or claiming a vague superpower does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or claiming the rules defeat the animal is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous animal. Judge it against the opening card and ask whether the animal has a real trait that directly answers or defeats that opening animal.\n",
+      "A bigger, faster, louder, or tougher version of the standing animal is not a counter. The same species, a close copy, or a trait that merely improves the same attack fails unless it directly disables the standing animal or its useful ability.\n",
+      "Becoming the opening animal itself, or giving it a small costume change, is a duplicate and fails the novelty gate.\n",
+      "Strength is measured against the standing animal, never in the abstract. A real trait that cannot affect what stands there, such as a shell against a flying bird when no bite or attack is involved, is a failed counter.\n",
+      "The mechanism must be literal and biologically grounded. A claim such as confidence scaring a lion, paperwork trapping a monkey, or moonlight confusing a snake is not enough unless the stated animal has a real trait that causes the effect.\n",
+      "Surviving, ignoring, hiding from, outrunning, or waiting out the standing animal is dodging, not overcoming. A nocturnal animal that simply stays unseen has not defeated a predator unless its real trait directly blinds, confuses, traps, poisons, or otherwise stops it.\n",
+      "The animal must use a real trait, not a vague superpower or invented fact. If the counter depends on doubtful biology, judge it as a failure rather than rewarding confident nonsense.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a fox, silent, ambush-ready.",
+      "move": "I am a skunk, spray-blinding, ambush-ending.",
+      "gates_note": "all true",
+      "mechanism": "the skunk's spray drives off and disables the fox's close ambush",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am an owl, silent, hunting by sight.",
+      "move": "I am a bat, echolocation-finding, darkness-beating.",
+      "gates_note": "all true",
+      "mechanism": "echolocation lets the bat locate the owl in darkness and defeats its visual hunting edge",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a wolf, bite-ready, chasing.",
+      "move": "I am a tortoise, shell-covered, bite-stopping.",
+      "gates_note": "all true",
+      "mechanism": "the shell blocks the wolf's bite and removes its main way to harm the tortoise",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a lion, roar-backed, terrifying.",
+      "move": "I am a larger lion, louder, more terrifying.",
+      "gates_note": "satisfies_criterion false, mere amplification and no new mechanism",
+      "mechanism": "none, it is the same animal with more volume",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a snake, venomous, striking.",
+      "move": "I am a mouse, sneaky, hiding.",
+      "gates_note": "satisfies_criterion false, dodging rather than defeating the snake",
+      "mechanism": "none, hiding does not act on or disable the snake",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a bat, echolocation-finding, darkness-beating.",
+      "move": "I am a dolphin, sonar-powered, ocean-owning.",
+      "gates_note": "satisfies_criterion false, real trait but wrong setting and no clear effect on the bat",
+      "mechanism": "none stated, sonar does not automatically defeat a flying bat",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 2,
+        "novelty": 2
+      },
+      "confidence": "lean",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Night Keeper",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two animals must see why the winner's trait worked or why the loser brought nothing useful.",
+      "Name both animals, or plain stand-ins for them. A headline that fits any zoo brawl is a lazy headline.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Night Keeper refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the animal or the move, never identity groups or protected traits. Roast the form, not the player.",
+      "Plain spoken English. Edgy jokes and mild profanity are allowed, but no slurs, no threats, and no jokes about a player's body, family, or intelligence.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never pretends the animal won.",
+      "The coaching line names one animal and one real trait that would have worked. It ends on an action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The fox planned a midnight ambush. The skunk brought chemical warfare and zero invitations.",
+      "The owl owns the dark until the bat turns the blackout into a guided tour.",
+      "The wolf found a tortoise and immediately met the world's least cooperative lunchbox.",
+      "The snake brought venom. The mongoose brought the receipt and bit back.",
+      "The lion's roar meets a porcupine, and suddenly confidence has several sharp objections.",
+      "The octopus reaches for the crab, but the shell has closed for business.",
+      "A bigger lion is still the same bad idea with more mane. Bring a real counter.",
+      "The mouse hid from the snake. Cute, but hiding is not a defeat. Bring an animal that stops the strike."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the bat wins because bats are cool.",
+        "why": "opens with a status word and gives no biological mechanism"
+      },
+      {
+        "text": "The Night Keeper refuses: that was bullshit.",
+        "why": "opens with a ruling phrase, names the host, and explains nothing"
+      },
+      {
+        "text": "Move refused, excellent against animals, useless here.",
+        "why": "opens with a ruling phrase and could fit any failed move"
+      },
+      {
+        "text": "The dolphin dominates the bat with superior vibes.",
+        "why": "vibes are not a physical effect, and the animals are not actually connected"
+      },
+      {
+        "text": "The mouse cleverly survives the snake, so it wins.",
+        "why": "survival and hiding are dodges, not a direct defeat"
+      },
+      {
+        "text": "A stronger lion defeats the weaker lion.",
+        "why": "mere amplification is not a new counter"
+      },
+      {
+        "text": "The bat is awesome and the owl is screwed.",
+        "why": "generic praise, crude shorthand, and no explanation of echolocation"
+      },
+      {
+        "text": "A brave effort from someone who clearly knows nothing about biology.",
+        "why": "mocks the player and replaces a ruling with a personal insult"
+      },
+      {
+        "text": "The skunk's malodorous excretion renders the vulpine adversary nonviable.",
+        "why": "needlessly technical and not plain spoken English"
+      },
+      {
+        "text": "The owl saw darkness coming, but the bat had already seen it seeing.",
+        "why": "poetic wordplay obscures the actual echolocation mechanism"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the animal in front of you with a real body feature or behavior. Do not merely hide, flee, or survive it.",
+    "Say what you are, name your real trait, and state the clear effect on the standing animal.",
+    "The Judge rules on the biological idea, not spelling or swagger.",
+    "One animal whose trait fails against the standing animal ends the match."
+  ],
+  "labels": {
+    "opening": "The opening animal",
+    "next_opening": "The next animal",
+    "your_opening": "Your animal",
+    "compose": "Your animal against {token}",
+    "compose_waiting": "Draft your next animal while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put an animal in the enclosure.",
+    "too_long": "Over 200 characters. Give us a creature and its trick, not a wildlife documentary.",
+    "duplicate": "That animal already prowled this match. Pick a new species.",
+    "nudge": "Twice now. Beat {standing_form}. Use a real trait that acts on it, not a hiding place or a bigger copy."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two animals in a zoo after closing, trying to survive.\nAlways use this shape: \"I am a [animal], [real trait], [clear effect].\" The fragments should be short, not full clauses, and at least one must name what your trait does to the other animal.\nGood: \"I am a bat, echolocation-finding, owl-locating.\" / \"I am a skunk, spray-blinding, fox-repelling.\"\nBad: \"I am a bat, flying around in the dark and finding the owl with sound\" because that is a sentence wearing a costume. Bad: \"I am a lion, majestic, unbeatable\" because moods and verdicts are not traits. Bad: \"I am a mouse, hiding\" because hiding dodges the animal instead of defeating it.\nUse real, familiar animals and real traits. A stranger should picture the enclosure, the animal, and the effect in one glance. Venom, shells, webs, claws, ink, camouflage, flight, spray, electric shocks, and echolocation are useful when they directly act on the standing animal.\nDo not claim vague superpowers, fake biology, or a trait that only helps you escape. A bigger or louder version of the same animal is not a counter. Do not reuse an animal or trait from this match.\nTalk like a person across the fence, not a nature documentary narrator. You are trying to survive, not perform for applause. If the move is funny, it is because the biology makes the joke.\n",
+  "default_move": "I am a tortoise, shell-covered, bite-stopping."
+}

@@ -1,0 +1,276 @@
+{
+  "slug": "parent-teacher-nightmare",
+  "title": "Parent-Teacher Nightmare",
+  "tagline": "Keep the observation. Ruin the meeting.",
+  "emblem": "📋",
+  "accent": "#6b4c8a",
+  "premise": "Three rounds. Each round gives you a bland school report comment about an adult. Write one school report comment that keeps the tiny everyday truth alive while sending its meaning somewhere gloriously unhelpful. Add a warning, a scandal, a strange talent or a consequence that makes a parent sit down slowly.\n",
+  "seed_pool": [
+    {
+      "opening_token": "She remembers to bring a pen.",
+      "opening_emoji": "🖊️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "He shares equipment well.",
+      "opening_emoji": "🏫",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "They arrive on time for meetings.",
+      "opening_emoji": "⏰",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "subject": [
+        "she",
+        "he",
+        "they",
+        "the parent",
+        "the adult",
+        "the neighbour",
+        "our visitor",
+        "the volunteer"
+      ],
+      "ordinary_action": [
+        "brings a pen",
+        "shares equipment",
+        "arrives on time",
+        "labels their lunch",
+        "returns books",
+        "asks sensible questions",
+        "keeps notes",
+        "waits their turn"
+      ],
+      "setting": [
+        "at school",
+        "in class",
+        "at meetings",
+        "during lessons",
+        "in the office",
+        "at the gate",
+        "in the library",
+        "after lunch"
+      ]
+    },
+    "tests": [
+      "One short sentence with an article or pronoun, under eight words. A teacher can say it without needing a second page.",
+      "The observation is harmless and ordinary. Nobody is injured, threatened, arrested or seriously unwell.",
+      "It is bland enough to appear in a real report and dull enough to make a parent ask if that is all.",
+      "It gives the comment at least two words that can be reinterpreted as evidence of a warning, habit or secret talent.",
+      "It describes one checkable action in a clear setting, so a rewrite cannot quietly replace the fact."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "He shares equipment well, especially evidence.",
+    "hint": "One report comment. Keep the tiny truth, then make the meeting worse."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the comment travel from the plain observation while still keeping it true?",
+      "anchors": "0 = repeats the report with no new meaning; 1 = adds a faintly odd adjective; 2 = gives the action a suspicious motive or consequence; 3 = turns a harmless habit into a full concern while the observation survives; 4 = produces a spectacularly unhelpful school revelation from one tiny fact (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the comment make the ordinary detail funny by treating it as evidence of something much worse or stranger?",
+      "anchors": "0 = no joke; 1 = a small twitch of amusement; 2 = a clear smile; 3 = a proper laugh at the terrible implication; 4 = the kind of line a teacher would remember while locking the staffroom (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it sound like a compact school report comment rather than an explanation, confession or speech?",
+      "anchors": "0 = not a report comment; 1 = a report sentence buried under padding; 2 = recognisable but loose; 3 = concise, polished and plausibly teacherly; 4 = it could be copied straight into a report and ruin the afternoon (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A comment PLAYS if a reader who knows only the comment can still read the card’s exact everyday observation as true. It may add a shocking interpretation, warning, secret motive, consequence or quote, but it must not claim the opposite or quietly delete the observation. It fails when the action is missing, contradicted or overwritten, or when the move is not a school report comment but a question, a note to the Judge or a sentence about the game. A bland restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game or explaining the rules is itself a losing report comment.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the card’s everyday observation still be true given this comment? Do not ask whether the interpretation is likely, fair or suitable for a school report.\n",
+      "Added meaning is allowed. A pen can become evidence, sharing can become surveillance and punctuality can become an alibi, as long as the original action still happened.\n",
+      "The first move receives the same test as every later move. A clever first impression still has to keep the report’s tiny truth alive.\n",
+      "If the comment drops the action entirely, it fails. A warning about her criminal career does not prove that she remembers to bring a pen.\n",
+      "If the comment contradicts the action, it fails. Saying he refuses to share does not preserve a card saying he shares equipment well.\n",
+      "If the comment quietly overwrites a supplied detail, it fails. Arriving late is not arriving on time, and losing the pen is not remembering to bring one.\n",
+      "A question, explanation, message to the Judge or comment about the game fails even if the card’s fact can be inferred.\n",
+      "Judge each comment against its own card. The other player's interpretation is not evidence and does not raise or lower the gate.\n",
+      "Score stretch by the distance travelled from the observation, not by how alarming the wording sounds. A calm safeguarding concern can go further than five capital letters and a trembling adjective.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "She remembers to bring a pen.",
+      "move": "She remembers to bring a pen, and records every alibi.",
+      "gates_note": "all true",
+      "mechanism": "the pen remains a real habit while the comment turns note-taking into suspicious evidence",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "He shares equipment well.",
+      "move": "He shares equipment well, especially evidence.",
+      "gates_note": "all true",
+      "mechanism": "sharing still happens, but the equipment becomes evidence and the classroom acquires a case file",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "They arrive on time for meetings.",
+      "move": "They arrive on time for meetings, usually before the police.",
+      "gates_note": "all true",
+      "mechanism": "punctuality survives while the timing suggests an alarming appointment schedule",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "She remembers to bring a pen.",
+      "move": "She forgets all stationery and communicates through threatening glances.",
+      "gates_note": "satisfies_criterion false, the card says she remembers to bring a pen but the comment says she forgets stationery",
+      "mechanism": "the pen has been directly evicted from the report",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "He shares equipment well.",
+      "move": "Should we tell the Judge that he shares?",
+      "gates_note": "satisfies_criterion false, it is a question to the Judge rather than a school report comment",
+      "mechanism": "the comment has left the report and entered a procedural cupboard",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Head of Year",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the comment must see how the tiny truth became a concern.",
+      "Name the report's key object or action, the pen, the sharing, the punctuality. A line that fits any adult in the building is lazy paperwork.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused or The Head refuses.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Mock the comment, never the player. Light teasing is fine. Identity-based abuse, personal attacks and profanity are not.",
+      "Plain spoken English. No poetry, no rhymes, no education jargon and no grand legal vocabulary.",
+      "On a fail, say which report fact went missing or got broken, using the card's own action.",
+      "On a refusal, the comment refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one comment that would have scored. It ends on an action or concrete object, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The pen arrived, and apparently so did the evidence. A promising start to a worrying folder.",
+      "He shares equipment, but the word evidence has made the pencil case legally interesting.",
+      "On time for meetings and possibly several events nobody has put on the calendar.",
+      "The report kept the pen and gave it a criminal record. Efficient paperwork.",
+      "Sharing still happened. The equipment just acquired a witness statement.",
+      "The punctuality holds, while the police reference gives the meeting a regrettable agenda.",
+      "A pen is a small object until someone starts calling it an alibi.",
+      "The teacher has recorded a habit and accidentally opened an inquiry.",
+      "The comment keeps the lunch label and adds the sort of detail that sends a parent for tea.",
+      "The adult is still waiting their turn, which is considerate given what they may be planning to say."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: splendid evidence.",
+        "why": "opens with a status word and sounds like a form being stamped"
+      },
+      {
+        "text": "The Head refuses: write a report comment.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Wrong, the fact is missing.",
+        "why": "does not say whether the pen, sharing or punctuality went missing"
+      },
+      {
+        "text": "Very alarming and wonderfully strange.",
+        "why": "announces a reaction without giving the comment a useful object"
+      },
+      {
+        "text": "A brave attempt by someone who should read the instructions.",
+        "why": "mocks the player instead of the report comment"
+      },
+      {
+        "text": "O humble pen, thou keeper of the midnight truth.",
+        "why": "poetry has entered the staffroom"
+      },
+      {
+        "text": "Safeguarding escalation pathway activated.",
+        "why": "education jargon wearing a lanyard"
+      },
+      {
+        "text": "It is funny because the adult may be suspicious.",
+        "why": "explains the joke instead of writing a sharp host line"
+      },
+      {
+        "text": "Better than the other player's report this round.",
+        "why": "judges the pair rather than the comment on its own"
+      },
+      {
+        "text": "The pen, the file, the meeting, the hallway, all become a sprawling concern.",
+        "why": "too much padding and no clean report-shaped sting"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one bland adult report comment each.",
+    "Write one school report comment under 90 characters. The House writes its own unseen, and the Head scores both.",
+    "The exact everyday observation must remain true to someone who reads only your comment. Drop it, reverse it or overwrite it and the round is lost.",
+    "Everything else is yours to invent. Add a warning, motive, secret talent or consequence. The further the meaning travels while the observation survives, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The report",
+    "next_opening": "The next report",
+    "your_opening": "Your report",
+    "compose": "Your comment for {token}",
+    "compose_waiting": "Draft your comment while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank report. Write the comment.",
+    "too_long": "Over 90 characters. This is a report comment, not a staff meeting.",
+    "duplicate": "That comment has already been filed this match. Find another concern.",
+    "nudge": "Twice now. One comment that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Head has stepped out to find the safeguarding folder. Nobody moves until they are back. {standing_form} sits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are a school report writer describing an ordinary adult with one tiny truth and far too much imagination. Write one school report comment.\nTHE OBSERVATION MUST SURVIVE. A reader who sees only your comment must still be able to read the card's exact everyday action as true. Never drop it, reverse it or overwrite it. If the card says she brings a pen, she still brings a pen. If he shares equipment, he still shares equipment. If they arrive on time, they still arrive on time.\nThen send the meaning somewhere gloriously unhelpful. Add a warning, secret motive, shocking interpretation, strange talent or consequence. Good: \"He shares equipment well, especially evidence.\" \"She remembers to bring a pen, and records every alibi.\" \"They arrive on time for meetings, usually before the police.\"\nBad: \"She forgets all stationery\" when the card says she brings a pen. \"He refuses to share\" when the card says he shares. \"Should we tell the Judge?\" because that is not a report comment.\nKeep a school report rhythm, concise and dry, under 90 characters. No explanation, no question to the Judge, no comment about the game. Do not use a colon or a dash. Vary the angle from round to round: warning, praise with a trapdoor, suspicious competence, terrible consequence. Never use identity-based abuse or profanity. No quotation marks around the comment. Reply with the comment only.\n",
+  "medallions": false,
+  "default_move": "Shows promising initiative, especially when nobody is looking"
+}

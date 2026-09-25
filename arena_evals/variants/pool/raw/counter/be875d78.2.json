@@ -1,0 +1,274 @@
+{
+  "slug": "mirror-counter",
+  "title": "Mirror Counter",
+  "tagline": "Change what the bathroom mirror reveals.",
+  "emblem": "🪞",
+  "accent": "#0f766e",
+  "premise": "Two bathroom disasters face off in words. Each turn, name one concrete bathroom item that directly changes what the mirror would show. The Judge decides whether the counter actually works.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a mirror covered in toothpaste",
+      "opening_emoji": "🪞",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a sink clogged with hair",
+      "opening_emoji": "🚰",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a floor flooded beside the tub",
+      "opening_emoji": "🛁",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 6,
+    "axes": {
+      "scene": [
+        "toothpaste on mirror",
+        "hair in drain",
+        "water on floor",
+        "soap on tile",
+        "steam on glass",
+        "rust on faucet",
+        "toilet paper stuck",
+        "makeup on counter"
+      ],
+      "cause": [
+        "splatter",
+        "clog",
+        "spill",
+        "smear",
+        "fog",
+        "leak",
+        "stain",
+        "jam"
+      ],
+      "surface": [
+        "mirror",
+        "sink",
+        "floor",
+        "tub",
+        "toilet",
+        "faucet",
+        "tile",
+        "counter"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one visible bathroom problem at once, with no explanation needed.",
+      "A plain bathroom item can directly act on the problem. Name the item and the action it takes.",
+      "The scene is something a mirror could reveal or reflect in the bathroom, not a private feeling, a past event, or an invisible complaint.",
+      "The wording uses a concrete noun phrase with an article, and a twelve-year-old can understand every important word.",
+      "The item changes, removes, covers, dries, cleans, or repairs the stated scene. Hiding elsewhere, tolerating it, and making a larger copy do not count."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a towel: I erase the toothpaste streak from the mirror.",
+    "hint": "Name one bathroom item and the visible change it makes."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and completely the bathroom item changes the visible scene.",
+      "anchors": "0 = no action on the scene; 1 = vague contact, weak hope, or mere avoidance; 2 = plausible action but incomplete, indirect, or debatable; 3 = direct and effective counter that changes the visible problem; 4 = immediate, complete, and unmistakable correction, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the scene, the item, and the physical action.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires unusual knowledge or guesswork; 2 = understandable but blurred, overloaded, or partly abstract; 3 = clear concrete bathroom image; 4 = instantly visible, precise, and economical, rare.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the counter is within the bathroom problem, rather than a routine repeat or disguised copy.",
+      "anchors": "0 = the same item, same action, or stock answer already used; 2 = a sensible but familiar counter; 4 = an unexpected bathroom item that still acts literally and effectively, rare.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A counter succeeds if one concrete bathroom item directly removes, covers, dries, cleans, or repairs the stated visible scene. The item must change what the mirror would show, not merely complain, wait, hide elsewhere, tolerate the problem, or become a bigger copy of it.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or citing a rule instead of naming a bathroom item is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move: judge the item against the opening card instead. It must directly act on that bathroom scene.\n",
+      "The counter must be a concrete bathroom item, not a person, command, hope, mood, or abstract idea.\n",
+      "The mechanism must be literal and visible. A stranger must be able to watch the item remove, cover, dry, clean, or repair the scene.\n",
+      "Hiding the problem somewhere else is not a counter. Moving toothpaste from the mirror to the sink, covering a leak with a closed door, or turning off the light fails if the problem remains.\n",
+      "Tolerating, ignoring, waiting for, or being unaffected by the scene is not a counter. The new item must act on the stated problem.\n",
+      "A bigger, stronger, or more decorated copy of the same item or problem is not a new counter. A larger towel after a towel, or more toothpaste after toothpaste, fails.\n",
+      "A figurative answer fails. Dignity, patience, a fresh start, or a cleansing apology cannot physically change the bathroom scene.\n",
+      "The counter must address the stated scene, not an imagined cause. A plunger may clear a drain clog, but it does not clean toothpaste from a mirror unless that action is actually stated and plausible.\n",
+      "If the item only works by changing the subject, hiding the evidence, or relying on an unstated miracle, satisfies_criterion is false.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A mirror covered in toothpaste.",
+      "move": "I am a towel: I erase the toothpaste streak from the mirror.",
+      "gates_note": "all true",
+      "mechanism": "the towel wipes the toothpaste from the glass",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A sink clogged with hair.",
+      "move": "I am a plunger: I force the hair clog through the drain.",
+      "gates_note": "all true",
+      "mechanism": "the plunger applies pressure and clears the drain",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A floor flooded beside the tub.",
+      "move": "I am a bath mat: I wait politely until the water dries.",
+      "gates_note": "satisfies_criterion false, tolerating and waiting are not direct action",
+      "mechanism": "none, the mat does not remove or dry the stated flood",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A mirror fogged with steam.",
+      "move": "I am a bigger mirror, grander, impossible to intimidate.",
+      "gates_note": "satisfies_criterion false, mere amplification with no cleaning or drying mechanism",
+      "mechanism": "none, a larger mirror remains fogged",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A soap smear across the tile.",
+      "move": "I am a sponge: I scrub the smear from the tile.",
+      "gates_note": "all true",
+      "mechanism": "the sponge physically scrubs away the soap",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Bathroom Examiner",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "strict",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the forensic reason. A stranger must see why the item changed the scene or failed to do so.",
+      "Name the bathroom scene and the item, or their plain stand-ins. A generic insult is not a ruling.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Examiner refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the move and its item, not identity, body, family, intelligence, spelling, or protected traits. Roast level is allowed, cruelty is not.",
+      "Plain spoken English. Clinical menace is better than poetry. Profanity and adult innuendo are allowed only when they sharpen the bathroom joke.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not declare a winner.",
+      "The coaching line names one concrete item that would have worked. It ends on a physical action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The towel erased the toothpaste. The mirror is clean, and your alibi is not.",
+      "The plunger cleared the hair clog. Plumbing survived another avoidable crime scene.",
+      "The sponge scrubbed the soap away. Tile examined, smear deceased.",
+      "The squeegee removed the steam. Your face has been returned to evidence.",
+      "The brush met the toilet stain and left no witnesses.",
+      "The bath mat watched the flood spread. That is not absorbency, it is passive support.",
+      "The bigger mirror stayed fogged. Enlarging the evidence is not cleaning it.",
+      "The drain snake ended the clog. The hair lost its underground career.",
+      "A closed door hides the leak from you, not from the bathroom. Bring an item that acts.",
+      "The deodorant attacked the odor and lost the visible scene. Smelling better is not cleaning the mirror."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the towel erased the toothpaste.",
+        "why": "opens with a status word instead of the concrete ruling"
+      },
+      {
+        "text": "The Bathroom Examiner refuses: hope is not plumbing.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, your item did absolutely nothing.",
+        "why": "opens with a ruling phrase and gives no specific reason"
+      },
+      {
+        "text": "The mirror is clean, and everything is better now.",
+        "why": "does not name the item or physical mechanism"
+      },
+      {
+        "text": "The mat bravely accepts the flood.",
+        "why": "treats tolerance as a counter and hides the actual failure"
+      },
+      {
+        "text": "Your answer is stupid and you should be ashamed.",
+        "why": "mocks the player instead of diagnosing the move"
+      },
+      {
+        "text": "The plunger obliterates the clog with ruthless magnificence.",
+        "why": "inflated language replaces the plain physical action"
+      },
+      {
+        "text": "A bigger mirror wins because bigger is better.",
+        "why": "endorses amplification without a mechanism"
+      },
+      {
+        "text": "The soap is defeated, vanquished, destroyed, and utterly annihilated.",
+        "why": "repeats one idea and gives no useful picture"
+      },
+      {
+        "text": "The towel has entered a fascinating negotiation with the glass.",
+        "why": "figurative language obscures whether the towel actually cleans anything"
+      }
+    ]
+  },
+  "rules": [
+    "Counter the bathroom scene in front of you. Do not merely hide it.",
+    "Name one concrete bathroom item and what it physically changes.",
+    "The Judge rules on the mechanism, not the spelling or dramatic confidence.",
+    "A counter that does not act directly on the visible scene ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your item against {token}",
+    "compose_waiting": "Draft your next item while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put an item in the bathroom.",
+    "too_long": "Over 200 characters. Name the item and the action, not the whole plumbing report.",
+    "duplicate": "That item or counter already stood this match. Choose a new tool.",
+    "nudge": "Twice now. Counter {standing_form}. Act on it directly, do not hide it, repeat it, or merely tolerate it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody touches the fixtures until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two bathroom improvisers trying to keep the mirror honest.\nAlways write: \"I am a bathroom item: I change the scene.\" Name one concrete item,\nthen one literal action it takes against their bathroom problem.\nGood: \"I am a towel: I erase the toothpaste streak from the mirror.\"\nGood: \"I am a plunger: I clear the hair clog in the sink.\"\nBad: \"I am confidence: I ignore the mess.\" That is not a bathroom item and it\nacts on nothing. Bad: \"I am a bigger towel: I win harder.\" That is amplification,\nnot a new mechanism. Bad: \"I am a closed door: nobody sees the leak.\" Hiding the\nproblem is not fixing it.\nTalk like a person across a bathroom, not a poet or a campaign speech. Use plain\nitems anyone can name: towel, sponge, brush, plunger, soap, drain snake, mop.\nYour item must remove, cover, dry, clean, or repair the stated visible scene.\nThe mirror is the test. Ask what it would show after your item acts.\nYou are not performing for a crowd and you are not joking. You are trying to\nmake the mess visibly different. If the move lands funny, it is because the\nphysical action is real and the bathroom is unforgiving.\nNever reuse an item or a counter action from this match. Do not address the Judge,\nthe game, or the rules. Do not use moods, wishes, insults, or invisible forces\nas items.\n",
+  "default_move": "I am a towel: I wipe the mess from the glass."
+}

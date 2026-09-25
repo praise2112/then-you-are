@@ -1,0 +1,311 @@
+schema_version: 1
+slug: chat-court
+title: Chat Court
+tagline: Post the receipt that ruins the claim.
+emblem: ⚖️
+accent: '#7c3aed'
+premise: 'The group chat is now a courtroom. One player posts a claim, and the next posts an exhibit that
+  directly disproves, exposes, or makes it impossible.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 8
+  axes:
+    claim_type:
+    - denial
+    - alibi
+    - promise
+    - excuse
+    - ownership
+    - timing
+    - innocence
+    - certainty
+    setting:
+    - group chat
+    - kitchen
+    - office
+    - party
+    - street
+    - school
+    - family room
+    - online meeting
+    evidence_style:
+    - physical clue
+    - witness
+    - timestamp
+    - message
+    - recording
+    - contradiction
+    - missing object
+    - public post
+  tests:
+  - A stranger understands the claim at once. It must sound like something a person would actually say
+    in a group chat.
+  - A non-player can name one plain exhibit that would damage the claim within five seconds. Say what
+    that exhibit is.
+  - The claim leaves something testable on the table. It cannot be pure opinion, a feeling, or a foggy
+    statement nobody could prove wrong.
+  - It makes a stranger want to answer with evidence. A claim with a little social heat works better than
+    a dull fact such as the wall is painted.
+  - No more than eight everyday words. No brands, proper names, legal jargon, invented evidence, or claims
+    that require a private backstory.
+demo:
+  opening:
+    token: Nobody saw me take the last slice
+    emoji: 🍰
+  moves:
+  - actor: p1
+    text: 'Claim: Nobody saw me take the last slice.'
+    emoji: 🍰
+    scores: null
+  - actor: p2
+    text: 'Exhibit: the security video, your hand takes it at 11:42.'
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 2
+  headline: The frosting on your nose has entered evidence, and your alibi has left through the loading
+    bay.
+  openings:
+  - token: Nobody saw me take the last slice
+    examples:
+    - 'Exhibit: the security video, your hand takes it at 11:42.'
+  - token: I was home all night
+    examples:
+    - 'Exhibit: the security video, your hand takes it at 11:42.'
+move_constraints:
+  max_chars: 200
+  prefix: 'Exhibit: '
+  example: 'Exhibit: frosting on your nose, it catches you red-handed.'
+  hint: Name the evidence, then say how it wrecks the claim.
+rubric:
+- name: counter_strength
+  description: How directly the exhibit breaks, disproves, or exposes the claim currently on trial.
+  anchors: '0 = no connection to the claim; 1 = suggestive but easy to explain away; 2 = damaging but
+    not conclusive; 3 = clearly wrecks the claim; 4 = airtight proof that leaves the claim nowhere to
+    stand, rare.
+
+    '
+  weight: 6
+- name: coherence
+  description: How plainly a stranger can picture the exhibit and understand its connection to the claim.
+  anchors: '0 = unreadable or self contradicting; 1 = requires hidden context or specialist knowledge;
+    2 = understandable but muddy or overstuffed; 3 = clear, concrete, and properly connected; 4 = instantly
+    vivid and neatly damning, rare. Extra words do not earn points and can weaken the exhibit.
+
+    '
+  weight: 3
+- name: novelty
+  description: Whether the exhibit finds a fresh angle instead of reaching for the obvious repeated receipt.
+  anchors: '0 = repeats the claim, uses the same evidence already posted, or gives the stock answer; 2
+    = a decent but familiar piece of proof; 4 = a surprising exhibit from a different corner of the chat
+    that still directly lands, rare.
+
+    '
+  weight: 1
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: 'An exhibit OVERCOMES the standing claim if it directly disproves it, exposes the speaker
+    as false, or makes the claim impossible. The exhibit must act on the claim itself. Dodging it, merely
+    surviving it, repeating the claim louder, or offering a bigger version of the same claim does not
+    count.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game, or citing the rules is itself a
+    losing exhibit.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no player claim before it. Judge the exhibit against the opening claim instead,
+    and check whether it directly wrecks that claim.
+
+    '
+  - 'A larger, louder, or more dramatic version of the same assertion is not evidence. A longer denial
+    against a denial fails because it does not act on the claim.
+
+    '
+  - 'Repeating an exhibit, or giving a recoloured copy of one already used, is a duplicate and cannot
+    satisfy the criterion.
+
+    '
+  - 'The evidence must be literal and observable. A metaphor, pun, vibe, or clever phrase is not proof.
+    If the only link is figurative, rule fail.
+
+    '
+  - 'Surviving the claim, being unrelated to it, or showing that the claimant could be wrong in theory
+    is dodging. The exhibit must damage this standing claim in particular.
+
+    '
+  - 'A witness or record only counts if it actually bears on the claim. A random bystander, an unrelated
+    screenshot, or a timestamp from another day is not a counter.
+
+    '
+  - 'The exhibit must not invent a private fact that the claim gives no route to. If its force depends
+    entirely on unseen backstory, rule fail.
+
+    '
+examples:
+- previous_move: 'Claim: Nobody saw me take the last slice.'
+  move: 'Exhibit: the security video, your hand takes it at 11:42.'
+  gates_note: all true
+  mechanism: the recording visibly shows the speaker taking the slice
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: accept
+- previous_move: 'Claim: I was home all night.'
+  move: 'Exhibit: your rideshare receipt, dropped you downtown at midnight.'
+  gates_note: all true
+  mechanism: the receipt places the speaker away from home during the claimed time
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: accept
+- previous_move: 'Claim: The meeting started on time.'
+  move: 'Exhibit: a bigger claim, the meeting started extremely on time.'
+  gates_note: satisfies_criterion false, louder repetition with no evidence
+  mechanism: none, it merely repeats the claim with extra swagger
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 0
+  confidence: clear
+  verdict: fail
+- previous_move: 'Claim: Nobody saw me take the last slice.'
+  move: 'Exhibit: I was not hungry.'
+  gates_note: satisfies_criterion false, dodges the claim
+  mechanism: none, not being hungry does not show that nobody saw the theft
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 1
+  confidence: clear
+  verdict: fail
+- previous_move: 'Claim: I returned the borrowed book.'
+  move: 'Exhibit: the library checkout screen, your account still has it.'
+  gates_note: all true
+  mechanism: the library record shows the book remains checked out to the speaker
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 3
+  confidence: lean
+  verdict: accept
+host:
+  persona_name: The Chat Clerk
+  tone:
+    commentary_adj: witty
+    explanation_adj: snarky
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who read only the claim and exhibit must see why the exhibit
+    won or lost.
+  - Name the claim and the exhibit, or their plain stand ins. A headline that fits any chat is lazy.
+  - Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or
+    The Chat Clerk refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Roast the exhibit, never identity or protected traits. Edgy is fine, personal cruelty is not.
+  - Plain spoken English. No poetry, no courtroom cosplay, no Latin, no thesaurus flexing.
+  - On a refusal, the headline rejects the exhibit and asks for another. It never rules on who won the
+    whole case.
+  - The coaching line names one exhibit that would have won. It ends on a fact or an action, never a mood
+    or a verdict.
+  good_headlines:
+  - The frosting on your nose has entered evidence, and your alibi has left through the loading bay.
+  - The rideshare receipt put you downtown, while your alibi was busy lying in bed.
+  - The timestamp says late, so the meeting can stop pretending it owns a watch.
+  - The library screen still has the book, and your return story has been politely repossessed.
+  - The camera saw your hand, your denial saw nothing, and one of them has a job.
+  - The witness is unrelated to the claim. Bring evidence, not a random cousin with Wi Fi.
+  bad_headlines:
+  - text: 'Accepted: the receipt destroys the alibi.'
+    why: opens with a status word and gives a generic verdict
+  - text: 'The Chat Clerk refuses: nice try, genius.'
+    why: opens with a ruling phrase, names the host, and mocks the player
+  - text: Move refused, excellent evidence against literally anything.
+    why: opens with a ruling phrase and explains nothing about this pair
+  - text: The claim is false because the exhibit is stronger.
+    why: asserts victory without naming the mechanism
+  - text: Your vibe is not evidence, babe.
+    why: snark replaces the reason and attacks the person instead of the exhibit
+  - text: The screenshot defeats the claim, perhaps, in a manner that may be relevant.
+    why: hedges so hard that nobody can tell whether it won
+  - text: Exhibit A wins.
+    why: too vague, no claim, no evidence, no joke
+  - text: The receipt doth smite the alibi beneath the moonlit docket.
+    why: courtroom poetry, not plain speech
+  - text: The timestamp is timestamping harder than the timestamp ever timestamped.
+    why: repetition is not an explanation or a mechanism
+  - text: You could have won with a camera recording your hand taking the slice.
+    why: coaching is fine only when the refusal itself still names why this exhibit failed
+rules:
+- Post an exhibit that wrecks the claim in front of you.
+- 'Name the evidence and how it damages the claim: Exhibit: the frosting on your nose, it catches you
+  red handed.'
+- The Judge rules on the idea, never the spelling.
+- One exhibit that fails against the standing claim ends the match.
+labels:
+  opening: The opening claim
+  next_opening: The next claim
+  your_opening: Your claim
+  compose: Your exhibit against {token}
+  compose_waiting: Draft your next exhibit while you wait
+validation_messages:
+  empty: Nothing posted. Bring an exhibit.
+  too_long: Over 200 characters. Evidence, not a closing argument.
+  duplicate: That exhibit already appeared this case. Find a new receipt.
+  nudge: Twice now. Wreck {standing_form}. Do not repeat it or dodge it.
+judge_out_text: 'The judge has stepped out. Nobody posts until they are back. {standing_form} remains
+  on trial. Give it a minute.
+
+  '
+opponent_prompt: 'You are one player in a group chat courtroom, trying to survive.
+
+  Always post: "Exhibit: what it is, and how it wrecks the claim."
+
+  Good: "Exhibit: frosting on your nose, it catches you red handed."
+
+  Bad: "Exhibit: I feel like you did it" because a feeling is not evidence.
+
+  Bad: "Exhibit: the biggest denial ever" because louder repetition is not proof.
+
+  Bad: "Exhibit: a locked door" when the claim says nothing about a door.
+
+  Talk like a person in a real group chat, not a lawyer, poet, or game announcer.
+
+  Name things anyone would recognize: a receipt, a timestamp, a witness, a photo,
+
+  a missing key, a message. Plain evidence beats clever phrasing.
+
+  The exhibit must directly damage the standing claim. Do not merely survive it,
+
+  change the subject, repeat it, or invent private backstory that nobody could see.
+
+  Stay concrete and jargon free. Hop domains when useful: kitchen, work, street,
+
+  family chat, public post, security camera, delivery log.
+
+  Never reuse an exhibit or an evidence angle from this case.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: 'Exhibit: the timestamp, your claim arrived after the deadline.'
+seed_pool:
+  - { opening_token: "Nobody saw me take the last slice", opening_emoji: "🍰" }
+  - { opening_token: "I was home all night", opening_emoji: "🏠" }
+  - { opening_token: "The meeting started on time", opening_emoji: "⏰" }

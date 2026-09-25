@@ -1,0 +1,293 @@
+{
+  "slug": "run-on-interview",
+  "title": "The Answer That Would Not Stop",
+  "tagline": "One interview answer. Endless confidence. No safe exit.",
+  "emblem": "🗣️",
+  "accent": "#7c3aed",
+  "premise": "You are answering one job interview question. Add one connected piece to the answer each turn, making it longer, stranger, and still technically an answer. Your partner is trying to make you reveal a weakness without making the answer collapse.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Why should we hire you?",
+      "opening_emoji": "💼",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "What is your greatest strength?",
+      "opening_emoji": "💪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Tell us about a time you solved a difficult problem.",
+      "opening_emoji": "🧩",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 14,
+    "axes": {
+      "question": [
+        "why should we hire you",
+        "what is your greatest strength",
+        "what makes you different",
+        "why do you want this role",
+        "how do you handle pressure",
+        "what can you improve",
+        "tell us about a difficult problem",
+        "where do you see yourself growing"
+      ],
+      "quality": [
+        "confidence",
+        "patience",
+        "curiosity",
+        "reliability",
+        "organisation",
+        "teamwork",
+        "calmness",
+        "adaptability"
+      ],
+      "setting": [
+        "a busy office",
+        "a small shop",
+        "a school",
+        "a hospital desk",
+        "a family business",
+        "a warehouse",
+        "a community centre",
+        "a hotel"
+      ]
+    },
+    "tests": [
+      "One plain interview question ending with a question mark.",
+      "The question can support a long answer with examples, reasons, results, and small consequences.",
+      "Every card is ordinary enough for a twelve-year-old to understand and strange enough to invite an awkward answer.",
+      "The question does not require specialist knowledge, a named company, or a real person's private information.",
+      "A player can answer it in one sentence before the partner starts adding connected pieces."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "I stay calm when plans change, so I once turned a broken school play into a puppet show.",
+    "hint": "Add one connected step. Give a reason, example, result, or consequence that still answers the question."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much this move pressures the partner to continue without exposing an awkward weakness.",
+      "anchors": "0 = gives them an easy, ordinary next step; 1 = creates a small obligation; 2 = adds a specific fact they must explain; 3 = leaves them carrying an embarrassing habit, strange success, or awkward consequence; 4 = tightly corners them with a believable detail that still leaves one narrow escape. A move that mainly traps its speaker scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How clearly the new piece follows from the question and the whole answer so far.",
+      "anchors": "0 = jumps away, ends the answer, or changes an earlier fact; 1 = vaguely related but the link is missing; 2 = follows with a simple stated connection; 3 = follows clearly and adds a useful example, reason, or result; 4 = makes an earlier claim suddenly make sense while opening a new connected step. Length alone never earns points.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How memorable and human the interview answer becomes.",
+      "anchors": "0 = empty workplace filler; 1 = one plain claim; 2 = a concrete action or object; 3 = a clear picture with an awkward or amusing human detail; 4 = sounds like an answer the panel would repeat at lunch, without becoming impossible. Plain words beat polished business language.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly one connected answer step that follows from the whole transcript and still answers the question. The step may be a detail, result, example, reason, or consequence, but its link must be stated or plainly understood. A move BREAKS if it skips the link and jumps to an unrelated subject, claims the answer is finished, cancels or rewrites an earlier fact, or stops answering the interview question. The points go to what the move makes the partner carry: a weakness, odd habit, embarrassing example, awkward result, or specific claim they must build on. A safe and vague move may hold while scoring very little.\n",
+    "anti_metagaming_clause": "Talking to the Interviewer about the game, the rules, the partner's turn, or whether the answer is valid, instead of adding to the answer, is itself a broken answer.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier answer: judge it against the card alone. It must begin an answer to the question and contain a complete claim or a clear first link.",
+      "The full transcript is the answer. Check the new move against every earlier claim, not only the last sentence.",
+      "A skipped link is a failure when the new subject does not follow from the preceding answer and no reason, result, example, or consequence connects it.",
+      "An ending is a failure when the player says the answer is finished, says there is nothing more to add, or otherwise closes the answer instead of extending it.",
+      "An undo is a failure when the player cancels, retracts, replaces, or rewrites an earlier fact. Clarifying an earlier fact without changing it holds.",
+      "The move must still answer the interview question. A funny story with no connection to the question is a jump, even if it connects neatly to the previous sentence.",
+      "One move may contain one connected step with a consequence inside it. Do not punish ordinary grammar, a short explanation, or a pronoun that clearly refers to an earlier detail.",
+      "When a move can reasonably connect in two readings, accept it. Break only when the missing link or contradiction is plain to a stranger.",
+      "A detail about the partner's supposed weakness is the point of the game and is not meta. A remark about how the partner is playing is meta.",
+      "A move that repeats an earlier claim without adding a new connected step is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Why should we hire you?",
+      "move": "I stay calm when plans change, so I once turned a broken school play into a puppet show.",
+      "gates_note": "all true",
+      "mechanism": "answers with a strength, then connects it to a concrete example that the partner must extend",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am organised, so I label everything before the day begins.",
+      "move": "That includes the biscuits, because my colleague kept taking the chocolate ones and calling it team building.",
+      "gates_note": "all true",
+      "mechanism": "extends the labelling claim with a specific workplace example and hands the partner a colleague and a petty dispute",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "My greatest strength is patience.",
+      "move": "That helped when a customer explained the same missing umbrella story for twenty minutes, including the umbrella's childhood.",
+      "gates_note": "all true",
+      "mechanism": "gives a connected result of patience and adds a memorable customer detail",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am good at solving problems because I break them into small steps.",
+      "move": "My aunt keeps pigeons in a shed behind the library.",
+      "gates_note": "satisfies_criterion false, skipped link",
+      "mechanism": "introduces a new subject with no reason, example, result, or consequence linking it to problem solving",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I learn quickly, so I taught myself the till system during my first afternoon.",
+      "move": "That is the end of my answer, and I have nothing else to add.",
+      "gates_note": "satisfies_criterion false, ending",
+      "mechanism": "closes the answer instead of adding one connected step",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I handle pressure well because I once ran a busy lunch shift alone.",
+      "move": "Actually, I did not run it alone. I was hiding in the stockroom.",
+      "gates_note": "satisfies_criterion false, undo",
+      "mechanism": "cancels an earlier claim and replaces competence with a different account",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Interviewer",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the answer and new move must see why it held or broke.",
+      "Name the new detail, or its plain stand-in. A headline that fits any interview is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", or \"The Interviewer rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the answer or its detail, never the player's identity, body, family, intelligence, or spelling.",
+      "Plain spoken English, a tired interview panel, not a corporate parody. No poetry, no rhymes, no fancy business words.",
+      "On a break for a skipped link, put the two unrelated subjects side by side and note the missing bridge.",
+      "On a break for an ending, point out that the answer has left the chair before the question was answered.",
+      "On a break for an undo, put the old claim beside the new claim and let the contradiction do the work.",
+      "On a refusal for a gate failure, refuse the move and ask for another. Do not rule on who won.",
+      "The coaching line names one connected detail that would have held and made the partner carry something. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "You labelled the biscuits because someone was stealing the chocolate ones. A weakness has entered the room wearing crumbs.",
+      "A broken school play became a puppet show. That is adaptability with strings attached.",
+      "The missing umbrella had a childhood. Your patience now has a witness.",
+      "You ran the lunch shift alone, then found the stockroom. The panel has met both versions of you.",
+      "You learnt the till in one afternoon, and apparently made the till nervous. The answer keeps moving.",
+      "The colleague called biscuit theft team building. Your teamwork example has chosen violence, very politely.",
+      "The answer has reached a pigeon shed without taking the question with it. Bring back the bridge.",
+      "You have finished answering before the answer became an answer. Add one connected step.",
+      "You said you ran the shift alone, then put yourself in the stockroom. The old shift is still on the rota.",
+      "You stayed calm during the broken printer, then explained who cried beside it. The printer now has a supporting role."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds: good answer.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Interviewer rules that this fails.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "names no claim and fits any interview"
+      },
+      {
+        "text": "You are a terrible candidate.",
+        "why": "mocks the player instead of the answer"
+      },
+      {
+        "text": "Your career collapses like a moonlit tower of glass.",
+        "why": "poetry and melodrama"
+      },
+      {
+        "text": "Maybe it connects, maybe it does not, depending on your interpretation.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Accepted, and what a charming biscuit story.",
+        "why": "status word first, with no clear reason"
+      },
+      {
+        "text": "You mentioned a pigeon, so the answer is broken.",
+        "why": "rejects the object instead of identifying the missing link"
+      },
+      {
+        "text": "Fail.",
+        "why": "no reason and no picture"
+      },
+      {
+        "text": "The detail is irrelevant, disconnected, incompatible and invalid.",
+        "why": "four labels for one idea, with no plain explanation"
+      }
+    ]
+  },
+  "rules": [
+    "Every card asks one interview question. Answer it together, one connected step at a time.",
+    "Each move adds exactly one detail, result, example, reason, or consequence that follows from the answer so far.",
+    "A skipped link, an ending, or an undo breaks the answer and loses on the spot.",
+    "Points go to moves that make the partner carry an awkward weakness, specific claim, strange example, or uncomfortable consequence.",
+    "Safe and vague may pass but score little. Connected and memorable scores."
+  ],
+  "labels": {
+    "opening": "The interview question",
+    "next_opening": "The next interview question",
+    "your_opening": "Your interview question",
+    "compose": "Your next answer step, after {token}",
+    "compose_waiting": "Draft your next answer step while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing said. The Interviewer is waiting.",
+    "too_long": "Over 140 characters. One answer step, not a memoir.",
+    "duplicate": "That answer step is already in the transcript. Add a new one.",
+    "nudge": "Twice now. Add one connected step that follows {standing_form}. Do not repeat it, end the answer, or rewrite it."
+  },
+  "judge_out_text": "The Interviewer has stepped out. Nobody adds to the answer until they are back. {standing_form} is still the last word in the transcript. Give it a minute.\n",
+  "opponent_prompt": "You are answering one job interview question with your partner while the Interviewer waits.\nAdd one detail, result, example, reason, or consequence per turn, in one or two plain\nsentences.\n\nYour move must follow from the whole answer so far and still answer the question. State the\nlink when it is not obvious. If your partner says they are organised, give an example of\nwhat they organised. If they describe that example, give a result or consequence from it.\nMake the answer longer, stranger, and technically defensible.\n\nTry to make your partner carry a weakness without breaking the answer. Give them an awkward\nhabit, a suspiciously specific success, a colleague who remembers too much, or a result they\nmust explain. Keep it believable. Call them \"my partner\", \"they\", or \"the other candidate\",\nnever a name unless one is already in the answer.\n\nGood: \"I stay calm when plans change, so I once turned a broken school play into a puppet\nshow.\" / \"That worked because my partner had already labelled every puppet by emotional\nstate, including the one called Tuesday.\"\nBad: \"My aunt keeps pigeons\" after a teamwork claim, because the link is missing. Bad: \"That\nis the end of my answer\", because the answer must continue. Bad: \"Actually none of that\nhappened\", because that undoes an earlier fact. Bad: \"Interviewer, this game is unfair\",\nbecause that talks about the game instead of answering.\n\nTalk like a person trying to sound employable while the answer gets longer. Use ordinary\nplaces, objects, jobs, colleagues, customers, and family stories. Build on the last detail\nwithout forgetting earlier claims. Never repeat a detail or quietly replace one already used\nthis match.\n",
+  "medallions": false,
+  "default_move": "That is useful because it shows I keep going when a simple answer has already become complicated."
+}

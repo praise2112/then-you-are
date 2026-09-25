@@ -1,0 +1,275 @@
+{
+  "slug": "tiny-trial",
+  "title": "Tiny Trial",
+  "tagline": "One star. The object may explain itself.",
+  "emblem": "⚖️",
+  "accent": "#6b4f3a",
+  "premise": "Three rounds. Each round puts one ordinary object before the court on the strength of a one-star review. Both players write the strangest fair courtroom claim, witness line or verdict they can. The card's plain truth must survive inside the move. The object may be accused of laziness, treachery, poor manners or grander crimes, but the move cannot make the object do something the card rules out. The Judge scores how far the case travels while the truth stays seated.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A pencil has a wooden body and a graphite center.",
+      "opening_emoji": "✏️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A mug holds hot liquid by its handle.",
+      "opening_emoji": "☕",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A sock covers part of a foot.",
+      "opening_emoji": "🧦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "object": [
+        "a pencil",
+        "a mug",
+        "a sock",
+        "a key",
+        "a spoon",
+        "an umbrella",
+        "a button",
+        "a notebook"
+      ],
+      "plain_fact": [
+        "has a wooden body and a graphite center",
+        "holds hot liquid by its handle",
+        "covers part of a foot",
+        "opens a lock",
+        "moves food toward a mouth",
+        "keeps some rain off a person",
+        "fastens two parts of clothing",
+        "holds written notes"
+      ],
+      "complaint_angle": [
+        "poor service",
+        "a suspicious design",
+        "a broken promise",
+        "a tiny act of betrayal",
+        "an unreasonable rule",
+        "a witness complaint",
+        "a public nuisance",
+        "an unfinished job"
+      ]
+    },
+    "tests": [
+      "One short sentence, with an article and a plain fact that can be checked at once.",
+      "The object is harmless and ordinary. No real people, brands, place names or serious crimes.",
+      "It is dull enough to earn one star, but clear enough for a stranger to picture it.",
+      "It gives the object a visible feature or job a courtroom claim can praise, blame or twist.",
+      "It leaves room for a fair complaint without making the object secretly dangerous, magical or alive."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "PENCIL ACCUSED OF HIDING ITS BEST PART",
+    "hint": "One courtroom line. Keep the plain truth, then make the object answer for itself."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the move turn a plain object fact into a strange but fair case?",
+      "anchors": "0 = repeats the card with no case; 1 = adds one mild complaint; 2 = gives the object a role, motive or witness; 3 = builds a whole tiny trial from the fact while the fact still holds; 4 = makes a one-star review feel like a landmark hearing, with every leap anchored to the object (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the complaint, evidence or verdict make the room smile?",
+      "anchors": "0 = no comic spark; 1 = a small twitch; 2 = a clear smile; 3 = a proper laugh; 4 = a line people would repeat while pointing at the object (rare). The joke should land on the move or the object, never on a person.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it fit as a crisp courtroom line, claim, witness statement or verdict?",
+      "anchors": "0 = a paragraph, question to the Judge or game comment; 1 = a loose sentence with spare furniture; 2 = recognisably legal but padded; 3 = compact, clear and ready for the tiny docket; 4 = it sounds like the perfect one-line exhibit label (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move PLAYS if it keeps the card's plain fact true while making the object a believable defendant, witness or subject of a verdict. It may add complaints, motives, evidence, legal language, dramatic consequences or a one-star conclusion. It fails when it drops the card's fact, contradicts it, replaces the object with another object, or claims a result the card does not support as possible. It also fails when it is not a courtroom claim, witness line or verdict, but a comment to the Judge, a question about the game or a sentence about the rules. A plain restatement can play, but scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game or hiding behind the rules is itself a losing move.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the card's fact still be true given this move? \"PENCIL ACCUSED OF HIDING ITS BEST PART\" passes because the pencil still has a wooden body and graphite center. Do not ask whether the accusation is fair, likely or scientifically important.\n",
+      "The first move need not mention every word of the card. It must leave every plain fact intact. A claim about a pencil's hidden graphite still allows both the wooden body and graphite center to exist.\n",
+      "An added complaint is not a contradiction. \"MUG TAKES CREDIT FOR THE HANDLE\" still allows the mug to hold hot liquid by it. Do not demand that every invented accusation be proven by the card.\n",
+      "A false result fails. If the card says a sock covers part of a foot, \"SOCK LEAVES THE FOOT BARE\" breaks the card. If the card says a key opens a lock, \"KEY CANNOT OPEN A LOCK\" breaks it.\n",
+      "A changed object fails. A pencil cannot become a pen, and a mug cannot become a bowl just because the move wants a fresher defendant.\n",
+      "Both players answer the same card. Judge each move on its own, not by comparing its cleverness with the other move.\n",
+      "Score stretch by distance from the plain fact, not by the size of the accusation. A quiet charge about a mug's selfish handle can beat a loud but empty claim of terrible design.\n",
+      "Lower case, missing punctuation and a verdict without capitals cost nothing. Judge the words and the shape of the move.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A pencil has a wooden body and a graphite center.",
+      "move": "PENCIL ACCUSED OF HIDING ITS BEST PART INSIDE WOOD",
+      "gates_note": "all true",
+      "mechanism": "the graphite becomes suspicious evidence while the wooden body and graphite center remain plainly true",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A mug holds hot liquid by its handle.",
+      "move": "HANDLE CLAIMS CREDIT, MUG STILL DOES ALL THE WORK",
+      "gates_note": "all true",
+      "mechanism": "the handle becomes a boastful witness while the mug still holds the hot liquid by it",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A sock covers part of a foot.",
+      "move": "SOCK LEAVES FOOT COMPLETELY BARE, COURT ORDERS REFUND",
+      "gates_note": "satisfies_criterion false (it says the foot is completely bare, contradicting the covering)",
+      "mechanism": "the sock's one reliable job disappears from the verdict",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A pencil has a wooden body and a graphite center.",
+      "move": "THE JUDGE IS WRONG ABOUT PENCILS",
+      "gates_note": "satisfies_criterion false (it addresses the Judge and gives no courtroom case about the card)",
+      "mechanism": "the move talks to the room instead of putting the pencil on trial",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A mug holds hot liquid by its handle.",
+      "move": "MUG FOUND GUILTY OF BEING A BOWL",
+      "gates_note": "satisfies_criterion false (it replaces the mug with a different object and drops the handle fact)",
+      "mechanism": "the defendant has changed clothes and left the evidence behind",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Little Judge",
+    "tone": {
+      "commentary_adj": "warm",
+      "explanation_adj": "clear"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the move must see why it scored.",
+      "Name the object's key feature, the graphite, handle, foot or button. A line that fits any object is a sleepy ruling.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or The Judge refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Tease the move, never the player. No jokes about identity, bodies, families, intelligence or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no legal jargon parade and no fancy thesaurus words.",
+      "On a fail, say which fact vanished, changed or got broken, using the card's own words.",
+      "On a refusal, the move refuses the case and asks for another. It never rules on who won.",
+      "The coaching line names one move that would have scored. It ends on an object or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The graphite is present, but the pencil has put it in witness protection.",
+      "The handle gets the credit, the mug gets the hot liquid, and everyone leaves mildly annoyed.",
+      "A sock covering part of a foot is a small job, but this verdict gives it a large courtroom.",
+      "The button fastened the shirt and then demanded applause, which is a lot for one small circle.",
+      "The umbrella kept some rain off and is now accused of charging the clouds by the drop.",
+      "The key opened the lock, then called itself the only adult in the room.",
+      "The pencil still has its wooden body and graphite centre, so the hiding charge can stand.",
+      "The spoon moved the food toward the mouth and now wants a travel allowance.",
+      "The mug did not become a bowl, it merely gave its handle a very confident alibi.",
+      "The sock cannot leave the foot bare in this court, but it may complain about the workload."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, a lovely case.",
+        "why": "opens with a status word and does not name the object's evidence"
+      },
+      {
+        "text": "The Judge refuses: try again.",
+        "why": "opens with a ruling phrase and talks about the host"
+      },
+      {
+        "text": "Wrong, the fact is missing.",
+        "why": "does not say which object fact went missing"
+      },
+      {
+        "text": "What a clever player.",
+        "why": "praises the player instead of explaining the move"
+      },
+      {
+        "text": "This is a very interesting and extremely unusual legal argument.",
+        "why": "pads one simple idea with a little too much wiggle room"
+      },
+      {
+        "text": "The pencil, noble witness of graphite, dost thou hide thy dark heart?",
+        "why": "poetry and courtroom fog, with no plain explanation"
+      },
+      {
+        "text": "Better than the other player's case.",
+        "why": "judges the pair instead of the move on its own"
+      },
+      {
+        "text": "The object has failed to satisfy the evidentiary threshold.",
+        "why": "legal jargon where a friendly plain sentence would do"
+      },
+      {
+        "text": "You clearly do not understand how socks work.",
+        "why": "mocks the player and does not identify the broken foot fact"
+      },
+      {
+        "text": "The case is over, the stars are aligned, justice has arrived.",
+        "why": "grand filler, no object, feature or reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one ordinary object fact each.",
+    "Write one courtroom claim, witness line or verdict for it, under 90 characters. The House writes its own, unseen, and the Judge scores both.",
+    "The card's plain truth must remain true to someone who reads only your move. Drop it, contradict it or replace the object and the case is lost.",
+    "Everything else may become evidence. Add a complaint, motive, witness, charge or verdict, and make the one-star review stranger while it stays fair. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The case",
+    "next_opening": "The next case",
+    "your_opening": "Your case",
+    "compose": "Your move for {token}",
+    "compose_waiting": "Prepare your case while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty docket. Write the move.",
+    "too_long": "Over 90 characters. The court wants a line, not a closing speech.",
+    "duplicate": "That case has already been heard this match. Find a new charge.",
+    "nudge": "Twice now. Put this object on trial while keeping the fact true: {standing_form}."
+  },
+  "judge_out_text": "The Little Judge has stepped out to inspect the evidence. Nobody moves until they are back. {standing_form} sits on the docket. Give it a moment.\n",
+  "opponent_prompt": "You are a playful little judge with an ordinary object and a one-star review to hear. Write one\ncourtroom claim, witness line or verdict.\nTHE CARD'S FACT MUST SURVIVE. A reader who sees only your move must still be able to read\nthe plain fact as true. Never drop it, contradict it or replace the object. A pencil with a\nwooden body and graphite center still has both. A mug holding hot liquid by its handle still\ndoes that, even if the handle is accused of taking credit.\nThen go as far as you dare. Invent a complaint, motive, witness, charge, evidence or verdict.\nThe points are for distance from the card while the card remains true.\nGood: \"PENCIL ACCUSED OF HIDING ITS BEST PART INSIDE WOOD\" for a pencil with a wooden body\nand graphite center. \"HANDLE CLAIMS CREDIT, MUG STILL DOES ALL THE WORK\" for a mug holding\nhot liquid by its handle. \"SOCK DEMANDS APPLAUSE FOR COVERING ONE SMALL FOOT\" for a sock\ncovering part of a foot.\nBad: \"Pencil has wood and graphite\" because it is only the card again. \"SOCK LEAVES FOOT\nCOMPLETELY BARE\" because it breaks the covering fact. \"MUG IS A BOWL\" because it replaces\nthe defendant. \"THE JUDGE IS WRONG\" because it talks to the room instead of making a case.\nKeep it short and plain. Under 90 characters. Capitals are fine but not required. Do not use\na colon or a dash. Do not explain the joke. The move may be a claim, witness line or verdict,\nbut it must sound like something that could sit on a tiny docket.\nVary the angle from round to round: a charge one round, a witness the next, a verdict, a\ncomplaint or a demand for a refund. Never use the same shape twice in a match.\nNo quotation marks around the move. Reply with the move only.\n",
+  "medallions": false,
+  "default_move": "OBJECT FOUND LIABLE FOR TINY INCONVENIENCE"
+}

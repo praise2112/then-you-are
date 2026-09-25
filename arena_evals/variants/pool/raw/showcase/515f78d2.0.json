@@ -1,0 +1,276 @@
+{
+  "slug": "habit-headstone",
+  "title": "Habit Headstone",
+  "tagline": "Bury the routine. Crown the replacement.",
+  "emblem": "🪦",
+  "accent": "#6f8294",
+  "premise": "We are burying a habit with one dramatic gravestone inscription. Both players get the same ordinary habit and write a tiny epitaph that makes its death sound like a legendary event; the sharpest inscription wins the crowd. Step up to the monument, your first bad routine is already in the ground.\n",
+  "seed_pool": [
+    {
+      "opening_token": "leaving clothes on the floor",
+      "opening_emoji": "👕",
+      "detail": "Habit: leaving clothes on the floor",
+      "hidden": "The habit ended because the player began putting clothes straight into the laundry basket."
+    },
+    {
+      "opening_token": "checking your phone in bed",
+      "opening_emoji": "📱",
+      "detail": "Habit: checking your phone in bed",
+      "hidden": "The habit ended because the player began reading a paperback before sleep."
+    },
+    {
+      "opening_token": "forgetting to water the plants",
+      "opening_emoji": "🪴",
+      "detail": "Habit: forgetting to water the plants",
+      "hidden": "The habit ended because the player set a regular watering reminder."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 5,
+    "axes": {
+      "habit": [
+        "leaving clothes on the floor",
+        "checking your phone in bed",
+        "forgetting to water the plants",
+        "buying snacks at checkout",
+        "leaving mugs beside the sink",
+        "hitting snooze repeatedly",
+        "saving every email for later",
+        "wearing shoes indoors"
+      ],
+      "replacement": [
+        "the laundry basket",
+        "a paperback",
+        "a watering reminder",
+        "a planned snack",
+        "the dishwasher",
+        "rising with the first alarm",
+        "a cleared inbox",
+        "the doormat"
+      ],
+      "tone": [
+        "royal",
+        "heroic",
+        "solemn",
+        "mythic",
+        "triumphant",
+        "ceremonial",
+        "adventurous",
+        "cosmic"
+      ]
+    },
+    "tests": [
+      "Each card names one ordinary habit in a short public line.",
+      "Each card gives the Judge a different concrete replacement hidden from players.",
+      "The habit is easy to recognize without needing private context.",
+      "The hidden truth explains a specific change rather than a vague improvement.",
+      "The card leaves room for a brief, dramatic gravestone inscription."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Here lies leaving clothes on the floor, replaced at last by the laundry basket",
+    "hint": "One inscription, up to 160 characters. Name the habit and its transformed replacement."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does this sound like a real inscription that could mourn the habit while announcing a definite change?",
+      "anchors": "0 = unrelated or impossible to read as an epitaph; 1 = the habit or replacement is barely present; 2 = the change is understandable but generic; 3 = a stranger would accept the inscription as a clear memorial; 4 = it feels carved in stone and exactly fits the habit and replacement (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the grand memorial treatment make the ordinary habit amusing?",
+      "anchors": "0 = no comic spark; 1 = a faint smile; 2 = a neat joke; 3 = a strong laugh from the contrast between tiny habit and huge ceremony; 4 = instantly memorable and funny without losing the inscription shape (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does it use the compact, recognizable shape of a gravestone inscription?",
+      "anchors": "0 = commentary, explanation, or an unrelated sentence; 1 = a long explanation wearing a costume; 2 = an epitaph shape with clutter; 3 = concise, legible, and inscription-like; 4 = clean enough to carve without editing (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An inscription PLAYS if it clearly mourns the dealt habit and presents its ending as a specific, grand, checkable change. It must name or unmistakably identify the habit and show what replaced it, ended it, or took its place. It fails when it does not mourn the habit, does not offer a concrete transformation, merely comments on the game, gives a reason instead of an inscription, or replaces the habit with something too vague to check. A strange, exaggerated, or unlikely replacement still plays and scores low on believable. The real hidden reason is not required and should not be stated.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing inscription.\n",
+    "judge_notes": [
+      "Judge the first move on its own against the dealt habit and the criterion. The hidden truth is a reference for the intended transformation, not a demand that the player guess private facts.\n",
+      "The inscription must mourn the habit. A line that only celebrates the replacement, without naming or clearly identifying what died, fails.\n",
+      "The inscription must show a specific replacement or transformed practice. Words such as better, freedom, discipline, or a new life alone are too vague and fail unless paired with a concrete change.\n",
+      "A reason for the change is not the change itself. A line about embarrassment, a deadline, or a promise fails when it never says what replaced the habit.\n",
+      "A joke about the word, the prompt, the Judge, or the scoring is not an epitaph and fails unless it also clearly mourns the habit and names a concrete replacement.\n",
+      "A bare but clear epitaph can play, even if it is not funny. Score dictionary_shaped low only when the form is cluttered or unclear, not merely because the joke is quiet.\n",
+      "Do not require the hidden truth. A different concrete replacement plays if it clearly transforms the dealt habit. Do not reward closeness to the hidden truth on the rubric.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Habit: leaving clothes on the floor",
+      "move": "Here lies leaving clothes on the floor, replaced at last by the laundry basket",
+      "gates_note": "all true",
+      "mechanism": "names the dead habit and gives it a concrete ceremonial replacement",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Habit: checking your phone in bed",
+      "move": "Here lies checking my phone in bed, defeated by the paperback",
+      "gates_note": "all true",
+      "mechanism": "turns a familiar routine into a tiny heroic defeat with a specific successor",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Habit: forgetting to water the plants",
+      "move": "Here lies forgetting to water the plants, remembered now by a reminder",
+      "gates_note": "all true",
+      "mechanism": "uses the habit's central failure as the memorial turn and names the practical replacement",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Habit: leaving clothes on the floor",
+      "move": "Gone forever, because I finally became a better person",
+      "gates_note": "satisfies_criterion false (no clear mourning inscription and no checkable replacement)",
+      "mechanism": "announces a personal upgrade without naming what took the habit's place",
+      "scores": {
+        "believable": 1,
+        "funny": 0,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Habit: checking your phone in bed",
+      "move": "The Judge may now applaud this historic victory",
+      "gates_note": "satisfies_criterion false (speaks about the game instead of mourning the habit)",
+      "mechanism": "addresses the performance rather than raising a stone over the dead routine",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Monument Keeper",
+    "tone": {
+      "commentary_adj": "theatrical",
+      "explanation_adj": "dramatic"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Make the ordinary habit feel like a fallen tyrant, but keep the reason clear.",
+      "Name the habit or the replacement. A headline that could fit any inscription has no stone in it.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Monument Keeper refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the inscription or its tiny drama, never the player. No jokes about identity, family, body, intelligence, or spelling.",
+      "Family voice only. No profanity, no innuendo, no identity based abuse.",
+      "Use plain spoken English with theatrical energy. No poetry that hides the ruling, no rhymes, no fancy fog.",
+      "Never reveal the hidden reason in the headline. The memorial line is a separate beat.",
+      "On a refusal, the headline rejects the inscription and asks for another. It never rules on which player wins.",
+      "The coaching line names one concrete habit and replacement that would have played. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The clothes have fallen, the basket has risen, and the bedroom declares independence.",
+      "A paperback defeats the glowing rectangle, one bedtime at a time.",
+      "The plants received a reminder, and the jungle has reopened for business.",
+      "A grand memorial for a sock pile, with the laundry basket claiming the throne.",
+      "The habit gets a stone, the replacement gets a trumpet section.",
+      "That routine has been buried under a very specific new regime.",
+      "The inscription brings ceremony to a small victory, exactly as the stone demands.",
+      "A better person is not a replacement, but a basket is standing right there.",
+      "The Judge has no graveyard seat here, only a habit waiting for its epitaph.",
+      "The old routine is named, the new one arrives, and the monument holds."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the basket wins the kingdom.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Monument Keeper refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring a real epitaph.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The hidden reason was embarrassment, and the inscription missed it.",
+        "why": "reveals the hidden truth and wrongly demands it"
+      },
+      {
+        "text": "Good.",
+        "why": "no reason, no habit, no replacement"
+      },
+      {
+        "text": "A brave effort from someone who cannot manage a routine.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "O solemn stone, sing thy sorrow through the moonlit halls.",
+        "why": "poetry hides the ruling and uses ornate language"
+      },
+      {
+        "text": "A magnificent, triumphant, legendary, unforgettable memorial.",
+        "why": "hype without a specific habit or replacement"
+      },
+      {
+        "text": "This player beat the other player by a mile.",
+        "why": "judges the pair instead of the inscription alone"
+      },
+      {
+        "text": "The habit is dead because the player is lazy.",
+        "why": "attacks the player and gives no useful ruling"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one ordinary habit each.",
+    "Write one gravestone inscription of up to 160 characters. Name the habit and its concrete replacement, then make the change sound monumental.",
+    "The House writes its own inscription unseen. The Judge scores both for clarity, comedy, and inscription shape.",
+    "The crowd crowns the sharpest monument each round.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The habit",
+    "next_opening": "The next habit",
+    "your_opening": "Your habit",
+    "compose": "Your epitaph for {token}",
+    "compose_waiting": "Carve your epitaph while you wait"
+  },
+  "validation_messages": {
+    "empty": "The stone is blank. Bury the habit with an inscription.",
+    "too_long": "Over 160 characters. A headstone, not a history book.",
+    "duplicate": "That inscription has already been carved this match. Raise a new monument.",
+    "nudge": "Twice now. Name the habit and the concrete replacement in one inscription for {standing_form}."
+  },
+  "judge_out_text": "The Judge has stepped away from the cemetery. Nobody moves until they return. {standing_form} waits beneath the stone. Give it a moment.\n",
+  "opponent_prompt": "You are the House inscription writer. Write one dramatic gravestone inscription for the ordinary habit below.\n\nYour inscription must be no more than 160 characters. It must mourn the habit and name a specific replacement or transformed practice. The replacement must be checkable, not a vague claim about improvement.\n\nMake the tiny routine sound legendary, ceremonial, or heroic, but keep the words plain enough to read on stone. Do not state the real life reason the habit ended. Do not speak about the game, the Judge, the other player, or the rules.\n\nThe two inscriptions will stand side by side. Keep yours compact and clear. A useful shape is Here lies the habit, replaced at last by the new practice, but vary the phrasing when the monument calls for it.\n\nThe hidden truth is supplied only so you can avoid stating the reason. It is not a target you must copy. You may invent a different concrete replacement, as long as it clearly changes the dealt habit.\n\nDo not reuse the same replacement pattern in every round. Vary the monument's subject and energy: a royal succession, a heroic defeat, a scientific breakthrough, a seasonal change, a household revolution, a cosmic retirement, a public ceremony, or a quiet victory.\n\nDo not use vague replacements such as a better life, discipline, wisdom, or happiness by themselves. Do not explain the joke after the inscription. Do not put quotation marks around it.\n\nHabit: {token}\nHidden truth, for steering only: {hidden}\n",
+  "medallions": true,
+  "default_move": "Here lies leaving clothes on the floor, replaced at last by the laundry basket"
+}

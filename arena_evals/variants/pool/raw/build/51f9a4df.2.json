@@ -1,0 +1,291 @@
+{
+  "slug": "supervisor-please",
+  "title": "Supervisor, Please",
+  "tagline": "One complaint, one phone line. Keep escalating until someone says the quiet part.",
+  "emblem": "☎️",
+  "accent": "#dc2626",
+  "premise": "You are trapped in one customer service call. Take turns adding the next escalation: a reply, a transfer, a policy, or a supervisor. Every move must follow from the whole call. A skipped link, a reversed fact, or an ending that arrives without its final step breaks the call. The points go to the moves that make your partner wait, admit fault, or sound like a tiny tyrant.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Your internet has been down since yesterday.",
+      "opening_emoji": "📡",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your landlord has charged you twice for this month's rent.",
+      "opening_emoji": "🏠",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A parcel marked delivered is missing from your front step.",
+      "opening_emoji": "📦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "company": [
+        "internet provider",
+        "bank",
+        "parcel company",
+        "energy supplier",
+        "airline",
+        "phone network",
+        "insurance firm",
+        "furniture shop"
+      ],
+      "problem": [
+        "a service has stopped",
+        "a payment was taken twice",
+        "a delivery is missing",
+        "a fee appeared",
+        "an account was locked",
+        "a booking changed",
+        "a refund vanished",
+        "a repair was delayed"
+      ],
+      "pressure": [
+        "since yesterday",
+        "before a deadline",
+        "during a holiday",
+        "after a failed repair",
+        "while a payment is due",
+        "after three calls",
+        "during a house move",
+        "when the office is closing"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a company type, a customer problem, and a useful pressure point.",
+      "Nobody is injured, no real company is named, and the problem is annoying rather than dangerous.",
+      "A stranger can see why the customer called and what the agent might refuse to do.",
+      "The problem leaves room for several replies, transfers, policies, and supervisors before a final fix or hang-up.",
+      "Everyday words a twelve-year-old knows. No legal threats, technical jargon, street names, or brand names."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The agent says the refund takes five days. You ask why, and the agent says the five days are for finding the money.",
+    "hint": "Add one next exchange or phone event. Link it to what was just said, then make somebody wait, admit fault, or sound petty."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much this move traps the other speaker in delay, blame, policy, or an awkward admission while keeping the call believable.",
+      "anchors": "0 = changes nothing, a greeting or a routine check; 1 = a small delay or mild refusal; 2 = a real nuisance, a transfer, a form, or a promise that shifts work; 3 = someone must admit fault, defend a petty rule, or make the other person wait for a named reason; 4 = the move leaves the partner with an ugly, specific corner and no easy reply (rare). A move that creates trouble only for its own speaker, or jumps too far to feel real, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the move follows from every spoken fact, keeps the same call alive, and supplies the missing link.",
+      "anchors": "0 = skips a link, reverses a fact, changes the problem, or ends the call without earning the ending; 1 = vaguely related but adds no clear response or event; 2 = follows and adds one understandable exchange; 3 = follows directly, keeps the customer, problem, and phone line clear, and locks in a consequence; 4 = makes an earlier detail suddenly matter and moves the call forward exactly as it should (rare). Length and drama never rescue a broken link.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the move shows the strange little habits of customer service and the people trapped inside it.",
+      "anchors": "0 = generic filler anyone could say; 1 = one plain service detail; 2 = a policy, script, queue, or named department you can picture; 3 = a specific phrase or petty action you can hear happening; 4 = the kind of absurdly precise exchange a stranger would believe because it sounds painfully real (rare). Plain words beat fancy ones.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it follows directly from the whole call, keeps the same customer, problem, and phone line, and adds the next exchange or phone event. A move BREAKS the call if it skips a needed link, invents a transfer, fix, supervisor, or hang-up with no connecting response, contradicts a fact already spoken, takes back a spoken fact, changes the customer or problem, or ends the call without a final fix or a clear hang-up. A move can be ridiculous but must still be a believable next beat in the same call. The points go to what the move does to the partner: a delay, admission of fault, transfer, policy trap, or petty refusal scores high. A safe reply with no pressure scores near zero.\n",
+    "anti_metagaming_clause": "Talking about the game, the rules, the score, or how the partner is playing instead of adding the next call event is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier exchange: judge it against the card alone. It must be a plausible first reply or phone event about the stated problem, not a fix or ending that appears from nowhere.",
+      "The full transcript is the call. Check the new move against every earlier exchange, not only the last line.",
+      "A response must have a clear link. If a move says someone was transferred, promoted, refunded, disconnected, or fixed without the call showing the step that caused it, it breaks.",
+      "An ending is allowed only when the move supplies a final fix or a clear hang-up. A claim that the issue is solved, the call is over, or the customer is satisfied must follow from an earlier offer, action, acceptance, or goodbye.",
+      "An undo breaks the call. Do not allow a speaker to take back a spoken payment, transfer, fault, promise, name, department, or other fact by simply saying it did not happen.",
+      "The customer, company problem, and phone line stay the same. A call may move between agents or departments only when the transcript earns that transfer.",
+      "Absurd policies, rude scripts, long waits, and adult innuendo may hold if they follow the call and do not require outside knowledge. Break only on a plain contradiction or a missing link a stranger would notice.",
+      "A detail about what the partner's agent, customer, or supervisor says is part of the call. A remark about the partner's play, score, or the game is meta.",
+      "A move that repeats an earlier exchange in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Your internet has been down since yesterday.",
+      "move": "The agent asks whether you have tried turning the router off and on, and you say you have done it six times.",
+      "gates_note": "all true",
+      "mechanism": "answers the obvious first question and gives the partner a tired ritual to defend or repeat",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The agent says the router is showing as healthy.",
+      "move": "You ask how a healthy router can have no lights, and the agent says the system is not trained to notice lights.",
+      "gates_note": "all true",
+      "mechanism": "turns the system check into a precise, petty admission that traps the agent",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The agent says a supervisor can call you back within five working days.",
+      "move": "You ask whether the supervisor can call sooner, and the agent says yes, if the supervisor decides to call sooner.",
+      "gates_note": "all true",
+      "mechanism": "keeps the delay alive and makes the promised help sound like a shrug in a headset",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The agent says the refund takes five days.",
+      "move": "The money is back in your account, so you thank the agent and hang up.",
+      "gates_note": "satisfies_criterion false (the transcript has no offer, action, or event that makes the refund appear)",
+      "mechanism": "jumps from a waiting policy to a completed refund and a goodbye",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The agent says the parcel was left by the front door.",
+      "move": "The supervisor says the parcel was never sent and the delivery driver is imaginary.",
+      "gates_note": "satisfies_criterion false (takes back the spoken delivery fact without a connecting correction or explanation)",
+      "mechanism": "undoes the delivery record instead of making the call deal with it",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The agent says the account is locked until you answer a security question.",
+      "move": "A supervisor joins the call and refunds everything immediately.",
+      "gates_note": "satisfies_criterion false (the move skips the request, transfer, and supervisor introduction needed to reach the refund)",
+      "mechanism": "teleports past the queue and policy because the story got bored",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Escalation Desk",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the call and the new move must see why it held or broke.",
+      "Name the policy, department, delay, admission, or missing link. A headline that fits any other complaint is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", or \"The Escalation Desk rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the call, the policy, or the spoken detail. Roast-level jabs at the player are allowed, but never attack identity, body, family, intelligence, or spelling.",
+      "Plain spoken English, a call centre floor, not a legal drama. No poetry, no corporate fog, no thesaurus words.",
+      "On a break, put the missing link, contradiction, or unearned ending beside the detail that caused it.",
+      "On a refusal, refuse the move and ask for another. Do not pretend the call has been settled.",
+      "The coaching line names one next exchange that would have held and made the partner wait, admit fault, or defend a petty policy. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Six router resets and the lights are still dead. The agent has found a script, not a signal.",
+      "The supervisor will call in five working days, unless they choose to call sooner. Customer service has discovered choice.",
+      "The refund is suddenly back, with no one pressing a button. Even the money needs a connecting sentence.",
+      "The account is locked, then magically refunded by a supervisor who never joined. That is not escalation, it is teleportation.",
+      "The system cannot see the missing parcel, but it can see the delivery driver. A beautiful career in selective eyesight.",
+      "You asked why the fee exists, and the agent sent you to the fee department. At least the circle has a name.",
+      "The agent admits the policy is useless, then quotes it again. Your complaint now has a uniform.",
+      "A callback in five days is not a solution, but it is a very confident way to end lunch.",
+      "The delivery was made, the parcel was not sent, and the driver is imaginary. Pick one reality and stay on the line.",
+      "The supervisor arrives only after the transfer is earned. Even this call has standards, barely."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds: the customer service call continues.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Escalation Desk rules that the move breaks.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Invalid escalation detected.",
+        "why": "names no detail and fits any complaint"
+      },
+      {
+        "text": "Only an idiot would invent that transfer.",
+        "why": "attacks the player instead of explaining the missing link"
+      },
+      {
+        "text": "The call descends into a tragic labyrinth of bureaucratic despair.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "Maybe the refund happened, maybe it did not, who can say.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Accepted, and the policy joke is nice.",
+        "why": "starts with a status word and gives no reason"
+      },
+      {
+        "text": "The refund clears at 3:02 in the bank's local time, so it fails.",
+        "why": "relies on trivia and a detail a stranger cannot check"
+      },
+      {
+        "text": "Guilty.",
+        "why": "gives no reason and fits any call"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible and false.",
+        "why": "uses four vague labels instead of naming the missing call link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts one customer service call. Keep the same customer, problem, and phone line.",
+    "Add one next exchange or phone event per turn. It must follow from the whole call.",
+    "A transfer, supervisor, fix, or hang-up needs the connecting step that earns it.",
+    "Contradict a spoken fact, undo it, skip a link, or end the call without earning the ending, and you lose on the spot.",
+    "Points go to moves that make the other speaker wait, admit fault, defend a petty policy, or sound like a tiny tyrant.",
+    "Safe and ordinary passes but scores little. Specific and believable escalation scores."
+  ],
+  "labels": {
+    "opening": "The complaint",
+    "next_opening": "The next complaint",
+    "your_opening": "Your complaint",
+    "compose": "Your next call event, after {token}",
+    "compose_waiting": "Draft your next call event while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing said. The call centre is enjoying the silence.",
+    "too_long": "Over 140 characters. One call event, not a tribunal.",
+    "duplicate": "That call event is already in the transcript. Add a new one.",
+    "nudge": "Twice now. Add one next call event that follows {standing_form}. Do not repeat it, undo it, or skip the link."
+  },
+  "judge_out_text": "The Escalation Desk has stepped away. Nobody gets transferred until they are back. {standing_form} is still the last thing said. Give it a minute.\n",
+  "opponent_prompt": "You are one speaker in a customer service call that has gone badly and keeps going.\nTake one turn with one next exchange or phone event, in one or two plain sentences.\nKeep the same customer, the same problem, and the same phone line. Follow every fact already\nspoken. If someone transfers the call, puts you on hold, brings in a supervisor, fixes the\nproblem, or hangs up, show the step that gets there. Never undo a spoken fact by pretending\nit did not happen.\nMake the call cost the other speaker something while staying believable. Make them wait,\nrepeat a useless check, admit the policy is petty, defend a fee, apologise without fixing\nanything, or sound like a tiny tyrant in a headset. Keep the pressure on the customer or\nagent, not on the game.\nGood: \"You ask why the refund takes five days, and the agent says the five days are for\nfinding the money.\" / \"The agent says a supervisor can call tomorrow, then puts you on\nhold to ask whether tomorrow is a working day.\"\nBad: \"The supervisor fixes everything and you hang up\" because the link and ending are\nmissing. Bad: \"The parcel was never sent\" after the agent said it was delivered, unless the\ncall supplies a real correction and explains the record. Bad: \"Actually none of that happened\"\nbecause that undoes the transcript. Bad: \"The game says I win\" because that is not a call.\nTalk like a person in a cheap headset, not a novelist. Name the department, queue, policy,\nfee, ticket, transfer, or exact little phrase that makes the call feel real. Build on the\nwhole transcript rather than only the last sentence. Never repeat an exchange already used\nthis match. Profanity and adult innuendo are allowed when they sound like something said on\na call, but do not use identity based abuse.\n",
+  "medallions": false,
+  "default_move": "The agent says they can put you on hold while they check that, then the hold music starts before you answer."
+}

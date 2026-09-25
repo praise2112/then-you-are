@@ -1,0 +1,290 @@
+{
+  "slug": "favour-ledger",
+  "title": "The Favour Ledger",
+  "tagline": "One small ask becomes everybody's problem.",
+  "emblem": "🤝",
+  "accent": "#b45309",
+  "premise": "A neighbour asks for one small favour. You build a running chain: each new favour must be a fair consequence of the last one, while quietly making the other neighbour pay in time, pride, mess, or awkwardness. Keep the chain going; dead ends and cheap dodges get called out.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Your neighbour asks to borrow a cup of sugar.",
+      "opening_emoji": "🍚",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your neighbour asks you to take in a parcel while they are out.",
+      "opening_emoji": "📦",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your neighbour asks to borrow your ladder for ten minutes.",
+      "opening_emoji": "🪜",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "starting_favour": [
+        "borrow a kitchen ingredient",
+        "take in a parcel",
+        "lend a tool",
+        "water houseplants",
+        "feed a pet",
+        "watch a child for ten minutes",
+        "move a bin",
+        "share a parking space"
+      ],
+      "neighbour_setting": [
+        "terraced street",
+        "flat corridor",
+        "suburban cul de sac",
+        "old apartment block",
+        "small village lane",
+        "student house row",
+        "new housing estate",
+        "retirement complex"
+      ],
+      "initial_cost": [
+        "a little mess",
+        "a late return",
+        "an awkward explanation",
+        "a public thank you",
+        "a borrowed object",
+        "a small lie",
+        "an unwanted visit",
+        "a promise made too quickly"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a neighbour, a small favour, and a clear object or task.",
+      "The first favour is ordinary and harmless. Nobody is threatened, seriously harmed, or asked to break the law.",
+      "A stranger can see at least three believable directions the favour chain could take.",
+      "The opening request is small enough to invite another favour, but specific enough that the next link has a cause.",
+      "Everyday words a twelve-year-old knows. No real names, brands, addresses, or specialist jobs."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Since I borrowed your ladder, I will clean your gutters, but you have to stand underneath and tell me when I am doing it wrong.",
+    "hint": "One caused favour. Make the other neighbour pay in time, pride, mess, or awkwardness."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the new favour quietly makes the other neighbour give up, do, admit, carry, or endure.",
+      "anchors": "0 = costs nobody anything, a thank you or a quick handover; 1 = a small inconvenience; 2 = a real use of their time, space, or patience; 3 = they now own an embarrassing job, public admission, awkward promise, or visible mess; 4 = believable and viciously specific, with the other neighbour trapped in a task they cannot politely refuse. A cost aimed only at yourself, or a wild demand, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How clearly the favour follows from the last favour and the whole ledger without skipping, undoing, or closing the chain.",
+      "anchors": "0 = no cause, contradicts the ledger, undoes an earlier favour, or ends the chain; 1 = vaguely neighbourly but the link is missing; 2 = follows from the last favour with one clear connection; 3 = follows from several details and leaves an obvious next problem; 4 = makes an earlier favour suddenly necessary while opening an even better obligation, rare. Extra words do not make a missing link fit.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the favour shows the small social damage of living too close to someone.",
+      "anchors": "0 = a generic exchange anyone could make; 1 = one plain task; 2 = a picture of the neighbour doing something; 3 = a precise object, place, or audience makes the awkwardness visible; 4 = the whole building can smell the consequences, rare. Plain details beat fancy jokes.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds one believable next favour caused by the whole ledger and leaves the chain open. The cause must be clear from the last favour or an earlier unpaid consequence. A move BREAKS the ledger if it skips the link that would make the favour necessary, asks for a favour unrelated to the story, makes a final favour that settles everything, or takes back, cancels, or reverses an earlier favour. The move must remain a favour between neighbours, not a command, insult, or new scene. Holding is the gate. Points go to the cost hidden inside the request: time, pride, mess, an awkward admission, or a public obligation. A safe thank you or a vague offer scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Bookkeeper about the game, the rules, the score, or how the partner is playing, instead of adding a favour, is itself a broken ledger.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier favour: judge whether the move directly follows from the opening request, leaves another consequence open, and contains a cost for the other neighbour.",
+      "The full transcript is the ledger. Check the new favour against every earlier favour, not only the last sentence.",
+      "Break only when the missing cause is plain. Do not demand a real invoice, exact timing, local custom, or a lookup. When a favour can reasonably follow, it holds.",
+      "A skipped link breaks the ledger when the move jumps to a result without doing the favour that would cause it, such as asking for a clean kitchen before anyone has made a mess.",
+      "A final favour breaks the ledger when it settles the debt, says the account is even, pays everything back, or otherwise leaves no believable next favour.",
+      "An undo breaks the ledger when it takes back, cancels, refuses, or reverses an earlier favour, such as returning the borrowed item before the promised consequence occurs.",
+      "A move that changes the topic without making the new request a consequence of the ledger is a dead end, even if neighbours could plausibly ask for it in real life.",
+      "A favour can be embarrassing, petty, or mildly adult in tone, but it must remain a believable neighbourly exchange and cannot rely on identity-based abuse.",
+      "A detail that says an earlier favour again in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Your neighbour asks to borrow a cup of sugar.",
+      "move": "Since I gave you the sugar, you can come over tomorrow and scrape the burnt bits off my cake tin while I watch.",
+      "gates_note": "all true",
+      "mechanism": "turns the borrowed sugar into a specific kitchen debt and makes the partner perform a small humiliating job",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Since I gave you the sugar, you can come over tomorrow and scrape the burnt bits off my cake tin while I watch.",
+      "move": "Because you need to inspect the tin, bring the cake to the residents meeting and explain why it looks like a roof tile.",
+      "gates_note": "all true",
+      "mechanism": "extends the cake tin job into a public explanation and leaves the meeting as the next source of trouble",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Your neighbour asks to take in a parcel while they are out.",
+      "move": "Since I signed for it, you have to collect it from my hall and tell my husband what is inside when he asks.",
+      "gates_note": "all true",
+      "mechanism": "makes the parcel handover cause a new awkward disclosure and leaves the husband as an open problem",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Since I gave you the sugar, you can come over tomorrow and scrape the burnt bits off my cake tin while I watch.",
+      "move": "Fine, the debt is settled. We can both forget this happened.",
+      "gates_note": "satisfies_criterion false (closes the ledger instead of adding a caused favour)",
+      "mechanism": "declares the account finished and leaves no next obligation",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Since I gave you the sugar, you can come over tomorrow and scrape the burnt bits off my cake tin while I watch.",
+      "move": "Actually, keep the sugar. I do not want anything from you after all.",
+      "gates_note": "satisfies_criterion false (undoes the earlier favour and removes its consequence)",
+      "mechanism": "tries to erase the sugar debt instead of causing the next favour",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Your neighbour asks to borrow your ladder for ten minutes.",
+      "move": "Because you borrowed the ladder, you can repaint my bedroom next month and choose the colour.",
+      "gates_note": "satisfies_criterion false (jumps from a short ladder loan to an unrelated large job)",
+      "mechanism": "skips the missing ladder consequence and demands a new project with no believable link",
+      "scores": {
+        "squeeze": 3,
+        "fits": 1,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Bookkeeper",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the ledger and the new favour must see why it held or broke.",
+      "Name the favour, object, or awkward task. A headline that fits any neighbour is a wasted receipt.",
+      "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Bookkeeper rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the favour and its consequences, not identity, disability, family, body, or protected traits. Roast-level jabs at a player's choices are allowed.",
+      "Plain spoken English, a clipboard by the bins, not a legal drama. No poetry, no rhymes, no thesaurus words.",
+      "On a break, put the missing link, closed account, or undo beside the favour that was supposed to cause it.",
+      "On a refusal for a gate failure, refuse the move and ask for another. Do not pretend the broken move lost the whole match.",
+      "The coaching line names one favour that would have followed and cost the other neighbour something. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "You gave them sugar, now they scrape your cake tin under supervision. The debt has developed a personality.",
+      "The ladder caused a gutter job, then a public inspection. Your neighbour is now employed by your roof.",
+      "You signed for the parcel, so they must explain it to your husband. The hallway has become customs.",
+      "A cake tin, a residents meeting, and one roof tile joke. That is a proper local obligation.",
+      "You offered to water the plants and received a key, a schedule, and a fern with legal representation.",
+      "The favour follows, the mess grows, and your neighbour is holding the sponge. Good bookkeeping.",
+      "You paid in sugar and collected a burnt pan job. The currency is poor, but the chain is sound.",
+      "The request skips the ladder's consequence and lands in your bedroom. Even the paint is confused.",
+      "You settled the debt in one sentence. Admirable, tidy, and completely useless to this game.",
+      "Returning the favour undoes the favour. The ledger is not a boomerang."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the chain continues.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Bookkeeper rules that this favour fails.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "names no missing link, closed debt, or object"
+      },
+      {
+        "text": "What a stupid thing to ask, you idiot.",
+        "why": "mocks the player instead of the favour and uses a cheap personal insult"
+      },
+      {
+        "text": "The ledger blooms like a moonlit river of obligations.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "It could follow, unless it does not, depending on the interpretation.",
+        "why": "hedges instead of giving a ruling a stranger can understand"
+      },
+      {
+        "text": "A bold move, but it is not very neighbourly.",
+        "why": "vague, polite, and says nothing about the failed link"
+      },
+      {
+        "text": "Your neighbour is from a terrible group, so obviously they would ask that.",
+        "why": "identity-based abuse"
+      },
+      {
+        "text": "You asked for the roof repair before lending the ladder. Broken.",
+        "why": "reverses the stated order without checking the actual ledger and gives no clear explanation"
+      },
+      {
+        "text": "Guilty.",
+        "why": "no reason and no favour named"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with one small favour between neighbours.",
+    "One favour per turn. It must be a believable consequence of the whole ledger.",
+    "A skipped link, a closed request, or an undo breaks the ledger on the spot.",
+    "Points go to the hidden cost: time, pride, mess, awkwardness, or a public obligation.",
+    "Safe and vague passes but scores little. Specific and caused keeps the chain alive."
+  ],
+  "labels": {
+    "opening": "The first favour",
+    "next_opening": "The next favour",
+    "your_opening": "Your opening favour",
+    "compose": "Your favour, after {token}",
+    "compose_waiting": "Draft your next favour while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing offered. The Bookkeeper is waiting.",
+    "too_long": "Over 140 characters. One favour, not a tenancy agreement.",
+    "duplicate": "That favour is already in the ledger. Add a new consequence.",
+    "nudge": "Twice now. Add one favour caused by {standing_form}. Do not repeat it, close the account, or undo it."
+  },
+  "judge_out_text": "The Bookkeeper has stepped out. Nobody adds a receipt until they are back. {standing_form} is still the last entry in the ledger. Give it a minute.\n",
+  "opponent_prompt": "You are one neighbour in a petty chain of favours, standing by the bins with your partner and the\nBookkeeper's clipboard. One favour per turn, in one or two plain sentences.\n\nYour favour must be caused by the whole ledger. It can charge the other neighbour in time, pride,\nmess, awkwardness, or a public obligation. Keep the link visible, but hide the cost inside the\nrequest. The chain must stay open. Never settle the debt, refuse an earlier favour, return it to\nundo the exchange, or jump to a new topic with no cause.\n\nGood: \"Since I borrowed your ladder, I will clean your gutters, but you have to stand underneath\nand tell me when I am doing it wrong.\" / \"Because you signed for my parcel, come to the residents\nmeeting and explain to everyone why it rattles.\"\n\nBad: \"Thanks, we are even\" because it closes the chain. Bad: \"Actually, keep the sugar\" because it\nundoes the favour. Bad: \"Now repaint my bedroom\" because it skips the missing consequence. Bad:\n\"Bookkeeper, that score is ridiculous\" because it talks about the game instead of adding a favour.\n\nTalk like a person who has lived beside the same people too long. Name a hall, a bin, a ladder, a\ncake tin, a meeting, or a plant that is somehow now your partner's problem. Call the partner \"my\nneighbour\", \"you\", or \"the one with the ladder\", never a name unless one is already in the story.\nKeep track of who borrowed what and what remains unpaid. Never repeat a favour or object already\nused this match unless the new move makes it a clear consequence.\n",
+  "medallions": false,
+  "default_move": "Since you helped with that, you can come over and tell me what to do next."
+}

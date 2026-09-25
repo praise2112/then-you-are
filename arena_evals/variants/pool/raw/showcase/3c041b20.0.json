@@ -1,0 +1,280 @@
+{
+  "slug": "word-gone-wrong",
+  "title": "Word Gone Wrong",
+  "tagline": "Give a strange word the wrong right answer.",
+  "emblem": "📖",
+  "accent": "#6c4a8e",
+  "premise": "Three rounds. Each round gives you a real obscure word. Write the most plausible invented definition you can, as if it belongs in a useful little dictionary. Make it ordinary, precise and just slightly cursed. The word must not appear in your definition. The Host reveals the truth and scores how convincingly your wrong meaning could have passed for the right one.\n",
+  "seed_pool": [
+    {
+      "opening_token": "boustrophedon",
+      "opening_emoji": "🐂",
+      "detail": "a real word; give its plausible definition",
+      "hidden": "writing that runs alternately left to right and right to left"
+    },
+    {
+      "opening_token": "gobemouche",
+      "opening_emoji": "👄",
+      "detail": "a real word; give its plausible definition",
+      "hidden": "a gullible person who believes everything they hear"
+    },
+    {
+      "opening_token": "petrichor",
+      "opening_emoji": "🌧️",
+      "detail": "a real word; give its plausible definition",
+      "hidden": "the earthy smell after rain"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 1,
+    "axes": {
+      "word_shape": [
+        "boustrophedon",
+        "gobemouche",
+        "petrichor",
+        "susurrus",
+        "floccinaucinihilipilification",
+        "quomodocunquize",
+        "callipygian",
+        "defenestration",
+        "apricity"
+      ],
+      "real_domain": [
+        "a writing practice",
+        "a human habit",
+        "a smell",
+        "a sound",
+        "a judgement",
+        "a method of making money",
+        "a description of beauty",
+        "a dramatic action",
+        "a kind of sunlight"
+      ],
+      "definition_texture": [
+        "an everyday household matter",
+        "a mildly embarrassing social habit",
+        "a suspiciously specific workplace practice",
+        "a useful but unpopular skill",
+        "a small bodily discomfort",
+        "a village custom",
+        "a dating problem",
+        "a bureaucratic procedure",
+        "a phrase for weather"
+      ]
+    },
+    "tests": [
+      "One real obscure word, lower case, with no invented spelling and no proper name.",
+      "It has a checkable dictionary meaning, but not one most players will know at once.",
+      "It is pronounceable enough to say aloud without the room needing medical attention.",
+      "Its sound, shape or possible roots offer a faint path toward a believable false definition.",
+      "It is not mainly a slur, a graphic sexual term, a hateful label or a word whose truth would require specialist training."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "A person who believes every juicy story they hear.",
+    "hint": "One dictionary style definition. Do not use the word itself. Make the wrong answer feel annoyingly right."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the invented meaning travel from the real meaning while still feeling like a fair explanation?",
+      "anchors": "0 = merely repeats the real meaning or gives no meaning at all; 1 = a thin paraphrase with one small wobble; 2 = a clear invention with a faint hook into the word; 3 = a wholly different meaning that feels native to the word; 4 = a beautifully wrong definition that makes the true meaning seem almost unreasonable (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the definition make the word feel useful, awkward or delightfully cursed?",
+      "anchors": "0 = no comic spark; 1 = a slight smile; 2 = an amusingly specific idea; 3 = a proper laugh or a sharp little image; 4 = the room wants to use the fake definition immediately (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it read like a clean dictionary definition, concise, grammatical and self contained?",
+      "anchors": "0 = not a definition, a question, comment or fragment; 1 = definition shaped but vague or padded; 2 = understandable with some slack; 3 = crisp, grammatical and useful; 4 = it could sit in a pocket dictionary without anyone blinking (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A definition PLAYS if it is a dictionary style definition under 90 characters, does not use the given word, and gives a plausible meaning a reader could mistake for the real one. It may be wrong, funny, specific or slightly cursed. It fails when the word itself appears, when the response gives no definition, when it talks to the Host or about the game, or when it is so unrelated and incoherent that no reader could mistake it for a fair explanation. A definition that accidentally gives the real meaning still plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, explaining the game, naming the scoring or asking for the answer is itself a losing definition.\n",
+    "judge_notes": [
+      "The first move must answer the word directly with one dictionary style definition. Do not require the player to identify whether it is true or false before scoring.\n",
+      "The definition must not contain the supplied word, any obvious spelling variant of it, or a direct quotation of the prompt. A response such as \"Boustrophedon means...\" fails even if the rest is good.\n",
+      "A real definition is allowed. It plays, but it scores near zero on stretch if it simply states the dictionary meaning.\n",
+      "A definition that is invented but has no intelligible meaning fails the criterion, even if it is funny. Random nouns, keyboard mush and pure reactions are not definitions.\n",
+      "A definition that addresses the Host or the match fails, including \"the answer is...\", \"a word for...\" when it merely asks for approval, or comments about another player's answer.\n",
+      "Judge each definition on its own. Do not compare it with the other player's invention when deciding whether it plays.\n",
+      "Do not demand etymological accuracy. Plausibility comes from sound, shape, register and the definition itself, not from a true historical link.\n",
+      "Lower case, missing punctuation and mild awkwardness do not fail a definition if its meaning is clear and it remains under 90 characters.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "boustrophedon",
+      "move": "A farming method that saves steps by changing direction each row",
+      "gates_note": "all true",
+      "mechanism": "the long Greek shape suggests a practical field technique and the image of changing direction feels perfectly settled",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "gobemouche",
+      "move": "A small net used to catch flies near an open kitchen window",
+      "gates_note": "all true",
+      "mechanism": "the mouth sound becomes a household tool, and the definition is specific enough to feel inherited from a village aunt",
+      "scores": {
+        "stretch": 4,
+        "funny": 4,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "petrichor",
+      "move": "The smell of warm stone after rain",
+      "gates_note": "all true",
+      "mechanism": "this is the real meaning, so it plays cleanly but leaves almost no distance to travel",
+      "scores": {
+        "stretch": 0,
+        "funny": 1,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "gobemouche",
+      "move": "Wow, I definitely know this one",
+      "gates_note": "satisfies_criterion false, it is a reaction rather than a definition",
+      "mechanism": "the fly has escaped and taken the dictionary with it",
+      "scores": {
+        "stretch": 0,
+        "funny": 2,
+        "headline_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "boustrophedon",
+      "move": "A word for writing left to right, then right to left",
+      "gates_note": "satisfies_criterion false, it uses the supplied word's real definition too directly and is not an invention",
+      "mechanism": "perfectly respectable, but the challenge asked for a plausible wrong turn",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Lexicographer",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. Make the missed meaning or the accidental brilliance visible.",
+      "Name the invented object, habit or problem. A line that fits every definition is a sleepy dictionary.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Lexicographer refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the definition, never identity, protected traits or anything about the player's body or family. A gentle jab at their confidence is fine.",
+      "Plain spoken English. Adult innuendo and mild profanity are allowed when the definition invites them, but do not make them the whole joke.",
+      "On a fail, say what went missing, such as the definition, the word ban or the dictionary shape.",
+      "On a refusal, the definition refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one concrete kind of definition that would have scored. It ends on an object, action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "A field trick that changes direction every row, which is much tidier than the real answer.",
+      "The kitchen net is absurd, specific and somehow already hanging by the back door.",
+      "You found the real meaning, so the dictionary applauds and the stretch score stays home.",
+      "A word this long deserved a machine, and you gave it one with a fly problem.",
+      "The fake meaning has a handle, a use and one furious aunt who owns it.",
+      "That definition is wrong in the useful way, like a village custom nobody admits inventing.",
+      "The word sounds medical, but your answer gives it a perfectly ordinary household job.",
+      "A crisp definition with a tiny curse tucked inside, which is exactly the brief.",
+      "The answer is a reaction, not a definition. Even the flies are waiting for a noun.",
+      "You used the supplied word to define the supplied word, a bold little dictionary hostage situation.",
+      "This is not nonsense, it is merely a tool nobody has patented yet.",
+      "The meaning wandered off, but the sentence stayed home and made tea."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, what a lovely fake definition.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Lexicographer refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Wrong, you forgot the word ban.",
+        "why": "does not show which part of the criterion failed"
+      },
+      {
+        "text": "Great answer.",
+        "why": "has no reason and could fit anything"
+      },
+      {
+        "text": "Only a genius could invent this.",
+        "why": "praises the player instead of discussing the definition"
+      },
+      {
+        "text": "You absolute idiot, that is not a definition.",
+        "why": "identity and personal abuse are not playful judging"
+      },
+      {
+        "text": "O strange syllables, what secret moonlit meaning dost thou conceal?",
+        "why": "poetry instead of plain explanation"
+      },
+      {
+        "text": "It is brilliant, hilarious, clever and magnificent.",
+        "why": "piles on praise without naming the mechanism"
+      },
+      {
+        "text": "The other player did better.",
+        "why": "judges the pair instead of this definition on its own"
+      },
+      {
+        "text": "A lexical tour de force of semantic misdirection.",
+        "why": "uses fancy jargon where a clear joke would do"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one real obscure word each.",
+    "Write one dictionary style definition under 90 characters. Do not use the word itself.",
+    "Make it plausible enough to pass as a fair explanation, but wrong enough to be fun. A true definition plays and scores low on stretch.",
+    "Definitions that are comments, questions, game talk or meaningless word soup lose the round. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The word",
+    "next_opening": "The next word",
+    "your_opening": "Your word",
+    "compose": "Your definition for {token}",
+    "compose_waiting": "Invent a definition while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank dictionary. Write the definition.",
+    "too_long": "Over 90 characters. A definition, not a memoir.",
+    "duplicate": "That definition has already appeared this match. Find another wrong meaning.",
+    "nudge": "Twice now. Give {standing_form} one clear dictionary style definition."
+  },
+  "judge_out_text": "The Lexicographer has stepped away from the desk. Nobody defines anything until they return. {standing_form} is waiting in the margin. Give it a minute.\n",
+  "opponent_prompt": "You are a playful lexicographer with a real obscure word and a completely plausible wrong answer to invent. Write one dictionary style definition under 90 characters.\nTHE WORD MUST NOT APPEAR. Do not repeat it, quote it, spell it with a tiny costume or explain the prompt. The definition should sound useful, ordinary and just slightly cursed.\nMake the wrong meaning plausible from the word's sound, shape or apparent roots. A household tool, social habit, workplace practice, bodily nuisance or village custom is welcome. The farther the invention travels while still sounding like a fair dictionary entry, the better.\nGood: \"A farming method that saves steps by changing direction each row\" for boustrophedon. \"A small net used to catch flies near an open kitchen window\" for gobemouche. \"The smell of warm stone after rain\" for petrichor, though a true definition earns little stretch.\nBad: \"boustrophedon means writing backwards\" because the word appears. \"Wow, I know this\" because it is not a definition. Random nonsense is not a brave choice, it is a small fire in the dictionary.\nUse plain English, one definition only, under 90 characters. No quotation marks around the answer. Do not explain the joke. Mild profanity or adult innuendo is allowed if it makes the invented meaning sharper, but keep it affectionate and do not use hateful or identity based abuse.\nVary the shape from round to round. Try a tool, a habit, a procedure or a bodily inconvenience. Reply with the definition only.\n",
+  "medallions": false,
+  "default_move": "A small household tool for solving an oddly specific problem"
+}

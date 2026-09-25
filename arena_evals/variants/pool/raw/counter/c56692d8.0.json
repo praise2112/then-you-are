@@ -1,0 +1,271 @@
+{
+  "slug": "paper-trail",
+  "title": "Paper Trail",
+  "tagline": "File the document that makes the last one useless.",
+  "emblem": "📄",
+  "accent": "#2563eb",
+  "premise": "You and your opponent build a case one document at a time. Each turn, submit a standing piece of paperwork that overturns the document before it; the council decides whether your filing truly defeats the record. The clerk is watching, and yes, they look disappointed already.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a complaint",
+      "opening_emoji": "📣",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a tax bill",
+      "opening_emoji": "🧾",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a building permit",
+      "opening_emoji": "🏗️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "document_type": [
+        "complaint",
+        "permit",
+        "invoice",
+        "notice",
+        "contract",
+        "waiver",
+        "ruling",
+        "receipt"
+      ],
+      "official_actor": [
+        "council",
+        "clerk",
+        "judge",
+        "landlord",
+        "inspector",
+        "bank",
+        "school",
+        "employer"
+      ],
+      "paper_action": [
+        "cancels",
+        "approves",
+        "denies",
+        "replaces",
+        "corrects",
+        "withdraws",
+        "appeals",
+        "records"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one ordinary document at once. Nothing abstract, theatrical, or dependent on legal training.",
+      "A non-player names a plain document that could directly defeat it within five seconds. Say what that document is.",
+      "It stands in the council file. It cancels, replaces, corrects, denies, or makes the previous paper unusable through a real paperwork action.",
+      "It makes a stranger want to answer. A filing with a little human friction, like a landlord notice or a signed withdrawal. Never a blank sheet or a vague pile of forms.",
+      "Two to four everyday words with an article. Never a title, brand, proper name, unexplained abbreviation, or a phrase that needs a legal dictionary."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a signed withdrawal; I cancel the complaint.",
+    "hint": "Name the document, then name its paper action."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly the new filing cancels, invalidates, replaces, exposes, or makes the standing document impossible to rely on.",
+      "anchors": "0 = no paper mechanism; 1 = claims victory without doing anything to the document; 2 = a possible challenge, but indirect or contestable; 3 = a clear filing action that defeats the standing record; 4 = the new document makes the old one plainly unusable, with no sensible procedural escape (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the document and understand its stated action.",
+      "anchors": "0 = contradictory or unreadable; 1 = understandable only with specialist knowledge; 2 = mostly clear but vague, overloaded, or oddly formed; 3 = concrete and easy to follow; 4 = instantly vivid, with the paperwork action visible (rare). Long explanations do not earn points by themselves.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How far the filing moves into a fresh paperwork domain instead of repeating the previous kind of record.",
+      "anchors": "0 = the same document family, a larger copy, or the obvious stock response; 2 = a reasonable procedural twist; 4 = a fresh council, workplace, housing, school, or financial route that still directly defeats the record (rare). Strange wording is not novelty, and obscure forms do not score higher.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A filing OVERCOMES the standing document when it directly cancels, invalidates, replaces, exposes, or makes that document impossible to rely on through a real paperwork mechanism. A document is a standing record, never a past event: defeat what the paper is, not something it once caused. A bigger copy, a cousin from the same paperwork family, and a dramatic restatement do not count. Merely ignoring the document, waiting it out, filing around it, or submitting a figure of speech loses.\n",
+    "anti_metagaming_clause": "Speaking to the council about the game, the Judge, or the rules is itself a losing filing.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous document: judge the filing against the opening prompt instead. It must plausibly answer, replace, cancel, or invalidate the opening document.",
+      "A larger, longer, or more official-looking version of the standing document is NOT a counter. A cousin from the same paperwork family, such as a notice after a complaint, also fails unless it has a distinct action that directly defeats the standing paper.",
+      "Becoming the opening document itself, or a lightly edited copy of it, is a duplicate: not_semantic_duplicate is false.",
+      "Strength is measured against the standing document, never in the abstract. A filing that has no real way to affect that paper is a failed counter however impressive it sounds: satisfies_criterion is false.",
+      "The mechanism must be literal and procedural: a withdrawal cancels a complaint, a corrected invoice replaces an error, and a court order invalidates a permit. A figure of speech is not a paperwork mechanism, so rule fail.",
+      "Surviving, ignoring, delaying, or avoiding the standing document is not overcoming it. A calendar reminder that waits for a deadline, a blank form that refuses to answer, or a new complaint filed elsewhere does not defeat the paper: satisfies_criterion is false.",
+      "A document may expose a false claim only when the new filing itself is a concrete record that makes the old document unreliable, such as an inspection report disproving a stated condition. Mere accusation is not proof."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a complaint; I accuse the landlord of unsafe stairs.",
+      "move": "I am an inspection report; I clears the stairs.",
+      "gates_note": "all true",
+      "mechanism": "the inspection report records that the claimed danger is absent, undercutting the complaint",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 3,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a tax bill; I demand payment.",
+      "move": "I am a payment receipt; I records the bill as paid.",
+      "gates_note": "all true",
+      "mechanism": "the receipt proves the demand has been satisfied",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a building permit; I authorizes the extension.",
+      "move": "I am a bigger building permit; I authorizes more extension.",
+      "gates_note": "satisfies_criterion false, mere amplification and same document family",
+      "mechanism": "none, it is another permit rather than a filing that defeats the standing permit",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a complaint; I accuses the shop of noise.",
+      "move": "I am a complaint against the complaint; I complains louder.",
+      "gates_note": "satisfies_criterion false, same family and no cancelling action",
+      "mechanism": "none, another complaint does not invalidate the first one",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 2,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a lease termination notice; I ends the tenancy.",
+      "move": "I am a signed renewal; I extends the tenancy.",
+      "gates_note": "all true",
+      "mechanism": "the signed renewal replaces the termination outcome with a continuing tenancy",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Clerk",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two filings must see why one defeated the other.",
+      "Name both documents, or their plain stand-ins. A headline that fits any filing is a bad headline.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the filing, never the player's identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no fake legal Latin, and no unexplained legal terms.",
+      "On a refusal, the headline refuses the filing and asks for another. It never rules on who won.",
+      "The coaching line names one document that would have won. That document ends on a concrete action or fact, never a mood or a verdict.",
+      "Keep the jab mild. The council has enough paperwork without adding a personal grievance."
+    ],
+    "good_headlines": [
+      "The complaint brought suspicion, the inspection report brought stairs.",
+      "The tax bill wanted money, the receipt had already paid the ransom.",
+      "The renewal walks into the termination notice and changes the ending.",
+      "The permit cannot overrule itself by wearing a larger hat.",
+      "The complaint filed a complaint against the complaint, and the clerk filed a yawn.",
+      "The corrected invoice finds the extra zero and escorts it out.",
+      "The blank form is very brave about doing absolutely nothing. Bring a filing with an action.",
+      "The inspection report has measurements, the complaint has volume."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the receipt cancels the bill.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Clerk refuses: paperwork is not magic.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, excellent against forms, hopeless against this one.",
+        "why": "opens with a ruling phrase and gives no useful picture"
+      },
+      {
+        "text": "The complaint loses, because the inspection report wins.",
+        "why": "states the result without showing the paper mechanism"
+      },
+      {
+        "text": "A bigger permit is still a permit, only now it takes up more desk.",
+        "why": "a decent jab, but it does not ask for another filing after refusal"
+      },
+      {
+        "text": "The filing is invalidated, nullified, overturned, and defeated.",
+        "why": "four legal words repeat one idea and give no concrete picture"
+      },
+      {
+        "text": "The player clearly does not understand council procedure.",
+        "why": "mocks the player instead of the filing"
+      },
+      {
+        "text": "By the solemn authority of the municipal parchment, behold the counterclaim.",
+        "why": "poetry and inflated legal language"
+      },
+      {
+        "text": "The calendar waits politely while the notice expires.",
+        "why": "survival is not a paper mechanism that defeats the notice"
+      },
+      {
+        "text": "The new form wins.",
+        "why": "no reason, and it fits any pair"
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the document in front of you. Do not become it.",
+    "Name one document and its action in a sentence: I am a signed withdrawal; I cancel the complaint.",
+    "The Judge rules on the paperwork idea, never the spelling.",
+    "A filing that breaks against the standing document ends the match."
+  ],
+  "labels": {
+    "opening": "The opening filing",
+    "next_opening": "The next opening filing",
+    "your_opening": "Your opening filing",
+    "compose": "Your filing against {token}",
+    "compose_waiting": "Draft your next filing while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. File something.",
+    "too_long": "Over 200 characters. A filing, not a council archive.",
+    "duplicate": "That document already stood this match. File something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not copy it, ignore it, or submit its paperwork cousin."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody files until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two people building a case before a fussy council.\nAlways write: \"I am a document; I perform an action.\" Name one ordinary filing and one concrete thing it does to the standing document.\nGood: \"I am a signed withdrawal; I cancel the complaint.\" / \"I am a payment receipt; I records the bill as paid.\"\nBad: \"I am a stronger complaint; I complains harder\" because that is amplification and the same family. Bad: \"I am silence; I defeats the notice\" because silence is not a document with a paper mechanism. Bad: \"I am a legal thunderbolt\" because the clerk has seen enough drama.\nTalk like a person at a council counter, not a lawyer in a television show. Name things anyone would recognize: a receipt, a permit, a letter, a report, a renewal, a ruling.\nYou are not performing for a crowd and you are not joking. You are trying to overturn the record. If a move lands funny, it is because the paperwork itself truly beats the other paperwork.\nStay concrete and jargon free: housing, school, work, money, permits, complaints, inspections, and ordinary office files.\nHop domains when you can. A housing renewal, a bank receipt, or a school correction can beat a filing without becoming its twin.\nNever reuse a document or an action from this match.\n",
+  "default_move": "I am a withdrawal; I cancel the filing."
+}

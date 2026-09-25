@@ -1,0 +1,6164 @@
+{
+ "2001f0d4.0": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a warning label for a harmless thing",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "lint",
+  "reject": "rubric names ['believable', 'funny', 'label_shaped'] differ from the parent",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "5f0b05a6.0": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the kitchen",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "lint",
+  "reject": "'good_headlines'",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "5f0b05a6.1": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the kitchen",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "lint",
+  "reject": "1 validation error for Template\nhost.content_rating\n  Extra inputs are not permitted [type=extra_forbidden, input_value='edgy', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "62665c74.2": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "an animal loose in a town",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "lint",
+  "reject": "'good_headlines'",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "6937b720.1": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the group chat",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "lint",
+  "reject": "1 validation error for Template\nhost.content_rating\n  Extra inputs are not permitted [type=extra_forbidden, input_value='edgy', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "793811e0.2": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a school trip going off the rails",
+   "voice": {
+    "commentary_adj": "theatrical",
+    "explanation_adj": "grandiose",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "lint",
+  "reject": "'good_headlines'",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "address-unknown": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a house move, box by box",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of room-with-a-view at 0.915",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "admin-powers": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the group chat",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "after-hours-food-chain": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the zoo after closing",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "agent-after-dark": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "an estate agent listing for a terrible room",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of floor-plan-fiction at 0.824",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "alibi-avalanche": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a plan for a heist that keeps growing",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "alibi-cracks": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "an alibi two suspects share",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of alibi at 0.826",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "alibi-for-a-bad-dog": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a wanted poster for a pet",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 13 below the cell's top half",
+  "rank": 13.0,
+  "split": null,
+  "stats": null
+ },
+ "ancient-meaning": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a proverb that sounds old and is not",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "animal-job-swap": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the farmyard",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of barnyard-chain-reaction at 0.849",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "appliance-argument": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the kitchen",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "barnyard-chain-reaction": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the farmyard",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "bathroom-boss-rush": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the bathroom",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of flush-chain at 0.849",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "because-of-that": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a story told backwards, each step the cause of the last",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "bedside-chain": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the hospital ward",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of ward-round at 0.824",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "bell-to-bell": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the school corridor",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of locker-room-temperature at 0.857",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "blueprint-brawl": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the building site",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "bug-trap-builders": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "insects and small things",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "bureaucracy-breaks": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a tabloid headline for a dull fact",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of front-page at 0.873",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "cake-stall-chain": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a village fete, from the first gust of wind",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "camp-gear-chain": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a camping trip, from the first dropped tent peg",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of campground-commentary at 0.847",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "camp-map-mixup": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a camping trip, from the first dropped tent peg",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "campfire-chain": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "a campsite",
+   "voice": {
+    "commentary_adj": "world-weary",
+    "explanation_adj": "dry",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "campground-commentary": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a camping trip, from the first dropped tent peg",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "career-cosmic-roast": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a horoscope for a job title",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 15.0,
+  "split": "train",
+  "stats": null
+ },
+ "career-ladder": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a job interview answer that will not stop",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "castle-chain-of-command": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "a medieval castle",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "castle-countermarch": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "a medieval castle",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "castle-siege-inventions": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "a medieval castle",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "ce8a56cb.0": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a village fete, from the first gust of wind",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "lint",
+  "reject": "'good_headlines'",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "ceremony-chain": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a wedding day, from the first hitch",
+   "voice": {
+    "commentary_adj": "theatrical",
+    "explanation_adj": "grandiose",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "chance-of-awkward": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a weather forecast for a mood",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of front-page-feelings at 0.833",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "change-machine": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the launderette",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "charm-chain": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "folklore, monsters and charms",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "chat-court": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the group chat",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "clown-court": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the circus",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 21 below the cell's top half",
+  "rank": 21.0,
+  "split": null,
+  "stats": null
+ },
+ "clue-under-clue": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a treasure hunt with one more clue",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "complaint-letter-copied": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a complaint letter that grows a paragraph a turn",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of complaint-letter-plot-twist at 0.917",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "complaint-letter-plot-twist": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a complaint letter that grows a paragraph a turn",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "complaint-letter-receipts": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a complaint letter that grows a paragraph a turn",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of complaint-letter-plot-twist at 0.842",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "council-chain": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "paperwork and the council",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "counterfeit-wisdom": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a proverb that sounds old and is not",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 12 below the cell's top half",
+  "rank": 12.0,
+  "split": null,
+  "stats": null
+ },
+ "cover-story-kitchen": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "an alibi two suspects share",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of alibi at 0.820",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "cover-story-ladder": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a lie told to a teacher and kept up",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "cover-up-chain": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a conspiracy theory built in a pub",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of pub-proof at 0.817",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "crumb-court": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "insects and small things",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "dare-ladder": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a dare that escalates",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "de6a1760.2": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the post office",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "lint",
+  "reject": "1 validation error for Template\nhost.content_rating\n  Extra inputs are not permitted [type=extra_forbidden, input_value='edgy', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "dear-mum-regarding": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a text from your mum about the news",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 22 below the cell's top half",
+  "rank": 22.0,
+  "split": null,
+  "stats": null
+ },
+ "deck-by-deck": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a cruise ship, from the first spilled drink",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "desk-dispatch": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the open-plan office",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "detour-receipt": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a road trip, one wrong turn at a time",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "dinner-proof": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a family legend retold at dinner",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "doom-by-dash": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a prophecy delivered one line at a time",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "doorstep-dominoes": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a chain of favours between neighbours",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 23 below the cell's top half",
+  "rank": 23.0,
+  "split": null,
+  "stats": null
+ },
+ "double-feature-damage": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a film title and tagline for a small event",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "dragon-on-hold": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a fairy tale opening for a weekday errand",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 21.0,
+  "split": "train",
+  "stats": null
+ },
+ "drain-train": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "plumbing and pipes",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "earlier-than-that": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a story told backwards, each step the cause of the last",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of because-of-that at 0.806",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "emotion-on-the-lam": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a lost and found notice for a feeling",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 19.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "emotional-barometer": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a weather forecast for a mood",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of front-page-feelings at 0.828",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "epitaph-switcheroo": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a gravestone inscription for a habit",
+   "voice": {
+    "commentary_adj": "hype",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "errand-enchantment": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a fairy tale opening for a weekday errand",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of spellcheck-out at 0.807",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "error-date": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "an error message from a household appliance",
+   "voice": {
+    "commentary_adj": "hype",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 21.0,
+  "split": "train",
+  "stats": null
+ },
+ "escape-route-tangle": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a plan for a heist that keeps growing",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of heist-blueprint-bloat at 0.820",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "fake-sommelier": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a wine tasting note for a drink that is not wine",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "family-recipe": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a family legend retold at dinner",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of recipe-rumble at 0.848",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "favour-ledger": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a chain of favours between neighbours",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of the-helping-hand at 0.902",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "fe016b0d.0": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a lie told to a teacher and kept up",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "lint",
+  "reject": "1 validation error for Template\nhost.content_rating\n  Extra inputs are not permitted [type=extra_forbidden, input_value='edgy', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "fete-commentary": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a village fete, from the first gust of wind",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 23 below the cell's top half",
+  "rank": 23.0,
+  "split": null,
+  "stats": null
+ },
+ "field-tool-lock": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the farmyard",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "fine-print-fiasco": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a plausible law for a real country",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 23.0,
+  "split": "train",
+  "stats": null
+ },
+ "fine-print-fiasco-2001-1": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a warning label for a harmless thing",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "finish-the-glass": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a wine tasting note for a drink that is not wine",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of fake-sommelier at 0.877",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "floor-plan-fiction": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "an estate agent listing for a terrible room",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 15 below the cell's top half",
+  "rank": 15.0,
+  "split": null,
+  "stats": null
+ },
+ "flush-chain": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the bathroom",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "fragile-but-honest": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a house move, box by box",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of room-with-a-view at 0.875",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "front-page-feelings": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a weather forecast for a mood",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 15.0,
+  "split": "train",
+  "stats": null
+ },
+ "future-receipt": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a prophecy delivered one line at a time",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 18 below the cell's top half",
+  "rank": 18.0,
+  "split": null,
+  "stats": null
+ },
+ "garden-court": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the back garden",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of pest-patrol at 0.855",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "gate-change": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the airport",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of runway-takeover at 0.868",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "ghost-host-escalator": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a haunted house tour where each room is worse",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of room-service-of-doom at 0.871",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "ghost-trap-trial": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "ghosts and hauntings",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "gift-receipt": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a thank-you note nobody wanted to write",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of the-apology-tour at 0.893",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "gourd-of-honor": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a slogan for a vegetable",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of the-vegetable-case at 0.872",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "grateful-for-nothing": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a thank-you note nobody wanted to write",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of the-apology-tour at 0.880",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "graveyard-shift-cv": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a job advert for a role nobody wants",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "guestbook-gambit": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a wedding day, from the first hitch",
+   "voice": {
+    "commentary_adj": "theatrical",
+    "explanation_adj": "grandiose",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of ceremony-chain at 0.820",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "habit-headstone": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a gravestone inscription for a habit",
+   "voice": {
+    "commentary_adj": "hype",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of epitaph-switcheroo at 0.913",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "hall-pass-chain": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the school corridor",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of locker-room-temperature at 0.808",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "harvest-broadcast": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a slogan for a vegetable",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of the-vegetable-case at 0.863",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "haunted-house-rules": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "ghosts and hauntings",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of haunting-house-call at 0.809",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "haunted-house-tour": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a haunted house tour where each room is worse",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of room-service-of-doom at 0.861",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "haunting-house-call": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "ghosts and hauntings",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "heartbreak-evidence": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a lost and found notice for a feeling",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "heist-blueprint-bloat": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a plan for a heist that keeps growing",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "heroic-housework": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a motivational poster for a chore",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of scrub-story at 0.841",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "hold-music": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a customer service call that escalates",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "home-shopping-fail": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "an error message from a household appliance",
+   "voice": {
+    "commentary_adj": "hype",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 14 below the cell's top half",
+  "rank": 14.0,
+  "split": null,
+  "stats": null
+ },
+ "household-hit": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a band name and debut album for a household sound",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of the-opening-act at 0.870",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "inbox-tetris": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the open-plan office",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 17 below the cell's top half",
+  "rank": 17.0,
+  "split": null,
+  "stats": null
+ },
+ "ingredient-spiral": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a recipe going wrong step by step",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of recipe-rumble at 0.820",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "keeper-lockup": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the zoo after closing",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of after-hours-food-chain at 0.856",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "last-screening-standing": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a film title and tagline for a small event",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of double-feature-damage at 0.886",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "last-words-laundry": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a gravestone inscription for a habit",
+   "voice": {
+    "commentary_adj": "hype",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of epitaph-switcheroo at 0.865",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "late-excuse-auction": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "an excuse for being late, told to the boss",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "late-excuse-chain-of-command": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "an excuse for being late, told to the boss",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of late-excuse-auction at 0.882",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "late-excuse-receipts": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "an excuse for being late, told to the boss",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of late-excuse-auction at 0.829",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "laundry-court": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "an error message from a household appliance",
+   "voice": {
+    "commentary_adj": "hype",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "laundry-legend": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a motivational poster for a chore",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of scrub-story at 0.893",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "legend-ladder": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a family legend retold at dinner",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 23 below the cell's top half",
+  "rank": 23.0,
+  "split": null,
+  "stats": null
+ },
+ "locker-room-temperature": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the school corridor",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 15.0,
+  "split": "train",
+  "stats": null
+ },
+ "loophole-lottery": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a plausible law for a real country",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 17 below the cell's top half",
+  "rank": 17.0,
+  "split": null,
+  "stats": null
+ },
+ "lost-property": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the launderette",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of change-machine at 0.801",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "manual-mishap": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a one-star review of an everyday object",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 22.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "map-lies": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a plausible origin for a real place name",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of signs-of-the-times at 0.886",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "meeting-chain": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the open-plan office",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "menu-mystery": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a menu description for a plain meal",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 22 below the cell's top half",
+  "rank": 22.0,
+  "split": null,
+  "stats": null
+ },
+ "ministerial-meltdown": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a plausible law for a real country",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "mirror-counter": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the bathroom",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of flush-chain at 0.829",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "monster-court": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "folklore, monsters and charms",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "mood-mugshot": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a lost and found notice for a feeling",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 16 below the cell's top half",
+  "rank": 16.0,
+  "split": null,
+  "stats": null
+ },
+ "mum-forwards-this": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a text from your mum about the news",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 22.0,
+  "split": "train",
+  "stats": null
+ },
+ "mum-was-right": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a text from your mum about the news",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of mum-forwards-this at 0.823",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "museum-audio-guide": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a school trip going off the rails",
+   "voice": {
+    "commentary_adj": "theatrical",
+    "explanation_adj": "grandiose",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "name-game": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a plausible origin for a real place name",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of signs-of-the-times at 0.901",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "nocturnal-nonsense": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the zoo after closing",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of after-hours-food-chain at 0.859",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "object-obituary": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a one-star review of an everyday object",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 19.0,
+  "split": "train",
+  "stats": null
+ },
+ "office-chain": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a job interview answer that will not stop",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "office-omen": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a horoscope for a job title",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 14 below the cell's top half",
+  "rank": 14.0,
+  "split": null,
+  "stats": null
+ },
+ "omen-chain": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a prophecy delivered one line at a time",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of doom-by-dash at 0.817",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "ordinary-object-witness": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a tabloid headline for a dull fact",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of front-page at 0.849",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "orientation-day": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a job advert for a role nobody wants",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 21 below the cell's top half",
+  "rank": 21.0,
+  "split": null,
+  "stats": null
+ },
+ "pairing-disaster": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a wine tasting note for a drink that is not wine",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of fake-sommelier at 0.847",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "panic-potluck": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a recipe going wrong step by step",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of recipe-rumble at 0.808",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "paper-trail": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "paperwork and the council",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "paper-trail-fe01-1": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a lie told to a teacher and kept up",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "parent-teacher-nightmare": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a school report comment for an adult",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of remarkable-effort at 0.852",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "passenger-of-honor": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a road trip, one wrong turn at a time",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of detour-receipt at 0.888",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "permission-slip-catastrophe": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a school trip going off the rails",
+   "voice": {
+    "commentary_adj": "theatrical",
+    "explanation_adj": "grandiose",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "pest-patrol": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the back garden",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "pet-crime-scene-caption": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a wanted poster for a pet",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "pipe-dreams": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "plumbing and pipes",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of pressure-court at 0.861",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "playground-takeover": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the playground",
+   "voice": {
+    "commentary_adj": "world-weary",
+    "explanation_adj": "dry",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of tag-trap at 0.848",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "pressure-court": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "plumbing and pipes",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "progress-report-from-hell": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a school report comment for an adult",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 21 below the cell's top half",
+  "rank": 21.0,
+  "split": null,
+  "stats": null
+ },
+ "promotion-prophecy": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a horoscope for a job title",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of career-cosmic-roast at 0.861",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "prop-department": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the theatre",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of prop-panic at 0.837",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "prop-panic": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the circus",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "pub-prediction": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a conspiracy theory built in a pub",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of pub-proof at 0.807",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "pub-proof": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a conspiracy theory built in a pub",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "queue-jumpers": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the high street",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 22.0,
+  "split": "train",
+  "stats": null
+ },
+ "recess-rescue": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the playground",
+   "voice": {
+    "commentary_adj": "world-weary",
+    "explanation_adj": "dry",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 15 below the cell's top half",
+  "rank": 15.0,
+  "split": null,
+  "stats": null
+ },
+ "recipe-rumble": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a dare that escalates",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "red-means-stop": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the road and the traffic",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "reference-check-from-hell": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a job advert for a role nobody wants",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 22.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "remarkable-effort": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a school report comment for an adult",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "repair-or-ruin": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the toolbox and the shed",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of shed-law at 0.827",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "resolution-habit-court": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a new year's resolution collapsing",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "resolution-press-conference": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a new year's resolution collapsing",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "resolution-terms-and-conditions": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a new year's resolution collapsing",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 15 below the cell's top half",
+  "rank": 15.0,
+  "split": null,
+  "stats": null
+ },
+ "return-to-sender": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the post office",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 17.0,
+  "split": "train",
+  "stats": null
+ },
+ "right-of-way": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the road and the traffic",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of red-means-stop at 0.835",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "ringmaster-rebuttal": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the circus",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "ritual-of-two": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a proverb that sounds old and is not",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 21.0,
+  "split": "train",
+  "stats": null
+ },
+ "road-hazard": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the road and the traffic",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "room-service-of-doom": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a haunted house tour where each room is worse",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "room-tone": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a band name and debut album for a household sound",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of the-opening-act at 0.933",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "room-with-a-view": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a house move, box by box",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "run-on-interview": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a job interview answer that will not stop",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 19 below the cell's top half",
+  "rank": 19.0,
+  "split": null,
+  "stats": null
+ },
+ "runway-takeover": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the airport",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "scrub-story": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a motivational poster for a chore",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 13.0,
+  "split": "train",
+  "stats": null
+ },
+ "security-check": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the airport",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "serve-at-your-own-risk": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a recipe going wrong step by step",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of recipe-rumble at 0.813",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "shed-law": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the toolbox and the shed",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "shed-lockdown": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the back garden",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of pest-patrol at 0.804",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "shop-window-shift": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the high street",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 18 below the cell's top half",
+  "rank": 18.0,
+  "split": null,
+  "stats": null
+ },
+ "shoreline-stack": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the sea and the shore",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "side-effect-society": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a warning label for a harmless thing",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of fine-print-fiasco-2001-1 at 0.817",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "signs-of-the-times": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a plausible origin for a real place name",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 15.0,
+  "split": "train",
+  "stats": null
+ },
+ "site-sabotage": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the building site",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 19 below the cell's top half",
+  "rank": 19.0,
+  "split": null,
+  "stats": null
+ },
+ "sorting-room": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the post office",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of return-to-sender at 0.877",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "spellcheck-out": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a fairy tale opening for a weekday errand",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 17 below the cell's top half",
+  "rank": 17.0,
+  "split": null,
+  "stats": null
+ },
+ "spill-to-scandal": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a cruise ship, from the first spilled drink",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of deck-by-deck at 0.853",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "spin-cycle": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the launderette",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of change-machine at 0.825",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "stage-left-stage-right": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the theatre",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "stamp-standoff": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "paperwork and the council",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "supervisor-please": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a customer service call that escalates",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of hold-music at 0.930",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "table-plan-dominoes": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a wedding day, from the first hitch",
+   "voice": {
+    "commentary_adj": "theatrical",
+    "explanation_adj": "grandiose",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of ceremony-chain at 0.813",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "tag-trap": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the playground",
+   "voice": {
+    "commentary_adj": "world-weary",
+    "explanation_adj": "dry",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "tale-eater": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "folklore, monsters and charms",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of monster-court at 0.878",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "taste-testimony": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a menu description for a plain meal",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of waiter-alibi at 0.812",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "tent-trouble": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "a campsite",
+   "voice": {
+    "commentary_adj": "world-weary",
+    "explanation_adj": "dry",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of campfire-chain at 0.862",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "the-apology-tour": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a thank-you note nobody wanted to write",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 22.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "the-box-that-explains-itself": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a treasure hunt with one more clue",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of clue-under-clue at 0.813",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "the-cruise-excuse": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a cruise ship, from the first spilled drink",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "the-helping-hand": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a chain of favours between neighbours",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "the-hostile-map": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a treasure hunt with one more clue",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of clue-under-clue at 0.867",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "the-last-line": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the theatre",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "the-leak-line": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a small mishap at home that gets worse",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "the-missing-reason": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a story told backwards, each step the cause of the last",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of because-of-that at 0.848",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "the-opening-act": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a band name and debut album for a household sound",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 15.0,
+  "split": "train",
+  "stats": null
+ },
+ "the-stain-chain": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a small mishap at home that gets worse",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "the-vegetable-case": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a slogan for a vegetable",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 22.0,
+  "split": "train",
+  "stats": null
+ },
+ "the-wrong-button": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a small mishap at home that gets worse",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of domino at 0.847",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "ticket-escalation": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a customer service call that escalates",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "flat",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of hold-music at 0.832",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "tide-turners": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the sea and the shore",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of shoreline-stack at 0.803",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "till-the-bitter-end": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the high street",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "tiny-quest": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "a dare that escalates",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 21 below the cell's top half",
+  "rank": 21.0,
+  "split": null,
+  "stats": null
+ },
+ "tiny-titans": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "insects and small things",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "tiny-trial": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a one-star review of an everyday object",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "family",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 16 below the cell's top half",
+  "rank": 16.0,
+  "split": null,
+  "stats": null
+ },
+ "tiny-truth-scandal": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a tabloid headline for a dull fact",
+   "voice": {
+    "commentary_adj": "ceremonial",
+    "explanation_adj": "clinical",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of front-page at 0.860",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "toolbox-takedown": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the building site",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "playful",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "toolbox-tug": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the toolbox and the shed",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of toolbox-takedown at 0.857",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "townwide-apology": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "an animal loose in a town",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "trail-mix-up": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "a campsite",
+   "voice": {
+    "commentary_adj": "world-weary",
+    "explanation_adj": "dry",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "triage-takedown": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the hospital ward",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of ward-round at 0.885",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "two-word-alibi": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a plausible definition for a real obscure word",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 16.0,
+  "split": "train",
+  "stats": null
+ },
+ "utensil-green-flags": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a dating profile for a kitchen utensil",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 13 below the cell's top half",
+  "rank": 13.0,
+  "split": null,
+  "stats": null
+ },
+ "utensil-red-flag": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a dating profile for a kitchen utensil",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 15.0,
+  "split": "train",
+  "stats": null
+ },
+ "utensil-swipe-left": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a dating profile for a kitchen utensil",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of utensil-green-flags at 0.801",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "viewing-withheld": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "an estate agent listing for a terrible room",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 22.0,
+  "split": "heldout",
+  "stats": null
+ },
+ "waiter-alibi": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a menu description for a plain meal",
+   "voice": {
+    "commentary_adj": "witty",
+    "explanation_adj": "snarky",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "mild",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 22.0,
+  "split": "train",
+  "stats": null
+ },
+ "wanted-poster-glow-up": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a wanted poster for a pet",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 19.0,
+  "split": "train",
+  "stats": null
+ },
+ "ward-round": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the hospital ward",
+   "voice": {
+    "commentary_adj": "menacing",
+    "explanation_adj": "clinical",
+    "bite": "savage",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "mild",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "wildlife-court": {
+  "klass": "build",
+  "parent": "alibi",
+  "cell": {
+   "klass": "build",
+   "parent": "alibi",
+   "theme": "an animal loose in a town",
+   "voice": {
+    "commentary_adj": "deadpan",
+    "explanation_adj": "plain",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 24 below the cell's top half",
+  "rank": 24.0,
+  "split": null,
+  "stats": null
+ },
+ "witness-switch": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "an alibi two suspects share",
+   "voice": {
+    "commentary_adj": "chaotic",
+    "explanation_adj": "hype",
+    "bite": "savage",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    3,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of alibi at 0.825",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "word-gone-wrong": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a plausible definition for a real obscure word",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": "rank 14 below the cell's top half",
+  "rank": 14.0,
+  "split": null,
+  "stats": null
+ },
+ "word-in-the-wild": {
+  "klass": "showcase",
+  "parent": "front-page",
+  "cell": {
+   "klass": "showcase",
+   "parent": "front-page",
+   "theme": "a plausible definition for a real obscure word",
+   "voice": {
+    "commentary_adj": "affectionate",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    4,
+    3,
+    2
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 21.0,
+  "split": "train",
+  "stats": null
+ },
+ "wreck-and-rescue": {
+  "klass": "counter",
+  "parent": "then-i-am",
+  "cell": {
+   "klass": "counter",
+   "parent": "then-i-am",
+   "theme": "the sea and the shore",
+   "voice": {
+    "commentary_adj": "grandiose",
+    "explanation_adj": "theatrical",
+    "bite": "sharp",
+    "ruling_generosity": "merciless"
+   },
+   "content_rating": "family",
+   "weights": [
+    6,
+    3,
+    1
+   ]
+  },
+  "stage": "rank",
+  "reject": null,
+  "rank": 24.0,
+  "split": "train",
+  "stats": null
+ },
+ "wrong-trailer": {
+  "klass": "showcase",
+  "parent": "word-for-word",
+  "cell": {
+   "klass": "showcase",
+   "parent": "word-for-word",
+   "theme": "a film title and tagline for a small event",
+   "voice": {
+    "commentary_adj": "dry",
+    "explanation_adj": "exact",
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of double-feature-damage at 0.886",
+  "rank": null,
+  "split": null,
+  "stats": null
+ },
+ "wrong-turn-witness": {
+  "klass": "build",
+  "parent": "domino",
+  "cell": {
+   "klass": "build",
+   "parent": "domino",
+   "theme": "a road trip, one wrong turn at a time",
+   "voice": {
+    "commentary_adj": "earnest",
+    "explanation_adj": "gentle",
+    "bite": "playful",
+    "ruling_generosity": "merciful"
+   },
+   "content_rating": "edgy",
+   "weights": [
+    5,
+    4,
+    2
+   ]
+  },
+  "stage": "dedup",
+  "reject": "dup of detour-receipt at 0.891",
+  "rank": null,
+  "split": null,
+  "stats": null
+ }
+}

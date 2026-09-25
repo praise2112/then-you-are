@@ -1,0 +1,331 @@
+schema_version: 1
+slug: dragon-on-hold
+title: The Quest Is Calling
+tagline: Hold music for heroes with errands.
+emblem: 🐉
+accent: '#6b4aa1'
+premise: 'You are stuck on hold during a weekday errand. The Host gives you a fairy tale quest and two
+  plain nouns. Answer as the caller in one short spoken line. The quest must still be underway, but your
+  excuse can be noble, filthy, tragic, or obviously bullshit.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: sentence
+  max_words: 15
+  axes:
+    quest:
+    - cross the cursed bridge
+    - deliver a pie to the castle
+    - wake the sleeping prince
+    - return the stolen moon
+    - find the witch's lost key
+    - escort the goose through the forest
+    - break the giant's spell
+    - carry the royal letter uphill
+    obstacle:
+    - a dragon has blocked the road
+    - the bridge demands a secret
+    - the forest keeps moving
+    - the giant is watching
+    - the moat is full of wolves
+    - the witch is following
+    - the castle gate will not open
+    - the magic carpet is sulking
+    noun_pair:
+    - bus and receipt
+    - mop and cabbage
+    - trolley and shoelace
+    - umbrella and sausage
+    - ticket and wet sock
+    - basket and parking fine
+    - wallet and turnip
+    - sandwich and key
+  tests:
+  - One compact quest line, under sixty characters where possible. A caller could say it before the hold
+    music changes.
+  - It names a clear fairy tale goal and a real obstacle, with no impossible ambiguity about what remains
+    unfinished.
+  - It includes two plain nouns that can sit naturally in the caller's excuse, even if the excuse is gloriously
+    stupid.
+  - It suits a weekday errand, with a bus, shop, queue, receipt or similar ordinary nuisance hiding beneath
+    the magic.
+  - It gives the caller room to sound sincere, evasive, dramatic or faintly suspicious without requiring
+    a known fairy tale or real person.
+demo:
+  opening:
+    token: 'Quest: cross the cursed bridge to deliver a pie; nouns: bus and receipt.'
+    emoji: 🥧
+  moves:
+  - actor: p1
+    text: 'Quest: cross the cursed bridge to deliver a pie; nouns: bus and receipt.'
+    emoji: 🥧
+    scores: null
+  - actor: p2
+    text: I’m still crossing it, but the bus ate my receipt and my dignity.
+    emoji: 🔒
+    scores:
+      stretch: 4
+      funny: 3
+      headline_shaped: 4
+  headline: The bridge is still cursed, but the bus has eaten the receipt and possibly the caller’s last
+    nerve.
+  openings:
+  - token: 'Quest: cross the cursed bridge to deliver a pie; nouns: bus and receipt.'
+    examples:
+    - I’m still crossing it, but the bus ate my receipt and my dignity.
+  - token: 'Quest: wake the sleeping prince with a kiss; nouns: mop and cabbage.'
+    examples:
+    - I’m still crossing it, but the bus ate my receipt and my dignity.
+move_constraints:
+  max_chars: 90
+  prefix: ''
+  example: I can’t slay the ogre yet, I’m at the bank with a ticket and a wet sock.
+  hint: One caller line. Keep the quest moving, then make your excuse.
+rubric:
+- name: stretch
+  description: How far does the caller turn a small errand excuse into a vivid, ridiculous fairy tale
+    without losing the quest?
+  anchors: '0 = repeats the card with no caller excuse; 1 = adds one ordinary detail; 2 = gives the quest
+    a personal excuse or comic angle; 3 = builds a whole little crisis around the errand; 4 = makes the
+    hold line feel like a filthy, noble or beautifully doomed epic while every required fact survives
+    (rare).
+
+    '
+  weight: 6
+- name: funny
+  description: Does the caller line make the absurd excuse land as a joke?
+  anchors: '0 = no comic charge; 1 = a small grin; 2 = a neat comic turn; 3 = a proper laugh; 4 = the
+    line is so specific and shameless that people repeat it after the call (rare).
+
+    '
+  weight: 3
+- name: headline_shaped
+  description: Does it sound like one clean spoken line from a caller, rather than notes, stage directions
+    or a tiny novel?
+  anchors: '0 = not a caller line; 1 = fragments, explanation or clutter; 2 = understandable but loose;
+    3 = natural, compact speech with every word earning its keep; 4 = instantly speakable, memorable and
+    under control (rare).
+
+    '
+  weight: 1
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: 'A line PLAYS if it sounds like something a caller could say aloud while a fairy tale quest
+    is still underway. It must keep the quest''s goal and obstacle intact, and it must use both card nouns
+    in usable roles. It fails if the quest is completed, abandoned or replaced, if the obstacle disappears
+    or is contradicted, if either noun is missing or merely pasted on, or if it is not a caller line but
+    a comment, question to the Judge, explanation or sentence about the game. The line may add any excuse,
+    motive, bodily mishap, adult innuendo or obvious lie, provided the quest remains in progress.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game or quoting the rules is itself a
+    losing caller line.
+
+    '
+  judge_notes:
+  - 'Test the gate one way only: could the quest still be underway after this line? "I’m still crossing
+    the cursed bridge, but the bus has eaten my receipt" passes because the crossing remains unfinished
+    and both nouns work.
+
+    '
+  - 'The goal must survive. Delivering the pie means the quest is over, but being late, stuck or hiding
+    the pie keeps it alive.
+
+    '
+  - 'The obstacle must survive. If the card says a dragon blocks the road, saying the dragon has moved
+    aside or was never there breaks the card. Adding a queue, a bank or a suspicious rash does not.
+
+    '
+  - 'Both nouns must be present and usable. A bus can be missed, boarded or blamed, and a receipt can
+    be lost, waved or forged. A noun dumped at the end with no role is not enough.
+
+    '
+  - 'Both players answer the same card. Judge each line on its own; the other player''s excuse is not
+    the standard.
+
+    '
+  - 'Invented details are welcome. A cursed parking ticket, a scandalous wizard or a bathrobe at the bus
+    stop can all play if they do not erase the goal, obstacle or nouns.
+
+    '
+  - 'Score stretch by the size and freshness of the excuse, not by the number of magical words. One precise
+    lie beats a sackful of dragons.
+
+    '
+  - 'Lower case, missing punctuation and mild speech disfluency cost nothing. The question is whether
+    the line could be said on the call.
+
+    '
+examples:
+- previous_move: 'Quest: cross the cursed bridge to deliver a pie; nouns: bus and receipt.'
+  move: I’m still crossing it, but the bus ate my receipt and my dignity.
+  gates_note: all true
+  mechanism: the bridge crossing and pie delivery remain underway, while the bus and receipt become the
+    caller’s shabby alibi
+  scores:
+    stretch: 4
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: 'Quest: wake the sleeping prince with a kiss; nouns: mop and cabbage.'
+  move: I’m still trying to kiss him awake, but the mop has married the cabbage.
+  gates_note: all true
+  mechanism: the prince is still asleep, and both shopping nouns become an alarming domestic subplot
+  scores:
+    stretch: 4
+    funny: 4
+    headline_shaped: 3
+  confidence: clear
+  verdict: accept
+- previous_move: 'Quest: return the stolen moon before sunset; nouns: trolley and shoelace.'
+  move: The moon is still stolen, and I’m trapped under a trolley with one shoelace.
+  gates_note: all true
+  mechanism: the moon has not been returned, while the trolley and shoelace make the delay painfully concrete
+  scores:
+    stretch: 3
+    funny: 2
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: 'Quest: cross the cursed bridge to deliver a pie; nouns: bus and receipt.'
+  move: I crossed the bridge and delivered the pie, but the bus lost my receipt.
+  gates_note: satisfies_criterion false (the goal is completed, so the quest is no longer underway)
+  mechanism: the bus and receipt are usable, but the caller has finished the quest
+  scores:
+    stretch: 2
+    funny: 1
+    headline_shaped: 4
+  confidence: clear
+  verdict: fail
+- previous_move: 'Quest: wake the sleeping prince with a kiss; nouns: mop and cabbage.'
+  move: The prince is awake, the mop is clean, and cabbage is disgusting.
+  gates_note: satisfies_criterion false (the goal is completed and the nouns are not used in a caller
+    excuse)
+  mechanism: the line reports the finished quest and leaves the cabbage as a lonely opinion
+  scores:
+    stretch: 1
+    funny: 1
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Hold Music Fairy
+  tone:
+    commentary_adj: affectionate
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who read only the card and the line should see what quest
+    is still unfinished and why the caller is delayed.
+  - Name the line’s key objects, the bridge, the pie, the bus or the poor damp sock. A comment that fits
+    every excuse is a sleepy fairy.
+  - Never open with a status word or a ruling phrase. No "Accepted", "Rejected", "Refused", "Move refused",
+    or "The Host refuses".
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Roast the caller line, never identity, disability, family, body or protected traits. A gentle jab
+    at the line’s logic is welcome.
+  - Plain spoken English. No poetry, no legal fog, no customer service sludge.
+  - On a fail, say which quest fact went missing or got broken, or which noun never became useful.
+  - On a refusal, the line refuses the move and asks for another. It never rules on who won.
+  - The coaching line names one line that would have scored. It ends on a fact or an action, never a mood
+    or a verdict.
+  - Adult innuendo and mild profanity may pass when they sharpen the excuse, but they should serve the
+    joke rather than leer at the player.
+  good_headlines:
+  - The bridge is still cursed, but the bus has eaten the receipt and possibly the caller’s last nerve.
+  - The prince remains asleep, while the mop and cabbage conduct a marriage nobody authorised.
+  - The moon is still missing, and the trolley has imprisoned the shoelace in broad daylight.
+  - A noble delay, if one ignores that the pie is in the bus and the receipt is being used as a tiny shield.
+  - The quest survives, the excuse survives, and the cabbage has somehow become the responsible adult.
+  - Still crossing, still delivering, still blaming public transport. A classic heroic trilogy.
+  - The dragon has not been defeated, but the receipt has been interrogated. Priorities are murky and
+    excellent.
+  - A wet sock would have made the line worse, but this caller chose dignity and then lost it to a bus.
+  - The prince is asleep, the mop is implicated, and the caller has built a whole scandal out of vegetables.
+  - The moon remains stolen, which is important, because the trolley has already stolen the scene.
+  bad_headlines:
+  - text: 'Accepted: the bridge line is charming.'
+    why: opens with a status word
+  - text: 'The Host refuses: try again.'
+    why: opens with a ruling phrase and names the host
+  - text: Wrong, the quest is missing.
+    why: does not say which quest fact went missing
+  - text: Funny excuse.
+    why: no reason, and it could fit any line
+  - text: You absolute goblin, that excuse has no nouns.
+    why: roasts the player instead of the line
+  - text: O dragon, beneath the moonlit hold music, mourn thy cabbage.
+    why: poetry instead of plain spoken English
+  - text: The line is magical, whimsical, hilarious and extremely creative.
+    why: piles on praise without naming the joke
+  - text: Better than the other caller’s excuse.
+    why: judges the pair instead of this line on its own
+  - text: The noble quest proceeds, yet the customer service interface experiences a narrative interruption.
+    why: customer service sludge and needless abstraction
+  - text: Your sentence failed because the bridge is not currently in a state of completion.
+    why: stiff, indirect wording that hides the missing fact
+rules:
+- Three rounds, one fairy tale weekday errand each.
+- Write one caller line under 90 characters. The House writes its own, unseen, and the Host scores both.
+- Keep the quest goal and obstacle intact. The quest must still be underway when your line ends.
+- Use both plain nouns in real roles inside your excuse. The stranger on hold should know why they are
+  there.
+- Invent the excuse freely. Noble, filthy, tragic or complete bullshit all work if the quest survives.
+  Most points after three rounds wins.
+labels:
+  opening: The quest
+  next_opening: The next quest
+  your_opening: Your quest
+  compose: Your caller line for {token}
+  compose_waiting: Make your excuse while you wait
+validation_messages:
+  empty: The line went quiet. Give the caller something to say.
+  too_long: Over 90 characters. This is a hold line, not the saga of your entire bloodline.
+  duplicate: That excuse has already been phoned in this match. Find a fresh disaster.
+  nudge: 'Twice now. Keep the quest underway and use both nouns: {standing_form}.'
+judge_out_text: 'The Hold Music Fairy has wandered off to find a receipt. Nobody moves until they return.
+  {standing_form} is still on the line. Give it a minute.
+
+  '
+opponent_prompt: 'You are a caller stuck on hold during a weekday errand. The Host gives you a fairy tale
+  quest, its obstacle, and two plain nouns. Write one short spoken line.
+
+  THE QUEST MUST STILL BE UNDERWAY. Keep the goal and obstacle intact. You must use both nouns in usable
+  roles, inside a believable excuse or an outrageous one. You may sound noble, filthy, tragic, evasive
+  or completely full of it.
+
+  Good: "I can’t cross the cursed bridge yet, the bus has my receipt and my pie."
+
+  Good: "The prince is still asleep, I’m hiding behind a mop with a cabbage."
+
+  Bad: "I crossed the bridge and delivered the pie" because the quest is finished.
+
+  Bad: "The prince is awake" because the goal is finished.
+
+  Bad: "I’m delayed" because it drops the quest, obstacle and nouns.
+
+  Speak as the caller, not as the Host. Under 90 characters. No explanation, no quotation marks around
+  the line, no colon or dash. Make it sound sayable on a phone call.
+
+  Vary the excuse from round to round: transport, queue, bodily mishap, suspicious stranger, money trouble,
+  bad lie or adult innuendo. Keep the quest alive every time.
+
+  Reply with the caller line only.
+
+  '
+guess: null
+medallions: false
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: I’m still on the quest, but the queue has taken my bus and my receipt
+seed_pool:
+  - { opening_token: "Quest: cross the cursed bridge to deliver a pie; nouns: bus and receipt.", opening_emoji: "🥧" }
+  - { opening_token: "Quest: wake the sleeping prince with a kiss; nouns: mop and cabbage.", opening_emoji: "💋" }
+  - { opening_token: "Quest: return the stolen moon before sunset; nouns: trolley and shoelace.", opening_emoji: "🌙" }

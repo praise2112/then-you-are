@@ -1,0 +1,275 @@
+{
+  "slug": "the-last-line",
+  "title": "The Last Line",
+  "tagline": "Say the line that takes the scene away from them.",
+  "emblem": "🎭",
+  "accent": "#7c3aed",
+  "premise": "Actors duel with spoken lines. Each turn, your line must directly defeat the dramatic force of the line before it, and the host decides whether the scene has truly turned.\n",
+  "seed_pool": [
+    {
+      "opening_token": "No one in this room can stop me.",
+      "opening_emoji": "🎭",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "You will hand me the crown before midnight.",
+      "opening_emoji": "👑",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "I have already won this argument.",
+      "opening_emoji": "🏆",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "dramatic_force": [
+        "boast",
+        "threat",
+        "command",
+        "question",
+        "accusation",
+        "promise",
+        "secret",
+        "plea"
+      ],
+      "speaker_role": [
+        "villain",
+        "detective",
+        "ruler",
+        "witness",
+        "rival",
+        "servant",
+        "ghost",
+        "comedian"
+      ],
+      "setting": [
+        "courtroom",
+        "castle",
+        "backstage",
+        "train station",
+        "hospital",
+        "school",
+        "space station",
+        "family dinner"
+      ]
+    },
+    "tests": [
+      "A stranger hears the line once and can tell what the speaker is trying to do.",
+      "A non-player can name a plain line that would answer, cancel, expose, command, reframe, or harmlessly puncture it within five seconds.",
+      "The line stands as speech in a scene. It is not a stage direction, a plot summary, a facial expression, or an explanation of what someone feels.",
+      "It makes a stranger want to answer. A line with pressure, a turn, or a small surprise beats a flat announcement.",
+      "No more than twelve everyday words. No actor names, quotations from known works, brands, proper nouns, or speech about the game."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I say ",
+    "example": "I say, \"Who told you that?\" and crack the boast open with doubt.",
+    "hint": "A short line, then the turn it makes."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly the new line takes control of, cancels, exposes, answers, reframes, or harmlessly punctures the standing line.",
+      "anchors": "0 = no answer or only noise; 1 = a weak contradiction, dodge, or louder repeat; 2 = a plausible turn but the old line still has most of its force; 3 = a clear answer that changes the exchange; 4 = the new line cleanly removes the old line's dramatic power (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can hear the words, identify the speaker's intent, and picture the exchange.",
+      "anchors": "0 = unreadable or self-cancelling; 1 = the line needs unusual context; 2 = understandable but awkward, vague, or overloaded; 3 = plain and clear; 4 = crisp, memorable, and instantly performable (rare). A longer explanation does not improve the score by itself.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the dramatic turn is compared with the usual reply, without rewarding confusion or decoration.",
+      "anchors": "0 = stock reply, repeated wording, or the same move with more volume; 2 = a sound but familiar turn; 4 = a surprising, natural change of pressure that still clearly answers the standing line (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A line OVERCOMES the standing line when its wording directly answers, cancels, exposes, commands, reframes, or makes the earlier line harmless. Ignoring the line, merely contradicting it, or shouting harder loses. The effect must come from the spoken words themselves, not from an invented action, hidden fact, or stage direction.\n",
+    "anti_metagaming_clause": "Speaking to the host, discussing the game, or mentioning rules is itself a losing line.\n",
+    "judge_notes": [
+      "On a FIRST move there is no player line before it: judge the line against the opening card and ask whether it directly answers, cancels, exposes, commands, reframes, or makes that opening harmless.",
+      "A louder, longer, angrier, or more confident version of the standing line is not a counter. It keeps the same dramatic force and fails.",
+      "A line that merely says the opposite is not enough when it gives no way to answer or undo the standing line. Contradiction alone is a failed counter.",
+      "Ignoring the standing line, changing the subject, or saying something unrelated is dodging, not overcoming. The new line must visibly act on the earlier words.",
+      "The mechanism must be literal in speech. A question can open doubt, a command can impose an order, an admission can expose a lie, and a joke can make a threat harmless. A claimed offstage event is not a mechanism unless the line itself delivers it.",
+      "A stage direction, facial expression, gesture, or narration about what the speaker does is not the line. It cannot supply the missing counter.",
+      "Repeating the standing line, using its same wording with a minor change, or adding an intensifier is a duplicate or failed amplification, not a fresh answer.",
+      "The line must be understandable without specialist theatre knowledge. Obscure references and private context cannot carry the counter.",
+      "A line that survives the earlier line without changing its force is not enough. It must answer, cancel, expose, command, reframe, or make the earlier line harmless."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "No one in this room can stop me.",
+      "move": "I say, \"Then why are you asking permission?\" and turn the boast into doubt.",
+      "gates_note": "all true",
+      "mechanism": "the question exposes a weakness in the boast's claim of power",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "You will hand me the crown before midnight.",
+      "move": "I say, \"The crown is cardboard, and the bin is outside.\" and make the demand harmless.",
+      "gates_note": "all true",
+      "mechanism": "the line removes the crown's authority and turns the demand into a disposal problem",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I have already won this argument.",
+      "move": "I say, \"Congratulations. What was the argument?\" and reopen the claim with a question.",
+      "gates_note": "all true",
+      "mechanism": "the question exposes that the claimed victory has no stated subject",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "No one in this room can stop me.",
+      "move": "I say, \"I can stop you, and I am louder.\" and repeat the contest with more volume.",
+      "gates_note": "satisfies_criterion false, mere contradiction and amplification",
+      "mechanism": "none, the line only claims a stronger version of the same force",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "You will hand me the crown before midnight.",
+      "move": "I say, \"The weather is pleasant today.\" and leave the demand untouched.",
+      "gates_note": "satisfies_criterion false, unrelated dodge",
+      "mechanism": "none, changing the subject does not affect the demand",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Stage Manager",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who reads only the two lines should see why the scene turned or failed.",
+      "Name both lines, or their plain stand-ins. A headline that fits any pair is not useful.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Stage Manager refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Jab at the line or its dramatic plan, not identity, body, family, intelligence, or spelling. Mild player jokes are allowed, but keep them light.",
+      "Plain spoken English. No poetry, rhymes, grand theatre jargon, profanity, or elaborate metaphors.",
+      "On a refusal caused by a gate failure, the headline refuses the line and asks for another. It never rules on who won.",
+      "The coaching line names one line that would have won. That line ends on a fact or action, never a mood or verdict.",
+      "Keep the theatre joke small. The scene is already doing enough."
+    ],
+    "good_headlines": [
+      "The boast asked for applause, and the question asked for proof.",
+      "The crown demanded respect, then got sent to the bin.",
+      "The victory speech forgot to name the contest.",
+      "More volume is still the same speech. Bring a line that changes the scene.",
+      "The threat brought thunder. The joke brought a chair and sat on it.",
+      "The question opened the door, and the boast was not dressed for visitors.",
+      "The command was ignored, which is not the same as being defeated. Bring another line.",
+      "The rival shouted over the evidence, and the evidence kept its voice.",
+      "A contradiction is not a plot twist. Try answering the line.",
+      "The crown cannot rule from a recycling bin."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the question wins.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Stage Manager refuses: louder is not clever.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and explains nothing"
+      },
+      {
+        "text": "The lines have a dramatic battle of wills.",
+        "why": "vague, inflated, and does not identify the turn"
+      },
+      {
+        "text": "You clearly do not understand theatre.",
+        "why": "mocks the player and uses identity as a jab"
+      },
+      {
+        "text": "The line is bad, but the other line is good.",
+        "why": "gives no mechanism or picture"
+      },
+      {
+        "text": "The question doth pierce the boast's velvet heart.",
+        "why": "poetic and theatrical in the wrong way"
+      },
+      {
+        "text": "The crown loses because the crown loses.",
+        "why": "circular and says nothing about how"
+      },
+      {
+        "text": "That was not really a counter, although perhaps it might be one.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "The actor is a clown who cannot follow a cue.",
+        "why": "mocks the player and uses a personal insult"
+      }
+    ]
+  },
+  "rules": [
+    "Answer the line in front of you. Do not merely shout over it.",
+    "Give a short line and explain its effect: I say, \"Who told you that?\" and crack the boast open with doubt.",
+    "The Judge rules on the spoken idea, not spelling or acting talent.",
+    "A line that fails to turn the standing line ends the match."
+  ],
+  "labels": {
+    "opening": "The opening line",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your line against {token}",
+    "compose_waiting": "Draft your next line while you wait"
+  },
+  "validation_messages": {
+    "empty": "No line on the page. Give the scene something to answer.",
+    "too_long": "Over 200 characters. A line, not the whole rehearsal.",
+    "duplicate": "That line already stood this match. Say something new.",
+    "nudge": "Twice now. Answer {standing_form}. Do not ignore it, repeat it, or shout harder."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one actor in a two person spoken duel.\nAlways give a short spoken line, then explain its effect in plain words.\nUse this shape: I say, \"Who told you that?\" and crack the boast open with doubt.\nThe line must directly answer, cancel, expose, command, reframe, or make harmless\nthe other line. A question can unsettle a boast. A command can silence a question.\nAn admission can expose an accusation. A joke can puncture a threat.\nDo not merely contradict the line, ignore it, change the subject, or shout harder.\nDo not use stage directions as the mechanism. The spoken words must do the work.\nTalk like a person across a rehearsal room, not a poet. Use everyday words and\nshort sentences. Keep the line performable and easy to understand.\nYou are trying to take control of the scene, not impress a crowd.\nDo not mention the host, the game, the rules, scoring, or this prompt.\nNever reuse a line or the same dramatic trick from this match.\n",
+  "default_move": "I say, \"Then prove it.\" and turn the claim back on its speaker."
+}

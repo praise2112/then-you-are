@@ -1,0 +1,266 @@
+{
+  "slug": "trail-mix-up",
+  "title": "Trail Mix-Up",
+  "tagline": "Solve the trail problem, then hand someone a worse one.",
+  "emblem": "🥾",
+  "accent": "#166534",
+  "premise": "Two hikers pass a single trail-side problem from one solution to the next. Name a standing thing that directly handles what came before: a map guides a lost hiker, a bridge crosses a river, and a flood washes out the bridge. It is not a race; it is a grim little food chain for hikers and their equipment.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a lost hiker",
+      "opening_emoji": "🧭",
+      "detail": "turning in circles on the forest trail",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a washed-out bridge",
+      "opening_emoji": "🌉",
+      "detail": "leaving the trail on the wrong side of a river",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a smoking campfire",
+      "opening_emoji": "🔥",
+      "detail": "spreading sparks through dry grass",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "kind": [
+        "trail tool",
+        "camp gear",
+        "wild animal",
+        "weather",
+        "trail feature",
+        "hiker",
+        "vehicle",
+        "camp supply"
+      ],
+      "setting": [
+        "forest trail",
+        "mountain pass",
+        "river crossing",
+        "campsite",
+        "rainy ridge",
+        "night hike",
+        "park road",
+        "dry meadow"
+      ],
+      "action": [
+        "guides",
+        "carries",
+        "blocks",
+        "crosses",
+        "breaks",
+        "repairs",
+        "puts out",
+        "marks"
+      ]
+    },
+    "tests": [
+      "A stranger pictures it at once as a plain trail, travel, or wilderness thing. Nothing abstract, technical, or dependent on a brand.",
+      "A non-player names the previous thing and can say exactly how this card acts on it within five seconds.",
+      "It stands in the chain and does something direct: it guides, carries, blocks, crosses, breaks, repairs, or puts out what came before. Merely avoiding danger or surviving it does not count.",
+      "It creates the next problem naturally. A bridge can be washed out, a lantern can be smashed, and a pack animal can bolt, but a pleasant sunset is not handing anyone a problem.",
+      "The words are ordinary enough for a tired twelve-year-old at a campsite. No proper nouns, brands, scientific labels, or grand speeches."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a compass, pointing the lost hiker toward camp.",
+    "hint": "Name the thing, then name the direct action it takes on what stands."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new trail thing handles the thing standing before it.",
+      "anchors": "0 = no action on the standing thing; 1 = a vague connection or a lucky circumstance; 2 = a possible but weak or debatable handling; 3 = a clear direct action that solves, damages, carries, blocks, crosses, or repairs it; 4 = the obvious trail answer, with the standing thing practically finished (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a tired hiker can picture the thing and its action without filling in missing facts.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = understandable only with specialist knowledge or generous repair; 2 = mostly clear but awkward, broad, or incomplete; 3 = plain and concrete; 4 = instantly visual and neatly phrased (rare). Long explanations do not earn points by themselves.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "Whether the move opens a fresh part of the campsite world instead of repeating the same tool, setting, or answer.",
+      "anchors": "0 = the same thing, a close duplicate, or the stock response; 2 = a reasonable shift with familiar ground; 4 = a fresh domain hop that still directly handles the standing thing (rare). Strange wording is not novelty, and obscurity is not cleverness.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move OVERCOMES the previous form only when it is a new trail, travel, or wilderness thing that directly guides, carries, blocks, crosses, breaks, or repairs what stands before it. The action must be literal and visible. Avoiding the thing, enduring it, being immune to it, waiting it out, or offering a bigger relative does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or naming a rule is itself a losing trail thing.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move. Judge it against the opening card, and require a plain thing that directly handles the stated problem.",
+      "A larger, faster, stronger, newer, or more expensive version of the standing thing is not a counter. A bigger tent does not defeat a tent, and a longer trail does not defeat a trail.",
+      "Becoming the opening thing itself, or making only a small cosmetic change to it, is a duplicate and fails the new thing gate.",
+      "The mechanism must be direct. A map guides a lost hiker, a bridge crosses a river, and a flood washes out a bridge. A good intention, a sunny day, or a lucky break does not.",
+      "Surviving, ignoring, hiding from, walking around, or being too tough for the standing thing is dodging, not handling it. A hiker who ignores rain has not defeated rain.",
+      "The move must act on what stands, not on a different nearby problem. A bear spray against a broken boot is impressive but irrelevant.",
+      "A form that merely causes a later problem without handling the standing form fails. A campfire does not defeat a wet blanket just because it might start another fire.",
+      "The thing must remain a standing form, not a past event or a whole scene. Name a thing that can act in the chain, not a story about what happened."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a lost hiker, turning in circles on the forest trail.",
+      "move": "I am a compass, pointing the lost hiker toward camp.",
+      "gates_note": "all true",
+      "mechanism": "a compass directly guides the lost hiker",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a river, cutting across the trail.",
+      "move": "I am a bridge, carrying hikers over the river.",
+      "gates_note": "all true",
+      "mechanism": "a bridge directly crosses and carries people over the river",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a washed-out bridge, stranding hikers beside the river.",
+      "move": "I am a flood, tearing the bridge apart.",
+      "gates_note": "all true",
+      "mechanism": "floodwater directly breaks and washes out the bridge",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a smoking campfire, sending sparks into dry grass.",
+      "move": "I am a larger campfire, burning hotter.",
+      "gates_note": "satisfies_criterion false, mere amplification and no new mechanism",
+      "mechanism": "it is still a campfire and does not directly handle the standing fire",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a muddy trail, slowing the hikers.",
+      "move": "I am a hiker, walking carefully around it.",
+      "gates_note": "satisfies_criterion false, avoidance rather than direct handling",
+      "mechanism": "the hiker avoids the mud instead of acting on or overcoming it",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Tired Trail Warden",
+    "tone": {
+      "commentary_adj": "world-weary",
+      "explanation_adj": "dry"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Sound like someone who has filled out too many rescue forms and still has to explain the obvious.",
+      "The joke carries the reason. A stranger reading only the two forms should see why the move won or failed.",
+      "Name both forms, or plain stand-ins for them. Do not use a reusable headline that could fit any campsite.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Warden refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Roast the losing form and, when useful, the player's decision. Keep it playful, never identity-based or cruel.",
+      "Plain spoken English. Dry jokes beat poetry, campfire wisdom, and suspiciously polished brochure language.",
+      "On a gate failure, refuse the move and ask for another. Do not pretend the failed move won the chain.",
+      "The coaching line names one form that would have won. End on a concrete action, not a mood or verdict.",
+      "Profanity and adult innuendo are allowed sparingly, but the reason must stay clear and the campsite must remain the target."
+    ],
+    "good_headlines": [
+      "The lost hiker met a compass, which is awkward for anyone committed to being lost.",
+      "The bridge carries hikers over the river. At last, infrastructure earns its lunch.",
+      "The flood breaks the bridge, because water has always hated paperwork.",
+      "The wet blanket ignores the campfire. That is not a counter, it is damp optimism. Bring another form.",
+      "A bigger tent is still a tent. The storm remains unimpressed and possibly amused.",
+      "The hiker walks around the mud, so the mud wins by doing absolutely nothing.",
+      "The bear spray handles the bear, not the broken boot. Even panic needs to read the label.",
+      "The rope pulls the stuck pack free, giving gravity one more administrative problem."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the compass finds the hiker.",
+        "why": "opens with a status word and gives a thin reason"
+      },
+      {
+        "text": "The Tired Trail Warden refuses: nice try.",
+        "why": "opens with a ruling phrase, names the host, and explains nothing"
+      },
+      {
+        "text": "The bridge wins.",
+        "why": "too vague to show what the bridge did"
+      },
+      {
+        "text": "The tent is bigger, better, and generally more tent than before.",
+        "why": "jokes around the failed duplicate without stating that it does not handle the standing form"
+      },
+      {
+        "text": "The hiker survives the rain through grit and inner strength.",
+        "why": "survival and mood replace a direct action"
+      },
+      {
+        "text": "Your brain took a wrong turn and died beside the trail.",
+        "why": "mocks the player's intelligence instead of the form"
+      },
+      {
+        "text": "The river is defeated, vanquished, conquered, and shown the door.",
+        "why": "repeats the ruling without naming a visible mechanism"
+      },
+      {
+        "text": "The lantern and the night share a complex relationship.",
+        "why": "hedges, stays abstract, and never says what acts on what"
+      }
+    ]
+  },
+  "rules": [
+    "Handle the thing in front of you. Do not become it.",
+    "Say what you are and what you directly do to it: I am a compass, pointing the lost hiker toward camp.",
+    "The Judge rules on the idea and action, not spelling or literary sparkle.",
+    "A bigger version, a dodge, or a lucky survival does not count.",
+    "One form that fails against the standing thing ends the match."
+  ],
+  "labels": {
+    "opening": "The trail problem",
+    "next_opening": "The next trail problem",
+    "your_opening": "Your trail problem",
+    "compose": "Your form against {token}",
+    "compose_waiting": "Draft your next trail answer while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the trail. Name a thing and make it act.",
+    "too_long": "Over 200 characters. This is a trail answer, not a rescue report.",
+    "duplicate": "That thing already stood this match. Find a new piece of campsite trouble.",
+    "nudge": "Twice now. Handle {standing_form}. Do not become it, dodge it, or repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two tired hikers passing a problem down a trail.\nAlways write: \"I am X, and I ACTION what stands.\"\nName a plain trail, travel, or wilderness thing. Your action must directly guide,\ncarry, block, cross, break, repair, or put out the form before yours.\nGood: \"I am a compass, pointing the lost hiker toward camp.\"\nGood: \"I am a bridge, carrying hikers over the river.\"\nBad: \"I am a bigger tent, surviving the storm.\" That is amplification and dodging.\nBad: \"I am hope, helping everyone.\" That is abstract and has no visible action.\nBad: \"I am a hiker, walking around the mud.\" Walking around it is not handling it.\nTalk like a person at a campsite, not a poet or a game announcer. Use ordinary\nthings anyone can picture: a map, rope, boot, bridge, bear, rain, fire, pack,\ntrail sign, or truck. Keep the action literal and tied to the standing thing.\nA good move should create a fresh next problem, but do not force a scene or a\nwhole story. Hop between tools, weather, animals, terrain, and travel when the\nchain allows it. Never reuse a form or an attribute from this match.\n",
+  "default_move": "I am a trail sign, pointing hikers toward camp."
+}

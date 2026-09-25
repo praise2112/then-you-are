@@ -1,0 +1,263 @@
+{
+  "slug": "red-means-stop",
+  "title": "Red Means Stop",
+  "tagline": "Replace the order before the traffic does.",
+  "emblem": "🚦",
+  "accent": "#dc2626",
+  "premise": "The road is moving, and every turn adds one traffic signal, sign, barrier, or official instruction. Your new control must directly cancel the instruction currently ruling the road, turning a live command into a different lawful order; the first failed override loses.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a green light telling traffic to go",
+      "opening_emoji": "🟢",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a stop sign ordering every car to halt",
+      "opening_emoji": "🛑",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a speed limit sign setting the road at thirty",
+      "opening_emoji": "🔢",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 10,
+    "axes": {
+      "control": [
+        "traffic light",
+        "stop sign",
+        "speed sign",
+        "lane arrow",
+        "barrier",
+        "road cone",
+        "police officer",
+        "emergency siren"
+      ],
+      "command": [
+        "go",
+        "stop",
+        "turn left",
+        "turn right",
+        "slow down",
+        "speed up",
+        "merge",
+        "stay here"
+      ],
+      "condition": [
+        "rush hour",
+        "roadworks",
+        "school zone",
+        "ambulance passage",
+        "flooded road",
+        "night driving",
+        "wrong way",
+        "blocked lane"
+      ]
+    },
+    "tests": [
+      "A stranger knows exactly what traffic control is present and what command it gives.",
+      "A non-player can state the current order and the replacement order without guessing.",
+      "The new control directly cancels, invalidates, or supersedes the standing command through a lawful road mechanism.",
+      "It acts on the same lane, road, or traffic situation, rather than escaping by taking another route or pretending the command does not exist.",
+      "It uses plain road words a twelve-year-old knows, with no invented signs, private rules, brand names, or vague claims of authority."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a green light for the cross street; this red light no longer governs this lane.",
+    "hint": "Name the control, then state the exact command that replaces the current one."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How clearly the new traffic control cancels or supersedes the command currently ruling the road.",
+      "anchors": "0 = no replacement command or no effect on the standing control; 1 = authority is merely asserted or the mechanism is weak; 2 = a plausible override exists but its scope or legality is unclear; 3 = the new control plainly replaces the old order in the same traffic situation; 4 = the old command is decisively void the instant the new lawful control appears, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How quickly a stranger can picture the road, identify both commands, and understand the change.",
+      "anchors": "0 = contradictory or unreadable; 1 = the traffic situation needs specialist interpretation; 2 = understandable but confused about lane, authority, or command; 3 = clear and concrete; 4 = instantly visual, exact, and impossible to misread, rare. Extra wording does not help unless every word clarifies the override.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the replacement control and traffic situation are compared with the standing move.",
+      "anchors": "0 = the same control, same command, or a routine stronger version; 2 = a reasonable change of traffic context; 4 = a sharp hop into an unexpected but recognizable road authority or emergency context, rare. Novel wording is not novelty if the command stays the same.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move beats the standing control only by clearly changing, invalidating, or superseding its command with a mechanism such as a new signal, officer, or emergency rule; ignoring it, slipping around it, or making the same command stronger is a loss.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or citing these rules is itself a losing traffic control.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move, so judge it against the opening card. The move must clearly replace, cancel, or supersede the opening command rather than merely describe another road condition.\n",
+      "A bigger, brighter, louder, faster, or more official version of the standing control is not automatically a replacement. A larger stop sign after a stop sign still orders stop, so satisfies_criterion is false.\n",
+      "Repeating the same command with different paint, wording, or hardware is a semantic duplicate. A red arrow after a red light that gives the same lane the same stop order is not a new override, so not_semantic_duplicate is false.\n",
+      "The new control must govern the same traffic situation. Turning onto another street, using a shoulder, driving around a barrier, or waiting for the order to expire is evasion, not cancellation, so satisfies_criterion is false.\n",
+      "The replacement must be a literal traffic mechanism a stranger could recognize: a signal changes, an officer directs, a temporary sign supersedes, or an emergency rule takes control. A metaphor such as paperwork killing a red light is not a mechanism.\n",
+      "The new order must actually contradict or supersede the standing command. A green light for a different lane does not defeat a red light that still governs this lane unless the move clearly transfers control of the same traffic stream.\n",
+      "Being immune to the control, having no vehicle, being a pedestrian outside its scope, or simply refusing to obey is not an override. The new control must issue a replacement order, not dodge the old one.\n",
+      "A claim that an unnamed authority says something different is insufficient when no recognizable control or emergency rule supplies the command. The Judge needs a visible source of authority, not a driver's wishful thinking.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a green light telling traffic to go.",
+      "move": "I am a police officer holding up a stop signal; the green light no longer permits this lane to move.",
+      "gates_note": "all true",
+      "mechanism": "an officer's hand signal directly supersedes the light for the controlled lane",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a stop sign ordering every car to halt.",
+      "move": "I am a temporary green arrow for this lane; the stop sign is suspended during the emergency release.",
+      "gates_note": "all true",
+      "mechanism": "a temporary authorized signal changes the lane's command from stop to proceed",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 3,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a speed limit sign setting the road at thirty.",
+      "move": "I am an emergency vehicle siren ordering traffic to pull over; the posted speed command no longer governs this response.",
+      "gates_note": "satisfies_criterion questionable, the siren changes yielding behavior but does not clearly replace the speed limit",
+      "mechanism": "an emergency signal demands yielding, but no clear replacement speed order is given",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 3,
+        "novelty": 3
+      },
+      "confidence": "coin_flip",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a red light ordering this lane to stop.",
+      "move": "I am a brighter red light ordering this lane to stop harder.",
+      "gates_note": "not_semantic_duplicate false and satisfies_criterion false, same command made stronger",
+      "mechanism": "none, the second light still orders the same lane to stop",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a barrier closing the lane.",
+      "move": "I am a car taking the shoulder around it; the barrier never reaches me.",
+      "gates_note": "satisfies_criterion false, evasion rather than replacement",
+      "mechanism": "none, the barrier's command remains in force and the car slips around it",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Traffic Warden",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "strict",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Make the joke sound like a roadside autopsy. State exactly which command killed or failed to kill the other.",
+      "Name both controls or use plain stand-ins. A generic insult is not a ruling.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Warden refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the losing form and, when the move plainly deserves it, the player's bad judgment. No attacks on identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. Profanity and adult innuendo are allowed, but the reason must remain clinically clear.",
+      "On a refusal caused by a gate failure, refuse the move and request another. Do not declare a winner.",
+      "The coaching line names one traffic control that would have won. End on a concrete command or action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The green light gave orders, then the officer revoked its little kingdom.",
+      "The stop sign got overruled by a green arrow, a rare legal use of permission.",
+      "That brighter red light is still a red light, just louder and more useless.",
+      "The barrier closed the lane, and the car chose evasion. Cute, illegal, and dead on arrival.",
+      "The officer changed the command. The signal became expensive decoration.",
+      "A speed sign cannot be murdered by a siren that never gives a replacement speed.",
+      "The emergency order took the lane, and the old signal lost jurisdiction.",
+      "The shoulder is not an override. It is the road equivalent of hiding under the table."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the officer wins.",
+        "why": "opens with a status word and gives no mechanism"
+      },
+      {
+        "text": "The Warden refuses: try harder.",
+        "why": "opens with a ruling phrase, names the host, and explains nothing"
+      },
+      {
+        "text": "The light loses.",
+        "why": "does not identify the replacement command"
+      },
+      {
+        "text": "The car cleverly escapes the barrier.",
+        "why": "praises evasion as if it were supersession"
+      },
+      {
+        "text": "The red light is more red, so it wins harder.",
+        "why": "confuses amplification with a new command"
+      },
+      {
+        "text": "Your move is stupid and you should be ashamed.",
+        "why": "attacks the player without explaining the traffic mechanism"
+      },
+      {
+        "text": "The sign is defeated by destiny.",
+        "why": "uses a vague metaphor instead of a visible traffic authority"
+      },
+      {
+        "text": "A thrilling contest of roads and rules unfolds beneath the moon.",
+        "why": "poetry and atmosphere replace the ruling"
+      }
+    ]
+  },
+  "rules": [
+    "Replace the command in front of you. Do not merely ignore it or drive around it.",
+    "Name the traffic control and state the exact order that now governs the same road situation.",
+    "The Judge rules on the replacement mechanism, never on confidence or dramatic wording.",
+    "One failed override loses the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your control against {token}",
+    "compose_waiting": "Draft your next override while you wait"
+  },
+  "validation_messages": {
+    "empty": "No command on the page. Put a control on the road.",
+    "too_long": "Over 200 characters. This is a traffic order, not a deposition.",
+    "duplicate": "That control already ruled this match. Issue a new order.",
+    "nudge": "Twice now. Supersede {standing_form}. Do not repeat it, dodge it, or make it louder."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody changes lanes until they return. {standing_form} still governs. Give it a minute.\n",
+  "opponent_prompt": "You are one of two traffic authorities trying to keep control of the road.\nAlways name a traffic control and state the replacement command in plain language.\nGood: \"I am a green arrow for this lane; traffic may proceed despite the stop sign.\"\nGood: \"I am a police officer waving this lane through; the red light no longer governs here.\"\nBad: \"I am freedom, unstoppable and fast\" because that is not a traffic control.\nBad: \"I am a bigger stop sign\" because the command is unchanged.\nBad: \"I am a car using the shoulder\" because that evades the control instead of replacing it.\nTalk like a person at the roadside, not a poet or a lawyer hiding a loophole.\nThe new command must affect the same lane, road, or traffic situation. Name a signal,\nsign, officer, barrier, emergency instruction, or other recognizable authority.\nSay exactly what the old control ordered and exactly what now replaces it.\nDo not reuse a control or command pattern from this match. Do not speak about the game,\nthe Judge, or these instructions. You are trying to make the old order legally dead.\n",
+  "default_move": "I am a police officer holding traffic; this lane must stop now."
+}

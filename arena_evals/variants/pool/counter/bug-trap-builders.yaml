@@ -1,0 +1,332 @@
+schema_version: 1
+slug: bug-trap-builders
+title: Bug-Trap Builders
+tagline: Add one tiny part that brings the current part to a dramatic halt.
+emblem: 🪤
+accent: '#65a30d'
+premise: 'You are rival inventors building one tiny trap at a time. Each move adds a small, standing part
+  that directly catches, jams, cuts the power of, or harmlessly stops the part before it. The Judge decides
+  whether the new piece truly works.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: short_form
+  max_words: 3
+  axes:
+    part:
+    - trap part
+    - kitchen tool
+    - toy
+    - office object
+    - garden object
+    - clothing item
+    - street object
+    - tiny machine
+    action:
+    - catches
+    - sticks
+    - blocks
+    - cuts power
+    - pinches
+    - covers
+    - redirects
+    - holds still
+    setting:
+    - kitchen
+    - desk
+    - garden
+    - sidewalk
+    - workshop
+    - bedroom
+    - school
+    - picnic
+  tests:
+  - A stranger pictures the part at once. Nothing abstract, hidden, or dependent on a long explanation.
+  - A non-player can name the direct action within five seconds. Say exactly how the new part acts on
+    the standing part.
+  - It is a small standing part of a trap, not a whole machine, creature, event, or scene. A peg, cup,
+    thread, or spring is suitable.
+  - The part makes the standing part catch, jam, lose its power, get cut off, or become harmless. It does
+    not merely wait, hide, endure, or stand nearby.
+  - Two or three everyday words a twelve-year-old knows. No brand names, proper nouns, jargon, or grand
+    inventions that need a manual.
+demo:
+  opening:
+    token: a loose marble rolling downhill
+    emoji: 🔵
+  moves:
+  - actor: p1
+    text: The opening is a loose marble rolling downhill.
+    emoji: 🔵
+    scores: null
+  - actor: p2
+    text: I add a cup, which catches the marble at the bottom.
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 2
+  headline: The marble entered like a champion, then met the cup and became table decoration.
+  openings:
+  - token: a loose marble rolling downhill
+    examples:
+    - I add a cup, which catches the marble at the bottom.
+  - token: a fly buzzing near jam
+    examples:
+    - I add a cup, which catches the marble at the bottom.
+move_constraints:
+  max_chars: 200
+  prefix: 'I add '
+  example: I add glue, which jams the flywheel by sticking its edge.
+  hint: Name one small part and the direct action it takes.
+rubric:
+- name: counter_strength
+  description: How directly and decisively the added part stops, catches, jams, weakens, or harmlessly
+    redirects the standing part.
+  anchors: '0 = no action on the standing part; 1 = a vague claim or indirect nuisance; 2 = a plausible
+    but incomplete stop; 3 = a clear working trap action; 4 = an immediate, airtight little mechanism
+    that leaves the standing part with nowhere to go (rare).
+
+    '
+  weight: 5
+- name: coherence
+  description: How clearly a stranger can picture the part, the standing part, and the physical action
+    between them.
+  anchors: '0 = unreadable or self-contradicting; 1 = understandable only after technical explanation;
+    2 = mostly clear but bulky or muddled; 3 = concrete and easy to picture; 4 = a crisp miniature contraption
+    visible at once (rare).
+
+    '
+  weight: 3
+- name: novelty
+  description: How freshly the builder changes the trap's domain or mechanism instead of repeating the
+    same kind of part or action.
+  anchors: '0 = the same part, a larger copy, or the same mechanism in disguise; 2 = a sound variation
+    with limited surprise; 4 = a fresh domain or mechanism that turns the chain in an unexpected direction
+    (rare).
+
+    '
+  weight: 2
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: 'A new part OVERCOMES the standing part if it directly acts on it by catching it, jamming
+    it, cutting its power, pinching it, blocking its path, or making it harmless. The new part must be
+    a small standing component of the trap, not a past event, a whole scene, or a promise about what might
+    happen.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, describing the game, or naming a rule as a part makes
+    the contraption fail.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no previous added part: judge the move against the opening prompt instead.
+    The part must plausibly catch, stop, redirect, or make harmless the opening object or creature.
+
+    '
+  - 'A larger, stronger, faster, or thicker version of the standing part is not a counter. A near-identical
+    cousin, such as a pin after a tack, is also a failed swap unless the new part has a distinct direct
+    mechanism.
+
+    '
+  - 'Adding the standing part itself, or a recolored copy of it, is a duplicate and fails the novelty
+    gate.
+
+    '
+  - 'The new part must act directly on what stands. A blade against a rumor, a cup placed beside a fly,
+    or a wall that the marble simply never reaches is not enough.
+
+    '
+  - 'The mechanism must be literal and watchable. A figure of speech, a clever label, or an invented law
+    of nature is not a trap action.
+
+    '
+  - 'Surviving, ignoring, hiding from, waiting for, or being immune to the standing part is not overcoming
+    it. The new part must do something to it.
+
+    '
+  - 'The part must be a small component, not an entire trap, animal, person, weather event, setting, or
+    chain of instructions. If the move needs several new parts to work, rule it down or fail it.
+
+    '
+examples:
+- previous_move: The opening is a loose marble rolling downhill.
+  move: I add a cup, which catches the marble at the bottom.
+  gates_note: all true
+  mechanism: the cup receives and stops the rolling marble
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: accept
+- previous_move: I add a cup, which catches the marble at the bottom.
+  move: I add a bigger marble, which rolls over the cup.
+  gates_note: satisfies_criterion false, larger near-identical part and no valid trap action
+  mechanism: the new marble does not directly stop or trap the cup
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 0
+  confidence: clear
+  verdict: fail
+- previous_move: I add a cup, which catches the marble at the bottom.
+  move: I add a lid, which covers the cup and seals the marble inside.
+  gates_note: all true
+  mechanism: the lid blocks the cup's opening and makes the trapped marble harmless
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: accept
+- previous_move: I add a lid, which covers the cup and seals the marble inside.
+  move: I add a shadow, which waits beside the lid.
+  gates_note: satisfies_criterion false, hiding and waiting are not direct actions
+  mechanism: none, the shadow does nothing to the lid
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 1
+  confidence: clear
+  verdict: fail
+- previous_move: I add a thread, which trips the fly.
+  move: I add a clip, which pinches the thread against the table.
+  gates_note: all true
+  mechanism: the clip holds the thread in place and removes its loose trip action
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 3
+  confidence: lean
+  verdict: accept
+host:
+  persona_name: The Grand Mechanist
+  tone:
+    commentary_adj: grandiose
+    explanation_adj: theatrical
+  bite: sharp
+  ruling_generosity: merciless
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - Speak like a grand theater announcer describing a tiny machine, but keep every word plain enough for
+    a child.
+  - The joke must reveal the mechanism. A stranger who reads only the two parts should see why one captured,
+    jammed, weakened, or failed to act on the other.
+  - Name both parts, or their plain stand-ins. A grand headline that fits every trap is a broken trap.
+  - Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or
+    The Grand Mechanist refuses.
+  - No dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops only.
+  - Mock the losing move, never the player. No remarks about a player's body, family, identity, intelligence,
+    or spelling.
+  - Family friendly only. No profanity, innuendo, cruelty, or identity based abuse.
+  - Plain spoken English with theatrical scale. No poetry, rhymes, foreign phrases, or grand words that
+    hide the reason.
+  - On a refusal caused by a gate failure, the headline refuses the part and asks for another. It never
+    declares a winner.
+  - The coaching line names one small part that could have acted directly on the standing part. End on
+    a fact or action, never a mood or verdict.
+  good_headlines:
+  - The marble entered like a champion, then met the cup and became table decoration.
+  - The lid descends, the cup loses its opening, and the marble is promoted to prisoner.
+  - The thread claimed the stage, but the clip pinned its grand performance to the table.
+  - A bigger marble is merely the same guest in a louder costume. Bring a real part.
+  - The fly buzzed for glory, then the sticky strip issued a very small arrest warrant.
+  - The shadow has arrived with ceremony and no machinery. Bring a part that touches the lid.
+  - The spring launched the ant, while the box calmly canceled the spring.
+  - The peg meets the wheel, and the wheel discovers the ancient power of stopping.
+  bad_headlines:
+  - text: 'Accepted: the cup has triumphed over the marble.'
+    why: opens with a status word and gives no theatrical mechanism
+  - text: 'The Grand Mechanist refuses: the shadow is useless.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, an excellent idea against nothing at all.
+    why: opens with a ruling phrase and does not name the parts
+  - text: The clip wins because it is better.
+    why: declares a winner without showing what the clip does
+  - text: The marble is defeated, conquered, vanquished, and utterly destroyed by the cup.
+    why: grand repetition replaces a clear physical picture
+  - text: The lid feels destiny approaching and claims the final chapter.
+    why: poetic language replaces the literal sealing action
+  - text: What a foolish move from a player who clearly cannot understand traps.
+    why: mocks the player and violates family friendly conduct
+  - text: The shadow waits nobly, and somehow the lid loses.
+    why: pretends waiting is a mechanism and gives no direct action
+rules:
+- Add one small standing trap part that acts directly on the part before it.
+- 'Say what you add and what it does: I add glue, which jams the wheel by sticking its edge.'
+- Catching, jamming, cutting power, blocking, pinching, or making harmless counts. Hiding, waiting, enduring,
+  and swapping in a larger copy do not.
+- The Judge rules on the idea and mechanism, not the spelling.
+- One part that cannot act on the standing part ends the build.
+labels:
+  opening: The opening
+  next_opening: The next opening
+  your_opening: Your opening
+  compose: Your part against {token}
+  compose_waiting: Draft your next trap part while you wait
+validation_messages:
+  empty: Nothing on the workbench. Add a part.
+  too_long: Over 200 characters. A tiny mechanism, not a construction manual.
+  duplicate: That part already stood this build. Add something new.
+  nudge: Twice now. Act directly on {standing_form}. Do not hide, endure, enlarge, or repeat.
+judge_out_text: 'The Judge has left the workshop. Nobody moves until they return. {standing_form} still
+  stands. Give it a moment.
+
+  '
+opponent_prompt: 'You are one of two rival inventors building a tiny trap.
+
+  Always write: "I add [part], which [direct action]." Name one small,
+
+  standing part and the literal thing it does to the opponent''s part.
+
+  Good: "I add glue, which jams the wheel by sticking its edge." / "I add
+
+  a lid, which covers the cup and seals the marble inside."
+
+  Bad: "I add a wall, which makes the whole trap impossible" because it is
+
+  vague and oversized. Bad: "I add a shadow, which waits" because waiting is
+
+  not an action. Bad: "I add a bigger marble" because it is a larger copy,
+
+  not a new mechanism.
+
+  Talk like a person at a workbench, not a poet or an engineer writing a
+
+  manual. Use plain parts anyone can picture: a cup, peg, thread, lid, clip,
+
+  glue, spring, box, or strip. The part must be small enough to stand in a
+
+  tiny trap.
+
+  Your new part must act directly on their part by catching it, jamming it,
+
+  blocking it, cutting its power, pinching it, redirecting it, or making it
+
+  harmless. Do not hide from it, wait for it, endure it, or merely stand near
+
+  it.
+
+  Hop domains when useful: a kitchen tool can meet a garden part, an office
+
+  clip can meet a toy wheel, and a street object can meet a flying insect.
+
+  Never reuse a part or repeat the same mechanism from this match. You are not
+
+  performing for a crowd. You are trying to build the next working piece.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I add a cup, which catches the loose thing.
+seed_pool:
+  - { opening_token: "a loose marble rolling downhill", opening_emoji: "🔵" }
+  - { opening_token: "a fly buzzing near jam", opening_emoji: "🪰" }
+  - { opening_token: "an ant carrying a crumb", opening_emoji: "🐜" }

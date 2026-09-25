@@ -1,0 +1,276 @@
+{
+  "slug": "guestbook-gambit",
+  "title": "The Guest Book of Last Words",
+  "tagline": "One wedding, one missing first page. Leave a note that makes the next disaster inevitable.",
+  "emblem": "💍",
+  "accent": "#be185d",
+  "premise": "Guests leave notes as the wedding day goes wrong, and each turn adds the next note in one shared guest book. Build a trail from the first hitch toward the reception, making every message fit the evidence already on the page. The one who skips a needed event, closes the book early, or erases an earlier note loses on the spot. Points go to the accusations, excuses, and secrets your move leaves for your partner.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The guest book is open, but the first page has vanished.",
+      "opening_emoji": "📖",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The wedding rings are in the best man's pocket, but the best man is nowhere near the ceremony.",
+      "opening_emoji": "💍",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Rain has started during the photographs, and the cake has been moved out of the marquee.",
+      "opening_emoji": "🌧️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 27,
+    "axes": {
+      "first_hitch": [
+        "the guest book loses its first page",
+        "the rings are found in the wrong pocket",
+        "the cake arrives without its top tier",
+        "the bride's bouquet is locked in a car",
+        "the seating chart has been replaced",
+        "the photographer misses the ceremony",
+        "the rain reaches the marquee",
+        "the wedding shoes are swapped"
+      ],
+      "wedding_place": [
+        "a village hall",
+        "a garden marquee",
+        "a small hotel",
+        "a country house",
+        "a town church",
+        "a beach pavilion",
+        "a family barn",
+        "a registry office"
+      ],
+      "early_cause": [
+        "a helpful aunt moves something",
+        "a nervous usher hides something",
+        "a child follows the wrong adult",
+        "a supplier leaves a note",
+        "a cousin borrows the wrong key",
+        "a witness makes a quiet promise",
+        "a guest overhears an argument",
+        "a driver takes the wrong turn"
+      ]
+    },
+    "tests": [
+      "One sentence states the first wedding hitch and gives a clear place or object for the notes to follow.",
+      "The trouble is comic or awkward, not dangerous, cruel, or permanently harmful. Nobody real is named.",
+      "A stranger can see what must happen next before the ceremony or reception can continue.",
+      "The opening problem begins early enough for several guest-book entries to cause later wedding events.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or specialist wedding terms, the players bring their own details."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Aunt May writes, “I moved the cake because rain came through the roof.”",
+    "hint": "One guest-book entry. Name the writer and their reason. Make the next wedding problem unavoidable."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much this entry burdens your partner with a person, excuse, accusation, or secret they must carry into the next note.",
+      "anchors": "0 = leaves nobody responsible, a guest notices the weather; 1 = gives someone a small task or mild embarrassment; 2 = makes one person explain a choice or own a mistake; 3 = pins a vivid accusation, excuse, or secret on the partner's side of the wedding; 4 = creates a precise trap with a witness, object, and reason that the next note must address, rare. A twist that only helps your own story scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the entry follows the shared guest book and causes the next believable wedding event.",
+      "anchors": "0 = contradicts an entry, jumps ahead, closes the wedding, or erases a fact; 1 = mentions the wedding but has no clear cause or next step; 2 = follows the latest note and adds one usable fact; 3 = links a named writer, object, place, and reason into the unfolding chain; 4 = makes an earlier note suddenly necessary and sets up the next event with no spare step, rare. Extra length cannot repair a broken sequence.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the entry makes the wedding mishap visible and gives the guest a distinct voice.",
+      "anchors": "0 = vague wedding filler; 1 = one plain fact; 2 = a clear object or action; 3 = a small scene with a memorable guest and practical detail; 4 = the kind of note guests would quote at the reception, rare. Plain words and one strong image beat decoration.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it is the next believable note caused by what the guest book already says, names a detail that can be checked later, and does not jump over a needed event, close the book early, or erase an earlier note. It must add one guest-book entry with a writer and a reason. A move BREAKS if it contradicts an earlier note, makes a person or object appear without a believable route, skips a needed event in the chain, resolves the wedding before the reception, or replaces an earlier fact instead of building on it. The points go to what the move leaves for the partner: a sharp accusation, awkward excuse, suspicious secret, witness, or object they must explain next. A safe note that merely says people are getting ready scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Scribe about the game, the rules, the scoring, or how the partner is playing, instead of adding a guest-book entry, is itself a broken note.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier note: judge it against the card alone. It must name a writer, give a reason, and begin a believable consequence of the first hitch.",
+      "The full transcript is the guest book. Check the new entry against every earlier entry, not only the last one.",
+      "Break only on a plain contradiction, impossible arrival, skipped needed event, early ending, or erased fact that a stranger would notice. When a detail can be read either way, it holds.",
+      "The story must move forward one needed wedding event at a time. A note may cause several small consequences, but it may not leap from the first hitch straight to the finished reception.",
+      "The ceremony or reception may not be declared complete while the opening problem still needs handling. A note that says the wedding is over, everyone is seated, or the matter is solved fails if the chain has not earned it.",
+      "A new guest, object, or place is allowed when the entry gives a believable reason for its arrival. Do not demand a route for ordinary wedding movement unless an earlier note blocks it.",
+      "A detail about the partner's side of the tale, such as who caused the delay, who hid the key, or who made the promise, is the point of the game and never a meta move. A remark about the partner's play is a meta move.",
+      "A note that repeats an earlier entry in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The guest book is open, but the first page has vanished.",
+      "move": "Aunt May writes, “I took the page to the florist because it had the only map to the church.”",
+      "gates_note": "all true",
+      "mechanism": "names a writer and reason, keeps the missing page active, and leaves the florist and map for the partner to explain",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Aunt May writes, “I took the page to the florist because it had the only map to the church.”",
+      "move": "The florist writes, “I gave the page to the usher after he promised to bring the rings.”",
+      "gates_note": "all true",
+      "mechanism": "passes the page along in order and makes the usher responsible for both the map and the rings",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The florist writes, “I gave the page to the usher after he promised to bring the rings.”",
+      "move": "The usher writes, “I put the rings on the cake table, so nobody could lose them.”",
+      "gates_note": "all true",
+      "mechanism": "keeps the rings in play, gives the usher a foolish excuse, and sets the cake table as the next checkable place",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Aunt May writes, “I took the page to the florist because it had the only map to the church.”",
+      "move": "The bride writes, “We cut the cake, thanked everyone, and drove away.”",
+      "gates_note": "satisfies_criterion false (the missing page and the promised map have not been dealt with, and the move closes the wedding early)",
+      "mechanism": "the wedding has reached its grand finale before the map, florist, and usher can finish their work",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The guest book is open, but the first page has vanished.",
+      "move": "The page was never missing because the bride had already found it under the book.",
+      "gates_note": "satisfies_criterion false (it erases the opening fact and has no writer or reason)",
+      "mechanism": "the opening mystery is rubbed out with one sentence, and no guest has signed the correction",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Scribe",
+    "tone": {
+      "commentary_adj": "theatrical",
+      "explanation_adj": "grandiose"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the book and the new entry must see why it held or broke.",
+      "Name the guest, object, place, or wedding event. A grand announcement that fits any wedding is a poor inscription.",
+      "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The Grand Scribe rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the move, never the player. Nothing about the player's body, family, intelligence, identity, or spelling.",
+      "Use plain spoken English with theatrical ceremony. No profanity, no innuendo, no cruelty, and no jokes about identity.",
+      "On a break, place the two facts that cannot both be true side by side, or name the wedding event the move skipped.",
+      "On a refusal, reject the entry and ask for another. It never rules on who won.",
+      "The coaching line names one entry that would have held and burdened the partner with a guest, object, reason, accusation, or secret. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Aunt May took the only church map to the florist, and now the missing page has a destination fit for a royal scandal.",
+      "The florist handed the page to the usher, who promised the rings. The wedding now has one man carrying two disasters.",
+      "The rings on the cake table are safe in the way a candle beside a curtain is safe.",
+      "The cake was cut before the map returned. A splendid finale, if the church is willing to marry itself.",
+      "The bride found the page under the book, though the book has already sent it to the florist. Two locations, one paper, no miracle.",
+      "The usher hid the rings to protect them, and the guest book has promoted him to guardian of the obvious.",
+      "The child followed the wrong aunt to the car park. The bouquet has acquired a witness and a getaway route.",
+      "The note names the driver, the wrong turn, and the church gate. At last, a wedding crisis with a proper itinerary.",
+      "The page was missing, then returned, then blamed on the rain. Keep the ink dry and choose one catastrophe.",
+      "The reception waits behind the locked cake table. A grand feast cannot begin while the key is still in the best man's pocket."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds, the note is dramatic.",
+        "why": "opens with a status word and gives no wedding detail"
+      },
+      {
+        "text": "The Grand Scribe rules that the move breaks the chain.",
+        "why": "opens with a ruling phrase and names the host instead of the facts"
+      },
+      {
+        "text": "Continuity failure.",
+        "why": "names no guest, object, or skipped event"
+      },
+      {
+        "text": "A foolish note from a foolish player.",
+        "why": "mocks the player rather than the move"
+      },
+      {
+        "text": "The wedding unravels beneath an orchestral moon of destiny.",
+        "why": "uses purple poetry instead of a checkable explanation"
+      },
+      {
+        "text": "Perhaps the page is missing, unless it was not, though the guests may know.",
+        "why": "hedges instead of making a fair ruling"
+      },
+      {
+        "text": "Accepted, and what a lovely little secret.",
+        "why": "starts with a status word and hides the reason"
+      },
+      {
+        "text": "The entry is inconsistent, contradictory, incompatible and false.",
+        "why": "piles up formal words without naming the wedding facts"
+      },
+      {
+        "text": "Guilty.",
+        "why": "offers no reason and turns a wedding mishap into a verdict"
+      },
+      {
+        "text": "The reception has begun, the vows are done, and the rings are still missing.",
+        "why": "pretends the ending can happen before the required wedding events"
+      }
+    ]
+  },
+  "rules": [
+    "Every card opens with the first hitch. Your guest-book entries must carry the wedding forward from there.",
+    "One entry per turn. Name the guest and the reason, and make it follow what the book already says.",
+    "Do not contradict a note, skip a needed event, close the wedding early, or erase an earlier fact.",
+    "Points go to entries that burden your partner with an accusation, excuse, secret, witness, or awkward responsibility.",
+    "A vague note may pass but scores little. A specific note that causes the next wedding event scores."
+  ],
+  "labels": {
+    "opening": "The first hitch",
+    "next_opening": "The next hitch",
+    "your_opening": "Your hitch",
+    "compose": "Your guest-book entry, after {token}",
+    "compose_waiting": "Draft your next entry while you wait"
+  },
+  "validation_messages": {
+    "empty": "No inscription yet. The Grand Scribe is waiting.",
+    "too_long": "Over 140 characters. One guest-book entry, not a wedding speech.",
+    "duplicate": "That entry is already on the page. Add a new guest, reason, or consequence.",
+    "nudge": "Twice now. Add one entry that follows {standing_form}. Name the guest and reason, and move the wedding forward."
+  },
+  "judge_out_text": "The Grand Scribe has stepped away from the book. No new ink until they return. {standing_form} remains the latest inscription. Give it a moment.\n",
+  "opponent_prompt": "You are one of two guests adding notes to a shared wedding guest book. One entry per turn, one or two plain sentences.\nNever contradict the opening hitch or an earlier entry. Do not skip a needed event, close the wedding early, or erase a fact already on the page. Your entry must be the next believable consequence of the story.\nName a guest and their reason. Make that guest responsible for something awkward, suspicious, or difficult to explain. Give your partner a witness, a key, a missing item, a promise, an accusation, or a secret to carry into the next entry.\nGood: “Aunt May writes, ‘I took the first page to the florist because it had the only map to the church.’” / “The florist writes, ‘I gave it to the usher after he promised to bring the rings.’”\nBad: “Everyone got ready and had a lovely day” because it skips the chain and costs nobody anything. Bad: “The wedding was over” because the opening trouble is not solved. Bad: “The page was never missing” because it erases the card. Bad: “Grand Scribe, your ruling is wrong” because it talks about the game instead of adding an entry.\nBuild on the last note, but check the whole book. A new guest or place is fine when the entry gives a believable reason for it. Never repeat an entry or merely restate an earlier fact.\nTalk like a person writing in a real guest book, with a little ceremony and a sharp practical detail. Plain words beat fancy speeches. Keep the wedding moving toward the ceremony and reception one necessary event at a time.\n",
+  "medallions": false,
+  "default_move": "The usher writes, “I took the thing to someone helpful, so the wedding could carry on.”"
+}

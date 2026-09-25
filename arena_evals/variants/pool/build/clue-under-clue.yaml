@@ -1,0 +1,324 @@
+schema_version: 1
+slug: clue-under-clue
+title: Clue Under Clue
+tagline: One clue points to another. Keep the hunt moving without finding the treasure too soon.
+emblem: 🗺️
+accent: '#7c3aed'
+premise: 'A treasure hunt has begun, and one more clue appears after each clue is followed. Two players
+  take turns saying what the hunters discover and do next. The Judge checks that each move follows plainly
+  from the standing clue, uses what has already been found, and leaves another useful clue or obstacle.
+  Skip ahead, repeat a clue, end the hunt, or undo a discovery and the chain stops with you.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 22
+  axes:
+    found_item:
+    - a map fragment
+    - a brass key
+    - a red ribbon
+    - a torn ticket
+    - a silver button
+    - a wooden token
+    - a folded note
+    - a glass marble
+    starting_place:
+    - inside a library book
+    - beneath a park bench
+    - on a castle gate
+    - under a café table
+    - in a school cupboard
+    - beside an old fountain
+    - inside a museum drawer
+    - at the edge of a forest path
+    first_mark:
+    - a blue circle around the word clock
+    - three waves and a crooked star
+    - four tiny knots and a sleeping fox
+    - a red arrow beside the number seven
+    - a picture of a ladder under a moon
+    - two footprints pointing toward a bell
+    - a green square around the word north
+    - a black sun above a locked door
+  tests:
+  - One found object starts a treasure hunt and gives a stranger a clear direction to investigate. Present
+    tense, one sentence, plain words.
+  - A non-player can name at least two places or objects the first mark might point toward within five
+    seconds.
+  - The card contains a clue, not the treasure, the answer, or a complete route. Finding a gold chest
+    is an ending, not a start.
+  - No one is hurt, no real people or brands appear, and the card does not depend on specialist knowledge.
+  - It feels like a promising first discovery. A mark, token, sound, or pattern should invite the next
+    move without solving the hunt.
+demo:
+  opening:
+    token: A map fragment is found inside a library book; its only mark is a blue circle around the word
+      clock.
+    emoji: 📚
+  moves:
+  - actor: p1
+    text: A map fragment is found inside a library book; its only mark is a blue circle around the word
+      clock.
+    emoji: 📚
+    scores: null
+  - actor: p2
+    text: Then the circle sends them to the library clock, where a paper star is wedged behind its brass
+      face.
+    emoji: 🎂
+    scores:
+      reach: 2
+      link: 4
+      picture: 4
+  headline: The clock earned its circle, and the paper star earned the next question.
+  openings:
+  - token: A map fragment is found inside a library book; its only mark is a blue circle around the word
+      clock.
+    examples:
+    - Then the circle sends them to the library clock, where a paper star is wedged behind its brass face.
+  - token: A brass key is found beneath a park bench, tied to a note showing three waves and a crooked
+      star.
+    examples:
+    - Then the circle sends them to the library clock, where a paper star is wedged behind its brass face.
+move_constraints:
+  max_chars: 140
+  prefix: 'Then '
+  example: Then the blue circle sends them to the library clock, where a paper star is wedged behind its
+    brass face.
+  hint: One immediate discovery or action caused by the standing clue, with a new clue or obstacle left
+    behind.
+rubric:
+- name: reach
+  description: How much useful ground the hunt gains in one honest move.
+  anchors: '0 = the hunters stay in place or merely restate the clue; 1 = they inspect or move a little;
+    2 = they reach a new spot or uncover a useful detail; 3 = they reach a new part of the hunt, person,
+    room, or obstacle through one clear clue; 4 = one clue opens a striking new layer while remaining
+    immediate and fair. Reach cannot reward a leap that skips the link.
+
+    '
+  weight: 5
+- name: link
+  description: How clearly the new discovery or action is caused by the standing clue.
+  anchors: '0 = the move does not follow; 1 = the connection is only asserted; 2 = it could fit but needs
+    extra explanation; 3 = a stranger can see why the clue led there; 4 = the clue makes the next move
+    feel natural and almost inevitable. A move that bundles several unexplained discoveries cannot score
+    above 2.
+
+    '
+  weight: 4
+- name: picture
+  description: How clearly a stranger can see the hunters finding or doing the next thing.
+  anchors: '0 = unclear, abstract, or only a plan; 1 = a vague search with no visible result; 2 = a clear
+    but ordinary event; 3 = the place, object, or obstacle is easy to picture; 4 = one small physical
+    detail makes the discovery stick. Extra words alone do not improve this score.
+
+    '
+  weight: 2
+criterion:
+  verb: follows from
+  inverse_verb: snaps off
+  description: 'A move FOLLOWS when it is one plain, immediate discovery or action caused by the standing
+    clue, uses the whole transcript, adds a usable clue or obstacle, and does not skip from clue to treasure,
+    declare the hunt over, undo a discovery, repeat the same clue, or introduce a stranger the hunt could
+    not have reached. The move should begin with Then, name the new clue or obstacle, and leave the other
+    player something fair to follow. Clever plans are not discoveries, and a plan wearing a hat is still
+    a plan.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game, or mentioning rules instead of
+    making the hunters act is itself a broken move.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no standing move: judge it against the opening card and ask whether the
+    action or discovery plainly follows from the card''s mark, object, or direction.'
+  - The whole transcript matters. A move may use an earlier clue if the standing clue leads back to it,
+    but it may not ignore a discovered fact that makes the new move impossible or duplicate an existing
+    clue.
+  - 'A new person may appear only when the place or clue could plainly bring them into the hunt, such
+    as a librarian answering a question about a clock or a groundskeeper opening a public gate. A stranger
+    with no route into the scene is a skipped link: satisfies_criterion is false.'
+  - A move must add a usable clue or obstacle. Merely saying the hunters look, think, walk, or make a
+    plan without finding something or meeting a fair obstacle fails the criterion.
+  - A move that jumps from a clue to the treasure, a final lock, or the complete answer skips the needed
+    discoveries. It fails even if the clue could eventually lead there.
+  - An ending is any move that finds the treasure, announces the hunt is solved, sends everyone home,
+    or leaves nothing useful or difficult for the next move. Endings fail satisfies_criterion and the
+    chain stops there.
+  - Undoing a discovery fails. The map cannot become blank, the key cannot vanish, and a door already
+    opened cannot become unopened unless the standing clue plainly causes a new obstruction without erasing
+    the earlier fact.
+  - Repeating the same clue or restating an earlier discovery fails the non-duplicate gate. A new angle
+    on an old place is allowed only when it reveals a distinct clue or obstacle.
+  - A newcomer or object that the hunt could not have reached is a skipped link. Do not allow a guide,
+    vehicle, room, or secret passage to appear solely because the move needs it.
+  - A step may be small and still pass if it follows and adds something. Score low reach rather than failing
+    it for being modest.
+  - Two or three events packed into one move may pass only when every link is plain. Keep link at 2 or
+    below when the move is crowded, and fail it if the final clue depends on an unexplained jump.
+  - The intended solution is not required. Judge whether the move is a fair continuation, not whether
+    it matches a hidden answer.
+examples:
+- previous_move: A map fragment is found inside a library book; its only mark is a blue circle around
+    the word clock.
+  move: Then the circle sends them to the library clock, where a paper star is wedged behind its brass
+    face.
+  gates_note: all true
+  mechanism: the marked word identifies the clock, and inspecting it reveals a new physical clue
+  scores:
+    reach: 2
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Then the paper star points toward the reading room, where a librarian notices its five
+    points.
+  move: Then the librarian opens the atlas drawer marked five and finds a strip of green thread inside.
+  gates_note: all true
+  mechanism: the star's number of points gives the drawer mark, and the librarian has a clear reason to
+    help
+  scores:
+    reach: 3
+    link: 3
+    picture: 4
+  confidence: lean
+  verdict: accept
+- previous_move: Then the green thread is tied around the atlas drawer.
+  move: Then the thread leads them straight to the treasure chest, and the hunt is solved.
+  gates_note: satisfies_criterion false, skips the remaining links and ends the hunt
+  mechanism: the move jumps from a small clue to the treasure with no immediate discovery in between
+  scores:
+    reach: 0
+    link: 1
+    picture: 2
+  confidence: clear
+  verdict: fail
+- previous_move: Then the paper star is wedged behind the library clock.
+  move: Then a pirate captain appears from a secret tunnel and hands them the final answer.
+  gates_note: satisfies_criterion false, skipped newcomer and skipped links
+  mechanism: the transcript gives no tunnel, captain, or reason for the answer to arrive
+  scores:
+    reach: 0
+    link: 0
+    picture: 2
+  confidence: clear
+  verdict: fail
+- previous_move: Then the blue circle sends them to the library clock, where a paper star is wedged behind
+    its brass face.
+  move: Then the paper star is still behind the clock, so they decide to search harder.
+  gates_note: satisfies_criterion false, repeats the discovery and adds no usable clue or obstacle
+  mechanism: the move restates the standing clue and replaces action with a plan
+  scores:
+    reach: 0
+    link: 2
+    picture: 1
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Trail Guide
+  tone:
+    commentary_adj: dry
+    explanation_adj: flat
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who reads only the two moves should see why the clue held
+    or failed.
+  - Name the standing clue and the new discovery, or their plain stand-ins. A headline that fits any hunt
+    is a bad headline.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Trail Guide refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Mock the move, never the player. No jokes about a player's body, family, identity, intelligence, spelling,
+    or background.
+  - Plain spoken English. No profanity, innuendo, poetry, rhymes, or fancy words.
+  - On a skipped link, name the missing discovery. On an ending, say the hunt ended and the chain stops
+    here.
+  - On a refusal, the headline refuses the move and asks for another. It never rules on who won.
+  - The coaching line names one discovery or obstacle that could have followed. It ends on a visible thing,
+    never a mood or a verdict.
+  - Keep the humor family friendly. The move is the target, not the player.
+  good_headlines:
+  - The clock earned its circle, and the paper star earned the next question.
+  - A five pointed star finds drawer five. The library has finally joined the hunt.
+  - The treasure arrived without a route. Send it through one more cupboard.
+  - The pirate captain had no road into this library. The missing link is wearing a hat.
+  - The star is still behind the clock. Searching harder is a plan, not a clue.
+  - The librarian can reach the drawer, and the green thread gives the hunt somewhere to go.
+  - The hunt ended at the chest. Very efficient, and completely too early.
+  - The map did not erase itself. The old clue is still on the table.
+  bad_headlines:
+  - text: 'Accepted: great clue.'
+    why: opens with a status word
+  - text: The Trail Guide refuses this nonsense.
+    why: opens with a ruling phrase and names the host
+  - text: What a brilliant treasure hunt.
+    why: gives no reason and fits any pair
+  - text: The protagonists undergo an epistemic transition.
+    why: uses fancy words and shows no picture
+  - text: Only an idiot would miss that clue.
+    why: attacks the player and uses identity unsafe language
+  - text: Maybe it follows, maybe it does not.
+    why: hedges instead of explaining the ruling
+  - text: And then the moon sang...
+    why: uses poetry and an ellipsis
+  - text: Clue. Search. Treasure.
+    why: lists labels instead of naming the missing link
+rules:
+- One immediate discovery or action follows from the standing clue. Start with Then.
+- Name a usable new clue or obstacle, not just a plan to search.
+- Use the whole transcript. Do not skip to the treasure, repeat a clue, undo a discovery, or end the hunt.
+- A new person or place needs a plain route into the hunt.
+- The Judge rules on the chain of clues, never the spelling.
+labels:
+  opening: The first clue
+  next_opening: The next clue
+  your_opening: Your clue
+  compose: What happens next, after {token}
+  compose_waiting: Draft the next discovery while you wait
+validation_messages:
+  empty: Nothing is discovered. Give the hunt one visible next step.
+  too_long: Over 140 characters. One discovery, not a field journal.
+  duplicate: That clue already appeared this match. Find a new detail or obstacle.
+  nudge: Twice now. Something must follow from {standing_form}. Add one new clue or obstacle.
+judge_out_text: 'The judge has stepped out. Nobody moves until they are back. {standing_form} still stands,
+  and the clue remains where it was.
+
+  '
+opponent_prompt: 'You are one of two players guiding a treasure hunt, and you want the next clue to appear.
+
+  Always write: Then X. Name one immediate discovery or action, caused by the standing clue.
+
+  Add a usable clue or obstacle for the other player.
+
+  Good: Then the blue circle sends them to the clock, where a paper star is tucked behind its brass face.
+
+  Bad: Then they find the treasure. That skips the hunt and ends it.
+
+  Bad: Then a pirate captain arrives from a secret tunnel. No route, no captain.
+
+  Bad: Then they decide to search harder. That is a plan, not a discovery.
+
+  Never close the hunt, never jump to the answer, never erase a clue, and never repeat the same clue.
+
+  Talk like a person telling a mate what the hunters find. Use plain words and physical details.
+
+  A new person or place needs a reason to be there. Only use facts already in the transcript or facts
+  the standing clue plainly reveals.
+
+  Never reuse a move from this match.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: Then the marked word leads them to a nearby object with one small clue hidden beneath it.
+seed_pool:
+  - { opening_token: "A map fragment is found inside a library book; its only mark is a blue circle around the word clock.", opening_emoji: "📚" }
+  - { opening_token: "A brass key is found beneath a park bench, tied to a note showing three waves and a crooked star.", opening_emoji: "🔑" }
+  - { opening_token: "A red ribbon is found on a castle gate, with four tiny knots and a drawing of a sleeping fox.", opening_emoji: "🎀" }

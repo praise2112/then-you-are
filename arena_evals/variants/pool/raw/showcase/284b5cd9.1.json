@@ -1,0 +1,278 @@
+{
+  "slug": "name-game",
+  "title": "Name Game",
+  "tagline": "Make the map sound like a local legend.",
+  "emblem": "🗺️",
+  "accent": "#4f8a8b",
+  "premise": "Three rounds. Each round gives a real place name made from two ordinary words. Both players invent one punchy sentence explaining the naming moment. The Judge scores each story for how believable, funny, and dictionary shaped it feels, then reveals the real origin. The answer that sounds most like a story locals would actually repeat earns the points.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Blue Ball, Pennsylvania",
+      "opening_emoji": "🔵",
+      "detail": "a blue ball",
+      "hidden": "named for a blue ball sign that hung outside an early tavern"
+    },
+    {
+      "opening_token": "Boring, Oregon",
+      "opening_emoji": "😴",
+      "detail": "boring",
+      "hidden": "named after William Harrison Boring, an early settler"
+    },
+    {
+      "opening_token": "Truth or Consequences, New Mexico",
+      "opening_emoji": "⚖️",
+      "detail": "truth or consequences",
+      "hidden": "renamed after the radio quiz show when its host promised to broadcast from the town if it adopted the show's name"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "setting": [
+        "tavern",
+        "farm",
+        "ferry",
+        "mine",
+        "church",
+        "market",
+        "bridge",
+        "railway",
+        "school"
+      ],
+      "naming_moment": [
+        "a sign",
+        "a dare",
+        "a mistake",
+        "a warning",
+        "a wager",
+        "a boast",
+        "a missing object",
+        "a local joke",
+        "a public announcement"
+      ],
+      "human_source": [
+        "a founder",
+        "a traveler",
+        "a child",
+        "a preacher",
+        "a surveyor",
+        "a shopkeeper",
+        "a mayor",
+        "a ferryman",
+        "a railway clerk"
+      ]
+    },
+    "tests": [
+      "The card uses two ordinary words that can be read as a compact place name.",
+      "The two words can both take an active role in one specific naming event.",
+      "The name can plausibly have been repeated by locals and preserved on a map.",
+      "The card does not require specialist knowledge to invent a plausible origin.",
+      "The name has enough room for a funny story without making the real origin obvious."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "A blue painted ball hung outside the first tavern, warning travelers that the owner never missed a game.",
+    "hint": "One punchy sentence. Name the moment that put both words on the map."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Would a stranger accept this as the sort of small incident that could genuinely give a place its name?",
+      "anchors": "0 = impossible or unrelated; 1 = a thin excuse; 2 = possible with some goodwill; 3 = sounds like a story locals might repeat; 4 = feels like a tidy piece of local history, with no obvious seam (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the naming moment have a laugh, a wink, or a pleasing bit of human foolishness?",
+      "anchors": "0 = no spark; 1 = mildly amusing; 2 = a clear smile; 3 = a proper laugh that still fits the story; 4 = genuinely funny and memorable without becoming a sketch (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the answer quickly and cleanly explain both words as parts of one naming event?",
+      "anchors": "0 = does not explain the name; 1 = one word is ignored or the story is foggy; 2 = both words appear but the connection is loose; 3 = both words have clear jobs in one concise moment; 4 = compact, vivid, and ready for a local history plaque (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A story PLAYS if it gives one specific naming moment in which both ordinary words are necessary parts of the place name. The answer must explain how the words came together, not merely mention them in separate details. It fails when it only comments on the name, retells the prompt, gives two unrelated facts, offers a generic history with no naming event, or uses one word while leaving the other ornamental. An unlikely origin still plays and scores low on believable. Landing close to the real origin is not a fail: it plays.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, explaining the game, or discussing the rules instead of giving an origin story is a losing answer.\n",
+    "judge_notes": [
+      "The real origin is given to you. Use it for the reveal and for truth proximity, but do not reward closeness to the truth on the rubric. A clearly different origin can still win if it is the better local legend.\n",
+      "The first move must contain a specific event, person, object, or utterance that caused the name to stick. A bare explanation such as \"it was blue and there was a ball\" fails because it gives no naming moment.\n",
+      "Both ordinary words must do necessary work in one event. If one word is merely decorative, or the answer explains two separate origins, the answer fails.\n",
+      "A sentence that only uses the place name, praises it, questions it, or talks about guessing is not an origin story and fails.\n",
+      "A generic claim such as \"locals liked the phrase\" fails unless it supplies a concrete moment that made locals use the phrase for the place.\n",
+      "A short phrase can play only if it still names a complete naming event. A fragment with no event or causal link fails.\n",
+      "A question mark, hedge, or phrase such as \"probably\" does not automatically fail, but it weakens the story. A question with no naming event fails.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Blue Ball, Pennsylvania",
+      "move": "A blue painted ball hung outside the first tavern, and travelers started using it as the landmark when giving directions.",
+      "gates_note": "all true",
+      "mechanism": "both words identify one visible landmark that turns into a repeated local direction",
+      "scores": {
+        "believable": 4,
+        "funny": 1,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Boring, Oregon",
+      "move": "A settler named Boring gave the town such dull speeches that the joke became its official name.",
+      "gates_note": "all true",
+      "mechanism": "the surname and the comic meaning meet in one memorable public moment",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Blue Ball, Pennsylvania",
+      "move": "Blue Ball is a lovely name for a town with a cheerful past.",
+      "gates_note": "satisfies_criterion false (comment, not a naming event)",
+      "mechanism": "it praises the name but explains neither how nor when it was attached to the place",
+      "scores": {
+        "believable": 0,
+        "funny": 0,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Truth or Consequences, New Mexico",
+      "move": "A truthful judge punished a careless mayor, so the town got both truth and consequences.",
+      "gates_note": "satisfies_criterion false (one word is ornamental and the naming moment is not established)",
+      "mechanism": "it stages a generic moral lesson instead of showing why the exact phrase became the place name",
+      "scores": {
+        "believable": 1,
+        "funny": 1,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Boring, Oregon",
+      "move": "A man called Boring arrived, and everyone agreed the place was boring.",
+      "gates_note": "all true",
+      "mechanism": "the surname supplies the name while the townspeople's reaction gives the second, comic reading",
+      "scores": {
+        "believable": 3,
+        "funny": 2,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Mapmaker",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke should explain the ruling. A stranger who reads only the place name and the answer should see why it worked or failed.",
+      "Name the place or the answer's key object. A headline that fits every story has lost the road.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", or \"The Mapmaker refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the story, not the player's identity. A little cheek is welcome, but no abuse about protected traits, body, family, or disability.",
+      "Plain spoken English. Mild profanity and adult innuendo are allowed when they serve the joke, but keep the warmth.",
+      "Never reveal or hint at the real origin in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline refuses the answer and asks for another. It never rules on which player won.",
+      "The coaching line names one concrete event that would have scored. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The blue ball is doing honest landmark work, and the tavern gets a new address.",
+      "Boring found the joke before the town found the map.",
+      "A judge, a punishment, and half a naming event. The other word is still waiting for a job.",
+      "Truth or consequences needs a microphone, not a moral lesson.",
+      "That sign has legs, a location, and just enough local gossip.",
+      "The mayor's speech may have been dull, but at least it stuck to the map.",
+      "A name is not born from two nouns standing awkwardly beside each other.",
+      "The tavern sign did more civic work than most town councils.",
+      "A good local legend needs one witness, one object, and one moment of bad judgment.",
+      "You brought the joke, but the place name misplaced the paperwork."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the blue ball works.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Mapmaker refuses: no naming event.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and gives no useful reason"
+      },
+      {
+        "text": "Boring was really named after William Harrison Boring.",
+        "why": "reveals the real origin in the headline"
+      },
+      {
+        "text": "Good story.",
+        "why": "gives no reason and could fit anything"
+      },
+      {
+        "text": "Only an idiot would call that an origin.",
+        "why": "mocks the player instead of the answer"
+      },
+      {
+        "text": "O venerable map, disclose thy secret roads.",
+        "why": "poetry and theatrical language"
+      },
+      {
+        "text": "It is plausible, credible, believable, and convincing.",
+        "why": "piles up labels without a picture"
+      },
+      {
+        "text": "Better than the other player's answer.",
+        "why": "judges the pair instead of explaining this answer"
+      },
+      {
+        "text": "Nice.",
+        "why": "too vague to be useful or funny"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one real place name made from two ordinary words each time.",
+    "Write one punchy sentence naming the specific moment that made both words become the place name.",
+    "The House writes its own origin unseen. The Judge scores both stories, then reveals the real origin.",
+    "The story that feels most like a tale locals would actually repeat earns the round's points.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The place name",
+    "next_opening": "The next place name",
+    "your_opening": "Your place name",
+    "compose": "Your origin for {token}",
+    "compose_waiting": "Invent the naming moment while you wait"
+  },
+  "validation_messages": {
+    "empty": "No story on the map. Give the name a moment.",
+    "too_long": "Over 160 characters. A local legend, not a county archive.",
+    "duplicate": "That origin has already been played this match. Find a new naming moment.",
+    "nudge": "Twice now. One sentence showing how both words became {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody names the town until they are back. {standing_form} waits on the map. Give it a minute.\n",
+  "opponent_prompt": "You are the local storyteller. Write one plausible origin for the place name.\nThe place name contains two ordinary words. Both words must do necessary work in one specific naming moment. Show an object, person, action, mistake, sign, saying, or public event that made locals attach the exact phrase to the place.\nKeep it to one punchy sentence, under 160 characters. Sound like a line from a local history book that has had one drink. Make the story concrete, but do not bury it in dates, surnames, counties, materials, or invented paperwork.\nDo not merely mention the two words in separate facts. Do not praise the name, define the words, ask a question, or explain the game. Do not use the place name itself as the only evidence. Both words need a job in the same event.\nYou are inventing a plausible origin, not reporting the real one. The real origin is given to you only so you can avoid copying it: never state it, paraphrase it, or use the same naming event. A different story can win if it sounds more like something locals would actually repeat.\nDo not reuse the same kind of naming moment from an earlier round. Vary the source of the name: a sign, a dare, a mistake, a warning, a boast, a missing object, a public announcement, or a memorable local character.\nNo quotation marks around the answer. No explanation after the sentence.\n",
+  "medallions": true,
+  "default_move": "A painted sign using both words fell from the first shop, and the villagers kept calling the crossroads by what they had seen."
+}

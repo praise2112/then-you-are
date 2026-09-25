@@ -1,0 +1,278 @@
+{
+  "slug": "fete-commentary",
+  "title": "And Now, A Small Disaster",
+  "tagline": "The bunting is up. The dignity is coming down.",
+  "emblem": "🎪",
+  "accent": "#b45309",
+  "premise": "You are live-commentating a village fete as the first gust sends everything wobbling. Take turns adding exactly one beat to the same running commentary, making the scene clearer, funnier, and more awkward without jumping ahead. Earn points by making your partner explain, apologise, or look like a total muppet.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The fete opens under a grey sky, and the first gust sends the bunting snapping above the cake stall.",
+      "opening_emoji": "🎂",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The village fete starts beside the church, and a sharp gust rolls the raffle tickets across the grass.",
+      "opening_emoji": "🎟️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The brass band strikes up by the village green, and the first gust lifts the mayor's welcome speech into the prize tent.",
+      "opening_emoji": "🎺",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 28,
+    "axes": {
+      "fete_place": [
+        "village green",
+        "church yard",
+        "school field",
+        "cricket ground",
+        "market square",
+        "car park",
+        "memorial garden",
+        "bandstand"
+      ],
+      "first_problem": [
+        "bunting snaps loose",
+        "raffle tickets scatter",
+        "cake boxes wobble",
+        "a marquee flap tears",
+        "a sign falls over",
+        "a hat blows away",
+        "a tablecloth lifts",
+        "a microphone squeals"
+      ],
+      "public_role": [
+        "mayor",
+        "treasurer",
+        "cake judge",
+        "head teacher",
+        "band leader",
+        "parish clerk",
+        "raffle caller",
+        "dog show steward"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a village fete place, a first gust, and one visible thing beginning to go wrong.",
+      "Nobody is badly hurt, nothing is hateful, and the trouble stays comic, public, and recoverable.",
+      "A stranger can see at least two objects and one person or group within five seconds.",
+      "The opening creates an immediate cause that later commentary can follow one small beat at a time.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or obscure local history."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The treasurer grabs the microphone, says \"bugger,\" and loses his hat into the tombola.",
+    "hint": "Add one immediate on-air beat. Show what happens next, and make someone own it."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the new beat makes a person explain, apologise, scramble, or carry the embarrassment into the next moment.",
+      "anchors": "0 = costs nobody anything, a flag flaps or a spoon rolls; 1 = a small nuisance or blush; 2 = someone must explain, fetch, apologise, or admit a mistake; 3 = one person is publicly stuck with a foolish choice, a wet sleeve, or a very bad excuse; 4 = the beat leaves a named person in a tight, funny, believable mess that the next commentator must address (rare). A beat that only causes general chaos scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How clearly the beat follows from every earlier event and adds one immediate visible step rather than skipping ahead.",
+      "anchors": "0 = contradicts, rewrites, jumps past, or wraps up the commentary; 1 = vaguely related but the cause is missing; 2 = follows and adds one checkable action; 3 = follows directly, keeps the same moment, and makes the next consequence obvious; 4 = turns an earlier object or action into a precise, surprising consequence without changing the timeline (rare). Cleverness cannot rescue a skipped link.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How easy the beat is to picture and how much it sounds like a real village fete being reported live.",
+      "anchors": "0 = a bare statement with no visible detail; 1 = one plain action; 2 = a clear object, gesture, or sound; 3 = a vivid public moment with a small human reaction; 4 = instantly pictureable, sharply specific, and funny without needing explanation (rare). Plain words beat grand language.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it follows directly from the whole running commentary, adds exactly one new visible beat, and keeps the scene in the same unfolding moment. A move SKIPS if it makes a sudden change with no cause, leaps over several consequences, introduces a separate event, or changes the scene without showing how. A move ENDS if it gives a final result, summary, rescue, curtain call, or other wrap-up instead of the next immediate beat. A move UNDOES if it denies, reverses, erases, or rewrites a beat already reported. Holding is the gate. The points go to the trouble the beat puts on a person, especially when they must explain, apologise, fetch something, or stand there looking foolish. A safe visual beat can hold and still score very little.\n",
+    "anti_metagaming_clause": "Talking to the Commentator about the game, the rules, the partner, or the scoring instead of adding the next on-air beat is itself a failed move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier commentary beyond the card: judge whether it follows directly from the first gust and adds one immediate visible beat.",
+      "The full transcript is the live commentary. Check the new move against every earlier beat, not only the last sentence.",
+      "A skipped link is a sudden change with no visible cause, a jump over several actions, or a new event that does not grow from the current scene. When a move can reasonably be read as the next beat, it holds.",
+      "An ending is a final wrap-up, rescue, clean conclusion, closing announcement, or statement that the whole incident is over. A move may show a small temporary fix if the fete is still unfolding.",
+      "An undo is denying, cancelling, reversing, or rewriting an earlier beat. Do not treat a natural consequence as an undo merely because it makes the earlier problem less serious.",
+      "One beat may contain a connected action and its immediate reaction. Do not demand a single verb, but reject a chain that jumps through several separate consequences.",
+      "A detail about a person being embarrassed, blamed, wet, flustered, or forced to explain is part of the commentary and never a meta move. A remark about how the partner is playing is meta.",
+      "A move that repeats an earlier visible beat in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The fete opens under a grey sky, and the first gust sends the bunting snapping above the cake stall.",
+      "move": "The cake judge pins one corner down with a Victoria sponge, which immediately slides towards the mayor's shoes.",
+      "gates_note": "all true",
+      "mechanism": "follows the loose bunting into the cake stall and gives the judge and mayor a visible problem",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The cake judge pins one corner down with a Victoria sponge, which immediately slides towards the mayor's shoes.",
+      "move": "The mayor catches it against his trousers and insists that this is not how the judging normally works.",
+      "gates_note": "all true",
+      "mechanism": "shows the immediate catch and makes the mayor publicly explain a mess he helped inherit",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The treasurer grabs the microphone, says \"bugger,\" and loses his hat into the tombola.",
+      "move": "The raffle caller fishes out the hat and announces number forty two, although nobody has bought it.",
+      "gates_note": "all true",
+      "mechanism": "keeps the hat and tombola in play and creates an immediate public explanation for a false winner",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The raffle caller fishes out the hat and announces number forty two, although nobody has bought it.",
+      "move": "By lunchtime the whole field is soaked, the marquee is down, and the committee has cancelled the fete.",
+      "gates_note": "satisfies_criterion false, ending",
+      "mechanism": "jumps to a later summary and closes the event instead of adding the next immediate beat",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The cake judge pins one corner down with a Victoria sponge, which immediately slides towards the mayor's shoes.",
+      "move": "The wind stops, the cake is safely back on the table, and everyone carries on as planned.",
+      "gates_note": "satisfies_criterion false, undo",
+      "mechanism": "erases the sliding cake and denies the public problem already reported",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Commentator",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the commentary and the new beat must see why it followed or failed.",
+      "Name the object, person, or action that matters. A headline that fits any fete is too vague.",
+      "Never open with a status word or ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", or \"The Commentator rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the public mishap and the foolish choice, not identity, disability, appearance, or protected traits.",
+      "Plain spoken English, a village loudspeaker, not a literary review. Adult innuendo and mild profanity are allowed when they fit the beat.",
+      "On a skipped beat, put the last visible action beside the unsupported leap, and say what link is missing.",
+      "On an ending, name the premature wrap-up and ask for the next thing anyone can see happening.",
+      "On an undo, put the earlier fact beside the denial. The wind does not get to edit the tape.",
+      "On a refusal for a gate failure, refuse the move and ask for another. Do not award points for a funny but invalid ending or undo.",
+      "The coaching line names one immediate beat that would have held and made someone explain, apologise, fetch something, or look foolish. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "The sponge is now on the mayor's trousers, and the judging has become a personal matter.",
+      "The hat enters the tombola, and the treasurer's swear word gets a wider audience than his speech.",
+      "The raffle caller has found a winner nobody paid for. Someone is about to explain the ticket system.",
+      "The bunting pulls the cake table, the cake moves, and the mayor is suddenly part of the furniture.",
+      "The wind catches the programme and the chairman catches it with his face. That is one way to announce the schedule.",
+      "The treasurer says it was tied down. The microphone says otherwise, and so does his hat.",
+      "The dog has the raffle tickets, the steward has a whistle, and neither appears qualified for this job.",
+      "The marquee flap hits the tea urn, and the woman holding the biscuits has chosen a very brave moment to turn around.",
+      "A single chair folds under the secretary, who is still trying to introduce the brass band from the grass.",
+      "The cake is safe for now, but the judge is holding it like evidence and looking for someone to blame."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the cake beat works.",
+        "why": "opens with a status word and gives no comic picture"
+      },
+      {
+        "text": "The Commentator rules that this move skips ahead.",
+        "why": "opens with a ruling phrase and names the host instead of explaining the scene"
+      },
+      {
+        "text": "Continuity error detected.",
+        "why": "uses game language and names no visible problem"
+      },
+      {
+        "text": "Only an idiot would write that.",
+        "why": "mocks the player rather than the fete disaster"
+      },
+      {
+        "text": "The afternoon unravels in a symphony of meteorological absurdity.",
+        "why": "uses inflated language no village loudspeaker would need"
+      },
+      {
+        "text": "Maybe the tent falls, maybe it does not, depending on how you read it.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "The whole fete is over and everyone goes home happy.",
+        "why": "wraps up the story instead of naming the premature ending"
+      },
+      {
+        "text": "The cake was never on the table, so none of this counts.",
+        "why": "rewrites an earlier beat rather than responding to it"
+      },
+      {
+        "text": "What a lovely development.",
+        "why": "could fit any move and gives no reason"
+      },
+      {
+        "text": "The first gust causes a chain reaction that is narratively unsatisfactory.",
+        "why": "sounds like a review and does not identify the missing link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with the fete already opening and the first gust already causing trouble.",
+    "Take turns adding exactly one immediate visible beat to the same live commentary.",
+    "The new beat must follow directly from the whole commentary. No sudden jumps, final summaries, or rewrites.",
+    "Points go to beats that make someone explain, apologise, fetch something, or look like a total muppet.",
+    "A move can be simple and still hold. Specific public embarrassment scores best."
+  ],
+  "labels": {
+    "opening": "The fete opens",
+    "next_opening": "The next fete",
+    "your_opening": "Your fete",
+    "compose": "Your beat, after {token}",
+    "compose_waiting": "Draft your next beat while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing said. The Commentator is waiting for the next wobble.",
+    "too_long": "Over 140 characters. One immediate beat, not the whole afternoon.",
+    "duplicate": "That beat is already in the commentary. Add something new.",
+    "nudge": "Twice now. Add one immediate beat after {standing_form}. Do not skip ahead, end the fete, or undo it."
+  },
+  "judge_out_text": "The Commentator has stepped away from the loudspeaker. Nobody adds a new beat until they are back. {standing_form} is still the latest thing on air. Give it a moment.\n",
+  "opponent_prompt": "You are the second live commentator at a village fete as the first gust of wind starts\nmaking a public nuisance of everything. Take turns adding exactly one immediate beat,\none or two plain sentences, to the same running commentary.\n\nYour move must follow from the whole transcript. Show the next thing anyone can see, hear,\nor have to deal with. Do not jump to lunchtime, the final result, a rescue, or a summary.\nDo not deny, reverse, or rewrite anything already reported. A connected action and its\nimmediate reaction are fine, but do not leap through several separate consequences.\n\nMake someone carry the embarrassment. Have the mayor explain the cake, the treasurer\nretrieve his hat, the raffle caller defend a ticket, or the band leader pretend the noise\nwas deliberate. Public awkwardness is useful. Mild swearing and adult innuendo are allowed\nwhen they fit the scene, but do not use identity based abuse or target the player.\n\nGood: \"The cake judge pins the bunting with a Victoria sponge, which slides towards the\nmayor's shoes.\" / \"The raffle caller fishes out the treasurer's hat and announces number\nforty two, although nobody has bought it.\"\nBad: \"By lunchtime the whole fete is cancelled\" because it skips and ends. Bad: \"The wind\nstops and the cake is safe\" because it undoes the reported trouble. Bad: \"Actually none of\nthat happened\" because it rewrites the commentary. Bad: \"Commentator, that is a stupid\nmove\" because it talks about the game instead of adding a beat.\n\nTalk like a person on a village loudspeaker, not a novelist. Name the object, the public\nplace, and the person now stuck with the problem. Build on the latest beat without losing\nearlier facts. Never repeat a beat already used this match.\n",
+  "medallions": false,
+  "default_move": "The nearest volunteer reaches for the loose tablecloth, and immediately has to choose between the cakes and the microphone."
+}

@@ -1,0 +1,286 @@
+{
+  "slug": "after-hours-food-chain",
+  "title": "After-Hours Food Chain",
+  "tagline": "The zoo is closed. Dinner service is not.",
+  "emblem": "🐊",
+  "accent": "#166534",
+  "premise": "The zoo is locked, the lights are out, and the animals are arguing over who gets to be dinner. On each turn, name a living zoo creature that defeats the creature just named by hunting, eating, trapping, poisoning, or clearly overpowering it.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a mouse",
+      "opening_emoji": "🐭",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a zebra",
+      "opening_emoji": "🦓",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a parrot",
+      "opening_emoji": "🦜",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "animal_class": [
+        "mammal",
+        "bird",
+        "reptile",
+        "fish",
+        "amphibian",
+        "insect",
+        "spider",
+        "mollusk"
+      ],
+      "habitat": [
+        "grassland",
+        "jungle",
+        "desert",
+        "river",
+        "pond",
+        "aviary",
+        "burrow",
+        "night house"
+      ],
+      "defense": [
+        "shell",
+        "horns",
+        "venom",
+        "armor",
+        "spines",
+        "speed",
+        "camouflage",
+        "teeth"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one living zoo animal at once. Nothing abstract, extinct, mechanical, or made up.",
+      "A non-player names a plain predator or attack within five seconds. Say what directly defeats this animal.",
+      "It belongs in a zoo and can act in the ring. Never a cage, keeper, habitat, footprint, or dead animal.",
+      "It makes the next player want to answer with another creature. A hunter, eater, trapper, stinger, or brute, not a harmless pet with no way to attack.",
+      "One to three everyday words a twelve-year-old knows, with an article. Never a scientific name, brand name, proper noun, or vague group such as wildlife."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a crocodile; I clamp down on the zebra's leg.",
+    "hint": "Name one living zoo animal and one specific attack on the standing animal."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively your animal defeats the standing animal through a believable hunt, attack, trap, poison, eating, or overpowering.",
+      "anchors": "0 = no attack or no connection; 1 = a weak claim, lucky accident, or unclear threat; 2 = possible but disputed or incomplete; 3 = a clear attack that plausibly wins; 4 = an obvious predator or overpowering match with no useful escape (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly the animal and its attack fit together in one scene a stranger can picture.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires specialist knowledge or leaves the action unclear; 2 = understandable but clumsy, vague, or overstuffed; 3 = clear, concrete, and easy to picture; 4 = crisp, vivid, and perfectly staged (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How freshly the move changes the food chain instead of repeating the same animal, attack, or predator type.",
+      "anchors": "0 = same animal, same attack pattern, or an obvious stock repeat; 2 = a reasonable new hunter or method; 4 = a surprising but plainly believable jump to a new zoo domain (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A creature OVERCOMES the standing creature if it directly hunts, eats, traps, poisons, or clearly overpowers it in a plain food-chain or predator-prey way. The attack must be something the new creature can do to the standing creature, not a story about hiding, fleeing, surviving, or waiting. Cleverness does not replace a real attack. A larger version of the same animal or a distant relative is not a new counter.",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a losing move.",
+    "judge_notes": [
+      "On a FIRST move there is no previous animal: judge it against the opening card instead. The first move must directly defeat the opening animal, not merely be dangerous in general.",
+      "A bigger, faster, older, or angrier version of the standing animal is not a new counter. A lion after a larger lion, or a snake after a longer snake, fails as repetition.",
+      "A distant relative or nearby species does not automatically win. A leopard after a lion is not a counter unless the move gives a clear attack that defeats the lion.",
+      "The mechanism must be literal and observable. A crocodile biting a zebra is a mechanism. A tiger being scarier, a shark having bad vibes, or an eagle symbolizing freedom is not.",
+      "Hiding, fleeing, dodging, camouflage, armor, immunity, or merely surviving is not overcoming. The new creature must act on and defeat the standing creature.",
+      "The animal must be living and suitable as a zoo creature. A cage, keeper, virus, fossil, ghost, weapon, or meal is not an animal counter.",
+      "A food-chain relationship must be plausible enough for a stranger to understand. A tiny predator cannot win just because the answer declares it powerful, and a prey animal cannot win by refusing to panic.",
+      "A trap or poison counts only when the new creature can plainly cause it. A spider trapping a fly or a snake poisoning a mouse counts. A random broken fence or keeper's tranquilizer does not.",
+      "The new move must name an attack on the standing animal. A bare animal name, a threat with no action, or a general claim that it eats things fails."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a mouse; I sneak beneath the sleeping lion's paw and bite its nose.",
+      "move": "I am a cobra; I strike the mouse and inject venom.",
+      "gates_note": "all true",
+      "mechanism": "the cobra bites and poisons the mouse",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a zebra; I kick the small lion into the straw.",
+      "move": "I am a crocodile; I clamp down on the zebra's leg.",
+      "gates_note": "all true",
+      "mechanism": "the crocodile bites and holds the zebra",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a parrot; I peck the mouse's eyes.",
+      "move": "I am a cat; I pounce on the parrot and bite its neck.",
+      "gates_note": "all true",
+      "mechanism": "the cat catches and kills the parrot",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a lion; I bite the zebra's throat.",
+      "move": "I am a bigger lion; I bite the lion harder.",
+      "gates_note": "satisfies_criterion false, larger version of the same animal and no new counter",
+      "mechanism": "none, it is the same predator made larger",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a mouse; I nibble the lion's tail.",
+      "move": "I am a turtle; I hide inside my shell until the mouse gets bored.",
+      "gates_note": "satisfies_criterion false, survival and waiting are not an attack",
+      "mechanism": "none, the turtle only avoids the mouse",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a zebra; I kick the lion's ribs.",
+      "move": "I am a leopard; I am also dangerous.",
+      "gates_note": "satisfies_criterion false, no specific attack is named",
+      "mechanism": "none, danger is not a mechanism",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 2,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Night Keeper",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two animals must see why one hunted or failed to hunt the other.",
+      "Name both animals, or their plain stand-ins. A headline that fits any cage is a bad headline.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Night Keeper refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Roast the losing animal or move, never identity groups or protected traits. Adult innuendo and mild profanity are allowed when they sharpen the joke.",
+      "Plain spoken English. No poetry, fake science, rhymes, or thesaurus words.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one animal and attack that would have won. It ends on a concrete action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The mouse had nerve, but the cobra brought a loaded bite.",
+      "The zebra kicked once, then the crocodile turned its leg into lunch.",
+      "The parrot had a beak, the cat had a closing argument.",
+      "A turtle hiding in its shell is not hunting, it is unpaid overtime in a box.",
+      "A bigger lion is still the same bad date, just with more mane.",
+      "The leopard announced danger and forgot the part where it attacks. Bring a move with teeth.",
+      "The spider does not need a sword, the fly walks straight into the paperwork.",
+      "The python wraps the deer up like the zoo's worst sleeping bag."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the cobra eats the mouse.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Night Keeper refuses: the turtle is boring.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring something with teeth.",
+        "why": "opens with a ruling phrase and does not name the animals"
+      },
+      {
+        "text": "The lion wins.",
+        "why": "no mechanism or reason, and it fits any pair"
+      },
+      {
+        "text": "The turtle survives magnificently against the mouse.",
+        "why": "survival is not defeating the standing animal"
+      },
+      {
+        "text": "The leopard is more powerful, obviously.",
+        "why": "assertion replaces a specific attack"
+      },
+      {
+        "text": "Your animal is stupid and so are you.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "The serpent doth feast upon the rodent beneath the moon.",
+        "why": "poetry and needlessly fancy words"
+      },
+      {
+        "text": "The mouse is defeated, crushed, destroyed, and utterly annihilated.",
+        "why": "piles on verdict words without showing the attack"
+      },
+      {
+        "text": "The turtle wins because it is too tough to bother.",
+        "why": "being unaffected or ignored is dodging, not an attack"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the animal in front of you. Do not become it.",
+    "Name one living zoo animal and a specific attack on the standing animal.",
+    "The Judge rules on the animal and attack, never the spelling.",
+    "Hiding, fleeing, surviving, or merely being bigger does not count.",
+    "One animal that breaks against the standing animal ends the match."
+  ],
+  "labels": {
+    "opening": "The opening animal",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your animal against {token}",
+    "compose_waiting": "Choose your next hunter while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing in the cage. Name an animal and an attack.",
+    "too_long": "Over 200 characters. A hunt, not a wildlife documentary.",
+    "duplicate": "That animal already hunted this match. Choose something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not hide, repeat it, or just claim you are bigger."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of the zoo animals after closing, trying not to become dinner.\nAlways say: \"I am a [animal]; I [specific attack] the [standing animal].\"\nName a living zoo creature, then name one plain action that directly defeats the\nanimal in front of you. Good: \"I am a crocodile; I clamp down on the zebra's leg.\"\nGood: \"I am a spider; I wrap the fly in silk.\" Bad: \"I am a lion, very scary\"\nbecause fear is not an attack. Bad: \"I am a turtle; I hide in my shell\" because\nsurvival is not victory. Bad: \"I am a bigger bear\" because size alone is not a\nnew counter.\nTalk like a person across a dark zoo walkway, not a poet or a wildlife professor.\nUse animals anyone can name: a mouse, a snake, a tiger, a frog. Say what your\nanimal does to theirs. Hunting, eating, trapping, poisoning, biting, stinging,\ncrushing, or clearly overpowering counts when it is plausible.\nDo not use cages, keepers, weather, machines, diseases, extinct animals, or game\nlanguage as your animal. Never reuse an animal or an attack pattern from this\nmatch. The zoo is closed, but the food chain is still taking reservations.\n",
+  "default_move": "I am a snake; I bite the mouse and inject venom."
+}

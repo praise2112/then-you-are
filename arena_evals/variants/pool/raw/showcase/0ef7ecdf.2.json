@@ -1,0 +1,289 @@
+{
+  "slug": "agent-after-dark",
+  "title": "Agent After Dark",
+  "tagline": "A room with character. Mostly damp character.",
+  "emblem": "🏚️",
+  "accent": "#5b3a29",
+  "premise": "Three rounds. Each round gives you a real, unexciting fact about a terrible room and names two objects inside it. Write the estate agent's spoken line to a doubtful buyer. The fact must remain audible, both objects must appear, and the room must stay honestly terrible. Everything else is yours: hidden tenants, suspicious rituals, legal loopholes, heroic furniture and reasons not to look behind the curtain. The Agent scores the furthest story that still leaves the room bad.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The carpet is wet / sofa and bucket",
+      "opening_emoji": "💧",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The room has no window / bed and fan",
+      "opening_emoji": "🛏️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The ceiling leaks / mirror and towel",
+      "opening_emoji": "🪞",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 8,
+    "axes": {
+      "bad_fact": [
+        "the carpet is wet",
+        "the ceiling leaks",
+        "the room smells of paint",
+        "the floor slopes",
+        "the room has no window",
+        "the radiator is broken",
+        "the walls are damp",
+        "the light never switches off"
+      ],
+      "object_one": [
+        "sofa",
+        "bed",
+        "mirror",
+        "lamp",
+        "chair",
+        "bucket",
+        "curtain",
+        "wardrobe"
+      ],
+      "object_two": [
+        "bucket",
+        "fan",
+        "towel",
+        "key",
+        "rug",
+        "stool",
+        "clock",
+        "coat"
+      ]
+    },
+    "tests": [
+      "A short form with one article, one bad room fact and two ordinary objects separated clearly enough for a stranger to use.",
+      "The fact is dull, concrete and plainly bad. It names something a buyer would reasonably want repaired.",
+      "The two objects are visible, harmless nouns that an agent can turn into witnesses, accomplices or evidence.",
+      "The card uses no real person, brand, place name or sensational event. The room is the whole scandal.",
+      "A doubtful buyer can hear the card once and later check whether a line kept the bad fact and both objects."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "THE BUCKET KNOWS WHY THE SOFA NEVER DRIES",
+    "hint": "One spoken line. Keep the bad fact and both objects, then sell the suspicion."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the agent's line travel from the bad room fact while keeping that fact and both objects true?",
+      "anchors": "0 = repeats the card with no story; 1 = adds a mild sales phrase; 2 = gives an object a role or hints at a reason; 3 = builds a suspicious little tale around the room; 4 = turns damp carpet and two household objects into a full scandal without making the room better (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the agent's explanation make the terrible room amusing?",
+      "anchors": "0 = flat; 1 = a small comic detail; 2 = a smile; 3 = a proper laugh; 4 = the line deserves repeating to someone who is still house hunting (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does the line work as one clean spoken sales line under 90 characters?",
+      "anchors": "0 = not a line, or mostly explanation; 1 = a tangled line with padding; 2 = clear but loose; 3 = compact, speakable and complete; 4 = an agent could deliver it without taking a breath or losing the buyer (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A line PLAYS if a buyer who hears only the line can still tell that the card's bad fact is true and can hear both named objects in the line. It may add motives, secrets, legal tricks, previous tenants, cover stories or suspicious consequences. It fails when the bad fact is dropped, contradicted or repaired, when either named object is absent or replaced, or when the move is not one spoken line but a question to the Agent, a comment about the game or an explanation of the joke. A plain restatement that keeps the fact and both objects plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Agent, about the game or about the rules is itself a losing line.\n",
+    "judge_notes": [
+      "Test the first move the same way as every later move: can a buyer hear the bad fact, the first named object and the second named object in the line? The sample line keeps a cold room, lamp and mirror, so it passes.",
+      "Both named objects must be present as the objects on the card. A bucket cannot become a fan, and a sofa cannot become a bed. Extra objects are allowed.",
+      "Invented reasons are not contradictions. A haunted bucket, a secret tenant or a mirror used as evidence can all play if the carpet remains wet and the sofa and bucket remain present.",
+      "The bad fact must stay bad. Drying the carpet, fixing the leak, adding a window or saying the room only looks damp breaks the card.",
+      "Dropping one object fails even if the story is funny. A wet carpet and sofa without the bucket is incomplete.",
+      "Contradicting one detail fails even if both objects are named. A dry carpet, working radiator or sunny window does not preserve the card.",
+      "A plain line such as \"The wet carpet is beside the sofa and bucket\" plays, but it adds almost no distance from the card.",
+      "Judge each line on its own. The other player's line is not evidence for or against it.",
+      "Lower case, capitals, punctuation and a missing full stop do not matter. The words and their meaning do."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The carpet is wet / sofa and bucket",
+      "move": "THE BUCKET KNOWS WHY THE SOFA NEVER DRIES",
+      "gates_note": "all true",
+      "mechanism": "the wet carpet becomes a secret shared by the bucket and sofa, while the room stays properly dreadful",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The ceiling leaks / mirror and towel",
+      "move": "The towel marks the leak, and the mirror refuses to discuss it.",
+      "gates_note": "all true",
+      "mechanism": "the towel becomes evidence and the mirror becomes a witness without stopping the leak",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The room has no window / bed and fan",
+      "move": "The bed is cosy, the fan is brave, and there is still no window.",
+      "gates_note": "all true",
+      "mechanism": "the fan is cast as a survivor while the missing window remains plainly missing",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The carpet is wet / sofa and bucket",
+      "move": "The sofa is dry beside the bucket.",
+      "gates_note": "satisfies_criterion false (the wet carpet is dropped)",
+      "mechanism": "the line mentions both objects but quietly removes the room's actual problem",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The ceiling leaks / mirror and towel",
+      "move": "The towel stopped the leak, and the mirror catches the sunshine.",
+      "gates_note": "satisfies_criterion false (the leak is repaired and the room is made better)",
+      "mechanism": "both objects appear, but the ceiling no longer leaks",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The room has no window / bed and fan",
+      "move": "The bed is ready for you. Why are you asking the Agent?",
+      "gates_note": "satisfies_criterion false (the fan and missing window are absent, and the line addresses the Agent)",
+      "mechanism": "it sells nothing except a request for clarification",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Agent",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who heard only the card and the line must see what the agent is hiding.",
+      "Name the room's bad fact and both objects when explaining a pass or fail. Do not give a vague review.",
+      "Never open with a status word or ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", or \"The Agent refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the line's sales pitch, never the player's body, identity, family, intelligence or spelling.",
+      "Plain spoken English. No poetry, rhymes, estate jargon or grand legal language.",
+      "On a fail, say which bad fact or named object went missing or got changed, in the words of the card.",
+      "On a refusal, the line refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one line that would have played. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The bucket has seen the wet carpet, and the sofa is keeping quiet.",
+      "A room with no window, a brave fan and a bed that knows too much.",
+      "The mirror reflects the leak, while the towel negotiates with the ceiling.",
+      "The sofa is dry in theory, and the bucket is collecting evidence in practice.",
+      "The wet carpet remains, but the bucket has a statement and the sofa has alibis.",
+      "The fan is not ventilation, the bed is not a window, and both know it.",
+      "The towel did not fix the leak, it merely accepted the assignment.",
+      "The mirror saw the damp wall first, and the chair has declined to comment.",
+      "The room has no window, but the fan has been promoted to lookout.",
+      "The carpet is wet, the sofa is implicated, and the bucket is taking notes."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: excellent use of the bucket.",
+        "why": "opens with a status word and does not explain the line"
+      },
+      {
+        "text": "The Agent refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, write something better.",
+        "why": "opens with a ruling phrase and mocks the player"
+      },
+      {
+        "text": "The room is bad.",
+        "why": "does not identify the missing fact or either object"
+      },
+      {
+        "text": "Great little story.",
+        "why": "no reason, so it could fit any line"
+      },
+      {
+        "text": "Only a fool would rent this.",
+        "why": "mocks the player or buyer instead of the line"
+      },
+      {
+        "text": "O damp chamber, what secrets breathe beneath thy floor?",
+        "why": "poetry and an unnecessary question"
+      },
+      {
+        "text": "This is suspicious, mysterious, sinister and deeply troubling.",
+        "why": "piles up adjectives without naming the room or objects"
+      },
+      {
+        "text": "Better than the other player's viewing.",
+        "why": "judges the pair rather than this line on its own"
+      },
+      {
+        "text": "The property has excellent kerb appeal and a flexible yield.",
+        "why": "uses estate jargon and avoids the actual bad room"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one terrible room fact each.",
+    "Write one spoken line to a doubtful buyer, under 90 characters. The House writes its own line, unseen, and the Agent scores both.",
+    "Your line must keep the card's bad fact audible and use both named objects. Drop, repair or contradict any part and the round is lost.",
+    "Everything else is yours to invent. The further the suspicious story travels while the room stays bad, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The room",
+    "next_opening": "The next room",
+    "your_opening": "Your room",
+    "compose": "Your agent line for {token}",
+    "compose_waiting": "Draft your sales line while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty viewing. Give the buyer a line.",
+    "too_long": "Over 90 characters. This is a viewing, not a brochure.",
+    "duplicate": "That line has already been shown this match. Try a different excuse.",
+    "nudge": "Twice now. Keep the bad fact and both objects: {standing_form}."
+  },
+  "judge_out_text": "The Agent is checking the damp. Nobody signs anything until they return. {standing_form} is on the brochure. Give it a moment.\n",
+  "opponent_prompt": "You are an estate agent showing a doubtful buyer around a terrible room. Write one spoken line.\nTHE ROOM MUST STAY TERRIBLE. The card gives one bad fact and two named objects. Your line must let the buyer hear that fact and must use both objects. Never drop one, replace one, repair the room or contradict the card.\nThen sell the suspicion. Invent a secret tenant, a cover story, a witness, a ritual, a liability or a reason the objects have stopped cooperating. The points are for distance from the card while the bad room remains true.\nGood: \"THE BUCKET KNOWS WHY THE SOFA NEVER DRIES\" for a wet carpet, sofa and bucket. \"The towel marks the leak, and the mirror refuses to discuss it\" for a leaking ceiling, mirror and towel.\nBad: \"The room is fine\" for any bad room. \"The sofa is dry beside the bucket\" when the wet carpet is missing. \"The towel stopped the leak\" when the ceiling must still leak. \"Nice bed\" when the fan and missing window have vanished.\nSpeak like an agent with something to hide. Use short plain words. Under 90 characters. No question to the host. Do not explain the joke. A question inside the agent's line is allowed only if it is clearly part of the sales pitch, but a direct question to the Judge or Agent is not.\nVary the angle from round to round: a witness, a cover story, a legal excuse, a suspicious object or a buyer warning. Never use the same shape twice in a match.\nNo quotation marks around the line. Reply with the line only.\n",
+  "medallions": false,
+  "default_move": "The bucket remembers, and the sofa is not discussing the wet carpet"
+}

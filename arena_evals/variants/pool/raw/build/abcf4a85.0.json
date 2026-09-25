@@ -1,0 +1,279 @@
+{
+  "slug": "pub-proof",
+  "title": "Pub Proof",
+  "tagline": "One oddity, one theory. Make the pub look guilty.",
+  "emblem": "🍺",
+  "accent": "#b45309",
+  "premise": "You are building one conspiracy theory, one clue at a time, while the host reports on your very serious investigation. Start with an ordinary oddity and make it suspicious; your partner must keep the same theory alive without quietly changing what it claims.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The pub clock is seven minutes slow.",
+      "opening_emoji": "🕰️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Every umbrella by the pub door is missing one spoke.",
+      "opening_emoji": "☂️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The landlord keeps a second set of bar keys in the biscuit tin.",
+      "opening_emoji": "🔑",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "oddity": [
+        "a clock is wrong",
+        "a sign is upside down",
+        "a drawer is always locked",
+        "the same song plays twice",
+        "a chair is never used",
+        "the lights flicker",
+        "a menu item has no price",
+        "a bell rings by itself"
+      ],
+      "pub_place": [
+        "the bar",
+        "the snug",
+        "the cellar",
+        "the toilets",
+        "the kitchen",
+        "the front door",
+        "the smoking area",
+        "the dartboard"
+      ],
+      "ordinary_cause": [
+        "a tired landlord",
+        "a broken timer",
+        "a regular with a grudge",
+        "a delivery mistake",
+        "a lost set of keys",
+        "a cheap repair",
+        "a staff superstition",
+        "a council inspection"
+      ]
+    },
+    "tests": [
+      "One short sentence with one ordinary pub oddity, not a theory or accusation.",
+      "Nothing causes real harm, nobody real is named, and the mystery stays silly enough for a pub conversation.",
+      "A stranger can picture the object and the part of the pub where it appears within five seconds.",
+      "The oddity leaves room for several connected explanations, so later clues can make it suspicious.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, politics, or technical jargon."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The clock is seven minutes slow, so the council can make every witness arrive late.",
+    "hint": "Add one clue and say how it supports the same theory. Leave a link for your partner."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How strongly the clue pushes the shared theory forward while giving your partner a useful and believable next link.",
+      "anchors": "0 = a random fact with no pressure; 1 = a weak suspicion; 2 = a useful connection with one clear implication; 3 = a strong clue that makes the partner explain a person, object, or routine; 4 = an awkwardly convincing clue that sharply limits the next move without closing the theory (rare). A clue that only adds drama without a link scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the clue agrees with the opening oddity and every clue already accepted, with no quiet change to the theory.",
+      "anchors": "0 = contradicts or replaces an accepted fact; 1 = vaguely related but the link is missing; 2 = fits and gives one usable connection; 3 = fits and explains why an earlier clue matters; 4 = fits so tightly that several earlier clues become more suspicious at once (rare). A longer explanation does not earn extra credit.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How vividly the clue sounds like something overheard beside a sticky pub table.",
+      "anchors": "0 = abstract or interchangeable; 1 = one plain fact; 2 = a concrete object, person, or habit; 3 = a memorable pub detail with a human reaction; 4 = a ridiculous but perfectly pictured detail that sounds almost credible (rare). Plain words beat elaborate theories.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A clue HOLDS if it adds exactly one connected clue that makes the shared theory more believable and fits every stated fact. The move must name the clue and its link, not merely announce that something is suspicious. A move BREAKS the proof if it skips the link and jumps to an unrelated conclusion, ends by making a final claim with no room for another clue, or undoes an accepted clue by denying, replacing, or quietly changing it. The clue must keep the same theory alive, not start a new conspiracy. Holding is the gate. The points go to how much the clue tightens the theory and how much useful trouble it leaves for the partner. A safe, vague connection scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the score, or the partner's performance instead of adding a clue and its link is itself a broken proof.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier clue: judge it against the opening card alone. It must add exactly one suspicious clue and explain its connection to the opening oddity.",
+      "The full transcript is the theory. Check the new clue against every earlier clue, not only the last one.",
+      "Break on an obvious contradiction, replacement, or denial of an accepted clue. Do not break over trivia, outside research, or a connection that is merely eccentric but still possible.",
+      "A skipped link is a failure even when the conclusion sounds entertaining. The move must say why this clue supports the existing theory.",
+      "An ending is a failure when it declares the whole conspiracy solved, proves the culprit, or otherwise leaves no room for another connected clue.",
+      "An undo is a failure when the move says an accepted clue was false, changes its object or meaning, or swaps the shared theory for a different one.",
+      "One move may contain one clue and one link. Extra wording is allowed only when it clarifies that same connection.",
+      "A clue about a landlord, regular, staff habit, receipt, key, clock, or pub object is part of the game. A remark about the partner's play is not a clue.",
+      "A detail that repeats an earlier clue without adding a new connection is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The pub clock is seven minutes slow.",
+      "move": "That lets the council print late permits, because every witness thinks they arrived on time.",
+      "gates_note": "all true",
+      "mechanism": "adds one connected consequence and leaves the permit system open for another clue",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "That lets the council print late permits, because every witness thinks they arrived on time.",
+      "move": "The landlord keeps those permits under the biscuit tin, so his missing keys are not missing at all.",
+      "gates_note": "all true",
+      "mechanism": "links the permits to a concrete pub habit and makes the keys useful without solving the theory",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Every umbrella by the pub door is missing one spoke.",
+      "move": "The missing spokes are radio aerials, which means the whole town is being watched.",
+      "gates_note": "satisfies_criterion false",
+      "mechanism": "jumps from bent umbrellas to a town-wide conclusion without a usable connecting clue",
+      "scores": {
+        "squeeze": 2,
+        "fits": 1,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The landlord keeps a second set of bar keys in the biscuit tin.",
+      "move": "So the landlord is definitely the mastermind and the case is solved.",
+      "gates_note": "satisfies_criterion false",
+      "mechanism": "ends the theory with a final accusation and leaves no room for another clue",
+      "scores": {
+        "squeeze": 3,
+        "fits": 2,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The same song plays twice because the jukebox is taking orders from the cellar.",
+      "move": "Actually it is not the same song, it only sounds similar, so the jukebox has nothing to do with it.",
+      "gates_note": "satisfies_criterion false",
+      "mechanism": "denies and replaces an accepted clue instead of extending the theory",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Barroom Correspondent",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the theory and the new clue must see why it held or broke.",
+      "Name the clue or its plain stand-in. A headline that fits any pub is a bad headline.",
+      "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The correspondent rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the theory or the clue, with gentle roast-level jabs at the player allowed. Never use identity-based abuse.",
+      "Plain spoken English, a serious report from a silly pub, not a crime novel. Adult innuendo and mild profanity are allowed when the detail earns it.",
+      "On a skipped link, put the two unrelated facts beside each other and say what connection is missing.",
+      "On an ending, name the final claim and explain that it has shut the investigation before the next clue.",
+      "On an undo, put the earlier accepted clue beside the new denial and point out that the theory has changed its coat.",
+      "On a refusal, the headline refuses the clue and asks for another. It never rules on who won.",
+      "The coaching line names one clue that would have held and left a useful link for the partner. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Seven slow minutes and a late permit, the council has found a very cheap time machine.",
+      "The biscuit tin holds the keys and the permits, which is either evidence or terrible snack security.",
+      "A missing umbrella spoke to a wet doormat, not the whole town. Give the theory one more step.",
+      "The landlord is suspicious, but not yet the mastermind. Leave room for the receipt behind the till.",
+      "The song played twice because the cellar sent it up. The jukebox now has a motive and a terrible taste in music.",
+      "The clock and the witness now share a lie, which is more coordination than this pub usually manages.",
+      "That is a conclusion wearing a clue's hat. Tell me how the broken bell helps before you arrest the furniture.",
+      "You have changed the missing key into a missing spoon. The theory cannot keep swapping evidence when challenged.",
+      "The umbrella spoke leads to the drainpipe, not the mayor's office. One ordinary link would have saved it.",
+      "The second key fits the cellar door and the suspicion. Keep the bar open for the next piece of nonsense."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds: the theory is consistent.",
+        "why": "opens with a status word and gives no picture of the clue"
+      },
+      {
+        "text": "The Barroom Correspondent rules that this breaks.",
+        "why": "opens with a ruling phrase and names the host instead of explaining the failure"
+      },
+      {
+        "text": "Conspiracy detected.",
+        "why": "names no clue and could fit any move"
+      },
+      {
+        "text": "Only an idiot would believe that.",
+        "why": "attacks the player's intelligence instead of the clue"
+      },
+      {
+        "text": "The evidence dances through the moonlit architecture of truth.",
+        "why": "uses poetry instead of plain pub language"
+      },
+      {
+        "text": "Well, it sort of connects if you squint at it.",
+        "why": "hedges instead of giving a clear ruling and reason"
+      },
+      {
+        "text": "Accepted, nice theory.",
+        "why": "starts with a status word and gives no specific explanation"
+      },
+      {
+        "text": "The council could not legally do that, so fail.",
+        "why": "relies on outside law and ends with a ruling word"
+      },
+      {
+        "text": "Guilty as charged.",
+        "why": "offers no reason and turns the game into an unsupported verdict"
+      },
+      {
+        "text": "This is inconsistent, incompatible, contradictory, and false.",
+        "why": "piles up abstract labels without naming the broken clues"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with an ordinary pub oddity. Build one shared conspiracy theory from it.",
+    "One move adds exactly one clue and says how that clue supports the theory.",
+    "A skipped link, a final claim, or an undo of an accepted clue breaks the proof on the spot.",
+    "Points go to clues that tighten the theory while leaving your partner a useful next connection.",
+    "Safe and vague connections pass but score little. Specific, connected clues score."
+  ],
+  "labels": {
+    "opening": "The oddity",
+    "next_opening": "The next oddity",
+    "your_opening": "Your oddity",
+    "compose": "Your clue, after {token}",
+    "compose_waiting": "Draft your next clue while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing added. The investigation is waiting.",
+    "too_long": "Over 140 characters. One clue and one link, not a pub lecture.",
+    "duplicate": "That clue is already in the theory. Add a new connection.",
+    "nudge": "Twice now. Add one clue linked to {standing_form}. Do not replace it, do not solve the whole case."
+  },
+  "judge_out_text": "The correspondent has stepped out. Nobody changes the evidence until they are back. {standing_form} is still the last word in the theory. Give it a minute.\n",
+  "opponent_prompt": "You are one of two regulars building a conspiracy theory in a pub while the host reports on your very serious investigation. One clue per turn, in one or two plain sentences.\nNever deny, replace, or quietly change a clue already accepted. Keep the same theory alive. Every move must add exactly one clue and say how it connects to the opening oddity or an earlier clue.\nDo not jump from a small fact to a giant conclusion without a link. Do not declare the case solved. Leave your partner a loose thread they can use next.\nMake the clue concrete and pub-sized: a receipt, a key, a clock, a regular, a staff habit, a cellar door, a song, or a strange note. Adult innuendo and mild profanity are fine when they fit the pub, but keep the conspiracy playful and avoid identity-based abuse.\nGood: The clock is seven minutes slow, so the council can make every witness arrive late. / The late permits are under the biscuit tin, which is why the landlord guards the shortbread like evidence.\nBad: The umbrellas are radio aerials, so the whole town is being watched. That skips the link. Bad: The landlord is definitely the mastermind and the case is solved. That ends the theory. Bad: Actually the clock is accurate, so forget the first clue. That undoes the evidence. Bad: Host, my partner is playing badly. That talks about the game instead of adding a clue.\nTalk like a person at a sticky table, not a novelist. Build on the last clue rather than starting a different conspiracy. Never repeat a clue or quietly change what it means this match.\n",
+  "medallions": false,
+  "default_move": "The oddity matters because someone at the pub has been keeping a record of it, and the record is still behind the bar."
+}

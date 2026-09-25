@@ -1,0 +1,267 @@
+{
+  "slug": "the-wrong-button",
+  "title": "The Wrong Button",
+  "tagline": "One tiny home mistake, one honest press at a time, until the house starts making decisions.",
+  "emblem": "🔘",
+  "accent": "#7c3aed",
+  "premise": "A tiny home mistake starts a chain of household trouble. Two players take turns pressing, touching, or choosing one thing that causes the next thing, and the host explains the growing mess with a straight face and a small jab. Skip a result, fix the mess, undo a step, or rescue the house and the chain stops with you.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A thumb hits the wrong button on the washing machine, and it starts filling with hot water.",
+      "opening_emoji": "🧺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Someone presses the remote and the television switches to the loudest channel.",
+      "opening_emoji": "📺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A finger taps the oven timer, and the cooker starts heating an empty tray.",
+      "opening_emoji": "🍞",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "who": [
+        "a sleepy parent",
+        "a child",
+        "a housemate",
+        "a grandparent",
+        "a distracted guest",
+        "a hungry teenager",
+        "a tired cleaner",
+        "a curious dog"
+      ],
+      "place": [
+        "the kitchen",
+        "the laundry room",
+        "the sitting room",
+        "the hallway",
+        "the bedroom",
+        "the bathroom",
+        "the garage",
+        "the home office"
+      ],
+      "wrong_control": [
+        "a washing machine button",
+        "a television remote",
+        "an oven timer",
+        "a dimmer switch",
+        "a kettle button",
+        "a door lock",
+        "a thermostat",
+        "a printer button"
+      ]
+    },
+    "tests": [
+      "A tiny household mistake starts trouble that a stranger can picture at once. Present tense, one sentence, plain words.",
+      "A non-player names what happens next within five seconds, and there is more than one good answer. Say two.",
+      "Nothing on the card is already a disaster. A flooded room or a house fire is an ending, a wrong button or a hot tray is a start.",
+      "Nobody is hurt on the card, no real people, no brands, no serious crime, and no danger that needs an immediate rescue.",
+      "The card offers one tempting thing to affect. It is a small home mistake, not an inventory of every appliance in the house."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the hot water fills the drum, so the clean towels begin to shrink.",
+    "hint": "One plain household action and its result, because of the standing problem."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much new household trouble this step creates.",
+      "anchors": "0 = no new trouble or the problem gets smaller; 1 = a tiny nudge or another sign of the same problem; 2 = one new household thing is affected; 3 = the trouble reaches a new object, room, or person through one clear result; 4 = the mistake becomes a much larger household problem in one believable step, rare. A dramatic result without a clear link scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the action and result grow out of the standing problem.",
+      "anchors": "0 = unrelated; 1 = the move merely claims a connection; 2 = the connection is possible but thin; 3 = a stranger can plainly see why it happens; 4 = the result feels like the obvious consequence, rare. Several hidden steps in one move keep this at 2 or below.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the household event.",
+      "anchors": "0 = unclear, abstract, or only a feeling; 1 = partly visible but muddled; 2 = clear and ordinary; 3 = easy to picture with a useful detail; 4 = crisp, physical, and memorable without being long, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if one clear household action happens because of the standing problem, adds a new problem, and leaves a physical or digital thing for the other player to affect. The action and result should be plain and visible. A move fails when it skips the result, ends with a clean fix or final rescue, undoes a step, swaps in an unrelated scene, or brings in a newcomer who changes the scene without being caused by what stands. A feeling, opinion, explanation, or household moral is not an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or mentioning rules is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge it against the opening card and ask whether the move plainly follows from the card.",
+      "A new person may appear only when the standing trouble gives them a reason to arrive, such as a noise waking a housemate or water reaching a person in the next room. A person who simply appears to solve or redirect the problem skips a link, so satisfies_criterion is false.",
+      "A move must show a result. Pressing a button with no consequence, touching an object with no change, or merely saying that trouble continues is too empty to satisfy the criterion.",
+      "A clean fix, final rescue, tidy-up, calm ending, or statement that everything is fine ends the story and fails satisfies_criterion even when it follows from the standing problem.",
+      "Undoing a step fails. Turning the machine off, putting the remote back, reversing the choice, or restoring the earlier state is a rewind unless a new problem clearly remains and the move does not erase what happened.",
+      "An unrelated household event fails. A move must grow from the standing object, action, or result, not introduce a fresh mishap elsewhere with no cause.",
+      "A move may contain an action and its immediate result. If it packs several consequences together, it may pass only when every link is plain, and link should be no higher than 2.",
+      "A step of the same size can still pass if it follows and leaves something to affect. Do not fail a dull move just because reach is 0 or 1.",
+      "Restating the standing result in new words, or naming only the obvious state already shown, is a duplicate and not_semantic_duplicate is false.",
+      "If the move is a feeling, lesson, warning, or explanation rather than a physical or digital event, satisfies_criterion is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A thumb hits the wrong button on the washing machine, and it starts filling with hot water.",
+      "move": "Then the hot water shrinks the clean towels, and they jam against the glass.",
+      "gates_note": "all true",
+      "mechanism": "hot water changes the towels, and the swollen towels crowd the drum",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the remote slips under the sofa, so the television jumps to the loudest channel.",
+      "move": "Then the bass shakes a mug off the side table and coffee runs into the game console.",
+      "gates_note": "all true",
+      "mechanism": "loud sound shakes the mug, and spilled coffee reaches the console",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the oven heats the empty tray, and smoke curls toward the alarm.",
+      "move": "Then the alarm wakes the upstairs housemate, who trips over the laundry basket.",
+      "gates_note": "all true",
+      "mechanism": "the alarm wakes the housemate, and the basket is in the path",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the thermostat turns the heating up, and the room grows stuffy.",
+      "move": "Then the whole city loses power and the mayor declares a crisis.",
+      "gates_note": "satisfies_criterion false, the move skips several results and leaves the home scene",
+      "mechanism": "no household link shown from a warm room to a city emergency",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then coffee runs into the game console and the screen goes black.",
+      "move": "Then someone dries it, repairs it, and everyone gets back to the film.",
+      "gates_note": "satisfies_criterion false, this is a clean fix and an ending",
+      "mechanism": "the move closes the trouble instead of leaving a new thing to affect",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The House Manager",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "earnest"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters, or two short sentences at most.",
+      "Explain the exact household link in plain words. The joke may be dry, but the reason must be clear.",
+      "Name both moves or their plain stand-ins. A headline that could fit any household mistake is too lazy.",
+      "Do not begin with a status word or ruling phrase such as Accepted, Rejected, or Refused.",
+      "Use commas and full stops only. No dashes as punctuation, no colons after a verdict, and no ellipses.",
+      "Roast the move, not identity, protected traits, or the player's body, family, intelligence, or spelling.",
+      "Plain spoken English. Profanity and mild adult innuendo are allowed when they fit, but do not make them the whole joke.",
+      "For a skipped result, name the missing household consequence. For an ending, say the chain ends because the mess was fixed or rescued.",
+      "A refusal headline rejects the move and asks for another. It never decides who won.",
+      "The coaching line suggests one next household event. End on something that happens, not a feeling or a ruling."
+    ],
+    "good_headlines": [
+      "The hot towels jam the drum because hot water has opinions. The next problem is already waiting.",
+      "A loud channel shakes the mug into the console. The remote has achieved management status.",
+      "The alarm wakes the housemate, and the basket supplies the trip. A very local disaster.",
+      "The television jumping to a louder channel does not power the whole city. Show the missing household result.",
+      "The console gets dried and the film resumes. That is a rescue, not another button problem.",
+      "The thermostat makes one room stuffy. It has not yet conquered the nation.",
+      "The oven heats the tray, smoke reaches the alarm, and the next mess has a proper door to walk through."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, nice move.",
+        "why": "starts with a ruling phrase and gives no reason"
+      },
+      {
+        "text": "The House Manager refuses this.",
+        "why": "starts with a ruling phrase and names the host instead of the missing link"
+      },
+      {
+        "text": "Chaos at home, what a journey.",
+        "why": "could fit any move and explains nothing"
+      },
+      {
+        "text": "The domestic catastrophe proliferates magnificently.",
+        "why": "uses grand words instead of a clear household picture"
+      },
+      {
+        "text": "Only an idiot would press that button.",
+        "why": "attacks the player instead of the move"
+      },
+      {
+        "text": "Then everything gets worse somehow.",
+        "why": "gives no action, result, or cause"
+      },
+      {
+        "text": "The mug dances through the night...",
+        "why": "uses poetic language and an ellipsis instead of plain speech"
+      },
+      {
+        "text": "The power fails, the roof lifts, the moon explodes.",
+        "why": "packs in skipped links and unrelated scale"
+      }
+    ]
+  },
+  "rules": [
+    "Write one plain next event beginning with Then.",
+    "The event must happen because of the standing problem and must create a new problem.",
+    "Leave a physical or digital thing for the other player to affect.",
+    "Skip a result, fix the mess, rescue the house, undo a step, or change scenes without a cause and the chain stops with you.",
+    "The Judge scores the link, the size of the new trouble, and how clearly the event can be pictured."
+  ],
+  "labels": {
+    "opening": "The first wrong button",
+    "next_opening": "The next household problem",
+    "your_opening": "Your household problem",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Draft your next household problem while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happens. Press something and let it cause trouble.",
+    "too_long": "Over 140 characters. One household step, not a repair manual.",
+    "duplicate": "That household problem already happened this match. Press on.",
+    "nudge": "That happened twice. Something has to follow from {standing_form}. One action, one result, one new thing to ruin."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody presses anything until they are back. {standing_form} still stands, and the house is waiting.\n",
+  "opponent_prompt": "You are one of two players turning a small home mistake into a larger home mistake.\nAlways begin with \"Then.\" Write one plain event with an action and its result.\nMake it follow from the standing problem, add a new problem, and leave a physical or digital thing for the other player to affect.\nGood: \"Then the hot water shrinks the towels, and they jam against the glass.\" Good: \"Then the alarm wakes the housemate, who trips over the laundry basket.\"\nBad: \"Then the whole city loses power\" because the home link is missing. Bad: \"Then someone fixes it and everyone relaxes\" because the story ends. Bad: \"Then they feel guilty\" because a feeling is not an event.\nDo not rescue anyone, clean up, undo a step, or jump to an unrelated room without a cause. A new person may enter only when the standing trouble gives them a reason to appear.\nUse ordinary words a twelve-year-old knows. Name the button, object, room, action, and result. Keep it under 140 characters. Never reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then the noise makes something nearby wobble and fall."
+}

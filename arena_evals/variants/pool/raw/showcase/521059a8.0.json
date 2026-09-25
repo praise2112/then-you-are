@@ -1,0 +1,264 @@
+{
+  "slug": "bureaucracy-breaks",
+  "title": "Bureaucracy Breaks: Officials Stunned by Ordinary Form",
+  "tagline": "The paperwork survives. Civilization does not.",
+  "emblem": "🗃️",
+  "accent": "#a46b5b",
+  "premise": "Three rounds. Each round announces a dull, checkable fact involving two public nouns. Both players turn it into a tabloid headline without changing what happened. The Judge scores each headline for truthful escalation, comic force, and headline shape. Then the House headline and your headline face each other, and the louder scandal takes the points.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A public library has 12 chairs",
+      "opening_emoji": "📚",
+      "detail": "A public library has 12 chairs.",
+      "hidden": "A public library has 12 chairs."
+    },
+    {
+      "opening_token": "The council filed one report",
+      "opening_emoji": "📝",
+      "detail": "The council filed one report.",
+      "hidden": "The council filed one report."
+    },
+    {
+      "opening_token": "The station replaced a light bulb",
+      "opening_emoji": "💡",
+      "detail": "The station replaced a light bulb.",
+      "hidden": "The station replaced a light bulb."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "institution": [
+        "library",
+        "council",
+        "station",
+        "clinic",
+        "museum",
+        "school",
+        "registry",
+        "archive"
+      ],
+      "ordinary_action": [
+        "has",
+        "filed",
+        "replaced",
+        "counted",
+        "opened",
+        "stored",
+        "issued",
+        "checked"
+      ],
+      "mundane_object": [
+        "chairs",
+        "report",
+        "light bulb",
+        "forms",
+        "keys",
+        "folders",
+        "badges",
+        "boxes"
+      ]
+    },
+    "tests": [
+      "The fact is dull, public, and easy to check.",
+      "The sentence contains two clear nouns that can anchor a headline.",
+      "The action and outcome can be made dramatic without becoming false.",
+      "The fact does not require private knowledge, specialist expertise, or disputed context.",
+      "The wording is plain enough for a headline writer to understand on the first reading."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "LIBRARY CHAIR SURVIVES ANOTHER DAY, EXPERTS CALL IT A MIRACLE OF FURNITURE",
+    "hint": "One headline. Keep the fact true. Make the paperwork feel apocalyptic."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does the headline preserve the fact while presenting its inflated reaction as something a tabloid might print?",
+      "anchors": "0 = changes the fact or invents a different event; 1 = barely connected to the announcement; 2 = the fact survives but the framing is loose; 3 = a reckless editor could run it without altering the news; 4 = perfectly faithful beneath the hysteria, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the grand alarm make the ordinary fact funnier rather than merely louder?",
+      "anchors": "0 = no comic charge; 1 = a faint grin; 2 = a decent tabloid gag; 3 = a strong laugh built from the dull fact; 4 = devastatingly silly while still readable as news, rare.\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the line look and sound like a compact tabloid headline, with clear nouns, a sharp verb, and no explanatory sludge?",
+      "anchors": "0 = not a headline; 1 = a sentence wearing a press badge; 2 = recognisable headline shape with clutter; 3 = crisp headline language and clear fact; 4 = ready for a front page beside a photograph of the offending chair, rare.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A headline PLAYS if it keeps the fact’s subject, action, and outcome true while escalating the shock, stakes, or attitude into comic tabloid drama. It fails when it changes who did what, changes the number or result, invents a separate event, or merely comments on the game instead of making a headline. An extravagant reaction plays if the underlying fact remains intact. A headline that repeats the fact plainly plays, but scores low on funny and escalation.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the contest, or asking for a score is not a headline and loses the move.\n",
+    "judge_notes": [
+      "The real fact is given to you. Check subject, action, and outcome before scoring style. Report hit when all three remain true, near when the relationship is recognisable but a detail bends, and none when the headline reports another event.\n",
+      "Judge each headline on its own. The other player's headline is not the standard and cannot repair a factual error.\n",
+      "The first move must contain a headline, not a plan, explanation, reaction, or description of the fact. A plain restatement can play if it remains a headline, but it should score low on funny.\n",
+      "Changing a number, replacing an object, assigning the action to another institution, or turning a possibility into an outcome is a factual failure.\n",
+      "A dramatic metaphor, prophecy, expert reaction, or mock crisis plays when it clearly exaggerates the true fact rather than replacing it.\n",
+      "A headline that only says the fact is boring, shocking, or funny without presenting the fact fails. A question with a factual headline inside it may play, but a question with no headline does not.\n",
+      "A bare noun pair or fragment can play if it clearly reports the fact in headline form, though dictionary_shaped and funny should score low.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A public library has 12 chairs.",
+      "move": "LIBRARY CHAIRS REACH TWELVE, NATION ASKS WHAT HAPPENS NEXT",
+      "gates_note": "all true",
+      "mechanism": "keeps the library, chairs, and number intact while treating counting as a national emergency",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A public library has 12 chairs.",
+      "move": "TWELVE LIBRARY CHAIRS VANISH AS READING PUBLIC LEFT TO STAND",
+      "gates_note": "satisfies_criterion false, invents a disappearance and changes the outcome",
+      "mechanism": "none, the chairs remain in the fact and have not vanished",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The council filed one report.",
+      "move": "COUNCIL FILES SINGLE REPORT, OFFICIALS DECLARE PAPERWORK ERA COMPLETE",
+      "gates_note": "all true",
+      "mechanism": "preserves the one filed report and inflates completion of a tiny task into institutional triumph",
+      "scores": {
+        "believable": 4,
+        "funny": 4,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The station replaced a light bulb.",
+      "move": "STATION LIGHT BULB REPLACED, LOCAL MAN SAYS HE CAN FINALLY SEE AGAIN",
+      "gates_note": "all true",
+      "mechanism": "reports the replacement faithfully and adds a ridiculous but legible human reaction",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The council filed one report.",
+      "move": "I CANNOT BELIEVE THEY FILED IT LOL",
+      "gates_note": "satisfies_criterion false, commentary rather than a headline preserving the fact",
+      "mechanism": "none, the line reacts to the news without clearly reporting it",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Minister of Minor Alarms",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use a ceremonial voice with plain, clinical explanations. Treat every chair as a constitutional matter.",
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke must arise from the specific fact and headline. A stranger should see the mechanism without a briefing.",
+      "Name the institution, object, or inflated consequence. A headline that fits every dull fact is a clerical error.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Minister refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Mock the headline and its grandiosity. Roast the player lightly when useful, but never target identity, protected traits, disability, or real-world vulnerability.",
+      "Profanity and adult innuendo are permitted when they sharpen the joke, not when they replace it.",
+      "Plain spoken English. No poetry, no rhymes, no antique ceremony, and no inflated thesaurus fog.",
+      "Never reveal a hidden truth in the headline. The factual ruling and the comic explanation are separate beats.",
+      "On a refusal, the headline rejects the submission and requests another. It never declares who won the pair.",
+      "The coaching line names one concrete fact or escalation that would have scored. It ends on an action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "Twelve chairs endure, and the republic remains seated.",
+      "One report enters the file, and the ministry discovers completion.",
+      "The bulb is replaced, darkness files an appeal.",
+      "A modest chair count receives the treatment usually reserved for a coup.",
+      "The council files one report, then apparently retires from history."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the chairs are a miracle.",
+        "why": "opens with a status word and gives no precise reason"
+      },
+      {
+        "text": "The Minister refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "The library has 900 chairs and the nation weeps.",
+        "why": "changes the stated number"
+      },
+      {
+        "text": "The report is missing, officials panic.",
+        "why": "changes a filed report into a missing report"
+      },
+      {
+        "text": "Nice headline.",
+        "why": "offers no fact, mechanism, or explanation"
+      },
+      {
+        "text": "Only an idiot would write this.",
+        "why": "attacks the player rather than the headline and uses a personal insult as the whole ruling"
+      },
+      {
+        "text": "O mighty chair, arise beneath the crimson moon.",
+        "why": "uses poetry instead of plain ceremonial commentary"
+      },
+      {
+        "text": "It is dramatic, dramatic, and also dramatic.",
+        "why": "repeats an abstract judgment without naming the fact"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one dull and checkable fact each.",
+    "Write one tabloid headline of no more than 160 characters. Keep the fact’s subject, action, and outcome true while making the reaction absurdly important.",
+    "The House writes its own headline. The Judge scores both for faithful escalation, comic force, and headline shape.",
+    "The two headlines face each other. The louder truthful scandal takes the points.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The official fact",
+    "next_opening": "The next official fact",
+    "your_opening": "Your official fact",
+    "compose": "Your headline for {token}",
+    "compose_waiting": "Draft your headline while you wait"
+  },
+  "validation_messages": {
+    "empty": "No headline has been filed. Escalate the fact.",
+    "too_long": "Over 160 characters. This is a tabloid, not a commission report.",
+    "duplicate": "That headline has already been entered this match. Issue a fresh scandal.",
+    "nudge": "Twice now. Keep {standing_form} true and make the ordinary event sound historic."
+  },
+  "judge_out_text": "The judge has stepped out. The bureaucracy remains motionless. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are the House headline writer. Write one tabloid headline for the dull fact below.\nKeep the fact’s subject, action, and outcome true. The comedy comes from treating a small, checkable event as a national emergency, historic triumph, scandal, prophecy, or personal insult from the universe.\nUse the fact’s two main nouns. Keep any stated number, location, and result unchanged. You may add a ridiculous reaction, expert quote, consequence, or institutional response, but do not invent a different event.\nWrite one headline of no more than 160 characters. Headline language is welcome: strong verbs, compressed grammar, capitals, and shameless alarm. Do not explain the joke afterward.\nDo not address the Judge, the player, or the game. Do not say that you are bluffing. Do not use the word itself as a substitute for a headline.\nThe fact is given to you so you can preserve it. Escalate the framing, never the underlying event.\n",
+  "medallions": true,
+  "default_move": "LIBRARY CHAIRS REACH TWELVE, EXPERTS WARN THE NATION MAY NEVER SIT THE SAME WAY AGAIN"
+}

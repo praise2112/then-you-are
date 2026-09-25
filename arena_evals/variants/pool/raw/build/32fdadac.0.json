@@ -1,0 +1,292 @@
+{
+  "slug": "spill-to-scandal",
+  "title": "Spill to Scandal",
+  "tagline": "One drink, two suspects, a shipload of terrible decisions.",
+  "emblem": "🍹",
+  "accent": "#0f766e",
+  "premise": "A drink hits the cruise ship deck. Build the same chain of trouble, one link at a time: spill, reaction, cover up, worse reaction. Make your partner responsible for the next mess. The ship will survive. Your dignity will not.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The first drink spills beside the midnight buffet.",
+      "opening_emoji": "🍹",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A bright blue cocktail runs under the piano during the captain's welcome toast.",
+      "opening_emoji": "🎹",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Someone knocks a glass of red punch onto the white towel stack by the pool.",
+      "opening_emoji": "🏊",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "drink": [
+        "rum",
+        "champagne",
+        "blue cocktail",
+        "red punch",
+        "frozen daiquiri",
+        "cider",
+        "gin and tonic",
+        "fruit punch"
+      ],
+      "ship_place": [
+        "midnight buffet",
+        "pool deck",
+        "piano bar",
+        "captain's lounge",
+        "casino entrance",
+        "theatre aisle",
+        "spa corridor",
+        "dining room"
+      ],
+      "first_problem": [
+        "hits a shoe",
+        "runs under a trolley",
+        "soaks a towel",
+        "splashes a uniform",
+        "stains a menu",
+        "slides toward a microphone",
+        "tips into a handbag",
+        "wets a warning sign"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a drink, a cruise ship place, and the first small accident.",
+      "The drink causes embarrassment or a silly problem, not serious injury, property destruction, or a real crime.",
+      "A stranger can picture exactly where the spill starts within five seconds.",
+      "The opening is small enough for several believable consequences, but awkward enough that someone will want to hide it.",
+      "Everyday words a twelve year old knows. No real brands, ship names, ports, or named passengers, the players bring those."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The rum reaches the captain's shoes, so you hide the mop and blame my sea legs.",
+    "hint": "One new consequence. Make your partner pay for it, and do not skip the next link."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How sharply the new consequence makes your partner responsible, exposed, embarrassed, or trapped in the chain.",
+      "anchors": "0 = nobody pays and the mess merely exists; 1 = a mild nuisance, a wet cuff or a dirty look; 2 = your partner must explain, clean, hide, or admit something; 3 = they now own a specific lie, witness, object, or humiliating job; 4 = believable and viciously specific, with their next link hanging by one thread (rare). A consequence that mainly harms the speaker scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the consequence follows directly from the full chain without skipping, ending, or undoing anything.",
+      "anchors": "0 = contradicts, skips a necessary link, declares the trouble over, or rewrites an earlier fact; 1 = vaguely related but the cause is missing; 2 = follows with a plain cause and effect; 3 = follows cleanly and uses an earlier object, person, or reaction; 4 = makes an earlier link suddenly matter while adding exactly one new consequence (rare). More drama does not make a skipped link fit.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the move makes the cruise ship, the mess, and the social embarrassment easy to picture.",
+      "anchors": "0 = generic trouble with no visible detail; 1 = one ordinary fact; 2 = a concrete ship detail or reaction; 3 = a sharp image with a person, object, or public reaction; 4 = the sort of humiliating little scene passengers would repeat before dessert (rare). Fancy language does not help.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly one believable next consequence to the whole chain. It must follow from the previous links in order, keep the original spill alive, and make one player pay through blame, cleanup, exposure, embarrassment, or a forced choice. A move BREAKS the chain if it skips a needed cause, adds several consequences at once, declares the trouble finished, cancels or rewrites an earlier link, contradicts the setting or timing, or turns into a new unrelated story. The points go to the cost imposed on the partner. A safe consequence with no target scores low even when it holds.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the scoring, or the partner's play instead of adding the next consequence is itself a broken chain.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier consequence: judge it against the opening card alone. It must be the immediate next result of the spill, not a later scandal.",
+      "The full transcript is one chain. Check the new consequence against every earlier link, not only the last sentence.",
+      "A skipped link fails when the move jumps over a needed reaction or cause, such as going from spilled drink straight to an evacuation without a believable alarm or discovery.",
+      "An ending fails when it says the mess is cleaned, forgiven, forgotten, resolved, or otherwise finished. The chain must remain open for one more consequence.",
+      "An undo fails when it cancels, denies, removes, or rewrites an earlier spill, reaction, lie, object, or responsibility.",
+      "Adding two linked results in one move fails when both are new consequences. State one consequence and let the next player handle its result.",
+      "A move may move attention from deck to staff, passengers, security, or the bar if the next link is clear and the cruise setting remains intact.",
+      "When a move can reasonably be read as one consequence, it holds. Break only for a plain skipped link, ending, undo, contradiction, or meta move.",
+      "A detail that repeats an earlier consequence in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The first drink spills beside the midnight buffet.",
+      "move": "The rum reaches your white shoes, so you kick the warning sign over it.",
+      "gates_note": "all true",
+      "mechanism": "the spill stains the partner and causes one immediate cover up",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The rum reaches your white shoes, so you kick the warning sign over it.",
+      "move": "A waiter sees the fallen sign and asks you to explain why your shoes are wet.",
+      "gates_note": "all true",
+      "mechanism": "one witness notices the cover up and makes the partner answer for it",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A waiter sees the fallen sign and asks you to explain why your shoes are wet.",
+      "move": "You say the waiter did it, and now the whole buffet applauds your honesty.",
+      "gates_note": "satisfies_criterion false (adds a lie and a public reaction as two new consequences)",
+      "mechanism": "the move bundles blame and applause instead of adding one next link",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "You say the waiter did it, and the waiter calls the floor manager.",
+      "move": "The captain arrives, the band stops, and the buffet is evacuated.",
+      "gates_note": "satisfies_criterion false (skips several needed reactions and adds multiple consequences)",
+      "mechanism": "three disasters arrive before anyone has time to react to the manager",
+      "scores": {
+        "squeeze": 3,
+        "fits": 0,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The floor manager asks you to mop the blue trail.",
+      "move": "You finish mopping, everyone forgives us, and we return to dessert.",
+      "gates_note": "satisfies_criterion false (declares the trouble finished)",
+      "mechanism": "the chain has been put to bed instead of given its next consequence",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "You hide the stained napkin in my cabin bag.",
+      "move": "There was never a stained napkin, and we both stayed clean.",
+      "gates_note": "satisfies_criterion false (undoes earlier objects and responsibility)",
+      "mechanism": "the move tries to erase the evidence rather than worsen the story",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Purser",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the chain and the new move must see why it held or broke.",
+      "Name the new consequence, or its plain stand in. A headline that fits any cruise disaster is lazy.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", \"The Purser rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the consequence and the partner's predicament, not identity, body, family, intelligence, or spelling.",
+      "Plain spoken English, a ship office with bad coffee, not a sea novel. No poetry, no rhymes, no thesaurus words.",
+      "On a break, put the skipped link, ending, undo, or overloaded sequence beside the move that caused it.",
+      "On a refusal, reject the move and ask for another. Never decide who won in the headline.",
+      "The coaching line names one immediate consequence that would have held and made the partner pay. It ends on a fact, never a mood.",
+      "Profanity and adult innuendo may appear sparingly, but never target a protected identity or turn the host into a bully.",
+      "Keep the ship visible. A mop, towel, buffet tray, cabin door, uniform, microphone, or passenger is better than abstract trouble."
+    ],
+    "good_headlines": [
+      "Your white shoes meet the rum, then the warning sign meets the deck. Your partner has started a tiny cover up.",
+      "The waiter asks why the shoes are wet. That is one question, one witness, and a very poor answer.",
+      "The manager has the mop, and your partner has the job. The buffet has found its entertainment.",
+      "You jumped from a fallen sign to an evacuation. Even the captain needs a reason to panic.",
+      "The chain was finished, forgiven, and sent back to dessert. Scandal needs at least one more embarrassing stop.",
+      "There was a stained napkin, then there was not. The napkin remains less slippery than this story.",
+      "The blue trail reaches the microphone, so the toast now has evidence. Your partner is holding the wrong sort of spotlight.",
+      "A wet towel becomes a complaint, and the complaint becomes your partner's problem. The ship's paperwork is thriving.",
+      "You blamed the waiter, and the waiter called the manager. A bold move, especially when the waiter has eyes.",
+      "The glass made one mess, your partner made another, and now the cabin bag is involved. Good judgment has missed the boat."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the chain continues.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Purser rules that this move fails.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Chain broken.",
+        "why": "names no detail and gives no reason"
+      },
+      {
+        "text": "What a stupid thing for you to say.",
+        "why": "mocks the player instead of the consequence"
+      },
+      {
+        "text": "The spill blooms into a tempest of destiny upon the moonlit sea.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "It may hold, unless it does not, because the rules are complicated.",
+        "why": "hedges and gives no plain ruling"
+      },
+      {
+        "text": "Rejected, but the wet shoes are funny.",
+        "why": "starts with a status word and does not explain the failure"
+      },
+      {
+        "text": "The captain is legally liable under maritime law.",
+        "why": "introduces legal trivia that a stranger cannot judge from the story"
+      },
+      {
+        "text": "Guilty.",
+        "why": "no reason and the game is not a criminal trial"
+      },
+      {
+        "text": "The move is inconsistent, discontinuous, contradictory and invalid.",
+        "why": "four abstract labels instead of one visible reason"
+      }
+    ]
+  },
+  "rules": [
+    "The first card gives you the spilled drink and its place on the ship.",
+    "Take turns adding exactly one believable next consequence.",
+    "Each move must follow the whole chain, keep the trouble open, and make one player pay.",
+    "Do not skip a needed reaction, declare the trouble finished, or undo an earlier link.",
+    "Specific embarrassment scores. A vague mess may hold, but it will not impress the Purser."
+  ],
+  "labels": {
+    "opening": "The first spill",
+    "next_opening": "The next spill",
+    "your_opening": "Your spill",
+    "compose": "Your next consequence, after {token}",
+    "compose_waiting": "Draft your next consequence while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing added. The Purser is waiting for the next mess.",
+    "too_long": "Over 140 characters. One consequence, not the entire cruise disaster.",
+    "duplicate": "That consequence is already in the chain. Make the next mess new.",
+    "nudge": "Twice now. Add one consequence that follows {standing_form}. Do not repeat it, finish the trouble, or erase it."
+  },
+  "judge_out_text": "The Purser has stepped away from the desk. Nobody adds a consequence until they return. {standing_form} is still the last link. Give it a minute.\n",
+  "opponent_prompt": "You are one of two passengers building the same chain of trouble on a cruise ship.\nThe first card gives the spilled drink and where it landed. Add one believable consequence per turn.\nEach move must follow the whole chain in order. Do not skip a needed reaction, end the trouble,\nor undo an earlier fact. Make your partner pay through blame, cleanup, exposure, embarrassment,\nor a forced choice. Keep the ship visible: use a waiter, towel, mop, uniform, buffet tray,\nmicrophone, cabin bag, lift, or passenger who saw too much.\n\nGood: \"The rum reaches your white shoes, so you kick the warning sign over it.\"\nGood: \"A waiter sees the fallen sign and asks you to explain why your shoes are wet.\"\nBad: \"The ship is evacuated and the captain resigns\" because it skips the links.\nBad: \"We clean it up and everyone forgives us\" because it ends the trouble.\nBad: \"There was never a spill\" because it undoes the opening.\nBad: \"Purser, that score is unfair\" because it talks about the game instead of adding a consequence.\n\nName your partner as \"my mate here\", \"he\", \"she\", or \"you\", never a name unless one is already\nin the chain. Keep one consequence in each move, not a list of disasters. Talk like a passenger\ntrying to sound innocent beside a wet buffet, not a novelist. Adult embarrassment and mild\nswearing are fine, but do not use identity based insults. Never repeat a consequence already used.\n",
+  "medallions": false,
+  "default_move": "The spill reaches the nearest towel, so my mate here grabs it before anyone can read the warning sign."
+}

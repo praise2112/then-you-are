@@ -1,0 +1,278 @@
+{
+  "slug": "office-chain",
+  "title": "Please Forward This",
+  "tagline": "One small request, then another. Keep the office waiting.",
+  "emblem": "📎",
+  "accent": "#0f766e",
+  "premise": "Create one chain of workplace requests, where each new request is caused by the one before it. Keep the chain polite and possible while quietly making your partner responsible for more work. The final request may be tiny, but it should explain why the whole office is waiting.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Please send me the meeting notes.",
+      "opening_emoji": "📝",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Please book a room for the interview panel.",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Please forward the spreadsheet to everyone on the project.",
+      "opening_emoji": "📊",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "work_item": [
+        "meeting notes",
+        "interview feedback",
+        "a project spreadsheet",
+        "a staff rota",
+        "a slide deck",
+        "a lunch order",
+        "a travel booking",
+        "a printer form"
+      ],
+      "next_need": [
+        "send it",
+        "print it",
+        "check it",
+        "rename it",
+        "attach it",
+        "share it",
+        "sign it",
+        "file it"
+      ],
+      "office_setting": [
+        "a meeting",
+        "an interview",
+        "a deadline",
+        "a training session",
+        "a team lunch",
+        "a review",
+        "a site visit",
+        "a budget check"
+      ]
+    },
+    "tests": [
+      "One short sentence beginning with a polite request, using everyday office words.",
+      "The request has a clear object and a reason why somebody needs it.",
+      "The request creates room for a natural next request rather than ending the task.",
+      "Nothing involves danger, private personal information, real wrongdoing, or naming a real person.",
+      "A stranger can understand the task, the workplace setting, and the likely next step without looking anything up."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Please ",
+    "example": "Please staple the notes, since loose pages are a bold way to lose a meeting.",
+    "hint": "Add one request and its plain reason. Make it follow the last request and leave your partner another job."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much extra work this request puts on your partner while still sounding like a reasonable office task.",
+      "anchors": "0 = asks for an effortless click or reply; 1 = adds one small job; 2 = adds a real nuisance such as checking, printing, or chasing; 3 = makes your partner responsible for several people, a deadline, or a detail they cannot ignore; 4 = polite on the surface and a full new workload underneath, rare. A request that mainly burdens you scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the new request clearly follows from the current request and remains compatible with the whole chain.",
+      "anchors": "0 = skips the link, contradicts the chain, ends it, or undoes an earlier request; 1 = vaguely related but the reason is missing; 2 = follows with a basic reason; 3 = follows cleanly and makes the next step obvious; 4 = solves a small practical problem created by the previous request and makes the chain feel inevitable, rare. Extra length does not earn points.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How recognisable and amusing the office problem is without becoming a speech.",
+      "anchors": "0 = generic office fog; 1 = one plain task; 2 = a detail people can picture; 3 = a detail that exposes a familiar workplace habit; 4 = a tiny, vivid request that makes the whole queue feel real, rare. Plain wording beats corporate jargon.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly one request that is a clear response to the current request and remains consistent with the full chain. The request must include a plain reason or an obvious practical cause. A move BREAKS if it skips a link and needs an unstated cause, says no more requests are needed, withdraws or changes an earlier request, adds two separate requests, or contradicts the existing chain. The request should keep the office task alive and give the partner more work. A safe request that adds almost no burden may hold but scores low.\n",
+    "anti_metagaming_clause": "Talking to the Coordinator about the game, the rules, the chain, or how the partner is playing instead of adding a workplace request is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier request beyond the card. Judge whether the move adds exactly one plausible request caused by the card and gives a plain reason.",
+      "The full transcript is the chain. Check the new request against every earlier request, not only the last one.",
+      "A skipped link fails when the new request would need an unstated task or cause between the previous request and this one. When the connection is reasonably clear, let it hold.",
+      "An ending fails when the move says the task is complete, no further action is needed, or the chain can stop there instead of adding a request.",
+      "An undo fails when the move cancels, withdraws, reverses, or changes an earlier request rather than building on it.",
+      "Adding two requests in one move fails because the move must add exactly one request. A request with one practical reason is still one move.",
+      "Check that the new request remains possible with the earlier chain. Do not invent calendar rules, software behaviour, company policy, or facts that need a lookup.",
+      "A request about the partner's work is part of the game. A remark about the partner's play or the Coordinator is a meta move.",
+      "A move that repeats an earlier request in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Please send me the meeting notes.",
+      "move": "Please put them in a shared folder, since email attachments have already started breeding.",
+      "gates_note": "all true",
+      "mechanism": "adds one clear follow up to sending the notes and gives the partner a visible filing job",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Please put them in a shared folder, since email attachments have already started breeding.",
+      "move": "Please check who can open the folder, since a shared document with no readers is just office wallpaper.",
+      "gates_note": "all true",
+      "mechanism": "makes access checking the practical consequence of sharing the folder",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Please send me the meeting notes.",
+      "move": "Please print the quarterly budget and book the large room, since the directors are arriving.",
+      "gates_note": "satisfies_criterion false, adds two requests and introduces an unstated meeting",
+      "mechanism": "jumps from notes to printing and room booking without one caused link",
+      "scores": {
+        "squeeze": 3,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Please print the interview feedback, since the panel needs paper copies.",
+      "move": "Actually, do not print it. Keep the feedback digital and send nothing.",
+      "gates_note": "satisfies_criterion false, undoes the earlier request and ends the chain",
+      "mechanism": "withdraws the printing request and asks for no next task",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Please attach the rota to the email, since the team needs the shifts.",
+      "move": "Please ask the team to confirm their shifts, since the attachment needs checking before Friday.",
+      "gates_note": "all true",
+      "mechanism": "turns the attachment into a confirmation chase and puts the deadline on the partner",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Coordinator",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the chain and the new request must see why it held or broke.",
+      "Name the request or its plain office object. A headline that fits any meeting is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", or \"The Coordinator rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the request, never identity, body, family, intelligence, or spelling. Light teasing is fine.",
+      "Plain spoken English, a tired office, not a corporate brochure. No poetry, no rhymes, no grand jargon.",
+      "On a break, put the two requests that cannot both work side by side, or name the missing link.",
+      "On a refusal for a gate failure, reject the request and ask for another. Do not pretend the chain has won or lost.",
+      "The coaching line names one request that would have held and added work for the partner. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "The notes need a shared folder, and the folder needs readers. The meeting has acquired a small government.",
+      "You asked for the room and the printer together. One move, two jobs, and no bridge between them.",
+      "The rota needs confirmations before Friday. Your partner now owns every reply and probably three reminders.",
+      "The attachment has to be checked before it is sent. Sensible, dull, and exactly how offices reproduce.",
+      "The report is renamed, then filed under the new name. A tiny request with a surprisingly long shadow.",
+      "You have asked for a signature on the form. The form has finally found someone to blame.",
+      "The feedback is printed for the panel, so counting the copies is fair. Paper has entered the chain.",
+      "No more requests are needed. That is an ending, not a contribution, and the queue remains unemployed.",
+      "The shared folder caused an access check. Nobody escapes a document by putting it online.",
+      "You withdrew the printing request and replaced it with nothing. The chain has been quietly sent home."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds: the request follows.",
+        "why": "opens with a status word and gives no office picture"
+      },
+      {
+        "text": "The Coordinator rules that this move fails.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Chain error.",
+        "why": "names no request and could describe any failure"
+      },
+      {
+        "text": "Only an idiot would ask for that.",
+        "why": "mocks the player and uses an identity based insult"
+      },
+      {
+        "text": "The paperwork dances through the moonlit corridors of destiny.",
+        "why": "poetry instead of a plain office reason"
+      },
+      {
+        "text": "It may follow, depending on how you look at it.",
+        "why": "hedges and gives no usable ruling"
+      },
+      {
+        "text": "Accepted, nice folder.",
+        "why": "starts with a status word and wastes the explanation"
+      },
+      {
+        "text": "The software would not permit that because of a hidden policy.",
+        "why": "relies on an invented fact a stranger cannot check"
+      },
+      {
+        "text": "Rejected.",
+        "why": "gives no reason and fits every request"
+      },
+      {
+        "text": "The request is sequentially, procedurally and operationally incompatible.",
+        "why": "uses corporate jargon instead of naming the missing link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts one workplace request chain.",
+    "Add exactly one request and its plain reason on each turn.",
+    "The new request must clearly follow the current request and fit the whole chain.",
+    "A skipped link, an ending, or an undo breaks the chain on the spot.",
+    "Points go to requests that give your partner more believable office work.",
+    "Polite and specific beats grand and complicated."
+  ],
+  "labels": {
+    "opening": "The first request",
+    "next_opening": "The next request",
+    "your_opening": "Your request",
+    "compose": "Your request, after {token}",
+    "compose_waiting": "Draft your next request while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing requested. The Coordinator is waiting.",
+    "too_long": "Over 140 characters. One office request, not a staff memo.",
+    "duplicate": "That request is already in the chain. Add a new one.",
+    "nudge": "Twice now. Add one request that follows {standing_form}. Do not end it, undo it, or skip a link."
+  },
+  "judge_out_text": "The Coordinator has stepped out. Nobody adds a request until they are back. {standing_form} is still the last word in the chain. Give it a minute.\n",
+  "opponent_prompt": "You are one of two colleagues building a chain of workplace requests. One request per turn, one or two plain sentences.\nEvery new request must be a clear response to the current request and must fit the whole chain. Include a simple reason so the link is visible.\nDo not skip a link. Do not say the work is finished, no more requests are needed, or that an earlier request should be cancelled or changed. Do not add two separate requests in one turn.\nMake each request cost your partner another believable office job. Ask them to check names, print copies, chase replies, rename files, confirm access, find a room, or remind someone before a deadline.\nGood: \"Please put the notes in a shared folder, since email attachments have already started breeding.\" / \"Please check who can open it, since a shared document with no readers is just office wallpaper.\"\nBad: \"Please book the room and print the report\" because that is two requests. Bad: \"Actually, do not send it\" because that undoes the chain. Bad: \"Please organise the whole conference\" because the link is missing. Bad: \"Coordinator, this is unfair\" because that talks about the game.\nTalk like a person in a mildly tired office, not a novelist or a manager training video. Use ordinary objects such as a form, a folder, a printer, a calendar, a meeting room, or a reply. Build from the last request rather than starting a new task.\nNever repeat an earlier request in different words. Keep the chain possible and polite, but make the next small job land on your partner.\n",
+  "medallions": false,
+  "default_move": "Please check that the request is still needed, since nobody wants to finish the wrong piece of work."
+}

@@ -1,0 +1,272 @@
+{
+  "slug": "alibi-cracks",
+  "title": "The Alibi Cracks",
+  "tagline": "Two mouths, one story, and a fresh lie waiting to trip over itself.",
+  "emblem": "🕵️",
+  "accent": "#7c3aed",
+  "premise": "You and your rival share one alibi, but every turn adds one plain detail to it. Make the story more useful, funny, or dangerously specific without breaking what is already true. The host hypes each new crack and roasts the player when the story folds.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Then we both say we were at the all-night diner when the power went out.",
+      "opening_emoji": "🍳",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Then we both claim we were stuck in the cinema during the fire alarm.",
+      "opening_emoji": "🎬",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Then we both swear we were at the wedding when the cake vanished.",
+      "opening_emoji": "💍",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 16,
+    "axes": {
+      "shared_story": [
+        "we ate at a diner",
+        "we watched a film",
+        "we attended a wedding",
+        "we waited at a bus stop",
+        "we played pool",
+        "we browsed a bookshop",
+        "we sang at karaoke",
+        "we sat in a laundrette"
+      ],
+      "pressure_point": [
+        "the power went out",
+        "an alarm started",
+        "a cake disappeared",
+        "a wallet was found",
+        "a window broke",
+        "the rain flooded the street",
+        "a famous guest arrived",
+        "the lights came back"
+      ],
+      "odd_detail": [
+        "our shoes were muddy",
+        "one chair was missing",
+        "the receipt had two names",
+        "a dog knew us",
+        "the clock was wrong",
+        "the waiter wore gloves",
+        "the camera was covered",
+        "we left by different doors"
+      ]
+    },
+    "tests": [
+      "It gives two suspects one shared place and one clear moment that a stranger can picture. Present tense, one sentence, plain words.",
+      "A non-player can ask at least two useful questions about the alibi within five seconds. The card must leave room for trouble.",
+      "Nothing on the card proves guilt or innocence. An arrest, confession, or perfect escape is an ending, not a start.",
+      "The card contains no real people, brands, identity-based abuse, or instructions for committing a crime.",
+      "It feels like a story two nervous suspects might repeat, with one small detail ready to become a very large headache."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the cop asks why our muddy shoes match the trail behind the bakery.",
+    "hint": "One event that follows from the whole alibi and leaves a fresh problem."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much useful pressure the new detail puts on the shared alibi.",
+      "anchors": "0 = nothing changes or the story gets safer; 1 = a tiny wrinkle; 2 = one new question or risk appears; 3 = the alibi pulls in a new person, place, or piece of evidence through one honest link; 4 = the detail blows the story open while still fitting every fact already standing, rare. A wild escalation with no support scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How plainly the event grows out of the details already in the alibi.",
+      "anchors": "0 = unrelated invention or contradiction; 1 = claimed connection with no visible reason; 2 = possible but strained; 3 = a stranger sees why the earlier detail causes this event; 4 = it feels brutally inevitable, rare. Packing several missing links into one move scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the new alibi trouble happening.",
+      "anchors": "0 = confusing, abstract, or only a thought; 1 = vague and hard to stage; 2 = clear but ordinary; 3 = a sharp scene appears at once; 4 = one concrete detail makes the lie feel alive, rare. Extra words do not create a picture by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it is one new event caused by and fitting the whole shared alibi, told plainly, and it leaves a fresh problem for the next player. Useful, funny, or dangerous specificity is welcome, but the chain must stay honest to every detail already standing. A step fails when it skips a link by introducing a sudden fact with no setup, ends the story with proof, arrest, confession, or everyone leaving the case, undoes or replaces a standing detail, contradicts the alibi, jumps to an unrelated scene, or gives only a thought, feeling, claim, or moral instead of an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, addressing the rules, or trying to bargain with the verdict is itself a broken step.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move: judge the move against the opening card and the shared alibi it establishes.",
+      "A new person may enter if the standing details give them a plain reason to appear, such as a waiter answering a complaint or a cop following a visible trail. A detective suddenly holding complete evidence is a skipped link unless the story already set it up.",
+      "An ending includes proof, arrest, confession, innocence being confirmed, everyone leaving the case, or any step that removes all remaining trouble. Endings fail even when they follow perfectly.",
+      "An undo includes denying a detail, changing the place or time, making a witness forget, or replacing a standing fact with a cleaner version. The chain must carry its baggage.",
+      "A contradiction is not a clever crack. Saying we were alone after naming a waiter, or saying the power stayed on after it went out, fails the criterion.",
+      "A same-size event can still pass if it follows and leaves something fresh to question. Score 0 or 1 on reach rather than failing it for being modest.",
+      "Restating the alibi, repeating a standing detail, or naming its obvious continuation with nothing new is a semantic duplicate and fails the criterion.",
+      "Two or three events packed into one move pass only when every link is plain. Score link at 2 or below when the move hides missing steps.",
+      "A feeling, suspicion, explanation, promise, or moral is not an event unless something visible happens because of it."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Then we both say we were at the all-night diner when the power went out.",
+      "move": "Then the waitress says our booth was empty when the lights died.",
+      "gates_note": "all true",
+      "mechanism": "the shared diner story creates a witness who can challenge where the suspects were",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the waitress says our booth was empty when the lights died.",
+      "move": "Then the manager checks the camera and finds our coats hanging there without us.",
+      "gates_note": "all true",
+      "mechanism": "the manager investigates the waitress's claim and finds visible evidence",
+      "scores": {
+        "reach": 4,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then we both say we were at the all-night diner when the power went out.",
+      "move": "Then the detective proves we stole the jewels and arrests us.",
+      "gates_note": "satisfies_criterion false, skipped evidence and an ending",
+      "mechanism": "proof and arrest appear without the trail that would produce them",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the waitress says our booth was empty when the lights died.",
+      "move": "Then we admit we were never at the diner and walk away from the case.",
+      "gates_note": "satisfies_criterion false, undo and ending",
+      "mechanism": "the move erases the shared alibi and closes the trouble",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the manager checks the camera and finds our coats hanging there without us.",
+      "move": "Then a red scarf is visible in the camera glass behind the coats.",
+      "gates_note": "all true",
+      "mechanism": "the camera footage already in play reveals a new visible clue",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Alibi Hype Machine",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hype"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Bring loud energy, then give the exact reason. The joke must still show why the step held or detonated.",
+      "Name both steps or their obvious plain stand-ins. Do not spray generic hype over every crime scene.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The host refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the move and the collapsing lie, with savage comic bite. Roast-level jabs at the player are allowed, but no identity-based abuse, threats, or slurs.",
+      "Profanity and adult innuendo are allowed when they sharpen the joke, not when they replace the explanation.",
+      "Plain spoken English. No poetry, no rhymes, no fake courtroom Latin, no thesaurus fog.",
+      "On a skipped link, name the missing setup. On an ending, say the case ended and the chain stops here.",
+      "On an undo, name the detail that got erased. The alibi is a junk drawer, not a magic delete button.",
+      "On a refusal, the headline rejects the step and demands another. It never rules on who won.",
+      "The coaching line names one event that could follow the standing alibi. End on something happening, never a mood or a verdict.",
+      "Use hype sparingly enough that the actual causal link remains visible. Screaming is not evidence, champ."
+    ],
+    "good_headlines": [
+      "The waitress saw an empty booth, and our alibi just lost its pants in public.",
+      "Coats without bodies on camera. Beautifully specific, deeply cursed, and exactly the right crack.",
+      "The red scarf appears in the glass, because apparently the lie hired a witness.",
+      "The manager checks the footage, the coats snitch, and the alibi starts sweating through its shirt.",
+      "A new witness enters because the diner exists. The story grows teeth without teleporting a detective.",
+      "That detail hits the camera already on the table. The lie is not dead, but it is bleeding on the paperwork.",
+      "Same diner, bigger problem. Gorgeous little disaster, no illegal staircase to the next clue.",
+      "The booth was empty, the coats were present, and the alibi is now doing unpaid comedy.",
+      "The story keeps its facts and adds a witness. Look at this rare specimen, a lie with continuity.",
+      "The evidence arrives through the camera, not from the heavens. Even bad alibis need an entrance."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, huge vibes, the alibi slays.",
+        "why": "opens with a status word and explains nothing"
+      },
+      {
+        "text": "Then the detective has every answer and arrests you, boom.",
+        "why": "hypes a skipped link and an ending instead of naming the missing setup"
+      },
+      {
+        "text": "Your brain has left the diner and filed for divorce.",
+        "why": "mocks the player rather than explaining the broken event"
+      },
+      {
+        "text": "The facts become problematic in a kaleidoscope of culpability.",
+        "why": "uses foggy thesaurus language with no visible cause"
+      },
+      {
+        "text": "Rejected: no.",
+        "why": "opens with a ruling phrase and gives no reason or coaching"
+      },
+      {
+        "text": "We were there, except we were not, unless the vibes say otherwise.",
+        "why": "hedges, contradicts the alibi, and refuses to rule plainly"
+      },
+      {
+        "text": "And lo, the alibi danced beneath the moon...",
+        "why": "poetry and an ellipsis hide the actual problem"
+      },
+      {
+        "text": "The cops arrest us because crime.",
+        "why": "skips the evidence and offers a baby sized explanation"
+      }
+    ]
+  },
+  "rules": [
+    "One event happens next because of the whole alibi. Start with Then.",
+    "Add a useful, funny, or dangerous detail without contradicting anything already standing.",
+    "Leave a fresh problem for the other player to worsen.",
+    "Skip a link, end the case, or undo a detail and the chain stops with you.",
+    "The Judge rules on the story link, not spelling, accents, or perfect grammar."
+  ],
+  "labels": {
+    "opening": "The shared alibi",
+    "next_opening": "The next crack",
+    "your_opening": "Your crack",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Draft your next crack while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happened. Even bad liars need an event.",
+    "too_long": "Over 140 characters. One crack, not a police report.",
+    "duplicate": "That detail already made the alibi sweat. Add a new problem.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. One event, one link, fresh trouble."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands, and the alibi is still sweating.\n",
+  "opponent_prompt": "You are one of two suspects sharing an alibi, and you want the story to become more useful, funny, or dangerously specific.\nAlways write one sentence beginning with Then. Name one visible event that follows from the entire alibi and leaves a fresh problem.\nGood: Then the waitress says our booth was empty when the lights died. Good: Then the camera catches our coats sitting there without us.\nBad: Then the detective proves everything and arrests us. That skips evidence and ends the case. Bad: Then we confess we were never there. That undoes the standing alibi and closes the trouble. Bad: Then we feel nervous. That is a feeling, not an event.\nCarry every fact already stated. Never deny, replace, tidy, prove, arrest, confess, or walk away from the case. Do not teleport in a witness unless the standing details give them a reason to appear.\nTalk like a person telling a mate about a lie that has grown legs. Plain words, present tense, one link, no novelist fog. Adult jokes and mild profanity are allowed, but the event must remain clear.\nNever reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then someone notices one small detail that neither of us remembers agreeing on."
+}

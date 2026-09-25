@@ -1,0 +1,274 @@
+{
+  "slug": "promotion-prophecy",
+  "title": "Promotion Prophecy",
+  "tagline": "Read the career ladder. Ignore the sensible rungs.",
+  "emblem": "🔮",
+  "accent": "#b56d91",
+  "premise": "Three rounds. Each round deals a job title. Both players write one sentence predicting the ridiculous path to that worker's next promotion. The Judge scores each prophecy for how well the job drives the advancement, how funny the climb is, and how neatly it reads. Then the prophecies are revealed and the stronger career forecast takes the round.\n",
+  "seed_pool": [
+    {
+      "opening_token": "librarian",
+      "opening_emoji": "📚",
+      "detail": "a librarian",
+      "hidden": "A worker who organizes, maintains, lends, and helps people find books and other information."
+    },
+    {
+      "opening_token": "beekeeper",
+      "opening_emoji": "🐝",
+      "detail": "a beekeeper",
+      "hidden": "A worker who tends bee colonies, manages hives, and collects or protects honey and wax."
+    },
+    {
+      "opening_token": "night auditor",
+      "opening_emoji": "🌙",
+      "detail": "a night auditor",
+      "hidden": "A hotel worker who handles overnight accounts, checks records, and assists guests during the night."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "work_focus": [
+        "organizing",
+        "repairing",
+        "serving",
+        "inspecting",
+        "growing",
+        "recording",
+        "protecting",
+        "guiding"
+      ],
+      "promotion_style": [
+        "ceremonial",
+        "bureaucratic",
+        "magical",
+        "political",
+        "culinary",
+        "military",
+        "royal",
+        "accidental"
+      ],
+      "new_rank": [
+        "keeper",
+        "chief",
+        "warden",
+        "minister",
+        "master",
+        "captain",
+        "director",
+        "oracle"
+      ]
+    },
+    "tests": [
+      "The card is a recognizable job title.",
+      "The card can be used naturally after an article such as a or an.",
+      "The title has a real workplace task that can drive a promotion.",
+      "The title is not already a rank, honorific, or promotion outcome.",
+      "The title is short enough to leave room for a one sentence prophecy."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Return every book on time, and the mayor will promote you to Keeper of the City's Forbidden Shelf.",
+    "hint": "One sentence. Make the job cause the promotion."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does the prediction make a strange but understandable career progression from the job's actual work?",
+      "anchors": "0 = the job has no role in the promotion; 1 = a thin connection or random reward; 2 = the work helps, with a large leap; 3 = the advancement follows clearly from the job; 4 = absurd on paper but perfectly earned by the worker's duties, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the promotion create a clean comic surprise without losing the career logic?",
+      "anchors": "0 = no joke or only confusion; 1 = a faint grin; 2 = a solid comic turn; 3 = a laugh with a sharp image; 4 = the promotion is wonderfully specific and still fits the job, rare.\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Is it one tidy prediction with a clear worker, action, and promotion?",
+      "anchors": "0 = not a prediction; 1 = a fragment or tangled explanation; 2 = understandable but padded; 3 = one clean sentence with a visible cause and result; 4 = compact enough to print on a career horoscope card, rare.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A prediction PLAYS if it concerns advancement earned through or caused by the dealt job's actual work. It must say or clearly imply what the worker does and how that work leads to a new rank, office, title, or authority. It fails when it is merely fan fiction about a person with the job, a general compliment, an unrelated lucky event, a comment about the game, or a sentence that never predicts advancement. A ridiculous promotion plays when the job remains the engine of the prophecy.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing prophecy.\n",
+    "judge_notes": [
+      "The first move must establish a job caused advancement, not merely describe the job or name a fanciful title. The promotion may be explicit or unmistakable from context.\n",
+      "Both players answer the same job title. Judge each prophecy on its own; the other player's prophecy is not the standard.\n",
+      "A prophecy about a worker's personality, appearance, romance, or private life fails unless the dealt job's actual work causes the promotion.\n",
+      "A random reward, inheritance, rescue, election, or accident fails when the job does not materially cause the advancement.\n",
+      "A sentence that praises the worker, uses the job in a story, or predicts an event without a promotion fails, even if it is funny.\n",
+      "A bare promotion title without a cause fails. A short sentence with a clear job based cause plays, even if it is plain.\n",
+      "The new rank may be absurd, invented, or grand. Do not punish fantasy when the connection to the job's real duties is clear.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "librarian",
+      "move": "Return every book on time, and the mayor will promote you to Keeper of the City's Forbidden Shelf.",
+      "gates_note": "all true",
+      "mechanism": "The librarian's core duty directly earns a municipal promotion with a specific forbidden shelf.",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "beekeeper",
+      "move": "After settling three rival hives without losing a single queen, you will become Minister of Pollination.",
+      "gates_note": "all true",
+      "mechanism": "Hive management drives an inflated public office, and the rival queens provide the trouble.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "night auditor",
+      "move": "The hotel will promote you to Emperor of Sleep because you look excellent in a waistcoat at 3 a.m.",
+      "gates_note": "satisfies_criterion false, the stated reason is appearance rather than the job's actual work",
+      "mechanism": "The title gets a promotion, but the audit work is left standing outside with the luggage.",
+      "scores": {
+        "believable": 1,
+        "funny": 2,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "librarian",
+      "move": "The mayor will promote you to Grand Wizard because the word librarian sounds mysterious.",
+      "gates_note": "satisfies_criterion false, a comment on the word rather than a work caused advancement",
+      "mechanism": "The prophecy admires the label and forgets the books, which is a poor filing system.",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "beekeeper",
+      "move": "You will inherit a palace and become Lord of the Golden Orchard.",
+      "gates_note": "satisfies_criterion false, it predicts an unrelated stroke of luck with no job based cause",
+      "mechanism": "The bees never enter the sentence, leaving the promotion to inheritance and decorative fruit.",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Career Astrologer",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the job and the prophecy must see why the career move scored.",
+      "Name the job or the promotion's key noun. A headline that fits every office is just a horoscope in a blank envelope.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Career Astrologer refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the prophecy, never the player. Light jabs are fine, but no identity based abuse or comments about body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no French, no thesaurus words.",
+      "Never reveal the hidden job explanation in the headline. The career logic can be discussed without spoiling anything else.",
+      "On a refusal, the headline refuses the prophecy and asks for another. It never rules on which player won.",
+      "The coaching line names one missing ingredient, usually the job's actual duty or the promotion. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The librarian shelves one book and unlocks a municipal conspiracy.",
+      "A beekeeper settles the queens and receives a ministry, because apparently pollen needs a cabinet.",
+      "The auditor gets a crown for looking awake. The ledger remains unconvinced.",
+      "That promotion has a cause, a title, and enough forbidden shelving to worry the mayor.",
+      "Inherited palaces do not count as night work, however flattering the waistcoat.",
+      "The bees did the campaigning, but the beekeeper still had to run the hives.",
+      "A title without a job based cause is just a name tag with ambition.",
+      "The librarian did the shelving, and the city promoted the shelf. Sensible enough for a prophecy.",
+      "The audit vanished, the crown arrived, and the sentence forgot to connect them.",
+      "A grand office earned through tiny records. Bureaucracy finally has a punchline."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the librarian gets promoted.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Career Astrologer refuses: this is not a prophecy.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and gives no useful image"
+      },
+      {
+        "text": "The librarian will actually become Keeper of the City's Forbidden Shelf.",
+        "why": "treats the invented promotion as a fact instead of commenting on the prophecy"
+      },
+      {
+        "text": "Believable.",
+        "why": "no reason, no job, no career picture"
+      },
+      {
+        "text": "Only a fool would forget the job.",
+        "why": "mocks the player instead of the prophecy"
+      },
+      {
+        "text": "O mighty worker, ascend through the moonlit corridors of fate.",
+        "why": "poetry and melodrama where plain speech would do"
+      },
+      {
+        "text": "It is plausible, credible, convincing, and realistic.",
+        "why": "four near synonyms doing no comic work"
+      },
+      {
+        "text": "Better than the other player's promotion.",
+        "why": "judges the pair instead of explaining this prophecy"
+      },
+      {
+        "text": "Nice career.",
+        "why": "no reason, no job, no bite"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one job title each.",
+    "Write one sentence predicting how that worker gets promoted. The job's actual work must cause or earn the advancement.",
+    "The Judge scores each prophecy for believable career logic, funny escalation, and clean shape.",
+    "The stronger prophecy wins the round. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The job",
+    "next_opening": "The next job",
+    "your_opening": "Your job",
+    "compose": "Your promotion prophecy for {token}",
+    "compose_waiting": "Draft your prophecy while you wait"
+  },
+  "validation_messages": {
+    "empty": "No prophecy yet. Give the worker a promotion.",
+    "too_long": "Over 160 characters. A career forecast, not a personnel file.",
+    "duplicate": "That prophecy has already been played this match. Find another route up.",
+    "nudge": "Twice now. Show how {standing_form} earns a promotion through the job."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody gets promoted until they are back. {standing_form} waits in the office. Give it a minute.\n",
+  "opponent_prompt": "You are the rival career astrologer. Write one sentence predicting how the worker with the dealt job gets promoted.\nThe job must drive the prophecy. Use a real duty of the job, then turn that duty into a ridiculous new rank, office, or authority. For librarian: Return every book on time, and the mayor will promote you to Keeper of the City's Forbidden Shelf.\nDo not write fan fiction about the worker's personality, appearance, romance, family, or private life. Do not use a random inheritance, lucky rescue, election, or accident unless the job's actual work clearly causes it.\nMake the promotion specific. A named office, grand title, absurd department, or ceremonial authority is better than simply saying promoted. The worker should earn it through the job, even if the reward is wildly disproportionate.\nKeep one sentence and use plain speech. Do not explain the joke after the prophecy. Do not mention the game, the Judge, the other player, or these instructions. Do not hedge.\nThe dealt job is given to you so you can build from its real work. The prophecy should not merely repeat the job title. A librarian should shelve, lend, organize, or protect books. A beekeeper should tend hives, calm colonies, or manage honey. A night auditor should check accounts, handle overnight records, or assist late guests.\nAvoid the same promotion pattern in every round. Vary the cause and the destination: a civic office, a royal post, a supernatural rank, a ceremonial title, a military command, a department, a household role, or a public ministry.\nDo not reuse a promotion or a central joke from an earlier round. Do not use quotation marks around the prophecy.\n",
+  "medallions": true,
+  "default_move": "Sort every overnight account without waking a guest, and the hotel will promote you to Minister of Midnight Arithmetic."
+}

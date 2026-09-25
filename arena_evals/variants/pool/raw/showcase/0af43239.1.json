@@ -1,0 +1,274 @@
+{
+  "slug": "the-vegetable-case",
+  "title": "The Vegetable Case",
+  "tagline": "The humble vegetable enters its plea.",
+  "emblem": "🥕",
+  "accent": "#5b7f3a",
+  "premise": "A vegetable stands before the court, accused of being boring. Both players deliver a slogan that builds its case, using the vegetable’s plain facts as evidence. The strongest defense turns humble details into a stirring cause.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Peas are small, round, green seeds that grow in pods.",
+      "opening_emoji": "🫛",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Carrots are orange roots that grow underground.",
+      "opening_emoji": "🥕",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Broccoli has green flower heads on thick stalks.",
+      "opening_emoji": "🥦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "vegetable": [
+        "peas",
+        "carrots",
+        "broccoli",
+        "cabbage",
+        "celery",
+        "onions",
+        "beetroot",
+        "cauliflower"
+      ],
+      "appearance": [
+        "small and round",
+        "long and orange",
+        "green and leafy",
+        "pale and layered",
+        "purple and smooth",
+        "white and branching",
+        "crinkled and green",
+        "red and firm"
+      ],
+      "place_or_structure": [
+        "grow in pods",
+        "grow underground",
+        "grow on stalks",
+        "grow in heads",
+        "grow in layers",
+        "grow from bulbs",
+        "grow in soil",
+        "grow on stems"
+      ]
+    },
+    "tests": [
+      "One short sentence with an article, under twelve words. A child can picture the vegetable at once.",
+      "It states plain, checkable facts about one vegetable, with no health promises or invented history.",
+      "The vegetable is safe to admire, and the fact gives a slogan something solid to praise.",
+      "It contains at least two concrete details, such as a colour, a shape, a part or a place of growth.",
+      "It is ordinary enough to need a defense. If the card already sounds like a campaign slogan, it is not a card."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Peas: Tiny green proof that good things travel in groups.",
+    "hint": "One slogan. Keep the facts true, then make the vegetable worth cheering for."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How boldly does the slogan turn the vegetable’s plain facts into a larger cause?",
+      "anchors": "0 = merely repeats the card; 1 = adds one mild compliment; 2 = finds a clear virtue or image in the facts; 3 = turns the facts into a memorable cause, promise or rallying cry; 4 = makes a tiny vegetable feel like the champion of a grand principle while every card fact still stands (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the defense produce a clean, surprising laugh?",
+      "anchors": "0 = no comic spark; 1 = a small grin; 2 = a pleasing turn; 3 = a clear laugh; 4 = the vegetable’s case is so unexpectedly persuasive that the room would repeat it (rare). The joke must target the slogan or the vegetable’s predicament, never a person.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as a compact slogan that could sit on a poster or campaign placard?",
+      "anchors": "0 = explanation, paragraph or question; 1 = a slogan buried under filler; 2 = usable but loose; 3 = concise, rhythmic and easy to remember; 4 = instantly printable, with every word serving the vegetable’s case (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A slogan PLAYS if it presents the vegetable as admirable and keeps every stated card fact true. It may add praise, ambition, metaphor, urgency, a cause or a playful accusation. It fails when it drops a stated fact, contradicts one, replaces the vegetable with another subject, or praises it without making the vegetable identifiable from the card. It also fails when it is a comment to the Judge, a question about the game, or an explanation rather than a slogan. A plain restatement of the card plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game or citing the rules is itself a losing slogan.\n",
+    "judge_notes": [
+      "Test the gate one way only: could every fact on the card still be true given this slogan, and is the vegetable being defended? Do not ask whether the slogan is scientifically complete or persuasive to every reader.\n",
+      "Added praise is not a contradiction. A slogan may call peas a team, carrots secret workers or broccoli a green constellation, provided it does not erase or change the card’s facts.\n",
+      "The first move is judged against the card alone. The other player’s slogan is never the standard for truth or quality.\n",
+      "If the slogan says peas are large, blue or grown on trees, the stated size, colour or place of growth is broken. If it simply says peas are brave, the card remains intact.\n",
+      "If the slogan praises healthy eating in general but never identifies or preserves the vegetable’s card facts, it does not satisfy the criterion. A defense needs a vegetable in the courtroom.\n",
+      "Score stretch by distance from the plain facts, not by grand language alone. A precise image can outrun a pile of dramatic adjectives.\n",
+      "Capital letters, a missing full stop and a decorative colon cost nothing. Judge the words, not the typography.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Peas are small, round, green seeds that grow in pods.",
+      "move": "PEAS: TINY GREEN PROOF THAT GOOD THINGS TRAVEL IN GROUPS",
+      "gates_note": "all true",
+      "mechanism": "small green seeds become evidence for companionship, while their pods and shape remain possible",
+      "scores": {
+        "stretch": 4,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Carrots are orange roots that grow underground.",
+      "move": "CARROTS: THE QUIET WORKERS BUILDING TOMORROW FROM BELOW",
+      "gates_note": "all true",
+      "mechanism": "underground growth becomes patient civic labor, with the orange root still at the center",
+      "scores": {
+        "stretch": 3,
+        "funny": 1,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Broccoli has green flower heads on thick stalks.",
+      "move": "BROCCOLI: A FOREST OF FLOWERS STANDING FIRM",
+      "gates_note": "all true",
+      "mechanism": "flower heads and stalks become a sturdy miniature forest",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Peas are small, round, green seeds that grow in pods.",
+      "move": "PEAS: HUGE BLUE HEROES FROM THE TREETOPS",
+      "gates_note": "satisfies_criterion false (small and green are contradicted, and growth in pods is replaced by treetops)",
+      "mechanism": "none, the slogan overwrites the peas’ stated size, colour and growing place",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Carrots are orange roots that grow underground.",
+      "move": "EAT WELL AND SAVE THE WORLD",
+      "gates_note": "satisfies_criterion false (the carrot and its stated facts are missing)",
+      "mechanism": "a general instruction replaces the vegetable’s case",
+      "scores": {
+        "stretch": 1,
+        "funny": 0,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Vegetable Advocate",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters. Two short sentences are allowed when a precise ruling needs them.",
+      "Speak as though a humble vegetable has entered a solemn court, but keep the words plain and the explanation exact.",
+      "The joke must arise from the move, its vegetable or its facts. Never mock the player, a group of people or anyone’s identity.",
+      "Never open with a status word or ruling phrase. Do not begin with Accepted, Rejected, Refused, Move refused or The Advocate refuses.",
+      "Use commas and full stops only as punctuation. No dashes, colons after a verdict or ellipses.",
+      "On a fail, name the specific fact that vanished or was broken, using the card’s own words.",
+      "On a refusal, say that the slogan cannot enter the case and request another. Do not rule on who won.",
+      "Name the key vegetable detail, such as the pod, root, flower head, colour or underground growth. A generic compliment is not an explanation.",
+      "The coaching line names one slogan that would have played. It ends on a fact or an action, never a mood or a verdict.",
+      "Keep all language suitable for a family audience. No profanity, innuendo or identity based abuse."
+    ],
+    "good_headlines": [
+      "The peas enter as small green seeds and leave as a party with evidence.",
+      "The carrot’s underground work is now a public service, and the root remains firmly in the ground.",
+      "Broccoli has flower heads and stalks, so the forest comparison has standing.",
+      "The pod is not scenery, it is the pea’s entire traveling chamber.",
+      "A blue pea is a splendid witness, but this card called it green.",
+      "The court recognizes a root, not a general lecture about eating well.",
+      "The cabbage kept its layers and acquired a constitution, a tidy case.",
+      "The onion made every layer an argument, and none of them contradicted the card.",
+      "A slogan may crown the beetroot, but it may not move its growth from soil to sky.",
+      "The vegetable supplied the evidence, and the slogan supplied the trumpet."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a noble defense.",
+        "why": "opens with a ruling phrase and gives no clinical reason"
+      },
+      {
+        "text": "The Advocate refuses: submit a proper slogan.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, the vegetable awaits your appeal.",
+        "why": "opens with a ruling phrase and addresses the ruling rather than the move"
+      },
+      {
+        "text": "Wrong, the facts are missing.",
+        "why": "does not identify which vegetable facts disappeared"
+      },
+      {
+        "text": "A brave attempt.",
+        "why": "offers praise without explaining the slogan’s evidence"
+      },
+      {
+        "text": "Only a fool would defend that carrot.",
+        "why": "mocks a person and uses identity based abuse"
+      },
+      {
+        "text": "O noble root, arise beneath the moonlit firmament.",
+        "why": "uses ornate poetry instead of plain spoken court language"
+      },
+      {
+        "text": "It is stirring, heroic, magnificent and inspirational.",
+        "why": "piles up praise without naming a fact or mechanism"
+      },
+      {
+        "text": "Better than the other player’s vegetable speech.",
+        "why": "judges the pair instead of the slogan on its own"
+      },
+      {
+        "text": "The evidence is hereby adjudicated as nutritionally compelling.",
+        "why": "uses stiff jargon and adds an unsupported health claim"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one plain vegetable fact each.",
+    "Write one slogan for it, under 90 characters. The House writes its own, unseen, and the Vegetable Advocate scores both.",
+    "Every stated card fact must remain true, and the slogan must present that vegetable as worth admiring. Drop or break a fact and the case is lost.",
+    "Everything else may become praise, metaphor, ambition, urgency or a grand cause. The further the defense travels while the facts hold, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The case",
+    "next_opening": "The next case",
+    "your_opening": "Your case",
+    "compose": "Your slogan for {token}",
+    "compose_waiting": "Prepare your slogan while you wait"
+  },
+  "validation_messages": {
+    "empty": "The vegetable has no advocate. Write the slogan.",
+    "too_long": "Over 90 characters. A slogan, not a closing argument.",
+    "duplicate": "That slogan has already entered this match. Present a fresh defense.",
+    "nudge": "Twice now. One slogan that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Vegetable Advocate has stepped out of court. The case is paused. {standing_form} remains on the evidence table. Give it a moment.\n",
+  "opponent_prompt": "You are a vegetable advocate in a small ceremonial court. A plain vegetable fact is before you. Write one slogan.\nTHE FACTS MUST SURVIVE. The slogan must keep every stated detail true while presenting the vegetable as worth admiring. Never drop a colour, shape, part or growing place. Never replace the vegetable with a general message about food.\nThen build the case as boldly as you dare. Turn pods into teamwork, roots into quiet labor, flower heads into forests, layers into patience or soil into a foundation. The points reward distance from the plain card while the card remains true.\nGood: \"PEAS: TINY GREEN PROOF THAT GOOD THINGS TRAVEL IN GROUPS\" for small green seeds in pods. \"CARROTS: THE QUIET WORKERS BUILDING TOMORROW FROM BELOW\" for orange roots underground.\nBad: \"HUGE BLUE PEAS FROM THE TREETOPS\" because size, colour and growing place are broken. \"EAT WELL AND SAVE THE WORLD\" because the vegetable and its facts are missing.\nSlogan rhythm: short, clear, memorable and suitable for a poster. Under 90 characters. Do not explain the joke. A colon is allowed inside the slogan, but do not use a dash. No quotation marks around the slogan. Keep the move family friendly, with no profanity, innuendo or identity based abuse.\nVary the defense from round to round: teamwork, quiet labor, architecture, courage, patience, surprise or public service. Do not use the same shape twice in a match.\nReply with the slogan only.\n",
+  "medallions": false,
+  "default_move": "Humble vegetable, standing tall for everyone"
+}

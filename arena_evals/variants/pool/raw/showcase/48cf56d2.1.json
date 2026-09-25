@@ -1,0 +1,277 @@
+{
+  "slug": "reference-check-from-hell",
+  "title": "Reference Check from Hell",
+  "tagline": "Recommend the ruin. Seal the fate.",
+  "emblem": "🖋️",
+  "accent": "#5b315f",
+  "premise": "Three rounds. Each round deals one job nobody wants, described by a dull fact about its work. Both players write one sentence from a former boss recommending the applicant. The work must remain recognisable, and the sentence must still make the applicant suitable and willing to do it. Everything else is fair game: grudges, secret talents, warnings, crimes, romance, bodily fluids and the precise reason nobody else applied. The Host scores how strangely the reference recommends the doomed applicant while the job still stands.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Stand outside a nightclub and hold umbrellas for strangers in the rain.",
+      "opening_emoji": "☔",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Count escaped chickens at a farm gate.",
+      "opening_emoji": "🐔",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Clean the changing rooms after a wrestling tournament.",
+      "opening_emoji": "🧽",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 14,
+    "axes": {
+      "setting": [
+        "a nightclub entrance",
+        "a farm gate",
+        "a public toilet",
+        "a wedding venue",
+        "a motorway lay-by",
+        "a petting zoo",
+        "a hospital corridor",
+        "a football changing room"
+      ],
+      "task": [
+        "hold umbrellas for strangers",
+        "count escaped chickens",
+        "scrub abandoned costumes",
+        "guard a pile of wet coats",
+        "announce missing dentures",
+        "sort socks from a lost property bin",
+        "calm queueing pensioners",
+        "remove chewing gum from seats"
+      ],
+      "ordeal": [
+        "in the rain",
+        "after midnight",
+        "during a heatwave",
+        "while wearing borrowed shoes",
+        "beside a broken loudspeaker",
+        "under constant supervision",
+        "with no chair provided",
+        "until the final customer leaves"
+      ]
+    },
+    "tests": [
+      "One plain sentence, past or present tense, under fifteen words. A stranger sees the job at once.",
+      "Nobody is murdered, seriously injured or forced into sexual activity. The misery is comic and workplace-sized.",
+      "It describes work a person could actually be hired to do, however vile, pointless or socially cursed.",
+      "It contains a setting and a task, with at least one noun a reference can turn into a witness, weapon or scandal.",
+      "It names one checkable ordeal, such as rain, a time, a number or a missing object, that a reference can keep or twist without erasing."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Reliable, discreet, and has never asked what was in the bin.",
+    "hint": "One reference sentence. Recommend the applicant, then reveal why the job should terrify us."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the reference turn a grim little job into a personal catastrophe while still recommending the applicant for it?",
+      "anchors": "0 = repeats the job with no angle; 1 = adds one mild compliment; 2 = gives a strange skill, motive or warning; 3 = invents a full history of disgrace, danger or devotion while the applicant still suits the job; 4 = a devastating character reference that makes the vacancy feel like evidence in a trial, yet still recommends the applicant without blinking (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the former boss's praise create a clean comic hit?",
+      "anchors": "0 = flat; 1 = a small twitch; 2 = a smile at the applicant's expense; 3 = a proper laugh; 4 = a sentence the room repeats because the recommendation is worse than the job (rare). Grim sincerity usually beats a wink.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as one crisp reference sentence, with praise doing the damage?",
+      "anchors": "0 = not a reference, an explanation or a paragraph; 1 = a recommendation buried under padding; 2 = recognisable but loose; 3 = compact, grammatical and clearly from a former boss; 4 = every word sounds useful until the final implication arrives (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A reference PLAYS if a reader who knows only the reference can still understand that the applicant is suitable and willing to perform the card's stated job. The job may be made filthy, sinister, humiliating or absurd, but it must remain the job. The sentence fails when it drops the work entirely, makes the applicant unwilling or unsuitable, replaces the task with another one, or becomes a comment about the game rather than a reference. A plain recommendation that merely repeats the card plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, discussing the round or explaining the scoring is not a reference and loses the move.\n",
+    "judge_notes": [
+      "Test the first move by asking whether a stranger can identify both the work and the applicant's willingness to do it. \"Punctual, fearless, and already knows every chicken by its alias\" passes for counting escaped chickens because the task remains clear and the applicant sounds ready.\n",
+      "Dropping the job fails. \"A troubled soul who should never be left alone with a clipboard\" is not enough for holding umbrellas outside a nightclub because no work survives.\n",
+      "Refusing the work fails. \"Brilliant, but she will not stand in the rain\" contradicts a job requiring the applicant to stand in the rain.\n",
+      "Unsuitability fails. \"A perfect umbrella holder, provided he is never near an umbrella\" breaks the stated task rather than recommending the applicant for it.\n",
+      "Replacing the task fails. \"He would make an excellent bouncer\" does not recommend someone to hold umbrellas, even if a nightclub appears in the card.\n",
+      "Invented detail is allowed when it supports the recommendation. A criminal record, a secret romance, a vendetta against poultry or a disturbing level of stamina may all play if the applicant still does the stated work.\n",
+      "Both players answer the same card. Judge each reference on its own; the other player's sentence is not the standard.\n",
+      "Score stretch by distance from the job, not by cruelty alone. A surgical reference that turns umbrella duty into a rain soaked custody dispute beats a loud insult with no work in it.\n",
+      "Lower case, capitals, a missing full stop and ordinary spelling do not matter. The words and their meaning do.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Stand outside a nightclub and hold umbrellas for strangers in the rain.",
+      "move": "Punctual, discreet, and has never asked what was in the umbrellas.",
+      "gates_note": "all true",
+      "mechanism": "the applicant still holds umbrellas for strangers, while the umbrellas acquire an alarming secret",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Count escaped chickens at a farm gate.",
+      "move": "Fearless with livestock, numbers, and poultry that have seen the footage.",
+      "gates_note": "all true",
+      "mechanism": "the applicant remains a chicken counter, but the birds now seem to have a history and a grievance",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Clean the changing rooms after a wrestling tournament.",
+      "move": "A superb cleaner, though the wrestlers still call him The Final Witness.",
+      "gates_note": "all true",
+      "mechanism": "the applicant still cleans the rooms, while the title turns routine mess into a suspicious aftermath",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Stand outside a nightclub and hold umbrellas for strangers in the rain.",
+      "move": "A gifted nightclub professional who refuses to touch wet fabric.",
+      "gates_note": "satisfies_criterion false (the applicant refuses the required umbrella work)",
+      "mechanism": "the setting survives, but the applicant will not perform the card's task",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Count escaped chickens at a farm gate.",
+      "move": "A natural leader who should be promoted to nightclub security.",
+      "gates_note": "satisfies_criterion false (it recommends different work and drops the chicken counting)",
+      "mechanism": "the applicant is given a new career, not recommended for counting escaped chickens",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Registrar",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Speak as though stamping a formal document while observing a preventable disaster.",
+      "The joke carries the reason. A stranger who saw only the card and the reference must understand the recommendation and the damage.",
+      "Name the job's key object or task, the umbrella, the chicken, the mop, the wet coat. Generic praise is a vacant form.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"The Registrar refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the reference and its applicant, not identity groups or protected traits. A little adult innuendo and profanity are permitted when the sentence earns them.",
+      "Plain spoken English. Ceremonial does not mean flowery. No legal fog, no HR jargon, no fake Latin.",
+      "On a fail, state the exact work that vanished, was refused or got replaced, using the card's own words.",
+      "On a refusal, the gate failure rejects the move and asks for another. It never rules on who won.",
+      "The coaching line names one reference that would have passed. It ends on a job, an object or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The umbrella duty remains, and so does the unexplained moisture in the applicant's file.",
+      "The chickens are counted, the alias is known, and the farm has accepted its new intelligence officer.",
+      "The changing rooms are clean, though calling him The Final Witness has not helped recruitment.",
+      "This is a reference for umbrella holding, not a confession, though the distinction is failing.",
+      "The applicant still counts chickens, and apparently counts them as people with grudges.",
+      "A wet coat was required, and the reference has supplied one with a criminal history.",
+      "The job is still cleaning wrestling rooms. The sentence merely makes the mop look complicit.",
+      "The applicant refuses wet fabric, so the umbrella job has lost its only employee.",
+      "Nightclub security is not umbrella duty, however confidently the applicant's career is redirected.",
+      "The chicken count disappeared beneath the leadership speech. Put the gate and the poultry back in."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the applicant is doomed.",
+        "why": "opens with a status word and announces the ruling"
+      },
+      {
+        "text": "The Registrar refuses: submit a proper reference.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "A magnificent candidate.",
+        "why": "generic praise contains no job, object or action"
+      },
+      {
+        "text": "Wrong, they forgot the chickens.",
+        "why": "does not state the required work clearly enough"
+      },
+      {
+        "text": "This player has no idea how employment works.",
+        "why": "mocks the player instead of examining the reference"
+      },
+      {
+        "text": "O noble umbrella bearer, whose rain soaked destiny calls.",
+        "why": "ceremonial poetry replaces plain spoken English"
+      },
+      {
+        "text": "Excellent, wonderful, outstanding, superb, brilliant.",
+        "why": "piles up praise without a picture or recommendation"
+      },
+      {
+        "text": "Better than the other applicant's reference.",
+        "why": "judges the pair rather than the sentence on its own"
+      },
+      {
+        "text": "Per the aforementioned operational umbrella deliverables.",
+        "why": "uses HR and legal fog instead of a human reference"
+      },
+      {
+        "text": "He will not do the job, but what a vibe.",
+        "why": "admits the applicant is unwilling and ends in commentary"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one unwanted job each.",
+    "Write one reference sentence for it, under 90 characters. The House writes its own, unseen, and the Registrar scores both.",
+    "The reference must still recommend an applicant suitable and willing to do the stated job. Drop, refuse or replace the work and the round is lost.",
+    "Everything else is yours to invent. The stranger the recommendation while the job survives, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The vacancy",
+    "next_opening": "The next vacancy",
+    "your_opening": "Your vacancy",
+    "compose": "Your reference for {token}",
+    "compose_waiting": "Draft your reference while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank form. Recommend the applicant.",
+    "too_long": "Over 90 characters. A reference, not a memoir.",
+    "duplicate": "That reference has already been filed this match. Find another stain.",
+    "nudge": "Twice now. One reference that keeps this job alive: {standing_form}."
+  },
+  "judge_out_text": "The Registrar has stepped away to locate the personnel file. Nobody is hired until they return. {standing_form} remains unsigned. Give it a moment.\n",
+  "opponent_prompt": "You are a former boss writing one reference sentence for a job nobody wants. Write one\nsentence under 90 characters.\nTHE JOB MUST SURVIVE. A reader who sees only your reference must still understand that the\napplicant is suitable and willing to do the stated work. Never drop the task, refuse it,\nor replace it with another career.\nThen go as far as you dare. Invent the applicant's history, secret talent, grievance,\ncrime, romance, bodily problem or terrifying dedication. The points are for distance from\nthe dull job while the recommendation still holds.\nGood: \"Punctual, fearless, and already knows every chicken by its alias\" for counting\nescaped chickens. \"Discreet, steady, and never asks why the coats are warm\" for guarding\nwet coats. \"A superb cleaner, though the wrestlers still call him The Final Witness\" for\ncleaning changing rooms.\nBad: \"A fascinating person\" because the work vanished. \"He refuses to stand in the rain\"\nbecause the applicant is unwilling. \"Excellent bouncer\" because the task was replaced.\nUse one crisp reference sentence. Praise should do the damage. Under 90 characters. Do not\nuse a colon or a dash. Do not explain the joke. Capitals are fine but not required.\nVary the angle from round to round: a warning, a secret talent, a suspicious compliment,\na past incident, a cost saving or a private feud. Never the same shape twice in a match.\nNo quotation marks around the reference. Reply with the reference only.\n",
+  "medallions": false,
+  "default_move": "Reliable, discreet, and willing to do the job nobody else would touch"
+}

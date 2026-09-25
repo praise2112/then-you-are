@@ -1,0 +1,276 @@
+{
+  "slug": "heroic-housework",
+  "title": "Heroic Housework",
+  "tagline": "Make the mess feel mighty.",
+  "emblem": "🧹",
+  "accent": "#d98262",
+  "premise": "You and the House receive the same chore and two everyday nouns. Turn them into a motivational poster caption, but do not dodge the chore with a joke or a story; the more inspiring the climb while the chore stays visible, the more points you earn.\n",
+  "seed_pool": [
+    {
+      "opening_token": "put away toys",
+      "opening_emoji": "🧸",
+      "detail": "Put away toys / box",
+      "hidden": "The toys belong in the box, and the caption must urge putting them away."
+    },
+    {
+      "opening_token": "wash dishes",
+      "opening_emoji": "🍽️",
+      "detail": "Wash dishes / moon",
+      "hidden": "The dishes must be washed, and the moon must be used as part of that call."
+    },
+    {
+      "opening_token": "fold laundry",
+      "opening_emoji": "🧺",
+      "detail": "Fold laundry / mountain",
+      "hidden": "The laundry must be folded, and the mountain must be used as part of that call."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 8,
+    "axes": {
+      "chore": [
+        "put away toys",
+        "wash dishes",
+        "fold laundry",
+        "sweep floor",
+        "wipe table",
+        "sort books",
+        "take out rubbish",
+        "make the bed"
+      ],
+      "noun_one": [
+        "box",
+        "moon",
+        "mountain",
+        "crumbs",
+        "mirror",
+        "castle",
+        "basket",
+        "blanket"
+      ],
+      "noun_two": [
+        "spark",
+        "army",
+        "garden",
+        "thunder",
+        "path",
+        "crown",
+        "harbor",
+        "sunrise"
+      ]
+    },
+    "tests": [
+      "The caption clearly tells someone to do the dealt chore.",
+      "Both everyday nouns appear in the caption or are unmistakably used as its images.",
+      "The chore remains visible instead of being replaced by a joke, story, or unrelated slogan.",
+      "The wording sounds like a motivational poster rather than a private note or an explanation.",
+      "The caption is no more than 160 characters and stands alone as one complete call."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "PUT AWAY THE TOYS: let every box become a small victory.",
+    "hint": "One poster caption, under 160 characters. Keep the chore visible and use both nouns."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this pass as a sincere motivational poster caption that makes the chore feel worth doing?",
+      "anchors": "0 = it avoids the chore or makes no sense; 1 = the encouragement is barely present; 2 = it works but feels forced; 3 = a real poster could print it; 4 = it makes an ordinary chore sound genuinely heroic without losing the chore.\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the caption give the chore a light, memorable lift without turning into a joke?",
+      "anchors": "0 = flat or confused; 1 = a faint grin; 2 = a pleasant image; 3 = a proper smile that still motivates; 4 = delightfully funny and poster ready, with the chore still in charge.\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the caption use both nouns cleanly and make a direct, compact call to do the chore?",
+      "anchors": "0 = missing the chore or a noun; 1 = the pieces are present but tangled; 2 = understandable with some clutter; 3 = clear, compact, and complete; 4 = every word pulls toward the same tidy command.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A caption PLAYS if it contains a recognizable call to do the dealt chore, uses both dealt nouns as part of that call, and stays within the poster-caption shape. It fails when it dodges the chore with a joke or story, omits either noun, gives only a comment or description, or replaces the chore with an unrelated slogan. A plain but complete command plays and can score low on the rubric.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or discussing the rules is not a housework caption and loses the move.\n",
+    "judge_notes": [
+      "The first move must name or unmistakably call for the dealt chore, and both supplied nouns must help form that call. Do not accept a caption that merely mentions the chore and nouns in passing.\n",
+      "A joke can still play if it contains a clear call to do the chore and uses both nouns in that call. A joke with no real call fails.\n",
+      "A story about someone doing the chore is not a call to the player and fails unless it plainly urges the reader to do it too.\n",
+      "A slogan that sounds inspiring but leaves out the chore fails, even if both nouns are used well.\n",
+      "A caption that names the chore but omits either noun fails. A noun hidden in an unrelated aside does not count as part of the call.\n",
+      "A question or hedge can play only when it still gives a recognizable instruction. If it merely asks whether the chore should happen, it fails.\n",
+      "Short commands such as \"Fold laundry, climb the mountain\" play when both nouns and the chore are clear. They score lower on dictionary_shaped only if they feel unfinished.\n",
+      "Do not reward length, grand language, or a happy tone by themselves. The chore and both nouns must remain visible.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "sweep floor / crumbs",
+      "move": "SWEEP THE FLOOR: send every crumb marching toward its quiet little freedom.",
+      "gates_note": "all true",
+      "mechanism": "a direct chore command, with crumbs turned into a tiny parade",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "put away toys / box",
+      "move": "PUT AWAY THE TOYS: give every box its brave little army.",
+      "gates_note": "satisfies_criterion false, the second noun is missing and the sentence does not complete the call",
+      "mechanism": "the caption has a good heroic start, but one noun stayed home",
+      "scores": {
+        "believable": 1,
+        "funny": 2,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "wash dishes / moon",
+      "move": "WASH THE DISHES: let the moon shine on a sink you conquered.",
+      "gates_note": "all true",
+      "mechanism": "the chore is direct, and the moon gives the clean sink a gentle medal",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "fold laundry / mountain",
+      "move": "The mountain is wearing socks again, honestly.",
+      "gates_note": "satisfies_criterion false, this is a comment and a joke rather than a call to fold the laundry",
+      "mechanism": "a charming mountain complaint, but the laundry receives no marching orders",
+      "scores": {
+        "believable": 0,
+        "funny": 3,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "wipe table / castle",
+      "move": "WIPE THE TABLE: polish the castle where every meal begins.",
+      "gates_note": "satisfies_criterion false, the second noun is missing",
+      "mechanism": "a noble table command with one supplied noun left outside the drawbridge",
+      "scores": {
+        "believable": 2,
+        "funny": 1,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Chore Champion",
+    "tone": {
+      "commentary_adj": "warm",
+      "explanation_adj": "clear"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the chore, nouns, and caption must see why it scored.",
+      "Name the chore or one of the nouns. A headline that fits every tidy little victory is not doing its chores.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", or \"The Chore Champion refuses\".",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops only.",
+      "Tease the caption or its missing piece, never the player's identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no French, and no grand thesaurus fog.",
+      "Keep the cheer affectionate. Light innuendo is fine, but no profanity and no identity based abuse.",
+      "Never reveal or hint at the House's caption or score in the headline.",
+      "On a refusal, the headline explains the missing chore or noun and asks for another caption. It never rules on who won.",
+      "The coaching line names one change that would make the caption play. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The box has enlisted, but the toys still need orders.",
+      "A moonlit sink, and suddenly the dishes have a destiny.",
+      "The mountain gets folded one sleeve at a time.",
+      "That castle wants a clean table, not another royal speech.",
+      "The crumbs are marching, and the floor has finally found its purpose.",
+      "A brave slogan, but the box is still waiting for its toys.",
+      "The mountain is funny, but the laundry needs a command.",
+      "Two nouns entered, one noun wandered off before the finish.",
+      "The blanket has a crown, and the bed has a very clear mission.",
+      "A little polish, a little glory, and the table is ready for its close up."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a heroic caption.",
+        "why": "opens with a status word and gives no specific reason"
+      },
+      {
+        "text": "The Chore Champion refuses: that is not a caption.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and gives no useful explanation"
+      },
+      {
+        "text": "The House wrote a better line.",
+        "why": "compares players instead of judging the caption on its own"
+      },
+      {
+        "text": "The real caption is about a moonlit sink.",
+        "why": "reveals hidden information"
+      },
+      {
+        "text": "You are lazy and cannot even clean properly.",
+        "why": "mocks the player and attacks character"
+      },
+      {
+        "text": "O mighty household, arise and conquer thy domestic realm.",
+        "why": "overwritten and theatrical rather than plain spoken"
+      },
+      {
+        "text": "Nice one.",
+        "why": "gives no reason and could fit any caption"
+      },
+      {
+        "text": "Funny, inspiring, memorable, excellent.",
+        "why": "lists praise without a picture or explanation"
+      },
+      {
+        "text": "The box is mentioned, but the caption does not tell anyone to put away the toys.",
+        "why": "too much explanation for a headline and coaching line"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one chore and two everyday nouns each.",
+    "Write one motivational poster caption of up to 160 characters. Keep the chore visible and use both nouns as part of the call.",
+    "The House writes its own caption unseen. The Judge scores both captions, then reveals which one wins the round.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The chore",
+    "next_opening": "The next chore",
+    "your_opening": "Your chore",
+    "compose": "Your caption for {token}",
+    "compose_waiting": "Draft your caption while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the poster. Give the chore a heroic command.",
+    "too_long": "Over 160 characters. A poster caption, not a household memoir.",
+    "duplicate": "That caption has already marched past this match. Try a fresh victory.",
+    "nudge": "Twice now. Keep {standing_form} visible, and use both nouns in the call."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody starts the cleaning campaign until they are back. {standing_form} waits on the poster. Give it a minute.\n",
+  "opponent_prompt": "You are the House's caption writer. Write one motivational poster caption for the dealt chore and both everyday nouns.\nKeep the chore unmistakable. The caption must tell the reader to do it, not merely mention it, describe someone doing it, or escape into a joke.\nUse both nouns as part of the call. They may be images, destinations, allies, or rewards, but they must help the instruction rather than sit in an unrelated aside.\nWrite one caption of no more than 160 characters. A command, a colon, or a short slogan is fine. Keep the language plain, bright, and poster ready.\nDo not explain the game, address the Judge, mention the House, or discuss scoring. Do not copy the example. Do not use the same image or sentence shape as an earlier round.\nA joke may add sparkle, but it cannot replace the chore. Make the ordinary task feel like a small heroic mission.\n",
+  "medallions": true,
+  "default_move": "PUT AWAY THE TOYS: let the box become a brave little harbor for every wandering adventure."
+}

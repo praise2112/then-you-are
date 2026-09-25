@@ -1,0 +1,269 @@
+{
+  "slug": "the-hostile-map",
+  "title": "The Hostile Map",
+  "tagline": "One clue points to another. Make the walk stranger, one visible mark at a time.",
+  "emblem": "🗺️",
+  "accent": "#7c3aed",
+  "premise": "Two hunters share a map that keeps revealing one more marked place. Each turn, say how the current mark leads the hunters to the next mark. The map is not evil; it is simply committed to making ordinary walking inconvenient.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The map shows a red square around the town fountain and a tiny line leading away from it.",
+      "opening_emoji": "⛲",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The map circles the old bandstand and draws three dots toward the rose garden.",
+      "opening_emoji": "🎺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The map marks a blue bench beside the lake and folds a black arrow toward the boathouse.",
+      "opening_emoji": "🪑",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "starting_mark": [
+        "town fountain",
+        "old bandstand",
+        "blue bench",
+        "clock tower",
+        "closed kiosk",
+        "stone bridge",
+        "rose garden",
+        "bus shelter"
+      ],
+      "map_signal": [
+        "a red square",
+        "three black dots",
+        "a tiny arrow",
+        "a blue ring",
+        "a wavy line",
+        "a star",
+        "a ladder symbol",
+        "a cross mark"
+      ],
+      "next_direction": [
+        "toward the rose garden",
+        "behind the picnic shelter",
+        "under the clock tower",
+        "along the lake path",
+        "past the locked gate",
+        "beside the old greenhouse",
+        "through the market lane",
+        "toward the railway footbridge"
+      ]
+    },
+    "tests": [
+      "The card gives two hunters one clear marked place and one visible sign leading somewhere nearby. Present tense, one sentence, plain words.",
+      "A non-player can picture where the hunters should look next within five seconds, and there is more than one good answer. Say two.",
+      "Nothing on the card reveals the treasure or ends the hunt. A marked fountain or a line toward a gate is a start.",
+      "The card contains no real people, brands, threats, or impossible locations. The map may be awkward, but the hunt remains ordinary.",
+      "It makes a stranger want to follow the mark. A fountain, a bench, a muddy arrow, or a sign with one missing letter is better than a list of map symbols."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then the mark sends them ",
+    "example": "Then the mark sends them behind the picnic shelter, where a painted arrow points toward the creek.",
+    "hint": "One reachable search or discovery caused by the current mark, with a new place or sign."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much useful ground the clue carries the hunters toward.",
+      "anchors": "0 = they stay put or the hunt gets no new target; 1 = a small shift to the obvious edge of the same place; 2 = a nearby spot or fresh search area; 3 = a new part of the hunt with a clear reason to go there; 4 = a surprisingly useful new location that still follows in one walk or search. Reach is earned only when the map makes the move possible.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How plainly the current mark leads to the new place or sign.",
+      "anchors": "0 = the mark does not cause the move; 1 = the move is merely announced; 2 = it could fit, but the map connection is thin; 3 = a stranger can see why the hunters go there; 4 = the mark makes that next search feel like the only sensible nuisance. A move that skips the walk or hides several clues scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly the new search or discovery can be seen.",
+      "anchors": "0 = no place or sign can be pictured; 1 = vague or crowded; 2 = clear but ordinary; 3 = a stranger can see the hunters searching there; 4 = one plain detail makes the map's inconvenience memorable. Extra words do not earn this score by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS when one visible map mark plainly causes one reachable search or discovery that fits every earlier mark, while a skipped journey, a finished treasure find, an erased mark, a duplicate restatement, or a person or place that cannot have entered the hunt fails. The best move sends the hunters somewhere new through a mark anyone can read. A move fails when it jumps across the hunt, finds and closes on the treasure, removes or changes an established mark, repeats the current clue without adding a new search, or brings in a person or place the scene could not hold.",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge the sentence against the card. The named place or sign must follow from the card's mark and be reachable in the ordinary scene.",
+      "A new person may enter if the place would plainly hold them, such as a gardener at a rose garden or a keeper near a boathouse, or if the new mark gives them a reason to appear. A person who could not be there without an unstated journey is a skipped link.",
+      "A new place may enter if the standing mark points toward it or the hunters can reach it through one plain search. A distant castle, another country, or a sealed private room without a reason is a skipped link.",
+      "A move that reaches the treasure, names the prize, celebrates the find, or says the hunt is over is an ending. Endings fail even when the clue points there.",
+      "Erasing, covering, moving, breaking, or changing an established mark fails because the map's standing information must remain true.",
+      "Restating the current mark or naming its obvious location without a new search or sign is a duplicate. It does not become new because the words change.",
+      "A move that names two or three linked details passes only when each link is plain. Score link at 2 or below when the hunters have effectively skipped a walk or clue.",
+      "A small move within the same place can follow and pass the gate. It scores low on reach, but do not fail it for being cautious.",
+      "The map need not be magical. A faded arrow, a copied symbol, a sign, or a line that ends at an awkward object can cause the next search if the connection is visible."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The map shows a red square around the town fountain and a tiny line leading away from it.",
+      "move": "Then the mark sends them behind the fountain, where the line ends at a loose tile.",
+      "gates_note": "all true",
+      "mechanism": "the tiny line leaves the fountain and ends at a nearby searchable object",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the mark sends them behind the fountain, where the line ends at a loose tile.",
+      "move": "Then the mark sends them under the market awning, where the same red square is painted on a crate.",
+      "gates_note": "all true",
+      "mechanism": "the loose tile reveals a matching mark that leads to a nearby market search",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the mark sends them behind the fountain, where the line ends at a loose tile.",
+      "move": "Then the mark sends them to the royal vault, where they find the treasure and go home.",
+      "gates_note": "satisfies_criterion false, skipped journey and finished treasure find",
+      "mechanism": "the fountain tile does not provide a path to a distant vault, and the hunt ends",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the mark sends them under the market awning, where the same red square is painted on a crate.",
+      "move": "Then the mark sends them to the park gate, after they erase the red square from the crate.",
+      "gates_note": "satisfies_criterion false, erased an established mark",
+      "mechanism": "the move removes standing information instead of following it",
+      "scores": {
+        "reach": 1,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the mark sends them behind the fountain, where the line ends at a loose tile.",
+      "move": "Then the mark sends them to the loose tile behind the fountain.",
+      "gates_note": "satisfies_criterion false, duplicate restatement",
+      "mechanism": "the move repeats the current search and adds no new sign or place",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Cartographer",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "plain"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke comes from the map, the mark, or the move. Explain the ruling in plain words.",
+      "Name the current mark and the new place or sign. A headline that fits any hunt is not useful.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Cartographer refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Mock the move, never the player. No jokes about identity, body, family, intelligence, or spelling.",
+      "Use plain spoken English. No poetry, rhymes, profanity, innuendo, or grand map language.",
+      "On a skipped journey, name the missing walk or clue. On an ending, say the hunt ended and the chain stops here.",
+      "On an erased mark or duplicate, name what was removed or repeated. Ask for a new mark to follow.",
+      "The coaching line names one reachable place or sign that could have followed. It ends on an event, not a mood or verdict."
+    ],
+    "good_headlines": [
+      "The fountain line reaches the loose tile. The map has found a smaller fountain.",
+      "The crate copies the square, so the market gets dragged into the hunt.",
+      "From one loose tile to a royal vault is a long walk with no map work. Show the next mark first.",
+      "The treasure is found and the hunt is over. A victory lap is not another clue.",
+      "The red square was erased, so the map lost its evidence. Leave it there and follow what remains.",
+      "The hunters are still behind the fountain. Rename the next sign, not the same search.",
+      "The awning fits the crate mark, and now the market has to participate.",
+      "A gardener at the rose bed can hold the next clue. A duke in the shrubbery cannot.",
+      "The tiny arrow points to the gate, not to every place on the planet.",
+      "The map has supplied a loose tile. Naturally, it wants the hunters to inspect it."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the clue works.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Cartographer refuses this leap.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "What a hunt, what a map, what a day.",
+        "why": "gives no reason and fits any pair"
+      },
+      {
+        "text": "The cartographic itinerary precipitates a magnificent revelation.",
+        "why": "uses grand words instead of a visible move"
+      },
+      {
+        "text": "Only an idiot would erase the clue.",
+        "why": "mocks the player and targets intelligence"
+      },
+      {
+        "text": "The clue may work, or perhaps it does not.",
+        "why": "hedges instead of ruling plainly"
+      },
+      {
+        "text": "The arrow sang through the moonlit lanes...",
+        "why": "uses poetry and an ellipsis"
+      },
+      {
+        "text": "More clues. More walking. More clues.",
+        "why": "repeats a general idea without naming the move"
+      }
+    ]
+  },
+  "rules": [
+    "One visible mark sends the hunters to one reachable search or discovery.",
+    "Start with Then the mark sends them and name the new place or sign.",
+    "Keep every earlier mark true. Make the hunt grow one awkward step at a time.",
+    "Skip a journey, finish the treasure find, erase a mark, repeat a clue, or add an impossible person or place and the chain stops with you.",
+    "The Judge rules on the map link, never the spelling."
+  ],
+  "labels": {
+    "opening": "The first mark",
+    "next_opening": "The next mark",
+    "your_opening": "Your mark",
+    "compose": "Where does the mark send them, after {token}",
+    "compose_waiting": "Draft the next mark while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happens. The map needs a place or sign.",
+    "too_long": "Over 140 characters. One clue, not a guidebook.",
+    "duplicate": "That search already happened this match. Follow a new mark.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. Name one reachable place or sign."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands, and the map has not moved.\n",
+  "opponent_prompt": "You are one of two hunters following a map that keeps adding one more clue.\nAlways start with \"Then the mark sends them\" and name one new place or sign.\nFollow the standing mark plainly. Make the next search reachable, awkward, and a little bigger.\nGood: \"Then the mark sends them behind the picnic shelter, where a painted arrow points toward the creek.\"\nBad: \"Then the mark sends them to the royal vault\" because the journey is missing. Bad: \"Then they find the treasure and go home\" because the hunt ends. Bad: \"Then they erase the arrow\" because an established mark must stay true.\nDo not finish the hunt, erase a clue, repeat the current search, or bring in a person or place that could not be there.\nTalk like a person giving directions to a mate, not a novelist. Use plain words a twelve-year-old anywhere knows: a gate, a bench, a sign, a shed.\nNever reuse a move from this match.\n",
+  "medallions": false,
+  "default_move": "Then the mark sends them beside the nearest sign, where a second arrow points toward the gate."
+}

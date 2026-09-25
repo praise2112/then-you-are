@@ -1,0 +1,274 @@
+{
+  "slug": "waiter-alibi",
+  "title": "Waiter Alibi",
+  "tagline": "Keep the meal. Bend the story.",
+  "emblem": "🍽️",
+  "accent": "#8a5a44",
+  "premise": "A plain meal has been found at the table, and the waiter needs an alibi for serving it. Turn the meal into a tiny mystery while keeping its two menu facts true. The Host knows your excuse is flimsy; impress them anyway.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Potato, baked.",
+      "opening_emoji": "🥔",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Rice, boiled.",
+      "opening_emoji": "🍚",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Carrot, roasted.",
+      "opening_emoji": "🥕",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "food": [
+        "potato",
+        "rice",
+        "carrot",
+        "peas",
+        "beans",
+        "pasta",
+        "chicken",
+        "bread"
+      ],
+      "method": [
+        "baked",
+        "boiled",
+        "roasted",
+        "fried",
+        "steamed",
+        "grilled",
+        "poached",
+        "toasted"
+      ],
+      "case_angle": [
+        "wrong table",
+        "late arrival",
+        "missing order",
+        "kitchen witness",
+        "stolen plate",
+        "locked pantry",
+        "false receipt",
+        "secret customer"
+      ]
+    },
+    "tests": [
+      "Two or three words, with an article if needed, naming one plain food and one clear cooking method.",
+      "The food is ordinary and recognisable at once. No branded products, rare ingredients or elaborate dishes.",
+      "The method is checkable and cannot be mistaken for a serving style, flavour or garnish.",
+      "It leaves room for a waiter to claim innocence, confusion, delay, mistaken identity or a kitchen conspiracy.",
+      "So plain that it sounds like a menu entry before the alibi starts doing the work."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "I arrived after the spud's oven confession, Your Honour.",
+    "hint": "One alibi line. Keep the food and method true, then explain the crime."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the alibi turn the plain meal into a mystery while keeping both menu facts true?",
+      "anchors": "0 = repeats the meal with no alibi; 1 = adds one weak excuse; 2 = gives the food or method a suspicious role; 3 = builds a clear little case with witnesses, motives or evidence; 4 = turns dinner into a full courtroom scandal while the named food and method still hold (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the excuse make the ordinary meal funny?",
+      "anchors": "0 = no comic spark; 1 = a small grin; 2 = a neat joke; 3 = a proper laugh; 4 = an alibi worth repeating over dessert (rare). Straight-faced nonsense usually beats a wink.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it feel like a compact alibi, with a clear voice and no wasted explanation?",
+      "anchors": "0 = not an alibi, just a meal or a question; 1 = an excuse buried in padding; 2 = a usable line with some slack; 3 = short, clear and properly defensive; 4 = the waiter could deliver it under oath without editing (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An answer PLAYS if it presents an alibi or excuse while keeping both facts in the card true: the named food is still the food, and the named cooking method is still the method. It fails when either fact is dropped, contradicted or replaced, such as turning baked potato into raw potato, or baked into boiled. It also fails when it is only a comment, a question to the Judge, a rule note or a sentence about the game. A plain restatement may play, but scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game or about the rules is itself a losing alibi.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the food and cooking method both be true given the line? \"I arrived after the spud's oven confession\" passes for potato, baked.",
+      "The alibi may invent witnesses, crimes, motives, receipts, delays and kitchen drama. New story detail is welcome unless it changes the named food or method.",
+      "Both menu facts must survive. \"The boiled rice vanished\" passes for rice, boiled. \"The raw rice was my alibi\" fails because raw contradicts boiled.",
+      "If the line keeps the facts but is not an alibi, it fails. A question, a review, a command or a comment on the game is not a defence.",
+      "Judge each answer against the card alone. The other player's line is not a test of truth or quality.",
+      "Score stretch by the size of the mystery, not by the number of dramatic words. A quiet false receipt can beat a noisy crime scene.",
+      "Capital letters, punctuation, accents and a missing full stop do not matter. The food, method and alibi do."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Potato, baked.",
+      "move": "I arrived after the spud's oven confession, Your Honour.",
+      "gates_note": "all true",
+      "mechanism": "the potato remains baked, while the oven becomes a witness and the waiter denies arriving in time",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Rice, boiled.",
+      "move": "The boiled rice was already missing when I checked the receipt.",
+      "gates_note": "all true",
+      "mechanism": "the rice keeps its method and becomes evidence in a small receipt mystery",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Carrot, roasted.",
+      "move": "I was outside when the roasted carrot took the stand.",
+      "gates_note": "all true",
+      "mechanism": "the carrot is still roasted, but the vegetable now has courtroom testimony",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Potato, baked.",
+      "move": "The raw potato cleared my name.",
+      "gates_note": "satisfies_criterion false, raw contradicts baked",
+      "mechanism": "the defence swaps the named baked potato for a raw one",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Rice, boiled.",
+      "move": "Did the rice do it?",
+      "gates_note": "satisfies_criterion false, it is a question rather than an alibi and gives no clear method",
+      "mechanism": "the waiter asks the room to solve the case instead of offering an excuse",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Host",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the line must see why it scored.",
+      "Name the food or method. A line about a generic dinner could judge any plate and is not useful.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", \"The Host refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the alibi, the potato or the suspicious oven, never the player's body, family, identity or intelligence.",
+      "Plain spoken English. No poetry, no legal jargon pileups, no fancy words pretending to be evidence.",
+      "On a fail, say which food or cooking fact was dropped or broken, in the words of the card.",
+      "On a refusal, the line refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one alibi that would have scored. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The potato stayed baked, but the oven has acquired a witness statement.",
+      "Boiled rice and a false receipt, at last a menu with evidence.",
+      "The roasted carrot took the stand, and nobody checked whether it had a solicitor.",
+      "The method survives, the alibi limps, and the waiter is still near the kitchen.",
+      "A baked potato is innocent until the oven says otherwise.",
+      "The rice was boiled before the waiter arrived, which is a thin defence and a strong soup.",
+      "The carrot remains roasted, while the story grills the waiter instead.",
+      "Your potato is baked, your excuse is half cooked, and the kitchen has motive.",
+      "The plate gives the waiter an alibi, but the receipt keeps asking questions.",
+      "A boiled meal with an unboiled mystery, the kitchen has finally found paperwork."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: excellent alibi.",
+        "why": "opens with a status word and explains nothing"
+      },
+      {
+        "text": "The Host refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, write a proper line.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "Wrong, the facts are missing.",
+        "why": "does not name the missing food or method"
+      },
+      {
+        "text": "Nice excuse.",
+        "why": "has no reason and could fit any line"
+      },
+      {
+        "text": "Only a fool would serve that.",
+        "why": "mocks the player instead of the meal or alibi"
+      },
+      {
+        "text": "O noble tuber, beneath thy copper moon, confess thy baked secrets.",
+        "why": "poetry and a potato having a much grander evening than requested"
+      },
+      {
+        "text": "It is suspicious, dramatic, mysterious and very clever.",
+        "why": "lists praise without showing what happened"
+      },
+      {
+        "text": "Better than the other player's excuse.",
+        "why": "judges the pair instead of this alibi"
+      },
+      {
+        "text": "Under oath, on the docket, before the culinary tribunal.",
+        "why": "legal jargon has eaten the actual explanation"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one plain meal each.",
+    "Write one alibi like line for it, under 90 characters. The House writes its own, unseen, and the Host scores both.",
+    "The named food and cooking method must both remain true to someone who reads only your line. Change either and the round is lost.",
+    "Everything else is yours to invent. Add witnesses, motives, receipts, delays or kitchen crimes. The further the story travels while the meal stays true, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The meal",
+    "next_opening": "The next meal",
+    "your_opening": "Your meal",
+    "compose": "Your alibi for {token}",
+    "compose_waiting": "Draft your alibi while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty plate. Write the alibi.",
+    "too_long": "Over 90 characters. That is a statement, not an alibi.",
+    "duplicate": "That alibi has already been served this match. Find another excuse.",
+    "nudge": "Twice now. One line that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Host has stepped into the kitchen. Nobody moves until they return. {standing_form} sits beside the cold plate. Give it a minute.\n",
+  "opponent_prompt": "You are a waiter with a plain meal and a suspicious table. Write one alibi-like line.\nTHE FOOD AND METHOD MUST SURVIVE. A reader who sees only your line must still be able to read both card facts as true. Never drop the food, never change the cooking method, never replace baked with raw or boiled with fried.\nThen go as far as you dare. Invent the witness, the missing receipt, the locked pantry, the late arrival or the kitchen conspiracy. The points are for distance from the plain menu while both facts hold.\nGood: \"I arrived after the spud's oven confession, Your Honour.\" for potato, baked. \"The boiled rice was already missing when I checked the receipt.\" for rice, boiled. \"I was outside when the roasted carrot took the stand.\" for carrot, roasted.\nBad: \"The raw potato cleared my name.\" for potato, baked. \"The rice was fried before I arrived.\" for rice, boiled. \"Did the rice do it?\" because a question is not an alibi.\nKeep it short and plain, under 90 characters. No question to the Judge. Do not explain the joke. Punctuation is optional, but the line should sound like a defence.\nVary the angle from round to round: a witness, a receipt, a delay, a missing order, a locked pantry. Never use the same shape twice in a match.\nNo quotation marks around the line. Reply with the alibi only.\n",
+  "medallions": false,
+  "default_move": "I was nowhere near the plate when service began"
+}

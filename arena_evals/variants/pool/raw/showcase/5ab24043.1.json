@@ -1,0 +1,275 @@
+{
+  "slug": "fine-print-fiasco",
+  "title": "Fine-Print Fiasco",
+  "tagline": "The law is harmless until someone reads the footnote.",
+  "emblem": "⚖️",
+  "accent": "#6b4c9a",
+  "premise": "Three rounds. Each round names a plausible law for a real country. Both players write one mock legal notice under 90 characters, preserving the rule while adding a legal exception, demand or consequence that makes it dramatically worse. The rule must survive, but the fine print may ruin everyone's day. The Clerk scores how far each notice travels from the harmless rule while remaining legally compatible.\n",
+  "seed_pool": [
+    {
+      "opening_token": "In France, workers have a legal right to disconnect from work emails.",
+      "opening_emoji": "📵",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "In Germany, Sunday shop closing is common.",
+      "opening_emoji": "🛒",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "In Japan, companies may require a health check for employees.",
+      "opening_emoji": "🩺",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 15,
+    "axes": {
+      "country": [
+        "France",
+        "Germany",
+        "Japan",
+        "Norway",
+        "Italy",
+        "Australia",
+        "Canada",
+        "Spain"
+      ],
+      "rule": [
+        "workers may disconnect from emails",
+        "shops close on Sunday",
+        "employees take a health check",
+        "tenants receive written notice",
+        "drivers carry a warning triangle",
+        "parents register a newborn",
+        "riders wear a bicycle helmet",
+        "businesses display opening hours"
+      ],
+      "legal_scope": [
+        "by law",
+        "under national rules",
+        "unless exempted",
+        "with written notice",
+        "during official hours",
+        "for public safety",
+        "subject to local approval",
+        "where the statute applies"
+      ]
+    },
+    "tests": [
+      "One sentence, under sixty characters where possible, naming a real country and a plausible ordinary rule.",
+      "The rule is harmless on its face. Nobody is hurt, hunted, jailed or made ill by the card itself.",
+      "It sounds like something a government could regulate, not a rumour, a custom or a joke dressed as law.",
+      "It contains a clear action or entitlement a legal notice can preserve while making the fine print worse.",
+      "A stranger can tell exactly what remains true after reading the card once."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "DISCONNECT AFTER EMAILING YOUR ABSENCE TO THE BOSS",
+    "hint": "One mock legal notice. Keep the rule alive, then weaponise the footnote."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How badly does the added legal detail distort the harmless rule without making it false?",
+      "anchors": "0 = merely repeats the card; 1 = adds a small condition; 2 = adds a sharp exception, demand or burden; 3 = turns the rule into a serious bureaucratic trap while preserving it; 4 = creates a magnificent legal disaster from an ordinary protection, with every word still compatible (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the legal notice make the rule absurd, painful or recognisably human?",
+      "anchors": "0 = no joke; 1 = a mild smirk; 2 = a neat bureaucratic sting; 3 = a proper laugh at the loophole; 4 = the kind of notice people photograph before ignoring it (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it feel like a tight mock legal notice rather than an explanation?",
+      "anchors": "0 = commentary, question or legal essay; 1 = a notice buried under padding; 2 = recognisable notice with slack; 3 = concise, official sounding and immediately readable; 4 = it could be pinned to a government door without anyone asking why (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A notice PLAYS if a reader who knows only the notice can still read the card's country rule as true. It must preserve the named country, the core action or entitlement and any important scope the card gives. The notice may add an exception, demand, fee, deadline, permission, penalty or consequence. It fails when the rule is dropped, contradicted, transferred to another country, or replaced by a different rule, or when the move is not a mock legal notice but a comment, a question to the Judge or a sentence about the game. A plain restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game or naming the scoring is itself a losing notice.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the card still be true given this notice? Do not ask whether the added law is real, fair, likely or good policy. Ask whether it leaves the named rule standing.\n",
+      "The first move gets no special allowance. A notice must preserve the rule and add a legal twist, even if the card is simple.\n",
+      "Invented fine print is allowed. Fees, forms, deadlines, exemptions, witnesses and penalties may be made up, provided they do not erase or contradict the card's rule.\n",
+      "A notice that says workers may disconnect but must first send a final email preserves the French right and adds a burden. A notice saying workers must answer emails does not.\n",
+      "Both players answer the same card. Judge each notice alone. The other player's ingenuity is not the standard for whether this one plays.\n",
+      "A country swap is a failure even if the legal twist is funny. France stays France, Germany stays Germany and so on.\n",
+      "Score stretch by the distance created by the fine print, not by the number of scary words. A precise little requirement can ruin a rule more elegantly than a pile of CAPITALS.\n",
+      "Lower case, missing punctuation and imperfect legal jargon do not matter if the rule and twist are clear.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "In France, workers have a legal right to disconnect from work emails.",
+      "move": "FRANCE ALLOWS DISCONNECTION AFTER EMPLOYEES EMAIL THEIR ABSENCE",
+      "gates_note": "all true",
+      "mechanism": "the right to disconnect remains, but exercising it requires one final work email",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "In Germany, Sunday shop closing is common.",
+      "move": "GERMAN SUNDAY CLOSURES STAND, EXCEPT FOR EMERGENCY BREAD LICENCES",
+      "gates_note": "all true",
+      "mechanism": "shops still close on Sunday, while bread becomes a state approved emergency",
+      "scores": {
+        "stretch": 4,
+        "funny": 4,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "In Japan, companies may require a health check for employees.",
+      "move": "JAPAN REQUIRES HEALTH CHECKS, INCLUDING PROOF YOU CAN AFFORD THE BANDAGE",
+      "gates_note": "all true",
+      "mechanism": "the company health check remains, with an invented and grimly petty proof requirement",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "In France, workers have a legal right to disconnect from work emails.",
+      "move": "FRENCH WORKERS MUST ANSWER EVERY EMAIL BEFORE DISCONNECTING",
+      "gates_note": "satisfies_criterion false (the right to disconnect is replaced by a duty to answer every email)",
+      "mechanism": "the notice turns the protection into its opposite",
+      "scores": {
+        "stretch": 1,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "In Germany, Sunday shop closing is common.",
+      "move": "SUNDAY SHOPS CLOSE IN FRANCE, GERMANY NOW REQUIRES SEVEN DAY SHOPPING",
+      "gates_note": "satisfies_criterion false (the country rule is contradicted and reassigned)",
+      "mechanism": "Germany's Sunday closure disappears under a new country and an opposite duty",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Clerk",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and notice must see why it scored.",
+      "Name the notice's key object, the email, bread licence, form or bandage. A line that fits every law is lazy paperwork.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused or The Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Roast the notice, not identity, body, family or intelligence. The fine print is fair game, the player is not.",
+      "Plain spoken English. Adult innuendo and mild profanity are allowed when the notice earns them, but do not make them the whole joke.",
+      "On a fail, say which country, rule or entitlement went missing or got reversed, using the card's own words.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Never decide who won.",
+      "The coaching line names one notice that would have scored. It ends on a rule, object or action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "France kept the right to disconnect and stapled an email to it, because freedom needs admin.",
+      "Sunday closing survives in Germany, but bread has hired a crisis lawyer.",
+      "The health check remains, and now the bandage wants proof of income. Efficiently bleak.",
+      "The notice preserves the rule, then charges it rent.",
+      "A legal right with one final form is still a right, just one wearing a tiny bureaucratic muzzle.",
+      "The country stayed put, the rule stayed put, and the loophole arrived carrying a clipboard.",
+      "That bread licence is not law, it is a carb based emergency with excellent paperwork.",
+      "The worker may disconnect after emailing the boss, which is how silence becomes a deliverable.",
+      "A harmless rule went into the office and came out owing three signatures.",
+      "The notice says health check, then quietly checks whether your wallet has a pulse."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: excellent loophole.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Clerk refuses: that is not a notice.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "Wrong, the law is missing.",
+        "why": "does not identify which country rule or entitlement vanished"
+      },
+      {
+        "text": "Nice legal twist.",
+        "why": "has no specific reason and could fit any move"
+      },
+      {
+        "text": "Only an idiot would write this.",
+        "why": "roasts the player instead of the notice"
+      },
+      {
+        "text": "The statute doth whisper beneath the moonlit seal.",
+        "why": "poetry and fake grandeur where a notice should be"
+      },
+      {
+        "text": "It is outrageous, dramatic, shocking and completely insane.",
+        "why": "four vague adjectives, zero legal detail"
+      },
+      {
+        "text": "Better than the other player's paperwork.",
+        "why": "judges the pair instead of this notice"
+      },
+      {
+        "text": "Pursuant to subsection 4(b), hereinbefore and heretofore.",
+        "why": "legal jargon pretending to be a joke"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one plausible country rule each.",
+    "Write one mock legal notice for it, under 90 characters. The House writes its own unseen notice, and the Clerk scores both.",
+    "The country and core rule must survive in the notice. Drop them, reverse them or replace them and the round is lost.",
+    "Add one legal exception, demand or consequence. The further the fine print travels while the rule remains true, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The law",
+    "next_opening": "The next law",
+    "your_opening": "Your law",
+    "compose": "Your notice for {token}",
+    "compose_waiting": "Draft your legal notice while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank form. File the notice.",
+    "too_long": "Over 90 characters. This is fine print, not a constitution.",
+    "duplicate": "That notice has already been filed this match. Find a nastier footnote.",
+    "nudge": "Twice now. Keep the country and rule, then add one legal nuisance: {standing_form}."
+  },
+  "judge_out_text": "The Clerk has left to consult subsection seven. Nobody moves until they return. {standing_form} is still on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are a government clerk with a harmless country rule and a drawer full of\nunfortunate footnotes. Write one mock legal notice.\nTHE RULE MUST SURVIVE. A reader who sees only your notice must still be able to read the\ncard's country, core action and entitlement as true. Never drop the rule, reverse it or\nmove it to another country.\nThen add one legal exception, demand or consequence. Invent the form, fee, deadline,\npermission, witness, penalty or bureaucratic trap. The points are for distance from the\nharmless rule while the rule still holds.\nGood: \"FRANCE ALLOWS DISCONNECTION AFTER EMPLOYEES EMAIL THEIR ABSENCE\" for the French\nright to disconnect. \"GERMAN SUNDAY CLOSURES STAND, EXCEPT FOR EMERGENCY BREAD LICENCES\"\nfor Sunday shop closing.\nBad: \"FRANCE BANS EMAIL DISCONNECTION\" because the rule is reversed. \"SUNDAY SHOPS CLOSE\nIN FRANCE\" because Germany vanished. \"WORKERS GET A NICE BREAK\" because the legal rule\nand country are gone.\nUse short official sounding language, under 90 characters. Do not explain the joke. A\nnotice can be stern, petty, absurd or quietly vicious. Vary the twist from round to\nround: a fee, a form, an exemption, a deadline, a witness, a penalty. Never use the\nsame shape twice in a match.\nNo quotation marks around the notice. Reply with the notice only.\n",
+  "medallions": false,
+  "default_move": "COUNTRY RULE REMAINS, SUBJECT TO THREE FORMS AND A FEE"
+}

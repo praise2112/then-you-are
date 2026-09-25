@@ -1,0 +1,278 @@
+{
+  "slug": "animal-news-loop",
+  "title": "Breaking News, Somehow",
+  "tagline": "One animal, one town, and absolutely no prepared statement.",
+  "emblem": "🦚",
+  "accent": "#0f766e",
+  "premise": "An animal is loose in town, and you are building one live news report as events unfold. Take turns adding the next update; keep the report moving while slipping in details that make the reporter, the town, or the other player look spectacularly unprepared.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A peacock has escaped during the morning bus rush.",
+      "opening_emoji": "🦚",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A goat has got loose outside the town hall just before the council meeting.",
+      "opening_emoji": "🐐",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A seal has wandered from the river into the market during the lunch crowd.",
+      "opening_emoji": "🦭",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 20,
+    "axes": {
+      "animal": [
+        "peacock",
+        "goat",
+        "seal",
+        "pony",
+        "llama",
+        "turkey",
+        "pig",
+        "alpaca"
+      ],
+      "setting": [
+        "bus station",
+        "town hall",
+        "market",
+        "library",
+        "shopping street",
+        "school gate",
+        "park",
+        "train platform"
+      ],
+      "moment": [
+        "morning rush",
+        "lunch crowd",
+        "after school",
+        "before a meeting",
+        "during a parade",
+        "at closing time",
+        "on a rainy afternoon",
+        "just before dinner"
+      ]
+    },
+    "tests": [
+      "One plain sentence with one loose animal, one town setting, and a clear moment.",
+      "The animal is loose or has escaped, but nobody is badly hurt and no real person is named.",
+      "A stranger can picture where the animal is and what kind of public moment it has interrupted.",
+      "The event is still developing, with enough room for several updates before anyone catches the animal.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or specialist animal terms."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The peacock is now blocking the number four bus, while our reporter asks the driver whether feathers count as luggage.",
+    "hint": "One broadcast update. Move the event forward and make somebody look unprepared."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How sharply this update embarrasses the reporter, the town, or the other player while remaining believable.",
+      "anchors": "0 = nobody looks foolish; 1 = a small awkward moment; 2 = one person or public service takes a clear hit; 3 = a specific person, plan, or institution now owns an embarrassing problem; 4 = the update leaves someone spectacularly exposed and forces the next report into a tight corner, rare. If the joke depends on impossible animal behaviour, score 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How well the update follows the live event and preserves every confirmed fact.",
+      "anchors": "0 = reverses a fact, skips the required progression, ends the event, or starts a different story; 1 = vaguely related but adds no clear next development; 2 = follows the event and gives one checkable change; 3 = clearly advances the animal, the town, or the response; 4 = advances the chase while neatly using an earlier fact, rare. A longer update does not score higher by itself.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the update sounds like a real, ridiculous live report.",
+      "anchors": "0 = generic news filler; 1 = one plain fact; 2 = a detail you can picture; 3 = a detail you can picture and hear; 4 = the sentence feels ready for a local broadcast and leaves a clean image behind, rare. Plain words beat theatrical ones.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An update HOLDS if it follows the same live animal story, preserves every confirmed fact, and gives the next believable development. It must move the animal, the crowd, the response, or the broadcast forward. An update BREAKS the report if it reverses a confirmed fact, skips over a required change, wraps up the chase before the report is ready to end, or abandons the event for a new story. The points go to the sharpest embarrassment that still fits: the reporter, the town, a public service, or the other player can look badly prepared. A safe update that merely says things continue scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Anchor about the game, the rules, the scoring, or how the other player is playing, instead of giving the next broadcast update, breaks the report.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier update: judge the move against the card alone. It must give the first believable development of the loose animal story.",
+      "The full transcript is the live report. Check the new update against every earlier update, not only the last one.",
+      "Break if the update reverses a confirmed fact, such as putting the animal back where it already left or changing what animal escaped.",
+      "Break if the update skips a required change by jumping from an early problem to a later result without a believable development in between.",
+      "Break if the update wraps up the chase before the report is ready to end, such as saying the animal was safely caught when the story is still clearly unfolding.",
+      "Break if the update abandons the animal event and starts a separate news story.",
+      "When wording can be read in more than one ordinary way, it holds. Do not break on obscure animal facts, exact travel times, or details that need a lookup.",
+      "The animal may move through town and people may respond, as long as the movement follows the confirmed story and the update advances it.",
+      "An embarrassing detail about the reporter, the town, or the other player is part of the game. A remark about the other player's play is a meta move.",
+      "An update that repeats an earlier development in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A peacock has escaped during the morning bus rush.",
+      "move": "The peacock is now blocking the number four bus, while our reporter asks the driver whether feathers count as luggage.",
+      "gates_note": "all true",
+      "mechanism": "moves the bird from the escape into the traffic problem and makes the reporter sound badly under briefed",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The peacock is now blocking the number four bus, while our reporter asks the driver whether feathers count as luggage.",
+      "move": "The driver has opened the doors, and the peacock is inspecting every seat while passengers film the delay on their phones.",
+      "gates_note": "all true",
+      "mechanism": "continues the bus disruption and gives the town a public spectacle nobody planned for",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The goat is now on the town hall steps, eating the mayor's meeting papers.",
+      "move": "The mayor says the goat has been removed and the meeting is back on.",
+      "gates_note": "satisfies_criterion false (the update wraps up the chase before a believable next development)",
+      "mechanism": "declares the animal dealt with and ends the live event instead of moving it forward",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The seal has slid across the market and knocked over three fish stalls.",
+      "move": "The seal is now back in the river, and the fish sellers are handing out discounts.",
+      "gates_note": "satisfies_criterion false (the update reverses the confirmed market location and skips the response)",
+      "mechanism": "puts the seal back at the river without showing how it left the market, then jumps to the tidy ending",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The llama has entered the library, where it is judging the romance section.",
+      "move": "Meanwhile, the council has announced a water main burst on the far side of town.",
+      "gates_note": "satisfies_criterion false (the update abandons the loose animal story for a separate news story)",
+      "mechanism": "drops the llama to report a different emergency, leaving the live report in the ditch",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Anchor",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+  },
+  "voice_rules": [
+    "One sentence, under 140 characters. Two short sentences at most.",
+    "The joke carries the reason. A stranger who read only the report and the new update must see why it held or broke.",
+    "Name the animal, place, public service, or person in the update. A headline that fits any town is lazy.",
+    "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Anchor rules.",
+    "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+    "Mock the update and its consequences, not identity, disability, family, or protected traits.",
+    "Plain spoken English, a local newsroom, not a disaster film. Adult innuendo and profanity are allowed when they sharpen the detail.",
+    "On a break, put the two facts that cannot both be true side by side, or name the animal story the update abandoned.",
+    "On a refusal caused by a gate failure, refuse the update and ask for another. Do not announce who won.",
+    "The coaching line names one next development that would have held and embarrassed someone. It ends on a fact, never a mood."
+  ],
+  "good_headlines": [
+    "The peacock has taken the number four, and the driver has lost an argument with a bird.",
+    "The goat ate the meeting papers, so town policy is now being drafted from memory and panic.",
+    "The reporter asked whether feathers count as luggage. The bus company has found its new lowest point.",
+    "The seal crossed three fish stalls and left the market with better coverage than the mayor.",
+    "The llama is judging the romance shelves, while the librarian pretends this was not a hiring decision.",
+    "The peacock is still moving, and the traffic plan has already given up.",
+    "The council says the goat is under control, but the goat is currently in the mayor's chair.",
+    "You sent the seal back to the river before telling me how it left the market. Even the fish sellers noticed.",
+    "The water main is interesting, but it is not the loose animal. Bring me back the llama.",
+    "The reporter has lost sight of the bird and is reading its own notes aloud. A strong day for local journalism."
+  ],
+  "bad_headlines": [
+    {
+      "text": "Accepted, the peacock is still loose.",
+      "why": "opens with a status word and gives no useful picture"
+    },
+    {
+      "text": "The Anchor rules that this breaks the report.",
+      "why": "opens with a ruling phrase and names the host"
+    },
+    {
+      "text": "News update rejected.",
+      "why": "names no detail and fits any report"
+    },
+    {
+      "text": "Only an idiot would lose a goat this way.",
+      "why": "mocks the player instead of the update and uses a personal insult"
+    },
+    {
+      "text": "The town trembled beneath the feathered apocalypse of truth.",
+      "why": "too dramatic and poetic for a plain local report"
+    },
+    {
+      "text": "Maybe it holds, maybe it does not, depending on how you read it.",
+      "why": "hedges instead of giving a clear ruling"
+    },
+    {
+      "text": "The seal is back in the river. Broken.",
+      "why": "gives the ruling without explaining the missing movement"
+    },
+    {
+      "text": "The animal was caught, everybody went home, and the story is over.",
+      "why": "wraps up the event without a sharp image or reason"
+    },
+    {
+      "text": "The council is incompetent and the players are worse.",
+      "why": "gives broad insults instead of naming what happened"
+    },
+    {
+      "text": "Meanwhile, a water main burst.",
+      "why": "abandons the loose animal story and supplies no report reasoning"
+    }
+  ],
+  "rules": [
+    "Every card starts a live local news report about one animal loose in town.",
+    "Add exactly one broadcast update per turn.",
+    "Each update must move the same event forward and preserve every confirmed fact.",
+    "Reversing a fact, skipping the needed development, ending the chase too early, or changing stories breaks the report.",
+    "Points go to the sharpest embarrassment that still fits, especially when the reporter or town looks spectacularly unprepared."
+  ],
+  "labels": {
+    "opening": "The breaking story",
+    "next_opening": "The next breaking story",
+    "your_opening": "Your breaking story",
+    "compose": "Your update, after {token}",
+    "compose_waiting": "Draft your next update while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing reported. The newsroom is waiting.",
+    "too_long": "Over 140 characters. One update, not the entire evening bulletin.",
+    "duplicate": "That development is already in the report. Give me the next one.",
+    "nudge": "Twice now. Give one new update that moves {standing_form} forward. Do not repeat it or change the story."
+  },
+  "judge_out_text": "The Anchor has stepped away from the desk. Nobody reports until they are back. {standing_form} is still the latest confirmed update. Give it a minute.\n",
+  "opponent_prompt": "You are the other local news anchor, building one live report with your partner about an animal loose in town. Add exactly one broadcast update per turn, using one or two plain sentences.\n\nKeep the same animal, the same event, and every fact already confirmed. The report must move forward. Do not reverse where the animal is, skip from the problem to a tidy ending, declare the chase over too early, or start a different news story.\n\nMake the update embarrass the reporter, the town, a public service, or your partner while staying believable. The reporter can lose the animal, the council can issue a useless statement, a bus can be delayed, or your partner can confidently identify the wrong species. Adult jokes are allowed, but keep the wording plain and do not use identity based abuse.\n\nGood: The peacock is now blocking the number four bus, while our reporter asks the driver whether feathers count as luggage.\nGood: The goat has reached the town hall steps, and the mayor is hiding the meeting papers under his coat.\nBad: The goat has been caught and everyone goes home. That ends the story too early.\nBad: The seal is back in the river, after it was confirmed in the market. That reverses a fact without showing the movement.\nBad: Meanwhile, there is a water main burst. That starts a different story.\nBad: Anchor, your last move was stupid. That talks about the game instead of reporting it.\n\nTalk like a local newsroom, not a novelist. Name the animal, place, people, or public service. Build on the last update and never repeat an earlier development. Make the next sentence worse for somebody.\n",
+  "medallions": false,
+  "default_move": "The animal has moved another few steps, and our reporter is still pretending this was covered in training."
+}

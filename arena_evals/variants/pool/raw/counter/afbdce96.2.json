@@ -1,0 +1,288 @@
+{
+  "slug": "clown-court",
+  "title": "Clown Court",
+  "tagline": "Make one circus claim, then knock the last one flat with evidence.",
+  "emblem": "⚖️",
+  "accent": "#dc2626",
+  "premise": "Two clowns argue cases in a circus court. Each turn makes one claim that must directly defeat the claim before it with a plain piece of evidence. Facts, objects, witnesses, and rules are allowed, but hand waving is not, because even a clown can spot a bad argument when it is wearing enormous shoes.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The ringmaster claims the tightrope is safe.",
+      "opening_emoji": "🎪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The clown claims the cannon is ready.",
+      "opening_emoji": "💥",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The animal trainer claims the tiger is tame.",
+      "opening_emoji": "🐯",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 10,
+    "axes": {
+      "speaker": [
+        "ringmaster",
+        "clown",
+        "acrobat",
+        "animal trainer",
+        "ticket seller",
+        "magician",
+        "strongman",
+        "fortune teller"
+      ],
+      "claim": [
+        "is safe",
+        "is ready",
+        "is tame",
+        "is honest",
+        "will work",
+        "is harmless",
+        "is real",
+        "is worth seeing"
+      ],
+      "circus_place_or_prop": [
+        "tightrope",
+        "cannon",
+        "tiger",
+        "ticket booth",
+        "magic box",
+        "elephant",
+        "main tent",
+        "trapeze"
+      ]
+    },
+    "tests": [
+      "A stranger can tell exactly who claims what about which circus thing. No fog, mood, or general complaint.",
+      "The next player can name one plain piece of evidence that directly attacks the claim within five seconds.",
+      "The claim stands in court as a fact, not a past event, an instruction, or a scene that merely happened.",
+      "The sentence uses ordinary words a twelve-year-old knows. No legal jargon, brand names, or invented circus titles.",
+      "The claim invites a reply because it has a clear weak point, like a broken rope, a witness, a rule, or a visible object."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The cannon is safe, because the inspector's cracked barrel proves it must be retired.",
+    "hint": "One claim, one direct piece of evidence that defeats the last claim."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new claim and evidence defeat the previous claim.",
+      "anchors": "0 = no evidence or no connection; 1 = the evidence is weak, indirect, or merely contradictory; 2 = it attacks the claim but leaves a clear escape; 3 = it directly proves, disproves, exposes, or blocks the claim; 4 = the evidence makes the previous claim impossible to maintain (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can understand the claim, the evidence, and the link between them.",
+      "anchors": "0 = unreadable or self contradicting; 1 = understandable only after guessing; 2 = clear enough but muddled or incomplete; 3 = plain and logically connected; 4 = crisp, concrete, and instantly courtroom ready (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the new evidence or line of attack is compared with the previous claim.",
+      "anchors": "0 = repeats the claim, changes only a word, or uses the same evidence; 2 = a reasonable new objection; 4 = a surprising but plain circus fact, witness, object, or rule that changes the case (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A new standing claim OVERCOMES the previous claim if its evidence directly proves, disproves, exposes, or legally blocks that claim. The evidence must act on the claim itself. Changing the subject, merely denying the claim, repeating it louder, or using a vague metaphor does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge about the game, the rules, or the scoring is itself a losing claim.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous claim. Judge the move against the opening claim instead, and require a direct piece of evidence that attacks it.",
+      "A bare denial is not evidence. Saying the tightrope is unsafe does not defeat safe without a crack, witness, rule, test, or other plain reason.",
+      "Repeating the same claim with more certainty, volume, or adjectives is not a counter. A very safe cannon does not defeat a safe cannon.",
+      "Changing the subject fails. A claim about the tiger does not answer a claim about the ticket booth, even if both are in the circus.",
+      "A vague metaphor is not evidence. Saying the tightrope smells like doom or the cannon has bad vibes gives the court nothing it can check.",
+      "The evidence must directly connect to the claim. A clown's red nose does not prove the tiger is tame, and a sold out show does not prove the tightrope is safe.",
+      "A past event can be evidence if it plainly proves the standing claim false or blocked. The standing move itself must still be a claim someone can judge.",
+      "A witness counts only when the witness has a clear reason to know. The ticket seller saw the broken booth; an unrelated spectator guessing from the cheap seats does not.",
+      "A rule blocks a claim only when the rule actually applies. A circus rule banning fire can block a claim that the flaming cannon may be used, but not a claim about the elephant's appetite."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The ringmaster claims the tightrope is safe.",
+      "move": "The inspector claims it is unsafe, because three strands are already split.",
+      "gates_note": "all true",
+      "mechanism": "the split strands are direct physical evidence against the rope being safe",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The clown claims the cannon is ready.",
+      "move": "The safety rule blocks it, because the barrel has a crack.",
+      "gates_note": "all true",
+      "mechanism": "the circus rule forbids using a cracked cannon, so readiness cannot stand",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The animal trainer claims the tiger is tame.",
+      "move": "The tiger is not tame, because it just bit through the trainer's chair.",
+      "gates_note": "all true",
+      "mechanism": "the visible attack is direct evidence that the tiger is dangerous and not tame",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The ringmaster claims the tightrope is safe.",
+      "move": "The tightrope is definitely safe, because I say so.",
+      "gates_note": "satisfies_criterion false, bare assertion and no evidence",
+      "mechanism": "none, the move only repeats the claim with confidence",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The clown claims the cannon is ready.",
+      "move": "The tiger is furious, because the audience bought peanuts.",
+      "gates_note": "satisfies_criterion false, changes the subject and gives an unrelated link",
+      "mechanism": "none, tiger anger does not defeat cannon readiness",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 2,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The magician claims the box is empty.",
+      "move": "The box is a black hole, because it feels like one.",
+      "gates_note": "satisfies_criterion false, vague metaphor is not evidence",
+      "mechanism": "none, a feeling and metaphor do not prove or disprove the box is empty",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 2,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Bailiff",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two claims must see why the evidence worked or failed.",
+      "Name both claims, or their plain stand ins. A headline that fits any case is useless paperwork.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Bailiff refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Roast the claim or the evidence, not identity. A clown can be called lazy, crooked, or spectacularly unhelpful, but do not attack protected traits.",
+      "Plain spoken English. No poetry, courtroom Latin, fancy legal language, or long metaphors.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one piece of evidence that would have worked. It ends on a fact or an action, never a mood or a verdict.",
+      "Adult innuendo and mild profanity are allowed when useful, but the reason must stay clear and the joke must not become the whole ruling."
+    ],
+    "good_headlines": [
+      "Three split strands beat the ringmaster's safety speech. The rope is having a bad day.",
+      "A cracked barrel is not ready, unless the cannon plans to sue the circus.",
+      "The tiger ate the chair, so tame has left the building.",
+      "The clown said so. The court has heard less evidence from a fortune cookie.",
+      "The fire rule blocks the cannon, and the cannon's career is now paperwork.",
+      "The ticket seller saw the broken booth. The ringmaster saw confidence and called it proof.",
+      "Peanuts do not answer cannon readiness. Bring evidence, not snack gossip.",
+      "The box may be empty, but calling it a black hole is just lying in a cape.",
+      "A witness with a front row seat beats a hunch from the popcorn queue.",
+      "The rope is safe because nobody screamed is not evidence. It is just a quiet minute."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the rope is unsafe.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Bailiff refuses: that argument is clownish.",
+        "why": "opens with a ruling phrase, names the host, and insults without explaining the failure"
+      },
+      {
+        "text": "Move refused, try harder.",
+        "why": "opens with a ruling phrase and offers no useful reason"
+      },
+      {
+        "text": "The evidence is weak.",
+        "why": "too vague to show what failed"
+      },
+      {
+        "text": "The cannon wins because it is bigger.",
+        "why": "size is not evidence and the sentence does not identify the claim it defeats"
+      },
+      {
+        "text": "The tiger is bad, bad, bad, and the clown is stupid.",
+        "why": "repeats an insult, mocks the player, and gives no mechanism"
+      },
+      {
+        "text": "Verily, the rope's corruption doth reveal its peril.",
+        "why": "uses ornate language instead of plain evidence"
+      },
+      {
+        "text": "The ticket booth has entered a philosophical disagreement with reality.",
+        "why": "vague metaphor hides the missing evidence"
+      },
+      {
+        "text": "The clown got owned.",
+        "why": "mocks the player and gives no reason"
+      },
+      {
+        "text": "The tiger is probably tame, unless it is not.",
+        "why": "hedges instead of making a ruling a stranger can understand"
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the claim in front of you with one plain piece of evidence.",
+    "State one claim and why the evidence proves, disproves, exposes, or blocks the last claim.",
+    "The Judge rules on the argument, never the spelling.",
+    "A move with no direct evidence ends the argument."
+  ],
+  "labels": {
+    "opening": "The opening claim",
+    "next_opening": "The next opening claim",
+    "your_opening": "Your opening claim",
+    "compose": "Your claim against {token}",
+    "compose_waiting": "Draft your next claim while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. File a claim.",
+    "too_long": "Over 200 characters. This is a claim, not a deposition.",
+    "duplicate": "That claim already stood this match. Bring a new case.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not repeat it, deny it bare, or change the subject."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody argues until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two clowns arguing a case in a circus court.\nAlways make one plain claim and one piece of evidence that defeats the other claim.\nGood: \"The cannon is unsafe, because the barrel has a crack.\"\nGood: \"The tiger is not tame, because it just bit through the trainer's chair.\"\nBad: \"The cannon is unsafe, because it feels cursed\" because that is a mood, not evidence.\nBad: \"The tiger is furious, because the tickets are expensive\" because it changes the subject.\nBad: \"The rope is very unsafe, obviously\" because it is a bare denial.\nTalk like a person across a table, not a poet or a lawyer showing off.\nUse facts, visible objects, witnesses with a reason to know, and circus rules that actually apply.\nThe new claim must directly attack the standing claim. It may prove it false, expose a hidden problem, or show that a rule blocks it.\nDo not merely deny the claim, repeat it louder, change the subject, or hide behind a metaphor.\nKeep the circus details concrete: ropes, cages, tickets, costumes, cannon barrels, animals, tents, acts, and inspectors.\nYou are trying to survive the case, not perform for applause. If the move is funny, it is because the evidence is good.\nNever reuse the same claim or evidence from this match.\n",
+  "default_move": "The claim fails, because the evidence is sitting in plain sight."
+}

@@ -1,0 +1,269 @@
+{
+  "slug": "camp-map-mixup",
+  "title": "The Trail Map That Keeps Changing",
+  "tagline": "One dropped peg starts a cheerful chain of wrong turns.",
+  "emblem": "🗺️",
+  "accent": "#2563eb",
+  "premise": "A camping group follows a hand-drawn map after the first tent peg is dropped. Each turn changes one thing about where the group is or what blocks the route, so the map becomes a cheerful record of wrong turns.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The tent peg drops beside the trail map, and a gust folds the map in half.",
+      "opening_emoji": "⛺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The tent peg drops beside the trail map, and a squirrel drags the corner under a picnic bench.",
+      "opening_emoji": "🐿️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The tent peg drops beside the trail map, and a bootprint covers the path to the lake.",
+      "opening_emoji": "🥾",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 16,
+    "axes": {
+      "group": [
+        "two campers",
+        "a family",
+        "three hikers",
+        "a scout troop",
+        "a parent and child",
+        "a camping club",
+        "two friends",
+        "a group of cousins"
+      ],
+      "map_problem": [
+        "a gust folds the map in half",
+        "rain blurs the lake",
+        "a squirrel drags the corner away",
+        "a bootprint covers the path",
+        "a leaf hides the bridge",
+        "the compass spins",
+        "a splash stains the campsite",
+        "a loose peg pins the map down"
+      ],
+      "first_landmark": [
+        "the trail map",
+        "the lake path",
+        "the old sign",
+        "the picnic bench",
+        "the wooden bridge",
+        "the campfire ring",
+        "the ranger hut",
+        "the hill trail"
+      ]
+    },
+    "tests": [
+      "The first dropped peg causes a small map problem that a stranger can picture at once. Present tense, one sentence, plain words.",
+      "A non-player names what route change could happen next within five seconds, and there is more than one good answer. Say two.",
+      "Nothing on the card already ends the trip. A folded map, a covered path, or a wrong sign is a start, not a finish.",
+      "The card preserves a real camping setting with no real people, brands, danger to a person, or place that appears from nowhere.",
+      "It makes a stranger want to add the next landmark or blockage. Never make it a list of camping equipment."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the group follows the folded edge and reaches the picnic bench instead of the lake path.",
+    "hint": "One next location or route change caused by the current map situation, while every landmark stays true."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much useful route change the move creates while keeping the camping trip moving.",
+      "anchors": "0 = no route change or the move stops the trip; 1 = the group barely shifts; 2 = the group reaches a nearby landmark or a small blockage changes; 3 = the move carries the group to a new supported landmark or makes a larger route problem; 4 = one clear map change opens a whole new part of the trail while still following from the standing situation, rare. A dramatic destination with no travel link scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new location or route change grows out of the current map situation.",
+      "anchors": "0 = no cause is shown; 1 = the move merely claims a new place; 2 = the cause is possible but thin; 3 = a stranger can see how the map, landmark, or blockage leads to it; 4 = the move feels like the obvious next turn, rare. A move that ignores an established landmark cannot score above 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How easily a stranger can see the group, the route, and the changed map situation.",
+      "anchors": "0 = unclear, abstract, or unreadable; 1 = a place is named but the change is muddled; 2 = clear but ordinary; 3 = the route and its problem are easy to picture; 4 = one plain detail makes the wrong turn memorable, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if it gives one next location or route change caused by the current map situation, preserves every established landmark, and leaves a new route problem or landmark for the other player. A move fails when it jumps past travel, declares the trip over, reverses an established change, or adds a person or place the map cannot support. It also fails when it swaps in an unrelated scene, changes a landmark without cause, or gives only a feeling, plan, or explanation instead of a route change.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge it against the card. The route change must follow from the dropped peg and the map problem, and it must preserve the card's landmarks.",
+      "A move may reach a named landmark already supported by the card or earlier moves. A new campsite feature may appear only when the route or map clearly leads there. A ranger hut, road, or person that the map cannot support is a skipped link: satisfies_criterion is false.",
+      "Jumping from the current map situation to a far destination without showing the route change is a skipped travel link: satisfies_criterion is false.",
+      "Declaring the trip over, reaching home, being rescued, setting up camp for the night, or saying the route is finished leaves nothing for the other player and fails satisfies_criterion.",
+      "Reversing an established change fails. If the map was folded, it cannot become flat again without a move that plainly causes that change, and even then the story must not undo the standing route.",
+      "A move that changes a landmark without a cause, such as making the lake become a road, fails because it does not preserve the established map.",
+      "A move that only says the group is confused, excited, or tired is not a route change and fails. A plan to turn is not the turn.",
+      "A same size move, such as taking one more step along the visible edge of the map, may follow and passes the gate. It scores 0 or 1 on reach. Do not fail it for being modest.",
+      "Restating the standing route change in new words, or naming the same landmark again without a new blockage or direction, is a duplicate: not_semantic_duplicate is false.",
+      "Two route changes packed into one move pass only if the first plainly causes the second. Score link at 2 or below when the move feels crowded."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The tent peg drops beside the trail map, and a gust folds the map in half.",
+      "move": "Then the group follows the exposed line and reaches the picnic bench instead of the lake path.",
+      "gates_note": "all true",
+      "mechanism": "the folded map hides the lake path and leaves the bench line visible",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the group reaches the picnic bench instead of the lake path.",
+      "move": "Then the bench points them toward the wooden bridge, but a muddy fork puts the bridge on the wrong side.",
+      "gates_note": "all true",
+      "mechanism": "the bench supports the route and the muddy fork changes which branch looks right",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the group reaches the picnic bench instead of the lake path.",
+      "move": "Then they arrive at the ranger hut and find a mountain road to the far campsite.",
+      "gates_note": "satisfies_criterion false, skipped travel and unsupported places",
+      "mechanism": "the move jumps to a hut and road the map has not supported",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the group follows the folded edge and reaches the picnic bench instead of the lake path.",
+      "move": "Then the map unfolds, the lake path returns, and everyone goes home.",
+      "gates_note": "satisfies_criterion false, reverses the map change and ends the trip",
+      "mechanism": "the move undoes the fold and closes the journey",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the compass points toward the wooden bridge.",
+      "move": "Then the campers feel worried about the map.",
+      "gates_note": "satisfies_criterion false, a feeling is not a route change",
+      "mechanism": "no location or blockage changes",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Trail Guide",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters. Two short sentences at most.",
+      "Let the joke come from the map mistake. Explain plainly why the route held or stopped.",
+      "Name both the standing move and the new move, or use clear plain stand-ins.",
+      "Never open with a status word or ruling phrase. Do not say Accepted, Rejected, Refused, or Move refused.",
+      "Use no dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Tease the move, never the player. Never mention identity, family, body, intelligence, spelling, or personal worth.",
+      "Use plain spoken English. No profanity, innuendo, poetry, rhyme, or fancy thesaurus words.",
+      "For a skipped link, name the missing travel or map change. For an ending, say the trip has ended and the chain stops here.",
+      "On a refusal, explain that the move does not follow and ask for another route change. Never rule on who won.",
+      "The coaching line names one route change that would have followed. It ends on a place, blockage, or map event, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The folded map sends them to the bench, and the bench is now part of the plan.",
+      "The bridge is a fair next landmark, but the muddy fork gets to redraw the morning.",
+      "The map cannot carry the group from one corner to the ranger hut in one hop.",
+      "The map unfolded and the trip ended. Please leave one more wrong turn.",
+      "The campers move only a little, but the muddy fork gives the next player something to solve.",
+      "The lake path stayed where it was, and the covered line made the bench the sensible mistake.",
+      "A feeling does not move the group. Put a boot on a path or a leaf over a sign.",
+      "The bridge followed from the bench, but the mountain road arrived without an invitation.",
+      "The compass turned, the path changed, and the map still remembers the bench.",
+      "Going home is tidy, but tidy is the end of this particular trail."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a lovely turn.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Trail Guide refuses this move.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "What a journey, what a map, what a day.",
+        "why": "has no clear reason and could fit any pair"
+      },
+      {
+        "text": "The cartography becomes increasingly disordered.",
+        "why": "uses formal words instead of a clear camping picture"
+      },
+      {
+        "text": "Only a foolish camper would miss that turn.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "It may follow, or perhaps it does not.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "The trail sang beneath the stars...",
+        "why": "uses poetry and an ellipsis instead of explaining the route"
+      },
+      {
+        "text": "Map. Turn. Confusion.",
+        "why": "lists fragments without saying what caused what"
+      }
+    ]
+  },
+  "rules": [
+    "Write one sentence beginning with Then. Give one next location or route change.",
+    "Make the camping route change while preserving every established landmark.",
+    "Do not jump past travel, reverse a change, add an unsupported place, or end the trip.",
+    "The Judge rules on the route link, not the spelling."
+  ],
+  "labels": {
+    "opening": "The first map problem",
+    "next_opening": "The next map change",
+    "your_opening": "Your map change",
+    "compose": "What changes next, after {token}",
+    "compose_waiting": "Draft your next map change while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing changes on the map. Give the group a next place or blockage.",
+    "too_long": "Over 140 characters. One route change, not a guidebook.",
+    "duplicate": "That map change already happened this match. Find the next wrong turn.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. Add one place, path, or blockage."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody changes the route until they return. {standing_form} still stands on the map.\n",
+  "opponent_prompt": "You are one of two campers following a hand drawn map that keeps sending the group the wrong way.\nAlways begin with Then. Write one sentence in present tense, with one next location or route change.\nTake the standing map situation and move it one clear step. Preserve every landmark already named.\nGood: Then the folded edge leads them to the picnic bench instead of the lake path.\nGood: Then the muddy fork blocks the bridge and points the group toward the campfire ring.\nBad: Then they reach the far campsite and go home, because travel and the ending were skipped.\nBad: Then the map unfolds and the lake path is clear, because that reverses an established change.\nBad: Then they feel nervous, because a feeling is not a route change.\nNever close the trip, rescue the group, rewind the map, or add a place the route cannot support.\nSpeak like a person explaining a camping mistake to a friend. Use plain words a twelve year old knows.\nName a path, landmark, turn, bridge, bench, sign, or blockage when useful.\nNever reuse a move from this match.\n",
+  "medallions": false,
+  "default_move": "Then the folded map points the group toward the nearest visible sign."
+}

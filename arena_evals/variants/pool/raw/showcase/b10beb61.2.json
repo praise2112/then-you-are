@@ -1,0 +1,279 @@
+{
+  "slug": "gift-receipt",
+  "title": "Dear Customer Service",
+  "tagline": "Keep the gift. File the damage.",
+  "emblem": "🎁",
+  "accent": "#7d3c98",
+  "premise": "Pretend the thank-you note is a complaint filed with the universe. Keep the gift and giver intact, but describe the present like a product that has ruined your life, your home, or possibly civilization. The host checks the receipt, because apparently manners need paperwork.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Kai gave Jo a glitter-covered notebook.",
+      "opening_emoji": "📓",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Mara gave Leon a singing toaster.",
+      "opening_emoji": "🍞",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Priya gave Sam a twelve-foot inflatable flamingo.",
+      "opening_emoji": "🦩",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "giver": [
+        "Kai",
+        "Mara",
+        "Priya",
+        "Leon",
+        "Nora",
+        "Felix",
+        "June",
+        "Owen"
+      ],
+      "receiver": [
+        "Jo",
+        "Sam",
+        "Max",
+        "Iris",
+        "Bea",
+        "Toby",
+        "Rae",
+        "Nina"
+      ],
+      "gift": [
+        "a glitter-covered notebook",
+        "a singing toaster",
+        "a twelve-foot inflatable flamingo",
+        "a cursed-looking lamp",
+        "a box of novelty socks",
+        "a self-help calendar",
+        "a miniature fog machine",
+        "a ceramic frog"
+      ]
+    },
+    "tests": [
+      "One short sentence in past tense, with a named giver, a named receiver and one clear gift.",
+      "The gift is harmless, concrete and easy to picture, but awkward enough to inspire a complaint.",
+      "No real brands, public figures, place names or serious injuries. The disaster must stay comic.",
+      "The giver and receiver have distinct names, and neither name can be confused with the gift.",
+      "A reader can identify the exact object without needing a backstory, receipt or second sentence."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Thanks, Kai. Notebook glitter now owns my home.",
+    "hint": "Name the giver, keep the gift, and make gratitude sound legally actionable."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the note turn an ordinary gift into a personal, domestic or cosmic customer-service disaster?",
+      "anchors": "0 = a plain thank-you with no complaint; 1 = one mild nuisance; 2 = a sharp inconvenience or clear product grievance; 3 = the gift has taken over a room, a relationship or a life; 4 = a full civilization-ending incident in under 90 characters, while giver, receiver and gift remain clear (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the fake gratitude create a clean laugh through complaint, exaggeration or polite malice?",
+      "anchors": "0 = no joke; 1 = a faint smirk; 2 = a neat comic image; 3 = a real laugh; 4 = the kind of thank-you people quote while avoiding your next birthday (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does the entry fit a compact customer-service thank-you, with names and gift doing useful work?",
+      "anchors": "0 = not a note, or impossible to parse; 1 = padded, vague or buried under explanation; 2 = clear but loose; 3 = brisk, readable and gift-specific; 4 = every word sounds like a tiny complaint form written by someone smiling through clenched teeth (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A note PLAYS if it is recognizably a thank-you note and clearly identifies the named giver, receiver and gift from the card. It may complain, threaten a return, blame the object, imply emotional damage or report an absurd side effect. It fails when the giver is missing, the receiver is missing, the gift is missing or replaced, the named relationship is contradicted, gratitude is absent enough that it no longer reads as a thank-you note, or the entry is a comment about the game rather than the note.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game or citing the rules is not a thank-you note and loses the move.\n",
+    "judge_notes": [
+      "Test the first move against the card, not against the other player's entry. The note must preserve Kai, Jo and the glitter-covered notebook, while still sounding like thanks.",
+      "The giver must be identifiable by name. \"Thanks, Kai\" passes for Kai gave Jo the gift. A note that says only \"Thanks\" does not.",
+      "The receiver must be identifiable from the note or its clear point of view. \"Jo thanks Kai\" passes. A generic complaint with no Jo connection fails.",
+      "The gift must remain identifiable. \"Thanks, Kai, the glitter notebook has colonised my lungs\" passes. \"Thanks for the nightmare\" does not name the notebook.",
+      "Do not demand a literal phrase such as thank you if the note plainly performs gratitude. \"Kai, your glitter notebook has ruined me, but thanks\" passes. Pure abuse or a return request with no thanks fails.",
+      "Invented consequences, refunds, lawsuits, curses and adult innuendo are allowed if they do not erase the giver, receiver or gift. The joke may be bigger than the present.",
+      "A changed gift fails. A glitter-covered notebook cannot become a laptop, and a notebook cannot vanish behind a vague word like package.",
+      "A note about the game, the Judge or the rules is a gate failure even if it mentions the right names and object.",
+      "Score stretch by escalation and specificity, not by random shouting. A precise complaint about glitter breeding in the walls beats ALL CAPS with no image.",
+      "Punctuation, capitalisation and missing full stops do not matter unless they make the note impossible to understand.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Kai gave Jo a glitter-covered notebook.",
+      "move": "Thanks, Kai. Jo's glitter notebook has breached every surface.",
+      "gates_note": "all true",
+      "mechanism": "names Kai and Jo, keeps the glitter-covered notebook, and turns glitter into a domestic invasion",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Mara gave Leon a singing toaster.",
+      "move": "Thanks, Mara. Leon's singing toaster now demands a solo career.",
+      "gates_note": "all true",
+      "mechanism": "the giver, receiver and toaster stay visible while the appliance develops theatrical ambition",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Priya gave Sam a twelve-foot inflatable flamingo.",
+      "move": "Thanks, Priya. Sam's flamingo has occupied the spare room and refuses rent.",
+      "gates_note": "all true",
+      "mechanism": "the oversized flamingo remains clear and becomes an entitled tenant",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Kai gave Jo a glitter-covered notebook.",
+      "move": "Thanks, Kai. The notebook has glittered Jo into bankruptcy.",
+      "gates_note": "satisfies_criterion false (Jo and the notebook are present, but the receiver's role is unclear and the gift is not clearly glitter-covered)",
+      "mechanism": "the complaint gestures at the card but muddies both the exact gift and who received it",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Mara gave Leon a singing toaster.",
+      "move": "Thanks, Mara, for the emotional damage.",
+      "gates_note": "satisfies_criterion false (Leon and the singing toaster are missing)",
+      "mechanism": "generic damage replaces the named receiver and the actual gift",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Returns Clerk",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger should see the giver, receiver, gift and damage without a guided tour.",
+      "Name the offending object. Glitter, toaster, flamingo and frog are not interchangeable units of suffering.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused or The Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the note and its tiny disaster, not identity, body, family or protected traits. The customer is already suffering enough from stationery.",
+      "Plain spoken English. No poetry, no legal sludge, no customer-service fog machine.",
+      "On a fail, say which required person, object or thank-you element went missing or got changed.",
+      "On a refusal, refuse the move and ask for another. Do not rule on who won.",
+      "The coaching line names one note that would have scored. It ends on a person, object or action, never a mood or verdict.",
+      "Adult innuendo and profanity may appear when the note earns them, but lazy shock is not a personality.",
+      "Keep the roast aimed at the absurd complaint. The player is not the product being recalled."
+    ],
+    "good_headlines": [
+      "Thanks, Kai. Jo's notebook has glittered the walls, the dog and possibly the moon.",
+      "Mara gave Leon a toaster, and now breakfast has a louder ego than the household.",
+      "Priya's flamingo is twelve feet tall and still somehow the least mature tenant.",
+      "Thanks, Felix. The frog is ceramic, silent and already judging the mortgage.",
+      "Nora gave Bea socks, and Bea has discovered that novelty can be a hate crime against ankles.",
+      "The notebook is still a notebook. It has simply applied for control of the building.",
+      "A thank-you note with the warmth of a refund request and the evidence of a glitter crime scene.",
+      "The toaster sings, Leon suffers and Mara remains legally described as generous.",
+      "The flamingo has not moved, which is impressive for a gift that occupies the whole damn room.",
+      "A perfect note would thank the giver before blaming the object for the collapse of civilisation."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a devastating note.",
+        "why": "opens with a status word and gives no useful reason"
+      },
+      {
+        "text": "The Clerk refuses: write it again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Thanks for everything.",
+        "why": "everything is doing the work of the missing gift"
+      },
+      {
+        "text": "Terrible gift, babe.",
+        "why": "no giver, receiver, gift or recognisable thank-you structure"
+      },
+      {
+        "text": "Wow, somebody really hates manners.",
+        "why": "comments on the player or game instead of the note"
+      },
+      {
+        "text": "Your entry is a brave little attempt from a brain made of soup.",
+        "why": "mocks the player rather than the complaint"
+      },
+      {
+        "text": "The glitter notebook's shimmering psychological ramifications are administratively nontrivial.",
+        "why": "legal sludge hiding a simple glitter problem"
+      },
+      {
+        "text": "Thanks, Kai. Thanks, Kai. Thanks, Kai.",
+        "why": "repetition is not escalation, it is stationery begging for help"
+      },
+      {
+        "text": "Customer-service apocalypse, product-based emotional terrorism, domestic catastrophe.",
+        "why": "three labels, no note and no clear card details"
+      },
+      {
+        "text": "I cannot believe what this gift has done to me.",
+        "why": "dramatic, but the giver, receiver and object have all gone missing"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one unwanted thank-you gift each.",
+    "Write a fake customer-service thank-you under 90 characters. The House writes its own, unseen, and the Returns Clerk scores both.",
+    "Keep the named giver, receiver and gift clearly identifiable. Lose one and the note is rejected.",
+    "Make gratitude sound like a complaint. The further the object ruins life while the card remains intact, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The gift receipt",
+    "next_opening": "The next receipt",
+    "your_opening": "Your receipt",
+    "compose": "Your note for {token}",
+    "compose_waiting": "Draft your note while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank card. Even the universe expected a thank-you.",
+    "too_long": "Over 90 characters. This is a note, not a deposition.",
+    "duplicate": "That complaint has already been filed this match. Find a fresher grievance.",
+    "nudge": "Twice now. Name the giver, receiver and gift, then thank them badly: {standing_form}."
+  },
+  "judge_out_text": "The Returns Clerk is away checking the paperwork. Nobody gets refunded yet. {standing_form} is still on the counter. Give it a minute.\n",
+  "opponent_prompt": "You are a customer-service clerk forced to process a thank-you note nobody wanted to write. Write one fake thank-you under 90 characters.\nTHE GIVER, RECEIVER AND GIFT MUST SURVIVE. A reader who sees only your note must identify all three from the card. Keep the gift exact enough to recognise, keep the named people clear, and make the gratitude sound like a complaint.\nGood: \"Thanks, Kai. Jo's glitter notebook has breached every surface.\" \"Thanks, Mara. Leon's singing toaster now demands a solo career.\" \"Thanks, Priya. Sam's flamingo has occupied the spare room.\"\nBad: \"Thanks for the emotional damage\" because the people and gift vanished. \"Thanks, Kai, for the lamp\" if the card gave a notebook. Pure abuse is not a thank-you note, and a joke about the game is not a note either.\nEscalate with a precise disaster. The object may ruin a room, a relationship, a bank account or civilisation. Invent consequences, refunds, curses and adult innuendo if they remain clearly tied to the gift. Keep the giver intact and do not replace the gift.\nUse short plain words. No explanation, no quotation marks around the note, no colon or dash. Under 90 characters. Start with thanks when possible, but recognisable gratitude matters more than a fixed phrase.\nVary the complaint from round to round: contamination, noise, tenancy, emotional damage, public scandal, domestic warfare. Never use the same shape twice in a match.\nReply with the note only.\n",
+  "medallions": false,
+  "default_move": "Thanks, giver. The gift has damaged my life as advertised"
+}

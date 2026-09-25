@@ -1,0 +1,280 @@
+{
+  "slug": "cover-up-chain",
+  "title": "Cover-Up Chain",
+  "tagline": "One pub secret. Pass it on without dropping the evidence.",
+  "emblem": "🗝️",
+  "accent": "#92400e",
+  "premise": "A tiny pub incident has been covered up by a chain of people, objects, and favours. Take turns naming exactly one new link, saying who or what carried the secret onward and why. Every link must connect directly to the last one and preserve the whole chain. Skip a link, finish the cover-up, or undo an earlier link, and you lose on the spot. The points go to links that leave your partner holding something suspicious.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A muddy key was found behind the pub dartboard.",
+      "opening_emoji": "🗝️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The landlord found a wet envelope under the fruit machine after closing.",
+      "opening_emoji": "✉️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Someone replaced the pub clock with one that runs seven minutes slow.",
+      "opening_emoji": "🕰️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "pub_object": [
+        "a muddy key",
+        "a wet envelope",
+        "a torn receipt",
+        "a brass button",
+        "a missing dart",
+        "a stained coaster",
+        "a broken watch",
+        "a jar of coins"
+      ],
+      "hiding_place": [
+        "behind the dartboard",
+        "under the fruit machine",
+        "inside the biscuit tin",
+        "in the cellar",
+        "behind the bar mirror",
+        "under a loose floorboard",
+        "in the toilets",
+        "inside the karaoke speaker"
+      ],
+      "small_incident": [
+        "was found after closing",
+        "turned up during the quiz",
+        "went missing before last orders",
+        "was swapped during a lock-in",
+        "appeared beside the till",
+        "was cleaned up before opening",
+        "was blamed on the new barman",
+        "was noticed by the cleaner"
+      ]
+    },
+    "tests": [
+      "One plain sentence with one pub object, one ordinary pub place, and one small unexplained incident.",
+      "The incident is suspicious but harmless. Nobody is hurt, nobody real is accused, and the mystery stays playful.",
+      "A stranger can name the first object and the exact pub place within five seconds.",
+      "The card leaves room for at least six believable links involving staff, customers, objects, and favours.",
+      "Everyday words a twelve-year-old knows. No brand names, real public figures, street names, or complicated crimes."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The cleaner hid the key in the landlord’s biscuit tin because the landlord owed her a favour.",
+    "hint": "Name one next carrier and why. Pass the secret directly from the last link to the next."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the link leaves your partner carrying something awkward, suspicious, or hard to explain while remaining believable.",
+      "anchors": "0 = harmless handoff with no pressure; 1 = a small inconvenience or ordinary favour; 2 = your partner owns a mildly suspicious object, person, or excuse; 3 = they are tied to a specific favour, lie, or witness they must build on; 4 = plausible, vivid, and your partner is left holding the worst evidence in the pub (rare). A link that only embarrasses you, or that is too wild to believe, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the new link directly follows the last one and keeps every earlier part of the cover-up possible.",
+      "anchors": "0 = skips the carrier, contradicts the chain, ends it, or changes an earlier link; 1 = vaguely related but the handoff is unclear; 2 = names a direct carrier and a workable reason; 3 = clearly passes the secret from the last link and preserves the whole chain; 4 = makes an earlier link click into place without breaking anything (rare). Extra names do not help if the actual handoff is missing.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the link makes the pub conspiracy feel like something real people would whisper about.",
+      "anchors": "0 = bare and interchangeable; 1 = one plain fact; 2 = a concrete person, object, or pub spot; 3 = a detail a stranger can picture and repeat; 4 = funny, specific, and instantly memorable without becoming fantasy (rare). Plain words beat grand theories.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it names exactly one new link that directly passes the secret from the last link to the next and preserves the whole chain. The move must identify a next carrier, object, or holder and give a reason for the handoff. It BREAKS the chain if it skips over who or what carried the secret, introduces two or more new links in one move, contradicts any earlier link, ends or seals the chain, or removes or changes a link already in it. A move that merely comments on the theory or repeats an existing link does not advance the chain. Holding is the gate. The points go to links that leave the partner with a suspicious object, awkward favour, lie, witness, or pub connection. A safe handoff can hold and still score near zero.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the scoring, or how the partner is playing, instead of naming the next link, breaks the chain.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier player link: judge it against the card alone. It must name exactly one direct next carrier or holder and explain how the opening object or incident reached them.",
+      "The full transcript is the chain. Check the new link against every earlier link, not only the last one.",
+      "A skipped link breaks the chain when the move jumps from the last known carrier to a later person, place, or object without naming the direct handoff.",
+      "An ending breaks the chain when the move seals, destroys, reveals, or permanently resolves the secret instead of passing it to one new link.",
+      "An undo breaks the chain when the move removes, replaces, denies, or changes a person, object, reason, or event already established.",
+      "A move that names more than one new carrier or handoff in one turn is not exactly one link and fails. When the wording clearly names only one new link, do not invent extra links.",
+      "Contradict only plain conflicts a stranger would notice. Do not fail a move for trivia, exact routes, opening hours, or details that need outside knowledge. When two readings are possible, the chain holds.",
+      "A new link may involve a person, object, place, or favour, but it must directly carry the secret onward and leave the earlier chain intact.",
+      "Repeating an earlier link in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A muddy key was found behind the pub dartboard.",
+      "move": "The cleaner hid the key in the landlord’s biscuit tin because he owed her a favour.",
+      "gates_note": "all true",
+      "mechanism": "names one new carrier, passes the key directly from the cleaner to the landlord’s tin, and gives the partner a suspicious favour",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The cleaner hid the key in the landlord’s biscuit tin because he owed her a favour.",
+      "move": "The landlord’s sister took it to the cellar and told the night porter to forget she had seen it.",
+      "gates_note": "satisfies_criterion false (the move skips from the tin to the sister and then to the porter, naming two new links)",
+      "mechanism": "the chain gets two handoffs in one turn, so the host cannot tell which link the next player must follow",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The landlord’s sister took the key to the cellar.",
+      "move": "The key was never in the cellar. It was thrown into the river months ago.",
+      "gates_note": "satisfies_criterion false (the move changes an earlier link and ends the chain)",
+      "mechanism": "the cellar link is being erased while the secret is being disposed of, which is two wrong turns at once",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The cleaner hid the key in the landlord’s biscuit tin because he owed her a favour.",
+      "move": "The landlord gave the biscuit tin to the quizmaster to keep behind the score sheets.",
+      "gates_note": "all true",
+      "mechanism": "one direct handoff from landlord to quizmaster, with a concrete hiding place and a partner now tied to the quiz",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The quizmaster kept the biscuit tin behind the score sheets.",
+      "move": "The pub’s old cat carried it to the mayor’s secret office.",
+      "gates_note": "satisfies_criterion false (the move is too implausible and does not preserve a believable chain)",
+      "mechanism": "a cat with a secret office is not a carrier a stranger would accept, even for a pub conspiracy",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Landlord",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the chain and the new link must see why it held or broke.",
+      "Name the new carrier, object, or handoff. A headline that fits any pub is a bad headline.",
+      "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The Landlord rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the link or the theory, not protected identity. Roast-level jabs at a player are allowed, but never target race, religion, gender, sexuality, disability, nationality, or another protected trait.",
+      "Plain spoken English, a serious landlord trying to document nonsense, not a crime novel. Adult innuendo and mild profanity are allowed when they fit the pub.",
+      "On a break for a skipped link, put the last named carrier beside the unexplained jump and ask who actually carried it.",
+      "On an ending, say that the secret has been sealed or disposed of instead of passed onward.",
+      "On an undo, put the earlier link beside the new denial. The biscuit tin cannot both hold the key and never have seen it.",
+      "On a refusal for a gate failure, refuse the move and ask for one new direct link. Do not decide the winner in the headline.",
+      "The coaching line names one next link that would have held and left the partner with an awkward object, favour, witness, or lie. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "The cleaner passed the key to the landlord’s tin, and now his biscuit habit has evidence.",
+      "The biscuit tin went to the quizmaster, one handoff and one very nervous score sheet.",
+      "You jumped from the biscuit tin to the night porter. Who carried it between them, the pub ghost?",
+      "The cellar link cannot vanish just because the river sounds more dramatic.",
+      "The cat is not a carrier, and the mayor does not have a secret office behind the pumps.",
+      "The quizmaster got the tin, and somehow the questions are now the least suspicious thing in the room.",
+      "A direct favour from the landlord to the cleaner works. A whole committee would need its own minutes.",
+      "You sealed the key in the river. Admirable panic, but the chain needed another link.",
+      "The night porter can hold the secret after someone gives it to him. At present, the secret is still in midair.",
+      "One biscuit tin, one carrier, one reason. Keep the conspiracy tidy."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the chain continues.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Landlord rules that the move breaks the chain.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Conspiracy detected.",
+        "why": "names no link and fits any pub"
+      },
+      {
+        "text": "You are an idiot for saying that.",
+        "why": "attacks the player instead of explaining the link"
+      },
+      {
+        "text": "The secret slithers through the moonlit arteries of fate.",
+        "why": "uses poetry instead of plain pub language"
+      },
+      {
+        "text": "Maybe it works, maybe it does not, depending on how you see the biscuit tin.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "A beautiful handoff, you absolute moron.",
+        "why": "the praise is spoiled by a personal insult"
+      },
+      {
+        "text": "The porter got it after the cleaner, landlord, quizmaster, and sister all passed it around.",
+        "why": "accepts several skipped links and loses the one link mechanic"
+      },
+      {
+        "text": "Guilty.",
+        "why": "gives no reason and does not identify the broken link"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible, and false.",
+        "why": "piles up abstract labels without naming the handoff"
+      }
+    ]
+  },
+  "rules": [
+    "The card gives the first pub incident. Build the cover-up one link at a time.",
+    "Each turn names exactly one new carrier, holder, object, or favour and explains why the secret passed to it.",
+    "The new link must connect directly to the last link and preserve every earlier link.",
+    "Skip a carrier, add several links, seal the secret, or undo an earlier link, and you lose on the spot.",
+    "Points go to links that leave your partner with suspicious evidence, an awkward favour, a witness, or a lie.",
+    "A safe and vague handoff can hold but scores little. Specific and believable makes the pub conspiracy worth hearing."
+  ],
+  "labels": {
+    "opening": "The first incident",
+    "next_opening": "The next pub secret",
+    "your_opening": "Your first link",
+    "compose": "Your next link, after {token}",
+    "compose_waiting": "Draft your next link while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing named. The landlord is still waiting for the next link.",
+    "too_long": "Over 140 characters. One link, not the whole conspiracy.",
+    "duplicate": "That link is already in the chain. Pass the secret somewhere new.",
+    "nudge": "Twice now. Name one direct link after {standing_form}. Do not skip it, end it, or undo it."
+  },
+  "judge_out_text": "The landlord has stepped into the cellar. Nobody adds a link until he is back. {standing_form} is still the last word in the chain. Give it a minute.\n",
+  "opponent_prompt": "You are one of two pub regulars building a harmless conspiracy for the landlord.\nTake one turn at a time. Name exactly one new link after the last one, and say why the\nsecret passed directly to that carrier, object, place, or favour.\n\nNever skip a link. If the last link is the cleaner hiding a key in a biscuit tin, your next\nmove must explain who receives that tin or key. Do not jump straight to the mayor, the\ncellar, or the final explanation. Never end the chain, destroy the evidence, or rewrite a\nlink already given.\n\nMake your partner carry something awkward while staying believable. Give them a favour,\na suspicious object, a witness, a lie, a habit, or a pub connection they must explain\nlater. Use ordinary people and things, such as the cleaner, quizmaster, barman, coat\npocket, score sheet, till, cellar door, or biscuit tin. Adult innuendo and mild profanity\nare fine when they suit the pub, but never use identity-based abuse.\n\nGood: \"The cleaner hid the key in the landlord’s biscuit tin because he owed her a favour.\"\nGood: \"The landlord gave the biscuit tin to the quizmaster to keep behind the score sheets.\"\nBad: \"The landlord gave it to the quizmaster, who took it to the cellar and told the porter.\"\nThat names two new links. Bad: \"The key was never in the tin.\" That undoes the chain.\nBad: \"The secret is safe forever.\" That ends it. Bad: \"Host, this rule is stupid.\" That talks\nabout the game instead of adding a link.\n\nBuild on the last link and check the whole transcript before speaking. Never repeat a link\nalready used this match. Talk like a person at a pub table, not a novelist. Keep the\nconspiracy small enough that a stranger can follow who had what and why.\n",
+  "medallions": false,
+  "default_move": "The last carrier passed it to the cleaner for a small favour, and she hid it where nobody checks."
+}

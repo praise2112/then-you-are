@@ -1,0 +1,278 @@
+{
+  "slug": "career-ladder",
+  "title": "Promotion, Apparently",
+  "tagline": "One small job, one huge title, and no one checking the payslip.",
+  "emblem": "🪜",
+  "accent": "#7c3aed",
+  "premise": "Build one ridiculous career path from the first job to the final title. Each turn adds exactly the next job or promotion, and every step must grow from the work already named. The aim is to make your partner accept an impressive title with a very small amount of actual power.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Your first job is helping at a school fair.",
+      "opening_emoji": "🎪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your first job is sorting lost property at a swimming pool.",
+      "opening_emoji": "🏊",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your first job is carrying menus at a family restaurant.",
+      "opening_emoji": "🍽️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 15,
+    "axes": {
+      "starting_job": [
+        "helping at a school fair",
+        "sorting lost property at a swimming pool",
+        "carrying menus at a family restaurant",
+        "watering plants in an office",
+        "stacking chairs at a community hall",
+        "checking tickets at a small cinema",
+        "labelling jars in a corner shop",
+        "walking dogs for a neighbour"
+      ],
+      "first_skill": [
+        "organising things",
+        "speaking to strangers",
+        "keeping a list",
+        "carrying awkward items",
+        "spotting mistakes",
+        "calming a queue",
+        "finding missing things",
+        "making small decisions"
+      ],
+      "setting": [
+        "a school",
+        "a pool",
+        "a restaurant",
+        "an office",
+        "a community hall",
+        "a cinema",
+        "a shop",
+        "a neighbourhood"
+      ]
+    },
+    "tests": [
+      "One short sentence with a clear first job and an ordinary setting.",
+      "The first job is harmless and believable for a beginner, with no crime, danger, or famous employer.",
+      "A stranger can see at least one skill that a later job could sensibly use.",
+      "The wording leaves room for several promotions without naming the whole career already.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or specialist qualifications."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Book-cart captain, because I already know where everything is.",
+    "hint": "Name the next job and one duty that earns it. Make the title bigger than the power."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the new title makes your partner carry, especially when the job sounds grand but the power stays tiny.",
+      "anchors": "0 = a normal next job with no pressure; 1 = a mild upgrade; 2 = a title with one awkward duty; 3 = a pompous promotion your partner must now explain; 4 = a wonderfully inflated role with a tiny budget, one key, or power over something silly, rare. A title that only helps you or cannot be believed scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How clearly the new job grows from the named work and duty without skipping a useful link.",
+      "anchors": "0 = jumps to an unrelated job, replaces a role, or contradicts the ladder; 1 = vague link with no useful duty; 2 = next job has one clear connection; 3 = duty directly earns the promotion from the last role; 4 = the new role neatly uses several earlier skills and makes the ladder feel inevitable, rare. A longer explanation does not improve the score by itself.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the job creates a picture of a real workplace and a person pretending it matters.",
+      "anchors": "0 = a bare title anyone could have; 1 = one plain work fact; 2 = a visible task or object; 3 = a specific duty that sounds faintly official; 4 = a title and duty people would repeat at lunch, rare. Plain words beat corporate fog.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it names exactly one next job or promotion and gives one duty that grows from the work already named. The link must be believable from the previous role and must not quietly require an unstated skill. A move BREAKS the ladder if it skips the needed link, names an unrelated role, demotes or replaces a named role, declares the career complete, or adds more than one next job. The full transcript is the career path. A safe promotion can hold while scoring low. The points go to how much the title burdens the partner with a ridiculous duty and how specifically the tiny power is shown.\n",
+    "anti_metagaming_clause": "Talking to the interviewer about the game, the rules, the partner's play, or whether a move should count, instead of naming the next job, is itself a broken answer.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier promotion: judge the role against the card alone. It must be a plausible next step from the starting job and include one duty.",
+      "The full transcript is the ladder. Check the new role against every earlier role, not only the last one.",
+      "Break only for a plain missing link, reversal, replacement, ending, or multiple promotion. Do not demand real world hiring rules or exact qualifications.",
+      "A new role may use an older skill as long as it is still the next believable step from the current role.",
+      "A title may be grand, silly, or nearly powerless. That is the point, provided the duty gives it a clear link to the work already named.",
+      "A move that says the career is finished is an ending, not a promotion, and fails.",
+      "A move that demotes, deletes, swaps, or says the speaker was never in a named role is an undo and fails.",
+      "A move that names two jobs, two promotions, or a chain of roles in one turn fails because it skips the next link.",
+      "A remark about the partner's play or the interview itself is meta and fails. A duty involving the partner is allowed when it is part of the job.",
+      "A move that repeats an earlier role and duty without adding a genuine promotion is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Your first job is helping at a school fair.",
+      "move": "Queue marshal, because I already know how to keep children moving past the cake stall.",
+      "gates_note": "all true",
+      "mechanism": "adds one clear next role and turns the fair duty into small official power over a queue",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Queue marshal, because I already know how to keep children moving past the cake stall.",
+      "move": "Deputy Director of Cake Flow, because I now decide which tray gets the folding table.",
+      "gates_note": "all true",
+      "mechanism": "promotes queue control into a grand title with a tiny, checkable power",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Your first job is helping at a school fair.",
+      "move": "Chief Financial Officer of the national airline, because I was trusted with the raffle tickets.",
+      "gates_note": "satisfies_criterion false (jumps from a school fair helper to an unrelated executive role)",
+      "mechanism": "the raffle tickets have not earned control of an airline",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Book-cart captain, because I already know where everything is.",
+      "move": "Actually I was never a library page. I became a nightclub owner instead.",
+      "gates_note": "satisfies_criterion false (replaces a named role and jumps to an unrelated job)",
+      "mechanism": "the ladder cannot quietly remove its first rung and replace it with a nightclub",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Lost-property clerk, because I can label every swimming cap without losing the list.",
+      "move": "Regional lost-property manager, because I now train two people to label the caps.",
+      "gates_note": "satisfies_criterion false (names two promotions in one move, skipping the next single role)",
+      "mechanism": "regional manager arrives before the ladder has been given its next rung",
+      "scores": {
+        "squeeze": 2,
+        "fits": 1,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Interviewer",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the ladder and the new job must see why it held or broke.",
+      "Name the job, duty, or missing link. A headline that fits any career is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", or \"The Interviewer rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the title or duty, never identity, body, family, intelligence, or spelling.",
+      "Plain spoken English, an interview room, not a business novel. No poetry, no rhymes, no corporate fog.",
+      "On a break the headline puts the old role and the impossible new role side by side, or names the missing rung.",
+      "On a refusal caused by a gate failure the headline refuses the answer and asks for another. It never rules on who won.",
+      "The coaching line names one next job and one duty that would have held while making the partner carry a tiny piece of power. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Cake-stall queue marshal to Deputy Director of Cake Flow. The budget is one folding table, but the promotion holds.",
+      "You labelled the caps, then became their regional manager. At last, a department with a very small pool.",
+      "The clipboard earned you control of the lost-property drawer. Your authority now ends at one wet towel.",
+      "You can direct the queue, so you may direct the tray. The title is enormous, the tray is not.",
+      "Book-cart captain is a proper next rung, and someone will now expect the carts to salute.",
+      "The duty links cleanly, and the new title gives you power over exactly one cupboard.",
+      "From carrying menus to Table Number Supervisor. The restaurant has found its smallest empire.",
+      "The fair work earned a queue role. The lanyard is already doing most of the management.",
+      "Airline chief from raffle tickets is a leap, not a ladder. The winning number cannot fly the plane.",
+      "You have retired the library page and hired a nightclub owner instead. The ladder cannot edit its own history."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, this promotion makes sense.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Interviewer rules that the career path breaks.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Career ladder failure.",
+        "why": "names no job or missing link"
+      },
+      {
+        "text": "Only an idiot would call that a promotion.",
+        "why": "mocks the player and uses an identity based insult"
+      },
+      {
+        "text": "The ladder trembles beneath the moonlit tower of ambition.",
+        "why": "poetry instead of plain spoken English"
+      },
+      {
+        "text": "It may hold, unless it does not, depending on your interpretation.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Rejected: that was unrelated.",
+        "why": "starts with a status word and uses a colon after the verdict"
+      },
+      {
+        "text": "You need a qualification in aquatic logistics, so it fails.",
+        "why": "breaks on specialist hiring trivia rather than the missing link"
+      },
+      {
+        "text": "Wrong.",
+        "why": "gives no reason and no job detail"
+      },
+      {
+        "text": "The role is incongruous, discontinuous, and professionally untenable.",
+        "why": "uses corporate fog and says the same thing three times"
+      }
+    ]
+  },
+  "rules": [
+    "The card gives you the first job. Your answer must add the next job in the career.",
+    "Name exactly one new role and one duty that earns it from the work already named.",
+    "A skipped link, a demotion, a replacement, or declaring the career complete breaks the ladder.",
+    "Points go to promotions that make your partner carry a grand title with a tiny, specific power.",
+    "A safe and ordinary promotion can hold but scores little. Specific and pompous scores."
+  ],
+  "labels": {
+    "opening": "The first job",
+    "next_opening": "The next rung",
+    "your_opening": "Your first rung",
+    "compose": "Your next promotion, after {token}",
+    "compose_waiting": "Draft your next promotion while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing said. The Interviewer is waiting.",
+    "too_long": "Over 140 characters. One promotion, not a career brochure.",
+    "duplicate": "That promotion is already on the ladder. Add a new rung.",
+    "nudge": "Twice now. Add one next job that fits {standing_form}. Do not skip it, undo it, or argue with it."
+  },
+  "judge_out_text": "The Interviewer has stepped out. Nobody adds a rung until they return. {standing_form} is still the top title. Give it a minute.\n",
+  "opponent_prompt": "You are one of two candidates in an interview that has become a career ladder. One promotion per turn, one or two plain sentences.\nStart from the job on the card. Each move must name exactly the next job and one duty that earns it from the work already named. Keep the link clear. If your partner sorted lost property, move to a role that uses sorting, lists, finding things, or dealing with the people who lost them.\nMake the title larger than the power. Give your partner a tiny empire, one key, one cupboard, one queue, one folding table, or one person to train. A grand title with a small duty is better than a normal job with a large duty.\nGood: \"Queue marshal, because I already know how to keep children moving past the cake stall.\" / \"Deputy Director of Cake Flow, because I now decide which tray gets the folding table.\"\nBad: \"Chief Executive of the airline, because I held raffle tickets\". That skips the link. Bad: \"Actually I was never a queue marshal\". That undoes the ladder. Bad: \"I became queue marshal and then regional manager\". That names two rungs. Bad: \"The ladder is unfair\". That talks about the interview instead of adding a job.\nTalk like a person in a plain interview room, not a business novelist. Use ordinary jobs, objects, and duties. Never repeat a role or duty already used this match. Build from the current top rung, and keep the promotions believable enough to survive one more question.\n",
+  "medallions": false,
+  "default_move": "Assistant Coordinator of Small Tasks, because I have already shown I can keep one list in order."
+}

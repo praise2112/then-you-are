@@ -1,0 +1,275 @@
+{
+  "slug": "haunted-house-rules",
+  "title": "Haunted House Rules",
+  "tagline": "Write the rule that shuts down the haunting before it.",
+  "emblem": "👻",
+  "accent": "#6d28d9",
+  "premise": "Two house managers rewrite the rules of a haunted house. Each turn adds a rule that limits, cancels, reverses, or exploits the rule before it. The Judge decides whether the house obeys.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Every mirror shows a ghost",
+      "opening_emoji": "🪞",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The stairs add one step at midnight",
+      "opening_emoji": "🪜",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A door opens whenever someone whispers",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "haunting_source": [
+        "ghost",
+        "mirror",
+        "door",
+        "staircase",
+        "portrait",
+        "bell",
+        "shadow",
+        "bedroom"
+      ],
+      "trigger": [
+        "midnight",
+        "a whisper",
+        "a footstep",
+        "a name",
+        "a candle",
+        "a closed eye",
+        "a knock",
+        "a reflection"
+      ],
+      "effect": [
+        "appears",
+        "moves",
+        "speaks",
+        "opens",
+        "vanishes",
+        "adds a step",
+        "changes places",
+        "turns around"
+      ]
+    },
+    "tests": [
+      "A stranger understands the house rule at once. It names a plain action or condition, not a vague mood or an abstract idea.",
+      "A non-player can say exactly how the rule before it is limited, cancelled, reversed, or used against itself.",
+      "The rule changes what the haunted house does. It is not merely a resident surviving, hiding, waiting, or refusing to notice the haunting.",
+      "It creates a small picture of a house, ghost, object, or visitor doing something. It is not a speech about the game or a warning to the Judge.",
+      "It uses everyday words in one short sentence. No proper names, fake legal language, technical jargon, or piles of exceptions."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "House rule: ",
+    "example": "House rule: No one may speak after midnight; this stops the ghost that appears when someone says its name.",
+    "hint": "State the rule, then show what it does to the standing rule."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How clearly the new house rule controls, cancels, reverses, or exploits the standing rule.",
+      "anchors": "0 = it does nothing to the standing rule; 1 = it gestures at control but leaves the rule working; 2 = it interferes partly or depends on a shaky reading; 3 = it plainly shuts down or turns the rule against itself; 4 = it makes the standing rule impossible to carry out in a crisp and unavoidable way, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How quickly a stranger can understand the rule and picture its effect inside the haunted house.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires special explanation; 2 = understandable but tangled or too broad; 3 = clear, concrete, and workable; 4 = instantly visual and neatly phrased, rare. Extra wording never helps unless every part does useful work.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "Whether the new rule finds a fresh kind of house logic instead of repeating the previous answer.",
+      "anchors": "0 = the same rule, a direct repetition, or the same trick with stronger wording; 2 = a sensible variation; 4 = a fresh change of object, trigger, or loophole that still beats the rule, rare. Strange wording is not novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A house rule BEATS the standing rule when it clearly limits, cancels, reverses, or exploits that rule. The new rule must change what the standing rule can do inside the house. Ignoring the rule, merely enduring it, hiding from it, waiting it out, or making the same rule more extreme does not count.\n",
+    "anti_metagaming_clause": "Writing about the Judge, the match, the players, or the rules of this game is itself a losing house rule.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player rule: judge it against the opening card instead. It must clearly limit, cancel, reverse, or exploit the opening haunting.",
+      "Repeating the standing rule with stronger wording is not a counter. No mirrors may show two ghosts does not beat every mirror shows a ghost. It is the same rule made larger, so satisfies_criterion is false.",
+      "A rule that merely ignores or avoids the standing rule fails. No one looks in the mirrors does not stop mirrors from showing ghosts, and a room without mirrors does not control mirrors elsewhere.",
+      "A rule that merely endures the standing rule fails. Ghosts cannot scare me and I sleep through the footsteps leave the standing rule intact.",
+      "A rule that waits for the standing rule to end fails. The ghost leaves at dawn does not beat a rule that already controls the night.",
+      "The new rule must act on the standing rule, not just describe a stronger house, a tougher resident, or a larger haunting. A bigger ghost does not beat a ghost.",
+      "The mechanism must be literal and watchable. A locked mirror can stop a mirror showing a ghost, while being brave about the ghost is only an attitude.",
+      "An exploit counts when the new rule uses a real condition in the standing rule against it. If every ghost must enter through a door, sealing all doors can beat that rule. A clever slogan without a house action cannot.",
+      "The rule must be one standing house rule, not a list of unrelated commands joined together to cover every possibility. If its parts pull in different directions, judge coherence low and reject when the counter is unclear."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Every mirror shows a ghost.",
+      "move": "House rule: All mirrors must face the wall; this stops them showing anyone.",
+      "gates_note": "all true",
+      "mechanism": "Turning every mirror away prevents the standing mirror display from being seen or carried out as described.",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Every mirror shows a ghost.",
+      "move": "House rule: Every mirror shows two ghosts, even more frightening.",
+      "gates_note": "satisfies_criterion false, same rule made stronger",
+      "mechanism": "None. The mirrors still show ghosts, now with an extra booking.",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The stairs add one step at midnight.",
+      "move": "House rule: At midnight the stairs become a slide, so no new step can be added.",
+      "gates_note": "all true",
+      "mechanism": "Changing the stairs into a slide removes the staircase structure the standing rule needs to add a step.",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A door opens whenever someone whispers.",
+      "move": "House rule: Whispering is forbidden, and anyone who whispers must leave the house.",
+      "gates_note": "all true",
+      "mechanism": "Removing the trigger prevents the door from opening under the standing rule.",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Every portrait speaks when someone enters the room.",
+      "move": "House rule: Everyone must cover their ears when entering.",
+      "gates_note": "satisfies_criterion false, it only ignores the effect",
+      "mechanism": "Covered ears do not stop portraits from speaking.",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The House Manager",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke should carry the reason. A stranger should see why the new rule controls the old one.",
+      "Name both rules, or their plain effects. A headline that fits any pair is not useful.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The House Manager refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "A light jab at the written rule is fine. Do not insult identity, body, family, intelligence, spelling, or the player.",
+      "Plain spoken English. No poetry, rhymes, fake old language, or fancy substitutes.",
+      "On a refusal caused by a gate failure, the headline asks for another rule and does not declare a winner.",
+      "The coaching line names one house rule that would have beaten the standing rule. It ends with a fact or an action, not a mood or a verdict.",
+      "Mild innuendo is allowed only when it stays harmless and clear. No profanity, threats, or identity based abuse."
+    ],
+    "good_headlines": [
+      "The mirror kept showing ghosts, but the wall got the last word.",
+      "A second ghost is not a counter. It is a crowded mirror.",
+      "The whisper opened the door, then the house banned whispering. Awkward, but effective.",
+      "Covered ears do not stop a portrait talking. They only make the tour less informative.",
+      "The stairs tried to grow, but becoming a slide removed the paperwork.",
+      "The candle was ignored, not defeated. House rules require more than looking away.",
+      "The ghost may haunt the hallway, but a sealed door has boundaries.",
+      "Every mirror still shows a ghost. Adding scarier ghosts is still mirror business.",
+      "The bell rang on cue, then the rule removed the cue. A small administrative victory.",
+      "Try sealing the doors before the ghost gets its entrance."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the mirror is covered.",
+        "why": "opens with a status word and gives too little reason"
+      },
+      {
+        "text": "The House Manager refuses: nice try.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, the rule is not strong enough.",
+        "why": "opens with a ruling phrase and gives no concrete mechanism"
+      },
+      {
+        "text": "The stairs win.",
+        "why": "no reason, so it fits almost any pair"
+      },
+      {
+        "text": "The ghost is very dead and defeated.",
+        "why": "repeats verdict words instead of showing what the rule does"
+      },
+      {
+        "text": "A brave attempt from someone who cannot write a proper rule.",
+        "why": "mocks the player"
+      },
+      {
+        "text": "Whither the specter, when midnight's pale breath doth close the door?",
+        "why": "poetry and old fashioned wording obscure the ruling"
+      },
+      {
+        "text": "The visitor ignores the ghost and carries on with admirable confidence.",
+        "why": "celebrates dodging, which is not overcoming"
+      },
+      {
+        "text": "No ghosts, no mirrors, no doors, no stairs, no problems.",
+        "why": "a pile of commands is not one clear counter"
+      },
+      {
+        "text": "The new rule is better.",
+        "why": "no form named and no mechanism given"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the house rule in front of you. Do not merely survive it.",
+    "State one rule and how it controls the standing rule.",
+    "The Judge rules on the idea, not spelling or punctuation.",
+    "A rule that fails against the standing rule ends the match."
+  ],
+  "labels": {
+    "opening": "The opening rule",
+    "next_opening": "The next opening rule",
+    "your_opening": "Your opening rule",
+    "compose": "Write a rule against {token}",
+    "compose_waiting": "Draft your next house rule while you wait"
+  },
+  "validation_messages": {
+    "empty": "No rule on the clipboard. The house remains unsupervised.",
+    "too_long": "Over 200 characters. It is a house rule, not a property deed.",
+    "duplicate": "That rule already stood this match. Write a different one.",
+    "nudge": "Twice now. Beat {standing_form}. Do not ignore it, repeat it, or make it louder."
+  },
+  "judge_out_text": "The judge has stepped out. The house is still obeying {standing_form}. Give it a minute.\n",
+  "opponent_prompt": "You are one of two house managers trying to keep a haunted house under control.\nAlways write one clear rule in this shape: \"House rule: condition or command; this limits, cancels, reverses, or exploits their rule.\"\nGood: \"House rule: All mirrors must face the wall; this stops them showing ghosts.\"\nBad: \"House rule: I am not scared of mirrors.\" That only endures the haunting.\nBad: \"House rule: The mirror shows a bigger ghost.\" That repeats the same rule.\nBad: \"House rule: No ghosts, no doors, no stairs, no problems.\" That is a pile of commands, not one rule.\nTalk like a person managing a strange building, not like a poet or a lawyer.\nUse plain things anyone can picture: locks, candles, doors, names, footsteps, rooms, keys.\nYour rule must act on the standing rule. Ignoring it, hiding from it, waiting for it to stop, or being immune to it does not count.\nA literal house action is best. Cover the mirror, remove the trigger, reverse the direction, or use the rule's own condition against it.\nKeep the sentence short and concrete. Do not speak to the Judge, the game, or the other player about rules outside the haunted house.\nNever reuse a rule or the same trick from this match. You are trying to keep the house under control, not write a speech about control.\n",
+  "default_move": "House rule: No ghost may cross a locked door."
+}

@@ -1,0 +1,292 @@
+{
+  "slug": "lost-and-found-quest",
+  "title": "Lost-and-Found Quest",
+  "tagline": "One trip, three missing things, and a partner who keeps finding socks.",
+  "emblem": "🧭",
+  "accent": "#b45309",
+  "premise": "The trip’s route, supplies, and dignity have vanished. Build one shared chain of clues, one step at a time, until the group can recover what was lost; make each clue useful but take a sly jab at your partner where the clue points. The host treats every tiny discovery as a heroic expedition, even when it is just a wet sock.\n",
+  "seed_pool": [
+    {
+      "opening_token": "After lunch, the class discovers that the teacher’s master key, the map, and the emergency biscuits are missing.",
+      "opening_emoji": "🗺️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "At the museum gate, the class finds a torn permission slip, a single trainer, and the guide’s bright red umbrella left behind.",
+      "opening_emoji": "☔",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "When the coach is ready to leave the castle, the class cannot find the roll book, the lunch bag, or the trophy bought in the gift shop.",
+      "opening_emoji": "🏰",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 32,
+    "axes": {
+      "setting": [
+        "museum",
+        "castle",
+        "aquarium",
+        "zoo",
+        "science centre",
+        "beach",
+        "farm",
+        "old railway station"
+      ],
+      "missing_items": [
+        "master key and map",
+        "permission slips and umbrella",
+        "roll book and lunch bag",
+        "first aid box and camera",
+        "bus tickets and trophy",
+        "walkie talkie and biscuits",
+        "guide book and class flag",
+        "teacher’s phone and raincoats"
+      ],
+      "disruption": [
+        "after lunch",
+        "during a sudden shower",
+        "when the guide changes the route",
+        "just before the coach leaves",
+        "after a noisy demonstration",
+        "when the gates are closing",
+        "during a head count",
+        "after someone follows the wrong sign"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a school trip setting, a clear moment, and two or three missing or misplaced things.",
+      "Nothing is dangerous, nobody is seriously hurt, and no real person is named. Lost property and mild chaos, not peril.",
+      "A stranger can picture at least three ordinary places where a clue might lead within five seconds.",
+      "The missing things are small enough to be carried, hidden, dropped, or found during one school outing.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or specialist museum terms."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The muddy footprint stops beneath the bench beside the vending machine, where my partner has apparently been conducting secret research into wet socks.",
+    "hint": "Add one clue. Narrow the search, follow the last fact, and make your partner look faintly responsible."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How sharply the clue corners your partner, forcing them to account for a ridiculous habit, choice, or bit of trip behaviour.",
+      "anchors": "0 = burdens nobody, a plain arrow or ordinary footprint; 1 = a small tease, a dropped wrapper or muddy shoe; 2 = gives your partner a real nuisance to explain, such as the wrong queue or a suspicious pocket; 3 = makes them own a vivid, embarrassing part of the search, such as hiding under a bench or feeding biscuits to a goat; 4 = the clue leaves them on a glorious tightrope with a specific object, witness, or blunder to carry forward (rare). A clue that only mocks the partner without advancing the search scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the clue follows from the opening card and every clue already found, while narrowing the route without leaping over missing steps.",
+      "anchors": "0 = contradicts the trail, invents an impossible location, skips a link, solves the quest outright, or retracts a found clue; 1 = vaguely related but does not narrow anything; 2 = follows and points to one plausible next place or object; 3 = follows tightly and gives a clear, checkable next step; 4 = makes an earlier clue suddenly useful and narrows the whole expedition with perfect logic (rare). A long clue does not earn extra credit.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How strongly the clue makes the school trip visible, comic, and gloriously undignified.",
+      "anchors": "0 = bare instruction with no scene; 1 = one ordinary object or action; 2 = a clear picture, sound, or smell; 3 = a memorable school-trip moment with a useful comic detail; 4 = a tiny disaster worthy of a brass plaque, while still serving the trail (rare). Plain, concrete details beat fancy adventure language.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A detail HOLDS if it adds exactly one clue or discovery that follows from the opening card and every clue already found. It must narrow the search by pointing to a plausible next place, object, person, or mark. A detail BREAKS the quest if it skips a necessary link with an unexplained jump, contradicts a known clue, solves the whole search before the chain earns its ending, identifies the recovered item or final place when the move is not an ending, or undoes a clue already found. The final move may identify what was recovered or where the chain ends, but it must follow from the trail. The points go to the partner cost: make their mistake, habit, pocket, queue, or heroic incompetence matter while keeping the clue useful.\n",
+    "anti_metagaming_clause": "Talking to the Host about the game, the rules, the scoring, or how the partner is playing, instead of adding one clue, counts as a broken quest.",
+    "judge_notes": [
+      "On a FIRST move there are no earlier clues: judge it against the card alone. It must add exactly one plausible discovery and narrow the search without recovering everything.",
+      "The full transcript is the trail. Check the new clue against the opening card and every earlier clue, not only the last one.",
+      "A skipped link is a break when the move jumps from a known place or object to a distant answer without saying how the search got there. When a small ordinary link is reasonably implied, let it hold.",
+      "A contradiction is a break when a stranger would notice that the object, place, direction, or state cannot match the established trail. Do not break on trivia, exact distances, opening hours, or facts that need a lookup.",
+      "An ending may identify the recovered item or final place only when the preceding clues have earned it. Naming the answer on the first or middle move is an unexplained jump and breaks the quest.",
+      "An undo is a break when the move retracts, cancels, denies, or replaces a clue already found. Adding a new consequence is allowed if it keeps the old clue true.",
+      "Each move adds one clue or discovery. Two separate discoveries joined by and are still one move only when the second is plainly part of the same immediate find; otherwise refuse the extra step.",
+      "A jab at the partner is welcome when it is attached to the clue. A remark about the partner's play, the Host, or the scoring is meta and breaks the quest.",
+      "A detail that repeats an earlier clue in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "After lunch, the class discovers that the teacher’s master key, the map, and the emergency biscuits are missing.",
+      "move": "A biscuit crumb trail leads from the picnic table towards the greenhouse, with my partner’s enormous thumbprint on the first crumb.",
+      "gates_note": "all true",
+      "mechanism": "adds one trail that narrows the search to the greenhouse and gives the partner a suspiciously snack-shaped problem",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The muddy footprint stops beneath the bench beside the vending machine.",
+      "move": "Under the bench is a torn corner of the map, and my partner has somehow labelled the greenhouse upside down.",
+      "gates_note": "all true",
+      "mechanism": "follows the footprint to one new find and makes the partner own the map’s spectacular lack of direction",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The torn map corner points towards the greenhouse door.",
+      "move": "Beside the greenhouse door, a wet sleeve has caught on the handle, pointing to the potting shed.",
+      "gates_note": "all true",
+      "mechanism": "adds one physical link from the door to the shed and leaves the partner dressed as evidence",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "After lunch, the class discovers that the teacher’s master key, the map, and the emergency biscuits are missing.",
+      "move": "The master key is in the head teacher’s office, and my partner is being questioned by the entire school.",
+      "gates_note": "satisfies_criterion false (identifies a recovered item and distant final place without an earned chain)",
+      "mechanism": "jumps straight to an answer and skips the expedition the card asked the players to build",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A blue thread on the fence points towards the animal pens.",
+      "move": "The trail suddenly ends in the museum gift shop, where the missing map is recovered from a locked drawer.",
+      "gates_note": "satisfies_criterion false (skips the link from the fence to the gift shop and solves the search without support)",
+      "mechanism": "abandons the established route and produces the answer by royal decree",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A biscuit wrapper is wedged under the greenhouse bench.",
+      "move": "There is no biscuit wrapper under the bench. The trail begins at the coach instead.",
+      "gates_note": "satisfies_criterion false (undoes a clue already found)",
+      "mechanism": "attempts to erase the evidence and redraw the quest map after the fact",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Marshal of Minor Disasters",
+    "tone": {
+      "commentary_adj": "theatrical",
+      "explanation_adj": "grandiose"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair"
+  },
+  "voice_rules": [
+    "One sentence under 140 characters. Two short sentences at most.",
+    "Speak like a grand expedition announcer reporting on a puddle, a biscuit, or a child's appalling sense of direction.",
+    "The joke carries the reason. A stranger who sees the card, the trail, and the new clue must understand the ruling.",
+    "Name the clue, object, place, or leap. A grand headline that could fit any school trip is worthless pageantry.",
+    "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Grand Marshal rules.",
+    "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+    "Roast the clue or the partner's fictional expedition conduct, not identity, body, family, intelligence, or real life.",
+    "Profanity and adult innuendo are allowed sparingly when they sharpen the joke, but keep the scene school-trip safe and never target a protected group.",
+    "On a break, place the established clue beside the impossible leap, contradiction, ending, or undo. Make the missing link sound like a collapsed bridge.",
+    "On a refusal for a gate failure, reject the move and ask for one clue. Do not pretend it lost the whole quest.",
+    "The coaching line names one clue that would have held and cost the partner something. It ends on a concrete object, place, or action, never a mood."
+  ],
+  "good_headlines": [
+    "The crumb trail reaches the greenhouse, and your partner leaves a thumbprint on breakfast. The expedition advances, dignity retreats.",
+    "A wet sleeve points to the potting shed. Your partner has become both detective and damp evidence.",
+    "The upside down map still leads somewhere, a miracle worthy of a small statue and a very large apology.",
+    "The key ring rattles beneath the bench, where your partner has apparently been hiding from geography itself.",
+    "A goat has chewed the corner marked picnic table. The trail holds, and your partner's lunch has entered negotiations.",
+    "The torn ticket leads from the coach to the museum steps. At last, a clue with the courage to use its feet.",
+    "The red thread catches on the gate, and your partner is now responsible for following the only obvious sign on Earth.",
+    "The biscuit wrapper points to the shed. A noble discovery, though the snack appears to have been the better navigator.",
+    "The class flag is behind the rain barrel, beside a shoe that has seen more of the trip than the pupils have.",
+    "The final cupboard opens on the missing map. Your partner's heroic trail ends where sensible people start looking."
+  ],
+  "bad_headlines": [
+    {
+      "text": "Accepted, the clue works.",
+      "why": "opens with a status word and offers no theatrical image or reason"
+    },
+    {
+      "text": "The Grand Marshal rules that this is a failure.",
+      "why": "names the host, opens with a ruling phrase, and explains nothing"
+    },
+    {
+      "text": "A magnificent clue.",
+      "why": "praises without naming the clue or showing why it holds"
+    },
+    {
+      "text": "Your partner is a useless idiot.",
+      "why": "mocks the player instead of the fictional clue and uses a flat personal insult"
+    },
+    {
+      "text": "The quest unfurls like a moonlit tapestry of destiny.",
+      "why": "grandiose poetry replaces plain evidence"
+    },
+    {
+      "text": "It may hold, unless perhaps it does not, depending on interpretation.",
+      "why": "hedges instead of giving a fair ruling a stranger can understand"
+    },
+    {
+      "text": "The trail jumps to the office, and I suppose that is fine.",
+      "why": "fails to identify the missing link or refuse the unsupported ending"
+    },
+    {
+      "text": "You are a disgrace to education, and the clue is wrong.",
+      "why": "attacks the player and gives no concrete reason"
+    },
+    {
+      "text": "A wormhole beneath the coach reveals the biscuits in a secret castle.",
+      "why": "accepts an absurd unexplained leap that the established trail cannot support"
+    },
+    {
+      "text": "Contradiction detected.",
+      "why": "sounds like a machine, names no facts, and has no theatrical bite"
+    }
+  ],
+  "rules": [
+    "Every card begins with a school trip disaster and several missing or misplaced things.",
+    "One clue per turn. It must follow from the card and every clue already found.",
+    "Each clue must narrow the search. Do not skip a link, solve the quest early, or undo a discovery.",
+    "The final move may identify the recovered item or final place once the trail has earned it.",
+    "Points go to clues that make your partner carry a ridiculous habit, mistake, pocket, queue, or piece of evidence.",
+    "Useful and believable beats grand. A wet sock can be a landmark if the trail earns it."
+  ],
+  "labels": {
+    "opening": "The trip disaster",
+    "next_opening": "The next trip disaster",
+    "your_opening": "Your trip disaster",
+    "compose": "Your clue, after {token}",
+    "compose_waiting": "Draft your next clue while you wait"
+  },
+  "validation_messages": {
+    "empty": "No clue given. The expedition is standing beside the coach.",
+    "too_long": "Over 140 characters. One clue, not the director's cut.",
+    "duplicate": "That clue is already in the trail. Find a new footprint.",
+    "nudge": "Twice now. Add one clue that follows {standing_form}. Do not repeat it, undo it, or leap to the treasure."
+  },
+  "judge_out_text": "The Grand Marshal has left the parade ground. Nobody advances until they return. {standing_form} is still the last clue in the trail. Give it a moment.\n",
+  "opponent_prompt": "You are one of two pupils on a school trip, building a shared chain of clues for the Grand Marshal of Minor Disasters.\nOne clue per turn, one or two plain sentences.\n\nYour clue must follow the card and every clue already given. It must narrow the search by pointing to one plausible next place, object, person, mark, or sound. Do not skip a link, solve the whole quest early, contradict the trail, or undo a clue already found.\n\nMake each clue cost your partner something while staying believable. Give them a muddy pocket, a terrible shortcut, a suspicious snack, a public embarrassment, or a habit that leaves evidence. Call them my partner, he, or she, never a name unless one is already in the story.\n\nGood: \"A biscuit crumb trail leads from the picnic table towards the greenhouse, with my partner's thumbprint on the first crumb.\" / \"The wet sleeve catches on the shed door, and my partner is still carrying the wrong map.\"\nBad: \"The key is in the head teacher's office\" because it skips the trail and solves the quest. Bad: \"There is no clue under the bench\" because it undoes an established fact. Bad: \"Actually the trail starts at the coach\" because it rewrites the story. Bad: \"Grand Marshal, you cannot prove anything\" because it talks about the game instead of adding a clue.\n\nUse ordinary places and objects: a bench, coach, gate, toilet block, picnic table, shed, puddle, locker, or gift shop. Build on the last clue rather than starting a new thread. Never repeat a clue or place already used this match unless the new clue gives a necessary, clearly earned return.\n\nThe final clue may recover an item or name the final place only after the chain supports it. Keep the tone like a heroic expedition report about a wet sock, a crooked sign, or a missing biscuit.\n",
+  "medallions": false,
+  "default_move": "A small muddy mark continues towards the nearest bench, where my partner has somehow left another damp sock."
+}

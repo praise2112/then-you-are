@@ -1,0 +1,275 @@
+{
+  "slug": "tiny-trouble",
+  "title": "Tiny Trouble: Warning Labels for Harmless Things",
+  "tagline": "Make the ordinary sound mildly alarming.",
+  "emblem": "⚠️",
+  "accent": "#d4875d",
+  "premise": "Three rounds. Each round deals an ordinary harmless thing. Both players write a warning label that makes it sound like a tiny menace, with a headline and one supporting line. The Judge checks whether each label still truthfully fits the thing, then rewards the label that goes furthest without breaking that truth.\n",
+  "seed_pool": [
+    {
+      "opening_token": "shoelace",
+      "opening_emoji": "👟",
+      "detail": "an ordinary lace used to fasten a shoe",
+      "hidden": "A flexible cord threaded through eyelets and tied to hold footwear securely on the foot."
+    },
+    {
+      "opening_token": "teacup",
+      "opening_emoji": "🍵",
+      "detail": "a small cup used for serving tea",
+      "hidden": "A small handled vessel that holds a hot drink and may cause burns if handled carelessly."
+    },
+    {
+      "opening_token": "bookmark",
+      "opening_emoji": "🔖",
+      "detail": "a marker placed between the pages of a book",
+      "hidden": "A thin object used to mark a reader's place so the book can be reopened at the same page."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "object_type": [
+        "clothing",
+        "kitchenware",
+        "stationery",
+        "furniture",
+        "toy",
+        "tool",
+        "container",
+        "household object"
+      ],
+      "ordinary_use": [
+        "fastening",
+        "holding",
+        "marking",
+        "covering",
+        "measuring",
+        "carrying",
+        "cleaning",
+        "supporting"
+      ],
+      "trouble_angle": [
+        "unexpected movement",
+        "minor delay",
+        "awkward timing",
+        "mess making",
+        "social embarrassment",
+        "misleading appearance",
+        "small discomfort",
+        "unwanted attention"
+      ]
+    },
+    "tests": [
+      "The card names a harmless everyday object rather than a person, place, event, or abstract idea.",
+      "The card is a short noun phrase with an article and no extra explanation.",
+      "The object has a familiar ordinary use that can support a truthful warning.",
+      "The object can inspire mild trouble without being inherently dangerous.",
+      "The object is concrete enough for two players to write distinct warning labels about it."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "WARNING:",
+    "example": "MAY CAUSE UNEXPECTED REFLECTIONS. Especially when pointed at your face during pudding negotiations.",
+    "hint": "One alarming headline and one short supporting line. Keep the danger tiny and the truth intact."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this warning appear on the object without making a sensible reader call the manufacturer?",
+      "anchors": "0 = the object could not possibly do this; 1 = technically imaginable but wildly forced; 2 = plausible with generous charity; 3 = a reader would accept the warning at a glance; 4 = oddly convincing and still harmless (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the label make ordinary life feel briefly and delightfully suspicious?",
+      "anchors": "0 = no comic spark; 1 = a small twitch of amusement; 2 = a clear smile; 3 = a proper laugh; 4 = the warning is so silly and apt it deserves to be printed (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "label_shaped",
+      "description": "Does it look and sound like a warning label, with a clear headline and a concise supporting line?",
+      "anchors": "0 = no warning or supporting line; 1 = mostly commentary or a loose joke; 2 = recognizable warning with some clutter; 3 = crisp headline and useful second line; 4 = ready for a tiny sticker (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A warning PLAYS if its headline and supporting line describe a possible, genuine feature, use, effect, or minor risk of the dealt thing, while framing that harmless fact as tiny trouble. It fails when it is unrelated to the thing, claims an impossible or inherently dangerous property, merely comments on the game, or gives no warning at all. An exaggerated but truthful warning plays and may score well. A warning that lands on a real feature is not a fail.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing warning.\n",
+    "judge_notes": [
+      "On the first move, judge the label against the dealt thing and its ordinary uses. Do not require the warning to be a common printed warning, only that the claimed trouble could genuinely arise from the object.\n",
+      "A headline without a supporting line, or a supporting line without a warning headline, fails the criterion when the missing part leaves no complete label.\n",
+      "A warning about a possible effect, use, feature, or minor risk plays even when the wording is dramatic. Score believable according to how naturally that fact supports the alarm.\n",
+      "A claim that the object causes an impossible event, has a wholly unrelated power, or is inherently dangerous fails rather than merely scoring low.\n",
+      "A label about the Judge, the match, scoring, or the act of guessing is commentary, not a warning about the object, and fails.\n",
+      "Both players answer the same card. Judge each label on its own; the other player's label is not the standard.\n",
+      "A question, hedge, or apology can still play if it contains a clear warning and supporting line, but label_shaped and believable score low. A question with no actual warning fails.\n",
+      "A bare headline with no supporting line is incomplete. A bare supporting sentence with no warning framing is also incomplete.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "shoelace",
+      "move": "MAY CAUSE SUDDEN STOPS. Particularly when allowed to negotiate with the pavement.",
+      "gates_note": "all true",
+      "mechanism": "The lace can come undone and catch a foot, while the personification gives the ordinary snag a tiny criminal record.",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "label_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "teacup",
+      "move": "HANDLE WITH SUSPICION. May encourage a second biscuit before anyone has noticed the first.",
+      "gates_note": "all true",
+      "mechanism": "The handle is real, the tea setting supports the biscuit temptation, and the menace is domestic rather than medical.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "label_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "bookmark",
+      "move": "MAY ERASE MEMORIES. The plot remains safely inside the book, where it cannot reach you.",
+      "gates_note": "satisfies_criterion false (claims an unrelated impossible effect)",
+      "mechanism": "The bookmark marks a place but does not erase memory, so the label has wandered away from the object.",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "label_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "shoelace",
+      "move": "WARNING. I do not know what this does, but it looks eager.",
+      "gates_note": "satisfies_criterion false (a comment, not a genuine warning)",
+      "mechanism": "It offers suspicion without naming a possible feature, use, effect, or risk of a shoelace.",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "label_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "teacup",
+      "move": "MAY CAUSE HOT FINGERS. Especially if held by the part that has just met the tea.",
+      "gates_note": "all true",
+      "mechanism": "The heat risk is genuine, and the second line points at the ordinary mistake with a neat little sting.",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "label_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Safety Sticker",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. Someone who sees only the object and label should understand why it works.",
+      "Name the object or the warning's key trouble. A headline that fits any object is a sleepy sticker.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Safety Sticker refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Jab the warning, never the player's identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no French, no grand safety jargon.",
+      "Never reveal the hidden truth in the headline. The explanation may name the genuine feature without turning into a lecture.",
+      "On a refusal, the headline refuses the label and asks for another. It never rules on who won.",
+      "The coaching line names one warning that would have worked. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The shoelace has found the floor and is taking one ankle with it.",
+      "A teacup that threatens biscuits is still a teacup, but now it has an accomplice.",
+      "The bookmark marks your place and quietly judges how long you have been there.",
+      "That warning fits the spoon, which has always looked too pleased with itself.",
+      "A tiny hazard, neatly labelled, and nobody had to evacuate the kitchen.",
+      "The handle is innocent, the hot tea is not, and the sticker has chosen its side.",
+      "This makes a bookmark sound like a spy, but at least the spy knows your page.",
+      "A warning with both feet on the ground, unlike the shoelace.",
+      "The object is harmless, the implication is not, and the sticker is delighted.",
+      "That label gives ordinary furniture a very small criminal career."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the shoelace is a tiny menace.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Safety Sticker refuses: that is not a warning.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, please try again.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The bookmark really erases memories.",
+        "why": "turns the headline into an impossible claim and gives away the ruling"
+      },
+      {
+        "text": "Good warning.",
+        "why": "no reason and no object"
+      },
+      {
+        "text": "Only a fool would write that.",
+        "why": "mocks the player rather than the label"
+      },
+      {
+        "text": "O tiny cup, beware thy biscuit destiny.",
+        "why": "poetry and an unnecessary theatrical voice"
+      },
+      {
+        "text": "It is plausible, credible, believable, and convincing.",
+        "why": "four words for one idea, with no picture"
+      },
+      {
+        "text": "Better than the other player's warning.",
+        "why": "judges the pair instead of the label on its own"
+      },
+      {
+        "text": "Nice one.",
+        "why": "no reason, no object, no tiny trouble"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one harmless everyday thing each.",
+    "Write one warning headline and one short supporting line about the thing. Make it sound alarming, but keep the claim truthful.",
+    "The House writes its own label unseen. The Judge checks whether each warning fits the object, then scores both labels.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The thing",
+    "next_opening": "The next thing",
+    "your_opening": "Your thing",
+    "compose": "Your warning for {token}",
+    "compose_waiting": "Draft your warning while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the sticker. Add a warning headline and a supporting line.",
+    "too_long": "Over 160 characters. It is a label, not a safety manual.",
+    "duplicate": "That warning has already been played this match. Find a fresh little danger.",
+    "nudge": "Twice now. Write one warning headline and one supporting line about {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} waits on the sticker sheet. Give it a minute.\n",
+  "opponent_prompt": "You are writing the House's warning label. Make the harmless object sound like a tiny menace, without breaking the truth.\nWrite one warning headline and one short supporting line, both about the card. The headline should sound like a printed warning. The supporting line should name a real feature, ordinary use, possible effect, or minor risk of the object.\nThe label must fit the object. You may exaggerate the tone, but do not claim impossible powers or make the object inherently dangerous. A shoelace may cause a sudden stop, a teacup may burn a careless finger, and a bookmark may make a reader lose track of time. Keep the trouble small.\nDo not talk about the game, the Judge, scoring, or your act of guessing. Do not explain the joke. Do not use the object name in the warning unless it would naturally appear on a real label.\nUse a clear headline in capitals or warning language, followed by one concise supporting line. Keep the whole label under 160 characters. Avoid vague menace with no genuine connection to the object.\nYou are writing a rival label, not the real answer to a puzzle. Make it specific, truthful, and just a little cheeky.\n",
+  "medallions": true,
+  "default_move": "MAY CAUSE UNEXPECTED DELAYS. Particularly when the object decides it is not quite ready to cooperate."
+}

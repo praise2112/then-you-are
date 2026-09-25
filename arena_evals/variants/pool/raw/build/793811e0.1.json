@@ -1,0 +1,279 @@
+{
+  "slug": "museum-audio-guide",
+  "title": "Museum Audio Guide: The Incident",
+  "tagline": "One exhibit, one disaster, one partner to blame.",
+  "emblem": "🏛️",
+  "accent": "#7c3aed",
+  "premise": "You are recording a dramatic audio guide about the school trip that went off the rails. Take turns adding exactly one next beat to the same unfolding incident, while giving your partner the most ridiculous blame you can make fit. The host speaks as though civilisation itself is hanging on this recording.\n",
+  "seed_pool": [
+    {
+      "opening_token": "At the first museum stop, the guide opens a locked display case and finds the class mascot inside.",
+      "opening_emoji": "🧸",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "At the natural history museum, the class arrives to find their packed lunches arranged around the dinosaur skeleton.",
+      "opening_emoji": "🦖",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "At the science museum, the school bus doors open and every pupil is wearing a different museum uniform.",
+      "opening_emoji": "🚌",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 24,
+    "axes": {
+      "museum": [
+        "art gallery",
+        "natural history museum",
+        "science museum",
+        "transport museum",
+        "castle museum",
+        "local history museum",
+        "maritime museum",
+        "toy museum"
+      ],
+      "disaster": [
+        "the mascot appears somewhere impossible",
+        "the lunches form a strange display",
+        "the class wears the wrong uniform",
+        "a harmless alarm starts",
+        "a tour group copies the pupils",
+        "the teacher loses the timetable",
+        "a model begins making a noise",
+        "the gift shop sells something embarrassing"
+      ],
+      "first_discovery": [
+        "a guide opens a locked case",
+        "the class enters the main hall",
+        "the teacher checks the register",
+        "the bus doors open",
+        "a volunteer lifts a curtain",
+        "the pupils gather by a statue",
+        "the guide starts the welcome talk",
+        "the class reaches the gift shop"
+      ]
+    },
+    "tests": [
+      "One short sentence with a school trip, a museum setting, and the first strange discovery.",
+      "Nothing is dangerous, permanently damaged, or cruel. The disaster is theatrical, ridiculous, and recoverable.",
+      "A stranger can tell who is present and what the first museum problem is within five seconds.",
+      "The opening creates a clear first beat that another player can extend with one later beat.",
+      "Everyday words a twelve-year-old knows. No real school names, museum names, brands, or famous people."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The guide points at the mascot, and my partner claims it was conducting the tour.",
+    "hint": "Add one next beat. Keep the incident moving, and make your partner responsible for the ridiculous part."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How effectively the beat pins an absurd, embarrassing, or inconvenient responsibility on your partner without making the story impossible.",
+      "anchors": "0 = blames nobody, the lights flicker; 1 = a tiny accusation, they touched a button; 2 = a proper nuisance, they hid the map or started the chant; 3 = they now own a public humiliation or a problem several people saw; 4 = exquisitely specific blame that leaves them no graceful next move, rare. Blaming only yourself, or making your partner the villain of an unbelievable disaster, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the new beat follows the exact order of the incident and preserves every fact already recorded.",
+      "anchors": "0 = skips ahead, rewrites the record, ends the incident, or contradicts an earlier beat; 1 = vaguely follows but adds no clear next event; 2 = supplies one understandable next beat; 3 = clearly links cause and effect while preserving the transcript; 4 = makes an earlier oddity suddenly make perfect sense, rare. Extra actions, explanations, and endings do not earn more here.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How vividly the beat makes the school trip feel like a real public catastrophe in miniature.",
+      "anchors": "0 = flat and generic; 1 = one ordinary fact; 2 = a visible comic detail; 3 = a detail people can picture and hear; 4 = a magnificent little disaster that sounds ready for the museum archive, rare. Plain words and one sharp image beat a pile of decoration.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it supplies exactly the next single beat in the shared incident and preserves the whole transcript. A move BREAKS the incident if it skips a required link, jumps to a later consequence without showing the next beat, contradicts or rewrites an earlier beat, declares what finally happened, or cancels an earlier recorded beat instead of adding to it. The move must keep the school trip and its museum disaster in the same unfolding story. The points go to what the beat does to the partner: ridiculous blame, public embarrassment, awkward responsibility, or a problem they must now carry. A safe beat that costs nobody anything scores near zero.\n",
+    "anti_metagaming_clause": "Speaking to the host about the rules, the recording, the scoring, or the partner's play instead of adding the next incident beat is itself a broken recording.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier player beat: judge it against the card alone. It must add the immediate next beat, not leap to the finale or undo the opening.",
+      "The full transcript is the recording. Check the new beat against every earlier beat, not only the last sentence.",
+      "A skipped link is a failure when the move jumps over an obvious intervening action or consequence instead of advancing one step.",
+      "An ending is a failure when the move says how the whole incident finishes, is solved, cleaned up, explained, or remembered afterward. The story must remain open for the next beat.",
+      "An undo is a failure when the move cancels, removes, reverses, or declares false an earlier recorded beat instead of adding something new.",
+      "One beat may contain a clear cause and its immediate result, but it must not stack separate later actions, scenes, or consequences into one move.",
+      "When a move can reasonably be read as one immediate next beat, it holds. Do not punish harmless detail, ordinary timing, or a link that is clear without outside knowledge.",
+      "A detail that blames the partner's actions is part of the game. A remark about how the partner is playing, whether they are winning, or what the host should accept is meta.",
+      "A move that repeats an earlier beat without advancing the incident is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "At the first museum stop, the guide opens a locked display case and finds the class mascot inside.",
+      "move": "The guide points at the mascot, and my partner claims it was conducting the tour.",
+      "gates_note": "all true",
+      "mechanism": "adds the immediate public reaction and gives the partner a ridiculous claim to carry",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The guide points at the mascot, and my partner claims it was conducting the tour.",
+      "move": "The guide hands my partner the microphone, and the mascot gets introduced as the senior curator.",
+      "gates_note": "all true",
+      "mechanism": "continues the public embarrassment in one immediate beat and makes the partner responsible for the introduction",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "At the natural history museum, the class arrives to find their packed lunches arranged around the dinosaur skeleton.",
+      "move": "The teacher asks who made the display, and my partner points at the dinosaur with both hands.",
+      "gates_note": "all true",
+      "mechanism": "moves to the immediate question and saddles the partner with a pathetic attempt at denial",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The guide points at the mascot, and my partner claims it was conducting the tour.",
+      "move": "By the end of the trip, the head teacher gives the mascot a certificate and everyone goes home.",
+      "gates_note": "satisfies_criterion false (the move jumps to the ending and closes the incident)",
+      "mechanism": "abandons the next beat and drags the recording straight to its closing credits",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The guide points at the mascot, and my partner claims it was conducting the tour.",
+      "move": "Actually, the mascot was never in the case, so the guide apologises and the class leaves.",
+      "gates_note": "satisfies_criterion false (the move cancels an established beat and adds an ending)",
+      "mechanism": "tries to erase the evidence and then flee the museum before the recording can object",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Curator of Catastrophe",
+    "tone": {
+      "commentary_adj": "theatrical",
+      "explanation_adj": "grandiose"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like civilisation is collapsing inside a school museum visit, but keep the reason obvious.",
+      "Name the new beat, the object, or the partner's disgrace. A headline that fits any trip is a failed performance.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", or the host's name.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the recorded detail and the partner's theatrical conduct, not protected traits, bodies, families, intelligence, or spelling.",
+      "Grand language is welcome, but the sentence must remain plain enough for a pupil to understand.",
+      "On a break, place the skipped beat, contradiction, ending, or undo beside the fact the transcript already established.",
+      "On a refusal caused by a gate failure, reject the move and request another beat. Do not pretend the verdict settles the whole incident.",
+      "The coaching line names one next beat that would have held and blamed the partner. It ends on a concrete fact, never a mood.",
+      "Profanity and adult innuendo may appear sparingly when they sharpen the roast, never as filler and never as an attack on identity.",
+      "Do not explain every rubric score. Deliver one vivid ruling that a stranger can follow."
+    ],
+    "good_headlines": [
+      "The mascot has entered public service, and your partner is its press secretary. The republic trembles.",
+      "A microphone, a stuffed animal, and your partner's career in educational theatre. The museum may never recover.",
+      "The lunches now form a dinosaur shrine, and your partner is standing beside it with the solemnity of a tiny priest.",
+      "The guide asks for the culprit, and your partner points at a fossil. Magnificent, useless, and perfectly on record.",
+      "The class has not escaped the hall, but your partner has already been promoted to curator of bad decisions.",
+      "The beat advances, the mascot speaks through nobody, and your partner somehow remains the only suspect.",
+      "You have leapt from locked case to happy ending. History demands the missing disaster first.",
+      "The mascot was in the case, then you erased it with one desperate flourish. Even the display label is embarrassed.",
+      "One beat, please. The bus cannot depart, the ancestors cannot applaud, and your partner still needs a new catastrophe.",
+      "The guide's microphone is now a weapon of humiliation, and your partner handed it over with both hands."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the beat is fine.",
+        "why": "opens with a status word and offers no theatrical image"
+      },
+      {
+        "text": "The Curator of Catastrophe rules that this fails.",
+        "why": "opens with a ruling phrase and names the host instead of the incident"
+      },
+      {
+        "text": "The story is inconsistent.",
+        "why": "names no museum object, beat, or reason"
+      },
+      {
+        "text": "What a stupid little performance from a stupid little player.",
+        "why": "attacks the player directly and adds no useful ruling"
+      },
+      {
+        "text": "The golden wheels of destiny grind beneath the moonlit arch of pedagogical doom.",
+        "why": "grandiose poetry obscures the actual failure"
+      },
+      {
+        "text": "Maybe it holds, maybe it breaks, depending on how one views chronology.",
+        "why": "hedges instead of making a fair, readable ruling"
+      },
+      {
+        "text": "The incident ends, and that is bad.",
+        "why": "vague, flat, and too late to identify the missing next beat"
+      },
+      {
+        "text": "The partner is a disgusting freak for blaming the mascot.",
+        "why": "uses identity adjacent abuse and mocks a person rather than the recorded detail"
+      },
+      {
+        "text": "You skipped a beat, contradicted the beat, ended the beat, and undid the beat.",
+        "why": "lists verdict language without naming the concrete transcript evidence"
+      },
+      {
+        "text": "Bravo. A flawless catastrophe, probably.",
+        "why": "sarcasm without a reason and an unnecessary hedge"
+      }
+    ]
+  },
+  "rules": [
+    "Every card begins a school trip incident in a museum. The transcript must keep moving forward from that opening.",
+    "Add exactly one next beat per turn. Do not skip a link, stack several later actions, or rewrite an earlier beat.",
+    "Do not announce the ending, solve the disaster, or undo anything already recorded.",
+    "Give your partner the most ridiculous blame that still fits the unfolding incident.",
+    "A clear beat that advances the story scores. A safe beat nobody owns scores little. A broken recording fails on the spot."
+  ],
+  "labels": {
+    "opening": "The first recording",
+    "next_opening": "The next incident",
+    "your_opening": "Your incident",
+    "compose": "Your next beat, after {token}",
+    "compose_waiting": "Draft your next beat while you wait"
+  },
+  "validation_messages": {
+    "empty": "Silence in the gallery. The Curator is waiting.",
+    "too_long": "Over 140 characters. One beat, not the entire museum saga.",
+    "duplicate": "That beat is already in the archive. Advance the disaster.",
+    "nudge": "Twice now. Add one next beat that fits {standing_form}. Do not skip ahead, end it, or erase it."
+  },
+  "judge_out_text": "The Curator has left to inspect the damage. Nobody adds a beat until they return. {standing_form} remains the last recorded fact.\n",
+  "opponent_prompt": "You are one of two pupils recording a dramatic audio guide about a school trip that has gone\nwildly wrong. One beat per turn, one or two plain sentences.\n\nContinue from the exact transcript. Add the immediate next event, not the final result. Do not\nskip over a needed link, announce that the trip is over, solve the disaster, or cancel anything\nalready recorded. The story stays in the same museum incident until the next player advances it.\n\nMake your partner carry the most ridiculous blame that still fits. They can have pressed the\nwrong button, lied to a guide, trained the mascot, hidden a map, or volunteered for a public\nembarrassment. Keep the blame funny and specific, not cruel. Call them \"my partner\", \"he\", or\n\"she\", never a name unless one is already in the story.\n\nGood: \"The guide points at the mascot, and my partner claims it was conducting the tour.\" / \"The\nteacher asks for the culprit, and my partner points at the dinosaur with both hands.\"\nBad: \"By the end of the trip everyone goes home\" because it ends the incident. Bad: \"Actually the\nmascot was never in the case\" because it erases the record. Bad: \"Then the police arrive, the\nmuseum closes, and we board the bus\" because it stacks several later beats. Bad: \"Curator, that\nmove was unfair\" because it talks about the game instead of playing it.\n\nSpeak like a grand museum narrator with a sharp tongue, not a novelist. Use ordinary objects,\nclear actions, and one immediate consequence. Never repeat a beat without advancing the story.\n",
+  "medallions": false,
+  "default_move": "The guide asks what happened, and my partner points at the nearest harmless object."
+}

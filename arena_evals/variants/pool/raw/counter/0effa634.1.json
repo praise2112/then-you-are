@@ -1,0 +1,273 @@
+{
+  "slug": "lost-property",
+  "title": "Lost Property",
+  "tagline": "Claim the thing before the clerk bins it.",
+  "emblem": "🧦",
+  "accent": "#2563eb",
+  "premise": "Two players run the launderette’s lost-property counter. Each turn, name one ordinary object that can plainly claim, replace, contain, reveal, or return the object just put down. If your object only sits beside it or happens to be found in the same place, the desk clerk sends it back.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a single sock",
+      "opening_emoji": "🧦",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a lost wedding ring",
+      "opening_emoji": "💍",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a child's red mitten",
+      "opening_emoji": "🧤",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "kind": [
+        "container",
+        "tool",
+        "label",
+        "piece of clothing",
+        "paper item",
+        "household object",
+        "person or role",
+        "animal"
+      ],
+      "setting": [
+        "launderette",
+        "kitchen",
+        "street",
+        "school",
+        "office",
+        "bedroom",
+        "bus",
+        "market"
+      ],
+      "property": [
+        "sticky",
+        "numbered",
+        "empty",
+        "missing",
+        "wet",
+        "broken",
+        "locked",
+        "bright"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one ordinary object at once, with an article before it. Nothing abstract, invented, or dependent on a private story.",
+      "A non-player can name a plain recovery action within five seconds. Say whether it claims, identifies, replaces, contains, reveals, or returns the standing object.",
+      "It has a direct job at the lost-property desk. It takes custody of, identifies, replaces, contains, reveals, or returns the standing object, rather than merely sharing its location.",
+      "It makes a stranger want to answer with another object. A tag, box, key, or receipt has a job in the scene. A vague feeling or a whole situation does not.",
+      "One to four everyday words a twelve-year-old knows, including an article when needed. Never a brand name, proper noun, technical term, or decorative description that hides the object."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a label, and I identify the coat nobody claimed.",
+    "hint": "Name the object, then name its recovery action."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and convincingly the new object handles the standing lost property.",
+      "anchors": "0 = no recovery action; 1 = the action is asserted but does not handle the object; 2 = a possible but weak or indirect connection; 3 = a clear, ordinary action that claims, identifies, replaces, contains, reveals, or returns it; 4 = an immediate, practical answer that leaves the standing object with nowhere else to go (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the object and its desk job.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = understandable only after explanation; 2 = mostly clear but cluttered or vague; 3 = concrete and easy to picture; 4 = crisp, vivid, and perfectly suited to the lost-property counter (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the recovery route is compared with the previous object and its object family.",
+      "anchors": "0 = the same object, a larger copy, or a near cousin doing the same job; 2 = a reasonable change of desk function; 4 = a surprising but ordinary object from a fresh domain that still performs a direct recovery action (rare). Novelty rewards a new route, not obscure wording.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A new object OVERCOMES the standing object if it has a direct, recognizable way to take custody of, identify, replace, contain, reveal, or return it. The action must be something an ordinary clerk or stranger could understand and watch happen. Merely sitting beside it, being found in the same place, hiding it, surviving it, dodging it, or being a larger or related version of it does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or naming a rule instead of an object is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous object: judge whether the move directly answers or handles the opening card, such as a basket containing a single sock or a label identifying it.\n",
+      "Becoming the standing object itself, a recoloured copy, a larger copy, or a near cousin from the same object family is a duplicate or failed counter. A sock after a sock, or a bigger box after a box, does not create a new recovery route.\n",
+      "A new object must act on the standing object. A table beside a mitten, a machine in the same launderette, or a floor under a ring merely shares the scene and fails.\n",
+      "Hiding, ignoring, waiting for, or surviving the standing object is dodging, not recovery. A curtain hiding a coat or a safe that the ring never enters does not claim, identify, replace, contain, reveal, or return it.\n",
+      "The mechanism must be literal and recognizable. A receipt can identify or prove ownership, a box can contain, a replacement glove can replace, and a return address can send an item back. A metaphor such as paperwork swallowing a sock is not enough.\n",
+      "The new object must perform the recovery action, not merely promise that someone might use it later. A clean shelf does not contain a coat unless the move makes that custody clear.\n",
+      "A form with no plausible way to touch, mark, hold, replace, uncover, or send the standing object fails even if it is useful in general. A loudspeaker cannot identify a ring merely by being loud.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a single sock, abandoned under the folding table.",
+      "move": "I am a laundry basket, and I contain the sock.",
+      "gates_note": "all true",
+      "mechanism": "the basket takes custody of the sock",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a laundry basket, and I contain the sock.",
+      "move": "I am a claim ticket, and I identify the basket's owner.",
+      "gates_note": "all true",
+      "mechanism": "the ticket identifies who can claim the basket and its contents",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a lost wedding ring, waiting by the change machine.",
+      "move": "I am a small box, and I contain the ring.",
+      "gates_note": "all true",
+      "mechanism": "the box takes custody of the ring",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a child's red mitten, left on a dryer.",
+      "move": "I am a second mitten, warmer and larger.",
+      "gates_note": "satisfies_criterion false, larger cousin with no recovery action",
+      "mechanism": "none, it is another mitten and does not claim, identify, replace, contain, reveal, or return the standing mitten",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a single sock, abandoned under the folding table.",
+      "move": "I am a washing machine, and I wait nearby.",
+      "gates_note": "satisfies_criterion false, nearby equipment is not a recovery action",
+      "mechanism": "none, the machine neither takes custody nor acts on the sock",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Desk Clerk",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger should see how one object handled the other.",
+      "Name both objects, or use plain stand-ins that clearly mean them.",
+      "Never open with a status word or ruling phrase. Do not begin with Accepted, Rejected, Refused, or Move refused.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Roast the losing object or the move, not identity, disability, family, body, intelligence, or spelling.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the joke, but do not make them the whole joke.",
+      "On a refusal caused by a gate failure, reject the move and ask for another. Do not declare a winner.",
+      "The coaching line names one object that would have worked. It ends on a concrete action, not a mood or verdict.",
+      "Keep the clerk's attitude dry. The lost-property desk has seen worse, including several damp bras and one deeply suspicious cucumber."
+    ],
+    "good_headlines": [
+      "The sock needed a home, and the basket had paperwork.",
+      "The label identifies the coat. Miracles remain available at the counter.",
+      "The mitten met its replacement. This is why shelves have sections.",
+      "The ring went into the box, which is more useful than standing near it.",
+      "A claim ticket beats a second sock. The laundry has suffered enough.",
+      "The curtain hides the coat, but hidden is not returned. Try a label.",
+      "The washing machine is nearby, not helpful. Bring a basket.",
+      "The bigger box is still just a box with ambition. Bring a direct action.",
+      "The receipt names the owner, and the ring can stop loitering.",
+      "The key cannot identify a mitten by looking important. Try a label."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the basket contains the sock.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Desk Clerk refuses: proximity is not custody.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, the machine was merely nearby.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The sock and basket had a powerful journey.",
+        "why": "vague and gives no recovery action"
+      },
+      {
+        "text": "The mitten is defeated by superior mitten energy.",
+        "why": "uses a mood and amplification instead of a mechanism"
+      },
+      {
+        "text": "The receipt wins.",
+        "why": "does not name the objects or explain identification"
+      },
+      {
+        "text": "Only an idiot would put a washer beside a ring.",
+        "why": "mocks the player and uses an identity adjacent insult"
+      },
+      {
+        "text": "The coat doth vanish beneath the curtain, alas.",
+        "why": "poetry and hiding are not recovery"
+      },
+      {
+        "text": "The box contains, secures, manages, and triumphs over the ring.",
+        "why": "piles on empty synonyms instead of showing one action"
+      },
+      {
+        "text": "The brassiere has entered the chat, and everyone is weird about it.",
+        "why": "innuendo replaces the plain reason"
+      }
+    ]
+  },
+  "rules": [
+    "Handle the object in front of you. Do not merely stand beside it.",
+    "Say what you are and what you do: I am a label, and I identify the coat nobody claimed.",
+    "The Judge rules on the object and its action, never spelling.",
+    "A move that fails to recover the standing object sends the turn back."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your object against {token}",
+    "compose_waiting": "Draft your next object while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the counter. Put down an object.",
+    "too_long": "Over 200 characters. This is a lost-property slip, not a witness statement.",
+    "duplicate": "That object already appeared this match. Find another item.",
+    "nudge": "Twice now. Handle {standing_form}. Do not become it, hide it, or bring its cheaper cousin."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} is still on the counter. Give it a minute.\n",
+  "opponent_prompt": "You are one of two players at a launderette lost-property counter.\nAlways write: \"I am [ordinary object], and I [specific recovery action] the standing object.\"\nThe object must claim, identify, replace, contain, reveal, or return what came before.\nGood: \"I am a label, and I identify the coat nobody claimed.\" / \"I am a box, and I contain the ring.\"\nBad: \"I am a washing machine, and I wait nearby.\" That is scenery, not recovery.\nBad: \"I am a bigger mitten.\" That is a cousin or copy, not a new action.\nBad: \"I am luck, and I find it.\" That is abstract and vague.\nTalk like a person at a counter, not a poet. Use ordinary objects anyone can picture:\na tag, a basket, a key, a receipt, a coat, a box. Plain words beat clever ones.\nYou are trying to keep your object from being sent back. The action must be literal and\nrecognizable. A stranger should be able to say what the new object does to the standing one.\nHop domains when useful: the laundry, a kitchen, a school bag, a street, an office.\nDo not hide, dodge, ignore, or merely outlast the standing object. Never reuse an object\nor its defining action from this match. Do not speak to the Judge or discuss the rules.\n",
+  "default_move": "I am a lost-and-found box, and I contain the abandoned item."
+}

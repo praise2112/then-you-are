@@ -1,0 +1,266 @@
+{
+  "slug": "late-excuse-receipts",
+  "title": "The Receipt Department",
+  "tagline": "You were late. The boss wants proof. The proof has opinions.",
+  "emblem": "🧾",
+  "accent": "#7c3aed",
+  "premise": "You tell the boss why you are late while the boss asks for proof. Two players take turns adding one ordinary piece of evidence, beginning with Then I showed. The evidence should help at first, then become wonderfully unhelpful. The Judge checks that each item follows from the last claim and reveals something new.\n",
+  "seed_pool": [
+    {
+      "opening_token": "You said a bus delay made you late.",
+      "opening_emoji": "🚌",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "You said a neighbour's loose goat blocked your path.",
+      "opening_emoji": "🐐",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "You said your alarm clock joined the wrong time zone.",
+      "opening_emoji": "⏰",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "excuse": [
+        "a bus delay",
+        "a lost key",
+        "a loose goat",
+        "a dead phone",
+        "a flooded path",
+        "a broken lift",
+        "a missed train",
+        "a confused alarm"
+      ],
+      "place": [
+        "the bus stop",
+        "the front door",
+        "the market",
+        "the station",
+        "the office lift",
+        "the footbridge",
+        "the kitchen",
+        "the car park"
+      ],
+      "first_proof": [
+        "a ticket",
+        "a message",
+        "a photo",
+        "a receipt",
+        "a clock",
+        "a muddy shoe",
+        "a key",
+        "a witness"
+      ]
+    },
+    "tests": [
+      "A late excuse is clear in one quick look. Present tense, one sentence, plain words.",
+      "A boss can ask for one sensible piece of proof within five seconds, and there are several possible answers.",
+      "Nothing on the card proves the excuse already. It gives the player a claim, not a finished case.",
+      "No real person, brand, serious injury, or crime with a victim appears on the card.",
+      "It sounds like something a slightly flustered worker might say before remembering that details are evidence."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then I showed ",
+    "example": "Then I showed a bus ticket stamped 8:40, which revealed the bus had not arrived.",
+    "hint": "Add one new item of proof that could result from the last claim, and say what it reveals."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much the new evidence changes the case, for better or worse.",
+      "anchors": "0 = it changes nothing or merely repeats the last item; 1 = a small extra detail; 2 = it opens a useful new question or weakens the excuse a little; 3 = it changes what the boss must suspect, while still following in one step; 4 = it turns the whole case in an unexpected direction without breaking the chain, rare. Reach is earned only when the evidence has a clear source."
+    },
+    {
+      "name": "link",
+      "description": "How plainly the new item comes from the standing claim or evidence.",
+      "anchors": "0 = no source is shown; 1 = the item is simply placed on the table; 2 = the source is possible but needs explaining; 3 = a stranger sees why the last item or claim produced it; 4 = the item feels like the exact proof that would naturally appear next, rare. One move may not invent a whole chain of missing evidence."
+    },
+    {
+      "name": "picture",
+      "description": "How clearly the boss can imagine the item and what it reveals.",
+      "anchors": "0 = vague, unreadable, or only an opinion; 1 = abstract or muddled; 2 = clear but ordinary; 3 = easy to picture and tied to the excuse; 4 = one small detail makes the evidence memorable, rare. Extra words do not count unless they make the item clearer."
+    }
+  ],
+  "criterion": {
+    "description": "A move follows if it adds exactly one new piece of evidence beginning with Then I showed, and that item could result from the last claim or evidence. It must say what the item reveals. The evidence may first support the excuse and later make it wonderfully unhelpful. A move fails when it produces proof with no source, skips the steps that would create the item, ends the case by proving the excuse or destroying it completely, or undoes an earlier item by making it vanish or mean the opposite.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the match, or about the rules is not evidence and breaks the move.",
+    "judge_notes": [
+      "On a FIRST move there is no standing evidence: judge the item against the card. It must be a sensible first receipt, object, message, photo, or witness for the opening excuse.",
+      "A new item must have a source in the standing claim or evidence. A bus delay can produce a ticket, a service message, or a station photo. It cannot produce the boss's private security footage without a link showing how it was obtained.",
+      "A move may reveal that evidence is unhelpful or embarrassing. That is allowed if the item follows. A receipt with the wrong date can weaken the excuse without ending the case.",
+      "A new person may appear only when the evidence gives them a reason to be there, such as a witness named in a message or a driver shown in a photo. An unexplained expert, reporter, or police officer is a skipped link.",
+      "An ending is any move that settles the case completely, such as proof that the bus was delayed and the excuse is accepted, or proof that the speaker was still at home and the excuse is destroyed. Endings fail even when the evidence follows.",
+      "An undo is any move that removes an earlier item, says it was never there, or reverses its meaning without a new piece of evidence causing that change. The chain cannot quietly erase paperwork.",
+      "Restating the standing item in new words, or adding a second version of the same ticket, is a duplicate. The new item must reveal something not already shown.",
+      "Two items packed into one move are a crowded move. If both are clearly separate, judge the first item as the move and treat the extra item as a skipped link or score link at 2 or below."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "You said a bus delay made you late.",
+      "move": "Then I showed a bus ticket stamped 8:40, which revealed the bus was due at 8:10.",
+      "gates_note": "all true",
+      "mechanism": "the delay claim naturally produces a ticket with a late time",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then I showed a bus ticket stamped 8:40, which revealed the bus was due at 8:10.",
+      "move": "Then I showed a message from the driver saying the bus had been stuck behind a goat.",
+      "gates_note": "all true",
+      "mechanism": "the late ticket gives a reason to have a delay message",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then I showed a message from the driver saying the bus had been stuck behind a goat.",
+      "move": "Then I showed the mayor's report proving the whole city had stopped for the goat.",
+      "gates_note": "satisfies_criterion false, the report has no shown source and skips several links",
+      "mechanism": "none shown between a driver message and a mayor's report",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then I showed a bus ticket stamped 8:40, which revealed the bus was due at 8:10.",
+      "move": "Then I showed a clean clock photo proving I arrived exactly on time.",
+      "gates_note": "satisfies_criterion false, the excuse is completely destroyed and the case ends",
+      "mechanism": "the photo contradicts the standing claim instead of adding a linked complication",
+      "scores": {
+        "reach": 1,
+        "link": 1,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then I showed a bus ticket stamped 8:40, which revealed the bus was due at 8:10.",
+      "move": "Then I showed the same ticket again, now with a coffee stain.",
+      "gates_note": "satisfies_criterion false, duplicate evidence with no new reveal",
+      "mechanism": "the ticket is already present and the stain proves nothing useful",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Receipt Clerk",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the two moves must see why the evidence held or failed.",
+      "Name the claim and the item, or their plain stand-ins. A headline that fits any excuse is a wasted receipt.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Receipt Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Mock the excuse or evidence, never identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, rhymes, profanity, or grand legal words.",
+      "On a skipped link, name the proof that appeared without a source. On an ending, say the case is settled and the chain stops here.",
+      "On a refusal, the headline refuses the item and asks for another. It never rules on who won.",
+      "The coaching line names one item that could have followed. It ends on evidence, never a mood or a verdict.",
+      "Light teasing is fine. The receipt may be silly. The player is not the target."
+    ],
+    "good_headlines": [
+      "The late ticket supports the bus story. The goat message makes payroll nervous.",
+      "A mayor's report needs a trail, not a dramatic entrance.",
+      "The clock proves the excuse is dead. Please file it under arrived early.",
+      "Same ticket, fresh coffee, no new evidence. Even the stain has done more work.",
+      "The driver message follows the ticket. The goat has now entered office paperwork.",
+      "The photo appears from nowhere. Receipts do not grow on trees, despite this excuse.",
+      "The case is settled, the clock is merciless, and the chain stops here.",
+      "A muddy shoe can follow a flooded path. It cannot explain a missing bus ticket.",
+      "The ticket says late, the clean clock says otherwise, and the excuse has left the building.",
+      "The proof is small, the problem is larger, and nobody has explained the coffee."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: good evidence.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Receipt Clerk refuses this.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "What a case, what a mess, what a morning.",
+        "why": "gives no reason and fits any pair"
+      },
+      {
+        "text": "The evidentiary apparatus lacks causal coherence.",
+        "why": "uses stiff legal words instead of plain speech"
+      },
+      {
+        "text": "Only an idiot would show that ticket.",
+        "why": "mocks the player and uses an insult"
+      },
+      {
+        "text": "Maybe it follows, maybe it does not.",
+        "why": "hedges instead of ruling clearly"
+      },
+      {
+        "text": "The receipt sang beneath the moon...",
+        "why": "uses poetry and an ellipsis"
+      },
+      {
+        "text": "Ticket. Message. Chaos.",
+        "why": "lists items without saying why the link works"
+      }
+    ]
+  },
+  "rules": [
+    "Begin with Then I showed and add one new piece of evidence.",
+    "Say what the item reveals about the late excuse.",
+    "The item must follow from the last claim or evidence.",
+    "Skip a source, settle the case, or undo an item and the chain stops with you.",
+    "The Judge rules on the evidence link, not spelling."
+  ],
+  "labels": {
+    "opening": "The excuse",
+    "next_opening": "The next receipt",
+    "your_opening": "Your receipt",
+    "compose": "What did you show after {token}",
+    "compose_waiting": "Draft your next piece of evidence while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing was shown. The boss is still waiting for proof.",
+    "too_long": "Over 140 characters. One receipt, not an audit.",
+    "duplicate": "That evidence is already filed. Show what it reveals next.",
+    "nudge": "Twice now. Add one new item that follows from {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out to check the filing cabinet. Nobody moves until they are back. {standing_form} still stands, and no new proof has been filed.\n",
+  "opponent_prompt": "You are one of two workers explaining why you are late, and the boss wants proof.\nAlways begin with \"Then I showed\". Add one ordinary item, then say what it reveals.\nLet the item follow from the standing claim or evidence. A ticket can show a late bus. A message can explain the ticket. A photo can make the message look less helpful.\nGood: \"Then I showed a bus ticket stamped 8:40, which revealed the bus was due at 8:10.\" / \"Then I showed a photo of the goat beside the bus, which revealed traffic had stopped.\"\nBad: \"Then I showed the mayor's full report\" when nobody has shown how it appeared. That skips the source. Bad: \"Then I showed a clock proving I was on time\" because it ends and destroys the excuse. Bad: \"Then I showed a feeling of panic\" because a feeling is not an item of evidence.\nNever settle the case, rescue the excuse completely, erase an earlier item, or reverse its meaning without a new linked item.\nTalk like a person at a desk, not a lawyer. Use plain things anyone knows: a ticket, a text, a photo, a wet shoe, a receipt, a clock.\nOnly words a twelve-year-old anywhere knows. Keep one item per move. Never reuse an item from this match.\n",
+  "medallions": false,
+  "default_move": "Then I showed a message from the bus company, which revealed the delay was real."
+}

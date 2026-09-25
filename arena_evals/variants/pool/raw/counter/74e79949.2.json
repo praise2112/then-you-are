@@ -1,0 +1,265 @@
+{
+  "slug": "inbox-tetris",
+  "title": "Inbox Tetris",
+  "tagline": "Stack one useful office reply on the last.",
+  "emblem": "📥",
+  "accent": "#2563eb",
+  "premise": "You and your opponent manage a shared open-plan office inbox one message at a time. Each reply must directly resolve, redirect, or create an answerable decision from the message before it. One useless reply collapses the inbox.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Can you approve this?",
+      "opening_emoji": "✅",
+      "detail": "A file is attached.",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Who owns the meeting room?",
+      "opening_emoji": "🚪",
+      "detail": "Two teams need it at three.",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The printer is out of paper.",
+      "opening_emoji": "🖨️",
+      "detail": "A queue is forming beside it.",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 10,
+    "axes": {
+      "office_source": [
+        "manager",
+        "coworker",
+        "client",
+        "finance",
+        "support",
+        "reception",
+        "human resources",
+        "facilities"
+      ],
+      "request_type": [
+        "approval",
+        "owner",
+        "deadline",
+        "access",
+        "booking",
+        "invoice",
+        "printer help",
+        "file review"
+      ],
+      "pressure": [
+        "today",
+        "before lunch",
+        "by Friday",
+        "blocking work",
+        "needed for a meeting",
+        "waiting on one answer",
+        "already overdue",
+        "noticed by everyone"
+      ]
+    },
+    "tests": [
+      "A stranger can tell who needs what from the message at once. Nothing vague, private, or abstract.",
+      "A reply can take one concrete office action within the next message. Say what that action is.",
+      "The message leaves a clear handle for the next player, such as a choice, owner, time, file, or place.",
+      "It belongs in an open-plan office. It could arrive by email or chat while people work nearby.",
+      "Ten plain words or fewer, with everyday office language. No brand names, private jokes, or invented departments."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I reply, ",
+    "example": "I reply, \"Approved, please send the file,\" turning the approval request into the next clear task.",
+    "hint": "Quote the reply, then say what office action it creates."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and completely the reply handles the standing office message.",
+      "anchors": "0 = no reply action or unrelated text; 1 = acknowledges the message but leaves the same problem standing; 2 = offers a partial action or a vague redirect; 3 = clearly resolves, redirects, or creates a specific decision; 4 = closes the loop and leaves an unmistakable next task or owner (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can understand the reply and the office result it creates.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = understandable only with missing context; 2 = mostly clear but vague about action, owner, or result; 3 = plain and workable; 4 = crisp enough that the inbox could act on it immediately (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How usefully the reply changes the kind of office action without abandoning the standing message.",
+      "anchors": "0 = repeats the request, says it louder, or gives the stock non-answer; 2 = a sensible but ordinary redirect or decision; 4 = an unexpectedly simple office move that handles the message from a fresh angle (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A reply OVERCOMES the standing message if it takes a concrete office action that resolves the request, redirects it to a named person or channel, or turns it into an answerable decision. The reply must handle what the message actually asks. Ignoring it, postponing it without a useful next step, repeating the same request more loudly, or changing to a nearby topic without handling the standing message fails.\n",
+    "anti_metagaming_clause": "Talking to the Judge, discussing the game, or describing the rules is not an office reply and loses.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous reply: judge it against the opening message. It must answer, route, or turn that opening request into a clear next action.\n",
+      "A reply that merely repeats the standing request with stronger wording is not a counter. \"Please approve this today\" does not handle a request that already asks for approval.\n",
+      "A reply that says it will deal with the message later fails unless it gives a concrete owner, time, and next action that moves the matter forward.\n",
+      "A reply that ignores the standing request and starts a nearby office topic fails. A room booking reply that discusses snacks does not handle the room booking.\n",
+      "A reply that only acknowledges receipt, thanks the sender, or says it is being reviewed fails when it creates no decision, owner, route, or task.\n",
+      "The reply must create a literal office action a stranger could follow, such as approving, assigning, forwarding, booking, requesting a missing item, or choosing between stated options. A slogan or figure of speech is not an action.\n",
+      "A reply may redirect the message, but the destination must be clear enough to act on. \"Ask someone else\" is not a useful redirect.\n",
+      "The new reply must handle the standing message, not just benefit from the earlier context. A reply that works only if the reader invents missing details fails.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Can you approve this? A file is attached.",
+      "move": "I reply, \"Approved, please send the final file to finance,\" turning approval into a clear handoff.",
+      "gates_note": "all true",
+      "mechanism": "it gives the requested approval and creates a named next task",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Who owns the meeting room? Two teams need it at three.",
+      "move": "I reply, \"Facilities owns bookings, so I am forwarding this to them,\" routing the conflict to the right desk.",
+      "gates_note": "all true",
+      "mechanism": "it names the owner and forwards the request to that owner",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The printer is out of paper. A queue is forming beside it.",
+      "move": "I reply, \"The printer is out of paper, and everyone should know this immediately.\"",
+      "gates_note": "satisfies_criterion false, repeats the problem without creating an action",
+      "mechanism": "none, it restates the printer problem",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Can you approve this? A file is attached.",
+      "move": "I reply, \"I will look at it sometime next week,\" postponing the decision without a usable next step.",
+      "gates_note": "satisfies_criterion false, postpones without a concrete action",
+      "mechanism": "none, it gives no decision, owner, or actionable handoff",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Who owns the meeting room? Two teams need it at three.",
+      "move": "I reply, \"Also, does anyone want coffee for the afternoon meeting?\" ignoring the booking question.",
+      "gates_note": "satisfies_criterion false, changes to a nearby topic without handling the request",
+      "mechanism": "none, coffee does not assign or book the room",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Desk Clerk",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the two messages should see what moved or failed.",
+      "Name both messages, or their plain office stand-ins. A headline that fits any inbox is not useful.",
+      "Never open with a status word or ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", or \"Move refused\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the reply, never the player. No jokes about identity, ability, family, body, or spelling.",
+      "Use plain spoken English. No poetry, no rhymes, no profanity, no innuendo, and no corporate fog.",
+      "On a refusal, the headline says why the reply failed and asks for another. It never claims the inbox moved.",
+      "The coaching line names one reply that would have handled the standing message. It ends on an action, owner, choice, or next step.",
+      "Keep the office details specific. A useful reply should sound like something a real coworker could send."
+    ],
+    "good_headlines": [
+      "Approval became a handoff, and finance now has a job.",
+      "The room question found Facilities before the meeting found the hallway.",
+      "The printer is still empty, but the supply request is finally going somewhere.",
+      "A thank you is polite. It is not a booking.",
+      "The reply changed no subject, which is unusual and helpful.",
+      "Coffee is not the owner of the meeting room. Try the booking desk.",
+      "The file received an answer and finance received a task.",
+      "The inbox has achieved the rare dignity of moving forward."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the approval is approved.",
+        "why": "opens with a status word and adds no useful reason"
+      },
+      {
+        "text": "The Desk Clerk refuses, because office logic says no.",
+        "why": "opens with a ruling phrase and gives no concrete explanation"
+      },
+      {
+        "text": "The reply is bad.",
+        "why": "too vague to show what failed"
+      },
+      {
+        "text": "The printer remains a printer, in a tragic dance of paper.",
+        "why": "uses poetry instead of naming the missing action"
+      },
+      {
+        "text": "Please stop being useless.",
+        "why": "mocks the player and gives no coaching"
+      },
+      {
+        "text": "The room is booked, probably.",
+        "why": "hedges instead of ruling clearly"
+      },
+      {
+        "text": "The email enters a new paradigm of stakeholder alignment.",
+        "why": "uses corporate fog instead of plain office language"
+      },
+      {
+        "text": "The request is handled, resolved, completed, and concluded.",
+        "why": "repeats the verdict without showing the action"
+      }
+    ]
+  },
+  "rules": [
+    "Handle the message in front of you. Do not change the subject.",
+    "Quote a concrete reply, then say what office action it creates.",
+    "You may resolve, redirect, or create a clear decision.",
+    "The Judge rules on the office action, not the spelling.",
+    "One reply that leaves the standing message untouched collapses the inbox."
+  ],
+  "labels": {
+    "opening": "The opening message",
+    "next_opening": "The next message",
+    "your_opening": "Your message",
+    "compose": "Reply to {token}",
+    "compose_waiting": "Draft your next reply while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing in the inbox. Send a useful reply.",
+    "too_long": "Over 200 characters. This is an office reply, not a staff meeting.",
+    "duplicate": "That reply already appeared this match. Send a different action.",
+    "nudge": "Twice now. Handle {standing_form}. Do not repeat it, postpone it, or change the subject."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody sends until they are back. {standing_form} still needs handling. Give it a minute.\n",
+  "opponent_prompt": "You are one of two coworkers managing a shared open-plan office inbox.\nAlways write: \"I reply, '...,' turning the message into ...\" The quoted part is a\nshort, realistic office reply. The ending names the concrete action it creates.\nGood: \"I reply, 'Approved, please send the final file to finance,' turning the\nrequest into a clear handoff.\"\nBad: \"I reply, 'Noted,' turning the message into progress.\" That acknowledges\nnothing useful and claims a result it does not create.\nBad: \"I reply, 'I will handle it later,' turning the message into patience.\"\nThat postpones the work without a usable next step.\nTalk like a person at a desk, not a corporate brochure. Use plain office things:\nowners, files, rooms, dates, invoices, access, supplies, and decisions.\nYou are replying to the standing message, not writing a new topic. Resolve it,\nredirect it to a named place or person, or turn it into a specific choice.\nNever say the same request more loudly. Never use game talk, Judge talk, or rules\nas the reply. Do not reuse a reply or its key action from this match.\n",
+  "default_move": "I reply, \"Please send the missing details and deadline,\" turning the vague request into an answerable task."
+}

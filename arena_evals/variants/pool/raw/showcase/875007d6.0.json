@@ -1,0 +1,274 @@
+{
+  "slug": "menu-mystery",
+  "title": "Menu Mystery",
+  "tagline": "Keep the meal. Invent the scandal.",
+  "emblem": "🍽️",
+  "accent": "#7a3e2f",
+  "premise": "Three rounds. Each round serves one plain meal with two dull facts, the food and its preparation. Both players write a suspicious menu description for it. The meal must survive inside the line: a diner who knows only the description can still identify what was served and how it was prepared. Everything else is fair game, secret deals, daring escapes, cover-ups, witnesses and harmless theories. The Host scores how far each description gets from the plain meal while the meal stays true.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Rice, boiled.",
+      "opening_emoji": "🍚",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Potatoes, mashed.",
+      "opening_emoji": "🥔",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Carrots, roasted.",
+      "opening_emoji": "🥕",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "food": [
+        "rice",
+        "potatoes",
+        "carrots",
+        "beans",
+        "pasta",
+        "eggs",
+        "peas",
+        "apples"
+      ],
+      "preparation": [
+        "boiled",
+        "mashed",
+        "roasted",
+        "steamed",
+        "baked",
+        "fried",
+        "chopped",
+        "grilled"
+      ],
+      "texture": [
+        "soft",
+        "crisp",
+        "fluffy",
+        "tender",
+        "smooth",
+        "warm",
+        "firm",
+        "sticky"
+      ]
+    },
+    "tests": [
+      "Two or three words, with an article and a food followed by its preparation. A diner pictures the plate at once.",
+      "The food is ordinary and harmless. No meat, illness, injury, alcohol, brands or real people.",
+      "The preparation is plain and checkable. It says what happened in the kitchen, not what the diner imagines.",
+      "The card is dull enough to need a mystery. If the meal already sounds like a crime scene, discard it.",
+      "The food and preparation are distinct facts a menu line can preserve or twist without replacing either one."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "PEARL SIZED SURVIVOR ESCAPES THE STEAMING WHITEWATER",
+    "hint": "One menu description. Keep the meal true, then make the kitchen look guilty."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the menu line travel from the plain meal while still naming the food and its preparation?",
+      "anchors": "0 = repeats the meal with no invention; 1 = adds one suspicious adjective; 2 = suggests a motive, witness or small secret; 3 = turns lunch into a full harmless mystery while both meal facts survive; 4 = makes boiled rice feel like an international incident without losing rice or boiling (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the innocent meal become funny through the theory wrapped around it?",
+      "anchors": "0 = no spark; 1 = a faint raised eyebrow; 2 = a smile at the premise; 3 = a proper laugh at the contrast; 4 = the table would repeat it while asking for more bread (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as a tight menu line, with a clear image and no explanation?",
+      "anchors": "0 = a comment, question or explanation; 1 = a line buried under filler; 2 = recognisably a menu description but loose; 3 = compact, vivid and easy to scan; 4 = it belongs on the menu unchanged, preferably above the soup (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A description PLAYS if a diner who knows only the line can still truthfully identify both the meal's listed food and its listed preparation. For example, a line for Rice, boiled must still point to rice and boiling, even if it calls the grains survivors fleeing a steaming river. It fails when the food is dropped, replaced or contradicted, when the preparation is dropped, replaced or contradicted, or when the response is not a menu description but a question, comment, explanation or remark about the game. A plain restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, discussing the game or mentioning rules is itself a losing menu description.\n",
+    "judge_notes": [
+      "Test the gate on the first move one way only: could a diner identify both listed facts from the line? Pearl-sized survivor escapes the steaming whitewater passes for Rice, boiled because rice is the pearls and steaming water signals boiling. Do not demand the exact card wording.",
+      "A food failure is fatal. A line about grains, tubers or treasure with no reasonable food identity does not preserve rice, potatoes or the card's listed food.",
+      "A preparation failure is fatal. A line about rice that never suggests boiling does not preserve Rice, boiled. Added steaming, bubbling or hot water can carry the preparation without copying the word boiled.",
+      "Contradiction is fatal. Raw rice, fried rice or untouched potatoes breaks a boiled or otherwise listed preparation. A suspicious story may add detail, but it cannot overwrite the kitchen fact.",
+      "Both players answer the same meal. Judge each description alone, not against the other player's theory.",
+      "A wild theory is not a contradiction. Spies, witnesses, escape plans and secret payments are invented decoration if the food and preparation still hold.",
+      "A plain menu restatement plays but earns little stretch. Suspicion alone is not distance if it adds no specific image or turn.",
+      "A question, comment, rule reference or explanation about the game fails even if it mentions the right meal. The response must be a menu description.",
+      "Capital letters, missing punctuation and slightly odd grammar cost nothing if the line clearly functions as a menu description.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Rice, boiled.",
+      "move": "PEARL SIZED SURVIVOR ESCAPES THE STEAMING WHITEWATER",
+      "gates_note": "all true",
+      "mechanism": "rice becomes a survivor and boiling becomes a whitewater escape",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Potatoes, mashed.",
+      "move": "SMASHED TUBERS HIDE THE EVIDENCE UNDER A BUTTERY ALIBI",
+      "gates_note": "all true",
+      "mechanism": "potatoes remain mashed while the mash becomes a cover-up",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Carrots, roasted.",
+      "move": "ROASTED CARROTS REFUSE TO NAME THE MISSING DIP",
+      "gates_note": "all true",
+      "mechanism": "carrots and roasting remain explicit while the plate gains a witness scandal",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Rice, boiled.",
+      "move": "SECRET GRAINS PREPARE A CRUNCHY REVOLT",
+      "gates_note": "satisfies_criterion false (rice is vague and crunchy contradicts boiled)",
+      "mechanism": "the line replaces the boiled rice with an unclear and crunchy theory",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Potatoes, mashed.",
+      "move": "THE KITCHEN DENIES EVERYTHING",
+      "gates_note": "satisfies_criterion false (neither the potatoes nor the mashed preparation is identifiable)",
+      "mechanism": "the kitchen has a lawyer, but the menu has lost its meal",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Host",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A diner who read only the meal and the line must see why it scored.",
+      "Name the food or the preparation, the rice, the mash, the roast. A line that fits any plate is a limp canapé.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or The Host refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the menu line, never the player's identity, body, family or intelligence. A bad dish is fair game, a bad person is not.",
+      "Plain spoken English. No poetry, rhymes, kitchen jargon or thesaurus fog.",
+      "On a fail, say which food or preparation went missing or got broken, in the words of the meal.",
+      "On a refusal, the Host refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one menu description that would have scored. It ends on a food or kitchen action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The rice survived the steaming water and the description finally gave it a motive.",
+      "Mashed potatoes under a buttery alibi, a cover story with excellent texture.",
+      "The carrots are roasted, the dip is missing, and someone at this table has questions.",
+      "A boiled grain escape is still lunch, which is more than the kitchen can say for its reputation.",
+      "The tubers kept their mash and acquired a suspiciously competent lawyer.",
+      "That is a menu line with two facts and one small conspiracy, a balanced plate.",
+      "The roast remains visible beneath the theory, unlike the missing napkin.",
+      "The rice is present, boiled is present, and the whitewater has made a meal of it."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: lovely suspicious rice.",
+        "why": "opens with a status word and gives no useful reason"
+      },
+      {
+        "text": "The Host refuses: try again.",
+        "why": "opens with a ruling phrase and names the Host"
+      },
+      {
+        "text": "Move refused, that is not a menu.",
+        "why": "opens with a ruling phrase and explains nothing about the meal"
+      },
+      {
+        "text": "Wrong, you forgot the potatoes.",
+        "why": "mocks the player and does not explain the preparation failure"
+      },
+      {
+        "text": "Nice mystery.",
+        "why": "could describe any line and has no food or kitchen image"
+      },
+      {
+        "text": "The contestant clearly has no idea how food works.",
+        "why": "attacks the player instead of the menu line"
+      },
+      {
+        "text": "O tender grains, what secret tides have carried thee?",
+        "why": "poetry is not a useful ruling"
+      },
+      {
+        "text": "A bold, daring, mysterious and suspicious culinary revelation.",
+        "why": "four vague adjectives where one concrete image would do"
+      },
+      {
+        "text": "Better than the other player's suspicious potato story.",
+        "why": "judges the pair instead of this line alone"
+      },
+      {
+        "text": "A classic chef's table amuse bouche with a narrative arc.",
+        "why": "kitchen jargon hides the actual reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one plain meal each.",
+    "Write one menu description under 90 characters. The House writes its own, unseen, and the Host scores both.",
+    "The line must preserve both the food and its preparation. Lose either one, contradict it or replace it and the round is lost.",
+    "Everything else is yours to invent. The further you get from the meal while both facts hold, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The meal",
+    "next_opening": "The next meal",
+    "your_opening": "Your meal",
+    "compose": "Your menu description for {token}",
+    "compose_waiting": "Draft your menu description while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty plate. Write the menu description.",
+    "too_long": "Over 90 characters. That is a menu line, not a cookbook.",
+    "duplicate": "That description has already been served this match. Find another theory.",
+    "nudge": "Twice now. One menu description that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Host has stepped away from the table. Nobody orders yet. {standing_form} sits under the heat lamp. Give it a moment.\n",
+  "opponent_prompt": "You are a suspicious menu writer with a plain meal and a hungry table. Write one\nmenu description.\nBOTH FACTS MUST SURVIVE. A diner who sees only your line must still identify the food\nand its preparation. Never drop either one, never replace either one, never contradict\neither one. For Rice, boiled, keep rice clear and keep boiling clear, as in PEARL SIZED\nSURVIVOR ESCAPES THE STEAMING WHITEWATER.\nThen go as far as you dare. Invent the witness, the cover-up, the secret payment, the\nescape or the harmless theory. Points are for distance from the plain meal while both\nfacts hold.\nGood: PEARL SIZED SURVIVOR ESCAPES THE STEAMING WHITEWATER for Rice, boiled. SMASHED\nTUBERS HIDE THE EVIDENCE UNDER A BUTTERY ALIBI for Potatoes, mashed.\nBad: SECRET GRAINS PREPARE A CRUNCHY REVOLT for Rice, boiled, because crunchy breaks the\npreparation. THE KITCHEN DENIES EVERYTHING loses both food and preparation. Rice is\nboiled again is true but dull.\nKeep a menu rhythm, short plain words and one strong image. Under 90 characters. Do not\nuse a colon or a dash. Do not explain the joke. Capitals are fine but not required.\nVary the angle from round to round: a witness one round, a cover-up the next, an escape,\na missing item or a suspicious kitchen denial. Never use the same shape twice in a match.\nNo quotation marks around the description. Reply with the menu description only.\n",
+  "medallions": false,
+  "default_move": "Plain meal appears, kitchen says nothing"
+}

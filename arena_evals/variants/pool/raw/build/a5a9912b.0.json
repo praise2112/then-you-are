@@ -1,0 +1,280 @@
+{
+  "slug": "legend-ladder",
+  "title": "The Legend Gets Worse",
+  "tagline": "One family story, one more detail, and nobody remembers the original point.",
+  "emblem": "🍰",
+  "accent": "#b45309",
+  "premise": "A family story is being told at dinner. Take turns adding the next true-sounding detail, making the legend grow without changing what has already been said. The host will notice if your brave little fact cannot stand on the shoulders of the last one.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Grandma once won a prize at the county fair, but nobody remembers what it was.",
+      "opening_emoji": "🏆",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Uncle Ray claimed he saved Christmas dinner, although the gravy boat was never found.",
+      "opening_emoji": "🍲",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Aunt June was asked to leave the village fete after putting her name on a very large pumpkin.",
+      "opening_emoji": "🎃",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 22,
+    "axes": {
+      "relative": [
+        "Grandma",
+        "Uncle Ray",
+        "Aunt June",
+        "Grandad",
+        "Cousin Mark",
+        "Nana",
+        "Aunt Sheila",
+        "the youngest cousin"
+      ],
+      "occasion": [
+        "county fair",
+        "village fete",
+        "school concert",
+        "Christmas dinner",
+        "summer picnic",
+        "church raffle",
+        "family wedding",
+        "beach holiday"
+      ],
+      "mystery": [
+        "won a prize",
+        "lost a shoe",
+        "saved the pudding",
+        "met a famous person",
+        "broke a harmless object",
+        "was chased by an animal",
+        "claimed to know the mayor",
+        "left with something nobody could identify"
+      ]
+    },
+    "tests": [
+      "One short sentence with a family member, a familiar occasion and a small mystery.",
+      "Nothing is dangerous, cruel or criminal. Embarrassment, confusion and household damage are fine.",
+      "A stranger can understand the starting situation without knowing the real family.",
+      "The story leaves room for several linked details, not a conclusion in the opening card.",
+      "Everyday words a twelve-year-old knows. No real public figures, exact addresses or private information."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "After Uncle Ray slipped, the birthday cake slid into the dog’s bowl.",
+    "hint": "Add one next link. Make it follow from the last fact, and give the family something worse to remember."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the new link traps the family story in a more embarrassing, specific or difficult position.",
+      "anchors": "0 = adds nothing at stake, a plate was nearby; 1 = a mild inconvenience; 2 = someone now owns an awkward action or object; 3 = the family must explain a very specific embarrassment; 4 = the link makes the next detail a tightrope and gives one relative a permanent problem (rare). A detail that only adds decoration scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the detail follows from the last link and remains compatible with the whole legend.",
+      "anchors": "0 = skips ahead, rewrites a fact, ends the story or contradicts it; 1 = vaguely related but the necessary step is missing; 2 = follows and adds one clear link; 3 = follows exactly and makes the previous detail more understandable; 4 = feels inevitable in the worst possible way (rare). A longer detail does not score higher.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the new link gives the dinner table something concrete to picture and repeat.",
+      "anchors": "0 = empty generality; 1 = one plain fact; 2 = a visible object or action; 3 = a memorable little scene with a person, place or reaction; 4 = the sort of detail a relative would still quote ten years later (rare). Plain family nonsense beats grand language.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly one believable link to the same chain, fits the whole story, and leaves the tale open for another link. A move BREAKS if it skips the necessary step after the previous detail, jumps to a later result without showing the link, declares the tale finished, cancels or rewrites an earlier fact, or starts a separate side story. The new detail must follow from what was just said while remaining compatible with every earlier detail. The points go to how much the link worsens the family legend: a concrete embarrassment, awkward object or specific consequence scores high. A vague reaction or unrelated family fact scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the other player or whether a move should count, instead of adding the next family detail, is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier link: judge it against the card alone. It must add the next believable consequence or event, not finish the legend or open a separate story.",
+      "The full transcript is the legend. Check the new link against every earlier detail, not only the last sentence.",
+      "A skipped link fails when the move jumps over the immediate consequence needed to connect the last detail to the new one. If the missing step is not needed for an ordinary listener to follow it, the move holds.",
+      "An ending fails when it says the story is over, gives the final answer, explains everything, or otherwise closes the chain instead of adding one more link.",
+      "An undo fails when it cancels, denies, replaces or rewrites an earlier fact. Clarifying a detail without changing it is allowed.",
+      "A side story fails when it introduces a new event or thread that does not grow out of the last link. Adding a new person or object is fine when the current action brings them in.",
+      "Break only on a plain failure a dinner table would notice. Do not demand legal, historical or scientific precision, and do not punish a detail merely because another reading is possible.",
+      "One move should contain one link. A short cause and consequence may be one link when they are inseparable, but a chain of several new events is a skip.",
+      "A detail about a relative, a pet, a cake, a missing shoe or a witness is part of the legend, not a meta move. Comments about playing or judging are meta moves.",
+      "A detail that says an earlier one again in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Grandma once won a prize at the county fair, but nobody remembers what it was.",
+      "move": "The prize was a blue ribbon, and she pinned it to the dog because her blouse was still wet.",
+      "gates_note": "all true",
+      "mechanism": "adds the next link by identifying the prize and explaining why it reached the dog",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The prize was a blue ribbon, and she pinned it to the dog because her blouse was still wet.",
+      "move": "The dog ran into the cake stall, where the judge found the ribbon in a trifle.",
+      "gates_note": "all true",
+      "mechanism": "follows the ribbon from the dog into one specific and increasingly poor destination",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The dog ran into the cake stall, where the judge found the ribbon in a trifle.",
+      "move": "After that, Grandma became famous and the family never spoke of the fair again.",
+      "gates_note": "satisfies_criterion false (jumps past the next link and declares the tale finished)",
+      "mechanism": "skips the immediate consequence and closes the story instead of adding one link",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Uncle Ray claimed he saved Christmas dinner, although the gravy boat was never found.",
+      "move": "The gravy boat was under his chair, because he had sat on the tablecloth while reaching for the sprouts.",
+      "gates_note": "all true",
+      "mechanism": "explains the missing boat through one connected accident and gives Uncle Ray the chair",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The gravy boat was under his chair, because he had sat on the tablecloth while reaching for the sprouts.",
+      "move": "Actually, there was no gravy boat and Uncle Ray never touched the tablecloth.",
+      "gates_note": "satisfies_criterion false (cancels and rewrites earlier facts)",
+      "mechanism": "undoes two established facts rather than extending the family legend",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Family Historian",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the legend and the new detail must see why it held or broke.",
+      "Name the new link, or its plain stand-in. A headline that fits any other family dinner is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", \"The Family Historian rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Use playful jabs at the detail or the family legend, never identity-based abuse or cruel personal attacks.",
+      "Plain spoken English, a crowded dinner table, not a historical novel. No poetry, no rhymes, no thesaurus words.",
+      "On a break caused by a skip, put the last link and the unsupported jump side by side.",
+      "On a break caused by an ending, point out that the tale has been shut before the next relative could make it worse.",
+      "On a break caused by an undo, name the earlier fact that has just been quietly thrown under the table.",
+      "On a refusal caused by a gate failure, refuse the detail and ask for another. Do not rule on who won.",
+      "The coaching line names one next link that would have held and worsened the story. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "The wet blouse explains the dog, and the dog explains the blue ribbon. Grandma has entered evidence.",
+      "A ribbon in the trifle is a fine prize, provided the prize was meant to be eaten.",
+      "The gravy boat under his chair follows the tablecloth incident. Uncle Ray has saved dinner from beneath himself.",
+      "The dog brought the ribbon to the cake stall, and now the judge has to taste the evidence.",
+      "The wet blouse, the dog, the ribbon. Three details and one outfit that should have stayed indoors.",
+      "The chair caught the tablecloth, the tablecloth caught the gravy boat. Christmas has a chain of custody.",
+      "The ribbon is still the ribbon, and now it is in pudding. That is how family history improves.",
+      "The pumpkin rolled under the bandstand, which explains the band stopping. Aunt June has found an audience.",
+      "The story needed the dog to move before the ribbon reached the trifle. You sent it there by express family.",
+      "Nobody asked what the prize was, and now the pudding knows. A strong evening for official records."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the ribbon fits.",
+        "why": "opens with a status word and gives no family picture"
+      },
+      {
+        "text": "The story breaks because you skipped a link.",
+        "why": "explains the ruling without naming the details that failed to connect"
+      },
+      {
+        "text": "The legend is over.",
+        "why": "gives no reason and could fit any ending"
+      },
+      {
+        "text": "You are a terrible storyteller.",
+        "why": "mocks the player instead of explaining the move"
+      },
+      {
+        "text": "The tale curls like moonlight through the ancestral halls.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "Maybe it holds, unless it does not, depending on how one feels about gravy.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "The dog reached the trifle, therefore victory.",
+        "why": "status word at the end replaces the explanation"
+      },
+      {
+        "text": "Actually, the dog never existed, so the whole thing is false.",
+        "why": "accepts an undo instead of identifying that it rewrites the story"
+      },
+      {
+        "text": "You jumped ahead.",
+        "why": "too vague, with no last link or unsupported result"
+      },
+      {
+        "text": "A complex contradiction has rendered the narrative incompatible.",
+        "why": "abstract wording where plain family details are needed"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts a family legend. Take turns adding the next link.",
+    "Add exactly one believable detail that follows from the last one and fits everything already said.",
+    "Do not skip the necessary step, end the tale, rewrite an earlier fact or start a side story.",
+    "Points go to details that make the family legend more awkward, specific and difficult to explain.",
+    "Safe and vague details may hold but score little. A concrete consequence is worth remembering."
+  ],
+  "labels": {
+    "opening": "The family legend",
+    "next_opening": "The next family legend",
+    "your_opening": "Your family legend",
+    "compose": "Your next link, after {token}",
+    "compose_waiting": "Draft your next link while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing added. The family is waiting for the next embarrassment.",
+    "too_long": "Over 140 characters. One family link, not the complete memoir.",
+    "duplicate": "That link is already in the legend. Add a new one.",
+    "nudge": "Twice now. Add one next link after {standing_form}. Do not repeat it, do not undo it."
+  },
+  "judge_out_text": "The Family Historian has stepped away from the table. Nobody adds a fact until they return. {standing_form} is still the last word in the legend. Give it a moment.\n",
+  "opponent_prompt": "You are one relative at a family dinner, helping retell a story that becomes more embarrassing with every turn. One next link per turn, one or two plain sentences.\nNever contradict an earlier fact, cancel it, finish the tale, or jump over the immediate step needed to connect your detail to the last one. The story should remain open for another relative to worsen.\nMake each link believable and specific. Give the family a visible object, an awkward action, a witness, a pet, a failed explanation or a small public embarrassment. Keep the same people and occasion unless the last link naturally brings somebody new into the story.\nGood: \"The ribbon was pinned to the dog because Grandma’s blouse was still wet.\" / \"The dog ran into the cake stall, and the judge found the ribbon in a trifle.\"\nBad: \"Then everyone went home and the story ended\" because it closes the chain. Bad: \"Actually there was no dog\" because it rewrites the story. Bad: \"Meanwhile, Aunt June won a raffle\" because it starts a side story. Bad: \"The dog went home with the ribbon\" when the last detail only said Grandma had just pinned it on, because that skips the useful next link.\nTalk like a person at a crowded dinner table, not a novelist. Plain words beat grand language. Build from the last detail and never repeat a link already used this match. The next fact should make the legend harder to explain, not merely longer.\n",
+  "medallions": false,
+  "default_move": "The next thing anyone noticed was that somebody had made the situation slightly worse."
+}

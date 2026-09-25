@@ -1,0 +1,270 @@
+{
+  "slug": "panic-potluck",
+  "title": "Panic Potluck",
+  "tagline": "One recipe, zero competence, and every mistake gets a sequel.",
+  "emblem": "🍲",
+  "accent": "#dc2626",
+  "premise": "A recipe starts normally, but one cooking mistake creates the next problem. Two players take turns saying what happens next, one kitchen event at a time, while the host calls the disaster like a sports announcer with no safety training. The Judge checks that every problem follows from the last. Skip a cause, finish the meal, undo the trouble, or summon help from nowhere and the chain stops with you.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The onions hit the hot pan before anyone adds oil.",
+      "opening_emoji": "🧅",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Someone pours cake batter into a cold frying pan.",
+      "opening_emoji": "🥞",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The cook adds salt instead of sugar to the birthday frosting.",
+      "opening_emoji": "🧂",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 16,
+    "axes": {
+      "cook": [
+        "a tired student",
+        "a distracted dad",
+        "a nervous teenager",
+        "a hungry flatmate",
+        "a smug amateur chef",
+        "a child helper",
+        "a wedding guest",
+        "a sleepy baker"
+      ],
+      "dish": [
+        "onion soup",
+        "birthday cake",
+        "chilli",
+        "pancakes",
+        "pasta bake",
+        "gravy",
+        "rice pudding",
+        "garlic bread"
+      ],
+      "mistake": [
+        "forgets the oil",
+        "uses salt twice",
+        "leaves the lid on",
+        "grabs the wrong spoon",
+        "turns the heat too high",
+        "adds flour too early",
+        "drops in a wet towel",
+        "sets the timer for one hour"
+      ]
+    },
+    "tests": [
+      "One ordinary cooking mistake starts the card, and a stranger can picture the pan, bowl, or counter at once. Present tense, one sentence, plain words.",
+      "A non-player can name at least two different next cooking problems within five seconds. The card must leave room for play.",
+      "Nothing on the card is already a complete kitchen disaster. Burnt remains, a ruined kitchen, or a finished failure is an ending, not a start.",
+      "Nobody is badly hurt on the card, no real people, no brands, no hateful material, and no impossible kitchen equipment.",
+      "The mistake is small enough to grow one step at a time. It should invite a nasty little chain, not require a rescue crew before the first move."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the onions stick to the pan, and the cook scrapes them straight into the open bin.",
+    "hint": "One plain cooking event that happens next because of the standing kitchen trouble."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much further the kitchen trouble spreads from this one cooking event.",
+      "anchors": "0 = nothing gets worse or the step only repeats the mess; 1 = a small nudge, such as a smell or stain; 2 = one new ingredient, tool, surface, or dish is now at risk; 3 = the trouble reaches a new person, room, course, or appliance through one clear cause; 4 = the kitchen problem jumps to a much bigger scale while still following in one honest step, rare. A wild jump without a shown cause scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new kitchen event is caused by the standing cooking trouble.",
+      "anchors": "0 = no cooking cause is visible; 1 = the player simply declares the result; 2 = plausible but missing a small link; 3 = a stranger immediately sees why the event follows; 4 = the result feels unavoidable, as if the recipe itself pressed the button, rare. Packing several hidden causes into one move keeps this at 2 or below.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the pan, food, tool, or person in the event.",
+      "anchors": "0 = unreadable, abstract, or only a feeling; 1 = vague kitchen talk with no clear action; 2 = clear but ordinary; 3 = easy to picture in motion; 4 = one sharp food or kitchen detail makes the disaster pop, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it is one plain cooking event that happens next because of the standing kitchen trouble, and it leaves a fresh problem on the counter, in the pan, or in somebody's hands. Bigger is better, but only when the cause is visible. The best step turns one recipe mistake into a larger kitchen problem through one clean link. A step fails when it skips causes, when it finishes the meal or closes the disaster, when it rescues or tidies everything, when it undoes the trouble, when it swaps to an unrelated kitchen scene, when it is only a feeling or judgement, or when it brings in a person or force the recipe and kitchen could not contain.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, mentioning rules, or addressing the other player instead of describing the next kitchen event is itself a broken step.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing step: judge the move against the card and ask whether it follows from the opening cooking mistake.",
+      "A cook, flatmate, child helper, waiter, or nearby guest may enter if the kitchen or meal plainly contains them, or if the standing trouble gives them a reason to arrive. A fire crew, food critic, television chef, or whole neighbourhood cannot appear without the missing arrival link: satisfies_criterion is false.",
+      "A finished meal, a successful dinner, a clean kitchen, a rescue, or a line such as everyone laughs and starts again is an ending. Nothing fresh remains to knock over, so satisfies_criterion is false.",
+      "A step that merely repeats the same cooking trouble, such as the onions smoke again, follows and passes the gate. Score reach 0 or 1. Do not fail it for being boring.",
+      "Putting the onions back in the bowl, restoring the frosting, turning the clock back, or otherwise undoing the standing trouble is a rewind: satisfies_criterion is false.",
+      "A move about an unrelated recipe, a different house, or a new meal with no kitchen link is a scene swap: satisfies_criterion is false.",
+      "A feeling, opinion, lesson, or judgement is not an event. The cook feels ashamed and dinner is doomed do not satisfy the criterion.",
+      "Restating the standing kitchen trouble in new words, or naming its obvious continuation with nothing new, is a duplicate: not_semantic_duplicate is false.",
+      "Two or three cooking events packed into one move pass only when every cause is plain. Score link at 2 or below and keep picture modest because the move is crowded."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The onions hit the hot pan before anyone adds oil.",
+      "move": "Then the onions stick hard, and the cook scrapes them into the open bin.",
+      "gates_note": "all true",
+      "mechanism": "dry onions catch on the hot pan, and scraping sends them into the bin",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the onions smoke beside the open bin.",
+      "move": "Then the smoke alarm shrieks, and the baby at the table throws mashed potato at the ceiling.",
+      "gates_note": "all true",
+      "mechanism": "smoke triggers the alarm, and the startled baby flings food",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the salty frosting slides off the cake.",
+      "move": "Then the whole town declares a sugar emergency and helicopters drop icing on the roof.",
+      "gates_note": "satisfies_criterion false, skipped causes and impossible new scene",
+      "mechanism": "none shown between sliding frosting and a town response",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the pasta boils over and covers the hob.",
+      "move": "Then the chef turns off the cooker, cleans everything, and serves a perfect dinner.",
+      "gates_note": "satisfies_criterion false, rescue and ending",
+      "mechanism": "the trouble is removed and the recipe closes",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the cake batter spills across the counter.",
+      "move": "Then the batter crawls back into the bowl and the counter becomes spotless.",
+      "gates_note": "satisfies_criterion false, undo and tidy-up",
+      "mechanism": "the standing spill is magically reversed",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "Chef Catastrophe",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hype"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Sound like a sports announcer watching a saucepan commit a felony against dinner. Bring heat, but explain the call.",
+      "Name the actual food, tool, spill, or person in both steps. A headline that fits any kitchen is lazy sludge.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or Chef Catastrophe refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the move, not identity, protected traits, disability, family, body, or intelligence. The recipe can be humiliated. The player can take a sharp joke about the choice, not who they are.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the kitchen disaster, but do not turn every line into noise.",
+      "On a skipped link, yell about the missing cooking step. On an ending, say the meal or disaster is over and the chain stops here.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line gives one next kitchen event that would have followed. End on something happening, never a mood, moral, or verdict.",
+      "Keep the energy high. The pan is smoking, the crowd is losing it, and somebody still thinks the recipe can be saved.",
+      "Do not use fancy food words when a stranger would say burnt, wet, salty, stuck, or spilled."
+    ],
+    "good_headlines": [
+      "Dry onions meet hot metal, and now the bin is involved. The recipe has entered its villain era.",
+      "That salty frosting just left the cake. One more move and the birthday has a criminal record.",
+      "The alarm heard smoke, the baby heard drama, and mashed potato has taken flight.",
+      "A perfect dinner? After that pan? The meal is over, the chain stops here, and the lie is enormous.",
+      "The batter cannot teleport back into the bowl. Nice try, kitchen wizard, now wreck the next surface.",
+      "The pasta boiled over, the hob got slimed, and dinner is still somehow gaining momentum.",
+      "A whole town did not hear one burnt onion. Show the smoke reaching the next thing first.",
+      "The cook feels bad, sure, but feelings do not spill sauce. Put an actual mess on the counter.",
+      "The flour hit the fan, the fan hit the flour, and the kitchen just unlocked a terrible new texture.",
+      "That step packed three disasters into one sentence like a panicked amateur hiding evidence. Give us one clean burn."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the soup goes hard.",
+        "why": "opens with a status word and gives no reason for the call"
+      },
+      {
+        "text": "Chef Catastrophe refuses this move.",
+        "why": "opens with a ruling phrase and names the host instead of the kitchen problem"
+      },
+      {
+        "text": "The cooking is cooking and chaos happens.",
+        "why": "generic sludge with no food, tool, cause, or picture"
+      },
+      {
+        "text": "A gastronomical conflagration metastasizes.",
+        "why": "thesaurus cosplay, no plain kitchen action"
+      },
+      {
+        "text": "You clearly should never be allowed near a stove.",
+        "why": "roasts the player as a person instead of the move"
+      },
+      {
+        "text": "Maybe the cake burns, maybe it does not, who knows.",
+        "why": "hedges instead of ruling and refuses to name the missing cause"
+      },
+      {
+        "text": "And then the glorious sauce danced...",
+        "why": "poetry and an ellipsis, while the actual pan disappears"
+      },
+      {
+        "text": "Fire. More fire. Epic.",
+        "why": "hype without a mechanism, picture, or useful coaching"
+      }
+    ]
+  },
+  "rules": [
+    "One cooking thing happens next because of the last kitchen problem. Start with Then.",
+    "Make the recipe worse. Points go to how far one honest cooking link carries the disaster.",
+    "Skip a cause, finish or rescue the meal, undo the trouble, or summon an impossible newcomer and the chain stops with you.",
+    "The Judge rules on the kitchen link, never the spelling."
+  ],
+  "labels": {
+    "opening": "The recipe mistake",
+    "next_opening": "The next kitchen disaster",
+    "your_opening": "Your kitchen disaster",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Draft your next kitchen disaster while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happens. Even this cursed kitchen needs an event.",
+    "too_long": "Over 140 characters. One cooking disaster, not a cookbook.",
+    "duplicate": "That mess already happened this match. Burn a new surface.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. One kitchen event, bigger than the last."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody touches the stove until they return. {standing_form} still stands, and the next disaster is waiting.\n",
+  "opponent_prompt": "You are one of two players turning a recipe into a public kitchen emergency, and you want the food mess to get bigger.\nAlways write: \"Then X.\" One cooking event, one clear cause, plain present tense.\nTake the standing kitchen trouble and push it into the next pan, ingredient, tool, surface, or person with a reason to be there.\nGood: \"Then the dry onions smoke, and the alarm starts screaming.\" / \"Then the salty sauce boils over and floods the burner knobs.\"\nBad: \"Then the whole restaurant burns down\" because the missing links are doing all the work. Bad: \"Then everyone eats a perfect meal\" because that ends the story. Bad: \"Then the cook feels guilty\" because a feeling is not a kitchen event.\nNever rescue the meal, never tidy the counter, never rewind the mistake, never switch to an unrelated recipe, and never summon a fire crew before the kitchen gives them a reason.\nTalk like a person telling a mate what happened while the pan is actively betraying you. Name things anyone would name: a spoon, a wet tea towel, a bin, a neighbour, a Tuesday. Use plain words, not restaurant fog.\nNever reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then the smell reaches the next room and someone comes to see what the hell is burning."
+}

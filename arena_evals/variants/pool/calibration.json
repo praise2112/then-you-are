@@ -1,0 +1,136 @@
+{
+ "alibi": {
+  "matches": 100,
+  "pilot_size": 10,
+  "pass_rate": [
+   1.0,
+   1.0
+  ],
+  "spread": [
+   0.11522512815253796,
+   0.20514005943179714
+  ],
+  "dup_rate": [
+   0.0,
+   0.21273372018052866
+  ],
+  "median_length": [
+   3.0,
+   10.0
+  ],
+  "agreement_same": [
+   0.8,
+   1.0
+  ],
+  "agreement_luna": [
+   1.0,
+   1.0
+  ]
+ },
+ "domino": {
+  "matches": 100,
+  "pilot_size": 10,
+  "pass_rate": [
+   1.0,
+   1.0
+  ],
+  "spread": [
+   0.134736709767843,
+   0.19967296971991258
+  ],
+  "dup_rate": [
+   0.0,
+   0.1665300546448087
+  ],
+  "median_length": [
+   3.5,
+   10.0
+  ],
+  "agreement_same": [
+   1.0,
+   1.0
+  ],
+  "agreement_luna": [
+   1.0,
+   1.0
+  ]
+ },
+ "front-page": {
+  "matches": 100,
+  "pilot_size": 10,
+  "pass_rate": [
+   1.0,
+   1.0
+  ],
+  "spread": [
+   0.07604348040888455,
+   0.12631703902311167
+  ],
+  "dup_rate": [
+   0.0,
+   0.19999999999999996
+  ],
+  "median_length": null,
+  "agreement_same": [
+   0.85,
+   1.0
+  ],
+  "agreement_luna": [
+   0.7,
+   1.0
+  ]
+ },
+ "then-i-am": {
+  "matches": 100,
+  "pilot_size": 10,
+  "pass_rate": [
+   0.8181818181818181,
+   1.0
+  ],
+  "spread": [
+   0.19017216516045862,
+   0.2492687621728944
+  ],
+  "dup_rate": [
+   0.0,
+   0.21041666666666664
+  ],
+  "median_length": [
+   1.0,
+   3.5
+  ],
+  "agreement_same": [
+   0.85,
+   1.0
+  ],
+  "agreement_luna": [
+   1.0,
+   1.0
+  ]
+ },
+ "word-for-word": {
+  "matches": 100,
+  "pilot_size": 10,
+  "pass_rate": [
+   0.984375,
+   1.0
+  ],
+  "spread": [
+   0.05940464261845071,
+   0.09601703065178697
+  ],
+  "dup_rate": [
+   0.0,
+   0.18461538461538463
+  ],
+  "median_length": null,
+  "agreement_same": [
+   0.85,
+   1.0
+  ],
+  "agreement_luna": [
+   1.0,
+   1.0
+  ]
+ }
+}

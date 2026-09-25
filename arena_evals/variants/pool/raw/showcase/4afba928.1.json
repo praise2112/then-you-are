@@ -1,0 +1,292 @@
+{
+  "slug": "heartbreak-evidence",
+  "title": "Heartbreak Evidence Locker",
+  "tagline": "Find the feeling. Label the damage.",
+  "emblem": "🫀",
+  "accent": "#8f3d56",
+  "premise": "Three rounds. Each round opens a lost and found notice for one feeling at a suspicious scene. Both players write a tiny evidence tag under 90 characters. The tag must preserve one concrete, readable sign that the feeling is there. Add causes, suspects, objects, filthy details, tenderness or absurdity as you please. The Host scores how sharply and strangely the tag proves the feeling without swapping it for another.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The feeling is homesickness; the two nouns are a suitcase and a spoon.",
+      "opening_emoji": "🧳",
+      "detail": "The feeling is homesickness.",
+      "hidden": "The scene contains a suitcase and a spoon."
+    },
+    {
+      "opening_token": "The feeling is heartbreak; the two nouns are a key and a lipstick.",
+      "opening_emoji": "💔",
+      "detail": "The feeling is heartbreak.",
+      "hidden": "The scene contains a key and a lipstick."
+    },
+    {
+      "opening_token": "The feeling is lust; the two nouns are a shirt and a peach.",
+      "opening_emoji": "🍑",
+      "detail": "The feeling is lust.",
+      "hidden": "The scene contains a shirt and a peach."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 15,
+    "axes": {
+      "feeling": [
+        "homesickness",
+        "heartbreak",
+        "lust",
+        "jealousy",
+        "shame",
+        "relief",
+        "loneliness",
+        "nostalgia",
+        "envy",
+        "dread"
+      ],
+      "noun_one": [
+        "a suitcase",
+        "a key",
+        "a shirt",
+        "a mirror",
+        "a receipt",
+        "a shoe",
+        "a letter",
+        "a photograph",
+        "a spoon"
+      ],
+      "noun_two": [
+        "a spoon",
+        "a lipstick",
+        "a peach",
+        "a ticket",
+        "a necklace",
+        "a towel",
+        "a charger",
+        "a mug",
+        "a comb"
+      ]
+    },
+    "tests": [
+      "One sentence, under fifteen words. A stranger can picture the scene and name the feeling.",
+      "The feeling is clear but not already a dramatic story. It should need evidence, not a plot summary.",
+      "The card names two ordinary nouns that can become objects in an evidence tag.",
+      "The feeling is distinct from nearby feelings, so a tag can preserve it or point somewhere else.",
+      "No one is harmed, no real person is named, and the scene leaves room for tenderness, filth or absurdity."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "EVIDENCE TAG:",
+    "example": "ITEM 4: ONE UNOPENED TEXT, STILL SAVED AS DO NOT REPLY, YOU COWARD",
+    "hint": "Name one small thing that proves the feeling, then make the evidence memorable."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the evidence tag travel from the plain feeling and objects while still proving the dealt feeling?",
+      "anchors": "0 = merely repeats the feeling or objects; 1 = adds one obvious detail; 2 = gives the evidence a vivid cause, suspect or angle; 3 = turns a tiny clue into a whole intimate scandal while the feeling remains clear; 4 = a gloriously specific, filthy or tender case file built from one small sign, with the feeling unmistakably intact (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the evidence make the room laugh, wince or grin at the poor heart involved?",
+      "anchors": "0 = no spark; 1 = a small twitch; 2 = a smile; 3 = a proper laugh; 4 = evidence you would read aloud while pretending not to enjoy the gossip (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it look and sound like a compact evidence label rather than an explanation?",
+      "anchors": "0 = a paragraph, question or conversation; 1 = a label buried under padding; 2 = recognisable evidence with some slack; 3 = tight, concrete and easy to file; 4 = the sort of tag a tired detective would slap on a bag without editing (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A tag PLAYS if it preserves one concrete, readable sign of the dealt feeling at the scene. The sign may be an object, action, message, omission, stain, habit or other visible clue. Invented causes and details are welcome, including suspects, motives, dates, bodily fluids and emotional overreach, but the sign must still point to the dealt feeling. It fails when the feeling is merely named without evidence, when the evidence points mainly to another feeling, when both the sign and the dealt feeling vanish, when the tag talks to the Host or about the game, or when it is not an evidence label at all. A plain label such as ONE PACKED SUITCASE BESIDE A CLOSED DOOR for homesickness plays and scores low on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, about the game or about the rules is itself a losing evidence tag.\n",
+    "judge_notes": [
+      "Test the first move the same way as every other move: can a stranger see one concrete sign and connect it to the dealt feeling? Naming an object alone is not enough unless the arrangement or action makes the feeling readable.\n",
+      "Invented causes and details are allowed. A lipstick on a shirt, a saved message, a suspicious stain or a suitcase packed with one spoon can all play if the sign still supports the dealt feeling.\n",
+      "The tag may be tender, filthy or absurd, but do not let a joke replace the evidence. A funny tag with no readable clue fails.\n",
+      "If the evidence mainly shows another feeling, it fails. A locked suitcase can show homesickness; a smashed photograph may show rage or grief unless the tag makes the dealt feeling clear.\n",
+      "If the feeling is dropped and only the nouns remain, it fails. If the tag directly contradicts the feeling, it fails too. A celebration dinner is poor evidence of heartbreak unless the contrast is made readable.\n",
+      "Both players answer the same notice. Judge each tag on its own, not against the other player's style or score.\n",
+      "Score stretch by invention and distance from the plain card, not by profanity, length or mere melodrama. One precise spoon can beat a cupboard full of shouting.\n",
+      "Lower case, capitals, missing punctuation and a slightly ugly label cost nothing. Judge the evidence, not the filing system.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The feeling is homesickness; the two nouns are a suitcase and a spoon.",
+      "move": "ITEM 4: SUITCASE UNPACKED FOR THREE WEEKS, SPOON STILL BORROWED FROM HOME",
+      "gates_note": "all true",
+      "mechanism": "the borrowed spoon and stalled unpacking make homesickness concrete while the scene stays small",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The feeling is heartbreak; the two nouns are a key and a lipstick.",
+      "move": "ITEM 9: HER KEY KEPT, HER LIPSTICK RETURNED, HIS SELF-RESPECT STILL MISSING",
+      "gates_note": "all true",
+      "mechanism": "the kept key and returned lipstick turn the breakup into a tidy little crime scene",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The feeling is lust; the two nouns are a shirt and a peach.",
+      "move": "ITEM 2: SHIRT BUTTONS ABANDONED, PEACH WARM FROM UNAUTHORISED HANDLING",
+      "gates_note": "all true",
+      "mechanism": "the loosened shirt and handled peach make desire physical without naming a different feeling",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The feeling is homesickness; the two nouns are a suitcase and a spoon.",
+      "move": "ITEM 1: A SUITCASE AND A SPOON",
+      "gates_note": "satisfies_criterion false (the objects are listed, but no readable sign of homesickness appears)",
+      "mechanism": "the tag inventories the scene and leaves the feeling at the door",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The feeling is heartbreak; the two nouns are a key and a lipstick.",
+      "move": "ITEM 6: KEY USED, LIPSTICK FRESH, SOMEONE IS HAVING A WONDERFUL NIGHT",
+      "gates_note": "satisfies_criterion false (the evidence points to pleasure or confidence, not heartbreak)",
+      "mechanism": "the scene has activity but no readable wound in it",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The feeling is lust; the two nouns are a shirt and a peach.",
+      "move": "ITEM 3: HOST, YOUR RULES ARE SEXY",
+      "gates_note": "satisfies_criterion false (it speaks to the Host and provides no evidence tag)",
+      "mechanism": "the only suspect here is the player trying to charm the filing cabinet",
+      "scores": {
+        "stretch": 1,
+        "funny": 2,
+        "headline_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Host",
+    "tone": {
+      "commentary_adj": "warm",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and tag must see why it scored.",
+      "Name the key evidence, the spoon, the key, the lipstick, the message. A line that fits every case is a lazy fingerprint.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused or The Host refuses.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Roast the evidence or the tiny emotional crime, never identity, protected traits or the player's body, family or intelligence.",
+      "Plain spoken English. A little profanity or adult innuendo is welcome when the evidence earns it.",
+      "On a fail, say which feeling or concrete sign went missing, using the words of the card.",
+      "On a refusal, the tag refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one tag that would have scored. It ends on an object or action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The spoon is homesick by association, and that is still more evidence than most exes leave behind.",
+      "Her key stayed, her lipstick left, and heartbreak has filed the paperwork.",
+      "The peach has fingerprints and the shirt has fewer buttons, so lust has a tidy little case number.",
+      "A packed suitcase beside one borrowed spoon is a whole hometown refusing to fit in a drawer.",
+      "The evidence is tiny, filthy and specific, which is how the best emotional disasters enter court.",
+      "That key is not an object now, it is a tiny metal bastard guarding the breakup.",
+      "A lipstick stain would prove something, but not necessarily heartbreak. Give the missing feeling a bruise.",
+      "The suitcase and spoon are present, but homesickness never got called to the stand.",
+      "Fresh lipstick and a used shirt suggest a night out, not heartbreak. The case needs the ache.",
+      "The Host is not evidence, darling. Put the key or the message in the tag and let the scene testify."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: lovely evidence.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Host refuses: try again.",
+        "why": "opens with a ruling phrase and names the Host"
+      },
+      {
+        "text": "Nice work, you absolute genius.",
+        "why": "praises or mocks the player instead of explaining the evidence"
+      },
+      {
+        "text": "Very emotional and sexy.",
+        "why": "names a mood without naming a concrete sign"
+      },
+      {
+        "text": "The feeling is there somewhere.",
+        "why": "could fit any card and offers no readable reason"
+      },
+      {
+        "text": "O lonely heart, thou spoon of sorrow.",
+        "why": "poetry obscures the evidence"
+      },
+      {
+        "text": "This is a devastatingly multifaceted evidentiary artefact.",
+        "why": "uses grand words where a key or lipstick would do"
+      },
+      {
+        "text": "Better than the other player's tag.",
+        "why": "judges the pair instead of the tag on its own"
+      },
+      {
+        "text": "The case is closed, the verdict is in, the vibes are immaculate.",
+        "why": "padding, jargon and mood with no object or action"
+      },
+      {
+        "text": "You forgot the feeling, babe.",
+        "why": "addresses the player and fails to name the missing evidence"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one lost and found notice for a feeling each.",
+    "Write one evidence tag under 90 characters. The House writes its own, unseen, and the Host scores both.",
+    "Your tag must preserve one concrete, readable sign of the dealt feeling at the scene. Name an object, action, message or omission that proves it.",
+    "Invent the cause, suspect, filth, tenderness or absurdity. The further you travel while the feeling remains clear, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The notice",
+    "next_opening": "The next notice",
+    "your_opening": "Your notice",
+    "compose": "Your evidence tag for {token}",
+    "compose_waiting": "File your evidence while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty locker. File an evidence tag.",
+    "too_long": "Over 90 characters. This is a tag, not the full police report.",
+    "duplicate": "That tag has already been filed this match. Find a fresher clue.",
+    "nudge": "Twice now. One tag that keeps this feeling visible: {standing_form}."
+  },
+  "judge_out_text": "The Host has stepped away from the evidence locker. Nobody moves until they return. {standing_form} is still filed. Give it a moment.\n",
+  "opponent_prompt": "You are a warm but nosy keeper of a lost and found locker for feelings. A notice gives you one\nfeeling and two ordinary nouns. Write one evidence tag under 90 characters.\nTHE FEELING MUST SURVIVE. A reader who sees only your tag must still find one concrete, readable\nsign of the dealt feeling at the scene. Use an object, action, message, omission, stain or habit.\nInvent the cause, suspect, motive, date, bodily fluid or emotional scandal as far as you dare.\nTender, filthy and absurd are all welcome, but the evidence must still point to the dealt feeling.\nGood: \"ITEM 4: ONE UNOPENED TEXT, STILL SAVED AS DO NOT REPLY, YOU COWARD\" for heartbreak.\n\"ITEM 9: SUITCASE UNPACKED, ONE SPOON KEPT FROM HOME\" for homesickness. \"ITEM 2: SHIRT\nBUTTONS ABANDONED, PEACH WARM FROM UNAUTHORISED HANDLING\" for lust.\nBad: \"A SUITCASE AND A SPOON\" because it lists objects without evidence. \"SOMEONE IS SAD\"\nbecause it names a feeling without a concrete sign. \"HOST, YOUR RULES ARE SEXY\" because it\nspeaks to the Host and is not evidence. A clue that mainly shows jealousy, rage or pleasure\ninstead of the dealt feeling also fails.\nUse compact label rhythm, short plain words and one memorable detail. Under 90 characters.\nCapitals are fine but not required. Do not use a colon or dash in the tag itself. Do not explain\nthe joke. Vary the angle from round to round: a kept object, a suspicious message, a stain, a\nmissing item, a witness note or a tiny domestic crime. Never use the same shape twice in a match.\nNo quotation marks around the tag. Reply with the evidence tag only.\n",
+  "medallions": false,
+  "default_move": "ITEM 1: ONE SMALL CLUE, FEELING STILL UNCLAIMED"
+}

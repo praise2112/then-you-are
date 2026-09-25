@@ -1,0 +1,274 @@
+{
+  "slug": "stage-left-stage-right",
+  "title": "Stage Left, Stage Right",
+  "tagline": "Control the stage before the scene controls you.",
+  "emblem": "🎭",
+  "accent": "#7c3aed",
+  "premise": "Two stage crews compete to control a runaway play. Each turn, place a real theatre thing that handles the thing currently onstage: a curtain can hide a spotlight, and a spotlight can expose a curtain. The host gives a dry review of every failed bit of stagecraft.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a spotlight",
+      "opening_emoji": "🔦",
+      "detail": "blazing at center stage",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a red curtain",
+      "opening_emoji": "🎭",
+      "detail": "hanging across the proscenium",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a ringing stage bell",
+      "opening_emoji": "🔔",
+      "detail": "calling the cast to places",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "theatre_place": [
+        "stage",
+        "balcony",
+        "backstage",
+        "orchestra pit",
+        "box office",
+        "dressing room",
+        "loading dock",
+        "rehearsal room"
+      ],
+      "theatre_thing": [
+        "spotlight",
+        "curtain",
+        "trapdoor",
+        "stage bell",
+        "costume rack",
+        "prop table",
+        "painted backdrop",
+        "follow spot"
+      ],
+      "stage_state": [
+        "blazing",
+        "closed",
+        "ringing",
+        "waiting",
+        "rolling",
+        "hidden",
+        "empty",
+        "crowded"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the theatre thing at once. Nothing abstract, invented, or dependent on a famous show.",
+      "A non-player names a plain theatre counter within five seconds. Say what that counter is.",
+      "It can directly handle what stands onstage by blocking, revealing, trapping, silencing, removing, or controlling it. Merely being nearby is not stagecraft.",
+      "It makes a stranger want to answer with another theatre thing. A curtain, cue light, trapdoor, or prop is useful; a vague mood is not.",
+      "The wording uses everyday theatre words a twelve-year-old can understand. No proper show titles, actor names, brands, jargon, or dramatic speeches."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a blackout, and I swallow the spotlight.",
+    "hint": "Name a theatre thing and its plain action on the standing thing."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the theatre thing controls what is currently onstage.",
+      "anchors": "0 = no action on the standing thing; 1 = a loose association or uncertain effect; 2 = a possible but incomplete bit of stagecraft; 3 = clear, direct control that handles the standing thing; 4 = total and immediate control, with no practical escape (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the theatre thing and the action it performs.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires specialist theatre knowledge; 2 = understandable but hazy or overcomplicated; 3 = clear and concrete; 4 = instantly stageable and vivid (rare). Length never wins on its own: every extra word must clarify the bit.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the move is within the theatre, rather than a routine repeat of the same stage function.",
+      "anchors": "0 = the obvious repeat, a larger copy, or the same theatre function as the previous move; 2 = a sound but familiar stage solution; 4 = a surprising jump to a different part of theatre that still directly controls the standing thing (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move wins only when the named theatre thing directly blocks, reveals, traps, silences, removes, or otherwise controls what stands. Merely moving away, enduring it, waiting for it, or using a larger version of it loses.\n",
+    "anti_metagaming_clause": "Speaking to the host, about the game, or about rules is itself a failed piece of stagecraft.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous theatre thing: judge the move against the opening card instead. It must plausibly handle or control the opening thing.",
+      "A larger, brighter, louder, or faster version of the standing thing is not a counter. A close cousin from the same stage function is also not enough unless it has a direct new action.",
+      "Becoming the opening thing itself, or a lightly changed copy of it, is a duplicate and fails the novelty gate.",
+      "Strength is measured against the standing theatre thing, never in the abstract. A theatre object that has no way to act on what stands fails, however useful it might be elsewhere.",
+      "The mechanism must be literal and stageable. A stranger should be able to watch the new theatre thing act on the standing one. A spotlight exposing a curtain is literal; applause defeating a problem is not.",
+      "Surviving, ignoring, avoiding, or waiting out the standing thing is not control. A costume that stays away from a trapdoor has not handled the trapdoor.",
+      "A move must name a real theatre thing, not a player, rule, review, idea, or plot event disguised as stage equipment.",
+      "A move that merely changes location does not win. Moving a spotlight to another corner does not control the spotlight already standing.",
+      "A move that claims control without naming what the theatre thing does fails. The host needs a visible stage action, not a confident announcement."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A spotlight, blazing at center stage.",
+      "move": "I am a blackout, and I swallow the spotlight.",
+      "gates_note": "all true",
+      "mechanism": "a blackout removes the light from the spotlight",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a blackout, and I swallow the spotlight.",
+      "move": "I am a stage manager, and I call the blackout back on.",
+      "gates_note": "all true",
+      "mechanism": "the stage manager directly restores the light by giving the cue",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a red curtain, and I covers the stage.",
+      "move": "I am a follow spot, and I expose the curtain.",
+      "gates_note": "all true",
+      "mechanism": "the follow spot reveals and targets the curtain",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a stage bell, and I summon the cast.",
+      "move": "I am a louder stage bell, and I summon them harder.",
+      "gates_note": "satisfies_criterion false, mere amplification and no new mechanism",
+      "mechanism": "it is the same cue made louder, not a theatre thing controlling the bell",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a spotlight, and I reveal the curtain.",
+      "move": "I am a costume rack, and I wait backstage.",
+      "gates_note": "satisfies_criterion false, it avoids the spotlight instead of controlling it",
+      "mechanism": "none, waiting backstage does not act on the spotlight",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The House Manager",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain",
+      "bite": "playful",
+      "ruling_generosity": "fair"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger should see the stage action from the two forms.",
+      "Name both theatre things, or plain stand-ins for them.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, or Move refused.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Use a deadpan review voice with mild playful jabs. Tease the failed stagecraft, never identity or personal traits.",
+      "Plain spoken English. No poetry, theatre quotes, profanity, or grand speeches.",
+      "On a refusal, explain the missing stage action and ask for another form. Do not declare a winner.",
+      "The coaching line names one theatre thing that would have handled the standing thing. End on an action or fact, not a mood or verdict.",
+      "Light innuendo is allowed only when it stays harmless and does not target a person."
+    ],
+    "good_headlines": [
+      "The blackout swallowed the spotlight. Efficient, if not cheerful.",
+      "The stage manager turned the blackout back on. The dark has been given notes.",
+      "The follow spot exposed the curtain, which is awkward for a curtain.",
+      "The trapdoor removed the actor. The floor has made its point.",
+      "The bell called the cast, then the sound booth cut it off.",
+      "The prop table caught the rolling mask. At last, a prop with timing.",
+      "A larger bell is still a bell. Bring something that handles it.",
+      "The costume rack waited backstage while the spotlight did nothing to it. Bring another form.",
+      "The curtain is not defeated by standing near it. Try a spotlight.",
+      "The stage crew brought a cue sheet to a trapdoor. Paper remains above ground."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the blackout wins the spotlight.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The House Manager refuses: the bell was not persuasive.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, the costume rack is shy.",
+        "why": "opens with a ruling phrase and gives no stage mechanism"
+      },
+      {
+        "text": "The trapdoor defeats the actor, the curtain, the audience, and perhaps the economy.",
+        "why": "adds unrelated claims and loses the plain reason"
+      },
+      {
+        "text": "The spotlight wins.",
+        "why": "no reason and no useful stage picture"
+      },
+      {
+        "text": "A brave effort from someone who clearly cannot stage a scene.",
+        "why": "mocks the player rather than the form"
+      },
+      {
+        "text": "The prop table, in a most operatic triumph, doth silence the bell.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "The curtain was defeated, overcome, vanquished, and thoroughly bested.",
+        "why": "repeats one idea without showing an action"
+      },
+      {
+        "text": "The costume rack avoids the spotlight with admirable dignity.",
+        "why": "treats avoidance as control"
+      }
+    ]
+  },
+  "rules": [
+    "Handle the theatre thing in front of you. Do not merely leave the stage.",
+    "Say what you are and what you do to it: \"I am a blackout, and I swallow the spotlight.\"",
+    "Use a real theatre thing and a plain, visible stage action.",
+    "The Judge rules on the idea, never the spelling.",
+    "One move that fails to control the standing thing ends the show."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your form against {token}",
+    "compose_waiting": "Draft your next stage move while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the stage. Place a theatre thing.",
+    "too_long": "Over 200 characters. A stage move, not a full rehearsal.",
+    "duplicate": "That theatre thing already stood this show. Bring on something new.",
+    "nudge": "Twice now. Handle {standing_form}. Do not repeat it or simply step away."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two stage crews trying to control a runaway play.\nAlways use this shape: \"I am [theatre thing], and I [plain action] the [standing thing].\"\nGood: \"I am a blackout, and I swallow the spotlight.\" / \"I am a spotlight, and I expose the curtain.\"\nBad: \"I am a costume rack, and I wait backstage\" because waiting does not control anything.\nBad: \"I am a bigger spotlight, and I shine harder\" because size and volume are not a new mechanism.\nUse real theatre things anyone can picture: curtains, lights, bells, trapdoors,\nprops, costumes, ropes, scenery, cue lights, sound booths, and stage managers.\nTheatre jargon is not a prize. Plain words beat clever speeches.\nYou are not performing for the audience and you are not joking. You are trying to\nkeep control of the stage. If a move lands funny, it is because the stage action is\nclear and the failing thing has nowhere useful to stand.\nHop around the theatre: the stage, backstage, the booth, the dressing room,\nthe balcony, the loading dock. A fresh place is useful only if the thing there\nacts directly on what stands.\nNever reuse a theatre thing or an attribute from this match.\n",
+  "default_move": "I am a curtain, and I hide the standing thing."
+}

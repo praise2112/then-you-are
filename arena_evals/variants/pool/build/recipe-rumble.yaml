@@ -1,0 +1,320 @@
+schema_version: 1
+slug: recipe-rumble
+title: Recipe Rumble
+tagline: One dish, two cooks. Make your partner handle the strange bit.
+emblem: 🍳
+accent: '#ea580c'
+premise: 'Together you are inventing one strange but edible recipe, adding one step at a time. Keep the
+  same dish and all its ingredients in mind. A safe step may hold, but a clever change that makes your
+  partner handle an odd ingredient scores more.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 18
+  axes:
+    dish:
+    - snack
+    - warm bowl
+    - toast
+    - skewers
+    - salad
+    - sandwich
+    - dip
+    - fruit cup
+    base:
+    - apple
+    - oats
+    - bread
+    - rice cakes
+    - yogurt
+    - crackers
+    - banana
+    - potato
+    twist:
+    - honey
+    - cinnamon
+    - cheese
+    - pickles
+    - coconut
+    - raisins
+    - lemon
+    - pretzels
+  tests:
+  - One short sentence with a dish and three to five ordinary ingredients.
+  - Everything is edible and safe to combine in a small home kitchen.
+  - The dish can be completed in six to ten simple cooking steps.
+  - At least one ingredient is slightly surprising but not disgusting or dangerous.
+  - Everyday words a twelve-year-old knows. No brands, rare foods, or specialist equipment.
+demo:
+  opening:
+    token: Make a snack from an apple, crackers, and honey.
+    emoji: 🍎
+  moves:
+  - actor: p1
+    text: Make a snack from an apple, crackers, and honey.
+    emoji: 🍎
+    scores: null
+  - actor: p2
+    text: Crush the crackers into rough crumbs in a bowl.
+    emoji: 😭
+    scores:
+      squeeze: 1
+      fits: 3
+      colour: 2
+  headline: The crumbs are ready and the apple is still waiting. Press one into the other before calling
+    it a snack.
+  openings:
+  - token: Make a snack from an apple, crackers, and honey.
+    examples:
+    - Crush the crackers into rough crumbs in a bowl.
+  - token: Make a warm bowl from oats, a pear, cinnamon, and one surprising crunchy ingredient.
+    examples:
+    - Crush the crackers into rough crumbs in a bowl.
+move_constraints:
+  max_chars: 140
+  prefix: ''
+  example: Toast the bread lightly, then spread the honey over one side.
+  hint: One cooking action. Prepare, mix, heat, shape, or add something, while keeping the same dish unfinished.
+rubric:
+- name: squeeze
+  description: How much this step makes your partner deal with an awkward ingredient, fussy action, or
+    very specific kitchen choice.
+  anchors: '0 = a plain step anyone would choose, like stirring or putting something on a plate; 1 = a
+    small inconvenience; 2 = your partner must handle an unusual ingredient or careful action; 3 = they
+    now own an odd combination, messy tool, or precise choice; 4 = believable, edible, and their next
+    step is a real kitchen tightrope because of it (rare). A step that creates trouble only for you scores
+    1 at most.
+
+    '
+  weight: 5
+- name: fits
+  description: How well the step follows the recipe already made, uses ingredients at the right stage,
+    and keeps the dish possible.
+  anchors: '0 = skips a needed link, undoes a completed step, serves the dish early, or makes it impossible;
+    1 = technically possible but barely connected or leaves an ingredient ignored; 2 = follows the recipe
+    and uses or preserves what is present; 3 = clearly advances the dish with a checkable cooking action;
+    4 = neatly prepares an ingredient for a later step or makes an earlier choice pay off (rare). Fancy
+    wording does not help.
+
+    '
+  weight: 3
+- name: colour
+  description: How clearly and pleasantly the step lets a stranger picture the food and the kitchen.
+  anchors: '0 = vague or generic; 1 = one plain action; 2 = a visible change in the food; 3 = a clear
+    texture, smell, sound, or shape; 4 = a memorable but still edible kitchen moment (rare). Odd is good
+    when the food still makes sense.
+
+    '
+  weight: 2
+criterion:
+  verb: holds
+  inverse_verb: breaks
+  description: 'A move HOLDS if it is the next cooking step for the same dish, uses or preserves everything
+    already named, and leaves the recipe possible. A skipped link uses an ingredient without preparing
+    or adding it, an ending serves the dish, and an undo removes or reverses a completed cooking step.
+    A move BREAKS the recipe if it skips a needed preparation, serves the dish before the recipe is complete,
+    undoes a completed step, changes to a different dish, makes the food unsafe or impossible, or contradicts
+    an ingredient, quantity, or action already established. The points go to what the move makes the partner
+    handle: an odd ingredient, a messy action, a precise choice, or a combination they must build on.
+    A safe step nobody could picture scores near zero.
+
+    '
+  anti_metagaming_clause: 'Talking to the Host about the game, the rules, or how the partner is playing,
+    instead of adding a cooking step, is itself a broken recipe.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no earlier step: judge it against the card alone. It must begin the same
+    dish, use a named ingredient or prepare one, and leave the dish unfinished.'
+  - The full transcript is the recipe. Check the new step against every earlier step, not only the last
+    one.
+  - Break a skipped link when a move uses an ingredient or tool result that has not been prepared or added.
+    When a reasonable preparation is already implied, let it hold.
+  - Break an ending when the move serves, plates for eating, or declares the dish ready before the recipe
+    has had a proper final step. Putting food in a bowl for mixing is not serving.
+  - Break an undo when a move removes, discards, unmixes, or reverses a completed cooking step. A later
+    adjustment that adds more of something is not an undo.
+  - Break a contradiction when the move changes a named ingredient, quantity, order, or completed action
+    in a way a stranger would notice. Do not break on kitchen trivia or exact cooking science.
+  - The dish may change shape during cooking, as long as it remains the same planned dish and all named
+    ingredients are kept or used. A toast becoming chopped toast is not a new dish.
+  - A move about the partner handling, spilling, tasting, or preparing an ingredient is the point of the
+    game and is never meta. A remark about the partner's play is a meta move.
+  - 'A move that says an earlier cooking action again in other words is a duplicate: not_semantic_duplicate
+    is false.'
+examples:
+- previous_move: Make a snack from an apple, crackers, and honey.
+  move: Crush the crackers into rough crumbs in a bowl.
+  gates_note: all true
+  mechanism: starts the snack with a clear preparation and gives the partner crumbs to deal with later
+  scores:
+    squeeze: 1
+    fits: 3
+    colour: 2
+  confidence: clear
+  verdict: accept
+- previous_move: Crush the crackers into rough crumbs in a bowl.
+  move: My mate here must press the apple slices into the crumbs before we drizzle them with honey.
+  gates_note: all true
+  mechanism: keeps the snack edible but makes the partner coat slippery apple slices with crumbs
+  scores:
+    squeeze: 3
+    fits: 3
+    colour: 3
+  confidence: clear
+  verdict: accept
+- previous_move: Press the apple slices into the crumbs.
+  move: Warm the honey until it runs, then let my mate here drizzle it over the crumb-coated apple.
+  gates_note: all true
+  mechanism: prepares the honey and assigns the partner a careful sticky drizzle over a lumpy snack
+  scores:
+    squeeze: 4
+    fits: 4
+    colour: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Crush the crackers into rough crumbs in a bowl.
+  move: Drizzle the honey over the apple slices and serve the snack.
+  gates_note: satisfies_criterion false (the apple has not been added or prepared, and the move serves
+    the dish early)
+  mechanism: skips the crumb step and ends the recipe before the ingredients have become one snack
+  scores:
+    squeeze: 1
+    fits: 0
+    colour: 2
+  confidence: clear
+  verdict: fail
+- previous_move: Slice the apple into thin pieces.
+  move: Put the apple back together and leave it whole again.
+  gates_note: satisfies_criterion false (the move reverses a completed slicing step)
+  mechanism: the apple has already been sliced, and the recipe cannot quietly un-slice it
+  scores:
+    squeeze: 0
+    fits: 0
+    colour: 2
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Head Cook
+  tone:
+    commentary_adj: earnest
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who read only the recipe and the new step must see why it
+    held or broke.
+  - Name the ingredient or cooking action. A headline that fits any kitchen is a bad headline.
+  - Never open with a status word or a ruling phrase. No "Holds", "Broken", "Accepted", "Refused", "The
+    Head Cook rules".
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Joke about the move or the food, never the player. No comments about identity, body, family, intelligence,
+    or spelling.
+  - Plain spoken English, a busy home kitchen, not a cooking show monologue. No poetry, no rhymes, no
+    fancy words.
+  - On a break the headline puts the missing preparation, early serving, or reversed action beside the
+    new step.
+  - On a refusal caused by a gate failure, the headline refuses the step and asks for another. It never
+    rules on who won.
+  - The coaching line names one cooking step that would have held and made the partner handle something
+    awkward. It ends on a fact, never a mood.
+  good_headlines:
+  - The crumbs are ready and the apple is still waiting. Press one into the other before calling it a
+    snack.
+  - Honey over sliced apple is fine, but serving now leaves the crackers unemployed.
+  - Your partner now owns the sticky drizzle over the crumb coat. That is a recipe and a small kitchen
+    problem.
+  - The apple has been sliced, so putting it back together is not a cooking step. It is a puzzle.
+  - Warm honey, rough crumbs, and thin apple. Strange enough to remember, edible enough to continue.
+  - The bowl is doing honest work, but it is not a plate yet. Keep building.
+  - You gave the partner the slippery part and kept the easy stirring. The recipe still holds.
+  - A crunchy apple coat is unusual, but the ingredients are present and the next step is clear.
+  - The honey has been prepared for pouring, not for an early finish. Keep the snack in the kitchen.
+  - That step leaves the fruit, crumbs, and sweet topping in one possible dish. Your partner has the messy
+    bit.
+  bad_headlines:
+  - text: 'Holds: the recipe is consistent.'
+    why: opens with a status word and gives no kitchen picture
+  - text: The Head Cook rules that the step breaks the recipe.
+    why: opens with a ruling phrase and names the host
+  - text: Cooking error detected.
+    why: names no ingredient or action and fits any recipe
+  - text: Only a silly cook would do that.
+    why: mocks the player instead of the cooking move
+  - text: The apple dances through a symphony of golden culinary destiny.
+    why: uses poetry and inflated language
+  - text: Well, it might work, or maybe it does not, depending on how you read it.
+    why: hedges instead of giving a clear reason
+  - text: Accepted, although the honey is a nice touch.
+    why: starts with a status word and gives too little explanation
+  - text: The crackers are technically dry, so the step fails.
+    why: breaks on kitchen trivia that does not matter to the story
+  - text: Bad.
+    why: gives no reason and no picture
+  - text: The action is inconsistent, contradictory, incompatible and false.
+    why: uses several abstract words instead of naming the cooking problem
+rules:
+- Every card asks the same question. What is the next step for this one dish?
+- One cooking action per turn. It must fit the card and every step already given.
+- Skip a needed link, serve too early, undo a completed step, or make the dish impossible, and you lose
+  on the spot.
+- 'Points go to steps that make your partner handle something awkward: an odd ingredient, a sticky tool,
+  a careful pour, or a strange texture.'
+- Safe and clear passes but scores little. Specific, edible, and inconvenient scores.
+labels:
+  opening: The recipe
+  next_opening: The next recipe
+  your_opening: Your recipe
+  compose: Your step, after {token}
+  compose_waiting: Draft your next cooking step while you wait
+validation_messages:
+  empty: Nothing added. The Head Cook is waiting.
+  too_long: Over 140 characters. One cooking step, not a whole recipe.
+  duplicate: That cooking step is already in the recipe. Add a new one.
+  nudge: Twice now. Add one cooking step that fits {standing_form}. Do not repeat it, undo it, or serve
+    the dish.
+judge_out_text: 'The Head Cook has stepped away. Nobody adds anything until they return. {standing_form}
+  is still the last step in the recipe. Give it a moment.
+
+  '
+opponent_prompt: 'You are one of two cooks inventing one strange but edible dish with your partner, under
+  the watch of the Head Cook. One cooking step per turn, in one or two plain sentences.
+
+  Never contradict the card or an earlier step. Keep every named ingredient in mind, and do not serve
+  the dish before the recipe is complete.
+
+  A step must be the next sensible action. Prepare an ingredient before using its prepared form, add ingredients
+  before mixing them, and do not undo a completed action.
+
+  Every step should make your partner handle something awkward while staying edible. Make them grate,
+  fold, drizzle, crush, balance, sprinkle, or deal with an odd combination. The step may be unusual, but
+  a stranger should still understand how the food could work.
+
+  Call your partner "my mate here", "he", or "she", never a name unless one is already in the recipe.
+
+  Good: "Crush the crackers into rough crumbs, then my mate here must press the apple slices into them."
+  / "Warm the honey until it runs, and make my mate here drizzle it over the lumpy crumb coating."
+
+  Bad: "Mix everything and serve" because it skips links and ends early. Bad: "Put the apple back together"
+  because it undoes slicing. Bad: "Actually, use a banana instead" because it changes the card. Bad: "Head
+  Cook, that move is unfair" because it talks about the game instead of cooking.
+
+  Talk like a person in a home kitchen, not a novelist. Name common tools, ingredients, textures, and
+  actions. Build on the last step rather than starting a separate recipe. Never repeat a cooking step
+  or quietly remove an ingredient already used.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: Stir the ingredients together gently and keep the dish in the bowl for the next step.
+seed_pool:
+  - { opening_token: "Make a snack from an apple, crackers, and honey.", opening_emoji: "🍎" }
+  - { opening_token: "Make a warm bowl from oats, a pear, cinnamon, and one surprising crunchy ingredient.", opening_emoji: "🥣" }
+  - { opening_token: "Make a small party bite from bread, cheese, grapes, and a sweet spread.", opening_emoji: "🧀" }

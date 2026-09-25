@@ -1,0 +1,289 @@
+{
+  "slug": "front-page-feelings",
+  "title": "Front-Page Feelings",
+  "tagline": "Forecast the heart. Report the weather.",
+  "emblem": "🌦️",
+  "accent": "#4f7894",
+  "premise": "Each round gives both players the same bland headline and a hidden emotional forecast. Rewrite the headline as a tiny news alert that makes the feeling contagious without stating it. The Judge scores how dramatically the emotional weather changes while the headline still reports the same event.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Dog waits outside a shop",
+      "opening_emoji": "🐕",
+      "detail": "mood: dread",
+      "hidden": "The dog waits outside the shop while expecting something bad to happen."
+    },
+    {
+      "opening_token": "Local man opens an umbrella",
+      "opening_emoji": "☂️",
+      "detail": "mood: defiance",
+      "hidden": "The man opens the umbrella as a proud act of resistance against threatening circumstances."
+    },
+    {
+      "opening_token": "Woman finds a coin in the street",
+      "opening_emoji": "🪙",
+      "detail": "mood: wistfulness",
+      "hidden": "The woman finds the coin and is touched by the small reminder of an absent past."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 7,
+    "axes": {
+      "event": [
+        "a person waits",
+        "a person opens something",
+        "a person finds something",
+        "a person loses something",
+        "a person enters a place",
+        "a person leaves a place",
+        "a person notices an animal",
+        "a person makes a small purchase"
+      ],
+      "mood": [
+        "dread",
+        "defiance",
+        "wistfulness",
+        "relief",
+        "envy",
+        "tenderness",
+        "paranoia",
+        "euphoria"
+      ],
+      "setting": [
+        "outside a shop",
+        "near a bus stop",
+        "in a public square",
+        "beside a school",
+        "at a railway station",
+        "under an office tower",
+        "along a quiet street",
+        "near a closed café"
+      ]
+    },
+    "tests": [
+      "The event is ordinary enough to fit a bland local headline.",
+      "The hidden mood can be made unmistakable through weather or forecast language.",
+      "The card does not require specialist knowledge or a named real person.",
+      "The rewrite can preserve the event in one short sentence.",
+      "The mood is distinct from the event and is not stated in the public detail."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "News alert:",
+    "example": "LOCAL MAN OPENS UMBRELLA; NEIGHBORS REPORT THE SKY HAS FINALLY PICKED A SIDE.",
+    "hint": "One sentence. Preserve the event. Make the emotional weather contagious without naming the mood."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this pass as a tiny dramatic news alert about the stated event?",
+      "anchors": "0 = unrelated or impossible; 1 = the event is barely visible; 2 = recognisable but strained; 3 = a credible odd little alert; 4 = startlingly reportable, as though the newsroom had been waiting for this exact cloud.\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the rewrite create a sharp comic turn without losing the forecast?",
+      "anchors": "0 = flat or merely descriptive; 1 = a faint smirk; 2 = a clean comic idea; 3 = a strong laugh with weather in its bones; 4 = brilliantly bleak or absurd while still reporting the event.\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Is the alert compact, grammatical, and shaped like a headline rather than an explanation?",
+      "anchors": "0 = commentary or fragments with no report; 1 = padded or tangled; 2 = mostly headline shaped; 3 = tight, clear, and grammatical; 4 = polished enough for the front page before breakfast.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A rewrite PLAYS if it preserves the stated event, remains a one sentence news alert, and makes the hidden mood unmistakable through forecast-like detail without naming the mood. It fails when it changes the event, merely comments on the prompt, states the mood instead of evoking it, or offers no meaningful emotional forecast. A strange but coherent forecast plays and scores low on believable.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or explaining the technique is itself a losing alert.\n",
+    "judge_notes": [
+      "On the first move, compare the rewrite with the public headline and hidden mood. Accept it only if the same event remains the reported event and the emotional weather is carried by imagery, consequence, or forecast language.\n",
+      "Both players rewrite the same headline. Judge each alert on its own; the other player's alert is not the standard.\n",
+      "A rewrite that directly names the mood fails the central transformation, even if it preserves the event. It may still score zero across the rubric because the required forecast is absent.\n",
+      "A sentence that comments on the prompt, the game, the Judge, or the player's answer fails because it is not a news alert about the event.\n",
+      "A sentence that changes the event fails. Adding atmospheric consequence is allowed, but replacing the waiting dog with a storm, or the coin with a funeral, is not.\n",
+      "A fragment or headline without a finite verb may play if it clearly reports the event and creates the forecast, but dictionary_shaped scores low. A question with no report fails.\n",
+      "A rewrite that only repeats the bland headline and adds no emotional weather plays weakly at best, with low believable and dictionary_shaped scores.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Headline: Dog waits outside a shop; mood: dread",
+      "move": "DOG WAITS OUTSIDE SHOP; FORECAST CALLS FOR ONE MORE MINUTE OF SUNLIGHT.",
+      "gates_note": "all true",
+      "mechanism": "The waiting remains intact, while the forecast makes patience feel like a warning.",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Headline: Local man opens an umbrella; mood: defiance",
+      "move": "LOCAL MAN OPENS UMBRELLA; NEIGHBORS REPORT THE SKY HAS FINALLY PICKED A SIDE.",
+      "gates_note": "all true",
+      "mechanism": "The umbrella becomes a public challenge, and the sky is promoted to an opposing faction.",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Headline: Woman finds a coin in the street; mood: wistfulness",
+      "move": "WOMAN FINDS COIN IN STREET; ARCHIVE OF LOST SUMMERS REOPENS WITHOUT WARNING.",
+      "gates_note": "all true",
+      "mechanism": "The coin stays the event, while the sudden archive gives the small discovery an ache.",
+      "scores": {
+        "believable": 3,
+        "funny": 1,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Headline: Dog waits outside a shop; mood: dread",
+      "move": "DOG WAITS OUTSIDE SHOP; MOOD: DREAD.",
+      "gates_note": "satisfies_criterion false, directly states the mood instead of creating a forecast",
+      "mechanism": "The alert files the weather report instead of making the reader feel the pressure.",
+      "scores": {
+        "believable": 1,
+        "funny": 0,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Headline: Local man opens an umbrella; mood: defiance",
+      "move": "BREAKING NEWS: I THINK THIS IS A REALLY EMOTIONAL UMBRELLA SITUATION.",
+      "gates_note": "satisfies_criterion false, comments on the prompt and does not preserve the event as a report",
+      "mechanism": "The newsroom has filed a feeling about itself, while the man has vanished from the story.",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Headline: Woman finds a coin in the street; mood: wistfulness",
+      "move": "WOMAN ENTERS BANK; FORMER CHILDHOOD DECLARED MISSING.",
+      "gates_note": "satisfies_criterion false, changes the event",
+      "mechanism": "The forecast may be sad, but the coin has been removed from evidence.",
+      "scores": {
+        "believable": 2,
+        "funny": 1,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Meteorological Herald",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak as though issuing an official bulletin from the Ministry of Feelings, but keep the language plain.",
+      "The joke must arise from the forecast and the event. Roast the alert, and the player may receive a light ceremonial singeing.",
+      "Name the event or the forecast image. A headline that fits every alert is weather without a sky.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Herald refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Profanity and adult innuendo are allowed when they sharpen the alert, but never use identity based abuse or sexual humiliation.",
+      "Mock the move, not protected traits, bodies, families, intelligence, or spelling. The player may be called a scoundrel, not a slur.",
+      "Plain spoken English. No poetry, no rhymes, no French, and no inflated meteorological jargon.",
+      "Never state or hint at the hidden mood in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline refuses the alert and asks for another. It never rules on who won.",
+      "The coaching line names one concrete forecast detail that would have scored. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The dog waits, and the sunshine has begun taking attendance.",
+      "An umbrella opens beneath hostile skies. At last, a citizen has chosen a side.",
+      "The coin is small, but the past has found a loud way to jingle.",
+      "A tidy headline, until the weather starts behaving like an alibi.",
+      "The shop remains closed, yet suspense has arrived before opening hours.",
+      "The forecast is overcast, and this alert has the decency to make it personal.",
+      "A coin in the street, a century in the pocket, and not one dry eye in the treasury.",
+      "The umbrella rises with the solemnity of a tiny legal challenge.",
+      "The event survives, the feeling spreads, and the newsroom may now lower its voice.",
+      "A respectable local report, with one small cloud wearing a witness badge."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the dog alert is excellent.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Herald refuses: that is not an alert.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, submit another forecast.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The dog feels dread, exactly as requested.",
+        "why": "states the hidden mood instead of creating it"
+      },
+      {
+        "text": "A bold and evocative emotional weather report.",
+        "why": "comments on the move instead of reporting the event"
+      },
+      {
+        "text": "Your little headline has the intelligence of wet toast.",
+        "why": "roasts the player rather than the alert"
+      },
+      {
+        "text": "O tragic cloud, unveil thy silver heart.",
+        "why": "uses poetry and archaic phrasing"
+      },
+      {
+        "text": "The event is preserved and the mood is conveyed and the sentence is acceptable.",
+        "why": "clinical summary with no image or bite"
+      },
+      {
+        "text": "Better than the other player's forecast.",
+        "why": "judges the pair instead of the alert on its own"
+      },
+      {
+        "text": "Nice weather.",
+        "why": "no event, no reason, and no forecast image"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one bland headline and one hidden emotional forecast each.",
+    "Rewrite the headline as one tiny news alert. Preserve the event and make the mood contagious through forecast-like detail without naming it.",
+    "The House writes its own alert unseen. The Judge scores both alerts for believable, funny, and dictionary shaped.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The forecast",
+    "next_opening": "The next forecast",
+    "your_opening": "Your forecast",
+    "compose": "Your alert for {token}",
+    "compose_waiting": "Draft your alert while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the wire. File the alert.",
+    "too_long": "Over 160 characters. This is a bulletin, not a memoir.",
+    "duplicate": "That alert has already crossed the wires this match. Bring another forecast.",
+    "nudge": "Twice now. One sentence that preserves {standing_form} and makes its weather felt."
+  },
+  "judge_out_text": "The Judge has stepped out into the weather. Nobody files a bulletin until they return. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are the rival forecaster. Rewrite the bland headline as one tiny news alert that makes the hidden mood contagious without naming it.\nPreserve the event exactly. A person who waits must still wait, a coin that is found must still be found, and an umbrella that opens must still open. You may add a consequence, witness report, forecast, or atmospheric detail, but do not replace the event with a different one.\nUse one sentence and keep it under 160 characters. Sound like a real headline with one dramatic weather front moving through it. The feeling should be unmistakable from the image, not from the word for the feeling.\nDo not write the mood itself. Do not explain the joke, mention the game, address the Judge, or praise your own alert. Do not use a question unless it still clearly reports the event.\nAvoid padding such as I think, perhaps, apparently, or this is a story about. Do not merely repeat the bland headline. Give the ordinary event a forecast that changes the pressure in the room.\nYou are bluffing against another alert. Make yours concise, reportable, and vivid. Do not reuse the same forecast image or emotional mechanism from an earlier round.\n",
+  "medallions": true,
+  "default_move": "DOG WAITS OUTSIDE SHOP; FORECAST CALLS FOR ONE MORE MINUTE OF SUNLIGHT."
+}

@@ -1,0 +1,267 @@
+{
+  "slug": "alibi-avalanche",
+  "title": "Alibi Mountain",
+  "tagline": "Build one innocent excuse until it needs its own passport.",
+  "emblem": "🗻",
+  "accent": "#7c3aed",
+  "premise": "The target is a rare comic in a library case, and the first excuse is that the crew is visiting for a school project. Two players take turns adding one believable cover story detail at a time. Every excuse opens a new hole, so patch it with another person, object, appointment, or reason. The Judge checks that the plan grows without skipping straight to the theft, escape, or a miracle.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The target is a rare comic in a library case, and the first excuse is that the crew is visiting for a school project.",
+      "opening_emoji": "📚",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The target is a locked museum map, and the first excuse is that the crew is filming a quiet history project.",
+      "opening_emoji": "🗺️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The target is a jeweller's old display key, and the first excuse is that the crew is attending a charity planning meeting.",
+      "opening_emoji": "🔑",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 22,
+    "axes": {
+      "target": [
+        "rare comic in a library case",
+        "locked museum map",
+        "old display key in a jeweller's office",
+        "signed cookbook in a hotel cabinet",
+        "antique whistle in a station archive",
+        "missing painting in a gallery store room",
+        "sealed letter in a town hall drawer",
+        "silver medal in a school trophy case"
+      ],
+      "first_excuse": [
+        "a school project",
+        "a quiet history film",
+        "a charity planning meeting",
+        "a family research visit",
+        "a local newspaper feature",
+        "a repair estimate",
+        "a council tour",
+        "a student art display"
+      ],
+      "place": [
+        "library",
+        "museum",
+        "jeweller's office",
+        "hotel",
+        "station archive",
+        "gallery",
+        "town hall",
+        "school"
+      ]
+    },
+    "tests": [
+      "A stranger can picture the target, the place, and the first innocent excuse at once. Present tense, one sentence, plain words.",
+      "A non-player can add a believable cover detail within five seconds, and there are at least two useful holes to patch.",
+      "The card names a tempting object but does not describe the theft, the getaway, or the final success. The crime is a pressure behind the curtain, not the card.",
+      "No real people, brands, weapons, injuries, or instructions for committing a real crime appear on the card.",
+      "The excuse sounds almost normal until one more detail is needed. It must invite a ridiculous mountain of preparation, not arrive as a finished spreadsheet."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then our excuse needs ",
+    "example": "Then our excuse needs a cake, because three guests cannot all claim they came for a birthday with empty hands.",
+    "hint": "Add one believable cover detail because of something already standing, and leave a fresh hole to patch."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much new cover story the move creates and how much larger the suspicious preparation becomes.",
+      "anchors": "0 = no useful addition or the plan shrinks; 1 = a tiny patch with little new pressure; 2 = one clear new item, person, or appointment; 3 = a useful addition that opens a fresh hole or brings the excuse into a new part of the visit; 4 = the innocent story suddenly needs a whole new layer while still feeling like one move, rare. Reach belongs to the cover story, not to naming the heist."
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new excuse detail is forced by a detail already on the table.",
+      "anchors": "0 = unrelated invention; 1 = the connection is merely claimed; 2 = plausible but loose; 3 = the earlier detail plainly creates the need; 4 = the patch feels unavoidable, as if the excuse itself demanded it, rare. A move that stacks several unshown reasons cannot score above 2."
+    },
+    {
+      "name": "picture",
+      "description": "How easily a stranger can see the new cover detail in the scene.",
+      "anchors": "0 = vague, abstract, or unreadable; 1 = a blurry idea; 2 = clear but ordinary; 3 = a concrete object, person, or appointment appears; 4 = one funny precise detail makes the fake visit pop, rare. Extra words do not count as extra picture."
+    }
+  ],
+  "criterion": {
+    "description": "A move PASSES if it adds one sentence beginning with the required phrase, adds one believable cover-story person, object, appointment, or reason, and connects that addition to a detail already standing. The new detail should expose a fresh hole for the other player to patch. A move fails when it leaps to the theft, reveals a final escape, undoes or removes an established detail, repeats a detail without adding anything, jumps to an impossible person or event, or piles up several missing links at once. The plan may become absurd, but each patch must still be something a real visitor could plausibly arrange.\n",
+    "anti_metagaming_clause": "Talking to the Judge, discussing the game, announcing points, or asking for a pass is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge the addition against the seed card and the opening excuse. It must patch a hole created by the card, not jump to taking the target.",
+      "A newcomer may enter if the standing excuse gives them a plain reason to be there, such as a teacher for a school project, a baker for a birthday, or a guide for a museum film. A celebrity, head of state, or random emergency crew with no reason is an impossible arrival and fails.",
+      "A leap to the heist fails. Naming the case being opened, the comic being taken, or the target being swapped is not a cover-story patch, even if the excuse around it sounds polished.",
+      "A final escape fails. A getaway car, a border crossing, a safe house, or everyone leaving cleanly closes the plan instead of adding a fresh excuse hole.",
+      "An undo fails. Removing the cake, cancelling the appointment, changing the school project, or declaring that nobody noticed an earlier detail rewinds what stands.",
+      "A repeated detail fails when it merely says the same person, object, or appointment again. It passes only if the repeated detail gains a new cover function and creates a new hole.",
+      "An impossible event fails when the excuse depends on magic, instant travel, a dead person appearing, or a building changing its rules. A silly but ordinary appointment can pass.",
+      "Two or three additions packed into one move may pass only when every link is plain. Score link at 2 or below and picture low because the move is crowded.",
+      "A move of the same small size still passes the gate if it plainly patches one hole. Score reach low. Do not demand a bigger joke than the link can carry."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The target is a rare comic in a library case, and the first excuse is that the crew is visiting for a school project.",
+      "move": "Then our excuse needs a teacher, because a school project with no teacher looks like four adults loitering near a locked case.",
+      "gates_note": "all true",
+      "mechanism": "the school project creates a need for a supervising teacher",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then our excuse needs a teacher, because a school project with no teacher looks like four adults loitering near a locked case.",
+      "move": "Then our excuse needs permission slips, because the teacher cannot bring a class into a rare books room with nothing signed.",
+      "gates_note": "all true",
+      "mechanism": "the teacher and special room create a need for signed permission",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then our excuse needs permission slips, because the teacher cannot bring a class into a rare books room with nothing signed.",
+      "move": "Then our excuse needs the mayor, a television crew, and a train ticket to Paris, because official projects need famous witnesses and a dramatic ending.",
+      "gates_note": "satisfies_criterion false (too many leaps and impossible or unsupported arrivals)",
+      "mechanism": "the standing detail does not cause a mayor, a television crew, or foreign travel",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then our excuse needs a teacher, because a school project with no teacher looks like four adults loitering near a locked case.",
+      "move": "Then our excuse needs the comic, because the teacher has finished the lesson and we take it away in the getaway car.",
+      "gates_note": "satisfies_criterion false (leaps to the theft and final escape)",
+      "mechanism": "the move abandons the cover story and completes the crime",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then our excuse needs permission slips, because the teacher cannot bring a class into a rare books room with nothing signed.",
+      "move": "Then our excuse needs permission slips, because permission slips are still important.",
+      "gates_note": "satisfies_criterion false (repeated detail with no new function)",
+      "mechanism": "the same permission slips return wearing a tiny hat",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Hype Auditor",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters, or two short sentences at most. Make the ruling feel like a tiny fireworks show.",
+      "Explain the exact link or missing link. Name the standing detail and the new excuse detail so the joke cannot be pasted onto another move.",
+      "Never begin with a status word or ruling phrase. Do not say Accepted, Rejected, Refused, or The Hype Auditor refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops only.",
+      "Mock the suspiciously overbuilt excuse, not the player's identity, body, family, intelligence, spelling, or real life.",
+      "Keep it mild. Tease the plan, use light innuendo if useful, and never use profanity or identity based abuse.",
+      "Plain spoken English only. Hype is welcome, but do not hide the reason under fog, poetry, or fancy words.",
+      "For a skipped link, name the missing patch. For a theft or escape leap, say the cover story was abandoned. For an ending, say the mountain stopped growing.",
+      "On a refusal, ask for another cover step. Never rule on who won.",
+      "The coaching line must suggest one believable next patch, and it must end on an object, person, appointment, or reason, never a feeling or verdict.",
+      "Treat a tiny valid patch as valid. The mountain can grow by one awkward clipboard before it demands a marching band."
+    ],
+    "good_headlines": [
+      "The school project summoned a teacher, and now the lie has staff.",
+      "Permission slips for a comic visit. The paperwork is already wearing a tiny crown.",
+      "A mayor and a train to Paris do not grow from a permission slip. Patch the room first.",
+      "The getaway car just kicked the cover story off the mountain. Bring another excuse, not the loot.",
+      "Those permission slips already happened. Give them a new job or bring a fresh prop.",
+      "A cake for three fake guests. Gorgeous, suspicious, and somehow still educational.",
+      "The teacher creates the need for a sign in sheet. The excuse is multiplying like it pays rent.",
+      "The plan has reached celebrity witness territory before it has reached a clipboard. Spectacularly premature.",
+      "A film project needs a camera operator. At last, a person with a job instead of a grand finale.",
+      "The comic stays in the case for now. The cover story needs another layer before it gets ideas."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: amazing alibi.",
+        "why": "opens with a status word and gives no specific reason"
+      },
+      {
+        "text": "The Hype Auditor rejects your nonsense.",
+        "why": "opens with a ruling phrase, names the host, and attacks the player"
+      },
+      {
+        "text": "Absolute cinema, huge vibes, iconic mountain.",
+        "why": "hype without naming either step or explaining the link"
+      },
+      {
+        "text": "The clandestine pretext proliferates magnificently.",
+        "why": "uses fancy words instead of a clear picture"
+      },
+      {
+        "text": "You clearly cannot plan a heist.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "Maybe it works, maybe it does not. Who knows.",
+        "why": "hedges instead of making a clear ruling"
+      },
+      {
+        "text": "The alibi danced beneath the moon...",
+        "why": "poetry and an ellipsis, with no useful reason"
+      },
+      {
+        "text": "Then the crime happens and everyone escapes.",
+        "why": "endorses the forbidden leap and closes the story"
+      }
+    ]
+  },
+  "rules": [
+    "Begin with \"Then our excuse needs\" and add one believable cover detail.",
+    "Connect the new detail to something already standing.",
+    "Every patch should expose a fresh hole for the next player.",
+    "Do not leap to the theft, the escape, an undo, a repeat, or an impossible arrival.",
+    "The Judge scores the excuse link, not the player's spelling or criminal ambition."
+  ],
+  "labels": {
+    "opening": "The first excuse",
+    "next_opening": "The next excuse",
+    "your_opening": "Your excuse",
+    "compose": "Add a cover detail after {token}",
+    "compose_waiting": "Build your next suspiciously innocent patch while you wait"
+  },
+  "validation_messages": {
+    "empty": "No excuse appeared. The alibi is standing there in silence.",
+    "too_long": "Over 140 characters. One patch, not a whole legal department.",
+    "duplicate": "That detail already has a mountain view. Add a new cover function.",
+    "nudge": "The excuse needs a fresh patch because {standing_form}. Add one person, object, appointment, or reason."
+  },
+  "judge_out_text": "The Judge has stepped out to inspect the paperwork. Nobody adds a patch until they return. {standing_form} still stands, suspiciously laminated.\n",
+  "opponent_prompt": "You are one of two players building an excuse for a heist that must never be named as a completed act.\nAlways begin with: \"Then our excuse needs...\" Add one person, object, appointment, or reason.\nConnect it to a detail already standing, and make the new detail open a fresh hole.\nGood: \"Then our excuse needs a teacher, because a school project with no teacher looks like four adults loitering near a locked case.\"\nGood: \"Then our excuse needs a camera operator, because a film project with no camera looks like a very nervous picnic.\"\nBad: \"Then our excuse needs the comic and a getaway car\" because that leaps to the theft and escape.\nBad: \"Then our excuse needs the mayor, a television crew, and a helicopter\" because the links are missing and the mountain has become a fever dream.\nBad: \"Then our excuse needs confidence\" because a feeling is not a cover detail.\nNever steal the target, never finish the escape, never undo an established detail, and never repeat a detail without giving it a new job.\nUse plain words a twelve year old anywhere would know. Talk like a mate describing an absurdly overprepared visit, not like a criminal manual.\nKeep the crime fictional and non operational. Build the excuse, not real world instructions.\nNever reuse a move from this match.\n",
+  "medallions": false,
+  "default_move": "Then our excuse needs a visitor badge, because the first excuse has to get us through the front desk."
+}

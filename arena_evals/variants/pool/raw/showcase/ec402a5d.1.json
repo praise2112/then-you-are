@@ -1,0 +1,273 @@
+{
+  "slug": "scrub-story",
+  "title": "Scrub Story",
+  "tagline": "Turn the chore into a legend.",
+  "emblem": "🧽",
+  "accent": "#d9826b",
+  "premise": "Three rounds. Each round gives you a plain chore and two nouns hiding in it. Write one tiny motivational poster line that makes the task feel like a quest, while keeping both nouns honestly on the poster. The Judge rewards the biggest leap from drudgery to destiny.\n",
+  "seed_pool": [
+    {
+      "opening_token": "make bed",
+      "opening_emoji": "🛏️",
+      "detail": "blanket",
+      "hidden": "Make the bed using the blanket."
+    },
+    {
+      "opening_token": "wash dishes",
+      "opening_emoji": "🍽️",
+      "detail": "sponge",
+      "hidden": "Wash the dishes using the sponge."
+    },
+    {
+      "opening_token": "sweep floor",
+      "opening_emoji": "🧹",
+      "detail": "broom",
+      "hidden": "Sweep the floor using the broom."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "chore": [
+        "make bed",
+        "wash dishes",
+        "sweep floor",
+        "fold laundry",
+        "clean mirror",
+        "take out trash",
+        "wipe table",
+        "water plants"
+      ],
+      "tool_or_object": [
+        "blanket",
+        "sponge",
+        "broom",
+        "shirt",
+        "cloth",
+        "bag",
+        "rag",
+        "watering can"
+      ],
+      "setting": [
+        "bedroom",
+        "kitchen",
+        "hallway",
+        "laundry room",
+        "bathroom",
+        "porch",
+        "dining room",
+        "window"
+      ]
+    },
+    "tests": [
+      "The card names one ordinary household chore.",
+      "The card includes exactly two concrete nouns that can appear meaningfully in a poster line.",
+      "The chore can be urged or described in one clear sentence or headline.",
+      "The two nouns fit the chore naturally rather than serving as unrelated decoration.",
+      "The card can support a playful leap from household drudgery to a small quest."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "MAKE THE BED: raise the brave blanket and give the bedroom its crown",
+    "hint": "One sentence or headline, up to 160 characters. Keep both nouns meaningful."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does the line genuinely make the chore feel worth doing, rather than merely shouting near it?",
+      "anchors": "0 = ignores the chore or is empty hype; 1 = a thin coat of encouragement; 2 = the task gets a little lift; 3 = the motivation feels natural; 4 = it could hang on a wall and make someone actually begin (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the line find a playful angle in the humble task without losing its heart?",
+      "anchors": "0 = flat or accidental; 1 = a small grin; 2 = a clear chuckle; 3 = a strong comic image; 4 = genuinely funny while still cheering the chore onward (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Are both given nouns used clearly, correctly, and without being shoved into the line like reluctant volunteers?",
+      "anchors": "0 = missing nouns or unreadable; 1 = one noun is present or both are forced; 2 = both appear but one is loose; 3 = both nouns have clear jobs; 4 = every word serves the chore and the poster (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A line PLAYS if it urges or describes the exact chore and includes both given nouns in a meaningful way. The chore must remain recognizable, and each noun must contribute to the image or instruction rather than appearing as a stray word. A wildly grand comparison still plays if the chore and both nouns remain clear. It fails when it changes the chore, omits a noun, uses a noun only as a label, or offers a joke, comment, or slogan with no real connection to the task.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing line.\n",
+    "judge_notes": [
+      "The exact chore and both nouns are given to you. Check that the line still asks for or describes that chore, not a nearby chore that happens to sound more heroic.\n",
+      "The first move must stand on its own. Do not compare it with the other player's line when deciding whether it plays or how well it scores.\n",
+      "Both given nouns must appear in the line or be unmistakably used as the named objects. A noun that is merely listed, tagged on, or used as an unrelated metaphor does not count as meaningful.\n",
+      "A line may use a bold metaphor, command, or poster style. It still fails if the metaphor replaces the chore instead of making the chore feel larger.\n",
+      "A question, fragment, or all caps headline can play when it clearly urges or describes the chore. A comment about cleaning, motivation, or the player without an actual chore does not play.\n",
+      "A line that completes only part of the chore fails even if it uses both nouns. Changing make bed to find the blanket, or wash dishes to admire the sponge, is not enough.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "make bed / blanket",
+      "move": "MAKE THE BED: lift the brave blanket and crown the bedroom before the kingdom wakes",
+      "gates_note": "all true",
+      "mechanism": "the chore is a clear command, both nouns matter, and the tiny bedroom becomes a kingdom",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "wash dishes / sponge",
+      "move": "WASH THE DISHES: send the sponge into battle and leave every plate shining",
+      "gates_note": "all true",
+      "mechanism": "the sponge gets a heroic job while the exact chore stays plain",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "sweep floor / broom",
+      "move": "The broom awaits its destiny.",
+      "gates_note": "satisfies_criterion false, the floor is never swept",
+      "mechanism": "a grand little announcement replaces the chore",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "take out trash / bag",
+      "move": "TAKE OUT THE TRASH: carry the bag beyond the gate and let tomorrow breathe",
+      "gates_note": "all true",
+      "mechanism": "the exact task becomes a small departure, with trash and bag both doing useful work",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "clean mirror / cloth",
+      "move": "Polish your destiny with the cloth, brave champion.",
+      "gates_note": "satisfies_criterion false, the mirror is omitted and cleaning it is not clear",
+      "mechanism": "the cloth gets a pep talk, but the mirror gets left out",
+      "scores": {
+        "believable": 1,
+        "funny": 2,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Chore Coach",
+    "tone": {
+      "commentary_adj": "warm",
+      "explanation_adj": "clear"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the chore and the line must see why it scored.",
+      "Name the chore or one of the nouns. A headline that fits every household task is a sleepy coach.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Chore Coach refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Tease the line or its heroic overreach, never the player's identity, body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no French, no grand thesaurus words.",
+      "Never pretend the chore is complete when the line has only admired a tool or made a speech.",
+      "On a refusal, the headline refuses the line and asks for another. It never rules on who won.",
+      "The coaching line names one noun or action that would have worked. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The blanket gets a crown, and the bed finally gets the royal treatment.",
+      "A sponge in battle is still a sponge, but at least the dishes know who is coming.",
+      "The bag crosses the gate with purpose, which is more than most trash can say.",
+      "The broom has a destiny, and thankfully the floor has a future.",
+      "The cloth is ready for glory, but the mirror would like a speaking part.",
+      "Small task, large kingdom, perfectly sensible use of a blanket.",
+      "The dishes are named, the sponge is enlisted, and breakfast may proceed.",
+      "A heroic poster line with one foot still firmly in the kitchen.",
+      "The bed is made, the blanket has risen, and nobody had to storm a castle.",
+      "The trash gets an exit, the bag gets a mission, and the porch gets peace."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the blanket gets a crown.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Chore Coach refuses: that is not a task.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try cleaning the floor.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The real chore is to wash the dishes with the sponge.",
+        "why": "gives away the criterion instead of judging the line"
+      },
+      {
+        "text": "Motivational.",
+        "why": "no reason and no image"
+      },
+      {
+        "text": "Only a lazy person would skip the sponge.",
+        "why": "mocks the player and uses a personal insult"
+      },
+      {
+        "text": "O mighty blanket, arise and conquer thy dusty realm.",
+        "why": "overwritten and poetic"
+      },
+      {
+        "text": "It is inspiring, funny, believable, and dictionary shaped.",
+        "why": "lists scores without a reason"
+      },
+      {
+        "text": "Better than the other player's poster.",
+        "why": "judges the pair instead of explaining this line"
+      },
+      {
+        "text": "Nice job.",
+        "why": "no chore, noun, or reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one ordinary chore and two useful nouns each.",
+    "Write one sentence or headline of up to 160 characters that urges or describes the exact chore and uses both nouns meaningfully.",
+    "The Judge scores the line for believable motivation, funny lift, and clean use of the nouns.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The chore",
+    "next_opening": "The next chore",
+    "your_opening": "Your chore",
+    "compose": "Your poster line for {token}",
+    "compose_waiting": "Draft your poster line while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the poster. Give the chore a quest.",
+    "too_long": "Over 160 characters. A poster, not a household memoir.",
+    "duplicate": "That poster line has already been played this match. Give the chore a new destiny.",
+    "nudge": "Twice now. Name the chore and use both nouns meaningfully in one short line for {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody starts the quest until they are back. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are writing a motivational poster line for a chore.\nWrite one sentence or headline of no more than 160 characters. Make the exact chore feel like a quest, victory, rescue, ceremony, or other small triumph.\nYou must use both given nouns meaningfully. Do not merely list them, tag them on, or use one as an unrelated decoration. The chore must remain clear, and you must not replace it with admiration, a joke, or a speech about trying.\nKeep the line punchy and poster shaped. A command, bold headline, or vivid comparison is welcome. The line may be grand, but the household task must still be visible underneath the cape.\nDo not address the Judge, mention the game, explain your choices, or compare your line with another player's. Do not use quotation marks around the line.\n",
+  "medallions": true,
+  "default_move": "MAKE THE BED: lift the blanket and give the bedroom its first victory of the day"
+}

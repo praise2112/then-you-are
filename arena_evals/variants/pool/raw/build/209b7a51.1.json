@@ -1,0 +1,269 @@
+{
+  "slug": "tiny-quest",
+  "title": "The Tiny Quest",
+  "tagline": "One tiny dare at a time. Make the next step harder to refuse.",
+  "emblem": "🧸",
+  "accent": "#7c3aed",
+  "premise": "You are guiding a toy-sized hero through one shared adventure, one small action at a time. Each turn must move the same quest forward while honoring every fact already established; the best moves make the hero's troubles funny, not impossible.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A button is a boat, and the hero must cross the carpet.",
+      "opening_emoji": "🔘",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A teaspoon is a mountain pass, and the hero must carry a crumb to the far side.",
+      "opening_emoji": "🥄",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A sock is a sleeping dragon, and the hero must retrieve a bell from its toe.",
+      "opening_emoji": "🧦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 22,
+    "axes": {
+      "hero": [
+        "a wind up knight",
+        "a toy bear",
+        "a paper explorer",
+        "a marble sized sailor",
+        "a tiny robot",
+        "a wooden wizard",
+        "a pocket sized rabbit",
+        "a little astronaut"
+      ],
+      "object": [
+        "a button",
+        "a spoon",
+        "a sock",
+        "a bottle cap",
+        "a pencil",
+        "a block",
+        "a leaf",
+        "a thimble"
+      ],
+      "quest": [
+        "cross the carpet",
+        "reach the cushion",
+        "carry a crumb",
+        "rescue a bead",
+        "ring a bell",
+        "find a lost key",
+        "deliver a note",
+        "climb the book"
+      ]
+    },
+    "tests": [
+      "One short sentence with a toy sized hero, an ordinary object, and one clear quest.",
+      "The object is harmless and familiar, and the hero faces a playful dare rather than real danger.",
+      "A stranger can picture the starting place and name the next physical goal within five seconds.",
+      "The quest needs several small actions, not one jump, magic solution, or instant finish.",
+      "Everyday words a twelve-year-old knows. No brand names, proper names, or instructions that require special equipment."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The hero pushes the button into the first stripe of carpet.",
+    "hint": "Add one physical action by the hero or the world. Make the next step possible, then a little harder."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the move raises the pressure of the dare while keeping the next step playable.",
+      "anchors": "0 = changes almost nothing; 1 = adds a small nuisance; 2 = creates a clear obstacle or awkward choice; 3 = makes the next move genuinely tricky while still possible; 4 = turns a simple action into a tight, funny problem with one believable way forward, rare. A move that makes the quest impossible scores 1 at most.",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How well the move follows the quest and every fact already established.",
+      "anchors": "0 = skips a needed link, undoes a fact, ends the quest, or contradicts the story; 1 = vaguely related but leaves the action unclear; 2 = is a valid next step with a simple connection; 3 = clearly uses the current position, object, and goal; 4 = makes an earlier fact newly useful while opening the next step, rare. A longer move does not score higher by itself.",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly and playfully the move lets us picture the tiny adventure.",
+      "anchors": "0 = no picture or physical action; 1 = one plain action; 2 = a clear object or movement; 3 = a vivid little problem anyone can imagine; 4 = a memorable, funny image that still stays simple, rare. Fancy wording is not required.",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it is the next physical step in the stated quest, uses the whole transcript, and changes the hero's situation. A skipped link leaps past needed action, an ending finishes the quest, and an undo cancels an established action or fact. A move also BREAKS if it contradicts an earlier fact, introduces a different quest, makes the hero's position impossible to follow, or talks about the game instead of adding an action. The move should make the dare more demanding without making it impossible. Points go to moves that add pressure, obstacles, or awkward choices while leaving a clear next step.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the scoring, or the other player's move instead of adding one action is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier action: judge it against the card alone. It must begin the stated quest with one physical action and leave the goal unfinished.",
+      "The full transcript is the adventure. Check the new move against every earlier action and fact, not only the last move.",
+      "Break for a skipped link when the move jumps over physical steps that the established situation clearly requires, such as appearing on the far side without crossing the gap.",
+      "Break for an ending when the move completes the stated quest, reaches the final goal, or declares success instead of taking one more step.",
+      "Break for an undo when the move cancels or reverses an established action or fact, such as putting down an item that was already delivered or claiming the bridge was never crossed.",
+      "Break for contradiction when the move changes the object's nature, the hero's location, or another plain fact already in the story.",
+      "When a move can be read as either a small next step or a larger jump, choose the smaller reasonable reading and let it hold.",
+      "A move may add a new harmless obstacle, helper, or feature of the setting if it does not erase earlier facts and keeps the quest moving.",
+      "A move that makes the quest impossible is not a good escalation. It fails the gate if no ordinary next action could continue the adventure.",
+      "A move about the partner's play, the host, or the score is meta. A move that affects the hero or world is part of the story.",
+      "A move that repeats an earlier action without changing the situation is a semantic duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A button is a boat, and the hero must cross the carpet.",
+      "move": "The hero climbs onto the button and uses a thread as a rope.",
+      "gates_note": "all true",
+      "mechanism": "starts the crossing with a physical position and adds a small tool that can matter next",
+      "scores": {
+        "squeeze": 1,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The hero climbs onto the button and uses a thread as a rope.",
+      "move": "A gust from the open window spins the button toward the dark stripe in the carpet.",
+      "gates_note": "all true",
+      "mechanism": "the world changes the boat's course and gives the hero a new problem without stopping the crossing",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The hero grips the thread as the button spins toward the dark stripe.",
+      "move": "The hero lets go, climbs across the carpet, and reaches the far side.",
+      "gates_note": "satisfies_criterion false (it skips the crossing and finishes the quest in one move)",
+      "mechanism": "bundles several needed actions and declares the crossing complete",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The hero reaches the dark stripe and pulls the button past it.",
+      "move": "The hero steps off the button and says the crossing never began.",
+      "gates_note": "satisfies_criterion false (it undoes the established boat crossing)",
+      "mechanism": "cancels the hero's position and an established action instead of moving the quest forward",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A teaspoon is a mountain pass, and the hero must carry a crumb to the far side.",
+      "move": "The hero hoists the crumb onto the spoon's bowl.",
+      "gates_note": "all true",
+      "mechanism": "takes one necessary action and leaves the carry still unfinished",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Quest Keeper",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The reason should be easy to see from the story and the new move, with a gentle joke about the move only.",
+      "Name the object, action, or obstacle. A headline that could fit any quest is too vague.",
+      "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The Quest Keeper rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Joke about the move or the tiny problem, never about the player or anyone's identity, body, family, intelligence, or spelling.",
+      "Use plain spoken English. Sound like a careful guide at a play table, not a grand storyteller.",
+      "On a break, put the skipped action, finished goal, undone fact, or contradiction beside the move that caused it.",
+      "On a refusal for a gate failure, decline the move and ask for another small physical action. Do not decide the winner in the headline.",
+      "The coaching line names one smaller action that would have held and made the dare harder. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "The button has a rope and a direction now. The carpet is still winning, but only by a little.",
+      "A gust has turned the boat, and the dark stripe is suddenly the captain.",
+      "You crossed three actions at once and arrived before the button did. Take the next step.",
+      "The hero put the crossing back in the box. Established facts cannot be returned unopened.",
+      "The crumb is aboard the spoon, and now the spoon has a very important passenger.",
+      "The sock has twitched, so the bell retrieval has found its first sleeping dragon problem.",
+      "The hero reaches the cushion by climbing the whole table in one sentence. Give us the missing climb.",
+      "The pencil bridge bends under one tiny boot. The quest continues, but the bridge has opinions."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the move works.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Quest Keeper rules that this fails.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Quest violation detected.",
+        "why": "names no action or reason"
+      },
+      {
+        "text": "That was a silly move from a silly player.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "The adventure dances through the moonlit machinery of destiny.",
+        "why": "uses grand, poetic language instead of a clear reason"
+      },
+      {
+        "text": "Maybe it works, maybe it does not, depending on what you mean.",
+        "why": "hedges instead of giving a fair ruling"
+      },
+      {
+        "text": "The hero wins.",
+        "why": "ends the quest without naming what happened"
+      },
+      {
+        "text": "The button crossed the carpet because buttons are boats in the ancient law of toys.",
+        "why": "adds invented lore and does not explain the move's actual problem"
+      }
+    ]
+  },
+  "rules": [
+    "Every card gives the tiny hero one shared quest. Take turns guiding the same adventure.",
+    "Add exactly one physical action by the hero or the world.",
+    "The action must be the next step, use every established fact, and change the hero's situation.",
+    "Do not skip needed links, finish the quest early, undo a fact, or contradict the story.",
+    "The best moves make the dare harder while leaving one believable next step."
+  ],
+  "labels": {
+    "opening": "The tiny quest",
+    "next_opening": "The next tiny quest",
+    "your_opening": "Your tiny quest",
+    "compose": "Your next action, after {token}",
+    "compose_waiting": "Plan the next tiny action while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing moved. The Quest Keeper is waiting.",
+    "too_long": "Over 140 characters. One tiny action, not the whole adventure.",
+    "duplicate": "That action is already in the adventure. Change the hero's situation.",
+    "nudge": "Twice now. Add one small action that follows {standing_form}. Do not undo it, skip ahead, or explain the rules."
+  },
+  "judge_out_text": "The Quest Keeper has stepped away. Nobody moves until they return. {standing_form} is still the latest step. Give it a moment.\n",
+  "opponent_prompt": "You are guiding a toy sized hero through one shared adventure with another player. Add exactly one physical\naction by the hero or the world, in one or two plain sentences.\n\nUse the card and every fact already established. The action must be the next link, not a jump to\nthe goal. Do not finish the quest, undo an action, contradict a fact, or replace the quest with a\nnew one. Make the dare harder in a funny but possible way. Add a wobble, a narrow gap, a stuck\nwheel, a loud crumb, a slippery thread, or another small problem that leaves a clear next step.\n\nGood: \"The hero climbs onto the button and uses a thread as a rope.\" / \"A gust spins the button\ntoward the dark stripe in the carpet.\"\nBad: \"The hero crosses the carpet and wins\" because it skips steps and ends the quest. Bad: \"The\nbutton was never a boat\" because it undoes a fact. Bad: \"The host says this is legal\" because it\ntalks about the game instead of moving the hero.\n\nTalk like a careful guide at a play table, not a novelist. Name the small object and the physical\naction. Build on the last position, and do not repeat an action unless it changes the situation.\nKeep the hero tiny, the obstacles harmless, and the next step possible.\n",
+  "medallions": false,
+  "default_move": "The hero takes one careful step toward the next part of the quest."
+}

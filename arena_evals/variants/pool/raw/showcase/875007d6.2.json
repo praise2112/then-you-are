@@ -1,0 +1,287 @@
+{
+  "slug": "taste-testimony",
+  "title": "Taste Testimony",
+  "tagline": "The dish is innocent until seasoned.",
+  "emblem": "⚖️",
+  "accent": "#8b5e3c",
+  "premise": "The meal is called to testify in court, and you are its dramatic lawyer. Give it a statement that keeps its two menu facts in shape but makes the dish seem heroic, guilty, or oddly famous. The Host will object to bland lawyering.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Egg, fried.",
+      "opening_emoji": "🍳",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Beans, boiled.",
+      "opening_emoji": "🫘",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Rice, steamed.",
+      "opening_emoji": "🍚",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "food": [
+        "egg",
+        "beans",
+        "rice",
+        "potato",
+        "carrot",
+        "toast",
+        "peas",
+        "mushroom"
+      ],
+      "preparation": [
+        "fried",
+        "boiled",
+        "steamed",
+        "baked",
+        "roasted",
+        "grilled",
+        "mashed",
+        "toasted"
+      ],
+      "article": [
+        "an",
+        "a",
+        "the",
+        "one",
+        "this",
+        "that",
+        "some",
+        "plain"
+      ]
+    },
+    "tests": [
+      "Two or three words, with an article where natural, naming one ordinary food and one clear preparation.",
+      "A hungry stranger can picture the food and how it was prepared without needing a recipe.",
+      "No sauce, garnish, seasoning, filling, brand, place name or invented ingredient sneaks into the card.",
+      "The food and preparation are separate facts, so testimony can preserve both while changing the drama.",
+      "It is plain enough to sound like an item on a menu nobody remembers ordering."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "I WAS CRACKED UNDER PRESSURE, THEN FACED THE PAN BRAVELY",
+    "hint": "One courtroom statement. Keep the food and its preparation, then make the plate testify."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the testimony turn a plain meal into a dramatic case while keeping its food and preparation?",
+      "anchors": "0 = repeats the menu; 1 = adds one theatrical word; 2 = gives the meal a role, motive or accusation; 3 = builds a whole courtroom story from the plate; 4 = the dish has a scandal, a heroic past and a compelling case, while every menu fact survives (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the meal's testimony produce a laugh or a pleasingly silly image?",
+      "anchors": "0 = no spark; 1 = a small grin; 2 = a good comic turn; 3 = a clear laugh; 4 = the sort of testimony the room would quote after lunch (rare). Straight-faced culinary drama usually beats a nervous joke.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it sound like a short courtroom statement rather than a menu note or an explanation?",
+      "anchors": "0 = not testimony, just labels or commentary; 1 = a statement buried in padding; 2 = recognisably spoken but loose; 3 = tight, vivid and easy to say aloud; 4 = a polished witness statement that could open the trial unchanged (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A testimony PLAYS if it is a statement spoken by or for the meal and preserves both facts in the card: the listed food and its preparation. For Egg, fried, the reader must still understand that it is an egg and that it was fried. The statement may add a lawyer, a crime, a heroic motive, a witness, a reputation or any other invention. It fails when the food is dropped, replaced or changed, when the preparation is dropped or changed, when the answer says the meal was baked instead of fried, or when it is not a courtroom-style statement at all but a menu label, a question to the Host, an explanation or a comment about the game. A bland restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, discussing the game or citing the rules is itself a losing testimony.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the listed food and preparation both be true given the testimony? \"I was fried for a crime I did not commit\" passes for Egg, fried. Do not demand realism, culinary accuracy or a legally sound case.\n",
+      "Added drama is not a contradiction. A trial, an arrest, a bribe, a witness or a heroic claim all play if the original food and preparation remain intact.\n",
+      "The first move is judged against the card alone. Do not compare it with the other player's statement when deciding whether it plays or how funny it is.\n",
+      "If the card says egg and the testimony says potato, the food was dropped or replaced and the gate fails. If the card says fried and the testimony says boiled, the preparation was changed and the gate fails.\n",
+      "A statement such as \"Egg, fried\" preserves the facts but is only a dull restatement. It plays, yet earns almost no stretch and little comedy.\n",
+      "A line about the meal being delicious, suspicious or famous does not count unless the food and preparation also survive inside it.\n",
+      "Lower case, missing punctuation and an unusual courtroom voice cost nothing by themselves. Judge the words and the statement shape.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Egg, fried.",
+      "move": "I WAS CRACKED UNDER PRESSURE, THEN FACED THE PAN BRAVELY",
+      "gates_note": "all true",
+      "mechanism": "the egg is cracked, the pan confirms frying, and breakfast gets a heroic witness box",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Beans, boiled.",
+      "move": "I ENTERED THE POT AS A NOBODY AND LEFT AS THE PEOPLE'S WITNESS",
+      "gates_note": "all true",
+      "mechanism": "the beans remain boiled, while the pot becomes a surprisingly populist courtroom",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Rice, steamed.",
+      "move": "THE RICE WAS STEAMED, YOUR HONOUR, BUT NEVER BROKEN",
+      "gates_note": "all true",
+      "mechanism": "rice and steaming are both present, with a modest melodrama about emotional resilience",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Egg, fried.",
+      "move": "I WAS BAKED BY A RUTHLESS KITCHEN AND REFUSE TO NAME NAMES",
+      "gates_note": "satisfies_criterion false (the preparation changes from fried to baked)",
+      "mechanism": "the testimony supplies a crime drama but quietly changes the pan's job",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Beans, boiled.",
+      "move": "THE SUSPECT DENIES EVERYTHING",
+      "gates_note": "satisfies_criterion false (neither the beans nor the boiling survives)",
+      "mechanism": "a courtroom mood without a meal, which is a bold defence for an empty plate",
+      "scores": {
+        "stretch": 1,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Rice, steamed.",
+      "move": "RICE, STEAMED",
+      "gates_note": "all true",
+      "mechanism": "both menu facts survive, but the witness has brought no evidence and barely sat down",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Host",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the testimony must see why it scored.",
+      "Name the food and the preparation when explaining the ruling. The egg, the pan, the beans, the boil. Do not wave at a vague dish-shaped cloud.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or The Host refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the testimony, never the player's identity or personal traits. A dramatic egg is fair game, a real person is not.",
+      "Plain spoken English. No poetry, no legal jargon pileups, no fancy words wearing a wig.",
+      "On a fail, say which food or preparation went missing or got changed, using the words of the card.",
+      "On a refusal, the testimony is refused and another is requested. It never rules on who won.",
+      "The coaching line names one testimony that would have scored. It ends on a food or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The egg kept its pan and its nerve, which is more testimony than most breakfasts manage.",
+      "The beans were boiled and somehow became witnesses for the people. The pot has a very busy afternoon.",
+      "Rice steamed, dignity intact. The defence has finally found a case with no sauce on it.",
+      "The egg is still fried, but now it has a motive, a witness and excellent timing.",
+      "The beans survived the boil and entered court as informants. A modest pulse, a serious allegation.",
+      "A plain menu item just acquired a criminal record, and the preparation still checks out.",
+      "The rice vanished from the testimony, leaving the courtroom with steam and no defendant.",
+      "Baked is not fried. The egg changed kitchens halfway through its statement.",
+      "The meal is not a lawyer. Put the egg, beans or rice back in the witness box.",
+      "A good line would let the fried egg deny the charge while remaining unmistakably fried."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a strong case for breakfast.",
+        "why": "opens with a status word and gives no exact reason"
+      },
+      {
+        "text": "The Host refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, serve another statement.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "Wrong, the facts are missing.",
+        "why": "does not say whether the food or preparation went missing"
+      },
+      {
+        "text": "Good testimony.",
+        "why": "fits any line and explains nothing"
+      },
+      {
+        "text": "Only a fool would serve this argument.",
+        "why": "mocks the player rather than the testimony"
+      },
+      {
+        "text": "O humble grain, dost thou face the steaming heavens?",
+        "why": "poetry instead of plain spoken commentary"
+      },
+      {
+        "text": "The evidence is compelling, persuasive, compelling and persuasive.",
+        "why": "piles up filler without naming the dish"
+      },
+      {
+        "text": "A textbook culinary objection sustained in the jurisdiction of flavour.",
+        "why": "legal and culinary jargon doing a little too much"
+      },
+      {
+        "text": "Better than the other player's dish.",
+        "why": "judges the pair instead of the testimony on its own"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one plain meal each.",
+    "Write one courtroom style testimony under 90 characters. The House writes its own, unseen, and the Host scores both.",
+    "Your statement must preserve both listed facts, the food and its preparation. Change either one and the round is lost.",
+    "Everything else is yours to invent. Give the meal a crime, a motive, a heroic past or a suspicious alibi. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The meal",
+    "next_opening": "The next meal",
+    "your_opening": "Your meal",
+    "compose": "Your testimony for {token}",
+    "compose_waiting": "Prepare your statement while you wait"
+  },
+  "validation_messages": {
+    "empty": "Silent witness. Write the testimony.",
+    "too_long": "Over 90 characters. A statement, not a closing argument.",
+    "duplicate": "That testimony has already been heard this match. Find another charge.",
+    "nudge": "Twice now. One testimony that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Host has stepped out. Nobody touches the evidence until they return. {standing_form} sits in the witness box. Give it a moment.\n",
+  "opponent_prompt": "You are a dramatic food lawyer with a plain meal and a courtroom to entertain. Write one\nstatement under 90 characters.\nTHE TWO MENU FACTS MUST SURVIVE. A reader who sees only your statement must still know the\nlisted food and its preparation. For Egg, fried, the egg must remain an egg and frying must\nremain frying. Never replace the food, never change the preparation, never quietly turn a\npan into an oven.\nThen go as far as you dare. Invent a crime, a motive, an alibi, a witness, a scandal, a\nheroic sacrifice or an oddly famous past. The points are for distance from the menu while\nboth facts hold.\nGood: \"I WAS CRACKED UNDER PRESSURE, THEN FACED THE PAN BRAVELY\" for Egg, fried. \"I ENTERED\nTHE POT AS A NOBODY AND LEFT AS THE PEOPLE'S WITNESS\" for Beans, boiled. \"THE RICE WAS\nSTEAMED, YOUR HONOUR, BUT NEVER BROKEN\" for Rice, steamed.\nBad: \"Egg, fried\" (true but bland). \"I WAS BAKED FOR THE CRIME\" (the preparation changed).\n\"THE SUSPECT DENIES EVERYTHING\" (the meal disappeared). \"THIS WAS THE BEST LUNCH EVER\"\n(no food, no preparation, no testimony).\nCourtroom rhythm: first person or a statement for the meal, short plain words, confident\nand theatrical. Under 90 characters. Capitals are fine but not required. Do not use a colon\nor a dash. Do not explain the joke.\nVary the angle from round to round: a confession one round, an alibi the next, a heroic\nclaim, a witness, a scandal. Never the same shape twice in a match.\nNo quotation marks around the testimony. Reply with the testimony only.\n",
+  "medallions": false,
+  "default_move": "I WAS SERVED WITHOUT A LAWYER AND STILL KEPT MY COMPOSURE"
+}

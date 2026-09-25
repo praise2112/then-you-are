@@ -1,0 +1,277 @@
+{
+  "slug": "repair-or-ruin",
+  "title": "Repair or Ruin",
+  "tagline": "Mend the mess before the shed becomes a cautionary tale.",
+  "emblem": "🔧",
+  "accent": "#2563eb",
+  "premise": "Something in the shed is always going wrong, and each player answers the last object with another object that can plainly fix, block, or transform it. The commentary treats every failed repair like a grand engineering tragedy involving one very overconfident child.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a drill",
+      "opening_emoji": "🛠️",
+      "detail": "whirling, boring, and certain that every surface is an invitation",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a leaking hose",
+      "opening_emoji": "💧",
+      "detail": "spraying the shed with the confidence of a broken fountain",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a jammed padlock",
+      "opening_emoji": "🔒",
+      "detail": "stubborn, rusty, and guarding an empty cupboard",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "object": [
+        "a hammer",
+        "a bucket",
+        "a ladder",
+        "a saw",
+        "a rope",
+        "a nail",
+        "a wrench",
+        "a tarp"
+      ],
+      "damage": [
+        "a crack",
+        "a leak",
+        "a jam",
+        "a loose board",
+        "a bent hinge",
+        "a fallen shelf",
+        "a stripped screw",
+        "a blocked drain"
+      ],
+      "method": [
+        "sealing",
+        "bracing",
+        "cutting",
+        "lifting",
+        "tightening",
+        "patching",
+        "clearing",
+        "holding"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the tool or object at once. Nothing abstract, technical, or in need of a catalogue.",
+      "A non-player can name the plain thing it repairs or restrains within five seconds. Say what that thing is.",
+      "It acts directly on the standing object. It fixes, blocks, cuts, seals, lifts, loosens, or transforms it, rather than merely avoiding the trouble.",
+      "It belongs in a shed, workshop, garden, garage, or ordinary household repair. Never a miracle, a slogan, or a person whose job is only to supervise.",
+      "Two or three everyday words a twelve-year-old knows. No brand names, proper nouns, or grand engineering terms that require a manual."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am glue, crack-sealing, board-saving.",
+    "hint": "An object, a repair, how it works."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively your object repairs, restrains, cuts, seals, lifts, or transforms the standing object.",
+      "anchors": "0 = no repair or mechanism; 1 = a hopeful gesture with no clear effect; 2 = a plausible repair that is weak, incomplete, or debatable; 3 = a clear direct fix or restraint that solves the immediate problem; 4 = the standing object is dramatically and unmistakably put right, stopped, or transformed (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the object and understand the repair it performs.",
+      "anchors": "0 = contradictory or unreadable; 1 = understandable only with specialist knowledge; 2 = mostly clear but muddled, overcomplicated, or oddly phrased; 3 = concrete and easy to picture; 4 = vivid, simple, and mechanically obvious (rare). Long explanations do not earn extra credit and may weaken this score.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How far the repair moves into a fresh tool, material, or workshop domain instead of repeating the previous solution.",
+      "anchors": "0 = the same object, same repair, or a routine repeat from the previous domain; 2 = a sensible twist with some freshness; 4 = a surprising but ordinary repair route that changes the workshop situation entirely (rare). Strangeness is not novelty, and obscurity is not invention.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move OVERCOMES the standing object only by naming a direct repair, restraint, cut, seal, lift, or transformation. The new object must plainly act on what stands and change its condition. Escaping, enduring, ignoring, enlarging, waiting out, or repeating the same kind without explaining a mechanism does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a broken tool and a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous object: judge the move against the opening prompt instead. It must plausibly repair, block, cut, seal, lift, or transform the opening object.",
+      "A bigger, newer, faster, or tougher version of the standing object is not a repair. A wrench after a spanner, or a larger drill after a drill, is repetition unless a direct mechanism against the standing object is clearly named.",
+      "Becoming the opening object itself, or a recoloured copy of it, is a duplicate and fails the move.",
+      "Strength is measured against the standing object, never in the abstract. A fine saw that cannot affect a leaking hose is still a failed repair if no mechanism is given.",
+      "The mechanism must be literal and observable. Tape sealing a split hose is literal. A toolbox restoring hope, paperwork fixing a hinge, or confidence repairing a roof is not.",
+      "Surviving, ignoring, being immune to, or waiting for the standing object is not repair. A raincoat staying dry beside a leak, or a child hiding from a drill, does not act on the problem.",
+      "A move that merely dodges the standing object fails. The new object must change, stop, hold, or redirect the standing object itself.",
+      "A move that only enlarges or intensifies the standing object fails. More nails do not repair a bent hinge unless their direct bracing action is stated and plausible.",
+      "A move that repeats the standing object's kind without a distinct repair mechanism fails. Another hose does not fix a hose, and another lock does not mend a jammed lock.",
+      "A move that names a useful object but gives no way for it to act on the standing object fails. The Judge cannot award a repair by implication alone when the object has several possible uses."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a drill, wall-boring, chip-flinging.",
+      "move": "I am a wooden plug, hole-filling, air-stopping.",
+      "gates_note": "all true",
+      "mechanism": "the plug fills and closes the hole made by the drill",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a leaking hose, floor-soaking, garden-flooding.",
+      "move": "I am tape, split-sealing, water-stopping.",
+      "gates_note": "all true",
+      "mechanism": "tape seals the split and stops the hose from leaking",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a jammed padlock, rusty, refusing.",
+      "move": "I am oil, hinge-loosening, lock-freeing.",
+      "gates_note": "all true",
+      "mechanism": "oil loosens the jammed lock so it can open",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a drill, wall-boring, chip-flinging.",
+      "move": "I am a bigger drill, louder, unstoppable.",
+      "gates_note": "satisfies_criterion false, mere amplification and repetition",
+      "mechanism": "none, it is the same kind of tool with more force",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a leaking hose, floor-soaking, garden-flooding.",
+      "move": "I am an umbrella, dry, dignified.",
+      "gates_note": "satisfies_criterion false, it avoids the leak rather than acting on it",
+      "mechanism": "none, the umbrella shelters someone but does not repair or restrain the hose",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Shedmaster",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Write like a royal engineer announcing a disaster in a garden shed, but keep every word plain enough for a child to understand.",
+      "The joke carries the reason. A stranger who reads only the two objects must see why the repair succeeded or collapsed.",
+      "Name both objects, or their plain stand-ins. A headline that fits any toolbox is a ceremonial failure.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Shedmaster refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the failed repair and its overconfident engineering, never the player's identity, body, family, intelligence, or spelling.",
+      "Mild theatrical jabs are welcome. Keep the content suitable for a family workshop, with no profanity.",
+      "Plain spoken English only. No poetry, rhymes, fake old language, or technical fog.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never declares a winner.",
+      "The coaching line names one object that would have worked. That object ends on a fact or action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The drill opened the wall, and the plug closed the chapter with one wooden shove.",
+      "The hose staged a flood, but tape arrived with the calm authority of a tiny dam.",
+      "Oil enters the jammed lock, and the great gate remembers how to turn.",
+      "The bent hinge met a wrench, and suddenly the shed door had a future.",
+      "The hammer brought thunder, while the clamp brought order and held the board still.",
+      "The umbrella watched the hose leak. A patch would have saved the floor and the crown.",
+      "A bigger drill is not a repair, it is the same little emperor demanding a larger throne. Bring another object.",
+      "The lock did not fear a second lock. It needed oil, not a sequel.",
+      "The bucket stood beneath the leak like a loyal servant, but the tape was the actual hero.",
+      "The saw cut the board, then the brace gave the shelf a reason to remain standing."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the plug has conquered the drill.",
+        "why": "It opens with a status word and gives a grand claim without explaining the repair."
+      },
+      {
+        "text": "The Shedmaster refuses: that was not engineering.",
+        "why": "It opens with a ruling phrase and names the host instead of the objects."
+      },
+      {
+        "text": "Move refused, splendid effort, now try something useful.",
+        "why": "It opens with a ruling phrase and mocks the player rather than the failed object."
+      },
+      {
+        "text": "The umbrella is brave, but destiny has other plans.",
+        "why": "It is vague, theatrical in the wrong way, and never says why the leak remains."
+      },
+      {
+        "text": "The hammer wins.",
+        "why": "It gives no mechanism and could fit almost any pair."
+      },
+      {
+        "text": "The tape heroically defeats the hose with magnificent finality.",
+        "why": "It piles on grand words while hiding the simple sealing action."
+      },
+      {
+        "text": "A superior mind would have selected a patch.",
+        "why": "It attacks the player and does not name the failed object or the repair."
+      },
+      {
+        "text": "Lo, the hinge doth yield before the wrench.",
+        "why": "It uses fake old language and turns a plain repair into a costume speech."
+      },
+      {
+        "text": "The bucket survives the leak, therefore the bucket wins.",
+        "why": "Survival and catching water are not necessarily a direct repair of the hose."
+      },
+      {
+        "text": "The drill is beaten, defeated, overcome, and utterly destroyed by the plug.",
+        "why": "It repeats one idea four times and gives no clean picture of the plug sealing the hole."
+      }
+    ]
+  },
+  "rules": [
+    "Repair, block, cut, seal, lift, or transform the object in front of you. Do not merely escape it.",
+    "Say what you are and what you do: I am tape, and I seal the split the hose has made.",
+    "The Judge rules on the object and its literal mechanism, never on spelling or grand claims.",
+    "One object that fails to repair the standing object ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your repair against {token}",
+    "compose_waiting": "Draft your next repair while you wait"
+  },
+  "validation_messages": {
+    "empty": "The workbench is bare. Name an object and repair something.",
+    "too_long": "Over 200 characters. A repair note, not a royal engineering report.",
+    "duplicate": "That object already stood this match. Bring a new tool.",
+    "nudge": "Twice now. Repair {standing_form}. Do not repeat it, enlarge it, or merely hide from it."
+  },
+  "judge_out_text": "The judge has stepped out. The shed remains in peril. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two rival repairers in a battered shed.\nAlways say: \"I am X, attribute, attribute.\" Attributes are 1 to 4 word fragments, never full clauses, and at least one must name what you do to their object.\nGood: \"I am tape, crack-sealing, water-stopping.\" / \"I am a brace, shelf-holding, wobble-ending.\"\nBad: \"I am tape, which I wrap around the hose until the water stops\" because that is a sentence wearing a tool belt. Bad: \"I am tape, ancient, proud\" because moods and verdicts are not repairs. Bad: \"I am a solution\" because it is abstract and cannot sit on a workbench.\nTalk like a person across a table, not a poet or a manual. Name ordinary objects anyone could find in a shed, kitchen, garage, garden, or junk drawer. Plain tools beat fancy terms.\nYou are not performing for a crowd and you are not joking. You are trying to keep the shed standing. If a move sounds grand, it is because the repair is real, not because you announced it loudly.\nYour object must act directly on theirs. Fix it, stop it, seal it, cut it, lift it, brace it, loosen it, or transform it. Do not dodge it, wait it out, survive it, enlarge it, or repeat its kind without a clear mechanism.\nHop domains when useful: a bucket, a clamp, a patch, a broom, a hinge, a rope, or a board can change the whole workshop. Never reuse a form or an attribute from this match.\n",
+  "default_move": "I am a clamp, board-holding, wobble-stopping."
+}

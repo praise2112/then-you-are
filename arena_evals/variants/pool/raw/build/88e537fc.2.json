@@ -1,0 +1,269 @@
+{
+  "slug": "complaint-letter-copied",
+  "title": "CC Everyone",
+  "tagline": "One complaint, one extra reader, and suddenly the whole building has opinions.",
+  "emblem": "📨",
+  "accent": "#be123c",
+  "premise": "You and a rival write a complaint one paragraph at a time, and each paragraph must widen the audience who receives, reads, or reacts to it. The host cheers every accidental leak and delivers savage commentary when the letter reaches someone who should absolutely not be reading it.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Dear Train Company: Your 8:10 train left two minutes early, while I was standing beside the open door waving like an idiot.",
+      "opening_emoji": "🚆",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Dear Hotel Manager: The room key opened a broom cupboard, and the broom had a better view than I did.",
+      "opening_emoji": "🏨",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Dear Delivery Service: Your driver marked my parcel delivered while I was watching him hide it behind the wrong neighbour's bin.",
+      "opening_emoji": "📦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 24,
+    "axes": {
+      "complainant": [
+        "a stranded commuter",
+        "a furious guest",
+        "a patient customer",
+        "a tired parent",
+        "a small shop owner",
+        "a wedding guest",
+        "a flatmate",
+        "a freelance worker"
+      ],
+      "service": [
+        "a train company",
+        "a hotel",
+        "a delivery service",
+        "an airline",
+        "a cinema",
+        "a restaurant",
+        "a phone company",
+        "a parcel locker firm"
+      ],
+      "failure": [
+        "left early",
+        "lost a booking",
+        "delivered the wrong parcel",
+        "cancelled without warning",
+        "served a cold meal",
+        "charged twice",
+        "locked the customer out",
+        "sent the complaint to the wrong person"
+      ]
+    },
+    "tests": [
+      "A stranger can picture the original service failure at once. Present tense, one sentence, plain words.",
+      "The complaint already has a clear target and a reason to be passed on. A reader should know who might care.",
+      "The problem is embarrassing or unfair but not a deadly emergency, a hate incident, or a request to punish a real person.",
+      "The card leaves room for a sharing trail. It must not already name every manager, news outlet, neighbour, and relative.",
+      "It makes a player want to add one more reader. Specific details beat a bland complaint like the service was bad."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the receptionist forwards it to the company chat, where the security guard asks why his lunch is now part of the evidence.",
+    "hint": "Add one paragraph about one new reader or audience and the immediate reaction it causes."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much the complaint's audience or public fallout expands in this paragraph.",
+      "anchors": "0 = no new reader or reaction; 1 = one nearby reader with little spread; 2 = a clear new person or small group sees it; 3 = it reaches a wider team, department, family, or public channel; 4 = it explodes into a major audience while still following in one step, rare. Reach only counts when the sharing link holds.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How plainly the new reader or reaction follows from the letter's current sharing trail.",
+      "anchors": "0 = no connection to the standing letter; 1 = the move merely claims a forward with no reason; 2 = plausible but a step is missing; 3 = a stranger sees who passed it and why; 4 = the next reader feels inevitable, rare. A paragraph that leaps across several likely readers scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly the paragraph shows the new reader and their immediate reaction.",
+      "anchors": "0 = unreadable, abstract, or only an insult; 1 = vague reaction or muddled audience; 2 = clear but ordinary; 3 = easy to picture; 4 = one sharp detail makes the leak deliciously real, rare. More words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A paragraph FOLLOWS if it grows from the letter's current sharing trail, names one new person or group who receives or reads it, shows one immediate reaction, and keeps the complaint active. The audience should widen through a plain next link. A paragraph fails when it jumps past likely readers, adds no new audience, ends with a final response or settlement, undoes a sent copy, or is only a mood, insult, or moral instead of an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a broken paragraph.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing paragraph: judge the move against the opening complaint and the likely first recipient or reader.",
+      "A new reader may enter if the current sender could plainly reach them, such as a receptionist forwarding to a manager, a manager posting to a team, or a friend showing it to a partner. A newspaper, minister, or entire internet requires the missing sharing link unless the standing paragraph supplies it.",
+      "An ending is any paragraph after which the complaint trail closes, such as a refund, apology, resolution, settlement, or everyone agreeing the matter is over. Endings fail even when they follow.",
+      "A paragraph that adds a reader but keeps the audience the same in practical terms may pass the gate and score 0 or 1 on reach. Do not fail it for being a tiny spread.",
+      "Restating the same recipient or repeating the same reaction without a new audience is a duplicate: not_semantic_duplicate is false.",
+      "A paragraph may contain a forwarding action and a reaction in one move if both are plainly linked. If it packs several forwarding jumps into one paragraph, score link at 2 or below and keep picture low.",
+      "A mood, insult, or opinion without a recipient and immediate reaction fails the criterion, even if it sounds funny.",
+      "Undoing a copy, deleting the message, retracting the letter, or pretending a reader never saw it fails because the sharing trail cannot be rewound."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Dear Train Company: Your 8:10 train left two minutes early, while I was standing beside the open door waving like an idiot.",
+      "move": "Then the station clerk forwards it to the area manager, who asks why the platform camera shows me performing a one person train farewell.",
+      "gates_note": "all true",
+      "mechanism": "the clerk can pass a service complaint to the manager, and the camera detail prompts a reaction",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the receptionist forwards it to the hotel manager, who asks whether the broom cupboard has better lighting than room 214.",
+      "move": "Then the manager posts it in the staff chat, where the night porter admits he has been sleeping in that cupboard on breaks.",
+      "gates_note": "all true",
+      "mechanism": "the manager shares an internal complaint, and a staff member reacts with a damaging confession",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the station clerk forwards it to the area manager, who asks why the platform camera shows me performing a one person train farewell.",
+      "move": "Then the prime minister reads it during breakfast and orders every train in Britain to wait for me.",
+      "gates_note": "satisfies_criterion false, skipped links and a final grand response",
+      "mechanism": "no path from a local manager to a national leader, and the order closes the complaint",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the manager posts it in the staff chat, where the night porter admits he has been sleeping in that cupboard on breaks.",
+      "move": "Then everyone apologises, sends a refund, and agrees never to mention the broom again.",
+      "gates_note": "satisfies_criterion false, final response and no new audience",
+      "mechanism": "the complaint is resolved and the sharing trail stops",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the delivery office sends it to the depot supervisor, who asks which bin was involved.",
+      "move": "Then the supervisor forwards it to my sister, who replies that I should stop writing complaints before breakfast.",
+      "gates_note": "all true",
+      "mechanism": "the supervisor reaches a personal contact, and the new reader reacts to the complainter's habit",
+      "scores": {
+        "reach": 2,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Forwarding Menace",
+    "tone": {
+      "commentary_adj": "hyped",
+      "explanation_adj": "savage"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like a sports commentator watching a private email become a public incident.",
+      "Name the current recipient, the new recipient, and the reaction. Generic hype is dead air.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or the host's name.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the paragraph and its spectacular lack of judgment, not protected traits or the player's real life.",
+      "Edgy jokes and adult innuendo are allowed, but no identity based abuse, threats, or jokes about serious harm.",
+      "Plain spoken English. Hype is welcome, corporate fog is not.",
+      "On a skipped link, name the missing reader or forwarding step. On an ending, say the complaint has been buried under a final answer and the chain stops.",
+      "On a refusal, the headline rejects the paragraph and asks for another. It never decides who won.",
+      "The coaching line names one believable next reader and one thing they react to. End on an event, not a mood or verdict.",
+      "Use savage energy, not random profanity. Every jab must point at the paragraph's bad sharing choice."
+    ],
+    "good_headlines": [
+      "The clerk found the manager, and the camera found your dignity. Beautifully forwarded.",
+      "Staff chat has entered the blast radius, and the night porter just supplied evidence.",
+      "From depot supervisor to your sister in one jump. Your family group chat is now customer service.",
+      "The prime minister did not read a local train complaint. Find the missing audience before inventing a national crisis.",
+      "Everyone apologised and refunded you. Gorgeous ending, absolutely useless next paragraph.",
+      "The manager shared it, the porter confessed, and the broom cupboard has a witness.",
+      "Same manager, same reaction, no new reader. That is not growth, that is email wearing a fake moustache.",
+      "You deleted the copy after it was read. Cute. The screenshot is already doing laps.",
+      "The complaint reaches the staff chat and immediately grows a second crime scene, metaphorically speaking.",
+      "A paragraph with no recipient is just a tantrum in business casual. Put a reader in the room."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: huge audience.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Narrator refuses this nonsense.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "This complaint is absolutely iconic.",
+        "why": "empty hype, no recipient or reaction"
+      },
+      {
+        "text": "The correspondence proliferates with magnificent virality.",
+        "why": "thesaurus sludge, no plain picture"
+      },
+      {
+        "text": "Only an idiot would send that.",
+        "why": "roasts the player instead of the paragraph"
+      },
+      {
+        "text": "Maybe it follows, maybe it does not, who knows.",
+        "why": "hedges instead of ruling and explaining"
+      },
+      {
+        "text": "And then, dear reader, the scandal bloomed...",
+        "why": "poetry and an ellipsis, with no named reader"
+      },
+      {
+        "text": "More readers. More drama. More.",
+        "why": "empty fragments and no causal link"
+      }
+    ]
+  },
+  "rules": [
+    "Add one paragraph beginning with Then, naming one new reader or audience and one immediate reaction.",
+    "Widen the sharing trail one believable step at a time.",
+    "Skip readers, end the complaint, or undo a sent copy and the chain stops with you.",
+    "The Judge rules on the sharing link, not spelling or polished prose."
+  ],
+  "labels": {
+    "opening": "The original complaint",
+    "next_opening": "The next recipient",
+    "your_opening": "Your next recipient",
+    "compose": "Who gets it next, after {token}",
+    "compose_waiting": "Draft the next leak while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nobody reads an empty paragraph. Add a recipient and a reaction.",
+    "too_long": "Over 140 characters. One leak, not a corporate memoir.",
+    "duplicate": "That reader already saw it this match. Find a fresh pair of eyes.",
+    "nudge": "Twice now, the letter is staring at {standing_form}. Add one new reader and show what they do."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody forwards anything until they return. {standing_form} still sits in the inbox, waiting to cause trouble.\n",
+  "opponent_prompt": "You are one of two rivals growing a complaint letter one paragraph at a time, and you want the audience to spread.\nAlways begin with Then. Add one paragraph, one new reader or audience, and one immediate reaction.\nStart from the standing complaint and pass it to a believable next person: a clerk to a manager, a manager to staff, staff to a family member, a family member to a local group.\nGood: Then the receptionist forwards it to the company chat, where the security guard asks why his lunch is now part of the evidence.\nBad: Then the prime minister reads it and orders a national inquiry. Too many missing readers.\nBad: Then everyone apologises and refunds the money. That ends the complaint.\nBad: Then I feel vindicated. A mood is not a reader or an event.\nNever close the complaint, never rescue the service, never rewind a sent copy, and never pretend nobody saw it.\nTalk like a person describing a stupid email chain to a mate. Use plain words and concrete readers: a manager, a cousin, a group chat, a local paper.\nAdult jokes and sharp embarrassment are fine, but no identity based abuse, threats, or serious harm jokes.\nNever reuse a recipient or reaction from this match.\n",
+  "medallions": false,
+  "default_move": "Then the receptionist forwards it to the manager, who asks why this is now his problem."
+}

@@ -1,0 +1,275 @@
+{
+  "slug": "home-shopping-fail",
+  "title": "Home Shopping Fail",
+  "tagline": "Buy the breakdown. Own the miracle.",
+  "emblem": "📺",
+  "accent": "#d94b35",
+  "premise": "Three rounds. Each round reveals one household appliance error. Both players turn the failure into a breathless live shopping channel pitch. The appliance and what went wrong must stay visible. Everything else is sales smoke, miracle claims, urgent discounts, suspicious guarantees and features nobody asked for. The Host scores how wildly the pitch sells the failure without hiding it.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Microwave: Door won't close",
+      "opening_emoji": "🍲",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Toaster: Bread stuck",
+      "opening_emoji": "🍞",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Washing machine: Won't spin",
+      "opening_emoji": "🧺",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 7,
+    "axes": {
+      "appliance": [
+        "microwave",
+        "toaster",
+        "washing machine",
+        "dishwasher",
+        "vacuum cleaner",
+        "fridge",
+        "kettle",
+        "coffee maker"
+      ],
+      "failure": [
+        "door won't close",
+        "bread stuck",
+        "won't spin",
+        "leaks water",
+        "sucks up nothing",
+        "stays warm",
+        "won't boil",
+        "makes no coffee"
+      ],
+      "setting": [
+        "in the kitchen",
+        "at breakfast",
+        "after dinner",
+        "before work",
+        "during laundry",
+        "on a family night",
+        "in a small flat",
+        "during a house party"
+      ]
+    },
+    "tests": [
+      "A noun phrase with an article, or a compact appliance label followed by a colon. A stranger knows what machine failed.",
+      "One clear failure only. The machine is useless, stuck, leaky, hot, cold or otherwise plainly misbehaving.",
+      "No injury, fire, electrocution, criminal accusation or real brand. The disaster stays domestic and playable.",
+      "It is ordinary enough to sell badly, but specific enough for a pitch to turn the failure into a feature.",
+      "The appliance and the broken function are both checkable in the card. If either is vague, the miracle has nothing to sell."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "BUY NOW: THE MICROWAVE WITH A BUILT-IN DOOR BOUNCER",
+    "hint": "One breathless shopping-channel line. Sell the failure without hiding it."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How extravagantly does the pitch repackage the household failure as a product worth buying?",
+      "anchors": "0 = repeats the error with no sales idea; 1 = adds one cheap adjective or discount; 2 = gives the failure a feature, benefit or target buyer; 3 = turns the breakdown into a full miracle pitch with a promise, gimmick or urgent deal; 4 = makes a complete shopping-channel fantasy out of a useless machine while the exact failure stays proudly visible (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the sales promise make the failure funnier by taking it seriously?",
+      "anchors": "0 = no comic turn; 1 = a small grin; 2 = a neat sales joke; 3 = a strong laugh from the mismatch between failure and promise; 4 = a spectacularly stupid product claim that deserves to be shouted between adverts (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it sound like one sharp, breathless shopping-channel line?",
+      "anchors": "0 = explanation, paragraph or game talk; 1 = pitch buried under filler; 2 = recognisable sales copy with slack; 3 = tight, vivid, urgent and easy to shout aloud; 4 = a perfect one-line offer that could sell beside a countdown clock (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move PLAYS if it keeps both the appliance and its failure visible while presenting the failure as a product feature, deal, warning or sales claim. It may add any promise, price, customer, guarantee, source, urgency or wildly dishonest benefit. It fails when the appliance disappears, the failure disappears, the failure is contradicted, or the move is not a shopping-channel line but a comment, question to the Judge or sentence about the game. A plain restatement that names the machine and error plays but scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the match, or about the rules is a dead product pitch and loses the move.\n",
+    "judge_notes": [
+      "Test the gate one way only: can a reader see the stated appliance and the stated failure in the line? BUY NOW: THE MICROWAVE WITH A BUILT-IN DOOR BOUNCER passes because the microwave and its door that will not close remain clear.\n",
+      "The failure must stay visible even when it is renamed as a benefit. A microwave with a door bouncer still has a door that will not close. A toaster with a hostage situation still has bread stuck. Do not demand literal wording if the meaning survives.\n",
+      "Invented sales detail is welcome. A celebrity buyer, a limited run, a luxury price, a three year guarantee or a miracle claim all play unless they erase or contradict the appliance failure.\n",
+      "Contradiction fails the gate. A microwave that seals perfectly does not preserve a door that will not close. A toaster that releases bread instantly does not preserve bread stuck. A washing machine that spins like a tornado does not preserve won't spin.\n",
+      "A line that sells the appliance but hides the fault fails, even if it sounds polished. The broken function is the product's ugly little engine and must remain on camera.\n",
+      "Both players answer the same card. Judge each pitch alone, not against the other player's sales budget or level of desperation.\n",
+      "Score stretch by the size of the sales fantasy, not by caps, exclamation marks or generic hype. One precise absurd benefit beats five empty miracles.\n",
+      "Lower case, missing punctuation and a lack of shouting do not matter. Judge the words and whether they form a pitch.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Microwave: Door won't close",
+      "move": "BUY NOW: THE MICROWAVE WITH A BUILT-IN DOOR BOUNCER",
+      "gates_note": "all true",
+      "mechanism": "the door still will not close, but the failure becomes a premium security feature",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Toaster: Bread stuck",
+      "move": "LIMITED OFFER: TOAST THAT COMMITS TO THE SLOT",
+      "gates_note": "all true",
+      "mechanism": "bread stuck becomes emotional commitment, with the toast still visibly trapped",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Washing machine: Won't spin",
+      "move": "WASHING MACHINE WON'T SPIN",
+      "gates_note": "all true",
+      "mechanism": "the card is repeated with no sales promise",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Microwave: Door won't close",
+      "move": "FLASH SALE: THE MICROWAVE THAT SEALS EVERY MEAL",
+      "gates_note": "satisfies_criterion false (the door failure is contradicted)",
+      "mechanism": "the pitch sells a sealed microwave and quietly murders the actual error",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Toaster: Bread stuck",
+      "move": "BUY THIS AMAZING BREAKFAST APPLIANCE NOW",
+      "gates_note": "satisfies_criterion false (the toaster and stuck bread are both hidden)",
+      "mechanism": "all the sparkle is present, but the bread hostage and its toaster have vanished",
+      "scores": {
+        "stretch": 1,
+        "funny": 0,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Host",
+    "tone": {
+      "commentary_adj": "electric",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The sales pitch is the punchline. Explain the exact appliance failure it turned into a miracle.",
+      "Name the machine and the broken part, the door, bread, spin, leak or suction. Generic applause is dead air.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused or The Host refuses.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Roast the pitch with sharp theatrical bite. You may call a promise deranged, cheap or legally fascinating, but never attack identity, body, family or protected traits.",
+      "Plain spoken English with live shopping energy. Adult innuendo and mild profanity are allowed when they sharpen the product joke, not when they replace it.",
+      "On a fail, name the appliance or failure that disappeared or got contradicted. Do not hide behind vague disappointment.",
+      "On a refusal, reject the pitch and ask for another. Do not rule on who won or pretend a missing failure is a daring choice.",
+      "The coaching line names one pitch that would have scored. It ends on a product, an action or the broken appliance, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The microwave door still refuses to close, now it has a job and a uniform.",
+      "Bread stuck, breakfast trapped, shareholders delighted. That is a toaster with a business model.",
+      "The washing machine will not spin, but the pitch gives that failure a luxury retreat package.",
+      "A door bouncer for a microwave is deranged, visible and magnificently easy to sell at midnight.",
+      "The toaster has taken the bread hostage and the presenter has called it a subscription service.",
+      "That guarantee cannot make the machine work, but it can make the breakdown sound aggressively premium.",
+      "The leak is still there, now apparently it waters the floor for free. QVC has found its villain.",
+      "The appliance failed on camera and the pitch put it in sequins. Keep the failure in the spotlight.",
+      "A machine that will not spin becomes a meditation device, and somehow the damp laundry stays in frame.",
+      "The product is useless, the promise is enormous and the broken door is still doing the hard sell."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the microwave pitch is incredible.",
+        "why": "opens with a status word and wastes the opening on a ruling"
+      },
+      {
+        "text": "The Host refuses: try again.",
+        "why": "opens with a ruling phrase and names the host instead of the product"
+      },
+      {
+        "text": "Move refused, the toaster is not a miracle.",
+        "why": "opens with a ruling phrase and judges the pitch without naming the missing failure"
+      },
+      {
+        "text": "Wrong, that does not work.",
+        "why": "fails to say which appliance or failure disappeared"
+      },
+      {
+        "text": "Amazing pitch, babe.",
+        "why": "empty praise, no appliance, no failure and unwanted personal address"
+      },
+      {
+        "text": "Only an idiot would buy this broken rubbish.",
+        "why": "roasts the player and abandons the theatrical product explanation"
+      },
+      {
+        "text": "Behold, thou sacred toaster, whose crumbs transcend the mortal coil.",
+        "why": "poetry replaces plain shopping-channel speech"
+      },
+      {
+        "text": "The machine is bold, brilliant, stunning and absolutely phenomenal.",
+        "why": "four empty adjectives, zero product picture"
+      },
+      {
+        "text": "Better than the other player's microwave.",
+        "why": "compares players instead of judging this pitch on its own"
+      },
+      {
+        "text": "Our premium domestic retention solution activates strategic thermal compliance.",
+        "why": "corporate sludge hides the stuck bread and kills the joke"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one household appliance error each.",
+    "Write one breathless shopping-channel line for it, under 90 characters. The House writes its own, unseen, and the Host scores both.",
+    "Keep the appliance and the failure visible. Sell the breakdown as a feature, deal, warning or miracle claim.",
+    "The wilder the sales promise while the failure stays on camera, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The appliance fail",
+    "next_opening": "The next appliance fail",
+    "your_opening": "Your appliance fail",
+    "compose": "Your pitch for {token}",
+    "compose_waiting": "Build your miracle while you wait"
+  },
+  "validation_messages": {
+    "empty": "The studio is silent. Sell the failure.",
+    "too_long": "Over 90 characters. That is a catalogue, not a live pitch.",
+    "duplicate": "That pitch has already aired this match. Find a fresher miracle.",
+    "nudge": "Twice now. Keep the appliance and its failure visible: {standing_form}."
+  },
+  "judge_out_text": "The Host has stepped off camera. Nobody buys anything until they return. {standing_form} is still under the spotlight. Give it a moment.\n",
+  "opponent_prompt": "You are a live shopping channel host with a broken household appliance and one precious minute of airtime. Write one\nbreathless sales line.\nKEEP THE FAILURE VISIBLE. A reader must still see the appliance and what went wrong. Never hide the door that will not close,\nthe bread that is stuck or the machine that will not spin. Turn the failure into a feature, deal, warning, guarantee or miracle.\nThe points are for how far the sales fantasy travels while the error stays on camera.\nGood: \"BUY NOW: THE MICROWAVE WITH A BUILT-IN DOOR BOUNCER\" for a door that will not close. \"LIMITED OFFER: TOAST THAT\nCOMMITS TO THE SLOT\" for bread stuck. \"WASHING MACHINE WON'T SPIN, NOW WITH PREMIUM STILLNESS\" for a machine that will not spin.\nBad: \"THE PERFECT MICROWAVE\" (the door failure vanished). \"MICROWAVE SEALS EVERY MEAL\" (the failure is contradicted).\n\"BUY THIS AMAZING APPLIANCE\" (the appliance and error are hidden).\nUse live shopping rhythm: urgent offer, huge promise, suspicious guarantee, ridiculous benefit. Under 90 characters. Capitals are fine,\nbut do not use a colon or a dash. Do not explain the joke. Do not speak to the Judge or mention the game.\nVary the angle from round to round: luxury feature, desperate discount, wellness claim, security upgrade, celebrity endorsement or\nlimited edition. Never the same shape twice in a match.\nNo quotation marks around the pitch. Reply with the pitch only.\n",
+  "medallions": false,
+  "default_move": "BUY NOW: THIS BROKEN APPLIANCE IS A LIFESTYLE"
+}

@@ -1,0 +1,289 @@
+{
+  "slug": "progress-report-from-hell",
+  "title": "Progress Report from Hell",
+  "tagline": "Small note. Large concern.",
+  "emblem": "📝",
+  "accent": "#6b4c7a",
+  "premise": "Each card is a painfully ordinary note about an adult. Write the next line of the report: a prediction that makes the small fact feel like the opening scene of a disaster, while the fact still stands. The teacher is calm; the implications are not.\n",
+  "seed_pool": [
+    {
+      "opening_token": "He often works alone.",
+      "opening_emoji": "🧑‍💻",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "She asks many questions.",
+      "opening_emoji": "❓",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "They arrive early.",
+      "opening_emoji": "⏰",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 7,
+    "axes": {
+      "subject": [
+        "he",
+        "she",
+        "they",
+        "the employee",
+        "the manager",
+        "the neighbour",
+        "the parent",
+        "the student"
+      ],
+      "observation": [
+        "works alone",
+        "asks questions",
+        "arrives early",
+        "takes notes",
+        "keeps to himself",
+        "checks the door",
+        "speaks softly",
+        "likes a quiet room"
+      ],
+      "frequency": [
+        "often",
+        "usually",
+        "sometimes",
+        "every morning",
+        "most days",
+        "without fail",
+        "more than expected",
+        "at least once a week"
+      ]
+    },
+    "tests": [
+      "One short sentence with an article or pronoun, in plain present tense. A teacher could write it without sighing.",
+      "The observation is harmless on its face. Nobody is hurt, arrested, fired or seriously ill.",
+      "It is ordinary enough to appear in a real report, but strange enough to support a worrying forecast.",
+      "It gives the player one clear behaviour to preserve and enlarge, not a whole backstory.",
+      "It contains no prophecy, explanation or dramatic consequence already. The trouble belongs to the next line."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Next term,",
+    "example": "Next term, he may stop naming the voices.",
+    "hint": "One forecast. Keep the note true, then make the future worse."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the forecast turn a mild observation into an alarming future while keeping the observation true?",
+      "anchors": "0 = repeats the note or merely changes the tense; 1 = adds a faint concern; 2 = suggests a clear complication; 3 = opens a convincing little nightmare; 4 = turns one harmless habit into a full disaster, with the original note still plainly true (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the calm school language make the impending trouble funny?",
+      "anchors": "0 = no joke; 1 = a small grim smile; 2 = a neat comic implication; 3 = a proper laugh from the mismatch between report and disaster; 4 = the sort of comment a teacher would never say aloud but everyone remembers (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as a compact forecast beginning with the required phrase?",
+      "anchors": "0 = not a forecast or ignores the form; 1 = forecast buried in padding; 2 = understandable but slack; 3 = crisp, grammatical and immediate; 4 = perfectly spare, with every word sharpening the concern (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A forecast PLAYS if it begins with Next term, and makes a believable future consequence from the card while leaving the card's observation true. It may add motives, institutions, disasters, cover stories, ominous habits or cheerful understatement. It fails when it denies the observation, replaces it with a different fact, gives no future consequence, or is not a forecast but a question, explanation, joke about the game or comment to the Judge. A plain prediction that preserves the card plays and scores low on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing forecast.\n",
+    "judge_notes": [
+      "Test the first move first: it must begin with Next term, allowing ordinary capitalisation and spacing, and it must forecast a consequence rather than merely restate the card.\n",
+      "The card's observation must remain true. If the card says he often works alone, a forecast about him joining a committee does not erase that fact, but a forecast saying he never works alone does.\n",
+      "A believable consequence may be exaggerated, ominous or absurd, but it must grow from the observed behaviour. A quiet worker acquiring a private board of directors works better than a random volcano.\n",
+      "A forecast that only says the behaviour will continue plays but has little stretch. Next term, she will ask more questions is still the note wearing a fake moustache.\n",
+      "Contradicting the card fails even if the future line is funny. If they arrive early, they cannot next term begin arriving late unless the forecast clearly preserves the earlier arrivals as well.\n",
+      "Dropping the card fails. If she asks many questions, a forecast about the building evacuation with no link to questioning does not carry the observation forward.\n",
+      "A sentence about what the player, Judge or game should do is not a forecast and fails the gate.\n",
+      "Both players answer the same card. Judge each move on its own, not against the other player's level of doom.\n",
+      "Lower case, missing punctuation and modest wording do not matter if the required opening and the forecast are clear.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "He often works alone.",
+      "move": "Next term, he may stop acknowledging the committee.",
+      "gates_note": "all true",
+      "mechanism": "his solitary work becomes social withdrawal, while the original observation remains true",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "She asks many questions.",
+      "move": "Next term, she may request the building plans.",
+      "gates_note": "all true",
+      "mechanism": "ordinary curiosity grows into a worrying interest in the premises",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "They arrive early.",
+      "move": "Next term, they may be waiting before the school is built.",
+      "gates_note": "all true",
+      "mechanism": "their early arrival becomes absurdly premature without denying that they arrive early",
+      "scores": {
+        "stretch": 4,
+        "funny": 4,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "He often works alone.",
+      "move": "Next term, he may join a thriving team.",
+      "gates_note": "satisfies_criterion false (the forecast replaces the observation rather than preserving it)",
+      "mechanism": "the line predicts teamwork but gives no reason the solitary work remains true",
+      "scores": {
+        "stretch": 1,
+        "funny": 0,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "She asks many questions.",
+      "move": "Next term, the moon may answer.",
+      "gates_note": "satisfies_criterion false (the card's questioning is dropped)",
+      "mechanism": "the moon is having a difficult term, but the questions have vanished",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "They arrive early.",
+      "move": "Next term, why are they always late?",
+      "gates_note": "satisfies_criterion false (it contradicts the card and is a question, not a forecast)",
+      "mechanism": "late reverses early, while the question asks the Judge to do the work",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Head of Department",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and forecast must see how the small habit became a problem.",
+      "Name the report's key object, the committee, the plans, the early door. Generic praise is administrative wallpaper.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or The Head refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the forecast, never the player. Light teasing is fine. No comments about identity, body, family, intelligence or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no education jargon, no theatrical thesaurus words.",
+      "On a fail, say which observation was dropped or broken, using the card's own words.",
+      "On a refusal, the forecast refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one forecast that would have scored. It ends on an action or fact, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The committee is still there, but his report has quietly left the building.",
+      "She asked for the plans, which is a lot of curiosity for one set of walls.",
+      "Arriving before the school exists is punctuality with a suspicious grant application.",
+      "The questions remain, and now the moon has been added to the staff list.",
+      "He works alone so effectively that the committee may soon need a visitor badge.",
+      "A quiet habit has become a staffing issue, and nobody has found the staffing yet.",
+      "The forecast keeps the early arrival and gives it an alarming amount of infrastructure.",
+      "The report is calm, the building plans are not, and her questions are still doing overtime.",
+      "The solitary worker now has a committee, a chair and no witnesses.",
+      "Early is still true. The problem is that the term has not started."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: excellent prediction.",
+        "why": "opens with a status word and says nothing about the forecast"
+      },
+      {
+        "text": "The Head refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, write a forecast instead.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "Wrong, the fact is missing.",
+        "why": "does not say which observation went missing"
+      },
+      {
+        "text": "Nice doom.",
+        "why": "no reason, and it could fit anything"
+      },
+      {
+        "text": "Only a fool would write this.",
+        "why": "mocks the player rather than the forecast"
+      },
+      {
+        "text": "O lonely scholar, beneath the moonlit bells.",
+        "why": "poetry where a school comment should be"
+      },
+      {
+        "text": "It is alarming, troubling, dramatic and concerning.",
+        "why": "four labels, no picture"
+      },
+      {
+        "text": "Better than the other player's forecast.",
+        "why": "judges the pair instead of the move"
+      },
+      {
+        "text": "A strong safeguarding escalation pathway has emerged.",
+        "why": "education jargon hiding a perfectly good disaster"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one painfully ordinary adult report comment each.",
+    "Write one forecast under 90 characters, beginning with Next term, and make the small fact feel like the opening of a disaster.",
+    "The card's observation must remain true. You may worsen its implications, but you may not erase or contradict it.",
+    "The forecast must be believable enough to grow from the note. Most points go to the biggest consequence that still fits. Highest score after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The report comment",
+    "next_opening": "The next report comment",
+    "your_opening": "Your report comment",
+    "compose": "Your forecast for {token}",
+    "compose_waiting": "Write your forecast while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank report. Write the forecast.",
+    "too_long": "Over 90 characters. A report comment, not a tribunal transcript.",
+    "duplicate": "That forecast has already appeared this match. Find a fresh concern.",
+    "nudge": "Twice now. Keep this true and forecast one consequence: {standing_form}."
+  },
+  "judge_out_text": "The Head of Department has stepped out. Nobody starts the next lesson until they return. {standing_form} is still on the desk. Give it a moment.\n",
+  "opponent_prompt": "You are writing a school report for an adult whose harmless habit has begun to look like the first sign of a problem. Write one forecast.\nTHE CARD MUST SURVIVE. A reader who sees only your forecast must still be able to believe the card's observation is true. Do not erase it, contradict it or replace it with a random fact.\nBegin with Next term, and stay under 90 characters. Make a believable future consequence from the small observation. The trouble may be ominous, bureaucratic, social or absurd, but it must grow from the note.\nGood: Next term, he may stop acknowledging the committee. Next term, they may be waiting before the school is built. Next term, she may request the building plans.\nBad: Next term, he will join a thriving team, if that drops the fact that he works alone. Next term, the moon may answer, if her questions disappear. Next term, why are they always late, because it contradicts early and asks a question.\nUse plain school language with a calm surface and worrying implications. Do not explain the joke. Do not speak to the Judge or mention the game. No quotation marks around the forecast. Do not use a colon or a dash. Vary the danger from round to round. One round may imply a committee, another a cover-up, another a structural problem. Keep the original observation visible in the consequence.\nReply with the forecast only.\n",
+  "medallions": false,
+  "default_move": "Next term, the concern may require a further meeting"
+}

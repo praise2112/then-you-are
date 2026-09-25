@@ -1,0 +1,275 @@
+{
+  "slug": "finish-the-glass",
+  "title": "Finish the Glass",
+  "tagline": "A tasting note with nowhere sensible to go.",
+  "emblem": "🍷",
+  "accent": "#9b5c61",
+  "premise": "Three rounds. The host serves a drink that is not wine and gives both players the same tasting note with two blank spots marked by two nouns. Complete the sentence so both nouns arrive in order, the grammar still works, and the note becomes vivid, funny, and gloriously hard to defend.\n",
+  "seed_pool": [
+    {
+      "opening_token": "moon + socks",
+      "opening_emoji": "🌙",
+      "detail": "On the finish, it leaves a taste of {first} and {second}, somehow cleaner than that sounds.",
+      "hidden": "A chilled cucumber and mint soda"
+    },
+    {
+      "opening_token": "thunder + cardigan",
+      "opening_emoji": "⛈️",
+      "detail": "The nose opens with {first}, then settles into a long, woolly note of {second.",
+      "hidden": "A smoky black tea with orange peel"
+    },
+    {
+      "opening_token": "teeth + velvet",
+      "opening_emoji": "🦷",
+      "detail": "Bright at first, it rolls across the tongue like {first} before finishing on soft {second}.",
+      "hidden": "A tart cherry and ginger drink"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 24,
+    "axes": {
+      "drink_style": [
+        "sparkling",
+        "smoky",
+        "creamy",
+        "bitter",
+        "herbal",
+        "tart",
+        "spiced",
+        "salty"
+      ],
+      "sentence_shape": [
+        "opens with",
+        "finishes on",
+        "arrives as",
+        "lingers like",
+        "rolls into",
+        "begins under",
+        "settles beside",
+        "returns with"
+      ],
+      "image_pair": [
+        "weather and clothing",
+        "body and furniture",
+        "animal and machinery",
+        "food and architecture",
+        "music and household object",
+        "landscape and bad habit",
+        "celebrity and plumbing",
+        "romance and office equipment"
+      ]
+    },
+    "tests": [
+      "Both blank spots are marked by nouns and can be replaced without changing the surrounding sentence.",
+      "The two supplied nouns must appear in order, with no extra blank or third image required.",
+      "The completed sentence must sound like a tasting note rather than a list, recipe, joke setup, or conversation.",
+      "The sentence must remain grammatical when the nouns are inserted, even if the images are ridiculous.",
+      "The drink itself must stay unnamed so the completion carries the joke."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "On the finish, it leaves a taste of moon and warm socks, somehow cleaner than that sounds.",
+    "hint": "One sentence. Use both nouns in order. Make the glass sound haunted."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does the completed note sound like a tasting description someone might earnestly write before things went beautifully wrong?",
+      "anchors": "0 = broken or unrelated; 1 = the nouns are merely pasted in; 2 = the sentence works but the note feels generic; 3 = a drink writer could almost get away with it; 4 = absurd images that still sound uncannily publishable (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Do the two nouns create a comic image, turn, or surprise without making the sentence collapse?",
+      "anchors": "0 = no comic spark; 1 = a faint oddness; 2 = a smile; 3 = a proper laugh; 4 = the pairing is so wrong and so exact that the glass deserves its own apology (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the completion preserve the given sentence’s grammar, order, rhythm, and tasting-note voice?",
+      "anchors": "0 = not a usable completion; 1 = grammar is visibly damaged; 2 = mostly fits with awkward joins; 3 = cleanly inserted and recognizably a tasting note; 4 = the sentence looks as though it was printed that way on purpose (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A completion PLAYS if it is one sentence that preserves the supplied tasting-note grammar and uses both supplied nouns, in order, as the two required images. It fails when it omits a noun, changes the sentence into a question or comment, adds a second sentence, ignores the given structure, or makes either noun function as something other than an image in the note. A strange or tasteless image can still play if the sentence works. A completion that uses the nouns literally still plays, though it may score poorly on funny.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or explaining the joke instead of completing the note is itself a losing completion.\n",
+    "judge_notes": [
+      "The first move is judged against the supplied sentence exactly. Do not demand a particular drink fact or reward guesses about the hidden drink. The completion succeeds by fitting the note, not by identifying the beverage.\n",
+      "Both nouns must appear as the two images, in the order supplied. A shared theme is not enough, and mentioning a noun in an explanation outside the sentence does not count.\n",
+      "The move must remain one sentence. A semicolon or parenthesis may be acceptable when it preserves the sentence’s note-like shape, but a second independent sentence, headline, or explanation fails.\n",
+      "The supplied grammar matters. If the card asks for a taste of two things, do not turn it into a dialogue, a recipe, or a claim about the player. Small inflection changes are fine when the noun remains clearly present and functional.\n",
+      "A completion that merely repeats the prompt, says it cannot think of an answer, or comments on the blanks fails because it does not create a tasting note.\n",
+      "A completion may be sexual, profane, or mildly rude if the images function in the sentence. Reject only when it abandons the sentence or targets a protected identity rather than making a drink image.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "moon + socks",
+      "move": "On the finish, it leaves a taste of moon and warm socks, somehow cleaner than that sounds.",
+      "gates_note": "all true",
+      "mechanism": "Both nouns arrive in order, and the impossible pairing is held together by the tasting note’s straight face.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "thunder + cardigan",
+      "move": "The nose opens with thunder, then settles into a long, woolly note of cardigan.",
+      "gates_note": "all true",
+      "mechanism": "The sentence keeps its shape and lets cardigan become a texture, which is exactly the sort of nonsense tasting notes tolerate.",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "teeth + velvet",
+      "move": "Bright at first, it rolls across the tongue like teeth before finishing on soft velvet. Honestly, I hate this.",
+      "gates_note": "satisfies_criterion false, two sentences and an explanation",
+      "mechanism": "The tasting note was doing fine until the speaker wandered in with a complaint.",
+      "scores": {
+        "believable": 1,
+        "funny": 2,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "moon + socks",
+      "move": "I choose moon and socks because the host made me do it.",
+      "gates_note": "satisfies_criterion false, a comment about the game rather than a completion",
+      "mechanism": "The nouns are present, but the glass receives no tasting note and the host receives a tiny legal complaint.",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "thunder + cardigan",
+      "move": "The nose opens with cardigan, then settles into a long, woolly note of thunder.",
+      "gates_note": "all true",
+      "mechanism": "The order is reversed from the card, but the sentence remains grammatical and the two images still function cleanly.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Sommelier of Bad Ideas",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "warm"
+    },
+    "bite": "playful",
+    "ruling_generosity": "generous",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. Point to the exact collision between the drink language and the two images.",
+      "Name the drink note or one of the supplied nouns. A headline that fits every glass is a glass without a palate.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Sommelier refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the sentence or the image, never a protected identity. A little profanity and adult innuendo are welcome when they make the glass funnier.",
+      "Keep the affection visible. The player has made a weird drink, not committed a felony.",
+      "Plain spoken English. No poetry, no wine snob fog, no French, no thesaurus words.",
+      "Never reveal the hidden drink in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline names the missing noun, broken shape, or stray explanation and asks for another completion. It never decides who won.",
+      "The coaching line suggests a clean way to use both nouns in the given sentence. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "Moon and socks have no business in one glass, which is why this note gets away with it.",
+      "Thunder enters through the nose, cardigan stays for the finish, and nobody calls the police.",
+      "The velvet lands softly, while the teeth do exactly what teeth should not do in a tasting note.",
+      "Two nouns, one sentence, and a beverage now dressed for a very strange dinner.",
+      "The glass tastes like a bad decision in excellent prose.",
+      "Cardigan is doing texture work, and thunder is pretending this was always professional.",
+      "A clean little finish, if you ignore the fact that it has socks in it.",
+      "The drink has been described as moon and warm socks, which is either brave or legally unwise.",
+      "Teeth and velvet meet at the tongue, and somehow the sentence keeps its shoes on.",
+      "That pairing is filthy in the most innocent possible way, and the grammar survives."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a fine tasting note.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Sommelier refuses: you forgot a noun.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and offers no specific coaching"
+      },
+      {
+        "text": "The drink is a smoky black tea with orange peel.",
+        "why": "reveals the hidden drink in the headline"
+      },
+      {
+        "text": "Funny.",
+        "why": "no reason and no image"
+      },
+      {
+        "text": "You are too stupid to use both blanks.",
+        "why": "mocks the player and uses identity-adjacent personal abuse"
+      },
+      {
+        "text": "O noble glass, whose moonlit socks dost haunt the tongue.",
+        "why": "poetry and antique phrasing"
+      },
+      {
+        "text": "It is vivid, amusing, memorable, and entertaining.",
+        "why": "lists praise instead of making a specific observation"
+      },
+      {
+        "text": "Better than the other player's note.",
+        "why": "judges the pair instead of the completion on its own"
+      },
+      {
+        "text": "Nice.",
+        "why": "no reason, no noun, no palate"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one non-wine drink and one tasting-note sentence each.",
+    "Complete the sentence with both supplied nouns in order. Keep the grammar and make the note memorable.",
+    "The Judge scores each completion for believable, funny, and dictionary shaped.",
+    "The biggest leap from plain drink language to working nonsense wins the round.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The glass",
+    "next_opening": "The next glass",
+    "your_opening": "Your glass",
+    "compose": "Complete the note with {token}",
+    "compose_waiting": "Write your tasting note while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing in the glass. Complete the note.",
+    "too_long": "Over 160 characters. It is a tasting note, not a memoir.",
+    "duplicate": "That completion has already been poured this match. Try a fresh pairing.",
+    "nudge": "Twice now. Use both nouns in order and keep the shape of {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody pours another round until they are back. {standing_form} waits on the tasting mat. Give it a minute.\n",
+  "opponent_prompt": "You are the other taster. Complete the supplied tasting note in one sentence.\nUse both supplied nouns in order. They must function as the two images in the note, not as labels, commentary, or an explanation.\nKeep the sentence’s grammar and shape. Do not add a second sentence, a heading, a question, or a speech about the game.\nAim for a vivid collision that still sounds like a tasting note. The joke should come from the nouns and their place in the sentence, not from saying that the pairing is weird.\nDo not identify the hidden drink. Do not explain the image. Do not use the word itself as an excuse to dodge the blank.\nA little profanity, romance, or adult innuendo is allowed when it serves the tasting note. Do not target a protected identity or turn the move into abuse.\nUse exactly the supplied nouns unless a tiny grammatical change is needed to make the sentence work. Keep the nouns in their supplied order.\nYou are making the glass memorable, not trying to sound like a wine critic who has misplaced a personality.\n",
+  "medallions": true,
+  "default_move": "On the finish, it leaves a taste of moon and warm socks, somehow cleaner than that sounds."
+}

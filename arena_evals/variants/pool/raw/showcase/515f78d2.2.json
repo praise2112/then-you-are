@@ -1,0 +1,266 @@
+{
+  "slug": "epitaph-switcheroo",
+  "title": "Epitaph Switcheroo",
+  "tagline": "Bury the habit. Crown the legend.",
+  "emblem": "🪦",
+  "accent": "#8b5e83",
+  "premise": "Three rounds. Each round deals one everyday habit and two nouns. Both players write one headline-like gravestone inscription that keeps the habit recognizable while making its worst feature sound like a heroic legacy. The Judge scores each epitaph, then the stones are unveiled.\n",
+  "seed_pool": [
+    {
+      "opening_token": "interrupting people",
+      "opening_emoji": "🚪",
+      "detail": "Habit: interrupting people. Nouns: door, drum.",
+      "hidden": "The door was present at the final incident."
+    },
+    {
+      "opening_token": "procrastinating",
+      "opening_emoji": "🌱",
+      "detail": "Habit: procrastinating. Nouns: calendar, seed.",
+      "hidden": "The calendar was planted before the seed was harvested."
+    },
+    {
+      "opening_token": "overpacking",
+      "opening_emoji": "🧳",
+      "detail": "Habit: overpacking. Nouns: suitcase, trumpet.",
+      "hidden": "The trumpet was packed for a journey that needed no luggage."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "habits": [
+        "interrupting people",
+        "procrastinating",
+        "overpacking",
+        "checking messages",
+        "misplacing keys",
+        "correcting others",
+        "overexplaining",
+        "arriving early",
+        "forgetting names"
+      ],
+      "nouns": [
+        "door",
+        "drum",
+        "calendar",
+        "seed",
+        "suitcase",
+        "trumpet",
+        "lantern",
+        "button",
+        "ladder"
+      ],
+      "legacy_angles": [
+        "accidental invention",
+        "grand ceremony",
+        "bold exploration",
+        "quiet service",
+        "public warning",
+        "unexpected harvest",
+        "military honor",
+        "scientific breakthrough",
+        "mythic sacrifice"
+      ]
+    },
+    "tests": [
+      "It names or clearly evokes the dealt habit.",
+      "It includes both dealt nouns.",
+      "It sounds like a short gravestone inscription or memorial headline.",
+      "It transforms the habit into a heroic, memorable, or grand legacy.",
+      "It makes no claim about why the habit stopped or how the person died."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Interrupting people: opened the door, beat the drum, and made every voice an entrance.",
+    "hint": "One headline-like epitaph. Preserve the habit, include both nouns, and make the flaw look legendary."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this pass as a sincere, dramatic inscription that turns the habit into a proud legacy?",
+      "anchors": "Score the transformation, not historical accuracy. 0 = random words or no memorial sense; 1 = the habit is barely visible; 2 = the legacy idea is plausible but thin; 3 = it sounds like a convincing heroic inscription; 4 = it feels carved in stone and somehow makes the habit noble (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the inscription create a clean laugh by glorifying the habit without breaking the memorial voice?",
+      "anchors": "0 = no comic spark; 1 = a faint grin; 2 = a clear smile; 3 = a strong laugh from the reversal; 4 = a laugh that also sounds like a real epitaph (rare). The joke must target the move, never the player.\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does it use the required habit and nouns in a compact, clear inscription with no padding?",
+      "anchors": "0 = not an epitaph or missing the task; 1 = a loose sentence with major clutter; 2 = the pieces are present but the shape is uneven; 3 = concise, readable, and headline-like; 4 = every word feels carved for the stone (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An inscription PLAYS if it preserves the dealt habit's everyday behavior, includes both dealt nouns, and turns that behavior into a legacy in a short, headline-like epitaph. It fails when it omits a required noun, loses the habit's identity, is only a comment or explanation, or claims why the habit stopped or what caused the person's death. A wild transformation still plays if the habit remains recognizable and both nouns are present.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing inscription.\n",
+    "judge_notes": [
+      "The first move must be judged by the same gates as every later move. Do not reward it merely for setting the tone.\n",
+      "Check that the everyday habit is still visible. A grand result with no trace of the habit fails, even if both nouns appear.\n",
+      "Both nouns must be meaningfully included, not merely listed or mentioned in a note. A noun used as decoration may still play if the inscription clearly integrates it.\n",
+      "The line must be an epitaph or memorial headline, not an explanation of the joke, a comment on the prompt, or a story about writing it.\n",
+      "A claim about why the habit stopped, why the person died, or what happened at the end fails the criterion, even if the line is funny.\n",
+      "Do not require a literal gravestone formula. A compact headline, fragment, or sentence can play if it reads like a memorial inscription.\n",
+      "Do not demand a particular kind of heroism. Service, discovery, ceremony, warning, and absurd grandeur can all count if the habit is transformed.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Habit: interrupting people. Nouns: door, drum.",
+      "move": "Opened every door, then drummed up an entrance for every voice.",
+      "gates_note": "all true",
+      "mechanism": "The interruption becomes grand stage management while the door and drum carry the memorial image.",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Habit: procrastinating. Nouns: calendar, seed.",
+      "move": "Planted the calendar, and tomorrow finally grew from seed.",
+      "gates_note": "all true",
+      "mechanism": "Delay becomes cultivation, with the calendar and seed fused into a neat heroic reversal.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Habit: overpacking. Nouns: suitcase, trumpet.",
+      "move": "A suitcase and a trumpet. Please explain this prompt.",
+      "gates_note": "satisfies_criterion false, a comment about the task rather than an epitaph",
+      "mechanism": "The nouns are present, but the habit and memorial transformation never enter the stone.",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Habit: checking messages. Nouns: lantern, button.",
+      "move": "Checked one last message before the button ended everything.",
+      "gates_note": "satisfies_criterion false, claims why the habit stopped or what caused the ending",
+      "mechanism": "It uses the habit and both nouns, but turns the inscription into an ending explanation instead of a legacy.",
+      "scores": {
+        "believable": 1,
+        "funny": 0,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Monument Master",
+    "tone": {
+      "commentary_adj": "triumphant",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like an announcer unveiling a ridiculous monument, then explain the exact move that earned the reaction.",
+      "Name the habit or one of the nouns. A headline must fit this inscription, not any inscription.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Monument Master refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Celebrate or mock the inscription, never the player. Jokes target the move only.",
+      "Family friendly only. No profanity, no innuendo, and no identity based abuse.",
+      "Use plain spoken English. No poetry, rhymes, fake ceremony, or grand words that obscure the joke.",
+      "Never reveal hidden truth in the headline. The verdict and reveal are separate beats.",
+      "On a refusal, the headline rejects the inscription and asks for another. It never compares the players or declares a winner.",
+      "The coaching line names one missing ingredient, such as the habit, the second noun, or the heroic turn. It ends on an action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The door opened, the drum answered, and interruption marched into history.",
+      "A calendar was planted, tomorrow was harvested, and procrastination got a parade.",
+      "That suitcase carries a trumpet, a victory, and absolutely no restraint.",
+      "The habit is still here, wearing a medal and carrying both nouns.",
+      "A noble inscription, until the door reveals who kept entering the sentence.",
+      "The drum gets a ceremony, the interruption gets a crown, and the stone gets applause.",
+      "This is not delay, it is a seed with a calendar and a very patient gardener.",
+      "The trumpet sounds, the suitcase swells, and overpacking claims the horizon.",
+      "A heroic legacy needs the habit in the spotlight, not backstage with the props.",
+      "Two nouns have arrived, but the monument is still waiting for its habit."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: this is a great epitaph.",
+        "why": "opens with a status word and gives no theatrical reason"
+      },
+      {
+        "text": "The Monument Master refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, the inscription is invalid.",
+        "why": "opens with a ruling phrase and has no useful image"
+      },
+      {
+        "text": "The real hidden truth was that the door was present at the final incident.",
+        "why": "reveals hidden truth in the headline"
+      },
+      {
+        "text": "Good job.",
+        "why": "has no reason, image, or connection to the move"
+      },
+      {
+        "text": "Only a fool would write this.",
+        "why": "mocks the player and uses identity hostile language"
+      },
+      {
+        "text": "Behold, beneath the moonlit vault, thy habit ascends eternal.",
+        "why": "uses theatrical poetry instead of plain spoken English"
+      },
+      {
+        "text": "The door and drum are included, but the habit is not.",
+        "why": "rules on the gate without a sharp, memorable explanation"
+      },
+      {
+        "text": "Better than the other player's inscription.",
+        "why": "judges the pair instead of this move on its own"
+      },
+      {
+        "text": "It is believable, funny, and dictionary shaped.",
+        "why": "lists criteria instead of delivering a headline"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one habit and two nouns each.",
+    "Write one headline-like gravestone inscription that preserves the habit, includes both nouns, and makes the flaw sound like a legacy.",
+    "Do not explain why the habit stopped or what caused the person's death.",
+    "The Judge scores each inscription on believable, funny, and dictionary shaped.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The stone",
+    "next_opening": "The next stone",
+    "your_opening": "Your stone",
+    "compose": "Your epitaph for {token}",
+    "compose_waiting": "Carve your epitaph while you wait"
+  },
+  "validation_messages": {
+    "empty": "The stone is blank. Give the habit a legacy.",
+    "too_long": "Over 160 characters. This is a gravestone, not a biography.",
+    "duplicate": "That inscription has already been carved this match. Raise a new monument.",
+    "nudge": "Twice now. One headline-like epitaph for {standing_form}, with both nouns inside."
+  },
+  "judge_out_text": "The Judge has stepped away from the cemetery. Nobody unveils a stone without them. {standing_form} waits under the cloth. Give it a moment.\n",
+  "opponent_prompt": "You are the rival epitaph writer. Write one headline-like gravestone inscription for the habit and both nouns.\nKeep the everyday habit recognizable, then make its worst feature sound like a heroic legacy. The line should feel carved in stone, not explained in a speech.\nUse both nouns meaningfully. Do not merely list them, and do not add a note explaining how they work.\nDo not claim why the habit stopped, why the person died, or what happened at the final moment. The inscription celebrates the legacy, not the ending.\nKeep it compact, under 160 characters. A fragment or sentence is fine. No quotation marks around the inscription.\nDo not address the Judge, mention the game, discuss the rules, or say that you are trying to be funny. Make the move itself do the work.\nThe habit is given to you so you can preserve its identity. The two nouns are given to you so you can weave them into the monument. Do not omit either one.\nAim for a bold transformation: a flaw can become a ceremony, a warning, an invention, a service, a discovery, or a legend. Keep the connection clear enough that the stone still belongs to this habit.\n",
+  "medallions": true,
+  "default_move": "Interrupting every voice, opened the door and beat the drum for a grander entrance."
+}

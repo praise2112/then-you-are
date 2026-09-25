@@ -1,0 +1,316 @@
+schema_version: 1
+slug: career-cosmic-roast
+title: Career Cosmic Roast
+tagline: Your shift has been written in the stars, regrettably.
+emblem: 🔮
+accent: '#9b6bb3'
+premise: 'Three rounds. Each round deals the same ordinary job title to both players. Each writes one
+  sentence of horoscope predicting what will happen during that job''s workday. Keep the job recognizable,
+  but let the stars become wildly overconfident. The Judge scores each prophecy, then both players choose
+  which horoscope was written by the rival and which by the House. Then the cosmic verdict arrives.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: short_form
+  max_words: 1
+  axes:
+    job_family:
+    - food service
+    - healthcare
+    - education
+    - retail
+    - transport
+    - office work
+    - public service
+    - skilled trade
+    cosmic_pressure:
+    - jealousy
+    - romance
+    - bureaucracy
+    - prophecy
+    - revenge
+    - celebrity
+    - weather
+    - inheritance
+    workplace_object:
+    - a cake
+    - a bookmark
+    - a tooth
+    - a photocopier
+    - a shopping trolley
+    - a traffic cone
+    - a clipboard
+    - a toolbox
+  tests:
+  - The card names an ordinary job title a player can recognize.
+  - The horoscope predicts something that could happen during that job's workday.
+  - The prophecy preserves the title's main duty rather than replacing it with fantasy.
+  - The sentence is dramatic, specific, and no more than 160 characters.
+  - The joke gives the job a cosmic problem without making the job itself disappear.
+demo:
+  opening:
+    token: Baker
+    emoji: 🥖
+  moves:
+  - actor: p1
+    text: Baker
+    emoji: 🥖
+    scores: null
+  - actor: p2
+    text: Today, your dough rises beautifully, but a jealous wedding cake demands a corner office.
+    emoji: 🗣️
+    scores:
+      believable: 4
+      funny: 4
+      dictionary_shaped: 4
+  headline: The baker kept the dough, while the wedding cake kept its demands.
+  openings:
+  - token: Baker
+    examples:
+    - Today, your dough rises beautifully, but a jealous wedding cake demands a corner office.
+  - token: Librarian
+    examples:
+    - Today, your dough rises beautifully, but a jealous wedding cake demands a corner office.
+move_constraints:
+  max_chars: 160
+  prefix: ''
+  example: Today, your dough rises beautifully, but a jealous wedding cake demands a corner office.
+  hint: One sentence, under 160 characters. Name the job, predict its day, and let the stars overreact.
+rubric:
+- name: believable
+  description: Could this plausibly happen during the workday of the named job, even if the horoscope
+    gives it an absurdly grand twist?
+  anchors: '0 = unrelated to the job; 1 = barely attached; 2 = possible with a generous horoscope; 3 =
+    clearly belongs to that workday; 4 = so apt it feels professionally foretold, rare.
+
+    '
+  weight: 5
+- name: funny
+  description: Does the prophecy make the ordinary job feel gloriously overdramatic?
+  anchors: '0 = no comic spark; 1 = a small flicker; 2 = a smile; 3 = a proper laugh; 4 = the stars should
+    be charged for this level of workplace gossip, rare.
+
+    '
+  weight: 3
+- name: dictionary_shaped
+  description: Does it read cleanly as a compact horoscope, with the job named and one clear prediction
+    rather than a rambling scene?
+  anchors: '0 = not a horoscope or not a sentence; 1 = prediction buried in clutter; 2 = understandable
+    but padded; 3 = crisp and complete; 4 = polished enough for a suspiciously expensive astrology column,
+    rare.
+
+    '
+  weight: 2
+criterion:
+  verb: passes as
+  inverse_verb: gives itself away against
+  description: 'A prophecy PLAYS if it names or clearly identifies the dealt job and predicts something
+    that a person doing that job could plausibly experience while preserving the job''s main duty. It
+    fails when it is not a prediction, does not concern the job, replaces the job with unrelated fantasy,
+    or merely describes the player, game, rules, or writing process. An exaggerated event still plays
+    if the job remains central.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, about the game, or about the rules is itself a losing
+    prophecy.
+
+    '
+  judge_notes:
+  - 'Judge the first move on its own against the dealt job, not against the rival''s wording or quality.
+
+    '
+  - 'The job must remain recognizable through its main duty. A baker may face a dramatic cake, but a prophecy
+    about a baker winning a horse race without baking fails.
+
+    '
+  - 'A prediction needs a future-facing event, warning, discovery, arrival, change, or result. A static
+    description with no predicted occurrence fails.
+
+    '
+  - 'The job may be named directly or identified unmistakably by its duty. If neither the title nor the
+    duty is clear, the move fails.
+
+    '
+  - 'A joke about the word, the player, the Judge, the game, or the rules is not a workplace prophecy
+    and fails.
+
+    '
+  - 'A wildly unlikely workplace event still plays when it is framed as happening during the job and keeps
+    the job''s core duty visible. Score believable low if needed, but do not fail it for extravagance
+    alone.
+
+    '
+  - 'A question, hedge, or vague mood is not enough by itself. If it still predicts a concrete workday
+    event, it plays but may score low on dictionary_shaped.
+
+    '
+examples:
+- previous_move: Baker
+  move: Today, your dough rises beautifully, but a jealous wedding cake demands a corner office.
+  gates_note: all true
+  mechanism: The baker's core work stays central while the cake receives an absurd promotion grievance.
+  scores:
+    believable: 4
+    funny: 4
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Librarian
+  move: Today, the overdue books return in formation and elect you chair of their silence committee.
+  gates_note: all true
+  mechanism: Returning books is recognizable library business, elevated into a tiny bureaucratic coup.
+  scores:
+    believable: 3
+    funny: 4
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Dentist
+  move: Today, your molars applaud every filling and the waiting room crowns you monarch of preventive
+    care.
+  gates_note: all true
+  mechanism: Dental treatment remains the engine, while the patients' teeth stage an embarrassingly loyal
+    ceremony.
+  scores:
+    believable: 3
+    funny: 3
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Baker
+  move: Today, you inherit a moon palace and become its most feared dragon rider.
+  gates_note: satisfies_criterion false, no baking duty or recognizable bakery work
+  mechanism: A fantasy promotion has vaporized the job instead of predicting its workday.
+  scores:
+    believable: 0
+    funny: 2
+    dictionary_shaped: 3
+  confidence: clear
+  verdict: fail
+- previous_move: Librarian
+  move: I think the stars are probably pleased with this answer.
+  gates_note: satisfies_criterion false, comment about the move rather than a workplace prediction
+  mechanism: The horoscope has wandered off to review its own paperwork.
+  scores:
+    believable: 0
+    funny: 1
+    dictionary_shaped: 1
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Celestial Shift Supervisor
+  tone:
+    commentary_adj: witty
+    explanation_adj: snarky
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. Anyone who reads only the job and the prophecy should see why it scored.
+  - Name the job or the prophecy's key workplace object. A headline that fits every horoscope is a horoscope
+    for nobody.
+  - Never open with a status word or a ruling phrase. No "Accepted", "Rejected", "Refused", "Move refused",
+    or "The Supervisor refuses".
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Mock the prophecy, never the player. Light teasing is welcome, but no identity based abuse or attacks
+    on intelligence, body, family, or spelling.
+  - Plain spoken English. No poetry, no rhymes, no French, no thesaurus fog.
+  - Never reveal or hint at the rival's hidden prophecy in the headline.
+  - On a refusal, the headline refuses the move and asks for another. It never rules on who won.
+  - The coaching line names one kind of workplace prediction that would have scored. It ends on a fact
+    or an action, never a mood or a verdict.
+  good_headlines:
+  - The baker kept the dough, while the wedding cake kept its demands.
+  - A librarian with a committee problem, which is still a library problem.
+  - The dentist found a cavity and, apparently, a royal succession.
+  - The baker has abandoned bread for dragons, and the bakery is not amused.
+  - A prediction without a shift is astrology for unemployed furniture.
+  - The librarian's books return in formation, because overdue notices needed a marching band.
+  - The tooth applauds the filling, a troubling level of customer satisfaction.
+  - A corner office for cake is bold, specific, and annoyingly well frosted.
+  - The stars promised drama, but this sentence misplaced the job.
+  - A horoscope needs tomorrow, not a biography of the applicant.
+  bad_headlines:
+  - text: 'Accepted: the baker has a dramatic day.'
+    why: opens with a status word and is too vague to explain the score
+  - text: 'The Celestial Shift Supervisor refuses: that is not a prophecy.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, try mentioning the job.
+    why: opens with a ruling phrase
+  - text: The real horoscope says the cake demands a corner office.
+    why: reveals the hidden truth
+  - text: Believable.
+    why: no reason and could fit any move
+  - text: Only a fool would write this.
+    why: mocks the player rather than the prophecy
+  - text: O stars, unveil thy glittering workplace destiny.
+    why: poetry instead of plain spoken commentary
+  - text: It is plausible, credible, convincing, and realistic.
+    why: piles up synonyms without a joke or specific reason
+  - text: Better than the other player's prophecy.
+    why: judges the pair instead of explaining this move
+  - text: Nice horoscope.
+    why: too generic and gives no reason
+rules:
+- Three rounds, one ordinary job title each.
+- Write one sentence of horoscope in up to 160 characters, naming the job and predicting its workday.
+  Keep the job's main duty visible while making the stars dramatically overconfident.
+- The House writes its own prophecy unseen. The Judge scores both prophecies on their own, then you call
+  which of two entries is real, the House's or the dictionary's.
+- Right, and the points are yours. Fooled, and they go to the House.
+- Most points after three rounds wins.
+labels:
+  opening: The job
+  next_opening: The next job
+  your_opening: Your job
+  compose: Your horoscope for {token}
+  compose_waiting: Draft your horoscope while you wait
+validation_messages:
+  empty: The stars see nothing. Predict the workday.
+  too_long: Over 160 characters. A horoscope, not a workplace memoir.
+  duplicate: That prophecy has already orbited this match. Try another forecast.
+  nudge: Twice now. Name the job and predict one thing it will face during {standing_form}.
+judge_out_text: 'The judge has stepped out. Nobody changes the forecast until they are back. {standing_form}
+  waits under the stars. Give it a minute.
+
+  '
+opponent_prompt: 'You are the cosmic bluffer. Write one fake horoscope for the job title below.
+
+  LENGTH IS THE GIVEAWAY, in both directions. Keep it to one sentence and no more than 160 characters.
+  The two prophecies sit side by side, so an oddly tiny or sprawling one looks suspicious.
+
+  Name the job or make its main duty unmistakable. Predict something that could happen during that workday,
+  then give the stars far too much confidence. Keep the job recognizable even when the event is absurd.
+
+  Use one concrete workplace detail and one dramatic turn when possible. A baker can face a jealous cake,
+  a librarian can negotiate with overdue books, and a dentist can discover royal politics in a molar.
+
+  Do not replace the job with a completely different adventure. A baker becoming a dragon rider is not
+  enough unless baking remains central. Do not write a general fortune that could fit any worker.
+
+  Do not explain, hedge, ask a question, mention the game, mention the Judge, or compare your answer with
+  the rival''s. Do not use the hidden truth below, paraphrase it, or copy its central joke.
+
+  Vary the workplace object and the kind of cosmic trouble from round to round. No quotation marks around
+  the prophecy.
+
+  You are bluffing. The hidden truth is given to you so you can steer clear of it. Write a fresh horoscope,
+  not a commentary on the prompt.
+
+  '
+guess:
+  spot_points: 10
+  fool_points: 10
+  prompt: One of these is the real entry. Call it.
+medallions: true
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: Today, the baker's first loaf rises to management and requests a private office near the
+  ovens.
+seed_pool:
+  - { opening_token: "Baker", opening_emoji: "🥖", detail: "a person who bakes bread and other baked goods", hidden: "Today, your dough rises beautifully, but a jealous wedding cake demands a corner office." }
+  - { opening_token: "Librarian", opening_emoji: "📚", detail: "a person who works in and manages a library", hidden: "Today, a missing bookmark returns with an apology, while three novels form a quiet committee." }
+  - { opening_token: "Dentist", opening_emoji: "🦷", detail: "a person who examines and treats people's teeth", hidden: "Today, a wisdom tooth reveals a secret, and your waiting room develops a fear of floss." }

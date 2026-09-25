@@ -1,0 +1,276 @@
+{
+  "slug": "errand-enchantment",
+  "title": "Once Upon a Quick Stop",
+  "tagline": "Keep the shopping. Summon the trouble.",
+  "emblem": "🧚",
+  "accent": "#7651a9",
+  "premise": "The Host gives you a boring weekday errand and a fairy tale opening. Turn the errand into the first paragraph of a story, while keeping the errand's two ordinary things real. Make it magical, rude, romantic or gloriously doomed, but do not lose the shopping.\n",
+  "seed_pool": [
+    {
+      "opening_token": "In a kingdom before lunch...",
+      "opening_emoji": "🏰",
+      "detail": "return a library book",
+      "hidden": "buy toothpaste"
+    },
+    {
+      "opening_token": "Once, on a very ordinary Tuesday...",
+      "opening_emoji": "📅",
+      "detail": "post a birthday card",
+      "hidden": "buy bananas"
+    },
+    {
+      "opening_token": "Beyond the seventh roundabout...",
+      "opening_emoji": "🛣️",
+      "detail": "collect a prescription",
+      "hidden": "buy washing powder"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 14,
+    "axes": {
+      "opening": [
+        "In a kingdom before lunch...",
+        "Once, on a very ordinary Tuesday...",
+        "Beyond the seventh roundabout...",
+        "Long ago, on the high street...",
+        "At the edge of the enchanted town...",
+        "Before the clock struck half past nine...",
+        "In a land ruled by one tired queen...",
+        "On the morning the pigeons spoke..."
+      ],
+      "errand_one": [
+        "return a library book",
+        "post a birthday card",
+        "collect a prescription",
+        "drop off a parcel",
+        "buy a train ticket",
+        "renew a bus pass",
+        "pick up a repaired shoe",
+        "return a borrowed umbrella"
+      ],
+      "errand_two": [
+        "buy toothpaste",
+        "buy bananas",
+        "buy washing powder",
+        "buy a birthday cake",
+        "buy light bulbs",
+        "buy cat food",
+        "buy a packet of rice",
+        "buy plasters"
+      ]
+    },
+    "tests": [
+      "One short line or sentence, under the word limit. A stranger sees the tale begin at once.",
+      "It names exactly two ordinary errand objects or items, each with a clear job in the errand.",
+      "It uses the opening cue or its unmistakable words, so the line feels like a fairy tale opening rather than a shop update.",
+      "The errand is harmless and checkable. No real brands, public figures, graphic harm or impossible shopping list.",
+      "There is room for enchantment, danger, romance or nonsense, but the two small errands remain visible inside the spell."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "In the kingdom, Ella returned a library book and bought toothpaste from a dragon.",
+    "hint": "Open the tale, keep both errands real, and let the magic cause problems."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How boldly does the line turn a plain errand into the beginning of a fairy tale while keeping both items real?",
+      "anchors": "0 = repeats the errand with no story; 1 = adds a crown, spell or fancy adjective; 2 = gives the errand a character or small magical obstacle; 3 = creates a vivid danger, desire or strange kingdom around it; 4 = makes toothpaste and a library book feel like the hinge of an irresistible legend (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the tiny tale make the reader smile, snort or wonder who let the goblin write?",
+      "anchors": "0 = flat; 1 = a little whimsy; 2 = a clear smile; 3 = a proper laugh or deliciously rude twist; 4 = the line deserves to be read aloud while someone is trying to eat (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as a crisp story opening, with the opening cue, the errand and the trouble arriving quickly?",
+      "anchors": "0 = not an opening or too tangled to follow; 1 = a story fragment padded with explanation; 2 = readable but loose; 3 = compact, clear and immediately story-shaped; 4 = one clean breath that opens a whole enchanted world (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move PLAYS if it is a fairy-tale opening, stays under 90 characters, contains the card's opening cue or unmistakable opening words, and keeps both named errand nouns real in the situation. The nouns must keep their stated roles: a library book is returned, toothpaste is bought, and so on. It may add magic, romance, menace, rude jokes, villains, curses or an extremely judgmental frog. It fails if the fairy-tale opening is missing, if either noun is dropped, if an item is replaced or given the wrong role, or if the move is not a story opening at all but a comment, question to the Judge or sentence about the game. A plain but valid errand opening plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game or about the rules is itself a losing story opening.\n",
+    "judge_notes": [
+      "Check the first move exactly like every later move. It gets no special pass for being first, and it must carry the opening cue plus both errands.\n",
+      "Test the fairy-tale gate first: could this be the opening of a fairy tale? A kingdom, once, long ago or another unmistakable story cue passes. A plain shopping update does not.\n",
+      "Test both nouns separately. The line must contain the library book and toothpaste, or the two exact items on the card, and each must still be present in its stated role.\n",
+      "Magic can change the meaning around an item, but not erase its job. A dragon may guard the toothpaste, but the toothpaste still needs to be bought. A book may contain a curse, but it still needs to be returned.\n",
+      "An invented prince, curse, prophecy, shopkeeper or romantic disaster is fine. It is not a failure merely because the card never mentioned it.\n",
+      "A line that says the toothpaste was stolen, destroyed or left behind fails if buying toothpaste was the errand. A line that changes a library book into a crown fails if returning a library book was required.\n",
+      "Both players answer the same card. Judge each opening on its own, not against the other player's level of weirdness.\n",
+      "Under 90 characters is a gate, not a scoring bonus. Count the submitted line as written, including spaces and punctuation.\n",
+      "Lower case, missing punctuation and imperfect fairy-tale grammar do not fail a move if the opening and both errands remain clear.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "In a kingdom before lunch... Return a library book and buy toothpaste.",
+      "move": "In a kingdom before lunch, Ella returned the book and bought dragon toothpaste.",
+      "gates_note": "all true",
+      "mechanism": "the opening cue remains, the book is returned and toothpaste is bought, while the dragon makes the errand feel cursed",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Once, on a very ordinary Tuesday... Post a birthday card and buy bananas.",
+      "move": "Once, on Tuesday, a princess posted a card and bought bananas for the troll.",
+      "gates_note": "all true",
+      "mechanism": "the ordinary Tuesday opens a tale, and the troll gives bananas a pleasingly dodgy destiny",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Beyond the seventh roundabout... Collect a prescription and buy washing powder.",
+      "move": "Beyond the seventh roundabout, the witch lost the prescription and cursed the powder.",
+      "gates_note": "satisfies_criterion false (the prescription is not collected and the washing powder is not bought)",
+      "mechanism": "it has a story opening, but both errands have been abandoned in the ditch",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "In a kingdom before lunch... Return a library book and buy toothpaste.",
+      "move": "In a kingdom before lunch, the royal toothpaste defeated the library book.",
+      "gates_note": "satisfies_criterion false (the book is not returned and toothpaste is not bought)",
+      "mechanism": "the nouns are present, but their errands have been replaced by a tiny stationery war",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Once, on a very ordinary Tuesday... Post a birthday card and buy bananas.",
+      "move": "I hope the Judge likes my enchanted banana shopping strategy.",
+      "gates_note": "satisfies_criterion false (not a fairy-tale opening, and the card is missing)",
+      "mechanism": "the line discusses the move instead of opening a tale, while the birthday card vanishes completely",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Storybook Clerk",
+    "tone": {
+      "commentary_adj": "affectionate",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Let the joke carry the reason. A reader should see the magic and the errand without needing a lecture.",
+      "Name the useful object, the book, toothpaste, bananas or powder. Specific little things make the ruling feel enchanted.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or The Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Roast the line gently, never the player's identity, body, family or intelligence. A tiny jab at a soggy spell is welcome.",
+      "Plain spoken English. No poetry, fake old-timey fog or long magical legal speeches.",
+      "On a fail, say which opening cue or errand went missing, or which role got changed.",
+      "On a refusal, the storybook clerk refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one way to keep the fairy-tale opening and both errands. It ends on an object or action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The dragon bought the toothpaste, which is more domestic responsibility than most kings manage.",
+      "The book came home, the toothpaste got enchanted, and the errand survived the curse.",
+      "A princess, two bananas and one troll with excellent snack standards.",
+      "The prescription was collected and the powder bought, so the witch may now wash her robes.",
+      "The card got posted, the bananas got bought, and Tuesday has finally earned its legend.",
+      "The book is still a book, even with a dragon on the receipt.",
+      "A very small errand has acquired a troll, which is how these things get out of hand.",
+      "The toothpaste was bought, not crowned. Keep the shopping job visible and the kingdom can stay weird.",
+      "The line opens a tale and keeps both objects moving, a neat trick for a sentence carrying this much luggage.",
+      "The princess bought the bananas for a troll, and somehow the troll is the least suspicious part."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: lovely magic.",
+        "why": "opens with a status word and gives no useful reason"
+      },
+      {
+        "text": "The Clerk refuses: that is not a fairy tale.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and does not identify the missing errand"
+      },
+      {
+        "text": "The spell failed.",
+        "why": "too vague to say whether the opening or either errand failed"
+      },
+      {
+        "text": "Great enchantment.",
+        "why": "could fit almost any line and explains nothing"
+      },
+      {
+        "text": "A bold effort from someone whose wand is clearly decorative.",
+        "why": "takes a personal swipe at the player instead of the story"
+      },
+      {
+        "text": "O fairest toothpaste, what woes dost thou endure?",
+        "why": "fake poetry instead of plain spoken commentary"
+      },
+      {
+        "text": "This is whimsical, magical, romantic, dramatic and fantastical.",
+        "why": "piles on adjectives without naming the book or the errand"
+      },
+      {
+        "text": "Better than the other player's spell.",
+        "why": "judges the pair instead of the opening on its own"
+      },
+      {
+        "text": "The narrative deploys a liminal retail enchantment.",
+        "why": "uses abstract academic fog where a clear object would do"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one weekday errand and one fairy-tale opening each.",
+    "Write one or two story-opening sentences, under 90 characters. Include the opening cue and both named errand nouns.",
+    "Both errands must stay real and keep their roles. Return the book, buy the toothpaste, and so on. Magic may make this difficult, but not quietly replace it.",
+    "Add as much enchantment, danger, romance or bad decision-making as you like. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The tale",
+    "next_opening": "The next tale",
+    "your_opening": "Your tale",
+    "compose": "Open {token}",
+    "compose_waiting": "Write the opening while you wait"
+  },
+  "validation_messages": {
+    "empty": "The page is blank. Give the errand a beginning.",
+    "too_long": "Over 90 characters. A story opening, not the entire cursed novel.",
+    "duplicate": "That opening has already enchanted this match. Try another spell.",
+    "nudge": "Twice now. Keep the opening cue, both errands and their jobs: {standing_form}."
+  },
+  "judge_out_text": "The Storybook Clerk is fetching a ruling from the enchanted back room. {standing_form} sits beside the toothpaste. Give it a moment.\n",
+  "opponent_prompt": "You are a playful storybook clerk turning a weekday errand into a fairy tale. Write one or two\nstory-opening sentences under 90 characters.\nKEEP THE ERRAND REAL. The card gives an opening cue and two named errands. Your line must keep the\nopening cue, or unmistakable words from it, and both named things in their stated roles. A library\nbook must be returned. Toothpaste must be bought. A dragon may guard them, flirt with the shopper,\nor demand a toll, but it may not quietly eat the errand.\nThen make it magical, funny, romantic, rude or doomed. Add a witch, a prophecy, a cursed trolley,\na suspicious prince or a troll with dental standards. The points are for how far the ordinary errand\ntravels while both small jobs remain true.\nGood: \"In a kingdom before lunch, Ella returned the book and bought dragon toothpaste.\"\nGood: \"Once, on Tuesday, a princess posted a card and bought bananas for the troll.\"\nBad: \"The dragon ate the book and toothpaste.\" The errands are gone.\nBad: \"In a kingdom, the royal toothpaste defeated the library book.\" The opening is present, but both\nroles have changed.\nBad: \"I hope the Judge likes my spell.\" It talks about the game instead of opening a tale.\nUse plain spoken English. Keep the line compact and easy to picture. Do not use a colon or a dash.\nDo not explain the joke. Vary the trouble from round to round. No quotation marks around the story\nopening. Reply with the opening only.\n",
+  "medallions": false,
+  "default_move": "Once upon a Tuesday, the errand began"
+}

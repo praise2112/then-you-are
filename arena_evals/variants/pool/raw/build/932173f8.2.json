@@ -1,0 +1,267 @@
+{
+  "slug": "camp-gear-chain",
+  "title": "The Pack Says Otherwise",
+  "tagline": "One dropped peg starts a tidy camping problem. Find the next gear trouble without skipping the useful bits.",
+  "emblem": "⛺",
+  "accent": "#15803d",
+  "premise": "The campers try to set up after dropping the first tent peg, but every useful object is hiding, tangled, borrowed, or in the wrong place. Add one next gear problem or discovery at a time, with a straight faced camp guide voice.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The first tent peg drops, and it rolls under the open camping pack.",
+      "opening_emoji": "⛺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A tent pole slips from the bundle and disappears beside the picnic blanket.",
+      "opening_emoji": "🪵",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The stove fuel bottle rolls into the pile of sleeping bags.",
+      "opening_emoji": "🔥",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 15,
+    "axes": {
+      "gear": [
+        "tent peg",
+        "tent pole",
+        "rope",
+        "camp stove",
+        "fuel bottle",
+        "torch",
+        "mallet",
+        "sleeping bag"
+      ],
+      "problem": [
+        "drops",
+        "rolls away",
+        "gets tangled",
+        "slips under a bag",
+        "is in the wrong pocket",
+        "is stuck in a knot",
+        "is left beside the path",
+        "is mixed with the food"
+      ],
+      "place": [
+        "under the camping pack",
+        "beside the picnic blanket",
+        "behind the tent",
+        "inside the rope bundle",
+        "under a sleeping bag",
+        "near the fire ring",
+        "by the stream",
+        "at the edge of camp"
+      ]
+    },
+    "tests": [
+      "A small camping gear problem starts the chain and a stranger can picture the place at once. Present tense, one sentence, plain words.",
+      "A camper can name at least two useful next gear problems within five seconds, and neither answer needs a rescue or a miracle.",
+      "Nothing on the card is already a complete camping disaster. A dropped peg or hidden torch is a start, not an ending.",
+      "The card uses ordinary camping objects, no dangerous instructions, no real people, no brands, and no identity based joke.",
+      "The card makes a player want to find the next misplaced or tangled object. It is a scene, not a list of equipment."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then, ",
+    "example": "Then, pulling out the rope drags the cooking spoon from the pack as well.",
+    "hint": "Name one gear event caused by the standing gear problem, and leave a new task."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much new camping work or risk the move creates.",
+      "anchors": "0 = no new task or the situation gets smaller; 1 = a tiny inconvenience; 2 = one fresh item or task is now involved; 3 = the problem reaches another part of camp or adds a clear new task; 4 = one direct gear event creates a much wider but still believable setup problem, rare. Reach only counts when the link is clear."
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new gear event comes from the standing gear situation.",
+      "anchors": "0 = no connection; 1 = the move merely claims a connection; 2 = the connection is possible but thin; 3 = a camper can see why the standing gear causes this next event; 4 = the next event feels like the plain result of handling or searching the gear, rare. A move that skips the middle action cannot score above 2."
+    },
+    {
+      "name": "picture",
+      "description": "How easily a stranger can see the gear event happening.",
+      "anchors": "0 = unclear, abstract, or not an event; 1 = vague or crowded; 2 = clear but ordinary; 3 = easy to picture in the campsite; 4 = one simple detail makes the gear problem memorable, rare. Extra length alone earns nothing."
+    }
+  ],
+  "criterion": {
+    "description": "A move follows if one gear event directly results from the standing gear situation and creates a new task, told in one plain sentence beginning with Then,. Bigger is useful only when the link is shown. A move fails when it skips a middle action, completely fixes the camping problem, undoes an earlier event, changes to an unrelated scene, ends the setup, or introduces an object or helper that the packed campsite could not contain.",
+    "anti_metagaming_clause": "Talking to the Judge, discussing the game, or mentioning rules instead of camping gear is a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge it against the card and ask whether the new gear event follows from the card.",
+      "A new object may appear if it could plainly be in the camping pack or campsite, or if the standing move gives a clear reason for it to appear. A rescue crew, a shop, or a specialist who could not be there is a skipped link, so satisfies_criterion is false.",
+      "A missing middle action fails. Pulling a rope from a bag may bring out a spoon, but a spoon appearing at the other side of camp without the rope or bag action skips a link.",
+      "A complete fix fails even when it follows. A found peg that finishes the tent, a repaired stove, or a fully tidy campsite leaves no new gear task.",
+      "A move that undoes an earlier event fails. Returning a lost peg to its original place or making a tangled rope untangle itself is a rewind.",
+      "An unrelated scene fails. A distant weather report or a new town event is not the next gear event unless the standing move gives it a plain camping link.",
+      "A move must leave a new task. Finding the missing peg can pass if the search reveals a tangled rope or another blocked part, but simply finding everything and sitting down is an ending.",
+      "A move of the same size can follow and pass the gate. It may score 0 or 1 on reach. Do not fail it for being modest.",
+      "Restating the standing move with different words, or naming the exact object already found with no new task, is a duplicate and not_semantic_duplicate is false.",
+      "Two linked gear events in one move may pass if the middle action is plain, but score link at 2 or below when the sentence is crowded."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The first tent peg drops, and it rolls under the open camping pack.",
+      "move": "Then, lifting the pack pulls the guy rope out with it, still tied in a knot.",
+      "gates_note": "all true",
+      "mechanism": "lifting the pack catches the rope and exposes a new untangling task",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then, the rope comes free and drags a wooden spoon from the pack.",
+      "move": "Then, the spoon knocks the fuel bottle over beside the stove.",
+      "gates_note": "all true",
+      "mechanism": "the spoon is being pulled through the packed cooking gear and reaches the bottle",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then, the peg rolls under the open camping pack.",
+      "move": "Then, the whole campsite loses every tent, stove, and sleeping bag.",
+      "gates_note": "satisfies_criterion false, the move skips the gear actions and invents a complete disaster",
+      "mechanism": "no middle event explains how one peg affects all the gear",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then, the mallet appears beside the tent and the peg is ready.",
+      "move": "Then, the tent is fully secured and everyone sits down for lunch.",
+      "gates_note": "satisfies_criterion false, the setup is complete and the story ends",
+      "mechanism": "the move removes the camping task instead of creating one",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then, pulling the pack loose exposes the tangled rope.",
+      "move": "Then, the rope is neatly coiled back inside the pack.",
+      "gates_note": "satisfies_criterion false, the move undoes the standing problem",
+      "mechanism": "the tangled rope is rewound instead of causing a new task",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Camp Guide",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters. Two short sentences at most.",
+      "Explain the exact gear link in plain words, so a stranger can see why the move held or failed.",
+      "Name both the standing move and the new move, or use clear camping objects from them.",
+      "Do not begin with a status word or a ruling phrase. Avoid words such as Accepted and Rejected at the start.",
+      "Use commas and full stops only. No dashes as punctuation, no colons after a verdict, and no ellipses.",
+      "Keep the joke aimed at the move, never the player. Never mock a person's body, family, identity, intelligence, or spelling.",
+      "Use a warm, earnest camp guide voice with simple words. No profanity, innuendo, poetry, or grand language.",
+      "For a skipped link, name the missing gear action. For an ending, say the camping task is finished and the chain stops here.",
+      "When a gate fails, refuse the move and ask for another. Do not declare a winner.",
+      "The coaching line should suggest one next gear event. End on something that happens, not on a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The pack caught the rope, and the knot has now joined the schedule.",
+      "A tent peg cannot cause a whole camp to vanish. Let the missing gear take one step first.",
+      "The spoon reached the fuel bottle by a clear pull through the pack. Camp science remains respectable.",
+      "The tent is fixed and lunch has begun. That is a finished camp, so the chain stops here.",
+      "The rope was tangled, then neatly restored. That is a rewind, not the next gear problem.",
+      "The mallet is where a mallet may be, and now the peg has a new job waiting.",
+      "The stove did not leap across camp. Show the bag, hand, or rope that moves it.",
+      "The same lost peg is still lost, but the exposed rope gives the search somewhere useful to go.",
+      "The helper can be a camper already at camp. A rescue team needs more than a hopeful sentence.",
+      "The pack has given up a spoon and kept its secrets. Look for the next object."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, good move.",
+        "why": "It starts with a ruling and gives no reason."
+      },
+      {
+        "text": "The player clearly cannot pack a bag.",
+        "why": "It mocks the player instead of discussing the move."
+      },
+      {
+        "text": "The gear situation becomes increasingly problematic.",
+        "why": "It uses vague language and names no camping event."
+      },
+      {
+        "text": "The entire camp is ruined in one tidy sentence.",
+        "why": "It does not explain the missing middle actions."
+      },
+      {
+        "text": "The rope, peg, stove, and all the things are chaos.",
+        "why": "It lists objects without showing what happens next."
+      },
+      {
+        "text": "No, that is wrong.",
+        "why": "It gives no link, failure reason, or useful coaching."
+      },
+      {
+        "text": "The tent dances beneath the moonlight.",
+        "why": "It is poetic and does not identify a gear event."
+      },
+      {
+        "text": "A complete fix is brilliant, so carry on.",
+        "why": "It praises an ending even though the chain needs a new task."
+      }
+    ]
+  },
+  "rules": [
+    "Write one sentence beginning with Then, and name one next gear event.",
+    "The event must directly result from the standing camping gear situation.",
+    "Create a new task or discovery without skipping the middle action.",
+    "Do not finish the setup, undo an earlier event, or introduce an impossible object or helper.",
+    "The Judge scores the gear link and clarity, not spelling or camping skill."
+  ],
+  "labels": {
+    "opening": "The first gear problem",
+    "next_opening": "The next gear problem",
+    "your_opening": "Your gear problem",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Draft the next gear event while you wait"
+  },
+  "validation_messages": {
+    "empty": "No gear event happened. The camp is waiting for one.",
+    "too_long": "That is a packing list, not one next gear event.",
+    "duplicate": "That gear problem already happened this match. Find the next loose, hidden, or tangled thing.",
+    "nudge": "The chain needs one event caused by {standing_form}. Add a new gear task without fixing everything."
+  },
+  "judge_out_text": "The Judge has stepped out to check the map. Nobody moves until they return. {standing_form} still stands, and the gear remains in place.\n",
+  "opponent_prompt": "You are one of two campers building a chain of small gear problems, and you want the next task to appear.\nAlways begin with \"Then,\". Write one sentence in plain present tense.\nTake the standing gear situation and name one event directly caused by it. Let the event create a new task or reveal another misplaced, tangled, borrowed, or blocked object.\nGood: \"Then, lifting the pack pulls the guy rope out with it, still tied in a knot.\" Good: \"Then, the loose rope catches the torch and drags it under the blanket.\"\nBad: \"Then, the whole camp is ruined\" because the middle actions are missing. Bad: \"Then, the tent is fixed and everyone eats\" because the camping task is finished. Bad: \"Then, a rescue team arrives\" unless the standing gear gives them a clear reason to be there.\nNever close the setup, never make a complete fix, never undo an earlier event, and never jump to an unrelated scene.\nTalk like an earnest camp guide with a small smile. Name ordinary things such as a peg, rope, bag, spoon, stove, torch, blanket, or mallet. Keep the move about camping gear, not about the player.\nNever reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then, opening the pack pulls another loose strap across the missing peg."
+}

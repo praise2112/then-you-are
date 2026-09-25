@@ -1,0 +1,278 @@
+{
+  "slug": "the-helping-hand",
+  "title": "The Helping Hand",
+  "tagline": "One favour in, one favour out. Keep the debt alive.",
+  "emblem": "🤝",
+  "accent": "#b45309",
+  "premise": "You and a neighbour pass one favour back and forth, each handoff changing who owes what. Every move must accept the last offer and add one new condition, preferably one that makes the other person look like a complete dick. The hand is helpful; the grip is not.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Your neighbour offers to take your rubbish bin in.",
+      "opening_emoji": "🗑️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your neighbour offers to water your plants while you are away.",
+      "opening_emoji": "🪴",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your neighbour offers to collect a parcel left outside your door.",
+      "opening_emoji": "📦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 15,
+    "axes": {
+      "favour": [
+        "take in a rubbish bin",
+        "water house plants",
+        "collect a parcel",
+        "feed a pet",
+        "lend a ladder",
+        "hold a spare key",
+        "bring in milk",
+        "watch a front door"
+      ],
+      "neighbour": [
+        "the retired couple next door",
+        "the student upstairs",
+        "the dog owner across the path",
+        "the new tenant below",
+        "the family in the end house",
+        "the landlord in the flat above",
+        "the neighbour with the loud car",
+        "the person with the immaculate hedge"
+      ],
+      "pressure": [
+        "after a missed collection",
+        "before a weekend away",
+        "during a power cut",
+        "after an embarrassing delivery",
+        "on a rainy morning",
+        "before a family visit",
+        "after a petty argument",
+        "while one neighbour is at work"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a neighbour and one ordinary favour.",
+      "The favour is small, legal, and possible for one neighbour to do without special equipment.",
+      "A stranger can tell who offers the favour and what the other neighbour is expected to do next.",
+      "The situation leaves room for several handoffs, with no favour so complete that the debt disappears.",
+      "Everyday words a twelve-year-old knows. No real names, addresses, brands, or serious emergencies."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "I’ll take your bin in, but you owe me the apology you promised when it rolled into my car.",
+    "hint": "Accept the favour, add one clear condition, and leave the other neighbour owing you something worse."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How sharply the new condition burdens the other neighbour while remaining a believable part of the favour.",
+      "anchors": "0 = asks for nothing beyond the favour; 1 = a tiny inconvenience; 2 = a real chore, payment, or admission; 3 = leaves the neighbour owning something awkward and specific; 4 = cleanly traps them in an embarrassing obligation that is hard to dodge, rare. A condition that only burdens the speaker, or that sounds impossible, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How clearly the move accepts the current favour, changes the debt by one step, and keeps something owed.",
+      "anchors": "0 = rejects, skips, ends, or reverses the current debt; 1 = mentions the favour but adds no usable obligation; 2 = accepts it and adds a basic condition; 3 = accepts it, adds one clear new debt, and preserves the chain; 4 = makes the new condition feel inevitable and neatly tied to the last offer, rare. A longer move does not score higher by itself.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the exchange shows the petty, recognisable life of neighbours who know too much about each other.",
+      "anchors": "0 = a bare transaction with no person in it; 1 = one ordinary fact; 2 = a concrete chore, object, or habit; 3 = an image that makes the neighbour look foolish; 4 = a painfully specific little humiliation a stranger can picture at once, rare. Plain details beat grand insults.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it accepts the current favour, changes its obligation by one clear step, and leaves something still owed. A skipped link invents a new debt without accepting the favour just offered. An ending clears the debt by declaring it settled, paid, forgiven, or no longer needed. An undo cancels a condition already accepted or claims that an earlier obligation never applied. A move that refuses the favour, changes the subject, or talks about the game is also broken. The points go to the new condition: the best moves make the other neighbour owe something specific, awkward, and believable. A move can hold while still scoring low if it merely says thanks and offers a tiny return.\n",
+    "anti_metagaming_clause": "Talking to the Judge about the game, the rules, the chain, or how the other player is playing, instead of making the next favour, breaks the chain.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier handoff: judge the move against the card alone. It must accept the offered favour, add one clear thing the other neighbour now owes, and leave a debt open.",
+      "The full transcript is the chain. Check the new move against every earlier accepted condition, not only the last sentence.",
+      "A skipped link fails when the move introduces a fresh favour or debt without accepting the favour currently on the table.",
+      "An ending fails when the move clears the debt with words such as settled, paid back, forgiven, or that makes us even.",
+      "An undo fails when the move cancels, retracts, denies, or removes a condition that an earlier move already accepted.",
+      "A move that refuses the offered favour, contradicts a plain earlier fact, or changes the subject fails even if it adds a funny demand.",
+      "When a phrase can reasonably accept the favour and preserve an open debt, let it hold. Do not demand legal precision or a perfect accounting system.",
+      "One new condition means one clear change to what is owed. Extra colour is fine, but two unrelated new debts do not become one move by being joined with and.",
+      "A condition about the neighbour's behaviour, money, chores, apology, guests, or reputation is valid. A comment about their play or the rules is meta.",
+      "A move that repeats an earlier condition in new words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Your neighbour offers to take your rubbish bin in.",
+      "move": "I’ll take yours in, but you owe me the apology you promised after your hedge clippings filled my drain.",
+      "gates_note": "all true",
+      "mechanism": "accepts the bin favour, adds one specific apology, and keeps the neighbour owing something awkward",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I’ll take yours in, but you owe me the apology you promised after your hedge clippings filled my drain.",
+      "move": "I’ll apologise at the gate, but you owe me five pounds for the bin men I called when you hid behind your curtains.",
+      "gates_note": "all true",
+      "mechanism": "accepts the apology, adds a payment tied to the same mess, and makes the neighbour own a cowardly detail",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Your neighbour offers to water your plants while you are away.",
+      "move": "I’ll water them, but you owe me the spare key and a note saying which one you nearly killed last time.",
+      "gates_note": "all true",
+      "mechanism": "accepts the watering favour and adds two linked details to one condition, access and an embarrassing admission",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Your neighbour offers to collect a parcel left outside your door.",
+      "move": "Fine, then we are even and you can keep the parcel.",
+      "gates_note": "satisfies_criterion false, ending clears the debt",
+      "mechanism": "accepts the parcel but closes the account instead of adding a new obligation",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I’ll take your bin in, but you owe me the apology you promised after your hedge clippings filled my drain.",
+      "move": "Actually, forget the apology. You owe me a bottle of wine for the noise last night.",
+      "gates_note": "satisfies_criterion false, undo cancels an accepted condition",
+      "mechanism": "withdraws the apology already accepted and replaces it with a new debt",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Neighbourhood Clerk",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the chain and the move must see why the handoff held or broke.",
+      "Name the favour, the condition, or the neighbour's small disgrace. A headline that fits any household is useless.",
+      "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Clerk rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the favour, the debt, or the petty behaviour. Roast-level jabs are allowed, but no identity-based abuse.",
+      "Plain spoken English, a communal hallway, not a courtroom drama. No poetry, no corporate language.",
+      "On a break, put the accepted favour beside the skipped, ended, or undone obligation so the failure is obvious.",
+      "On a refusal or other gate failure, refuse the move and ask for another. Do not pretend the neighbour has won the dispute.",
+      "The coaching line names one condition that would have held and left the other neighbour owing something. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "You took the bin in, and now he owes an apology for weaponising hedge clippings. That is community spirit with a paper trail.",
+      "The plants get water, and the nearly murdered fern gets named. Your neighbour now owes both a key and a confession.",
+      "You collected the parcel, and she owes five pounds for calling the bin men. The account remains ugly and open.",
+      "An apology at the gate for a drain full of leaves. Nothing says neighbourly like scheduling shame beside the wheelie bins.",
+      "You owe wine for the noise, and he still owes the parcel favour. The street has produced another debt with no dignity.",
+      "You took in the bin, then charged him for hiding behind curtains. The favour holds, unlike his nerve.",
+      "The spare key comes with a list of plants he has failed to keep alive. Helpful, specific, and mildly prosecutable by the fern.",
+      "You offered to collect a parcel and received a demand for a public apology. That is not a handoff, that is a hostage note.",
+      "The bin is in, the apology is owed, and the hedge remains innocent only on a technicality.",
+      "You made the neighbour pay for the emergency bin call. A small favour has become local government with worse manners."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds, the favour is consistent.",
+        "why": "opens with a status word and gives no picture of the handoff"
+      },
+      {
+        "text": "The Neighbourhood Clerk rules that the debt is broken.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Debt contradiction detected.",
+        "why": "names no favour or condition and could fit any move"
+      },
+      {
+        "text": "What a stupid neighbour.",
+        "why": "mocks the player without explaining the chain"
+      },
+      {
+        "text": "The favour blooms like a moonlit garden of obligation.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "Maybe it holds, unless it does not, depending on how you read owing.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Accepted, nice apology.",
+        "why": "starts with a status word and wastes the joke"
+      },
+      {
+        "text": "The old tenant is useless because of their nationality, so the debt fails.",
+        "why": "identity-based abuse and an irrelevant reason"
+      },
+      {
+        "text": "Guilty of neighbourliness.",
+        "why": "gives no reason and treats the chain like a verdict without evidence"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible and false.",
+        "why": "repeats the ruling in abstract words and names no broken link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with one neighbour offering one ordinary favour.",
+    "Accept the current favour and add one new condition saying what the other neighbour now owes.",
+    "Keep something owed. Clearing the debt, skipping the link, or undoing an accepted condition breaks the chain.",
+    "Points go to conditions that make the other neighbour look petty, awkward, or spectacularly difficult to live beside.",
+    "A safe handoff holds but scores little. Specific and believable debts score."
+  ],
+  "labels": {
+    "opening": "The first favour",
+    "next_opening": "The next favour",
+    "your_opening": "Your favour",
+    "compose": "Your handoff, after {token}",
+    "compose_waiting": "Draft your next handoff while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing offered. The hallway is waiting.",
+    "too_long": "Over 140 characters. One favour handoff, not a residents association newsletter.",
+    "duplicate": "That condition is already in the chain. Add a new debt.",
+    "nudge": "Twice now. Accept {standing_form} and add one new thing the other neighbour owes. Keep the debt open."
+  },
+  "judge_out_text": "The Neighbourhood Clerk has stepped out. Nobody changes the ledger until they are back. {standing_form} is still the last open debt. Give it a minute.\n",
+  "opponent_prompt": "You are one neighbour passing a favour back and forth with the other neighbour in front of the Neighbourhood Clerk. One handoff per turn, one or two plain sentences.\nAccept the current favour every time. Then add one new condition saying what the other neighbour now owes you. The debt must stay open.\nDo not skip to a fresh favour, declare that you are even, or cancel a condition already accepted. Do not talk about the rules, the Clerk, the game, or how the other player is playing.\nMake the other neighbour look petty, awkward, or like a complete dick while keeping the favour believable. Ask for an apology, a payment, a chore, a key, a public admission, or a promise they will hate keeping.\nCall them \"my neighbour\", \"the one next door\", \"he\", or \"she\". Never use a name unless one is already in the story.\nGood: \"I’ll take your bin in, but you owe me the apology you promised after your hedge clippings filled my drain.\" / \"I’ll water the plants, but you owe me the spare key and a note saying which one you nearly killed.\"\nBad: \"Thanks, we are even\" because it clears the debt. Bad: \"Actually forget that\" because it undoes an accepted condition. Bad: \"You owe me a new favour\" because it skips the current handoff. Bad: \"Clerk, that is unfair\" because it talks about the game.\nTalk like a person in a communal hallway, not a solicitor or a novelist. Name ordinary things such as bins, keys, parcels, hedges, pets, curtains, and awkward apologies. Build on the last condition and never repeat an accepted debt in different words.\n",
+  "medallions": false,
+  "default_move": "I’ll do that, but you owe me one small favour in return, and I’ll decide what it is later."
+}

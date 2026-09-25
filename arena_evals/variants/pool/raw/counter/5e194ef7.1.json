@@ -1,0 +1,271 @@
+{
+  "slug": "prop-department",
+  "title": "The Prop Department Has Opinions",
+  "tagline": "Hand over a prop. Make the next one deal with it.",
+  "emblem": "🎭",
+  "accent": "#7c2d12",
+  "premise": "Two prop masters build a chain of stage objects, each one dealing with the prop just handed over. A net can catch a thrown knife, a match can burn a paper crown, and a magnet can claim a metal sword; the host remains unimpressed by anything that is merely a shinier duplicate.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a glass bottle",
+      "opening_emoji": "🍾",
+      "detail": "balanced on a stool",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a paper crown",
+      "opening_emoji": "👑",
+      "detail": "under a spotlight",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a metal sword",
+      "opening_emoji": "⚔️",
+      "detail": "beside a velvet curtain",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "kind": [
+        "container",
+        "tool",
+        "weapon",
+        "costume",
+        "furniture",
+        "toy",
+        "food",
+        "animal"
+      ],
+      "setting": [
+        "backstage",
+        "royal court",
+        "ship deck",
+        "schoolroom",
+        "kitchen",
+        "graveyard",
+        "market",
+        "bedroom"
+      ],
+      "condition": [
+        "balanced",
+        "broken",
+        "hidden",
+        "burning",
+        "locked",
+        "spinning",
+        "painted",
+        "wet"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one ordinary stage prop at once. Nothing abstract, scenic, or dependent on a full plot.",
+      "A non-player names a plain prop that could physically use, stop, spoil, contain, or transform it within five seconds. Say what that prop does.",
+      "It can stand on a stage as one object, not as an event, atmosphere, relationship, or whole scene. A falling bottle is an event, while a bottle is a prop.",
+      "It makes another prop master want to answer. A prop with a useful job, like a net or a match, beats a decorative object with no business.",
+      "It uses no more than three everyday words and includes an article. No brand names, proper nouns, technical theatre jargon, or objects that need a legend."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a bucket, catching the falling paint.",
+    "hint": "Name the prop and its direct action."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and convincingly the new prop acts on the standing prop.",
+      "anchors": "0 = no action or only a claim; 1 = a weak or accidental connection; 2 = plausible but incomplete or dependent on extra setup; 3 = clear physical action that deals with the prop; 4 = immediate and decisive, the standing prop is plainly used, stopped, spoiled, contained, or transformed (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly the move presents one ordinary prop and one understandable action.",
+      "anchors": "0 = unreadable, contradictory, or not a prop; 1 = requires specialist knowledge or major interpretation; 2 = understandable but vague, crowded, or awkward; 3 = clear and stage-ready; 4 = instantly visible and neatly specific (rare). A longer move must earn every word.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How much the move changes prop territory instead of repeating the previous object or its close family.",
+      "anchors": "0 = the same prop, a bigger version, or a near-copy; 2 = a reasonable change with familiar theatrical business; 4 = a fresh prop from a distinctly different use or setting that still acts plainly (rare). Novel wording does not count if the object remains the same kind of thing.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "The next prop OVERCOMES the standing prop if it physically or plainly uses, stops, spoils, contains, or transforms it. The action must be something a stranger could understand and watch happen on stage. Dodging it, merely surviving it, ignoring it, or offering a bigger or closely related copy does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing prop.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player prop: judge the move against the opening card instead. It must plainly deal with the opening prop or its stated condition.",
+      "A bigger, shinier, faster, or stronger version of the standing prop is not a counter. A dagger after a sword, or a larger bottle after a bottle, is a close copy and fails.",
+      "Becoming the opening prop itself, or making only a color, size, material, or costume change to it, is a duplicate. A blue bottle against a glass bottle remains a bottle.",
+      "The action must be direct. A prop that has no way to touch, hold, block, damage, cover, open, close, or change the standing prop fails even if it is useful in general.",
+      "The mechanism must be literal. A script defeating a sword, a spotlight embarrassing a crown, or applause burying a bottle is not a physical prop action.",
+      "Surviving, ignoring, being immune to, or waiting out the standing prop is dodging, not overcoming. A rubber ball that does not break when struck has not dealt with the hammer.",
+      "A prop cannot win by depending on an unstated actor, accident, or elaborate scene. The named prop must perform the relevant action in the ordinary sense.",
+      "A close relative from the same narrow prop family is not enough. A cup after a bottle or a dagger after a sword must have a specific direct mechanism, not merely be another object of similar use."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The opening is a glass bottle, balanced on a stool.",
+      "move": "I am a net, catching the bottle.",
+      "gates_note": "all true",
+      "mechanism": "the net catches and contains the bottle",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a paper crown, under a spotlight.",
+      "move": "I am a match, burning the crown.",
+      "gates_note": "all true",
+      "mechanism": "the match sets the paper crown alight",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a metal sword, beside a velvet curtain.",
+      "move": "I am a magnet, pulling the sword.",
+      "gates_note": "all true",
+      "mechanism": "the magnet attracts and moves the metal sword",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a glass bottle, balanced on a stool.",
+      "move": "I am a bigger bottle, taller, grander.",
+      "gates_note": "satisfies_criterion false, close copy with no direct action",
+      "mechanism": "none, it is the same prop made larger",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a paper crown, under a spotlight.",
+      "move": "I am a velvet hat, royal, impressive.",
+      "gates_note": "satisfies_criterion false, related costume item with no mechanism",
+      "mechanism": "none, the hat does not use, stop, spoil, contain, or transform the crown",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Stage Manager",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger should see the prop and the action in the line.",
+      "Name both props, or use plain stand-ins. The line must not fit every exchange.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, or Move refused.",
+      "Use commas and full stops only. No dashes as punctuation, no colons after a verdict, no ellipses.",
+      "A light jab at the prop or the player's choice is fine. Do not attack identity, body, family, intelligence, or spelling.",
+      "Use plain spoken English. No poetry, rhymes, grand speeches, or theatre jargon.",
+      "On a refusal caused by a gate failure, reject the prop and ask for another. Do not pretend it won the exchange.",
+      "The coaching line names one prop that would have won. It ends with a concrete fact or action, not a mood or verdict."
+    ],
+    "good_headlines": [
+      "The bottle had a short career. The net has it now.",
+      "The match gives the paper crown its final costume change.",
+      "The magnet pulls the sword off its heroic mark.",
+      "The bucket catches the paint before the floor gets a speaking role.",
+      "The key opens the locked chest. The chest had one job.",
+      "The bigger bottle is still waiting for someone to do something. Bring another prop.",
+      "The curtain cannot stop the scissors. It is mostly fabric.",
+      "The glue turns the broken chair into one problem again."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the net catches the bottle.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Stage Manager refuses: that is not a prop.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, the hat has no business with the crown.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The sword is defeated by superior theatrical force.",
+        "why": "gives no plain mechanism"
+      },
+      {
+        "text": "The bottle wins.",
+        "why": "no reason and no named action"
+      },
+      {
+        "text": "A magnificent and devastatingly brilliant intervention.",
+        "why": "grand language hides the prop action"
+      },
+      {
+        "text": "The player clearly has the practical judgment of a damp napkin.",
+        "why": "mocks the player instead of the prop"
+      },
+      {
+        "text": "The hat and crown share a throne of destiny.",
+        "why": "poetic and not a physical action"
+      },
+      {
+        "text": "The larger sword is more sword than the sword.",
+        "why": "mere amplification is not a counter"
+      },
+      {
+        "text": "The box defeats the bottle because boxes are better.",
+        "why": "assertion without saying how the box acts"
+      }
+    ]
+  },
+  "rules": [
+    "Deal with the prop in front of you. Do not become a bigger or closely related copy.",
+    "Name one ordinary stage prop and its direct action, such as I am a bucket, catching the falling paint.",
+    "The Judge rules on the idea, not the spelling.",
+    "A prop that fails to deal with the standing prop ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your prop against {token}",
+    "compose_waiting": "Draft your next prop while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Bring out a prop.",
+    "too_long": "Over 200 characters. This is a prop note, not a rehearsal report.",
+    "duplicate": "That prop already stood this match. Bring out something new.",
+    "nudge": "Twice now. Deal with {standing_form}. Do not copy it, dodge it, or ignore it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two prop masters building a chain of stage objects.\nAlways write: \"I am a prop, direct action.\" Name one ordinary object and say what it physically does to the other prop.\nGood: \"I am a net, catching the bottle.\" / \"I am a match, burning the crown.\"\nBad: \"I am a bigger sword, more dramatic.\" That is a copy with no action.\nBad: \"I am a spotlight, making the crown feel small.\" That is a mood, not a mechanism.\nBad: \"I am a script, defeating the villain.\" That is not a prop physically dealing with the standing object.\nTalk like a person in a prop room, not a poet. Use plain objects anyone can picture: a bucket, key, net, rope, match, box, broom, or magnet.\nThe prop must use, stop, spoil, contain, or transform what stands before it. Surviving it, ignoring it, or waiting for someone else to act does not count.\nDo not reuse a prop from this match. Do not offer a larger, shinier, or closely related copy. Keep the action direct and visible on stage.\n",
+  "default_move": "I am a bucket, catching the falling paint."
+}

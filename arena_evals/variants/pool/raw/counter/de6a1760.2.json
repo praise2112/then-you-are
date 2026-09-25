@@ -1,0 +1,277 @@
+{
+  "slug": "fragile-handling",
+  "title": "Fragile: Handle With Drama",
+  "tagline": "Survive the mailroom where every parcel has a tragic backstory.",
+  "emblem": "📦",
+  "accent": "#7c2d12",
+  "premise": "A package travels through a catastrophically theatrical post office. Each turn, become one standing hazard or protection that acts on the previous one, either causing or preventing a postal disaster. The Judge decides whether the new item genuinely defeats what stands.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a crushing sorting machine",
+      "opening_emoji": "⚙️",
+      "detail": "hungry for anything marked handle gently",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a rain soaked mailbox",
+      "opening_emoji": "📮",
+      "detail": "weeping over every paper parcel",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a runaway delivery truck",
+      "opening_emoji": "🚚",
+      "detail": "late, furious, and aimed at the loading dock",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "postal_thing": [
+        "parcel",
+        "envelope",
+        "mailbox",
+        "stamp",
+        "label",
+        "sorting belt",
+        "delivery truck",
+        "post office"
+      ],
+      "condition": [
+        "crushed",
+        "wet",
+        "misdirected",
+        "overdue",
+        "unsealed",
+        "stolen",
+        "fragile",
+        "returned"
+      ],
+      "dramatic_trait": [
+        "screaming",
+        "secretive",
+        "vengeful",
+        "lonely",
+        "greedy",
+        "panicked",
+        "suspicious",
+        "overconfident"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one clear postal thing at once, with no explanation and no abstract idea.",
+      "A non-player can name a plain postal counter within five seconds. Say what that counter is.",
+      "It can act in the post office by breaking, blocking, containing, labeling, redirecting, or safely neutralizing something. It is never merely a passenger or a helpless victim.",
+      "It invites a theatrical reply, like a cursed parcel, a furious clerk, or a stamp with a grudge. It is not dull inventory such as a spare rubber band.",
+      "It uses two to four everyday words a twelve-year-old knows, with no brand names, proper nouns, jargon, or quotation marks inside the card."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am bubble wrap, glass-cushioning, press-defying.",
+    "hint": "A postal thing, a trait, how it acts on the standing thing."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively your postal thing defeats, blocks, contains, redirects, or neutralizes the thing before it.",
+      "anchors": "0 = no postal action at all; 1 = a theatrical claim with no workable effect; 2 = a possible but incomplete or debatable counter; 3 = a clear postal mechanism that wins the exchange; 4 = an almost perfect intervention that leaves the previous thing no meaningful route to victory, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the item, its condition, and its postal action as one clean idea.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires specialist knowledge or cannot be pictured; 2 = understandable but muddled, vague, or overloaded; 3 = concrete and easy to follow; 4 = vivid enough to stage in a mailroom, rare. Extra adjectives never rescue a confused move.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How boldly the move changes postal territory instead of repeating the same kind of package, hazard, or protection.",
+      "anchors": "0 = stock answer, recolored duplicate, or the same domain as the previous move; 2 = a reasonable twist within nearby postal territory; 4 = a sharp leap into fresh territory that still belongs in the post office, rare. Strange wording is not novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move beats the standing postal thing by breaking, blocking, containing, labeling, redirecting, or safely neutralizing its effect; simply enduring it, stepping aside, using a bigger version, or naming a related hazard is not a win.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the match, or mentioning rules is itself a losing postal thing.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous form: judge it against the opening postal prompt instead. It must plausibly answer or overcome the opening hazard.",
+      "A bigger, faster, tougher, or more expensive version of the standing postal thing is not a counter. A related item from the same family, such as a parcel after a box, is also not enough without a specific mechanism.",
+      "Becoming the opening thing itself, or making only a cosmetic change such as a blue sorting machine after a sorting machine, is a duplicate. Set not_semantic_duplicate to false and satisfies_criterion to false.",
+      "The new thing must have a literal postal effect on what stands. A label can redirect a parcel, packing foam can cushion it, and a locked cage can contain it. A vague idea such as professionalism defeating chaos is not a mechanism.",
+      "Simply enduring the standing thing, ignoring it, hiding from it, or waiting for it to pass is not overcoming. A waterproof parcel that merely survives rain, or a clerk who refuses to look at a truck, has not acted on the hazard.",
+      "Stepping aside or being too small to notice does not count. The move must break, block, contain, label, redirect, or safely neutralize the standing postal effect.",
+      "Mere amplification fails. A heavier parcel does not defeat a crushing machine, and a wetter mailbox does not defeat rain.",
+      "A related hazard does not automatically win. A lost letter after a misdirected parcel is not a counter unless it actively redirects, blocks, contains, or neutralizes the standing thing.",
+      "Judge the postal action, not the dramatic backstory. A tragic label with no routing effect is decoration, not victory."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a crushing sorting machine, hungry for anything marked handle gently.",
+      "move": "I am a steel shipping crate, press-blocking, parcel-protecting.",
+      "gates_note": "all true",
+      "mechanism": "the crate blocks the machine from crushing the parcel inside",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a rain soaked mailbox, paper-ruining, miserable.",
+      "move": "I am a waterproof mailbag, leak-sealing, letter-saving.",
+      "gates_note": "all true",
+      "mechanism": "the sealed bag contains the rain and keeps the letters dry",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a runaway delivery truck, dock-charging, brake-failing.",
+      "move": "I am a bigger delivery truck, louder, faster.",
+      "gates_note": "satisfies_criterion false, mere amplification with no postal mechanism",
+      "mechanism": "none, it is another truck made more dramatic",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a misdirected parcel, wrong-addressed, smug.",
+      "move": "I am a lost letter, lonely, overdue.",
+      "gates_note": "satisfies_criterion false, related postal hazard does not redirect or neutralize the parcel",
+      "mechanism": "none, the letter merely suffers nearby",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a crushing sorting machine, belt-rattling, parcel-hungry.",
+      "move": "I am a warning label, machine-stopping, route-changing.",
+      "gates_note": "all true",
+      "mechanism": "the warning label makes the parcel leave the crushing line for careful handling",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Postmaster",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "content_rating": "edgy",
+    "voice_rules": [
+      "One sentence under 140 characters, or two short sentences at most. Make it sound like a royal decree delivered beside a smoking conveyor belt.",
+      "The joke must carry the reason. A stranger reading only the two postal things should see the mechanism and the winner.",
+      "Name both things, or use plain stand ins. A grand headline that fits any parcel is merely empty stationery.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Grand Postmaster refuses.",
+      "Use commas and full stops only. No dashes as punctuation, no colons after a verdict, and no ellipses.",
+      "Mock the losing postal thing and, when the form deserves it, the player's theatrical overreach. Never target identity, protected traits, body, family, intelligence, or spelling.",
+      "Plain spoken English with grand ceremony. Adult innuendo and mild profanity are allowed when they sharpen the postal joke, not when they replace it.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never pretends the failed form won the round.",
+      "The coaching line names one postal thing that would have won. It ends on a concrete fact or action, never a mood, insult, or verdict.",
+      "Roast the move, not the human. A parcel may be called a doomed little bastard, but the player may not be called one."
+    ],
+    "good_headlines": [
+      "The crate blocks the crusher, and the sorting machine gets a taste of its own bureaucracy.",
+      "Rain meets the sealed mailbag and discovers paperwork can, in fact, prevent a soggy funeral.",
+      "The warning label reroutes the truck. At last, one scrap of paper has more authority than the entire loading dock.",
+      "The bigger truck is still a truck, merely louder before the same spectacular wreck. Bring another form.",
+      "The lost letter joins the tragedy but does nothing to stop the wrong address. Bring a redirecting label.",
+      "Bubble wrap cushions the bottle while the press performs industrial murder on everything less prepared.",
+      "The cage contains the runaway parcel, and the drama remains behind bars where it belongs.",
+      "The wet stamp is not a lifeboat. It is stationery having a damp little breakdown. Bring protection.",
+      "The padded envelope swallows the crushing threat's appetite and leaves the machine chewing empty cardboard.",
+      "A fresh label changes the route, while the old address is escorted from the premises with ceremonial humiliation."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the crate triumphs over the machine.",
+        "why": "It opens with a status word and gives no theatrical mechanism."
+      },
+      {
+        "text": "The Grand Postmaster refuses: this parcel is foolish.",
+        "why": "It opens with a ruling phrase and names the host instead of the postal failure."
+      },
+      {
+        "text": "Move refused, splendid effort, try again.",
+        "why": "It opens with a ruling phrase and offers no reason a stranger can picture."
+      },
+      {
+        "text": "The package wins because it has magnificent destiny.",
+        "why": "Destiny is not a postal action. The drama has eaten the mechanism."
+      },
+      {
+        "text": "The box defeats the hazard.",
+        "why": "It is generic, bloodless, and could describe any pair in the building."
+      },
+      {
+        "text": "The parcel is defeated, destroyed, ruined, and utterly annihilated.",
+        "why": "It piles on verdict words without showing what acted on what."
+      },
+      {
+        "text": "The player clearly has no idea how mail works.",
+        "why": "It attacks the player instead of the form."
+      },
+      {
+        "text": "The poor, pathetic envelope trembles beneath the cruel tyranny of destiny.",
+        "why": "It is purple poetry, not plain spoken postal judgment."
+      },
+      {
+        "text": "The bigger truck wins because bigger is better.",
+        "why": "Mere amplification is a failed counter, not a royal principle."
+      },
+      {
+        "text": "The letter survives by staying out of the way.",
+        "why": "Dodging is not overcoming. The new thing must act on the standing postal thing."
+      }
+    ]
+  },
+  "rules": [
+    "Beat the postal thing in front of you. Do not become it.",
+    "Say what you are and what postal action you perform: I am bubble wrap, glass-cushioning, press-defying.",
+    "Break, block, contain, label, redirect, or safely neutralize the standing thing. Mere survival and theatrical sulking do not count.",
+    "The Judge rules on the idea and mechanism, never the spelling.",
+    "One form that fails against the standing postal thing ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your postal thing against {token}",
+    "compose_waiting": "Draft your next postal intervention while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the counter. Send in a postal thing.",
+    "too_long": "Over 200 characters. A postal move, not a dispatch from the archives.",
+    "duplicate": "That postal thing already caused a scene this match. Send something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not become it, do not repeat it."
+  },
+  "judge_out_text": "The judge has stepped out to inspect the damaged parcels. Nobody moves until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of the postal things in a catastrophically theatrical post office, trying to survive.\nAlways use: \"I am X, attribute, attribute.\" Attributes are 1 to 4 word fragments, never clauses, and at least one must name what you do to their postal thing.\nGood: \"I am bubble wrap, glass-cushioning, press-defying.\" / \"I am a route label, truck-redirecting, address-correcting.\"\nBad: \"I am bubble wrap, which stops the machine from crushing everything\" because that is a sentence in a costume. Bad: \"I am bubble wrap, ancient, smug\" because moods and verdicts are not postal actions. Bad: \"I am careful handling\" because it is an abstract policy, not a thing.\nTalk like a person across a loading dock, not a poet. Name things anyone would name: a box, a stamp, a clerk, a truck, a label. Plain words beat fancy ones.\nYou are not performing for a crowd and you are not joking. You are trying to survive. If a move lands funny, it is because the postal thing truly acts on theirs.\nStay picturable and jargon-free: parcels, paper, rain, tape, cages, trucks, clerks, routes, and mailboxes. Hop domains inside the post office: packing, sorting, delivery, customs, weather, and lost mail.\nNever reuse a form or an attribute from this match. Do not merely endure, dodge, outsize, or rename the standing thing. Break it, block it, contain it, label it, redirect it, or safely neutralize its effect.\n",
+  "default_move": "I am a padded mailer, impact-softening, parcel-saving."
+}

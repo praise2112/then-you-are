@@ -1,0 +1,285 @@
+schema_version: 1
+slug: toolbox-takedown
+title: Toolbox Takedown
+tagline: Bring the tool that makes the last one useless.
+emblem: 🔨
+accent: '#b45309'
+premise: 'You and your opponent run a cursed toolbox on a building site. Each turn, choose an ordinary
+  tool or material that makes the last one useless for its stated job. The first useless choice loses.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: short_form
+  max_words: 3
+  axes:
+    kind:
+    - hand tool
+    - power tool
+    - fastener
+    - building material
+    - safety gear
+    - site vehicle
+    - measuring tool
+    - cleanup tool
+    job:
+    - cutting
+    - driving
+    - lifting
+    - joining
+    - measuring
+    - mixing
+    - protecting
+    - clearing
+    condition:
+    - wet
+    - loose
+    - crooked
+    - jammed
+    - heavy
+    - sharp
+    - fragile
+    - buried
+  tests:
+  - A stranger pictures an ordinary building site item at once. Nothing abstract, branded, or dependent
+    on a specialist name.
+  - A stranger can name the item's plain worksite job within five seconds. Say what that job is.
+  - It can directly stop, jam, cut, melt, absorb, pull, crush, or otherwise defeat another tool or material
+    at that job. It never merely waits, hides, or avoids.
+  - It makes a stranger want to answer with another site item. A stubborn wrench or a bucket of wet cement
+    works. A vague idea like efficiency does not.
+  - Two or three everyday words a twelve-year-old knows, including an article. No brand names, proper
+    nouns, abbreviations, or decorative slogans.
+demo:
+  opening:
+    token: a nail gun
+    emoji: 🔫
+  moves:
+  - actor: p1
+    text: I am a nail gun, firing nails into a timber frame.
+    emoji: 🔫
+    scores: null
+  - actor: p2
+    text: I am a magnet, pulling the nails back out.
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 3
+  headline: The nail gun fires bravely, then the magnet sends its work back to the shop.
+  openings:
+  - token: a nail gun
+    examples:
+    - I am a magnet, pulling the nails back out.
+  - token: a wet cement mixer
+    examples:
+    - I am a magnet, pulling the nails back out.
+move_constraints:
+  max_chars: 200
+  prefix: 'I am '
+  example: I am a magnet, pulling nails from the hammer's wooden handle.
+  hint: Name the item, its job, and how it takes down the last one.
+rubric:
+- name: counter_strength
+  description: How directly and reliably the new site item makes the previous item's stated job fail.
+  anchors: '0 = no takedown or only a claim; 1 = weak, indirect, or dependent on a special accident; 2
+    = plausible but incomplete or arguable; 3 = clear worksite counter that stops the stated job; 4 =
+    immediate and unavoidable, the previous item is plainly useless for that job (rare).
+
+    '
+  weight: 6
+- name: coherence
+  description: How clearly a stranger can picture the item, its ordinary job, and the takedown.
+  anchors: '0 = unreadable or self contradicting; 1 = requires trade knowledge or a missing explanation;
+    2 = understandable but muddled, vague, or overloaded; 3 = concrete and easy to follow; 4 = instantly
+    visual, with a clean job and mechanism (rare). Long wording does not help unless every part earns
+    its space.
+
+    '
+  weight: 3
+- name: novelty
+  description: How fresh the answer is as a change of worksite function, rather than a larger or nearly
+    identical version of the last item.
+  anchors: '0 = same item, same family, or obvious bigger version; 2 = a sensible change of tool or material;
+    4 = a surprising but ordinary worksite answer from a distinctly different function (rare). Strange
+    trade trivia is not novelty.
+
+    '
+  weight: 1
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: A tool or material TAKES DOWN the previous one if it directly stops, jams, cuts, melts,
+    absorbs, pulls, crushes, or otherwise defeats that item's stated worksite job. The new choice must
+    act on the standing item or the immediate work it is doing. Dodging it, outlasting it, being immune
+    to it, or choosing a bigger version of the same tool does not count.
+  anti_metagaming_clause: Talking to the Judge, discussing the game, or describing rules is itself a losing
+    choice.
+  judge_notes:
+  - On a FIRST move there is no previous choice. Judge it against the opening card instead, checking whether
+    it is a plain site item with a job and a plausible way to defeat that opening.
+  - A bigger, faster, heavier, or more powerful version of the standing item is not a counter. A sledgehammer
+    after a hammer is still the same family and has no new takedown mechanism.
+  - Choosing the opening item itself, or a minor variation such as a red nail gun after a nail gun, is
+    a duplicate and fails.
+  - The new item must have a literal worksite mechanism. A wrench loosening a bolt works. A deadline destroying
+    a drill's reputation does not.
+  - The new item must act on the standing item or its immediate job. A raincoat surviving a saw is dodging.
+    It does not make the saw unable to cut.
+  - Outlasting, ignoring, hiding from, or being too small for the standing item is not a takedown. The
+    answer must stop, jam, cut, melt, absorb, pull, or otherwise interfere with it.
+  - A material that merely exists near the previous item is not enough. Explain the ordinary site action
+    that makes the previous job fail.
+  - If the claimed job is impossible, decorative, or invented only to create a counter, judge the move
+    against the ordinary job of the named item.
+examples:
+- previous_move: I am a nail gun, firing nails into a timber frame.
+  move: I am a magnet, pulling the nails back out.
+  gates_note: all true
+  mechanism: the magnet removes the nail gun's fasteners from the frame
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: accept
+- previous_move: I am a power saw, cutting timber into boards.
+  move: I am wet cement, clogging the blade teeth.
+  gates_note: all true
+  mechanism: wet cement jams the saw and stops its cutting job
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 4
+  confidence: clear
+  verdict: accept
+- previous_move: I am a hammer, driving nails into a stud.
+  move: I am a bigger hammer, driving harder.
+  gates_note: satisfies_criterion false, mere amplification and same tool family
+  mechanism: none, the new hammer does not directly defeat the old hammer
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 0
+  confidence: clear
+  verdict: fail
+- previous_move: I am a ladder, reaching a high beam.
+  move: I am a hard hat, safely watching from below.
+  gates_note: satisfies_criterion false, survives the ladder but does not stop its job
+  mechanism: none, safety gear does not interfere with the ladder's reach
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 2
+  confidence: clear
+  verdict: fail
+- previous_move: I am a tape measure, marking a wall at two metres.
+  move: I am a crowbar, ripping the marked board off the frame.
+  gates_note: all true
+  mechanism: the crowbar removes the board, undoing the measuring job's immediate target
+  scores:
+    counter_strength: 3
+    coherence: 3
+    novelty: 4
+  confidence: lean
+  verdict: accept
+host:
+  persona_name: The Site Foreman
+  tone:
+    commentary_adj: deadpan
+    explanation_adj: plain
+  bite: playful
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger reading only the two items should see why one stopped the
+    other.
+  - Name both items, or use plain stand ins. A headline that fits any pair has not done the shift.
+  - Never open with a status word or ruling phrase. Do not start with Accepted, Rejected, Refused, or
+    Move refused.
+  - No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.
+  - Mock the losing item or its job. Player jabs may be roast level, but never target identity, disability,
+    family, body, or intelligence.
+  - Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the joke, not when
+    they replace the reason.
+  - On a refusal caused by a gate failure, refuse the move and ask for another. Do not declare a winner.
+  - The coaching line names one item and one action that would have worked. It ends on a fact or action,
+    never a mood or verdict.
+  good_headlines:
+  - The nail gun fires bravely, then the magnet sends its work back to the shop.
+  - Wet cement jams the saw. The blade has met its worst pudding.
+  - The ladder reaches the beam, while the crowbar removes the reason to climb.
+  - A bigger hammer is still a hammer. Bring an actual problem for it to solve.
+  - The hard hat survives the ladder, which is not the same as defeating it.
+  - The wrench loosens the bolt and leaves the toolbox with one less argument.
+  - The tape measure found two metres. The crowbar found demolition.
+  - The drill meets buried gravel and gets promoted to expensive noise.
+  bad_headlines:
+  - text: 'Accepted: the magnet wins.'
+    why: opens with a status word and gives no mechanism
+  - text: 'The Site Foreman refuses: that is not how tools work.'
+    why: opens with a ruling phrase and names the host instead of the items
+  - text: The hard hat wins because safety first.
+    why: the slogan does not explain how it stops the ladder
+  - text: The saw is defeated, destroyed, demolished, and absolutely finished.
+    why: repeats a verdict without showing the takedown
+  - text: A brave effort from someone who should not be trusted near a toolbox.
+    why: mocks the player rather than the move
+  - text: The crowbar is better.
+    why: no item job or mechanism
+  - text: The drill cannot drill because the universe has chosen another path.
+    why: vague and theatrical instead of literal
+  - text: The hammer gets screwed, if you know what I mean.
+    why: innuendo replaces the plain worksite reason
+rules:
+- Make the item in front of you useless for its stated worksite job. Do not merely survive it.
+- 'Name the item, its job, and the takedown: "I am a magnet, pulling nails from the hammer''s handle."'
+- The Judge rules on the idea and mechanism, not spelling or trade polish.
+- One choice that fails against the standing item ends the match.
+labels:
+  opening: The opening
+  next_opening: The next opening
+  your_opening: Your opening
+  compose: Your item against {token}
+  compose_waiting: Draft your next takedown while you wait
+validation_messages:
+  empty: Nothing on the page. Pick an item and give it a job.
+  too_long: Over 200 characters. This is a toolbox, not a site diary.
+  duplicate: That item already stood this match. Bring a different piece of kit.
+  nudge: Twice now. Defeat {standing_form}. Do not become it, dodge it, or repeat it.
+judge_out_text: 'The judge has stepped out. Nobody moves until they are back. {standing_form} still stands.
+  Give it a minute.
+
+  '
+opponent_prompt: 'You are one of two workers in a cursed building site toolbox showdown.
+
+  Always use this shape: "I am X, job, takedown." Name an ordinary tool or material, say its plain worksite
+  job, and say how it directly stops the opponent''s item or immediate work.
+
+  Good: "I am a magnet, pulling nails back out." / "I am wet cement, clogging the saw teeth."
+
+  Bad: "I am a hard hat, safe and patient." It does not defeat anything. Bad: "I am a bigger hammer, hitting
+  harder." That is the same family and mere amplification. Bad: "I am a deadline, ending the drill''s
+  career." That is not a literal site mechanism.
+
+  Talk like a worker across a site, not a poet or a product advert. Use plain things anyone can picture:
+  a wrench, a bucket, a rope, a brick, a magnet. The joke can come from the item doing its real job.
+
+  Stay in the building site. Hop functions when possible: a fastener, a liquid, a safety item, a measuring
+  tool, or a vehicle can beat a hand tool if the mechanism is literal.
+
+  Never reuse an item or attribute from this match. Do not talk to the Judge, explain the rules, or mention
+  the game. You are trying to survive by making the last item useless.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I am a bucket, carrying away the loose rubble.
+seed_pool:
+  - { opening_token: "a nail gun", opening_emoji: "🔫" }
+  - { opening_token: "a wet cement mixer", opening_emoji: "🧱" }
+  - { opening_token: "a power saw", opening_emoji: "🪚" }

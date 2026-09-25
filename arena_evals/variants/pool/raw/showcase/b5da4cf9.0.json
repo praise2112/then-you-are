@@ -1,0 +1,277 @@
+{
+  "slug": "mum-was-right",
+  "title": "Mum Was Right",
+  "tagline": "Keep her fact. Lose the plot.",
+  "emblem": "📱",
+  "accent": "#7d4e8d",
+  "premise": "Three rounds. Each round Mum texts one dull true fact from the news. You reply as if the fact has exposed a scandal, a family secret or a national emergency. Mum's fact must survive inside the reply: a reader who knows only the reply can still read the news as true. Everything else is fair game, including motives, gossip, threats and innuendo. The Host scores how far the reply leaps from sensible news while Mum remains right.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The library has added six new chairs.",
+      "opening_emoji": "🪑",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The town opened a new footbridge.",
+      "opening_emoji": "🌉",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The council planted twelve trees.",
+      "opening_emoji": "🌳",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "authority": [
+        "the library",
+        "the council",
+        "the town",
+        "the school",
+        "the hospital",
+        "the museum",
+        "the station",
+        "the parish"
+      ],
+      "action": [
+        "added six chairs",
+        "opened a footbridge",
+        "planted twelve trees",
+        "painted a room",
+        "replaced three lamps",
+        "installed a drinking fountain",
+        "unveiled a noticeboard",
+        "repaired a public bench"
+      ],
+      "detail": [
+        "six",
+        "twelve",
+        "three",
+        "on Tuesday",
+        "near the entrance",
+        "for visitors",
+        "before winter",
+        "at a cost of £400"
+      ]
+    },
+    "tests": [
+      "One plain sentence, in the past or present tense, under twelve words. Mum can text it without sounding like a press officer.",
+      "Nobody is dead, injured, arrested, sacked or accused of a real crime. No real people, brands or place names.",
+      "It is ordinary enough to prompt a reply of \"good for them\". If it already contains a scandal, it is not a card.",
+      "It includes an institution, an action and a concrete detail a reply can turn into evidence.",
+      "A reader can check the fact from the sentence alone, including its number, object or timing."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "SIX CHAIRS, ONE VERY CROWDED ALIBI",
+    "hint": "One reply. Keep Mum right, then make the family group chat regret opening it."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the reply travel from Mum's sensible news while leaving every part of it true?",
+      "anchors": "0 = repeats the news with a polite nod; 1 = adds one mildly dramatic word; 2 = invents a motive, secret or suspect; 3 = turns civic housekeeping into a full family scandal while the fact survives; 4 = builds glorious chaos from one tiny true detail, with no part of Mum's news broken (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the reply make the family chat laugh, wince or quietly put the phone face down?",
+      "anchors": "0 = no comic charge; 1 = a small grin; 2 = a neat joke; 3 = a proper laugh or sharp innuendo; 4 = the sort of reply an aunt forwards with three crying emojis (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as a compact text reply, with a clear image and no explanatory padding?",
+      "anchors": "0 = a paragraph, question or rule complaint; 1 = a joke buried under setup; 2 = readable but loose; 3 = tight, immediate and easy to send; 4 = one clean message that detonates on arrival (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A reply PLAYS if a reader who knows only the reply can still read Mum's news fact as true. It may add motives, gossip, threats, scandal, family history or adult innuendo. It fails when the fact is dropped, contradicted or overwritten, or when the move is not a reply but a comment about the game, a question to the Host or an explanation of the joke. A plain restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, discussing the rules or announcing a score is not a reply and loses the move.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the card's fact be true given this reply? Do not ask whether the reply is likely, tasteful or fair to Mum. Ask whether it makes the news false.\n",
+      "The first move must answer the card, not replace it. \"Six new chairs, six new suspects\" keeps the library's chairs and adds chaos.\n",
+      "Invented detail is not a contradiction. A secret meeting, a bribe, a lover or a family feud can all be added if the card's given action and details remain possible.\n",
+      "Dropping the fact fails. \"The librarian has finally snapped\" does not preserve six new chairs unless the chairs remain readable as true from the reply.\n",
+      "Contradicting the fact fails. \"They removed six chairs\" breaks a card saying the library added six chairs.\n",
+      "Overwriting a given detail fails. \"The library added two chairs\" breaks a card saying six, while \"six chairs for the wedding guests\" holds.\n",
+      "A reply that is merely a greeting, a question to Mum or a remark about playing the game fails even if it is funny.\n",
+      "Both players answer the same card. Judge each reply alone, not against the other player's level of weirdness.\n",
+      "Score stretch by distance from the news, not by loudness. One precise family secret beats a pile of random alarm words.\n",
+      "Spelling, capital letters, emojis and missing punctuation do not matter. Judge the words and the image they create.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The library has added six new chairs.",
+      "move": "SIX CHAIRS, SIX ALIBIS, AND UNCLE TREVOR IS SWEATING",
+      "gates_note": "all true",
+      "mechanism": "the six chairs remain, while the furniture becomes evidence in a family crime story",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The town opened a new footbridge.",
+      "move": "Lovely, now the ducks have somewhere to meet their secret lovers",
+      "gates_note": "all true",
+      "mechanism": "the footbridge stays open and becomes a discreet meeting place for scandalous ducks",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The council planted twelve trees.",
+      "move": "Twelve trees planted, twelve witnesses bought off",
+      "gates_note": "all true",
+      "mechanism": "the number and planting remain intact, with bribery turned into the invented motive",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The library has added six new chairs.",
+      "move": "They removed the six chairs after one very public mistake",
+      "gates_note": "satisfies_criterion false, the reply contradicts the card by saying the chairs were removed",
+      "mechanism": "the news says six chairs were added, but the reply replaces that action with removal",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The town opened a new footbridge.",
+      "move": "Mum, the bridge is still closed, but I respect the optimism",
+      "gates_note": "satisfies_criterion false, the reply denies the bridge was opened",
+      "mechanism": "the opening is directly rejected, so Mum's fact cannot remain true",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Family Correspondent",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Speak like a small court recording a large family embarrassment. Keep the explanation clinical and the bite playful.",
+      "Name the card's key object, number or action. A ruling that fits any reply is an empty telegram.",
+      "Never open with a status word or ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"The Host refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the reply and its tiny conspiracy, never identity, disability, body, family hardship or protected traits. Roast-level jabs at the player are allowed only when they target the move, not who they are.",
+      "Plain spoken English with a ceremonial tilt. Profanity and adult innuendo are allowed when they sharpen the joke, not when they replace it.",
+      "On a fail, name the exact fact that vanished, changed or broke, using Mum's own object, action or number.",
+      "On a refusal, say the move is not a reply and ask for another. Do not rule on who won.",
+      "The coaching line names one reply that would have scored. It ends on an object or action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "Six chairs entered the library, and apparently six witnesses left their dignity at home.",
+      "The footbridge stands, the ducks have a venue, and romance has crossed municipal planning.",
+      "Twelve trees were planted, which is a generous number of witnesses for one small cover story.",
+      "The chairs are present, the alibis are not, and Uncle Trevor has chosen silence.",
+      "Mum's six chairs remain six chairs, but the family has supplied a motive and one sweating uncle.",
+      "A footbridge opened, and the ducks have acquired a private meeting room with railings.",
+      "The trees are in the ground, the scandal is above it, and the council has planted twelve witnesses.",
+      "The reply removed the chairs from the record. Put six chairs back beside the crime.",
+      "A closed bridge cannot preserve an opened bridge. Even Mum's optimism needs a crossing.",
+      "Six chairs became a paragraph about your feelings. The furniture requested a shorter statement."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, a noble reply.",
+        "why": "opens with a status word and offers no clinical reason"
+      },
+      {
+        "text": "The Host refuses, submit another message.",
+        "why": "opens with a ruling phrase and names the Host"
+      },
+      {
+        "text": "Wrong, Mum's fact is missing.",
+        "why": "does not identify which fact disappeared"
+      },
+      {
+        "text": "What a brave little text from a complete idiot.",
+        "why": "mocks the player with a personal insult rather than the reply"
+      },
+      {
+        "text": "The chairs, alas, didst witness a scandal most foul.",
+        "why": "uses theatrical poetry instead of plain spoken English"
+      },
+      {
+        "text": "It is bold, shocking, scandalous and absolutely outrageous.",
+        "why": "lists empty intensity words without naming the joke"
+      },
+      {
+        "text": "Your reply beats the other player's reply.",
+        "why": "judges the pair instead of this reply against the card"
+      },
+      {
+        "text": "The council's verdant infrastructure facilitates clandestine romance.",
+        "why": "uses stiff abstract language and loses the concrete image"
+      },
+      {
+        "text": "Mum was right, and the game rules were followed.",
+        "why": "talks about the game instead of explaining the reply"
+      },
+      {
+        "text": "The bridge is a bridge, but the vibe is immaculate.",
+        "why": "ends in vague mood language rather than an action or object"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one dull true news fact from Mum each.",
+    "Write one text reply under 90 characters. The House writes its own, unseen, and the Host scores both.",
+    "Mum's fact must still be true to someone who reads only your reply. Drop it, flip it or overwrite its details and the round is lost.",
+    "Everything else is yours to invent. Motives, gossip, threats and innuendo are welcome if the fact survives. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "Mum's news",
+    "next_opening": "Mum's next news",
+    "your_opening": "Your news",
+    "compose": "Your reply to {token}",
+    "compose_waiting": "Draft your reply while you wait"
+  },
+  "validation_messages": {
+    "empty": "No reply received. Mum is waiting.",
+    "too_long": "Over 90 characters. This is a text, not the family newsletter.",
+    "duplicate": "That reply has already been sent this match. Find another family disaster.",
+    "nudge": "Twice now. One reply that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Family Correspondent has stepped away from the group chat. Nobody sends another message until they return. {standing_form} remains unread.\n",
+  "opponent_prompt": "You are replying to a dull news text from your mum. Write one message.\nMUM'S FACT MUST SURVIVE. A reader who sees only your reply must still be able to read the card as true. Do not drop it, reverse it or overwrite a detail the card gave. Six chairs stays six chairs. An opened bridge stays opened. Twelve planted trees stay twelve planted trees.\nThen leap into family chaos. Invent motives, gossip, threats, secret lovers, cover stories, witnesses or adult innuendo. The points are for distance from sensible news while Mum remains right.\nGood: \"SIX CHAIRS, SIX ALIBIS, AND UNCLE TREVOR IS SWEATING\" for six new library chairs. \"Lovely, now the ducks have somewhere to meet their secret lovers\" for a new footbridge. \"Twelve trees planted, twelve witnesses bought off\" for twelve planted trees.\nBad: \"Nice\" because it merely acknowledges the card. \"They removed the six chairs\" because it contradicts the card. \"The bridge is still closed\" because it reverses the opening. \"Mum, this game is funny\" because it talks about the game.\nWrite one text under 90 characters. Plain words, immediate image, no explanation. Capitals and emojis are fine. Do not use a colon or a dash. Do not put quotation marks around the reply.\nVary the angle from round to round. Try a scandal, a family secret, a public threat or a filthy little implication. Never use identity-based abuse. Reply with the message only.\n",
+  "medallions": false,
+  "default_move": "Fine, but who authorised this"
+}

@@ -1,0 +1,275 @@
+{
+  "slug": "admin-powers",
+  "title": "Admin Powers",
+  "tagline": "Take control of the chat before it becomes a digital landfill.",
+  "emblem": "🛡️",
+  "accent": "#2563eb",
+  "premise": "One player posts a group chat problem. The other answers with a moderation power or chat feature that directly fixes it. The Judge decides whether you actually used the controls.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A spammer keeps posting the same message every second.",
+      "opening_emoji": "📨",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A stranger drops a private photo into the group.",
+      "opening_emoji": "📸",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Everyone starts replying at once until nobody can follow the chat.",
+      "opening_emoji": "💬",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "problem": [
+        "spam",
+        "harassment",
+        "leaks",
+        "scams",
+        "spoilers",
+        "flooding",
+        "impersonation",
+        "off topic"
+      ],
+      "target": [
+        "one member",
+        "the whole room",
+        "a message",
+        "a photo",
+        "a link",
+        "a thread",
+        "new arrivals",
+        "the notification feed"
+      ],
+      "pressure": [
+        "keeps repeating",
+        "arrives all at once",
+        "looks suspicious",
+        "breaks a rule",
+        "reveals something private",
+        "drowns out replies",
+        "pretends to be trusted",
+        "will not stop"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the chat problem at once. Nothing abstract, technical, or dependent on knowing a particular app.",
+      "A non-player can name a plain moderation feature that would affect it within five seconds. Say what that feature is.",
+      "It creates a real control problem in the room. It floods, exposes, deceives, harasses, interrupts, or blocks people, rather than merely being mildly annoying.",
+      "It makes a player want to seize the controls. A thing with consequences, like a scam link or a leak. Never a boring status update.",
+      "Use everyday words a twelve-year-old knows. No brand names, proper nouns, app jargon, or problems that require a rulebook to identify."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I use ",
+    "example": "I use mute to silence the flood without deleting the room.",
+    "hint": "Name the feature, then show its direct effect."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the feature changes the standing chat problem.",
+      "anchors": "0 = no effect or no feature; 1 = vaguely related, but the problem remains; 2 = partly limits or reveals the problem; 3 = clearly fixes or contains the problem; 4 = immediate, complete control that leaves the problem with nowhere to operate, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the feature being used and the problem changing.",
+      "anchors": "0 = unreadable or self-contradicting; 1 = requires app-specific knowledge or guesswork; 2 = understandable but incomplete; 3 = plain, concrete, and easy to follow; 4 = instantly vivid, with the control and result both obvious, rare.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh and well chosen the moderation power is for this particular problem.",
+      "anchors": "0 = the obvious stock button, or a feature already used in the same domain; 2 = a sensible but familiar choice; 4 = an unexpected feature that fits the problem perfectly, rare. Novelty never excuses a weak effect.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A feature OVERCOMES the standing problem if it directly removes, limits, reveals, or corrects what is happening in the chat. The effect must be visible in the room: a person is stopped, a message is hidden or corrected, access is restricted, or the truth is made clear. Merely leaving, waiting it out, making the problem bigger, or choosing a related feature without an effect does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move: judge the feature against the opening problem instead. It must plausibly affect that problem directly.",
+      "A stronger or larger version of the same feature is not a new counter. More muting, a bigger warning, or a louder announcement does not create a different mechanism.",
+      "Naming the problem again, or restating the opening in feature-shaped words, is not a solution.",
+      "The mechanism must be literal and visible in a group chat. A feature must do something to the message, member, access, or conversation that a stranger could understand.",
+      "Leaving the group, closing the app, waiting for the spammer to get bored, or ignoring the problem is dodging, not overcoming it.",
+      "Making the problem bigger is not moderation. Pinning spam, forwarding a leak, or adding more people to an argument fails unless the move also directly removes, limits, reveals, or corrects the problem.",
+      "A related feature without a stated effect fails. Reporting a spammer without saying what happens next, or using a reaction that changes nothing, does not control the room.",
+      "A feature that only protects the player personally does not overcome a room wide problem unless it directly changes the standing problem for the chat.",
+      "The feature must be a real or plainly understandable chat control. Magic, threats, physical violence, or a vague appeal to common sense are not moderation powers."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A spammer keeps posting the same message every second.",
+      "move": "I use slow mode to limit the spammer to one message at a time.",
+      "gates_note": "all true",
+      "mechanism": "slow mode directly limits how fast messages can be posted",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A stranger drops a private photo into the group.",
+      "move": "I use delete to remove the photo before more people can see it.",
+      "gates_note": "all true",
+      "mechanism": "deleting directly removes the leaked photo from the chat",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Everyone starts replying at once until nobody can follow the chat.",
+      "move": "I leave the group and enjoy the silence.",
+      "gates_note": "satisfies_criterion false, leaving dodges the problem",
+      "mechanism": "none, the chaotic chat still exists for everyone else",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A spammer keeps posting the same message every second.",
+      "move": "I use pin to keep the spam message at the top.",
+      "gates_note": "satisfies_criterion false, pinning makes the problem more prominent",
+      "mechanism": "pinning preserves and highlights the spam instead of limiting it",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A stranger drops a private photo into the group.",
+      "move": "I use report to report it.",
+      "gates_note": "satisfies_criterion questionable, no direct effect is stated",
+      "mechanism": "reporting may alert someone, but the photo remains visible in the move",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "lean",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Chat Warden",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the problem and feature must see why it won or lost.",
+      "Name both the problem and the feature, or their plain stand ins. A headline that fits any chat disaster is lazy.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Chat Warden refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the bad feature or the mess it creates, never identity, protected traits, or a player's body, family, intelligence, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no French, no thesaurus words.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one feature that would have worked. That feature ends on a fact or an action, never a mood or a verdict.",
+      "Edgy jokes and mild profanity are allowed when aimed at the chat mess, not at a protected group."
+    ],
+    "good_headlines": [
+      "Slow mode puts the spammer on a leash, and the same message finally misses a beat.",
+      "Delete removes the private photo before the group can turn a leak into a souvenir.",
+      "Mute shuts up the insult flood without burning down the whole chat.",
+      "The scam link wanted an audience, but approval leaves it waiting outside.",
+      "Pinning spam is not control, it is putting the cockroach in a frame. Bring another feature.",
+      "Leaving the noisy room fixes your evening, not the room. Try a control that touches the chaos.",
+      "Report is a tap on the bell, not a broom. Say what removes the photo.",
+      "Locking replies turns the pileup into a queue, which is more useful than watching everyone type over everyone.",
+      "The fake admin loses the badge when verification exposes the costume.",
+      "More notifications would not solve the flood, unless your moderation plan is electronic punishment."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: slow mode saves the chat from the spammer.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Chat Warden refuses: leaving is not leadership.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, reporting is not deleting.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The feature wins.",
+        "why": "gives no reason and could fit any move"
+      },
+      {
+        "text": "The spammer is stupid and so is this move.",
+        "why": "mocks a person instead of explaining the mechanism"
+      },
+      {
+        "text": "The photo is bad, but perhaps deletion is good.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Mute, silence, quiet, hush, peace.",
+        "why": "lists synonyms without a picture or reason"
+      },
+      {
+        "text": "The flood doth cease beneath the moderator's mighty hand.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "Pinning spam gives the spammer even more attention, which is sort of bad.",
+        "why": "weak hedge and no clear request for another move"
+      },
+      {
+        "text": "Just be nicer online.",
+        "why": "advice is not a moderation feature or a visible mechanism"
+      }
+    ]
+  },
+  "rules": [
+    "Control the problem in front of you. Do not merely leave or wait.",
+    "Name the feature and its direct effect: I use mute to silence the insult flood.",
+    "The Judge rules on the idea, never the spelling.",
+    "A move that does not visibly change the standing chat problem ends the match."
+  ],
+  "labels": {
+    "opening": "The opening problem",
+    "next_opening": "The next chat problem",
+    "your_opening": "Your chat problem",
+    "compose": "Your feature against {token}",
+    "compose_waiting": "Draft your next control while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing posted. Take the controls.",
+    "too_long": "Over 200 characters. A moderation move, not a policy manual.",
+    "duplicate": "That feature already stood this match. Find another control.",
+    "nudge": "Twice now. Directly change {standing_form}. Do not leave, wait, or make the mess bigger."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody changes the chat until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two players fighting for control of a group chat.\nAlways write: \"I use [feature] to [directly affect the problem].\"\nKeep the feature and effect plain. Name a real moderation control or an obvious chat feature, then say what it changes.\nGood: \"I use mute to silence the insult flood without deleting the room.\"\nGood: \"I use delete to remove the private photo before more people see it.\"\nBad: \"I leave the chat\" because leaving dodges the problem.\nBad: \"I use report\" if you do not say what report changes.\nBad: \"I use pin to keep the spam visible\" because making the problem bigger is not control.\nTalk like a person holding the admin panel, not a poet or a lawyer. You are trying to fix the room, not impress an audience.\nChoose features that act directly on messages, members, access, replies, or visibility.\nDo not reuse a feature or effect from this match. Avoid magic, threats, physical violence, and vague advice.\n",
+  "default_move": "I use mute to silence the problem."
+}

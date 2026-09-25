@@ -1,0 +1,276 @@
+{
+  "slug": "last-words-laundry",
+  "title": "Last Words Laundry",
+  "tagline": "Give a dead habit one final sentence worth carving in stone.",
+  "emblem": "🪦",
+  "accent": "#8b6f91",
+  "premise": "A habit is dead, and its final words must be delivered from the stone. Each round gives both players the same habit and two everyday nouns. Write one farewell that keeps the habit recognizable and links both nouns, while hiding which noun is the true cause of death. The Judge rewards the cleanest emotional hit.\n",
+  "seed_pool": [
+    {
+      "opening_token": "saying just five more minutes",
+      "opening_emoji": "⏰",
+      "detail": "habit, with alarm and blanket",
+      "hidden": "the alarm is the real witness"
+    },
+    {
+      "opening_token": "checking the fridge without opening it",
+      "opening_emoji": "🧊",
+      "detail": "habit, with spoon and hallway",
+      "hidden": "the hallway is the real witness"
+    },
+    {
+      "opening_token": "saving the best bite for last",
+      "opening_emoji": "🍰",
+      "detail": "habit, with napkin and calendar",
+      "hidden": "the calendar is the real witness"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "habit": [
+        "procrastination",
+        "overpacking",
+        "second guessing",
+        "snacking",
+        "tidying",
+        "daydreaming",
+        "apologizing",
+        "hoarding tabs"
+      ],
+      "noun_pair": [
+        "alarm and blanket",
+        "spoon and hallway",
+        "napkin and calendar",
+        "backpack and moon",
+        "receipt and window",
+        "teacup and staircase",
+        "shoelace and mailbox",
+        "pillow and notebook"
+      ],
+      "hidden_witness": [
+        "first noun",
+        "second noun",
+        "the object touched last",
+        "the object left behind",
+        "the object that waits",
+        "the object that remembers",
+        "the object nearest the door",
+        "the object nobody notices"
+      ]
+    },
+    "tests": [
+      "The sentence must keep the given habit recognizable.",
+      "The sentence must include both given nouns.",
+      "The sentence must sound like a final statement from a gravestone.",
+      "The sentence must not reveal which noun is the hidden witness.",
+      "The sentence must be one clear sentence and no more than eighteen words."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Saying just five more minutes leaves its blanket by the alarm and promises to sleep elsewhere.",
+    "hint": "One farewell sentence. Name the habit and both nouns, then make the ending count."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does this sound like a convincing final inscription for the given habit?",
+      "anchors": "0 = unrelated or impossible to read as a farewell; 1 = the habit is barely present; 2 = recognizable but forced; 3 = a stranger would accept it as a fitting epitaph; 4 = it feels carved in stone for this exact habit (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the farewell create a clean laugh without losing its gravestone voice?",
+      "anchors": "0 = no comic spark; 1 = a faint smile; 2 = a neat little joke; 3 = a clear laugh; 4 = a sharp laugh that still sounds like an epitaph (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the sentence use the required habit and nouns plainly, with no clutter or explanation?",
+      "anchors": "0 = missing the task or impossible to parse; 1 = a sentence buried under explanation; 2 = clear but padded or awkward; 3 = compact and complete; 4 = every word earns its place on the stone (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A farewell PLAYS if it keeps the given habit recognizable, includes both given nouns, and presents them in one sincere or comic final statement that could belong on a gravestone. It fails when it omits the habit, omits either noun, reveals the hidden witness, gives no farewell, or is not a single understandable sentence. A strange or weak farewell still plays and scores low. A strong farewell may be sincere, comic, or both.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or explaining the rules is itself a losing farewell.\n",
+    "judge_notes": [
+      "Judge the first move against the same gates as every later move. Do not give an opening move extra credit for being first.\n",
+      "The hidden truth tells you which noun is the real witness. A move may use both nouns vividly, but it must not announce which noun caused the habit's death.\n",
+      "If the habit is missing or no longer recognizable, it fails even if both nouns appear.\n",
+      "If either given noun is missing, the move fails even if the farewell is otherwise elegant.\n",
+      "If the move is a comment about the game, a question with no farewell, an explanation, or a string of unrelated words, it fails.\n",
+      "If the move is more than one sentence, it fails. A semicolon or a comma may join parts of one sentence, but separate full stops do not.\n",
+      "A bare phrase can play only when it clearly functions as a complete gravestone farewell and contains the habit plus both nouns. Otherwise it fails for not offering a final statement.\n",
+      "Do not require a particular tone. Sincere, absurd, tender, and comic farewells all play if they meet the gates.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Habit: saying just five more minutes. Nouns: alarm, blanket.",
+      "move": "Saying just five more minutes left its blanket beside the alarm and finally stopped asking for tomorrow.",
+      "gates_note": "all true",
+      "mechanism": "the habit remains clear, both nouns appear, and the final promise sounds ready for stone",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Habit: checking the fridge without opening it. Nouns: spoon, hallway.",
+      "move": "Checking the fridge without opening it met its spoon in the hallway and called that dinner.",
+      "gates_note": "all true",
+      "mechanism": "the strange meeting gives the habit a clean comic exit while naming both nouns",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Habit: saving the best bite for last. Nouns: napkin, calendar.",
+      "move": "Saving the best bite for last was defeated by the calendar, as recorded on the napkin.",
+      "gates_note": "satisfies_criterion false (reveals the hidden witness)",
+      "mechanism": "the farewell points directly at the secret witness instead of hiding the cause of death",
+      "scores": {
+        "believable": 2,
+        "funny": 2,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Habit: saying just five more minutes. Nouns: alarm, blanket.",
+      "move": "The blanket salutes the alarm, and may your morning be peaceful.",
+      "gates_note": "satisfies_criterion false (habit omitted)",
+      "mechanism": "both nouns march onto the stone, but the named habit never arrives",
+      "scores": {
+        "believable": 1,
+        "funny": 1,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Habit: checking the fridge without opening it. Nouns: spoon, hallway.",
+      "move": "Checking the fridge without opening it has retired.",
+      "gates_note": "satisfies_criterion false (one noun omitted)",
+      "mechanism": "the habit gets a farewell, but the spoon and hallway are left outside the ceremony",
+      "scores": {
+        "believable": 2,
+        "funny": 0,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Graveyard Announcer",
+    "tone": {
+      "commentary_adj": "theatrical",
+      "explanation_adj": "grand"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like a trumpet blast at a tiny funeral. The joke should explain the ruling.",
+      "Name the habit or the move's strongest image. A headline that fits any farewell is a dead headline.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Announcer refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the farewell, never the player. No jokes about identity, body, family, intelligence, or spelling.",
+      "Family friendly only. No profanity, no innuendo, and no identity based abuse.",
+      "Use plain spoken English with theatrical energy. No poetry recital, rhymes, or fancy fog.",
+      "Never reveal or hint at the hidden witness in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline stops the ceremony and asks for another farewell. It never rules on who won.",
+      "The coaching line names one missing ingredient, such as the habit, a noun, or the hidden witness staying hidden. It ends on an action or fact, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The blanket has arrived, the alarm has arrived, and the habit has earned its stone.",
+      "A spoon in the hallway, a fridge untouched, and one final dinner bell.",
+      "The napkin keeps the secret, while the calendar gets a starring role.",
+      "That farewell brings both nouns to the grave and leaves the habit recognizable.",
+      "A tiny funeral, a large promise, and just enough minutes to bury them.",
+      "The sentence lands like a trumpet solo at a ceremony for procrastination.",
+      "The stone is tidy, the joke is clean, and the backpack has seen enough.",
+      "The moon gets a visitor, the habit gets an ending, and the inscription gets applause.",
+      "This routine exits through the side door, carrying both nouns like legal witnesses.",
+      "A crisp little epitaph, with no loose words rattling in the graveyard."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a magnificent epitaph.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Graveyard Announcer refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring back the habit.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The alarm was the hidden witness all along.",
+        "why": "reveals the hidden truth in the headline"
+      },
+      {
+        "text": "A good one.",
+        "why": "has no image, reason, or theatrical lift"
+      },
+      {
+        "text": "Only a fool would leave out the spoon.",
+        "why": "attacks the player instead of the move"
+      },
+      {
+        "text": "O mournful habit, descend beneath the silver moon.",
+        "why": "uses overblown poetry instead of plain speech"
+      },
+      {
+        "text": "Funny, believable, clean, and excellent.",
+        "why": "lists praise without showing why the move works"
+      },
+      {
+        "text": "The other player had a better funeral.",
+        "why": "judges the pair instead of this move on its own"
+      },
+      {
+        "text": "The routine is dead, long live the routine.",
+        "why": "is generic and gives no reason tied to the move"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one dead habit and two everyday nouns each.",
+    "Write one gravestone sentence using the habit and both nouns, while keeping the hidden witness hidden.",
+    "The Judge scores each farewell for fit, comedy, and clean construction.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The deceased habit",
+    "next_opening": "The next deceased habit",
+    "your_opening": "Your deceased habit",
+    "compose": "Your farewell for {token}",
+    "compose_waiting": "Write the farewell while you wait"
+  },
+  "validation_messages": {
+    "empty": "The stone is blank. Give the habit its final sentence.",
+    "too_long": "That inscription needs a smaller stone. Keep it under 160 characters.",
+    "duplicate": "That farewell has already been carved this match. Try a new last word.",
+    "nudge": "Twice now. One sentence naming {standing_form} and both given nouns, with the hidden witness kept hidden."
+  },
+  "judge_out_text": "The Judge has stepped away from the graveyard. Nobody moves until they return. {standing_form} waits by the stone. Give it a moment.\n",
+  "opponent_prompt": "You are writing the rival farewell. Give the dead habit one final gravestone sentence.\nUse the habit and both everyday nouns exactly as clues, but do not reveal which noun is the hidden witness.\nThe sentence must be one clear sentence and no more than eighteen words. Keep the habit recognizable. Bring both nouns into the farewell.\nMake it sincere, comic, or both. The ending should sound final, not like a comment about the game.\nDo not explain your choices, hedge, ask a question, or mention the Judge. Do not use the hidden truth or name the cause of death.\nDo not reuse the same kind of image from an earlier round. Vary the farewell between a promise, a confession, a small scene, a last request, and a formal epitaph.\nYou are writing the inscription, not the funeral program. Make every word earn its place on the stone.\n",
+  "medallions": true,
+  "default_move": "Saying just five more minutes left its blanket beside the alarm and promised to rise with the sun."
+}

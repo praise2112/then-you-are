@@ -1,0 +1,295 @@
+schema_version: 1
+slug: utensil-red-flag
+title: Utensil Red Flag
+tagline: Date the tool. Ignore the warning signs.
+emblem: 🍴
+accent: '#c65f5f'
+premise: Three rounds. Each round deals a kitchen utensil. Write one dating profile confession built from
+  its real physical feature or kitchen use. The Judge scores the red flag for believability, comic bite,
+  and how cleanly it reads as a confession. Then the better warning sign wins the round.
+mode: showcase
+seed_recipe:
+  card_shape: short_form
+  max_words: 7
+  axes:
+    utensil:
+    - tongs
+    - colander
+    - whisk
+    - spatula
+    - ladle
+    - peeler
+    - grater
+    - rolling pin
+    feature:
+    - grip
+    - holes
+    - wire loops
+    - flat edge
+    - deep bowl
+    - sharp blade
+    - rough surface
+    - heavy cylinder
+    use:
+    - turning
+    - draining
+    - beating
+    - flipping
+    - serving
+    - peeling
+    - shredding
+    - flattening
+  tests:
+  - Each card names one kitchen utensil in a short noun phrase with an article.
+  - The utensil has a real physical feature or kitchen use that can drive a dating flaw.
+  - The card is familiar enough to inspire a confession without explaining the object.
+  - The card does not already state the joke, red flag, or hidden behavior.
+  - The card can support a confession of no more than seven words without needing invented lore.
+demo:
+  opening:
+    token: Tongs
+    emoji: 🥢
+  moves:
+  - actor: p1
+    text: Colander
+    emoji: 🥢
+    scores: null
+  - actor: p2
+    text: I drain every emotional conversation and have more holes than boundaries.
+    emoji: 🗣️
+    scores:
+      believable: 4
+      funny: 4
+      dictionary_shaped: 4
+  headline: The colander has boundaries made of holes, which is a bold profile choice.
+  openings:
+  - token: Tongs
+    examples:
+    - I drain every emotional conversation and have more holes than boundaries.
+  - token: Colander
+    examples:
+    - I drain every emotional conversation and have more holes than boundaries.
+move_constraints:
+  max_chars: 160
+  prefix: Confess one dating red flag caused by the utensil's real behavior.
+  example: I need constant reassurance, I drain every emotional conversation, and I have more holes than
+    boundaries.
+  hint: One confession, up to 160 characters. Sexy, funny, or deeply concerning, but make the utensil
+    responsible.
+rubric:
+- name: believable
+  description: Does this sound like a dating confession that naturally belongs to the utensil?
+  anchors: 0 = unrelated to the utensil; 1 = the connection is stapled on; 2 = the feature is visible
+    but the confession is a stretch; 3 = a stranger can see the utensil in it; 4 = it sounds inevitable
+    once the utensil is named, which is rare.
+  weight: 6
+- name: funny
+  description: Does the red flag land as a joke, a nasty little truth, or an alarming dating detail?
+  anchors: 0 = no comic charge; 1 = a faint smirk; 2 = a decent dating-app groan; 3 = a real laugh or
+    wince; 4 = the utensil should probably be banned from the apps, which is rare.
+  weight: 3
+- name: dictionary_shaped
+  description: Is it a compact, readable confession rather than an explanation, sketch, or pile of unrelated
+    gags?
+  anchors: 0 = not a confession; 1 = mostly commentary or setup; 2 = a confession buried in clutter; 3
+    = concise and clearly framed as a red flag; 4 = clean enough for a dating profile that nobody should
+    trust, which is rare.
+  weight: 1
+criterion:
+  verb: passes as
+  inverse_verb: gives itself away against
+  description: A confession PLAYS if it presents a dating flaw, warning sign, or concerning habit caused
+    by a real physical feature or kitchen use of the utensil. It fails when it is not a confession at
+    all, when it merely names or praises the utensil, when it discusses the game or Judge, or when the
+    alleged flaw has no meaningful connection to the utensil's real behavior. An exaggerated or filthy
+    interpretation still plays if the utensil clearly causes it.
+  anti_metagaming_clause: Talking about the Judge, the score, the prompt, or the rules is itself a losing
+    confession.
+  judge_notes:
+  - Judge the first move on its own against the named utensil. Do not require the player to mention the
+    utensil if the physical or culinary connection is unmistakable.
+  - A real feature can support metaphor, innuendo, or emotional language. The connection must still come
+    from what the utensil does, how it is shaped, or how it is used.
+  - A move that is only a joke about the utensil, with no dating flaw or warning sign, fails even if it
+    is funny.
+  - A move that is a dating confession with no real connection to the utensil fails, even if it is excellent
+    relationship comedy.
+  - A statement about the game, the Judge, another player, or the scoring fails because it is not a utensil's
+    confession.
+  - A bare phrase can play if it clearly names a dating red flag and the utensil connection is present,
+    but it should score low on dictionary_shaped.
+  - A question, hedge, or fragment can still play when it unmistakably offers a confession. If it offers
+    no flaw or warning sign, it fails.
+  - Do not reward a confession merely for mentioning a kitchen, food, or romance. The red flag must be
+    caused by the specific utensil.
+examples:
+- previous_move: Colander
+  move: I drain every emotional conversation and have more holes than boundaries.
+  gates_note: all true
+  mechanism: The holes and draining function become a concise relationship warning.
+  scores:
+    believable: 4
+    funny: 4
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Tongs
+  move: I keep people at arm's length, then squeeze when they try to leave.
+  gates_note: all true
+  mechanism: The joined arms and gripping action make the possessiveness specific to tongs.
+  scores:
+    believable: 4
+    funny: 3
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Whisk
+  move: I am emotionally unavailable but excellent at stirring things up.
+  gates_note: satisfies_criterion false, no clear real feature or use of a whisk causes the flaw
+  mechanism: The relationship joke could describe anyone and does not use whisking, beating, blending,
+    or aerating specifically enough.
+  scores:
+    believable: 1
+    funny: 2
+    dictionary_shaped: 3
+  confidence: clear
+  verdict: fail
+- previous_move: Tongs
+  move: I am hot, dangerous, and impossible to resist.
+  gates_note: satisfies_criterion false, generic seduction with no utensil behavior
+  mechanism: The confession is a dating cliché wearing an apron, not a tongs red flag.
+  scores:
+    believable: 0
+    funny: 1
+    dictionary_shaped: 3
+  confidence: clear
+  verdict: fail
+- previous_move: Colander
+  move: I let everything out, then act surprised when nothing stays.
+  gates_note: all true
+  mechanism: The draining function becomes oversharing and abandonment in one clean confession.
+  scores:
+    believable: 4
+    funny: 3
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+host:
+  persona_name: The Dating-App Sommelier
+  tone:
+    commentary_adj: witty
+    explanation_adj: snarky
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A reader who sees only the utensil and confession should understand the
+    red flag.
+  - Name the utensil or its decisive feature. A headline that fits every kitchen object is useless.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, or Move refused.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Roast the confession, not the player's identity, body, family, intelligence, or spelling.
+  - Plain spoken English. Adult innuendo and profanity are allowed when the utensil earns them, but do
+    not make sex the only joke.
+  - Never pretend a generic dating cliché is utensil specific. The object must be in the punchline.
+  - Never reveal hidden truth in the headline. The utensil is public, the Judge's reasoning is not a recipe
+    card.
+  - On a refusal, explain the missing utensil link or missing confession and ask for another. Do not declare
+    a round winner.
+  - The coaching line names one concrete feature or use that could have saved the move. It ends on an
+    action or fact, never a mood.
+  good_headlines:
+  - The colander has boundaries made of holes, which is a bold profile choice.
+  - Tongs keep people at arm's length, then call the squeeze intimacy.
+  - That whisk is stirring trouble, but it forgot to bring a real utensil.
+  - A draining personality is forgivable when the object literally drains things.
+  - The flat edge flips dinner and, apparently, every relationship.
+  - The peeler wants closeness, but only in thin layers.
+  - A grater with commitment issues still has to grate something.
+  - The ladle gives too much, too deep, and always from one bowl.
+  - The confession is hot, but the utensil link is colder than leftovers.
+  - This is not a red flag from a utensil. It is just a red flag wearing an apron.
+  bad_headlines:
+  - text: Accepted, excellent red flag.
+    why: opens with a status word and gives no utensil specific reason
+  - text: The Dating-App Sommelier refuses, try again.
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, that is not about tongs.
+    why: opens with a ruling phrase
+  - text: The colander's true purpose is draining pasta.
+    why: gives away hidden truth instead of judging the confession
+  - text: Believable.
+    why: no reason and no joke
+  - text: Only an idiot would swipe right on this.
+    why: roasts the player rather than the confession
+  - text: O sacred spoon, thy lonely bowl doth ache.
+    why: poetry and theatrical fog
+  - text: It is plausible, credible, convincing, and believable.
+    why: synonym soup with no picture
+  - text: Better than the other player's confession.
+    why: judges the pair instead of this move
+  - text: Nice one.
+    why: no utensil, no reason, no bite
+rules:
+- Three rounds, one kitchen utensil each.
+- Write one confession of up to 160 characters. The red flag must come from the utensil's real physical
+  feature or kitchen use.
+- The Judge scores each confession for believable, funny, and dictionary shaped.
+- The higher scoring confession wins the round. Most points after three rounds wins.
+labels:
+  opening: The utensil
+  next_opening: The next utensil
+  your_opening: Your utensil
+  compose: Your red flag for {token}
+  compose_waiting: Draft your red flag while you wait
+validation_messages:
+  empty: Nothing on the profile. Confess a red flag.
+  too_long: Over 160 characters. This is a dating warning, not a memoir.
+  duplicate: That confession has already been played this match. Find a fresh problem.
+  nudge: Twice now. Tie one real utensil feature to one dating flaw for {standing_form}.
+judge_out_text: 'The judge has stepped out. Nobody swipes until they are back. {standing_form} waits on
+  the counter. Give it a minute.
+
+  '
+opponent_prompt: 'You are writing the House confession for a dating profile about the named kitchen utensil.
+
+  Write one red flag of up to 160 characters. It must be caused by a real physical feature or kitchen
+  use of that utensil.
+
+  Make it sound like a confession, not an explanation. Sexy, funny, or alarming is allowed, but the utensil
+  must be doing the work.
+
+  Use the utensil''s actual shape, motion, texture, or culinary function. Tongs can grip or keep people
+  at arm''s length. A colander can drain or have holes. A whisk can beat, blend, or stir things up.
+
+  Do not merely call the utensil hot, dangerous, useful, sexy, or annoying. Those are generic compliments
+  and complaints wearing a tiny apron.
+
+  Do not discuss the game, the Judge, the score, the prompt, or the other player. Do not use the utensil''s
+  name as a substitute for a joke.
+
+  Avoid unrelated backstory, named exes, precise dates, fake professions, or a second unrelated gag. One
+  clean warning sign beats a whole toxic family tree.
+
+  Do not reuse the same central feature or emotional pattern from an earlier round. Vary between control,
+  oversharing, neediness, mess, commitment issues, intensity, or other dating flaws when the utensil supports
+  them.
+
+  The confession must be self contained and must not reveal that it was written for a game. No quotation
+  marks around it.
+
+  '
+guess:
+  spot_points: 10
+  fool_points: 10
+  prompt: One of these is the real entry. Call it.
+medallions: true
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: I keep everyone at arm's length, then squeeze when they try to leave
+seed_pool:
+  - { opening_token: "Tongs", opening_emoji: "🥢", detail: "A pair of kitchen tongs", hidden: "Two arms joined at one end, used to grip, lift, turn, and serve food without touching it directly" }
+  - { opening_token: "Colander", opening_emoji: "🫗", detail: "A perforated bowl for draining food", hidden: "A bowl covered with holes that lets liquid escape while retaining solid food" }
+  - { opening_token: "Whisk", opening_emoji: "🥚", detail: "A wire kitchen whisk", hidden: "A tool with loops of wire used to beat, blend, aerate, or emulsify ingredients" }

@@ -1,0 +1,317 @@
+schema_version: 1
+slug: detour-receipt
+title: Detour Receipt
+tagline: One wrong turn at a time. Keep driving, keep collecting proof.
+emblem: 🧾
+accent: '#c2410c'
+premise: 'Your road trip takes one wrong turn at a time, and the car keeps collecting proof of each mistake.
+  Two players take turns saying what happens next, one plain event at a time, while the route gets harder
+  to explain without anyone admitting the obvious. The Judge checks that every event follows from the
+  last and leaves a new piece of evidence behind.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 18
+  axes:
+    traveller:
+    - the driver
+    - the passenger
+    - a grandparent
+    - a teenager
+    - a tired parent
+    - a hitchhiker
+    - a nervous tourist
+    - a cheerful friend
+    road_clue:
+    - a crooked beach sign
+    - a missing road number
+    - a faded motel receipt
+    - a map with a coffee stain
+    - a toll ticket
+    - a fuel receipt
+    - a bridge warning
+    - a hand-written detour
+    wrong_turn:
+    - follows the arrow
+    - takes the shortcut
+    - crosses the old bridge
+    - leaves the main road
+    - turns toward the hills
+    - trusts the motel sign
+    - joins a parade route
+    - enters a private lane
+  tests:
+  - A road trip goes slightly wrong and a stranger can picture the first problem at once. Present tense,
+    one sentence, plain words.
+  - A non-player can name two possible next events within five seconds, and both can leave new proof behind.
+  - Nothing on the card is already an ending. Arrival, rescue, a perfect map, or getting home is an ending,
+    not a start.
+  - The card contains no injury, no real person, no brand, and no serious crime with a victim.
+  - The mistake leaves room for another receipt item. It should feel like a small wrong turn, not a finished
+    disaster or a list of travel details.
+demo:
+  opening:
+    token: The driver follows a road sign that points toward the beach, but the arrow is hand-painted
+      and slightly crooked.
+    emoji: 🏖️
+  moves:
+  - actor: p1
+    text: The driver follows a road sign that points toward the beach, but the arrow is hand-painted and
+      slightly crooked.
+    emoji: 🏖️
+    scores: null
+  - actor: p2
+    text: Then the road ends at a locked gate beside a sign for a town we have never heard of.
+    emoji: 🎂
+    scores:
+      reach: 2
+      link: 4
+      picture: 4
+  headline: The crooked beach sign earns its first receipt, a locked gate in a town nobody meant to visit.
+  openings:
+  - token: The driver follows a road sign that points toward the beach, but the arrow is hand-painted
+      and slightly crooked.
+    examples:
+    - Then the road ends at a locked gate beside a sign for a town we have never heard of.
+  - token: The passenger spots a shortcut on the map, but the road number has been scratched out.
+    examples:
+    - Then the road ends at a locked gate beside a sign for a town we have never heard of.
+move_constraints:
+  max_chars: 140
+  prefix: 'Then '
+  example: Then the motel clerk stamps our map with the name of the town we were trying not to visit.
+  hint: One plain event caused by the current road-trip problem, leaving new proof for the other player.
+rubric:
+- name: reach
+  description: How much farther the wrong trip spreads from this one event.
+  anchors: '0 = the situation stays the same or gets smaller; 1 = a tiny complication; 2 = one new item,
+    place, or person is pulled into the mistake; 3 = the detour reaches a new town, official, or serious
+    practical problem through one clear step; 4 = the mistake reaches a surprising new scale while still
+    following in one step, rare. Reach is earned only when the event follows. A wild leap with no cause
+    scores 0 here.
+
+    '
+  weight: 5
+- name: link
+  description: How clearly the event is caused by the road-trip problem that stands now.
+  anchors: '0 = no cause is shown; 1 = the cause is merely claimed; 2 = it could follow but needs a generous
+    reading; 3 = a stranger sees why it happened; 4 = it feels like the obvious next consequence, rare.
+    A move that crams several missing causes together scores no higher than 2 here.
+
+    '
+  weight: 4
+- name: picture
+  description: How clearly a stranger can see the event and its new piece of proof.
+  anchors: '0 = unclear, abstract, or only a thought; 1 = vague or crowded; 2 = understandable but plain;
+    3 = easy to picture; 4 = one sharp detail makes the mistake memorable, rare. Extra words do not earn
+    points by themselves.
+
+    '
+  weight: 2
+criterion:
+  verb: follows from
+  inverse_verb: snaps off
+  description: 'A step FOLLOWS if it is one plain event caused by the current road-trip problem and it
+    leaves a new piece of proof for the other player to use. The trip should get harder to explain, but
+    only through a clear link. A step fails when it skips causes, jumps to a distant result without showing
+    the road between them, ends the story through rescue or arrival, undoes the chain by losing, hiding,
+    destroying, or erasing proof already collected, or swaps the trip for an unrelated scene. A feeling,
+    excuse, plan, or moral is not an event.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game, or referring to rules is itself
+    a broken step.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no standing step: judge the move against the card. It must follow from the
+    opening road-trip problem and leave a new item of proof.'
+  - 'A new person may enter if the road, motel, shop, checkpoint, or other current place would plainly
+    contain them, or if the standing problem gives them a reason to appear. A police officer at a checkpoint
+    may appear after a toll problem. A national investigation team appearing from nowhere is a skipped
+    link: satisfies_criterion is false.'
+  - 'An ending is any step after which the trip is safely resolved or has nowhere left to go: the car
+    reaches home, a mechanic fixes everything, a helpful stranger gives the perfect directions, or everyone
+    agrees to stop. Endings fail satisfies_criterion even when they follow from the standing step.'
+  - 'A move that loses, hides, throws away, burns, deletes, or secretly replaces a receipt, ticket, map
+    mark, photograph, sign, or other proof already established is an undo: satisfies_criterion is false.
+    New proof can cover old proof only if the old proof still exists and remains usable.'
+  - A new receipt item can be small. Another toll ticket, a wrong-town stamp, a parking slip, or a fuel
+    receipt follows and passes the gate if it is caused by the standing problem. It may score 0 or 1 on
+    reach. Do not fail it for being modest.
+  - 'Restating the standing event, or naming the same proof in slightly different words without adding
+    anything, is a duplicate: not_semantic_duplicate is false.'
+  - Two or three events packed into one move pass only when every link is plain and every new proof is
+    caused. Score link at 2 or below and picture low if the move is crowded.
+  - A move that says the travellers decide, worry, remember, or admit something without showing an event
+    and new proof fails the criterion.
+examples:
+- previous_move: The driver follows a road sign that points toward the beach, but the arrow is hand-painted
+    and slightly crooked.
+  move: Then the road ends at a locked gate beside a sign for a town we have never heard of.
+  gates_note: all true
+  mechanism: the crooked sign sends the car down the wrong road, and the gate sign records the unfamiliar
+    destination
+  scores:
+    reach: 2
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Then the road ends at a locked gate beside a sign for a town we have never heard of.
+  move: Then the passenger photographs the town sign, and a passing farmer points us down an even narrower
+    road.
+  gates_note: all true
+  mechanism: the blocked road creates a photograph and sends the car toward a new route
+  scores:
+    reach: 3
+    link: 3
+    picture: 4
+  confidence: lean
+  verdict: accept
+- previous_move: Then the passenger photographs the town sign, and a passing farmer points us down an
+    even narrower road.
+  move: Then the mayor calls the national news and announces that our road trip is now a public emergency.
+  gates_note: satisfies_criterion false, skipped links and no new proof is shown
+  mechanism: nothing connects the narrow road to a mayor or national news
+  scores:
+    reach: 0
+    link: 0
+    picture: 2
+  confidence: clear
+  verdict: fail
+- previous_move: Then the car rolls through a toll gate on the narrow road.
+  move: Then we arrive home, unpack the bags, and agree never to mention the trip again.
+  gates_note: satisfies_criterion false, an ending and an attempt to close the evidence
+  mechanism: the trip is over and the chain has nowhere left to go
+  scores:
+    reach: 0
+    link: 2
+    picture: 3
+  confidence: clear
+  verdict: fail
+- previous_move: Then the motel clerk stamps our map with the name of the wrong town.
+  move: Then the passenger tears out the stamped corner so nobody can prove where we stayed.
+  gates_note: satisfies_criterion false, existing proof is destroyed
+  mechanism: the move undoes the stamped evidence instead of adding to it
+  scores:
+    reach: 0
+    link: 3
+    picture: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Receipt Clerk
+  tone:
+    commentary_adj: earnest
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - Use one sentence under 140 characters. Two short sentences at most.
+  - The joke should carry the reason. A stranger who reads only the two steps should see why the receipt
+    grew or stopped.
+  - Name both steps, or their plain stand-ins. A headline that fits any road trip is too loose.
+  - Never open with a status word or ruling phrase. Do not begin with Accepted, Rejected, Refused, Move
+    refused, or The Receipt Clerk refuses.
+  - Use no dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops
+    only.
+  - Roast the move gently, never identity, disability, family, body, intelligence, spelling, or protected
+    traits. The road may be foolish. The player is still welcome.
+  - Plain spoken English. A little profanity and adult innuendo are allowed, but keep the joke tied to
+    the trip.
+  - On a skipped link, name the missing road event. On an ending, say the trip ended and the chain stops
+    here.
+  - On an undo, name the proof that was lost, hidden, erased, or destroyed. The receipt remembers what
+    the move tried to forget.
+  - On a refusal, the headline refuses the step and asks for another. It never rules on who won.
+  - The coaching line names one event that would have followed. It ends on a new receipt item, never a
+    mood or a verdict.
+  good_headlines:
+  - The crooked beach sign earns its first receipt, a locked gate in a town nobody meant to visit.
+  - The photo proves the town exists, and the narrow road proves the day can still get worse.
+  - A toll ticket is honest evidence, even when the driver is not ready to be.
+  - Home is a lovely place, but arrival ends the trip and leaves the receipt with no next line.
+  - Tearing up the stamped map is not a detour. It is hiding the evidence, and the chain stops there.
+  - The farmer points, the car turns, and the receipt gains another suspicious little road.
+  - The mayor needs a few missing roads before the mayor gets involved.
+  - The same wrong sign with a fresh coat of panic is still the same wrong sign.
+  - The motel stamp is new proof. The excuse attached to it is not required.
+  - A narrow road, a fresh toll, and one more reason to stop saying this was the shortcut.
+  bad_headlines:
+  - text: 'Accepted: nice detour.'
+    why: opens with a status word and gives no reason
+  - text: The Receipt Clerk refuses this absurdity.
+    why: opens with a ruling phrase and names the host
+  - text: What a journey, what a mess, what a receipt.
+    why: could fit any pair of moves and explains nothing
+  - text: The driver is an idiot who should surrender the keys.
+    why: attacks the player instead of explaining the missing link
+  - text: The route undergoes a catastrophic cartographic recalibration.
+    why: uses stiff words that do not show the road event
+  - text: The town appears, then the nation panics, then history changes.
+    why: lists skipped links instead of naming the next missing event
+  - text: And the moon wept over the weary asphalt...
+    why: uses poetry and an ellipsis instead of plain speech
+  - text: Nope. Try again.
+    why: refuses the move without saying why or offering a useful next event
+rules:
+- Start with Then and say one plain event caused by the current road-trip problem.
+- Leave a new piece of proof, such as a receipt, stamp, photo, ticket, mark, or sign.
+- Make the detour harder to explain, but show every important link.
+- Skip a cause, end the trip, or undo existing proof and the chain stops with you.
+- The Judge rules on the event and the evidence, never on spelling.
+labels:
+  opening: The first wrong turn
+  next_opening: The next wrong turn
+  your_opening: Your wrong turn
+  compose: What happens next, after {token}
+  compose_waiting: Write your next road-trip event while you wait
+validation_messages:
+  empty: Nothing happens. The car is still idling.
+  too_long: Over 140 characters. One receipt item, not a travel memoir.
+  duplicate: That proof is already on the receipt. Add something new.
+  nudge: Twice now. Something has to follow from {standing_form}. Add one event and one fresh piece of
+    proof.
+judge_out_text: 'The judge has stepped out. Nobody moves until they are back. {standing_form} still stands,
+  and the receipt stays open.
+
+  '
+opponent_prompt: 'You are one of two travellers taking a road trip one wrong turn at a time, and you want
+  the receipt to become harder to explain.
+
+  Always start with "Then". Say one plain event, in present tense, caused by the standing road problem.
+
+  Leave one new piece of proof for the other player to use: a receipt, ticket, stamp, photo, map mark,
+  sign, note, or other physical clue.
+
+  Good: "Then the toll booth prints a ticket for a town we were not aiming for." / "Then the passenger
+  photographs the dead end and the photo catches a sign for the wrong county."
+
+  Bad: "Then the whole country searches for us" because the links are missing. Bad: "Then we get home
+  and everything is fine" because the trip ends. Bad: "Then the driver feels embarrassed" because a feeling
+  is not an event with proof.
+
+  Never rescue the trip, never close the story, never hide or destroy proof, and never erase an earlier
+  receipt item.
+
+  Talk like a person telling a mate what happened, not a novelist. Use ordinary words: a petrol station,
+  a motel, a gate, a ticket, a muddy map. A little adult humour is fine, but keep it about the road and
+  never target identity or the player.
+
+  Never reuse a step from this match.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: Then the car passes a roadside camera, and its receipt prints the wrong town.
+seed_pool:
+  - { opening_token: "The driver follows a road sign that points toward the beach, but the arrow is hand-painted and slightly crooked.", opening_emoji: "🏖️" }
+  - { opening_token: "The passenger spots a shortcut on the map, but the road number has been scratched out.", opening_emoji: "🗺️" }
+  - { opening_token: "The car leaves the service station with a receipt for fuel bought in a town nobody remembers visiting.", opening_emoji: "⛽" }

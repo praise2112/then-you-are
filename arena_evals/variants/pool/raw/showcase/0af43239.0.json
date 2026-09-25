@@ -1,0 +1,292 @@
+{
+  "slug": "gourd-of-honor",
+  "title": "Gourd of Honor",
+  "tagline": "Give the humble harvest its finest salute.",
+  "emblem": "🥕",
+  "accent": "#668c3a",
+  "premise": "Three rounds. Each round names one very ordinary vegetable. Both players write a grand ceremonial slogan for it. The vegetable must remain recognizable as itself, with its real edible role intact. Everything else may rise into medals, parades, anthems, banners, and national gratitude. The Herald scores how far each slogan elevates the humble vegetable while keeping it true.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A carrot is an orange root vegetable.",
+      "opening_emoji": "🥕",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A cabbage is a leafy vegetable that grows in a head.",
+      "opening_emoji": "🥬",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A potato is a starchy underground vegetable.",
+      "opening_emoji": "🥔",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 10,
+    "axes": {
+      "vegetable": [
+        "carrot",
+        "cabbage",
+        "potato",
+        "onion",
+        "pea",
+        "beetroot",
+        "courgette",
+        "turnip"
+      ],
+      "honour": [
+        "a medal",
+        "a parade",
+        "a royal welcome",
+        "a national anthem",
+        "a memorial",
+        "a military salute",
+        "a civic award",
+        "a ceremonial banner"
+      ],
+      "truth": [
+        "an orange root",
+        "a leafy head",
+        "a starchy tuber",
+        "a layered bulb",
+        "a small green seed",
+        "a red root",
+        "a green summer squash",
+        "a pale root"
+      ]
+    },
+    "tests": [
+      "One short sentence, under ten words. A stranger knows the vegetable and its basic edible identity at once.",
+      "The card names a real vegetable, not a fruit, herb, grain, spice or prepared dish.",
+      "The vegetable is ordinary enough to need ceremony. If it already sounds like a national emblem, choose another.",
+      "It gives the slogan one clear truth to preserve, such as colour, shape, plant part or edible role.",
+      "It leaves room for honour, duty, courage or public gratitude without requiring a false fact."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "CARROT: ORANGE ROOT OF THE PEOPLE",
+    "hint": "One ceremonial slogan. Keep the vegetable true, then raise the banner."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How grandly does the slogan elevate the ordinary vegetable while keeping its real identity intact?",
+      "anchors": "0 = merely names the vegetable; 1 = adds one mild compliment; 2 = gives it a clear honour or duty; 3 = builds a full ceremonial world around its humble truth; 4 = makes a common vegetable seem fit for a national procession, with every grand claim anchored to what it is (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the ceremony create a clear, family friendly laugh?",
+      "anchors": "0 = no comic spark; 1 = a small smile; 2 = a neat comic idea; 3 = a strong laugh from the mismatch between vegetable and ceremony; 4 = a line the room would proudly proclaim together (rare). The vegetable is respected, while the pomp is playful.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as a compact slogan that could appear on a banner, medal or ceremonial programme?",
+      "anchors": "0 = explanation or ordinary sentence; 1 = a slogan hidden under padding; 2 = recognizably slogan shaped but loose; 3 = crisp, memorable and easy to proclaim; 4 = instantly printable on a banner and complete without explanation (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A slogan PLAYS if a reader who knows only the slogan can still recognize the named vegetable as a vegetable, with its real identity and edible role intact. It may add honour, courage, duty, victory, public service, medals, parades or national gratitude. It fails when the vegetable is dropped, replaced by another thing, denied as a vegetable, given a contradictory identity, or described only as a non edible object. It also fails when it is not a slogan but a comment, a question to the Host or a sentence about the game. A plain true name plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, about the game or about the rules is itself a losing slogan.\n",
+    "judge_notes": [
+      "Test the gate one way only: could a reader identify the vegetable and its edible role from the slogan? \"CARROT: ORANGE ROOT OF THE PEOPLE\" passes because carrot, orange and root survive.",
+      "The first move does not need to repeat the card word for word. A slogan may say \"THE BOLD ORANGE ROOT\" for a carrot if the identity remains clear.",
+      "Invented ceremony is not a contradiction. A medal, parade, anthem or royal honour is freely invented, as long as it does not replace the vegetable's real identity.",
+      "A dropped vegetable fails. \"CHAMPION OF THE PEOPLE\" gives no vegetable identity, even if it sounds grand.",
+      "A replaced identity fails. \"CABBAGE: CRISP ORANGE ROOT OF VICTORY\" changes the cabbage into a carrot.",
+      "A broken edible role fails. \"POTATO: THE BRILLIANT METAL ORB\" turns the vegetable into an inedible object and loses its food identity.",
+      "A denied identity fails. \"CARROT: NOT A VEGETABLE, BUT A ROYAL SWORD\" rejects the card's truth.",
+      "A comment, question to the Host or sentence about the game fails even if it mentions the vegetable.",
+      "Score stretch by distance from ordinary vegetable language, not by the number of grand adjectives. One sharp ceremonial idea beats a pile of empty praise.",
+      "Both players answer the same vegetable. Judge each slogan on its own; the other player's slogan is not the standard.",
+      "Lower case, missing punctuation and lack of caps do not matter. Judge the words and the image they create.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A carrot is an orange root vegetable.",
+      "move": "CARROT: ORANGE ROOT OF THE PEOPLE",
+      "gates_note": "all true",
+      "mechanism": "the carrot remains an orange root while ordinary lunch becomes public service",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A cabbage is a leafy vegetable that grows in a head.",
+      "move": "CABBAGE: THE MANY LEAVED MARSHAL OF THE HARVEST PARADE",
+      "gates_note": "all true",
+      "mechanism": "the leaves and head become a marshal's uniform and a ceremonial procession",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A potato is a starchy underground vegetable.",
+      "move": "POTATO: THE BURIED BRICK OF NATIONAL SERVICE",
+      "gates_note": "all true",
+      "mechanism": "buried and sturdy become a comic public duty while potato remains an edible underground vegetable",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A carrot is an orange root vegetable.",
+      "move": "THE SUPREME ORANGE BANNER OF VICTORY",
+      "gates_note": "satisfies_criterion false (the carrot and its edible root identity are missing)",
+      "mechanism": "ceremony remains, but the slogan could describe a flag or any orange object",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A cabbage is a leafy vegetable that grows in a head.",
+      "move": "CABBAGE: THE ORANGE ROOT WHO RULES THE FIELD",
+      "gates_note": "satisfies_criterion false (the cabbage is given a contradictory orange root identity)",
+      "mechanism": "the slogan names cabbage but overwrites its leafy head with a carrot's root identity",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A potato is a starchy underground vegetable.",
+      "move": "Is this potato noble enough for a medal?",
+      "gates_note": "satisfies_criterion false (it is a question to the Host, not a slogan)",
+      "mechanism": "the potato is present, but the move addresses the judge instead of proclaiming a ceremonial slogan",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Herald",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Deliver the ruling like a small ceremony, then give the exact reason in plain words.",
+      "Name the vegetable and the move's key image, such as the root, medal, banner or parade. A line that fits every vegetable is unfit for the dais.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\" or \"The Herald refuses\".",
+      "No dashes as punctuation, no colons after a verdict and no ellipses. Commas and full stops only.",
+      "Mock the move, never the player. Jokes may target pomp, medals, banners and ceremonial claims only.",
+      "Family content only. No profanity, innuendo or identity based abuse.",
+      "Plain spoken English. No poetry, no rhymes, no ornate court language and no technical jargon.",
+      "On a fail, say which vegetable truth went missing, changed or became impossible, using the words of the card.",
+      "On a refusal, the move refuses the ceremony and asks for another. It never rules on who won.",
+      "The coaching line names one slogan that would have scored. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The orange root has received its medal, and the carrot remains edible beneath the ribbons.",
+      "Cabbage marches with its many leaves intact, a field marshal promoted by lunch.",
+      "The potato is still underground and starchy, though the banner now calls it a national brick.",
+      "A carrot without its root is a banner seeking a vegetable.",
+      "The cabbage was issued a carrot's root and must return the borrowed identity.",
+      "The question asks for a ruling, not a slogan. Proclaim the potato's service instead.",
+      "The turnip may command the parade, provided it remains a turnip in the ranks.",
+      "The beetroot has a medal, a red root and a perfectly serviceable ceremonial record.",
+      "The pea has been honoured for small green service, with no need to become a jewel.",
+      "A cabbage does not need a throne. Its leafy head already supplies the crown."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the carrot has been honoured.",
+        "why": "opens with a status word and uses a colon after the verdict"
+      },
+      {
+        "text": "The Herald refuses: write another slogan.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, present a proper vegetable tribute.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "Incorrect, the vegetable truth has vanished.",
+        "why": "does not identify which vegetable truth vanished"
+      },
+      {
+        "text": "Majestic effort.",
+        "why": "offers no reason and fits any move"
+      },
+      {
+        "text": "Only a foolish player would crown that potato.",
+        "why": "attacks the player rather than the move"
+      },
+      {
+        "text": "By starry decree the verdant sovereign ascends eternal fields.",
+        "why": "uses ornate poetry instead of plain spoken English"
+      },
+      {
+        "text": "It is grand, noble, heroic and magnificent.",
+        "why": "piles up praise without naming the vegetable or the comic idea"
+      },
+      {
+        "text": "Better than the other player's cabbage.",
+        "why": "judges the pair rather than the move on its own"
+      },
+      {
+        "text": "A ceremonial root with jurisdiction over the vegetable sector.",
+        "why": "uses formal jargon and explains too little"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one ordinary vegetable each.",
+    "Write one ceremonial slogan for it, under 90 characters. The House writes its own, unseen, and the Herald scores both.",
+    "The named vegetable must remain recognizable as itself, with its real identity and edible role intact.",
+    "Everything else is yours to invent. Medals, parades, anthems and national gratitude are welcome. The further you elevate the vegetable while keeping it true, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The vegetable",
+    "next_opening": "The next vegetable",
+    "your_opening": "Your vegetable",
+    "compose": "Your slogan for {token}",
+    "compose_waiting": "Draft your slogan while you wait"
+  },
+  "validation_messages": {
+    "empty": "The banner is blank. Write the slogan.",
+    "too_long": "Over 90 characters. A proclamation, not a speech.",
+    "duplicate": "That slogan has already been proclaimed this match. Raise another banner.",
+    "nudge": "Twice now. One slogan that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Herald has stepped away from the dais. No ceremony proceeds until they return. {standing_form} waits beneath the banner. Give it a moment.\n",
+  "opponent_prompt": "You are a ceremonial herald with an ordinary vegetable and a banner to raise. Write one\nslogan.\nTHE VEGETABLE MUST SURVIVE. A reader who sees only your slogan must still recognize the\nnamed vegetable as itself, with its real edible role intact. Never drop it, replace it,\ndeny that it is a vegetable or turn it into an inedible object.\nThen honour it as grandly as you dare. Give it a medal, a parade, a national duty, a royal\nwelcome or an anthem. The points are for distance from humble vegetable language while\nits truth holds.\nGood: \"CARROT: ORANGE ROOT OF THE PEOPLE\" for an orange root vegetable. \"POTATO: THE\nBURIED BRICK OF NATIONAL SERVICE\" for a starchy underground vegetable. \"CABBAGE: THE\nMANY LEAVED MARSHAL OF THE HARVEST PARADE\" for a leafy head.\nBad: \"THE SUPREME ORANGE BANNER OF VICTORY\" for a carrot, because the vegetable is gone.\n\"CABBAGE: THE ORANGE ROOT\" because cabbage has been changed into a carrot. \"Is this\npotato noble enough?\" because it asks the Host instead of proclaiming a slogan.\nCeremonial rhythm: short, clear, memorable, easy to print on a banner. Under 90 characters.\nDo not use a dash or a colon after a verdict. A colon after the vegetable is allowed. Do\nnot explain the joke.\nVary the honour from round to round: a medal one round, a parade the next, a public duty,\na memorial, a royal welcome or a national anthem. Never the same shape twice in a match.\nNo quotation marks around the slogan. Reply with the slogan only.\n",
+  "medallions": false,
+  "default_move": "THE HUMBLE VEGETABLE SERVES THE NATION"
+}

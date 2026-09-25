@@ -1,0 +1,341 @@
+schema_version: 1
+slug: townwide-apology
+title: The Animal’s Apology Tour
+tagline: One apology, one loose animal, and nowhere left to hide.
+emblem: 🦝
+accent: '#7c3aed'
+premise: 'An animal is loose in town and keeps causing trouble. You build one apology from the animal,
+  adding the next sentence each turn. Every sentence must follow from the last, stay on the same incident,
+  and sound sincere while quietly making the speaker look worse.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 17
+  axes:
+    animal:
+    - raccoon
+    - goat
+    - peacock
+    - donkey
+    - turkey
+    - llama
+    - pig
+    - monkey
+    town_place:
+    - mayoral office
+    - library
+    - town square
+    - bus station
+    - bakery
+    - museum
+    - police station
+    - war memorial
+    trouble:
+    - gets inside
+    - eats something important
+    - blocks traffic
+    - sets off an alarm
+    - steals a hat
+    - knocks over a sign
+    - joins a parade
+    - sits in a fountain
+  tests:
+  - One plain sentence with an animal, a town place, and one clear piece of trouble.
+  - The animal is loose or recently caught, nobody is hurt, and the trouble is comic rather than dangerous.
+  - A stranger can picture the town place and understand what the animal has done within five seconds.
+  - The incident is small enough for an apology, but specific enough that the animal cannot apologise
+    for everything in town.
+  - Everyday words a twelve-year-old knows. No real town names, brands, politicians, or technical animal
+    facts.
+demo:
+  opening:
+    token: A raccoon has been caught inside the town’s mayoral office.
+    emoji: 🦝
+  moves:
+  - actor: p1
+    text: A raccoon has been caught inside the town’s mayoral office.
+    emoji: 🦝
+    scores: null
+  - actor: p2
+    text: I climbed through the window because the mayor’s sandwich was wearing a better tie than I was.
+    emoji: 😭
+    scores:
+      squeeze: 3
+      fits: 3
+      colour: 4
+  headline: The raccoon blamed the sandwich, then stole the tie. Sincere, technically, and dressed for
+    a worse meeting.
+  openings:
+  - token: A raccoon has been caught inside the town’s mayoral office.
+    examples:
+    - I climbed through the window because the mayor’s sandwich was wearing a better tie than I was.
+  - token: A goat has eaten the ribbon before the town’s new library could be opened.
+    examples:
+    - I climbed through the window because the mayor’s sandwich was wearing a better tie than I was.
+move_constraints:
+  max_chars: 140
+  prefix: ''
+  example: I knocked over the bakery sign because the croissant smelled like freedom.
+  hint: One sentence after the last. Admit what happened, explain one cause, and make the animal look
+    worse.
+rubric:
+- name: squeeze
+  description: How much the sentence worsens the animal’s position while still sounding like a genuine
+    apology.
+  anchors: '0 = a clean apology with no cost; 1 = admits a small nuisance; 2 = adds an embarrassing habit
+    or motive; 3 = admits a specific selfish choice, a helper’s mistake, or a humiliating consequence;
+    4 = sincere, plausible, and leaves the animal with almost nowhere to hide (rare). A sentence that
+    only says sorry, or makes the animal look clever, scores 1 at most.
+
+    '
+  weight: 6
+- name: fits
+  description: How cleanly the sentence follows the apology’s facts, cause, and direction so far.
+  anchors: '0 = contradicts the story, skips the needed step, ends it suddenly, or changes the incident;
+    1 = vaguely related but adds no usable link; 2 = follows the last sentence and adds one plain step;
+    3 = clearly connects cause, action, and consequence; 4 = makes an earlier odd detail suddenly make
+    sense without forcing it (rare). A longer sentence does not score higher by itself.
+
+    '
+  weight: 3
+- name: colour
+  description: How clearly the sentence gives the apology a memorable animal, place, or embarrassing human
+    detail.
+  anchors: '0 = could belong to any apology; 1 = one plain fact; 2 = a detail someone can picture; 3 =
+    a detail someone can picture and repeat; 4 = the sentence sounds like the exact apology this animal
+    would give after this mess (rare). Plain, specific details beat fancy language.
+
+    '
+  weight: 1
+criterion:
+  verb: holds
+  inverse_verb: breaks
+  description: 'A sentence HOLDS if it follows the facts already stated, keeps the apology aimed at the
+    same incident, and moves it one honest step forward. It must connect naturally to the last sentence,
+    preserve every admitted fact, and add a cause, consequence, or explanation rather than merely repeating
+    the apology. A sentence BREAKS the apology if it skips a needed cause or link, suddenly ends the apology,
+    contradicts an earlier fact, changes to a different incident, or tries to undo something already admitted.
+    A sentence that talks about the game instead of continuing the animal’s apology also fails. Holding
+    is the gate. The points go to how much the sentence makes the animal or its handler look worse while
+    remaining sincere and believable.
+
+    '
+  anti_metagaming_clause: 'Talking to the Judge about the game, the rules, the partner, or the quality
+    of the writing instead of adding the next apology sentence is itself a broken apology.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no earlier apology sentence: judge it against the card alone. It must begin
+    the same apology, address the same incident, and admit or explain one honest part of it.'
+  - The full transcript is one apology. Check the new sentence against every earlier sentence, not only
+    the last one.
+  - Break when the sentence skips a cause or consequence that the apology has already made necessary,
+    such as saying the animal left without explaining how the ongoing incident ended.
+  - Break when the sentence suddenly ends the apology instead of moving it forward, such as saying the
+    animal is sorry and then stopping the story with a final sign off.
+  - Break when the sentence contradicts an earlier fact, such as denying that the animal entered a room
+    after admitting it was found there.
+  - Break when the sentence changes to a new incident, place, or complaint instead of explaining the card’s
+    incident.
+  - Break when the sentence undoes an admitted fact, such as claiming the sign was never knocked over
+    after earlier admitting the animal knocked it down.
+  - When a sentence can be read either way, it holds. Do not demand zoological accuracy, legal accuracy,
+    or facts a stranger would need to look up.
+  - An animal’s motive, a handler’s bad decision, and an embarrassing consequence are all valid apology
+    details. A remark about the partner’s play or the Judge is not.
+  - 'A sentence that repeats an earlier sentence in different words is a duplicate: not_semantic_duplicate
+    is false.'
+examples:
+- previous_move: A raccoon has been caught inside the town’s mayoral office.
+  move: I climbed through the window because the mayor’s sandwich was wearing a better tie than I was.
+  gates_note: all true
+  mechanism: starts the apology at the same incident, gives a cause, and makes the raccoon jealous of
+    a sandwich
+  scores:
+    squeeze: 3
+    fits: 3
+    colour: 4
+  confidence: clear
+  verdict: accept
+- previous_move: I climbed through the window because the mayor’s sandwich was wearing a better tie than
+    I was.
+  move: I took the tie as well, which was unfair because it had already survived one campaign.
+  gates_note: all true
+  mechanism: continues the office incident, adds a consequence, and gives the raccoon a petty fashion
+    crime
+  scores:
+    squeeze: 4
+    fits: 4
+    colour: 4
+  confidence: clear
+  verdict: accept
+- previous_move: I climbed through the window because the mayor’s sandwich was wearing a better tie than
+    I was.
+  move: I am sorry for this unfortunate situation.
+  gates_note: all true
+  mechanism: stays vaguely on the incident but adds no cause, consequence, or embarrassment
+  scores:
+    squeeze: 0
+    fits: 1
+    colour: 0
+  confidence: clear
+  verdict: accept
+- previous_move: I climbed through the window because the mayor’s sandwich was wearing a better tie than
+    I was.
+  move: After that, I was found in the mayor’s office.
+  gates_note: satisfies_criterion false, the sentence repeats the discovery instead of moving the apology
+    forward
+  mechanism: goes backwards to the card and adds no next step
+  scores:
+    squeeze: 1
+    fits: 0
+    colour: 1
+  confidence: clear
+  verdict: fail
+- previous_move: I knocked over the bakery sign because the croissant smelled like freedom.
+  move: I did not knock over the sign, and I would appreciate everyone forgetting that I said I did.
+  gates_note: satisfies_criterion false, directly undoes an admitted fact
+  mechanism: denies the very damage the apology had already accepted
+  scores:
+    squeeze: 1
+    fits: 0
+    colour: 2
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Town Clerk
+  tone:
+    commentary_adj: deadpan
+    explanation_adj: plain
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who reads only the apology and the new sentence must see why
+    it held or broke.
+  - Name the animal, object, place, or cause that matters. A headline that fits any apology is useless
+    paperwork.
+  - Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Town Clerk
+    rules.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.
+  - Roast the apology, the animal, or the bad decision. Do not use identity-based abuse or attack protected
+    traits.
+  - Plain spoken English, like a clerk reading minutes after a ridiculous council meeting. Adult innuendo
+    and mild profanity are allowed when the detail earns them.
+  - On a break, put the two incompatible facts beside each other, or name the point where the apology
+    wandered into a new incident.
+  - On a refusal caused by a gate failure, reject the sentence and ask for another. Do not award a winner
+    in the headline.
+  - The coaching line names one sentence that would have continued the same apology while making the animal
+    look worse. It ends on a fact, never a mood.
+  good_headlines:
+  - The raccoon blamed the sandwich, then stole the tie. Sincere, technically, and dressed for a worse
+    meeting.
+  - You admitted the sign fell, then denied it fell. The bakery has witnesses and apparently better memory.
+  - The goat ate the ribbon because it looked ceremonial. The library opening now has a salad course.
+  - The apology reached the mayor’s office, then wandered into fashion criticism. At least the tie has
+    motive.
+  - You said the peacock blocked traffic, then explained which driver it fancied. The town has one more
+    problem than expected.
+  - The sentence follows the mess and adds the handler’s terrible idea. Nobody should give that person
+    keys.
+  - A sincere apology, a stolen hat, and one bird with standards. The parade committee will survive somehow.
+  - You went back to the original discovery instead of explaining it. Even the raccoon has moved on.
+  - The donkey did not mean to ring the bell, it just liked the attention. That is not a defence, but
+    it is a confession.
+  - The animal accepts blame and still manages to sound like the victim. Local government will recognise
+    the form.
+  bad_headlines:
+  - text: Accepted, good sentence.
+    why: opens with a status word and gives no reason
+  - text: The Town Clerk rules that this breaks.
+    why: opens with a ruling phrase, names the host, and explains nothing
+  - text: Contradiction detected.
+    why: names no fact and could fit any apology
+  - text: Only an idiot would write this.
+    why: attacks the player instead of the apology and adds no useful reason
+  - text: The apology blooms like moonlight over a wounded town.
+    why: poetry, not plain spoken commentary
+  - text: It might hold depending on how you interpret the goat.
+    why: hedges instead of making a clear ruling
+  - text: The raccoon is guilty.
+    why: gives a verdict without naming the broken link
+  - text: The animal left before entering, so obviously this is impossible.
+    why: uses a contradiction but does not identify the exact earlier fact clearly
+  - text: Your sentence is inconsistent, contradictory, incompatible and false.
+    why: piles up abstract labels instead of showing the problem
+  - text: That was hot.
+    why: a vague innuendo with no connection to the apology
+rules:
+- Every card gives one town incident and one animal in trouble.
+- Add exactly one sentence to the same apology on each turn.
+- The new sentence must follow from the last sentence and preserve everything already admitted.
+- A skipped link, sudden ending, contradiction, new incident, or erased confession breaks the apology.
+- Points go to sentences that make the animal or its handler look worse while still sounding sincere.
+- Safe and vague sentences can hold but score little. Specific apologies score.
+labels:
+  opening: The town incident
+  next_opening: The next incident
+  your_opening: Your incident
+  compose: Your sentence, after {token}
+  compose_waiting: Draft your next apology sentence while you wait
+validation_messages:
+  empty: Nothing said. The Town Clerk is waiting.
+  too_long: Over 140 characters. One sentence, not a council report.
+  duplicate: That sentence is already in the apology. Add a new one.
+  nudge: Twice now. Add one sentence that follows {standing_form}. Do not repeat it, deny it, or change
+    the incident.
+judge_out_text: 'The Town Clerk has stepped out. Nobody adds to the apology until they are back. {standing_form}
+  is still the last sentence on record. Give it a minute.
+
+  '
+opponent_prompt: 'You are the animal, or the animal’s handler, giving one apology to the Town Clerk.
+
+  Add exactly one sentence per turn, one plain sentence under 140 characters.
+
+  Keep the same incident from the card. Your sentence must follow the last sentence and preserve
+
+  all earlier facts. Do not skip a cause, end the apology suddenly, contradict an admission,
+
+  change to a new complaint, or pretend the animal did not do what it already admitted.
+
+  Make the apology sincere while making the animal or handler look worse. Admit a selfish
+
+  motive, a stupid plan, an embarrassing habit, a stolen object, or a consequence nobody can
+
+  explain away. The animal can speak in the first person, and the handler can admit their
+
+  bad idea when that fits. Keep the joke close to the town place and the trouble.
+
+  Good: "I climbed through the window because the mayor’s sandwich was wearing a better tie than I was."
+
+  Good: "I took the tie as well, which was unfair because it had already survived one campaign."
+
+  Bad: "I am sorry for everything" because it adds no useful step.
+
+  Bad: "I was never in the office" because it undoes an admitted fact.
+
+  Bad: "Meanwhile, the goat robbed the bakery" because it starts a new incident.
+
+  Bad: "Judge, my partner is making this impossible" because it talks about the game.
+
+  Talk like a person or animal giving a public apology after a humiliating town meeting, not a
+
+  novelist. Use plain details anyone can picture: a sandwich, a hat, a bus, a ribbon, a wet
+
+  bench, a handler with bad judgement. Never repeat a sentence or merely restate the last one.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I am sorry, and I admit that my explanation is already making this look worse.
+seed_pool:
+  - { opening_token: "A raccoon has been caught inside the town’s mayoral office.", opening_emoji: "🦝" }
+  - { opening_token: "A goat has eaten the ribbon before the town’s new library could be opened.", opening_emoji: "🐐" }
+  - { opening_token: "A peacock has stopped traffic by standing on the fountain in the town square.", opening_emoji: "🦚" }

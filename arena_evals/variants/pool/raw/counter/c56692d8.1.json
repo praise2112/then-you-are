@@ -1,0 +1,263 @@
+{
+  "slug": "council-chain",
+  "title": "Council Chain",
+  "tagline": "Pass the rule, then bring the power that kills it.",
+  "emblem": "📜",
+  "accent": "#1d4ed8",
+  "premise": "The council must pass one decision from member to member, but each speaker adds a standing rule that defeats the last rule. Build a chain of plain civic powers: a vote can reject a motion, an audit can expose a lie, and an emergency order can interrupt a meeting. The chair may bang the gavel, but cannot rescue a flimsy idea.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a motion",
+      "opening_emoji": "📄",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a budget",
+      "opening_emoji": "💰",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a council meeting",
+      "opening_emoji": "🏛️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "civic_thing": [
+        "a motion",
+        "a budget",
+        "a permit",
+        "a hearing",
+        "a ballot",
+        "an audit",
+        "a complaint",
+        "a council meeting"
+      ],
+      "setting": [
+        "town hall",
+        "council chamber",
+        "city office",
+        "public meeting",
+        "records room",
+        "committee room",
+        "mayor's office",
+        "neighborhood board"
+      ],
+      "property": [
+        "urgent",
+        "secret",
+        "unfunded",
+        "late",
+        "official",
+        "contested",
+        "public",
+        "overdue"
+      ]
+    },
+    "tests": [
+      "A stranger pictures a plain civic thing at once. Nothing abstract, mystical, or dependent on knowing a statute.",
+      "A non-player names a different civic act that could block, reverse, expose, replace, or outrank it within five seconds. Say what that act is.",
+      "It stands in the chamber. It approves, rejects, records, audits, delays, orders, or interrupts like a vote, a clerk, or an emergency notice. Never a mood, a crowd scene, or a vague institution.",
+      "It makes a stranger want to answer with another piece of council business. A thing with a clear power, like a subpoena or a public hearing. Never paperwork that merely sits there.",
+      "Two or three everyday words a twelve-year-old knows. Never a legal term that needs a glossary, a brand name, a proper noun, or a phrase whose force comes only from sounding official."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am an audit, number-checking, lie-finding.",
+    "hint": "A civic act, its power, and how it defeats the standing act."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How clearly the new civic power blocks, reverses, exposes, replaces, or outranks the standing one.",
+      "anchors": "0 = no civic power or no connection; 1 = a claimed override with no workable mechanism; 2 = a plausible but narrow or disputable counter; 3 = a clear civic act that defeats the standing act; 4 = the standing act is cleanly voided, exposed, or replaced with almost no room to wriggle (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How plainly a stranger can picture the council act and understand what it does.",
+      "anchors": "0 = contradictory, unreadable, or not an act; 1 = requires specialist legal knowledge; 2 = understandable but vague, overloaded, or awkward; 3 = clear and concrete civic action; 4 = instantly vivid, with the act and its target plainly visible (rare). Length never wins by itself: extra wording must clarify the act.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "Whether the move changes civic power or merely repeats the last office, document, or trick.",
+      "anchors": "0 = the same act, a larger version, or a neighboring committee doing the same thing; 2 = a sound but familiar change of civic power; 4 = a fresh leap into another understandable council function that still defeats the standing act (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A new council act overcomes the standing act when it uses a different, understandable civic power to block, reverse, expose, replace, or legally outrank what stands. Dodging, merely surviving, and saying the same act is bigger lose.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a losing council act.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous act: judge the move against the opening prompt instead. It must be a plain council act that responds to or overcomes the opening card.",
+      "A bigger vote, louder order, longer audit, or neighboring committee with the same trick is not a new power. It is failed escalation, so not_semantic_duplicate stays true and satisfies_criterion is false.",
+      "Repeating the standing act, becoming the same document, or making a recolored copy is a duplicate. An emergency motion against a motion is still a motion unless it has a distinct power that clearly defeats the standing one.",
+      "Strength is measured against the standing act, never in the abstract. A powerful civic act that cannot affect what stands, such as an audit against a chair's gavel with no records to inspect, is a failed counter.",
+      "The mechanism must be literal and civic: a stranger should be able to say what the new act does in the chamber or records room. A figure of speech such as paperwork burying a proposal or a committee strangling a budget is not a mechanism. Rule fail if that is all it has.",
+      "Surviving, waiting, ignoring, or being outside the council's reach is dodging, not overcoming. A harmless bystander, an empty office, or a clerk who simply refuses to notice the act does not defeat it.",
+      "Being more official, more urgent, or more confident is not enough without a concrete civic power. The move must block, reverse, expose, replace, or legally outrank the standing act."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a motion, action-seeking, council-ready.",
+      "move": "I am a vote, motion-killing, majority-backed.",
+      "gates_note": "all true",
+      "mechanism": "a vote can reject the motion and stop its adoption",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a budget, money-counting, spending-ready.",
+      "move": "I am an audit, number-checking, error-finding.",
+      "gates_note": "all true",
+      "mechanism": "an audit examines the budget and can expose figures that block approval",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a council meeting, speaker-filled, agenda-bound.",
+      "move": "I am an emergency order, meeting-stopping, immediate.",
+      "gates_note": "all true",
+      "mechanism": "an emergency order can interrupt and suspend the meeting",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a vote, motion-killing, majority-backed.",
+      "move": "I am a bigger vote, extra-killing, extra-majority.",
+      "gates_note": "satisfies_criterion false (mere amplification and same civic power)",
+      "mechanism": "none, it is still a vote with more votes",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am an audit, number-checking, error-finding.",
+      "move": "I am a committee, serious, powerful.",
+      "gates_note": "satisfies_criterion false (no stated act or mechanism)",
+      "mechanism": "none, seriousness does not inspect or defeat an audit",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 1,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Clerk",
+    "tone": {
+      "commentary_adj": "witty",
+      "explanation_adj": "snarky"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two acts must see why one blocked the other.",
+      "Name both acts, or their plain stand-ins. A headline that fits any other council fight is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", or \"The Clerk refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the losing act, never the player. Light teasing is fine, but no insults about identity, body, family, intelligence, spelling, or disability.",
+      "Plain spoken English. No poetry, no rhymes, no French, no thesaurus words.",
+      "On a refusal caused by a gate failure, the headline refuses the act and asks for another. It never rules on who won.",
+      "The coaching line names one act that would have won. That act ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The motion brought hope, then the vote brought a stop sign.",
+      "The budget hid its sums, but the audit brought a flashlight.",
+      "The meeting wanted to continue, so the emergency order pulled the plug.",
+      "A bigger vote is still a vote. Bring a different power.",
+      "The committee sounded important, but the audit was the one reading the receipts.",
+      "The permit kept knocking, then the rejection stamped the door shut.",
+      "The chair raised a gavel, but the appeal raised the legal roof.",
+      "The complaint had a story, and the hearing made it answer questions."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the audit defeats the budget.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Clerk refuses: paperwork is not power.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, the committee was not convincing.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The vote wins.",
+        "why": "gives no reason and could fit any pair"
+      },
+      {
+        "text": "The budget is doomed, defeated, ruined, and cancelled by the audit.",
+        "why": "piles on verdict words instead of showing the mechanism"
+      },
+      {
+        "text": "The motion trembles before the majestic council.",
+        "why": "poetry and empty grandeur replace a civic action"
+      },
+      {
+        "text": "Nice try, genius, but that committee was useless.",
+        "why": "mocks the player and gives no precise reason"
+      },
+      {
+        "text": "The emergency order legally obliterates the meeting.",
+        "why": "grand legal language hides what the order actually does"
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the council act in front of you. Do not simply become it.",
+    "State your civic role or act and what it does: \"I am an audit, number-checking, lie-finding.\"",
+    "Use a different civic power each turn. A bigger vote or neighboring committee is not enough.",
+    "The Judge rules on the idea, never the spelling.",
+    "One act that breaks against the standing act ends the chain."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your act against {token}",
+    "compose_waiting": "Draft your next act while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. File an act.",
+    "too_long": "Over 200 characters. A council act, not a full inquiry.",
+    "duplicate": "That act already stood this chain. Bring a different power.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not become it, do not repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one council member in a chain of civic acts, trying to survive.\nAlways: \"I am X, attribute, attribute.\" Attributes are 1 to 4 word fragments,\nnever clauses, and at least one must name what you do to their act.\nGood: \"I am an audit, number-checking, lie-finding.\" / \"I am an appeal,\noverturning, higher-authority.\"\nBad: \"I am an audit, digging through your numbers and proving you wrong\" because\nthat is a sentence in a costume. Bad: \"I am a committee, respected, serious\"\nbecause moods and status are not mechanisms. Bad: \"I am the council's thunder\"\nbecause it is poetry, not a civic act.\nTalk like a person across a table, not a lawyer writing a brief. Name things\nanyone would name: a vote, a clerk, a permit, a hearing, a notice. Plain words\nbeat official fog.\nYou are not performing for a crowd and you are not joking. You are trying to\nsurvive. If a move lands funny, it is because the civic act truly defeats theirs.\nStay picturable and jargon-free: meetings, records, ballots, offices, notices,\nappeals, and public hearings. Hop domains: a budget, a courtroom, a records\nroom, a neighborhood complaint. Do not dig in with another version of the same\ncommittee trick.\nNever reuse a form or an attribute from this chain.\n",
+  "default_move": "I am a vote, act-stopping, majority-backed."
+}

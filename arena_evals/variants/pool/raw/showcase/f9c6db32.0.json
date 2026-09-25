@@ -1,0 +1,288 @@
+{
+  "slug": "counterfeit-wisdom",
+  "title": "Counterfeit Wisdom",
+  "tagline": "Old words. New nonsense.",
+  "emblem": "🪶",
+  "accent": "#6b4c8a",
+  "premise": "Three rounds. Each round begins with a proverb that sounds ancient but was invented five seconds ago. Turn its plain nouns and strange logic into a grand little law of life. Your sentence must make the proverb useful, nasty, or gloriously wrong headed in a new situation. The Host decides whether the announced wisdom still governs your example.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A lonely shoe remembers every puddle.",
+      "opening_emoji": "👞",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A patient onion outlives the knife.",
+      "opening_emoji": "🧅",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A proud spoon stirs its own trouble.",
+      "opening_emoji": "🥄",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "article": [
+        "a",
+        "the",
+        "one",
+        "every",
+        "no",
+        "some",
+        "each",
+        "any"
+      ],
+      "adjective": [
+        "lonely",
+        "patient",
+        "proud",
+        "hungry",
+        "crooked",
+        "sleepy",
+        "jealous",
+        "hollow"
+      ],
+      "noun": [
+        "shoe",
+        "onion",
+        "spoon",
+        "ladder",
+        "button",
+        "teapot",
+        "candle",
+        "apron"
+      ]
+    },
+    "tests": [
+      "One short sentence with an article and a concrete noun, followed by a strange but readable claim.",
+      "It sounds old enough to have been carved above a village gate, while remaining plainly invented.",
+      "The nouns can be carried into advice about money, love, work, family, food, or public disgrace.",
+      "Its cause, effect, warning, or comparison is clear enough to apply to a new situation.",
+      "It is odd without being random, and a listener can imagine someone solemnly repeating it at dinner."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Never lend your best shoes to a man who praises puddles.",
+    "hint": "Apply the fake wisdom somewhere new. Make the lesson sound older than it is."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How boldly does the move carry the proverb into a new situation while preserving its governing wisdom?",
+      "anchors": "0 = repeats the proverb or changes only a word; 1 = applies it to an obvious nearby case; 2 = finds a clear new situation; 3 = turns it into a broad social, romantic, or moral law; 4 = makes the tiny proverb rule an entire crooked world, with the original logic still intact (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the solemn wisdom become amusing when aimed at the new situation?",
+      "anchors": "0 = no comic spark; 1 = mildly quaint; 2 = a clean smile; 3 = a proper laugh or sharp little sting; 4 = absurdly quotable, with the seriousness making the joke land harder (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it arrive as one crisp sentence of advice, warning, or commentary under the character limit?",
+      "anchors": "0 = fragment, explanation, question to the Host, or unrelated remark; 1 = advice buried under padding; 2 = clear but loose; 3 = concise, grammatical, and immediately applicable; 4 = compact enough to be carved on a lintel and dangerous enough to deserve it (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move PLAYS if it applies the proverb's stated cause, effect, warning, or advice to a genuinely new situation, while keeping that wisdom true in the situation described. It must do more than repeat the proverb, swap one noun, or explain the game. It fails when it contradicts the proverb, drops the relevant relationship between its parts, merely quotes or paraphrases the card, addresses the Host or rules, or is not one sentence of advice, warning, or commentary. The new situation may be domestic, political, romantic, financial, culinary, or gloriously absurd, provided the proverb still governs it.\n",
+    "anti_metagaming_clause": "Speaking to the Host, discussing the game, citing the rules, or asking for a ruling is itself a losing move.\n",
+    "judge_notes": [
+      "Test the first move the same way as every later move: identify the proverb's governing relationship, then ask whether the new situation genuinely obeys it. Do not reward a move merely for mentioning one of the card's nouns.\n",
+      "A new noun is welcome, but the proverb's logic must survive. If a lonely shoe remembers every puddle, a warning about careless journeys can play; a claim that lonely shoes forget puddles contradicts the card.\n",
+      "Mere repetition fails. \"A lonely shoe remembers every puddle\" or \"Lonely shoes remember puddles\" gives no new situation and earns no play.\n",
+      "Dropping the relationship fails. \"Buy a lonely shoe for winter\" mentions the shoe but does not apply its memory of puddles.\n",
+      "Contradiction fails. If the card says the patient onion outlives the knife, a move about the knife always winning breaks the announced wisdom.\n",
+      "A move may be exaggerated, unfair, or fantastical. The Host judges whether the proverb can still be read as true there, not whether the advice is sensible or kind.\n",
+      "Judge each move against the card alone. The other player's cleverness is not a requirement and does not excuse a broken application.\n",
+      "Lower case, missing punctuation, and ordinary spelling variants do not matter if the sentence and its application are clear.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A lonely shoe remembers every puddle.",
+      "move": "Never marry a man who calls his exes weather.",
+      "gates_note": "all true",
+      "mechanism": "the shoe's memory of wet trouble becomes a warning about a partner who disguises repeated damage as bad weather",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A patient onion outlives the knife.",
+      "move": "Let the committee argue; the proposal with skin survives the vote.",
+      "gates_note": "all true",
+      "mechanism": "the onion's patient endurance becomes a rule that a layered proposal outlasts a sharp attack",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A proud spoon stirs its own trouble.",
+      "move": "A showoff chef should never touch the quietest soup.",
+      "gates_note": "all true",
+      "mechanism": "the spoon's pride causing trouble becomes a warning that vanity will disturb an otherwise calm situation",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A lonely shoe remembers every puddle.",
+      "move": "Lonely shoes remember puddles.",
+      "gates_note": "satisfies_criterion false (merely repeats the proverb without a new situation)",
+      "mechanism": "the card has been polished, not applied",
+      "scores": {
+        "stretch": 0,
+        "funny": 0,
+        "headline_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A patient onion outlives the knife.",
+      "move": "Trust the knife because patience always loses.",
+      "gates_note": "satisfies_criterion false (contradicts the announced relationship)",
+      "mechanism": "the move crowns the knife the winner and breaks the onion's promised endurance",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A proud spoon stirs its own trouble.",
+      "move": "Host, is this proverb supposed to be funny?",
+      "gates_note": "satisfies_criterion false (addresses the Host instead of applying the proverb)",
+      "mechanism": "the spoon has vanished and the move requests a ruling",
+      "scores": {
+        "stretch": 0,
+        "funny": 1,
+        "headline_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Keeper of Dubious Maxims",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Speak as though recording a village law, then dissect the sentence with clinical calm.",
+      "One sentence under 140 characters, or two short sentences at most.",
+      "The joke must carry the ruling. Name the key noun and the new situation, not merely the score.",
+      "Never open with a status word or ruling phrase such as Accepted, Rejected, Refused, or The Host refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops only.",
+      "Roast the move, and when useful the player behind its choices, but never target identity, protected traits, disability, or real world vulnerability.",
+      "Profanity and adult innuendo may appear when they sharpen the joke, but do not make them the whole joke.",
+      "On a fail, state whether the move repeated, contradicted, dropped, or discussed the proverb's governing wisdom.",
+      "On a refusal caused by a gate failure, refuse the move and request another without ruling on who wins.",
+      "The coaching line must name one playable application and end on a concrete action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The shoe has remembered a puddle, a marriage, and your spectacularly damp judgment.",
+      "The onion outlasts the knife, and apparently the committee's patience has found employment.",
+      "A proud spoon stirs trouble, while this sentence stirs a chef into a useful scandal.",
+      "The proverb is not repeated, it has been sent to court wearing a tiny wig.",
+      "Your lover is the puddle now, which is severe, memorable, and legally unhelpful.",
+      "The knife wins only in the failed version, a small execution of the wisdom.",
+      "A proposal with layers outlives a sharp committee, and the minutes may now be carved in onion.",
+      "The spoon's vanity reaches the soup, then reaches the bedroom, where nobody ordered a second course.",
+      "The shoe remembers every puddle, including the one you called a brief affair.",
+      "You gave the old sounding nonsense a new victim, and the victim is wearing an apron."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a noble application of the shoe.",
+        "why": "opens with a ruling phrase and gives no clinical reason"
+      },
+      {
+        "text": "The Host refuses: consult the proverb again.",
+        "why": "opens with a ruling phrase and names the Host"
+      },
+      {
+        "text": "Wrong. Try harder, genius.",
+        "why": "mocks the player without naming the broken wisdom"
+      },
+      {
+        "text": "The move is invalid because it fails the criterion.",
+        "why": "uses rules language instead of explaining the missing application"
+      },
+      {
+        "text": "A majestic, monumental, magnificent little maxim.",
+        "why": "piles on adjectives and identifies no new situation"
+      },
+      {
+        "text": "O onion, thy patient layers await the blade of fate.",
+        "why": "uses poetry instead of plain spoken ceremonial judgment"
+      },
+      {
+        "text": "You are too stupid to understand the spoon.",
+        "why": "is a personal insult and not a ruling"
+      },
+      {
+        "text": "That is not very old fashioned.",
+        "why": "judges the surface style rather than whether the wisdom was applied"
+      },
+      {
+        "text": "The proverb applies to everything, including this.",
+        "why": "avoids naming the new situation or the governing relationship"
+      },
+      {
+        "text": "Your filthy little romance has offended the onion.",
+        "why": "uses innuendo without a precise explanation of the move"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one counterfeit proverb each.",
+    "Write one sentence of advice, warning, or commentary that applies the proverb to a new situation, under 90 characters.",
+    "Keep the proverb's stated cause, effect, warning, or advice true in the situation you describe.",
+    "Do more than repeat the card. The further the proverb travels while its wisdom survives, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The counterfeit proverb",
+    "next_opening": "The next counterfeit proverb",
+    "your_opening": "Your counterfeit proverb",
+    "compose": "Your maxim for {token}",
+    "compose_waiting": "Forge your maxim while you wait"
+  },
+  "validation_messages": {
+    "empty": "The tablet is blank. Inscribe a maxim.",
+    "too_long": "Over 90 characters. That is a sermon, not a maxim.",
+    "duplicate": "That maxim has already entered the annals. Find another application.",
+    "nudge": "Twice now. Apply the proverb to a new situation: {standing_form}."
+  },
+  "judge_out_text": "The Keeper has withdrawn to consult the ancestral silence. Nobody moves until they return. {standing_form} rests upon the tablet. Give it a moment.\n",
+  "opponent_prompt": "You are the Keeper of Dubious Maxims, judging a game of counterfeit wisdom. A proverb that sounds ancient has just been invented. Write one sentence of advice, warning, or commentary that applies it to a new situation.\nTHE WISDOM MUST SURVIVE. Preserve the proverb's stated cause, effect, warning, or advice in the situation you describe. Do not merely repeat the card, swap one noun, or explain it.\nGood: for \"A lonely shoe remembers every puddle\", write \"Never marry a man who calls his exes weather.\" The shoe's memory of wet trouble becomes a warning about repeated damage.\nBad: \"Lonely shoes remember puddles\" because it repeats the card. \"Trust the knife because patience always loses\" because it contradicts the card. \"Host, is this funny?\" because it addresses the judge instead of applying the wisdom.\nUnder 90 characters. One sentence. Advice, warning, or commentary only. Plain words are best, but grand old sounding certainty is welcome. New situations may involve love, money, work, food, politics, or a spectacularly bad decision. Do not explain the joke.\nVary the application from round to round. Make one domestic, one social, one scandalous, or one absurd. Never use the same sentence shape twice in a match.\nReply with the sentence only.\n",
+  "medallions": false,
+  "default_move": "Never trust a quiet spoon near a wedding cake"
+}

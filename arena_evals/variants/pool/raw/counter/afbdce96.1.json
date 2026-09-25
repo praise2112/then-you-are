@@ -1,0 +1,272 @@
+{
+  "slug": "prop-panic",
+  "title": "Prop Panic",
+  "tagline": "Make the last circus prop useless.",
+  "emblem": "🎪",
+  "accent": "#be123c",
+  "premise": "The circus prop table is cursed. Each turn, your prop must physically make the prop just used useless, while the host watches the equipment budget die.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a whip",
+      "opening_emoji": "🪢",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a fire baton",
+      "opening_emoji": "🔥",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a paper target",
+      "opening_emoji": "🎯",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 7,
+    "axes": {
+      "prop": [
+        "bucket",
+        "net",
+        "ladder",
+        "barrel",
+        "rope",
+        "trunk",
+        "hoop",
+        "umbrella"
+      ],
+      "action": [
+        "smothering",
+        "pinning",
+        "covering",
+        "blocking",
+        "soaking",
+        "trapping",
+        "hiding",
+        "cutting"
+      ],
+      "target": [
+        "the whip",
+        "the fire baton",
+        "the paper target",
+        "the juggling pins",
+        "the high wire",
+        "the clown horn",
+        "the cannon",
+        "the silk scarf"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one ordinary circus prop and one immediate physical use against the previous prop.",
+      "The prop must remove, jam, break, hide, or control what the previous prop does, not merely survive it or stand nearby.",
+      "The action must happen now and be watchable, like a bucket smothering fire or a net tangling a wheel.",
+      "It must be a prop rather than a performer, trick, feeling, command, or vague force. No escaping danger by becoming absent.",
+      "Use plain everyday words a twelve-year-old knows. No brand names, technical circus jargon, proper nouns, or elaborate scene."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am the bucket, smothering the fire baton under wet sand.",
+    "hint": "Name one prop and one immediate use against the last prop."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and completely the new prop makes the previous prop useless.",
+      "anchors": "0 = no physical action against it; 1 = an action is claimed but barely affects its function; 2 = it interferes partly or only under a contestable condition; 3 = it clearly removes, jams, breaks, hides, or controls the function; 4 = it shuts the prop down in one obvious move, rare.\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the prop and its immediate use.",
+      "anchors": "0 = unreadable or self contradicting; 1 = needs special knowledge or leaves the action unclear; 2 = understandable but awkward, vague, or overpacked; 3 = concrete and easy to picture; 4 = crisp, vivid, and physically exact, rare.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the counter is without sacrificing a plain, workable mechanism.",
+      "anchors": "0 = the obvious repeat, a larger version, or nearly the same prop and action; 2 = a sensible variation from a different corner of the circus; 4 = an unexpected prop with a clean physical answer, rare. Strange wording is not novelty.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A prop OVERCOMES the previous prop if it physically removes, jams, breaks, hides, or controls that prop's function in an immediate, concrete way. Fleeing, enduring, ignoring, enlarging, or offering a related prop that does not act on it fails. The move must name one prop and one immediate use against the last prop.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player prop. Judge the move against the opening card instead, and check whether the named prop performs the stated use against that card's prop or function.\n",
+      "A bigger, stronger, faster, or duplicate version of the previous prop is not a counter. A larger bucket after a bucket, or a sharper whip after a whip, does not make the standing prop useless by itself.\n",
+      "A related prop with no action is not enough. A rope beside a whip, a hoop near a baton, or a matching target does not count unless it physically acts on the standing prop.\n",
+      "The mechanism must be literal and immediate. Smothering, pinning, cutting, covering, soaking, trapping, or controlling must be something a stranger could watch happen.\n",
+      "Surviving, dodging, fleeing, hiding yourself, or being unaffected is not overcoming. The new prop must act on the previous prop or its function.\n",
+      "A trick, performer, animal, weather event, command, or abstract force is not an ordinary prop and fails the prop gate.\n",
+      "The move must be one concrete prop in one concrete use. A chain of several props or a whole scene does not get extra credit and may fail for being unclear.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am the whip, cracking through the paper target.",
+      "move": "I am the net, tangling the whip before it can crack.",
+      "gates_note": "all true",
+      "mechanism": "the net catches and jams the whip",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am the fire baton, burning at both ends.",
+      "move": "I am the bucket, drowning the flames in wet sand.",
+      "gates_note": "all true",
+      "mechanism": "the bucket smothers the fire and removes the baton’s burning function",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am the juggling pins, flying through the air.",
+      "move": "I am a larger juggling pin, flying even higher.",
+      "gates_note": "satisfies_criterion false, mere amplification and no action against the pins",
+      "mechanism": "none, it is the same kind of prop continuing the same function",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am the high wire, carrying the acrobat above the ring.",
+      "move": "I am a safety net, waiting below.",
+      "gates_note": "satisfies_criterion false, it does not remove, jam, break, hide, or control the high wire",
+      "mechanism": "none, the net merely waits and does not act on the wire",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am the clown horn, honking across the tent.",
+      "move": "I am the trunk, swallowing the horn and sealing its lid.",
+      "gates_note": "all true",
+      "mechanism": "the trunk encloses the horn so it cannot be reached or sounded",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Equipment Manager",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger should see the physical action from the two props.",
+      "Name both props, or use plain stand ins that clearly mean them.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Equipment Manager refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Roast the prop choice or the move, not protected identity traits. Player jabs may be light and generic, never cruel.",
+      "Plain spoken English. No poetry, fake circus patter, or technical vocabulary.",
+      "On a refusal caused by a gate failure, ask for another prop. Do not pretend the failed move won anything.",
+      "The coaching line names one prop and one physical action that would have worked. It ends on that action, not on a mood or verdict.",
+      "Adult innuendo and mild profanity are allowed when useful, but do not make them the whole joke."
+    ],
+    "good_headlines": [
+      "The net catches the whip, which is a poor day for flexible equipment.",
+      "The bucket puts out the fire baton. The budget survives another minute.",
+      "The trunk swallows the horn and finally gives the tent some peace.",
+      "A bigger pin is still a pin. Bring something that can stop the juggling.",
+      "The lid closes on the clown horn. Silence gets promoted.",
+      "The rope beside the whip is just workplace gossip. Bring a knot that jams it.",
+      "The umbrella is not scared of the cannon. It just has no way to shut it down.",
+      "The sand smothers the fire baton before the insurance people arrive."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the net catches the whip.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Equipment Manager refuses: that hoop is useless.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, the rope loses.",
+        "why": "opens with a ruling phrase and gives no useful physical reason"
+      },
+      {
+        "text": "The bucket wins.",
+        "why": "does not explain what the bucket does to the fire baton"
+      },
+      {
+        "text": "The net is very brave against the whip.",
+        "why": "uses mood instead of a physical mechanism"
+      },
+      {
+        "text": "The rope has no chance, lol.",
+        "why": "mocks without naming the failed action"
+      },
+      {
+        "text": "The trunk metaphorically devours the horn.",
+        "why": "uses figurative language instead of the literal enclosure"
+      },
+      {
+        "text": "The prop is rejected because the player is an idiot.",
+        "why": "attacks the player rather than the move"
+      },
+      {
+        "text": "The umbrella gets fucked by the cannon, and that is life.",
+        "why": "has profanity but no ruling or mechanism"
+      },
+      {
+        "text": "The hoop circles the rope, perhaps destiny has intervened.",
+        "why": "vague, poetic, and unclear about control"
+      }
+    ]
+  },
+  "rules": [
+    "Make the prop in front of you useless.",
+    "Name one ordinary circus prop and one immediate use against the last prop.",
+    "The Judge rules on the physical idea, not the spelling.",
+    "Fleeing, enduring, enlarging, or standing nearby does not count.",
+    "One prop that fails to act on the standing prop ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your prop against {token}",
+    "compose_waiting": "Draft your next prop while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put a prop to work.",
+    "too_long": "Over 200 characters. This is a prop action, not a rehearsal schedule.",
+    "duplicate": "That prop already stood this match. Bring different equipment.",
+    "nudge": "Twice now. Make a prop physically defeat {standing_form}. Do not become it, dodge it, or repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two circus hands trying to keep the cursed prop table under control.\nAlways name one ordinary prop and one immediate use against the other prop.\nGood: \"I am the bucket, smothering the fire baton under wet sand.\" / \"I am the net, tangling the whip before it can crack.\"\nBad: \"I am the umbrella, staying dry\" because survival is not an action against the prop. Bad: \"I am a bigger hammer\" because size is not a mechanism. Bad: \"I am the ringmaster, ordering it away\" because a person and a command are not an ordinary prop.\nTalk like a person across a damaged equipment table, not a poet. Use plain objects anyone can picture: a bucket, net, trunk, rope, hoop, ladder, barrel, or umbrella.\nYour use must physically remove, jam, break, hide, or control the last prop’s function. A nearby object, a related prop, a trick, and a lucky escape do not count.\nKeep the move concrete and immediate. One prop, one action, one target. Do not build a whole scene or explain the rules.\nNever reuse a prop from this match. Try fresh corners of the circus: fire, juggling, clown gear, rigging, targets, wheels, curtains, and boxes.\nYou are trying to survive, not perform for applause. If the line is funny, it is because the equipment genuinely defeats the equipment.\n",
+  "default_move": "I am the bucket, covering the last prop."
+}

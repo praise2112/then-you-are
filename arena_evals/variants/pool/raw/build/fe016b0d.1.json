@@ -1,0 +1,280 @@
+{
+  "slug": "paper-trail",
+  "title": "Paper Trail",
+  "tagline": "One excuse, six scraps, and a teacher who has seen this nonsense before.",
+  "emblem": "🧾",
+  "accent": "#7c3aed",
+  "premise": "You and a classmate are forging a tiny trail of messages, notes, and receipts to support one lie told to a teacher. Build the trail one document at a time, then roast your partner by making each new scrap more awkward or risky without breaking the story.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Your teacher wants proof that you missed class for a family errand.",
+      "opening_emoji": "🏫",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your teacher wants proof that you missed class because you took a younger cousin to an appointment.",
+      "opening_emoji": "🩺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Your teacher wants proof that you missed class to help a relative move house before the evening.",
+      "opening_emoji": "📦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "proof_need": [
+        "a family errand",
+        "a medical appointment",
+        "a younger cousin",
+        "a house move",
+        "a broken-down car",
+        "a relative at home",
+        "a delivery problem",
+        "a family emergency"
+      ],
+      "paper_type": [
+        "a text message",
+        "a calendar entry",
+        "a shop receipt",
+        "a voicemail",
+        "a handwritten note",
+        "a bus ticket",
+        "an email",
+        "a photo caption"
+      ],
+      "awkward_hook": [
+        "an oversharing parent",
+        "a wrong name",
+        "a suspicious time",
+        "a humiliating detail",
+        "a missing signature",
+        "a dramatic typo",
+        "an inconvenient witness",
+        "a receipt for something silly"
+      ]
+    },
+    "tests": [
+      "One short sentence stating what proof the teacher wants and why the pair missed class.",
+      "The excuse is harmless schoolyard deception, not a real crime, medical claim about a named person, or serious emergency.",
+      "A stranger can tell who needs proof, what the excuse is, and roughly when the absence happened.",
+      "The situation leaves room for a chain of dated scraps, replies, and small pieces of evidence.",
+      "Everyday words a twelve-year-old knows. No real names, brands, addresses, or exact local details, the players bring those."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "8:12 a.m. Dad texts: I picked you up after the dentist. Please stop telling people I was crying.",
+    "hint": "One new scrap. Give its time, sender, receiver, and one line that makes your partner sweat."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How badly this scrap burdens your partner while keeping the shared lie believable.",
+      "anchors": "0 = harmless filler, a plain reminder or boring reply; 1 = a tiny inconvenience; 2 = your partner must own an awkward detail, person, or task; 3 = the scrap makes them explain something embarrassing and specific; 4 = it creates a deliciously tight corner with a witness, mistake, or risky paper trail, while still feeling possible. A scrap that only embarrasses you or makes the lie collapse scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the new scrap continues the timeline, document chain, and facts already written.",
+      "anchors": "0 = skips a needed link, reverses a fact, lands after the trail is finished, or contradicts a document; 1 = technically follows but adds no useful connection; 2 = follows the last scrap and preserves the excuse; 3 = clearly links sender, receiver, time, and proof; 4 = makes an earlier scrap suddenly useful or explains why the next paper had to exist, rare. Extra words do not earn fit.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How vividly the scrap feels like a real, slightly cursed school lie.",
+      "anchors": "0 = generic text anybody could send; 1 = one plain fact; 2 = a believable voice or concrete object; 3 = a line you can hear someone actually typing; 4 = painfully specific, funny, and instantly memorable without becoming impossible, rare. Plain wording beats fancy forgery jargon.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it is the next dated or replied-to scrap that fits every document already shown. It must name a sender, receiver, and one line of text, and it must continue the same excuse. A skipped link, a jump past a needed message, declaring the proof complete, or reversing a written fact is a BREAK. A scrap also breaks if it starts a different excuse, changes who was involved, or makes the pair admit the lie. Holding is the gate. Points go to what the scrap does to the partner: an embarrassing message, a witness they must explain, a receipt for something stupid, or a parent who overshares. Safe paperwork passes but scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Teacher about the game, the rules, the score, or how the partner is playing, instead of adding a scrap, is itself a broken trail.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier scrap: judge it against the card alone. It must start a plausible trail for the stated excuse, with a sender, receiver, time, and line.",
+      "The full transcript is the paper trail. Check the new scrap against every earlier scrap, not only the last one.",
+      "A dated scrap must come after the latest dated scrap, unless it is clearly a reply to an earlier message and does not jump beyond the current chain.",
+      "Break a skipped link when the move assumes a needed message, receipt, reply, or handoff that has not been written and cannot be read as the immediate next scrap.",
+      "Break a move that declares the proof complete, submits the final evidence, ends the excuse, or otherwise jumps past the continuing trail.",
+      "Break a reversal when a sender, receiver, time, object, reason, or quoted fact changes after being written. Do not break on tiny wording differences that a stranger would read as the same fact.",
+      "When a detail can be read either way, it holds. Do not demand real-world opening hours, travel times, phone records, or legal standards of proof.",
+      "A scrap may add awkward relatives, receipts, typos, or witnesses. Those are the point of the game unless they contradict the existing trail.",
+      "A remark about the partner's document is not a scrap. Saying the partner is lying, cheating, or playing badly is a meta move.",
+      "A scrap that repeats an earlier document in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Your teacher wants proof that you missed class for a family errand.",
+      "move": "7:42 a.m. Dad texts me: I am picking you up for Gran's appointment. Bring the folder.",
+      "gates_note": "all true",
+      "mechanism": "starts the trail with a plausible time, sender, receiver, family errand, and an object that can return later",
+      "scores": {
+        "squeeze": 1,
+        "fits": 3,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "7:42 a.m. Dad texts me: I am picking you up for Gran's appointment. Bring the folder.",
+      "move": "7:46 a.m. I reply to Dad: Is this the appointment where Gran shouts about the biscuits again?",
+      "gates_note": "all true",
+      "mechanism": "answers the first text, keeps the family errand, and forces the partner to carry an oddly specific biscuit scandal",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "7:46 a.m. I reply to Dad: Is this the appointment where Gran shouts about the biscuits again?",
+      "move": "8:03 a.m. Dad replies: Yes, and I found your folder under the cat. Do not mention the biscuits to the nurse.",
+      "gates_note": "all true",
+      "mechanism": "directly replies, preserves the errand, and gives the partner a cat, a folder, and a biscuit-related warning to defend",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "7:42 a.m. Dad texts me: I am picking you up for Gran's appointment. Bring the folder.",
+      "move": "9:20 a.m. The nurse emails: Your appointment is cancelled, so there is no need to come.",
+      "gates_note": "satisfies_criterion false, skipped_link true and reverses the active errand",
+      "mechanism": "jumps to a new outside document and cancels the very errand the trail is meant to support",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "7:42 a.m. Dad texts me: I am picking you up for Gran's appointment. Bring the folder.",
+      "move": "8:01 a.m. I submit the folder and receipt to my teacher, proving everything.",
+      "gates_note": "satisfies_criterion false, declares the proof complete",
+      "mechanism": "the trail has barely started and this move slams the paperwork shut like a tiny idiot filing cabinet",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Teacher",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hyped"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Bring loud classroom energy. The joke should explain the ruling, not float above it like a useless balloon.",
+      "Name the exact scrap, time, person, object, or contradiction. Generic hype is lazy hype.",
+      "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Teacher rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the document and the spectacular choices inside it. Roast-level jabs at the player are allowed, but no attacks on identity, body, family, intelligence, or spelling.",
+      "Plain spoken English with frantic school-office energy. Profanity and adult innuendo are allowed when useful, never gratuitous.",
+      "On a break, put the two incompatible scraps side by side, or point at the missing link, finished trail, or reversed fact.",
+      "On a refusal, reject the scrap and demand the next one. Do not pretend the player has lost if the gate failed.",
+      "The coaching line names one scrap that would have held and made the partner sweat. It ends on a fact, never a mood.",
+      "Use savage hype, but keep the reason readable to a stranger who sees only the card, the trail, and the new scrap."
+    ],
+    "good_headlines": [
+      "Dad says 7:42, the receipt says 8:10, and your folder is under a cat. This lie has achieved paperwork.",
+      "You asked about the biscuit incident, so now your partner owns a furious grandmother and a nurse with questions.",
+      "The reply lands after the text, the excuse survives, and the cat is now a key witness. Incredible rubbish.",
+      "You submitted the proof before creating the proof. That is not a paper trail, that is a paper puddle.",
+      "The nurse cancels an errand you were supposedly travelling to. Your alibi just tripped over its own clipboard.",
+      "A family text, a cursed folder, and one warning about biscuits. The teacher hates it, which means it is working.",
+      "The receipt follows the message and your partner now has to explain why the errand involved three cakes.",
+      "You changed Dad into Mum halfway through the chain. Even the photocopier is calling bullshit.",
+      "The timestamp fits, the reply bites, and somebody has put the evidence in a lunchbox. Beautifully stupid.",
+      "You skipped the pickup message and teleported to the receipt. Lovely leap, absolutely no legs."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the text fits.",
+        "why": "opens with a status word and gives no chaotic picture"
+      },
+      {
+        "text": "The Teacher rules that this breaks the trail.",
+        "why": "opens with a ruling phrase and names the host instead of the evidence"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "generic, bloodless, and impossible to connect to this trail"
+      },
+      {
+        "text": "You are a stupid liar.",
+        "why": "attacks the player instead of roasting the scrap, and uses a personal insult"
+      },
+      {
+        "text": "The chronology collapses into an epistemological abyss.",
+        "why": "fancy nonsense, not plain spoken classroom chaos"
+      },
+      {
+        "text": "Maybe it works, maybe it does not, who can say.",
+        "why": "hedges instead of giving a fair ruling"
+      },
+      {
+        "text": "Refused, nice receipt though.",
+        "why": "starts with a status word and never explains the failure"
+      },
+      {
+        "text": "The appointment was at 9:00 in a town three time zones away, so fail.",
+        "why": "relies on lookup trivia and ends with a ruling word"
+      },
+      {
+        "text": "Guilty as charged.",
+        "why": "no reason, no document, no paper trail"
+      },
+      {
+        "text": "The message is inconsistent, contradictory, incompatible, and invalid.",
+        "why": "piles up synonyms instead of naming the actual broken link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card gives you one excuse and one teacher who wants proof.",
+    "Add one new scrap per turn with its time, sender, receiver, and one line of text.",
+    "The new scrap must be the next link in the trail and must fit every document already shown.",
+    "Skip a needed link, declare the proof finished, or reverse a written fact, and the trail breaks on the spot.",
+    "Points go to scraps that make your partner own awkward people, objects, mistakes, or explanations.",
+    "Safe paperwork passes but scores little. Specific, connected, embarrassing paperwork scores."
+  ],
+  "labels": {
+    "opening": "The excuse",
+    "next_opening": "The next excuse",
+    "your_opening": "Your excuse",
+    "compose": "Your next scrap, after {token}",
+    "compose_waiting": "Draft your next scrap while you wait"
+  },
+  "validation_messages": {
+    "empty": "No scrap added. The teacher is staring at the empty page.",
+    "too_long": "Over 140 characters. One scrap, not a whole filing cabinet.",
+    "duplicate": "That scrap is already in the trail. Add a new link.",
+    "nudge": "Twice now. Add the next scrap after {standing_form}. Do not repeat it, do not skip it, do not declare victory."
+  },
+  "judge_out_text": "The teacher has stepped out. Nobody submits anything until they are back. {standing_form} is still the last scrap in the trail. Give it a minute.\n",
+  "opponent_prompt": "You are one of two classmates building a fake paper trail for the teacher. One scrap per turn, one or two plain sentences.\nEvery scrap must include its time, sender, receiver, and one line of text. It must be the next dated scrap or a clear reply to an earlier one. Never skip a needed message, receipt, handoff, or reply. Never declare the proof complete, end the excuse, or reverse a fact already written.\nMake each scrap cost your partner something while keeping the excuse believable. Give them an oversharing parent, a stupid receipt, a witness, a typo, a missing signature, or an object they must explain. Make the partner own the awkward bit. Keep the same family errand and the same people unless the trail already supports a change.\nCall them my mate here, he, she, Dad, Mum, or another role already in the trail. Do not introduce real names unless one is already present.\nGood: 7:42 a.m. Dad texts me: I am picking you up for Gran's appointment. Bring the folder. / 7:46 a.m. I reply to Dad: Is this the appointment where Gran shouts about the biscuits again?\nBad: I send the final proof to the teacher. That ends the trail. Bad: The nurse emails that the appointment was cancelled. That reverses the active excuse. Bad: We were actually at the cinema. That starts a new story. Bad: Teacher, you cannot prove anything. That talks about the game instead of adding a scrap.\nTalk like a person typing under a desk, not a novelist. Use ordinary messages, receipts, notes, calendars, and emails. Build from the last scrap and remember every earlier fact. Never repeat a document or skip to the ending.\n",
+  "medallions": false,
+  "default_move": "8:05 a.m. I reply to my mate here: I found the receipt, and nobody has noticed the spelling mistake yet."
+}

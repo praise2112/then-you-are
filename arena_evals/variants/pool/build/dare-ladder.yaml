@@ -1,0 +1,333 @@
+schema_version: 1
+slug: dare-ladder
+title: The Dare Ladder
+tagline: One harmless dare. Keep adding rungs until the ladder wobbles.
+emblem: 🪜
+accent: '#ea580c'
+premise: 'You and a friend are building one ridiculous dare, rung by rung. Start with a harmless dare,
+  then take turns adding exactly one harder rule while keeping every earlier rule. If your rung breaks
+  the ladder, you lose suddenly. Keep it safe, doable, and ready for one more step.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 18
+  axes:
+    object:
+    - a spoon
+    - a paper cup
+    - a cushion
+    - a scarf
+    - a book
+    - a soft toy
+    - a paper hat
+    - a cardboard tube
+    action:
+    - carry it across the room
+    - balance it on one hand
+    - move it from one chair to another
+    - walk it around a table
+    - place it on a marked spot
+    - pass it from one hand to the other
+    - take it through a doorway
+    - bring it back without dropping it
+    setting:
+    - in a living room
+    - between two chairs
+    - across a clear floor
+    - around a small table
+    - from the sofa to the door
+    - beside a row of cushions
+    - from one marked spot to another
+    - across a quiet hallway
+  tests:
+  - One short sentence with one harmless object, one clear action, and one ordinary setting.
+  - The dare is safe for a family room. No climbing, running, touching strangers, dangerous objects, humiliation,
+    or damage.
+  - A stranger can tell what the person must do within five seconds.
+  - The starting dare is easy enough to accept and has room for several harder rules.
+  - Everyday words a twelve-year-old knows. No brand names, street names, real people, or private information.
+demo:
+  opening:
+    token: Dare someone to carry a spoon across the room.
+    emoji: 🥄
+  moves:
+  - actor: p1
+    text: Dare someone to carry a spoon across the room.
+    emoji: 🥄
+    scores: null
+  - actor: p2
+    text: Do it while wearing oven mitts.
+    emoji: 😭
+    scores:
+      squeeze: 3
+      fits: 3
+      colour: 3
+  headline: Oven mitts on, spoon still crossing. That is one tidy rung, and the spoon is already nervous.
+  openings:
+  - token: Dare someone to carry a spoon across the room.
+    examples:
+    - Do it while wearing oven mitts.
+  - token: Dare someone to make a paper hat and wear it to the other side of the room.
+    examples:
+    - Do it while wearing oven mitts.
+move_constraints:
+  max_chars: 140
+  prefix: ''
+  example: Do it while wearing oven mitts.
+  hint: Add exactly one harder rule to the same dare. Keep every rung already there and leave room for
+    another.
+rubric:
+- name: squeeze
+  description: How much the new rule makes the same dare harder, while keeping it safe and possible.
+  anchors: '0 = no extra difficulty, it changes nothing; 1 = a tiny nuisance, such as using the other
+    hand; 2 = a clear obstacle, such as moving slowly or keeping one hand behind the back; 3 = a strong
+    but fair challenge that makes success uncertain; 4 = a precise, safe, and memorable obstacle that
+    makes the next rung a tight fit, rare. A dangerous, impossible, or wildly unrelated rule scores 1
+    at most.
+
+    '
+  weight: 5
+- name: fits
+  description: Whether the rule keeps the same dare and preserves every earlier rule.
+  anchors: '0 = replaces the dare, removes a rule, or contradicts the ladder; 1 = vaguely related but
+    skips the link or changes the task; 2 = keeps the task and adds a workable rule; 3 = clearly builds
+    on every earlier rung and leaves a next step; 4 = adds a neat escalation that makes an earlier rule
+    matter more, rare. A rule that finishes the dare completely scores 1 at most.
+
+    '
+  weight: 3
+- name: colour
+  description: How clearly and playfully the new rule lets someone picture the dare.
+  anchors: '0 = unclear or dull; 1 = one plain instruction; 2 = easy to picture; 3 = visual and funny
+    without making the person the joke; 4 = instantly pictureable, safe, and delightfully awkward, rare.
+    Fancy wording never wins here.
+
+    '
+  weight: 2
+criterion:
+  verb: holds
+  inverse_verb: breaks
+  description: 'A move HOLDS if it adds exactly one doable escalation to the same dare, keeps every earlier
+    rule, and leaves a clear next step. A move BREAKS the ladder if it skips several levels of difficulty
+    without a bridge, replaces the original action with a new dare, removes or weakens a standing rule,
+    makes the task unsafe or impossible, or completes the dare so there is no sensible next rung. The
+    new rule must make the same task harder, not merely add decoration. A safe, precise obstacle scores
+    well. A vague rule may hold but scores low. The points go to the move''s useful pressure, faithful
+    building, and clear picture.
+
+    '
+  anti_metagaming_clause: 'Talking to the host about the game, the rules, or how the partner is playing,
+    instead of adding one dare rule, is itself a broken ladder.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there are no earlier added rules: judge the move against the card alone. It must
+    add one safe, doable escalation to the starting dare and leave room for another rung.'
+  - The full transcript is the ladder. Check the new rule against every earlier rule, not only the last
+    one.
+  - A skipped link fails when the move jumps from a gentle task to a much harder version with no single
+    obstacle that explains the increase. When the increase is modest and clear, it holds.
+  - An ending fails when the move declares the dare finished, says the task is complete, or otherwise
+    leaves no clear next step. A move may make success very hard, but it must still be possible to add
+    another rule.
+  - An undo fails when the move removes, relaxes, cancels, or contradicts a standing rule, even if it
+    adds a new obstacle elsewhere.
+  - A new dare fails when it changes the main object or action instead of adding one rule to the existing
+    task. A small change in how the same task is done may hold.
+  - Safety is a gate. Reject rules involving dangerous heights, traffic, fire, sharp objects, harmful
+    substances, forced contact, strangers, property damage, or serious embarrassment. When wording can
+    be read safely, use the safe reading.
+  - Exactly one new rule is required. Several linked restrictions in one move count as a skipped link
+    unless they form one ordinary, inseparable instruction.
+  - 'A detail that repeats an earlier rule without making the dare harder is a duplicate: not_semantic_duplicate
+    is false.'
+examples:
+- previous_move: Dare someone to carry a spoon across the room.
+  move: Do it while wearing oven mitts.
+  gates_note: all true
+  mechanism: keeps the spoon and the crossing, then adds one clear hand obstacle
+  scores:
+    squeeze: 3
+    fits: 3
+    colour: 3
+  confidence: clear
+  verdict: accept
+- previous_move: Dare someone to carry a spoon across the room. Do it while wearing oven mitts.
+  move: Keep both elbows tucked against your sides.
+  gates_note: all true
+  mechanism: preserves both earlier rules and adds one precise movement restriction
+  scores:
+    squeeze: 3
+    fits: 4
+    colour: 3
+  confidence: clear
+  verdict: accept
+- previous_move: Dare someone to carry a spoon across the room. Do it while wearing oven mitts.
+  move: Also balance a book on your head, hop on one foot, and sing the alphabet backwards.
+  gates_note: satisfies_criterion false (several major obstacles are added at once, skipping the next
+    rung)
+  mechanism: turns one escalation into three large jumps and leaves no fair bridge
+  scores:
+    squeeze: 2
+    fits: 1
+    colour: 3
+  confidence: clear
+  verdict: fail
+- previous_move: Dare someone to carry a spoon across the room. Do it while wearing oven mitts.
+  move: Actually, take off the oven mitts and use your bare hands.
+  gates_note: satisfies_criterion false (removes a standing rule)
+  mechanism: the new rung quietly kicks away the mitts instead of climbing with them
+  scores:
+    squeeze: 0
+    fits: 0
+    colour: 2
+  confidence: clear
+  verdict: fail
+- previous_move: Dare someone to carry a spoon across the room. Do it while wearing oven mitts.
+  move: Now balance the spoon on your nose while walking through the garden.
+  gates_note: satisfies_criterion false (changes the setting and adds a new dare rather than one rule)
+  mechanism: the spoon survives, but the room crossing has been replaced by a different performance
+  scores:
+    squeeze: 2
+    fits: 0
+    colour: 3
+  confidence: clear
+  verdict: fail
+- previous_move: Dare someone to carry a spoon across the room. Do it while wearing oven mitts. Keep both
+    elbows tucked against your sides.
+  move: Complete it before anyone can add another rule.
+  gates_note: satisfies_criterion false (ends the ladder and leaves no next step)
+  mechanism: the dare has been declared finished instead of given another rung
+  scores:
+    squeeze: 1
+    fits: 1
+    colour: 2
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Ladder Keeper
+  tone:
+    commentary_adj: earnest
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who read only the ladder and the new rule must see why it
+    held or broke.
+  - Name the new rule or its plain stand-in. A headline that fits any other dare is a bad headline.
+  - Never open with a status word or a ruling phrase. No "Holds", "Broken", "Accepted", "Refused", "The
+    Ladder Keeper rules".
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Jokes target the move, never the player. No comments about identity, body, family, intelligence, spelling,
+    or worth.
+  - Plain spoken English, a cheerful challenge, not a grand adventure story. No poetry, no rhymes, no
+    fancy words.
+  - On a break the headline puts the standing rule beside the new rule that removed it, skipped too far,
+    changed the dare, or ended the ladder.
+  - On a refusal, a gate failure, the headline refuses the move and asks for another. It never rules on
+    who won.
+  - The coaching line names one safe rule that would have held and made the same dare harder. It ends
+    on a fact, never a mood.
+  good_headlines:
+  - Oven mitts on, spoon still crossing. That is one tidy rung, and the spoon is already nervous.
+  - Elbows tucked after the mitts. The ladder climbs, though the arms have filed a complaint.
+  - The book, hop, and backwards alphabet arrive together. That is three rungs in a trench coat.
+  - Bare hands remove the mitt rule. The ladder cannot climb by taking its own steps away.
+  - The garden replaces the room. Same spoon, different dare, and the ladder noticed.
+  - You called it complete before the next rule. A ladder needs somewhere to put its foot.
+  - One hand behind the back would have held and left the spoon crossing the room.
+  - Slow steps would have raised the difficulty without asking the spoon to become a circus act.
+  - The mitts stay, the elbows stay, and one new balance rule joins them. That is a proper rung.
+  - No fireworks needed, just carry the spoon with your weaker hand. The room is still waiting.
+  bad_headlines:
+  - text: 'Holds: the new rule is fine.'
+    why: opens with a status word and gives no picture
+  - text: The Ladder Keeper rules that this rung breaks.
+    why: opens with a ruling phrase and names the host
+  - text: Invalid escalation.
+    why: names no rule and gives no reason
+  - text: Only a silly person would suggest that.
+    why: mocks the player instead of the move
+  - text: The ladder trembles beneath a thunderous mountain of challenge.
+    why: uses grand, poetic language instead of plain speech
+  - text: Maybe it holds, maybe it does not, depending on how you look at it.
+    why: hedges instead of giving a clear ruling
+  - text: Accepted, and the oven mitts are funny.
+    why: starts with a status word and explains too little
+  - text: You cannot do that.
+    why: does not name the broken rule or explain the failure
+  - text: The ladder has become an existential staircase.
+    why: is vague, fancy, and not family plain
+  - text: That was a terrible idea.
+    why: judges the player and offers no useful reason
+rules:
+- Every card starts with one harmless dare. Build on that same dare.
+- One move adds exactly one harder rule. Keep every earlier rule.
+- A skipped link, an undo, a new dare, an unsafe rule, or an ending breaks the ladder.
+- A move must leave the dare possible and leave room for another rung.
+- Points go to clear, safe escalations that make the existing task harder without changing it.
+labels:
+  opening: The starting dare
+  next_opening: The next ladder
+  your_opening: Your starting dare
+  compose: Your next rung, after {token}
+  compose_waiting: Draft your next rung while you wait
+validation_messages:
+  empty: Nothing added. The Ladder Keeper is waiting.
+  too_long: Over 140 characters. One rung, not a whole staircase.
+  duplicate: That rule is already on the ladder. Add a new obstacle.
+  nudge: Twice now. Add one safe rule that keeps {standing_form} and makes the same dare harder. Do not
+    undo it or end the ladder.
+judge_out_text: 'The Ladder Keeper has stepped out. Nobody adds a rung until they are back. {standing_form}
+  is still the last step. Give it a moment.
+
+  '
+opponent_prompt: 'You are one of two friends building a ridiculous but safe dare, rung by rung.
+
+  One rule per turn, in one or two plain sentences.
+
+  Keep the original object and action. Never remove an earlier rule, replace the dare,
+
+  skip several levels, make the task unsafe, or declare it finished. Leave a clear next step.
+
+  The best move adds one obstacle that is easy to understand and still possible. Try a
+
+  slower pace, the other hand, a simple balance, a funny position, a quiet voice, or a
+
+  small restriction on movement. Keep all earlier rules exactly as they are.
+
+  Good: "Do it while wearing oven mitts." / "Keep both elbows tucked against your sides."
+
+  Bad: "Also hop, sing backwards, balance a book, and spin" because it skips several rungs.
+
+  Bad: "Take off the mitts" because it removes a rule. Bad: "Now do it in the garden"
+
+  because it changes the dare. Bad: "That rule is unfair" because it talks about the game
+
+  instead of adding a rule.
+
+  Use family safe ideas. No heights, traffic, fire, sharp objects, harmful substances,
+
+  forced touching, strangers, property damage, or serious embarrassment. Talk like a
+
+  person making a silly challenge in a living room, not like a novelist. Never repeat a
+
+  rule already used this match. Build directly on the standing form and leave the dare
+
+  ready for one more rung.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: Do it with your weaker hand, while keeping every rule already on the ladder.
+seed_pool:
+  - { opening_token: "Dare someone to carry a spoon across the room.", opening_emoji: "🥄" }
+  - { opening_token: "Dare someone to make a paper hat and wear it to the other side of the room.", opening_emoji: "🎩" }
+  - { opening_token: "Dare someone to stack three cushions and move them one at a time.", opening_emoji: "🛋️" }

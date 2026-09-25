@@ -1,0 +1,279 @@
+{
+  "slug": "omen-chain",
+  "title": "Omen Chain",
+  "tagline": "One strange sign at a time, march toward the fate nobody wants to name.",
+  "emblem": "🔮",
+  "accent": "#7c3aed",
+  "premise": "The first line is a small omen, and each player must make the next omen point more strongly toward one shared fate. Keep building the chain until the future feels impossible to avoid; the host calls every weak link a tiny betrayal of destiny.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A single shoe is found in the school hallway.",
+      "opening_emoji": "👟",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Every clock in the village stops at the same minute.",
+      "opening_emoji": "🕰️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A white feather appears inside the locked town hall.",
+      "opening_emoji": "🪶",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 14,
+    "axes": {
+      "sign": [
+        "a missing object",
+        "an animal behaving oddly",
+        "a mark on a wall",
+        "a repeated sound",
+        "a light going out",
+        "a message in dust",
+        "a strange footprint",
+        "a thing found in the wrong place"
+      ],
+      "setting": [
+        "school",
+        "village",
+        "train station",
+        "harbour",
+        "market",
+        "old house",
+        "town hall",
+        "forest path"
+      ],
+      "mood": [
+        "quietly alarming",
+        "eerie but ordinary",
+        "comic and unsettling",
+        "cold and watchful",
+        "too neat to ignore",
+        "bright in the wrong way",
+        "mysterious but harmless",
+        "ominous without violence"
+      ]
+    },
+    "tests": [
+      "One short sentence with one concrete omen a player can build on.",
+      "No one is hurt, no disaster is already happening, and no real person is named. Strange futures, not immediate danger.",
+      "A stranger can spot the sign, the setting, and the odd thing about it within five seconds.",
+      "The omen is open enough for several possible fates but specific enough to suggest a direction.",
+      "Everyday words a twelve-year-old knows. No prophecy jargon, named brands, or famous people."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The button is sewn to a child's red scarf, and the scarf is hanging from the headmaster's locked office door.",
+    "hint": "Add one new sign. It must connect to every omen already here and make the same future harder to escape."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the new omen tightens the chain around one likely fate without naming that fate outright.",
+      "anchors": "0 = a random spooky decoration; 1 = a faint nudge with no pressure; 2 = a clear new direction; 3 = the future now feels awkwardly hard to dodge; 4 = one elegant, believable sign makes several paths collapse into one destiny (rare). A line that merely announces the fate scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the omen connects to the opening and every earlier sign, with no skipped link or reversal.",
+      "anchors": "0 = contradicts the chain, erases an earlier sign, or jumps straight to the ending; 1 = vaguely spooky but barely connected; 2 = links to one earlier detail; 3 = clearly links to the whole chain; 4 = makes an earlier omen suddenly click into place without undoing it (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the omen creates a picture, sound, or small physical detail that makes the prophecy feel alive.",
+      "anchors": "0 = foggy filler; 1 = one plain spooky fact; 2 = easy to picture; 3 = vivid enough to make the room go quiet; 4 = strange, precise, and memorable without becoming silly or overwritten (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A line HOLDS if it adds one new sign that connects to all earlier omens and makes the same looming fate more likely. A line BREAKS the chain if it skips a necessary link and leaps from clues to conclusion, names the fate instead of adding a sign, contradicts or erases an earlier omen, starts a different prophecy, or makes an earlier sign meaningless. The shared fate may remain unstated. Holding is the gate. Points reward pressure on destiny, clean connections, and memorable small details. A random spooky line can hold only if it still links to the whole chain.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the score, or another player's move instead of adding an omen is itself a broken link in destiny.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier player line: judge the omen against the card alone. It must add a new sign that points toward a possible shared fate without naming that fate.",
+      "The full transcript is the prophecy. Check the new omen against every earlier omen, not only the last one.",
+      "A skipped link fails when the line jumps from an early clue straight to what must happen, with no new sign doing the connecting work.",
+      "An ending fails when it states, predicts, or directly declares the shared fate instead of adding another omen. The fate can be implied, never announced.",
+      "An undo fails when the new line cancels, explains away, or makes an earlier omen irrelevant. An omen may be reinterpreted, but it must still matter.",
+      "A line that begins a separate spooky story fails even if it is vivid. The chain needs one direction, not a cupboard full of unrelated ghosts.",
+      "When a line can reasonably connect to the chain in more than one way, let it hold. Do not demand a hidden backstory or outside knowledge.",
+      "A line about the prophecy, the host, the rules, or another player's quality of play is a meta move and fails instead of adding an omen."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A single shoe is found in the school hallway.",
+      "move": "Its lace is tied around a blue button from the headmaster's coat, and both are wet with river water.",
+      "gates_note": "all true",
+      "mechanism": "turns the shoe into a trail, links the button to authority, and introduces the river as a growing destination",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A single shoe is found in the school hallway. Its lace is tied around a blue button from the headmaster's coat, and both are wet with river water.",
+      "move": "At lunch, every pupil finds a wet footprint beside their chair, all pointing toward the locked bell tower.",
+      "gates_note": "all true",
+      "mechanism": "widens the water trail through the school and gives the bell tower a shared, checkable pull",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A single shoe is found in the school hallway.",
+      "move": "The shoe means the old river spirit will rise tonight and take the school.",
+      "gates_note": "satisfies_criterion false (states the fate and adds no new connecting sign)",
+      "mechanism": "skips the omen work and announces the ending with a tiny trumpet",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A single shoe is found in the school hallway. Its lace is tied around a blue button from the headmaster's coat, and both are wet with river water.",
+      "move": "The button was only loose, so the wet river water means nothing after all.",
+      "gates_note": "satisfies_criterion false (undoes the earlier river omen and makes it meaningless)",
+      "mechanism": "tries to throw the river out of the prophecy, which destiny finds embarrassingly obvious",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A single shoe is found in the school hallway. Its lace is tied around a blue button from the headmaster's coat, and both are wet with river water.",
+      "move": "In the bakery across town, a baker drops a spoon and hears a dog bark.",
+      "gates_note": "satisfies_criterion false (starts an unrelated chain with no link to the shoe, button, or river)",
+      "mechanism": "a perfectly good bakery omen has wandered into the wrong prophecy",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Fate Clerk",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hype"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair"
+  ,
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like destiny is running a loud game show with one clipboard and no patience.",
+      "The joke carries the reason. A stranger who reads only the chain and the new omen must see why it held or broke.",
+      "Name the omen, the link, or the exact leap. Do not use a headline that could fit any prophecy.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", \"The Fate Clerk rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Playful jabs at the player are allowed, with mild innuendo, but never identity based abuse, threats, profanity, or comments about bodies, families, intelligence, or spelling.",
+      "Plain spoken English with theatrical panic. No poetry, no fake ancient language, no thesaurus fog.",
+      "On a break, put the two incompatible omens side by side, or point at the skipped jump to the stated fate.",
+      "On a refusal caused by a gate failure, refuse the line and ask for another. Do not pretend the prophecy itself has ended.",
+      "The coaching line names one omen that would have linked cleanly and tightened the fate. It ends on a fact, never a mood.",
+      "Keep the energy wild, but keep the ruling precise. Destiny may scream, the explanation still needs to land."
+    ],
+    "good_headlines": [
+      "The wet shoe meets the river button, and destiny just tightened the laces. Keep going.",
+      "Footprints at every chair, all facing the bell tower. The school has one direction now, and it is not lunch.",
+      "The crow brings back the blue button. That is not a clue, that is destiny doing a little victory lap.",
+      "The moon appears in every puddle, even indoors. The chain holds, and the building is getting ideas.",
+      "You named the fate before giving us a sign. Destiny wanted a breadcrumb, not the whole cake.",
+      "The bakery spoon has no business in this prophecy. Link it to the shoe, the river, or let it go home.",
+      "You erased the river water and called it nothing. The omen is still dripping, spectacularly.",
+      "A bell rings when nobody pulls it, right after the wet footprints arrive. The future is practically waving.",
+      "The red scarf catches on the same nail as the blue button. Tiny detail, huge trap for tomorrow.",
+      "You jumped from one lonely shoe to the apocalypse. Bold, fast, and completely missing three ominous steps."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the omen fits.",
+        "why": "opens with a status word and has no image or energy"
+      },
+      {
+        "text": "The Fate Clerk rules that this breaks the chain.",
+        "why": "opens with a ruling phrase and names the host instead of the problem"
+      },
+      {
+        "text": "Prophecy error detected.",
+        "why": "names no omen and could fit any failed move"
+      },
+      {
+        "text": "What a stupid player, that omen is garbage.",
+        "why": "attacks the player and gives no useful reason"
+      },
+      {
+        "text": "The inevitable firmament of fate unfurls in a lachrymose chiaroscuro.",
+        "why": "purple poetry, not plain spoken English"
+      },
+      {
+        "text": "Maybe it fits, maybe it does not, destiny is complicated.",
+        "why": "hedges instead of making a clear ruling"
+      },
+      {
+        "text": "Broken: you said the shoe was wet.",
+        "why": "opens with a status word and gives no explanation of the actual link"
+      },
+      {
+        "text": "The bell tower is haunted by the third moon of Saturn, so fail.",
+        "why": "adds trivia and an invented fact instead of judging the chain"
+      },
+      {
+        "text": "Guilty of prophecy.",
+        "why": "vague, overdramatic, and explains nothing"
+      },
+      {
+        "text": "The omen is inconsistent, contradictory, incompatible, and false.",
+        "why": "piles up abstract labels without naming the broken connection"
+      }
+    ]
+  },
+  "rules": [
+    "Every card begins with one small omen. Build one shared prophecy from it.",
+    "Add one new omen per turn. It must connect to every omen already in the chain.",
+    "Each new sign should make the same looming fate more likely without naming that fate.",
+    "Skip a necessary link, erase an earlier omen, start a separate prophecy, or announce the ending, and your line breaks the chain.",
+    "Points go to omens that tighten destiny, connect cleanly, and leave a sharp picture behind."
+  ],
+  "labels": {
+    "opening": "The first omen",
+    "next_opening": "The next omen",
+    "your_opening": "Your omen",
+    "compose": "Your omen, after {token}",
+    "compose_waiting": "Shape your next omen while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing added. Destiny is tapping its clipboard.",
+    "too_long": "Over 140 characters. One omen, not the entire haunted history.",
+    "duplicate": "That omen is already in the chain. Add a new sign.",
+    "nudge": "Twice now. Add one omen that connects to {standing_form}. Do not erase it, skip to the ending, or start another prophecy."
+  },
+  "judge_out_text": "The Fate Clerk has stepped away to consult the trembling paperwork. {standing_form} is still the last sign in the chain. Give it a moment.\n",
+  "opponent_prompt": "You are one player in a prophecy built one line at a time. Add one omen per turn, in one or two plain sentences.\nEvery new omen must connect to the opening card and every omen already given. Make the same looming fate more likely, but never name the fate directly.\nUse small signs: a mark, a sound, an animal, a missing object, a repeated number, a light, a footprint, or a thing in the wrong place.\nDo not jump from clue to conclusion. Do not undo an earlier omen. Do not start a separate spooky story. Destiny wants a chain, not a drawer full of unrelated weirdness.\nGood: \"The button is sewn to a child's red scarf, and the scarf is hanging from the headmaster's locked office door.\" / \"Every school bell rings once, even though the power is off.\"\nBad: \"This means the river spirit will take the school\" because it names the fate instead of adding a sign.\nBad: \"The shoe was just lost, so the water means nothing\" because it erases an earlier omen.\nBad: \"In the bakery, a spoon falls beside a sleeping dog\" because it does not connect to the chain.\nTalk like a person who has noticed one impossible detail and is trying not to make a fuss. Plain words beat fancy prophecy language. Build on earlier objects, places, sounds, colours, and times. Never repeat an omen exactly.\n",
+  "medallions": false,
+  "default_move": "A small bell rings somewhere nearby, though nobody can find the bell."
+}

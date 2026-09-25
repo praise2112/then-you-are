@@ -1,0 +1,325 @@
+schema_version: 1
+slug: shed-law
+title: Shed Law
+tagline: Name the tool that rewrites the last tool's purpose.
+emblem: 🔧
+accent: '#7c3aed'
+premise: 'Two rival shed-keepers build strange little laws out of toolbox objects. On your turn, name
+  one standing object that defeats the previous object by changing what it can do. The Grand Inspector
+  decides whether your law holds.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: short_form
+  max_words: 3
+  axes:
+    object_type:
+    - hand tool
+    - fastener
+    - container
+    - measuring tool
+    - protective gear
+    - cleaning tool
+    - garden tool
+    - shed fixture
+    material:
+    - wood
+    - iron
+    - steel
+    - rubber
+    - glass
+    - rope
+    - plastic
+    - canvas
+    working_trait:
+    - gripping
+    - cutting
+    - locking
+    - lifting
+    - measuring
+    - holding
+    - smoothing
+    - draining
+  tests:
+  - A stranger pictures one ordinary shed object at once. Nothing abstract, enchanted, or dependent on
+    a brand.
+  - A non-player names a plain tool that could directly interfere with it within five seconds. Say what
+    that tool is.
+  - 'It stands in the shed and does something physical: it grips, cuts, locks, lifts, measures, holds,
+    smooths, or drains. It is not merely a place, a material, or a mood.'
+  - It gives the next keeper something to work against. A vice, a rope, or a crowbar has a clear handle
+    to seize; a tidy workshop does not.
+  - Use two or three everyday words, including an article. A twelve-year-old should know the object without
+    opening a catalogue. No brand names or proper nouns.
+demo:
+  opening:
+    token: a hammer
+    emoji: 🔨
+  moves:
+  - actor: p1
+    text: I am a hammer; I drive nails through stubborn boards.
+    emoji: 🔨
+    scores: null
+  - actor: p2
+    text: I am a toolbox; I swallow the hammer and shut its lid.
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 3
+  headline: The hammer entered with thunder, then the toolbox closed court.
+  openings:
+  - token: a hammer
+    examples:
+    - I am a toolbox; I swallow the hammer and shut its lid.
+  - token: a padlock
+    examples:
+    - I am a toolbox; I swallow the hammer and shut its lid.
+move_constraints:
+  max_chars: 200
+  prefix: 'I am '
+  example: I am a padlock; I shut the toolbox that contains the hammer.
+  hint: Name one shed object, then state the direct action that changes the standing object's function.
+rubric:
+- name: counter_strength
+  description: How plainly the new shed object directly changes, restrains, breaks, traps, cuts, joins,
+    or otherwise defeats the standing object.
+  anchors: '0 = no action on the standing object; 1 = a weak association or mere avoidance; 2 = a possible
+    interaction but the restraint is incomplete or debatable; 3 = a clear ordinary tool action that changes
+    what the standing object can do; 4 = an exact, decisive workshop answer that leaves the previous object
+    unable to perform its key function (rare).
+
+    '
+  weight: 5
+- name: coherence
+  description: How clearly the move presents one ordinary shed object and one understandable law for its
+    action.
+  anchors: '0 = contradictory or unreadable; 1 = requires specialist tool knowledge or major interpretation;
+    2 = understandable but vague, cluttered, or partly abstract; 3 = concrete and easy to picture; 4 =
+    crisp, vivid, and immediately demonstrable in a shed (rare). Extra words do not help unless each one
+    clarifies the action.
+
+    '
+  weight: 3
+- name: novelty
+  description: How far the move shifts to a fresh kind of shed object or operation instead of repeating
+    the previous tool's family.
+  anchors: '0 = the same object, a larger copy, or a nearby cousin doing the same job; 2 = a sensible
+    change of tool or operation; 4 = a surprising but plainly ordinary shed solution from a fresh domain
+    within the workshop (rare). Novel phrasing without a new object or operation scores low.
+
+    '
+  weight: 2
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: 'A move beats the standing object when its ordinary function plainly restrains, breaks,
+    traps, cuts, joins, or otherwise directly changes what that object can do. The new object must act
+    on the standing object, not merely hide from it, survive it, ignore it, wait it out, or name a nearby
+    cousin. A larger copy or stronger version is not a counter. A standing object is an object, never
+    a past event or a description of what happened.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Inspector, discussing the game, or invoking rules as the object
+    is itself a losing object.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no previous object: judge whether the named object plainly answers or overcomes
+    the opening card''s object and function.
+
+    '
+  - 'A bigger, sharper, heavier, faster, or upgraded version of the standing object is not a duplicate
+    counter. A wrench after a spanner, or a larger hammer after a hammer, is a nearby cousin or amplification
+    and fails unless it has a distinct direct mechanism, which it usually does not.
+
+    '
+  - 'Becoming the opening object itself, or giving it only a new color, size, handle, or finish, is a
+    duplicate. A red hammer against a hammer remains the same object.
+
+    '
+  - 'The action must be ordinary and literal. A wrench turning a bolt or a clamp holding a board is valid.
+    A schedule organizing a hammer, a rumor disarming a saw, or a shed law confusing a lock is figurative
+    and fails.
+
+    '
+  - 'The new object must directly change the standing object''s function. A box that the saw cannot reach,
+    gloves that protect a hand from the saw, or a roof that survives the rain is only hiding, surviving,
+    or shielding, not overcoming the standing object.
+
+    '
+  - 'The mechanism must be watchable in the shed. If the move only says that the new object is stronger,
+    immune, safer, or too distant to matter, it has no direct counter and fails.
+
+    '
+  - 'A nearby cousin does not count merely because it belongs to the same tool family. A different saw
+    after a saw, or a larger lock after a lock, is not a fresh law unless it performs a distinct action
+    on the standing object.
+
+    '
+examples:
+- previous_move: I am a hammer; I drive nails through stubborn boards.
+  move: I am a toolbox; I swallow the hammer and shut its lid.
+  gates_note: all true
+  mechanism: the toolbox contains and closes over the hammer, stopping it from swinging
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: accept
+- previous_move: I am a padlock; I deny every hand the toolbox.
+  move: I am a bolt cutter; I bite through the padlock's shackle.
+  gates_note: all true
+  mechanism: bolt cutters cut the lock's shackle and remove its restraint
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: accept
+- previous_move: I am a handsaw; I divide boards with every pull.
+  move: I am a pair of gloves; I keep my hands safe from your teeth.
+  gates_note: satisfies_criterion false (survival and shielding, no action on the saw)
+  mechanism: the gloves protect the user but do not restrain, break, or change the saw
+  scores:
+    counter_strength: 1
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: fail
+- previous_move: I am a hammer; I make nails regret standing proud.
+  move: I am a bigger hammer; I make nails regret it even more.
+  gates_note: satisfies_criterion false (mere amplification and same tool family)
+  mechanism: none, the new hammer is only a larger version of the standing hammer
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 0
+  confidence: clear
+  verdict: fail
+- previous_move: I am a handsaw; I turn boards into neat pieces.
+  move: I am a bench vise; I clamps the saw in place.
+  gates_note: all true
+  mechanism: the vise grips the saw and prevents its cutting motion
+  scores:
+    counter_strength: 3
+    coherence: 3
+    novelty: 4
+  confidence: lean
+  verdict: accept
+host:
+  persona_name: The Grand Inspector
+  tone:
+    commentary_adj: grandiose
+    explanation_adj: theatrical
+  bite: sharp
+  ruling_generosity: merciless
+  voice_rules:
+  - One sentence under 140 characters. Two short sentences at most.
+  - Speak like a ceremonial inspector announcing a tiny but momentous workshop verdict.
+  - The joke must carry the reason. A stranger should see why the winning object changed the losing object's
+    function.
+  - Name both objects, or use plain stand-ins. A grand headline that fits every tool is a failure of inspection.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Inspector refuses.
+  - No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.
+  - Tease the losing object and lightly rib the move if needed, but do not attack identity, body, family,
+    intelligence, or spelling.
+  - Use plain spoken English with theatrical grandeur. No poetry, no rhymes, no profanity, and no obscure
+    tool jargon.
+  - On a refusal caused by a gate failure, refuse the object and ask for another. Do not declare a winner.
+  - The coaching line names one object that would have won. It ends on a concrete action, never a mood
+    or a verdict.
+  good_headlines:
+  - The hammer entered with thunder, then the toolbox closed court.
+  - The bolt cutter has taken the padlock's grand keyhole hostage.
+  - Gloves may protect the hand, but the saw remains legally armed. Bring another object.
+  - A bigger hammer is only a louder speech from the same witness. Bring another object.
+  - The bench vise grips the saw, and the cutting career ends at the workbench.
+  - The rope ties the ladder down, while the ladder's ambitions remain entirely vertical.
+  - The wrench turns the bolt's authority into loose hardware.
+  - The bucket catches the leaking hose, a humble coup with excellent drainage.
+  - The lockpick speaks softly, and the padlock loses its entire argument.
+  - The roof can ignore the rain, but it cannot inspect a hammer's moving parts.
+  bad_headlines:
+  - text: Accepted, the toolbox triumphs.
+    why: opens with a status word and gives no reason
+  - text: The Grand Inspector refuses, your hammer is foolish.
+    why: opens with a ruling phrase, names the host, and mocks the player
+  - text: The wrench wins.
+    why: does not name the defeated object or explain the mechanism
+  - text: The saw is defeated, destroyed, conquered, and vanquished by the clamp.
+    why: piles up grand words instead of showing the clamp holding the saw
+  - text: The gloves are safe from the saw, therefore the saw loses.
+    why: confuses surviving or shielding with directly changing the saw
+  - text: The mighty tool of destiny shatters the humble implement.
+    why: uses vague grand language and names no ordinary action
+  - text: A splendid effort from someone who clearly cannot handle tools.
+    why: mocks the player rather than the object
+  - text: Behold, the saw doth cleave whereupon the clamp hath wrought its doom.
+    why: uses poetry and archaic phrasing instead of plain speech
+  - text: The red hammer is different from the hammer because it is red.
+    why: treats a recolored duplicate as a fresh counter
+rules:
+- Name one ordinary shed object that acts directly on the object in front of you.
+- 'Say what you are and what you do to it: "I am a padlock; I shut the toolbox that contains the hammer."'
+- Do not hide from, survive, ignore, enlarge, or rename the standing object.
+- The Grand Inspector judges the ordinary mechanism, not the spelling or theatrical flourish.
+- One object that fails to change the standing object's function ends the match.
+labels:
+  opening: The opening
+  next_opening: The next opening
+  your_opening: Your opening
+  compose: Your object against {token}
+  compose_waiting: Draft your next shed law while you wait
+validation_messages:
+  empty: The workbench is empty. Name an object.
+  too_long: Over 200 characters. A shed law, not a parliamentary scroll.
+  duplicate: That object already stood this match. Inspect a fresh tool.
+  nudge: Twice now. Change what {standing_form} can do. Do not hide from it, copy it, or merely outsize
+    it.
+judge_out_text: 'The Grand Inspector has stepped away from the workbench. Nobody moves until they return.
+  {standing_form} still stands. Give it a moment.
+
+  '
+opponent_prompt: 'You are one of two rival shed-keepers, trying to keep your laws standing.
+
+  Always name one ordinary object and the direct action it performs on the last object.
+
+  Good: "I am a padlock; I shut the toolbox that contains the hammer." / "I am a bolt cutter; I bite through
+  the padlock''s shackle."
+
+  Bad: "I am safe gloves; I avoid the saw" because avoiding or surviving is not a counter.
+
+  Bad: "I am a bigger hammer" because size and strength are not a new law.
+
+  Bad: "I am a toolbox spirit" because the object is abstract or unclear.
+
+  Talk like a person in a crowded shed, not a poet or a catalogue. Use plain objects anyone can picture:
+  a clamp, a rope, a bucket, a wrench, a hinge.
+
+  Your move must directly restrain, break, trap, cut, join, or otherwise change what the standing object
+  can do.
+
+  The Inspector cares about the mechanism, not a clever claim. If a stranger could watch the action happen,
+  it is promising.
+
+  Hop across shed domains: hand tools, storage, fasteners, garden gear, cleaning, measuring, and repair.
+
+  Never reuse an object or its exact action from this match. Do not speak about the game, the Inspector,
+  or the rules as your object.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I am a clamp; I grip the standing object and stop it moving.
+seed_pool:
+  - { opening_token: "a hammer", opening_emoji: "🔨", detail: "heavy-headed, swinging, and ready to make a problem look nailed down", hidden: "" }
+  - { opening_token: "a padlock", opening_emoji: "🔒", detail: "small, stubborn, and determined to make access a privilege", hidden: "" }
+  - { opening_token: "a handsaw", opening_emoji: "🪚", detail: "toothed, bright, and eager to divide one board into two opinions", hidden: "" }

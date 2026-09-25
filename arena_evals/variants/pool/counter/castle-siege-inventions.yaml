@@ -1,0 +1,328 @@
+schema_version: 1
+slug: castle-siege-inventions
+title: The Siegewrights’ Last Trick
+tagline: Build the device that defeats the machine before it.
+emblem: 🏰
+accent: '#7c3aed'
+premise: 'Two castle engineers take turns unveiling one siege device or defense that defeats the device
+  currently on the field. A device must act on the last device, not simply hide from it, until one invention
+  fails before the royal judge.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 9
+  axes:
+    device:
+    - catapult
+    - battering ram
+    - siege tower
+    - drawbridge
+    - portcullis
+    - moat pump
+    - fire cart
+    - scaling ladder
+    working_part:
+    - stone bucket
+    - iron nose
+    - wheeled platform
+    - chain winch
+    - iron teeth
+    - wooden pipe
+    - pitch barrel
+    - rope hook
+    action:
+    - hurls stones
+    - smashes gates
+    - carries soldiers
+    - raises bridges
+    - drops barriers
+    - drains water
+    - spreads fire
+    - climbs walls
+  tests:
+  - A stranger pictures the machine and its working part at once. Nothing abstract, magical, or dependent
+    on a long explanation.
+  - A non-player names a plain invention that could directly defeat it within five seconds. Say what that
+    counter is.
+  - It stands in the siege. It strikes, blocks, traps, jams, burns, cuts, tips, or turns a machine against
+    its purpose. Never a castle scene, a frightened soldier, or a promise to wait.
+  - It makes a stranger want to answer with another machine. A clever device with a visible weakness is
+    better than a pile of materials.
+  - No more than nine everyday words a twelve-year-old knows. Use plain castle language, no brand names,
+    proper nouns, technical jargon, or invented machinery names.
+demo:
+  opening:
+    token: a catapult
+    emoji: 🏹
+  moves:
+  - actor: p1
+    text: I am a catapult; its arm hurls stones at the wall.
+    emoji: 🏹
+    scores: null
+  - actor: p2
+    text: I am a thick rope net; it catches the stone and tangles the arm.
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 3
+  headline: The catapult brought a stone, the net brought a royal laundry disaster.
+  openings:
+  - token: a catapult
+    examples:
+    - I am a thick rope net; it catches the stone and tangles the arm.
+  - token: a battering ram
+    examples:
+    - I am a thick rope net; it catches the stone and tangles the arm.
+move_constraints:
+  max_chars: 200
+  prefix: 'I am '
+  example: I am a wet wool screen; I smother the fire arrows.
+  hint: Name one device and the part that acts on the last device.
+rubric:
+- name: counter_strength
+  description: How directly and reliably the new device defeats the machine currently on the field.
+  anchors: '0 = no action against the previous device; 1 = a claimed answer with no workable mechanism;
+    2 = a workable counter that is narrow, uncertain, or partly indirect; 3 = a clear device that reliably
+    breaks, blocks, traps, or redirects the previous one; 4 = a near-perfect mechanical answer that leaves
+    the previous device no useful job (rare).
+
+    '
+  weight: 6
+- name: coherence
+  description: How clearly a stranger can picture the device, its working part, and its action.
+  anchors: '0 = contradictory or impossible to parse; 1 = mostly labels or requires specialist knowledge;
+    2 = understandable but vague, overloaded, or mechanically muddled; 3 = concrete and easy to follow;
+    4 = crisp, vivid, and immediately buildable in the imagination (rare).
+
+    '
+  weight: 3
+- name: novelty
+  description: How freshly the invention changes the engineering problem instead of repeating the previous
+    machine.
+  anchors: '0 = the same device, a larger copy, or a routine cousin from the same approach; 2 = a sensible
+    variation with some fresh engineering; 4 = a surprising jump to a new tool, material, or method that
+    still directly acts on the previous device (rare).
+
+    '
+  weight: 1
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: 'An invention OVERCOMES the previous invention if a visible working part directly breaks,
+    blocks, traps, disables, redirects, or turns that machine against its purpose. The invention must
+    act on the machine itself, not merely protect its user or avoid the attack. Waiting, hiding, surviving,
+    making a larger copy, and claiming that something is too strong do not count.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, describing the game, or invoking a rule as an invention
+    is itself a losing move.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no previous invention: judge the move against the opening card instead.
+    It must plausibly answer the stated machine or attack, such as a defense that acts on the catapult''s
+    stone or frame.
+
+    '
+  - 'A larger, faster, heavier, or tougher copy of the standing machine is not a new counter. A second
+    catapult, a larger ram, or a thicker siege tower has no defeating mechanism by itself: satisfies_criterion
+    is false.
+
+    '
+  - 'A device that merely hides behind a wall, waits until the machine stops, survives the attack, or
+    stays out of reach is dodging, not overcoming. It must act on the standing machine: satisfies_criterion
+    is false.
+
+    '
+  - 'The mechanism must be literal and visible. A net catching a siege tower, a wedge jamming a ram, or
+    a hook pulling down a ladder counts. A clever plan, a fearful garrison, or a metaphorical answer does
+    not.
+
+    '
+  - 'The new device must act on the previous device, not only on its operators, cargo, target, or surroundings.
+    A moat that soldiers cannot cross may hinder a tower, but if it never acts on the tower itself, rule
+    fail.
+
+    '
+  - 'Surviving, ignoring, being immune to, or waiting out the standing machine is not a counter. A stone
+    bunker that the ram cannot crack, a covered cart that avoids arrows, or a watchman who waits for dawn
+    fails unless the invention directly disables the machine.
+
+    '
+  - 'A counter must address the actual machine in its stated condition. A water barrel may defeat a fire
+    cart, but it does not defeat a stone catapult unless the move explains how it reaches and disables
+    the catapult or its working part.
+
+    '
+  - 'If the proposed invention is the same device, a recolored copy, or a mere replacement part with no
+    new action, not_semantic_duplicate is false or satisfies_criterion is false.
+
+    '
+examples:
+- previous_move: I am a catapult; its arm hurls stones at the wall.
+  move: I am a thick rope net; it catches the stone and tangles the arm.
+  gates_note: all true
+  mechanism: the net catches the catapult's projectile and fouls its working arm
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: accept
+- previous_move: I am a battering ram; its iron nose pounds the gate.
+  move: I am a stone wedge; it jams beneath the ram and lifts its nose from the gate.
+  gates_note: all true
+  mechanism: the wedge blocks the ram's swing and stops its nose reaching the gate
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 4
+  confidence: clear
+  verdict: accept
+- previous_move: I am a siege tower; its wheels carry soldiers to the wall.
+  move: I am a taller siege tower; its platform carries more soldiers.
+  gates_note: satisfies_criterion false, mere amplification and no mechanism against the standing tower
+  mechanism: none, it is the same machine made larger
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 0
+  confidence: clear
+  verdict: fail
+- previous_move: I am a catapult; its arm hurls stones at the wall.
+  move: I am a deep moat; it waits below the battlements.
+  gates_note: satisfies_criterion false, the moat does not act on the catapult
+  mechanism: none stated, the moat may protect the wall but does not disable the machine
+  scores:
+    counter_strength: 1
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: fail
+- previous_move: I am a fire cart; its pitch barrel rolls burning toward the gate.
+  move: I am a water pump; its hose floods the barrel and douses the pitch.
+  gates_note: all true
+  mechanism: the pump sends water onto the fire cart's burning pitch barrel
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 3
+  confidence: lean
+  verdict: accept
+host:
+  persona_name: The Royal Master of Works
+  tone:
+    commentary_adj: grandiose
+    explanation_adj: theatrical
+  bite: sharp
+  ruling_generosity: merciless
+  voice_rules:
+  - One sentence under 140 characters. Two short sentences at most.
+  - Speak like a royal herald announcing an engineering triumph or a magnificent collapse.
+  - The joke carries the ruling. A stranger who sees only the two devices must understand the mechanical
+    reason.
+  - Name both devices, or use plain stand-ins for them. A grand headline that fits every siege is a failed
+    headline.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Royal Master refuses.
+  - No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.
+  - Mock the losing invention, never the player. No jokes about identity, body, family, intelligence,
+    spelling, or background.
+  - Family safe only. No profanity, innuendo, cruelty, or jokes aimed at real people.
+  - Use plain spoken English with theatrical scale. No poetry, fake antiquity, rhymes, or obscure technical
+    words.
+  - On a refusal caused by a gate failure, the headline refuses the invention and asks for another. It
+    never declares a winner.
+  - The coaching line names one device that would have won. End on a physical fact or action, never a
+    mood or verdict.
+  good_headlines:
+  - The catapult brought a stone, the net brought a royal laundry disaster.
+  - The battering ram met the wedge, and the gate may now enjoy its afternoon.
+  - A taller siege tower is still the same tower, only more magnificently misplaced. Bring another device.
+  - The moat waits beneath the catapult, but waiting is not engineering. Bring a machine that reaches
+    it.
+  - The water pump gives the fire cart a very public bath.
+  - The ladder climbed bravely until the hook pulled its top clean from the wall.
+  - The ram had iron manners, but the wedge taught it to kneel.
+  - The siege tower rolls onward, while the trench politely removes its road.
+  bad_headlines:
+  - text: Accepted, the net defeats the catapult.
+    why: opens with a status word and lacks theatrical explanation
+  - text: The Royal Master refuses, this machine is foolish.
+    why: opens with a ruling phrase, names the host, and mocks the move without a mechanism
+  - text: The catapult loses.
+    why: no reason, and it could fit any pair
+  - text: The wall shall tremble beneath the vast and glorious thunder of war.
+    why: grand poetry replaces the concrete engineering reason
+  - text: The moat wins because it is patient.
+    why: waiting is not a mechanism against the catapult
+  - text: A brave attempt from someone who cannot engineer.
+    why: mocks the player instead of the invention
+  - text: The tower is defeated, destroyed, ruined, crushed, and annihilated.
+    why: lists verdict words without showing what acts on the tower
+  - text: The pump makes a splashy entrance, but perhaps the cart survives.
+    why: hedges instead of giving a clear ruling and mechanism
+rules:
+- Defeat the device in front of you. Do not become it or make a larger copy.
+- 'Name one device and its working part: I am a wet wool screen; I smother the fire arrows.'
+- Your invention must directly break, block, trap, disable, redirect, or turn the previous machine against
+  its purpose.
+- The Judge rules on the engineering idea, not the spelling.
+- One invention that fails against the standing machine ends the siege.
+labels:
+  opening: The opening device
+  next_opening: The next opening
+  your_opening: Your opening
+  compose: Your device against {token}
+  compose_waiting: Design your next device while you wait
+validation_messages:
+  empty: The workshop is empty. Build a device.
+  too_long: Over 200 characters. A siege device, not a royal chronicle.
+  duplicate: That invention already stood in this siege. Design something new.
+  nudge: Twice now. Defeat {standing_form}. Do not become it, dodge it, or repeat it.
+judge_out_text: 'The royal judge has stepped away. The siege pauses, and {standing_form} still stands.
+  Give the court a moment.
+
+  '
+opponent_prompt: 'You are one of two medieval castle engineers trying to survive a chain of inventions.
+
+  Always name one concrete device and its working part, then state what that part does to the other device.
+
+  Good: "I am a thick rope net; it catches the stone and tangles the arm."
+
+  Good: "I am a stone wedge; it jams beneath the ram and lifts its nose from the gate."
+
+  Bad: "I am a stronger catapult" because it is only a larger copy.
+
+  Bad: "I am a moat" if it merely protects the wall or waits below the machine.
+
+  Bad: "I am victory" because it is abstract and has no working part.
+
+  Talk like an engineer across a castle yard, not a poet or a herald. Plain words beat grand claims.
+
+  Your device must directly break, block, trap, disable, redirect, or turn the standing device against
+  its purpose.
+
+  A device that only hides, survives, waits, scares operators, or attacks the target instead of the machine
+  fails.
+
+  Hop domains across the siege: ropes, water, stonework, kitchens, mills, animals, roads, and workshop
+  tools.
+
+  Never reuse a device or working part from this match.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I am a stone wall; it blocks the machine's path.
+seed_pool:
+  - { opening_token: "a catapult", opening_emoji: "🏹", detail: "hurling a stone at the wall", hidden: "" }
+  - { opening_token: "a battering ram", opening_emoji: "🪵", detail: "pounding the gate", hidden: "" }
+  - { opening_token: "a siege tower", opening_emoji: "🗼", detail: "rolling soldiers toward the battlements", hidden: "" }

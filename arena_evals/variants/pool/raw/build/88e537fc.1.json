@@ -1,0 +1,271 @@
+{
+  "slug": "complaint-letter-receipts",
+  "title": "Exhibit A, Unfortunately",
+  "tagline": "One complaint. One new receipt at a time. Build the case until customer service starts sweating.",
+  "emblem": "🧾",
+  "accent": "#b91c1c",
+  "premise": "You and a rival build a complaint letter by adding one paragraph each, but every paragraph must introduce a new piece of evidence. The host calls each receipt, photo, witness, or strange detail like a courtroom announcer and mocks anyone whose proof is flimsy.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Dear Customer Service: Your café charged me for a plain sandwich, but the receipt lists an item called premium mystery filling.",
+      "opening_emoji": "🥪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Dear Rail Company: Your train arrived late, and the apology email was sent before the train even left.",
+      "opening_emoji": "🚆",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Dear Hotel Manager: The room was advertised as quiet, but the welcome booklet includes a map of the nightclub downstairs.",
+      "opening_emoji": "🏨",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "complainant": [
+        "a tired customer",
+        "a parent",
+        "a student",
+        "a commuter",
+        "a tourist",
+        "a tenant",
+        "a hungry worker",
+        "a wedding guest"
+      ],
+      "business": [
+        "a café",
+        "a rail company",
+        "a hotel",
+        "a cinema",
+        "a delivery service",
+        "a gym",
+        "a supermarket",
+        "an airline"
+      ],
+      "evidence_hook": [
+        "a receipt with a strange charge",
+        "a timestamp that makes no sense",
+        "a photo of the broken promise",
+        "a witness who saw the mistake",
+        "an email sent too early",
+        "a menu that contradicts the bill",
+        "a tracking page that changed later",
+        "a notice posted beside the problem"
+      ]
+    },
+    "tests": [
+      "One ordinary customer has one clear complaint, and a stranger can picture the first suspicious detail at once.",
+      "A player can add at least three different kinds of evidence, such as a receipt, a photo, a witness, or a timestamp.",
+      "The card starts a case but does not already prove the whole case, announce punishment, or end with a solved dispute.",
+      "No real person, private information, protected group, serious injury, or accusation of a major crime appears on the card.",
+      "The wording sounds like the start of a complaint letter, not a rant, a legal verdict, or a pile of unrelated clues."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then I checked the timestamp on the receipt and found three charges in the same minute, all from the machine beside the broken camera.",
+    "hint": "Add one paragraph with one new checkable exhibit and say how it supports the complaint."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much the new exhibit widens or strengthens the complaint.",
+      "anchors": "0 = no new evidence or the case gets smaller; 1 = a tiny extra detail with little use; 2 = one useful fact adds pressure or confirms a narrow point; 3 = a strong new exhibit opens another part of the complaint or puts a new claim at risk; 4 = a startling but fully earned exhibit changes the scale of the case without skipping the evidence trail (rare). Reach only counts when the exhibit is genuinely new and connected.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new exhibit is discovered through, or supports, the standing complaint.",
+      "anchors": "0 = the exhibit has no shown connection; 1 = the paragraph merely announces proof; 2 = the connection is plausible but thin; 3 = a stranger can see why this complaint led to this check or why the exhibit backs it up; 4 = the discovery feels exact and unavoidable, with the earlier claim naturally pointing to it (rare). A paragraph that piles on several discoveries scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can inspect the exhibit in their mind.",
+      "anchors": "0 = vague outrage, unreadable wording, or no event; 1 = an abstract claim or blurry detail; 2 = a clear but ordinary document, object, or witness; 3 = a crisp exhibit with concrete names, numbers, times, or places; 4 = one sharp detail makes the evidence pop like it has been pinned to a corkboard (rare). Fancy wording does not count as proof.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A paragraph FOLLOWS if it begins with Then, adds one specific new piece of checkable evidence, connects that evidence to the standing complaint, and fits every earlier claim. The evidence may be a receipt, photo, timestamp, witness, message, notice, record, object, or other concrete exhibit. A paragraph fails when it offers no new evidence, leaps to a verdict or punishment, erases or contradicts evidence already established, changes the complaint into an unrelated case, repeats an exhibit, or is only anger, a conclusion, or a demand instead of proof.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, naming the rules, or arguing about scoring is itself a broken paragraph.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing paragraph: judge the move against the card and require one new exhibit that follows from the opening complaint.",
+      "A new witness, employee, document, or location may enter if the standing complaint gives a plain reason to find or contact them. A random executive, expert, police officer, or hidden camera without a discovery link is a skipped step: satisfies_criterion is false.",
+      "A verdict or punishment fails even when it follows. Refunds, bans, firings, lawsuits, arrests, public apologies, and final judgments are outcomes, not exhibits.",
+      "Erasing evidence or contradicting an earlier claim fails. If the receipt showed three charges, a later paragraph cannot say there was only one unless it presents a new checkable record explaining the correction.",
+      "A repeated receipt, photo, witness, timestamp, or identical fact is a duplicate and fails. A second exhibit about the same issue passes only if it is genuinely distinct and adds a new checkable fact.",
+      "Anger, insults, demands, morals, summaries, and conclusions are not evidence. A sentence saying the company is shameless scores zero on the gate unless it also presents a concrete exhibit.",
+      "A paragraph may contain a short explanation of how the exhibit supports the complaint, but it must center on one new exhibit. Two or three exhibits packed together are crowded and score link at 2 or below.",
+      "An exhibit can be mundane and still pass. A dated email, a menu line, or a named witness is enough if it is new, specific, and connected.",
+      "A paragraph that merely says the evidence proves the complaint repeats a conclusion rather than adding evidence and fails."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Dear Customer Service: Your café charged me for a plain sandwich, but the receipt lists an item called premium mystery filling.",
+      "move": "Then I checked the menu and found no premium mystery filling, but it does list the sandwich at five dollars.",
+      "gates_note": "all true",
+      "mechanism": "the strange receipt charge leads to the menu, which shows the listed sandwich price and no matching item",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then I checked the menu and found no premium mystery filling, but it does list the sandwich at five dollars.",
+      "move": "Then the cashier admitted on the order screen that the mystery filling button adds three dollars even when nobody selects it.",
+      "gates_note": "all true",
+      "mechanism": "the missing menu item leads to the cashier checking the order screen and finding the automatic charge",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then I checked the menu and found no premium mystery filling, but it does list the sandwich at five dollars.",
+      "move": "Then the café is exposed as a criminal empire and the manager is sentenced to ten years.",
+      "gates_note": "satisfies_criterion false, skipped links and a punishment instead of an exhibit",
+      "mechanism": "no record, witness, or other proof connects the menu to a criminal verdict",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the cashier admitted on the order screen that the mystery filling button adds three dollars even when nobody selects it.",
+      "move": "Then I was furious because this proves the café has no respect for customers.",
+      "gates_note": "satisfies_criterion false, anger and conclusion with no new evidence",
+      "mechanism": "the paragraph announces outrage and repeats the meaning of the earlier exhibit",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the cashier admitted on the order screen that the mystery filling button adds three dollars even when nobody selects it.",
+      "move": "Then I checked the same receipt again and it still showed the premium mystery filling charge.",
+      "gates_note": "satisfies_criterion false, duplicate exhibit",
+      "mechanism": "the paragraph reuses the standing receipt instead of adding a new record",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Exhibit Announcer",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hyped"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like a courtroom announcer who just drank three energy drinks. Hype the exhibit and roast the flimsy logic.",
+      "Name both the standing paragraph and the new paragraph, or their plain stand-ins. The joke must fit this exact evidence.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Exhibit Announcer refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Mock the paragraph, the receipt, or the dramatic leap. Roast-level jabs at the player are allowed, but never attack identity, disability, body, family, or protected traits.",
+      "Plain spoken English with edgy energy. Profanity and adult innuendo are allowed when they sharpen the joke, but do not make the line hateful or graphic.",
+      "On missing evidence, name the receipt, witness, timestamp, or record that never appeared. On a verdict or punishment, say the courtroom skipped the exhibits.",
+      "On a refusal, the headline refuses the paragraph and asks for another. It never rules on who won.",
+      "The coaching line names one concrete exhibit that could have followed. End on evidence, not a mood, moral, or verdict.",
+      "Every ruling must explain the mechanism. Hype without a reason is just a loud envelope."
+    ],
+    "good_headlines": [
+      "The menu just body slammed the mystery filling charge. Exhibit A has teeth.",
+      "A cashier, an order screen, and three illegal little dollars. The receipt has entered beast mode.",
+      "That timestamp is smoking, and the complaint finally brought a witness instead of vibes.",
+      "The photo shows the broken sign, the email shows the lie. Customer service, please locate your spine.",
+      "The same receipt again. Gorgeous confidence, absolutely no new evidence.",
+      "You jumped from a missing menu item to prison. Bring the order screen before calling the jury.",
+      "Anger is not an exhibit, champ. Put a dated message on the table.",
+      "The witness saw the charge, the receipt names the charge, and this complaint now has receipts for its receipts.",
+      "The refund is not evidence, it is the credits rolling. Find one more document.",
+      "A menu, a timestamp, and a charge that crawled out of a cursed spreadsheet. Proceed."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: huge proof drop.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Exhibit Announcer rejects this nonsense.",
+        "why": "opens with a ruling phrase and names the host instead of the evidence"
+      },
+      {
+        "text": "This complaint is absolutely insane and iconic.",
+        "why": "hype with no mechanism, evidence, or useful explanation"
+      },
+      {
+        "text": "The corporate malfeasance proliferates spectacularly.",
+        "why": "uses stiff thesaurus words and shows nothing a stranger can inspect"
+      },
+      {
+        "text": "You are too stupid to write a complaint.",
+        "why": "attacks the player instead of the paragraph"
+      },
+      {
+        "text": "Maybe there is proof, maybe there is not, who knows.",
+        "why": "hedges instead of ruling on the exhibit"
+      },
+      {
+        "text": "Behold, the sacred parchment of justice...",
+        "why": "uses theatrical poetry and an ellipsis"
+      },
+      {
+        "text": "Refund, apology, lawsuit, prison. Boom.",
+        "why": "lists outcomes, skips evidence, and turns the ruling into empty noise"
+      }
+    ]
+  },
+  "rules": [
+    "Add one paragraph beginning with Then.",
+    "Each paragraph must introduce one new, specific, checkable exhibit.",
+    "Explain how the exhibit supports the complaint and fit every earlier claim.",
+    "Do not leap to a verdict, punishment, refund, apology, or final demand.",
+    "Do not erase evidence, repeat an exhibit, or replace proof with anger.",
+    "The Judge rules on the evidence link, not spelling or fancy legal language."
+  ],
+  "labels": {
+    "opening": "The opening complaint",
+    "next_opening": "The next exhibit",
+    "your_opening": "Your exhibit",
+    "compose": "Add evidence after {token}",
+    "compose_waiting": "Draft your next exhibit while you wait"
+  },
+  "validation_messages": {
+    "empty": "No exhibit appeared. The complaint cannot run on fumes.",
+    "too_long": "Over 140 characters. One exhibit, not a twelve-page deposition.",
+    "duplicate": "That evidence already appeared this match. Find a fresh receipt.",
+    "nudge": "Twice now, and still no new exhibit. Add one checkable fact linked to {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody adds evidence until they return. {standing_form} still stands, and the file remains open.\n",
+  "opponent_prompt": "You are one of two rivals building a complaint letter one paragraph at a time, and you want the case to become harder to dismiss.\nAlways begin with Then. Add one paragraph, one new checkable exhibit, and a plain explanation of how it supports the standing complaint.\nGood: Then I checked the menu and found no premium mystery filling, but it does list the sandwich at five dollars.\nGood: Then the cashier showed me the order screen, where the charge appears before anyone selects a filling.\nBad: Then the company is guilty and should be shut down. That is a verdict and punishment, not evidence.\nBad: Then I was furious. Anger is not an exhibit.\nBad: Then the same receipt proves it again. That is a duplicate.\nNever erase an earlier fact, never solve the dispute, never demand the final punishment, and never leap past the missing record, witness, or timestamp.\nUse plain spoken English. Name concrete things such as a receipt, menu, email, photo, witness, screen, date, time, counter, or notice. Keep the paragraph focused on one exhibit, not a legal speech.\nDo not speak to the Judge, discuss rules, mention scores, or explain that you are playing a game.\nNever reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then I checked the payment record and found the same strange charge on the order made five minutes earlier."
+}

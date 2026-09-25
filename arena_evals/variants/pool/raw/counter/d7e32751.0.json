@@ -1,0 +1,275 @@
+{
+  "slug": "tale-eater",
+  "title": "Tale Eater",
+  "tagline": "Send folklore against folklore and leave the weaker legend on the slab.",
+  "emblem": "🧿",
+  "accent": "#7c3aed",
+  "premise": "You are a creature from folklore, and every turn you send out a different creature or charm to defeat the one just named. Make the weakness plain: a witch traps a ghost, a mirror confuses a doppelganger, a bell breaks a silence spell. The host delivers a clinical autopsy of each failed legend, with only mild teasing for the player who fed it to the beast.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a hungry ogre",
+      "opening_emoji": "👹",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a restless ghost",
+      "opening_emoji": "👻",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a sleeping dragon",
+      "opening_emoji": "🐉",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 3,
+    "axes": {
+      "kind": [
+        "monster",
+        "spirit",
+        "witch",
+        "fairy",
+        "animal",
+        "person or role",
+        "object",
+        "charm"
+      ],
+      "source": [
+        "forest",
+        "village",
+        "castle",
+        "mountain",
+        "river",
+        "graveyard",
+        "house",
+        "crossroads"
+      ],
+      "property": [
+        "cursed",
+        "hungry",
+        "sleepy",
+        "jealous",
+        "hidden",
+        "ancient",
+        "noisy",
+        "lonely"
+      ]
+    },
+    "tests": [
+      "A stranger pictures a folklore thing at once. Nothing abstract, technical, or dependent on a private story.",
+      "A non-player names a plain folklore counter within five seconds. Say what that counter is.",
+      "It can act in the ring. It bites, curses, traps, reveals, protects, banishes, or changes something, rather than merely watching.",
+      "It invites a clean legend. A stranger can imagine why this thing has a weakness and what sort of charm or creature might exploit it.",
+      "Two or three everyday words a twelve-year-old knows. No invented names, brand names, proper nouns, or lore that requires a book before the match can begin."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am an iron horseshoe; I burn the witch's curse away.",
+    "hint": "Name the folklore thing, then the literal mechanism that defeats the standing legend."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new creature or charm attacks, traps, reveals, breaks, or cancels the folklore thing before it.",
+      "anchors": "0 = no mechanism, or only hiding, fleeing, enduring, or claiming victory; 1 = a weak or merely possible connection; 2 = a recognizable counter but partial, indirect, or debatable; 3 = a clear folklore weakness with a workable mechanism; 4 = a precise, decisive counter that leaves the earlier legend with no useful move (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the folklore thing and understand what happens between the two forms.",
+      "anchors": "0 = unreadable, contradictory, or not a thing; 1 = requires obscure lore or heavy explanation; 2 = understandable but vague, crowded, or partly abstract; 3 = concrete and easy to follow; 4 = vivid, simple, and instantly legible (rare). A longer explanation does not repair a muddy legend.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the folklore domain and counter are, without rewarding obscurity or a renamed copy.",
+      "anchors": "0 = the obvious stock answer, a repeat, or a close cousin from the same family; 2 = a sound but familiar twist; 4 = a plain, surprising hop to a different folklore tool, creature, or tradition that still needs no lecture (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A form OVERCOMES the previous form if it directly attacks, traps, reveals, breaks, or cancels that creature or charm through a plain folklore mechanism. It must act on what stands now, not on a past event. Merely hiding, escaping, enduring, ignoring, naming a larger version, or choosing a close cousin from the same family does not overcome it.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or invoking rules is itself a losing form.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous form: judge the move against the opening card instead. It must plausibly attack, trap, reveal, break, or cancel the opening legend.",
+      "A larger, older, faster, or more powerful version of the standing creature is not a counter. A close cousin from the same family is also not a counter unless it has a direct mechanism that defeats the standing form.",
+      "Becoming the opening creature itself, or a recoloured copy such as a white ogre against an ogre, is a duplicate and fails.",
+      "Strength is measured against the standing form, never in the abstract. A charming creature with no way to affect what stands is a failed counter, however famous it is.",
+      "The mechanism must be literal within the folklore claim. A mirror confusing a doppelganger or iron burning a witch's curse counts. A hero defeating fear by being brave, or a moon ending sadness, is a figure of speech and fails.",
+      "Surviving, hiding from, escaping, ignoring, or waiting out the standing form is dodging, not overcoming. The new form must do something to the creature or charm before it.",
+      "A vague claim that a form is good luck, stronger magic, or immune to the opponent is not enough. Name the action that changes, traps, exposes, breaks, or cancels the standing legend.",
+      "A charm that merely protects its bearer while the standing creature remains active is not a counter unless the charm directly stops, binds, exposes, or cancels that creature.",
+      "A form that depends on specialist lore a stranger could not recognize is judged unclear unless the move itself supplies a plain mechanism."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a hungry ogre; I eat travelers.",
+      "move": "I am a witch; I turn the ogre into a toad.",
+      "gates_note": "all true",
+      "mechanism": "the witch's spell transforms and disables the ogre",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a restless ghost; I rattle the house.",
+      "move": "I am a bell; its holy ringing drives the ghost away.",
+      "gates_note": "all true",
+      "mechanism": "the bell's sacred sound banishes the ghost",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a doppelganger; I copy your face.",
+      "move": "I am a mirror; it confuses the copy among its reflections.",
+      "gates_note": "all true",
+      "mechanism": "the mirror creates indistinguishable doubles and defeats the doppelganger's advantage",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a sleeping dragon; my scales stop every blade.",
+      "move": "I am a bigger dragon; I have thicker scales.",
+      "gates_note": "satisfies_criterion false, mere amplification and same family",
+      "mechanism": "none, it is only a larger version of the standing creature",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a witch; I curse anyone who enters.",
+      "move": "I am a brave knight; I am not afraid.",
+      "gates_note": "satisfies_criterion false, bravery does not directly attack or cancel the curse",
+      "mechanism": "none, the knight merely claims endurance",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Folklore Examiner",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like a field examiner documenting a legend that has just failed in public.",
+      "The joke must carry the reason. A stranger reading only the two forms should see the mechanism and the wound.",
+      "Name both forms, or plain stand-ins for them. A headline that fits any pair is an untreated specimen.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Examiner refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the losing form and lightly tease the player who supplied it, but never attack identity, disability, body, family, intelligence, or spelling.",
+      "Mild menace is welcome. Light innuendo is allowed. No profanity, gore, or threats toward the player.",
+      "Plain spoken English only. No poetry, rhymes, fake Latin, or ornate old language.",
+      "On a refusal caused by a gate failure, say the specimen failed and ask for another. Do not rule on who won.",
+      "The coaching line names one form that would have won. That form ends with a concrete action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The ogre brought teeth; the witch brought paperwork for its entire body.",
+      "The ghost rattled the house until the bell rang, then left with its dignity medically absent.",
+      "The mirror gives the doppelganger too many faces and none of them are useful.",
+      "A larger dragon is still the same patient, only harder to fit on the table.",
+      "The knight is brave, but the curse is not waiting for his feelings. Bring a charm that breaks it.",
+      "The witch expected a victim; the iron horseshoe delivered a burn mark and a closed case.",
+      "The vampire met a garlic charm and discovered that dinner can file a complaint.",
+      "The ogre hid behind hunger, then the spell turned lunch into a small amphibian."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the witch wins.",
+        "why": "Opens with a status word and gives no mechanism."
+      },
+      {
+        "text": "The Examiner refuses: your legend is weak.",
+        "why": "Opens with a ruling phrase and attacks the player instead of explaining the form."
+      },
+      {
+        "text": "The ghost loses, obviously.",
+        "why": "No mechanism, no picture, and no useful clinical finding."
+      },
+      {
+        "text": "The dragon was defeated by superior energy.",
+        "why": "Abstract language replaces a literal folklore action."
+      },
+      {
+        "text": "The brave knight survives the curse by refusing to care.",
+        "why": "Survival and emotional resistance are dodging, not cancellation."
+      },
+      {
+        "text": "A bigger ogre eats the ogre.",
+        "why": "Same family and mere size escalation, with no clean counter logic."
+      },
+      {
+        "text": "Your move is stupid and you should be ashamed.",
+        "why": "Cruel personal abuse, not a clinical ruling about the legend."
+      },
+      {
+        "text": "Lo, the moonlit wraith doth quail before yon charm.",
+        "why": "Poetry and fake archaic speech obscure the mechanism."
+      },
+      {
+        "text": "The mirror wins because mirrors are cool.",
+        "why": "The claim supplies admiration, not an action against the doppelganger."
+      },
+      {
+        "text": "The fairy beats it, end of story.",
+        "why": "A verdict without a mechanism could describe any pair."
+      }
+    ]
+  },
+  "rules": [
+    "Defeat the folklore thing in front of you. Do not become it.",
+    "Say what you are and what your folklore mechanism does to it.",
+    "The Judge rules on the legend and its mechanism, not spelling or literary polish.",
+    "Hiding, escaping, enduring, getting bigger, or choosing a close cousin does not count.",
+    "One form that fails against the standing legend ends the match."
+  ],
+  "labels": {
+    "opening": "The opening legend",
+    "next_opening": "The next legend",
+    "your_opening": "Your legend",
+    "compose": "Your counter to {token}",
+    "compose_waiting": "Draft your next legend while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Send in a legend.",
+    "too_long": "Over 200 characters. A folklore mechanism, not an archive.",
+    "duplicate": "That legend already stood this match. Feed the tale something new.",
+    "nudge": "Twice now. Defeat {standing_form}. Do not hide from it, copy it, or join its family."
+  },
+  "judge_out_text": "The judge has stepped out to examine the remains. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of the folklore creatures or charm bearers, trying to survive.\nAlways name a concrete thing and the literal folklore mechanism that defeats their form.\nGood: \"I am a witch; I trap the ghost in a jar.\" / \"I am an iron horseshoe; I burn the curse away.\"\nBad: \"I am brave; I cannot be scared\" because that only claims endurance.\nBad: \"I am a bigger dragon\" because size is not a mechanism.\nBad: \"I am hope\" because it is abstract and cannot act on the legend.\nTalk like a person across a table, not a poet or a lore professor. Use plain names:\na bell, a mirror, a witch, a charm, a fox, a locked door. The mechanism should be\nsomething a stranger can picture happening in the room.\nYou are not performing for a crowd and you are not joking. You are trying to survive.\nIf a move lands funny, it is because the folklore mechanism is real and clean.\nStay picturable and jargon-free. Use monsters, spirits, witches, charms, animals,\nweather, household objects, and old village tricks.\nHop domains when useful. A kitchen charm, a graveyard spirit, a forest creature,\nor a village superstition can all defeat the standing legend if the action is direct.\nNever reuse a form or an attribute from this match. Do not address the Judge or talk\nabout the game as your form. The form must attack, trap, reveal, break, or cancel what stands.\n",
+  "default_move": "I am an iron horseshoe; I burn the curse away."
+}

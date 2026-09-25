@@ -1,0 +1,274 @@
+{
+  "slug": "orientation-day",
+  "title": "Orientation Day",
+  "tagline": "Welcome aboard. The dignity is not included.",
+  "emblem": "🧤",
+  "accent": "#6b4b3e",
+  "premise": "Three rounds. Each round gives you the first dull instruction for a terrible new job. Both players write one spoken line the new worker says while carrying it out. The instruction must survive inside the line. Everything else is yours to invent, from the worker's private war to the company's monstrous little kingdom. The Supervisor scores how wildly the line expands the work while the work still gets done.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Sort lost socks at a hotel laundry.",
+      "opening_emoji": "🧦",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Photograph potholes for the council.",
+      "opening_emoji": "🕳️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Remove gum from cinema seats.",
+      "opening_emoji": "🍿",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "worker": [
+        "a temp",
+        "a widow",
+        "a student",
+        "a night guard",
+        "a failed actor",
+        "a retired spy",
+        "a nervous cousin",
+        "a disgraced chef"
+      ],
+      "task": [
+        "sort lost socks",
+        "photograph potholes",
+        "remove gum",
+        "count dead batteries",
+        "label broken umbrellas",
+        "polish lift buttons",
+        "file complaint forms",
+        "feed office plants"
+      ],
+      "setting": [
+        "at a hotel laundry",
+        "for the council",
+        "at a cinema",
+        "in a hospital basement",
+        "inside a closing mall",
+        "at a motorway service station",
+        "in a luxury tower",
+        "beneath an empty stadium"
+      ]
+    },
+    "tests": [
+      "One short sentence, under eight words. A worker knows exactly what to do.",
+      "The job is legal, nonviolent and grimly plausible. No real people, brands or place names.",
+      "The task is so unwanted that a new worker might consider lying, crying or unionising.",
+      "It contains a concrete object and an action a spoken line can obey without explanation.",
+      "The setting adds social or physical discomfort, but does not turn the card into an adventure already."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Smile, crater, today you become evidence in my revenge.",
+    "hint": "One spoken line. Do the job, then reveal the hell around it."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the line build a strange, bleak or explosive world around the assigned work while the work still happens?",
+      "anchors": "0 = repeats the instruction with no life; 1 = adds a small complaint or decoration; 2 = gives the worker a motive, enemy or private stake; 3 = reveals a whole ugly system behind the task, and the task still happens; 4 = turns a sock, pothole or gum stain into the visible edge of a magnificent disaster, with the instruction intact (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the worker's line make the misery entertaining rather than merely miserable?",
+      "anchors": "0 = no comic charge; 1 = a faint grimace; 2 = a neat laugh; 3 = a strong laugh built from the job; 4 = the room repeats it while applying for unemployment (rare). Cruel institutions and doomed confidence are welcome, but the joke must have a target.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it work as one clean spoken line, with a clear voice, a sharp turn and no explanatory baggage?",
+      "anchors": "0 = not a spoken line, or mostly explanation; 1 = a line buried in setup; 2 = playable but loose; 3 = concise, speakable and pointed; 4 = an actor could deliver it once and make the whole workplace appear (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A line PLAYS if the worker is still carrying out the card's exact instruction while speaking. It may add motives, threats, memories, conspiracies, lovers, rivals, management policies and an entire collapsing civilisation. It fails when the worker abandons the task, changes the task, performs a different action, or merely comments on the instruction without doing it. It also fails when it is not a spoken line but a question to the Judge, a rule, a stage direction or a sentence about the game. A plain restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Host, about the game, or about the rules is itself a losing line.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the worker say this while carrying out the exact instruction? \"This sock goes in evidence, and so does my marriage\" passes for sorting lost socks. Do not ask whether the workplace, motive or threat is realistic.",
+      "Added detail is not a contradiction. A secret tribunal, a revenge plot or a cursed basement may all play, provided the worker still performs the card's action on the card's object.",
+      "The first move gets no special mercy. Judge it by the same gate and the same three scores as every later move.",
+      "A line fails if it drops the action. \"I hate these socks\" does not sort them. It fails if it swaps the action. Photographing a pothole is not repairing it, and removing gum is not insulting the person who left it.",
+      "A line fails if it turns the instruction into a future promise or a refusal. \"Tomorrow I will sort them\" and \"I am not sorting them\" leave the work undone.",
+      "A line fails if it speaks to the Judge, explains the rules, or describes the game. The worker must have a mouth in the workplace, not a podium outside it.",
+      "Score stretch by the world created around the task, not by profanity, volume or random menace. A quiet line that reveals a payroll cult beats a loud line that merely says bloody twice.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Sort lost socks at a hotel laundry.",
+      "move": "This one matches the senator, and both are going in the evidence bag.",
+      "gates_note": "all true",
+      "mechanism": "the worker sorts a sock while exposing a political scandal",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Photograph potholes for the council.",
+      "move": "Smile, crater, today you become evidence in my revenge.",
+      "gates_note": "all true",
+      "mechanism": "the pothole is photographed while the worker reveals a personal campaign against power",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Remove gum from cinema seats.",
+      "move": "I am removing the gum, Your Honour, but the seat knows who did it.",
+      "gates_note": "all true",
+      "mechanism": "the gum comes off while the cinema seat becomes a witness to a crime",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Sort lost socks at a hotel laundry.",
+      "move": "These socks can sort themselves while I negotiate my ransom.",
+      "gates_note": "satisfies_criterion false (the worker refuses to sort the socks and assigns the action elsewhere)",
+      "mechanism": "the line promises escape from the task instead of carrying it out",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Photograph potholes for the council.",
+      "move": "I repaired the crater, and now the mayor owes me lunch.",
+      "gates_note": "satisfies_criterion false (repairing is not photographing, so the exact instruction is replaced)",
+      "mechanism": "the worker performs a different civic service and leaves the camera absent",
+      "scores": {
+        "stretch": 2,
+        "funny": 1,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Supervisor",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Speak as though announcing a workplace ritual before dissecting it on a clean tray.",
+      "The joke carries the reason. Name the sock, crater, gum or other object that proves the line still lives at work.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Supervisor refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the line and its invented workplace, never identity, disability, family, body or protected class. A player may be called a coward only when the line itself earns the jab.",
+      "Plain spoken English with a ceremonial edge. No poetry, no corporate fog, no fake legal Latin.",
+      "On a fail, name the exact action that vanished or changed. Say sorting, photographing, removing or the card's own verb.",
+      "On a refusal, the line is barred from the roster and asks for another. It never rules on who won.",
+      "The coaching line names one concrete action the worker could still perform. It ends on an object or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The sock was sorted, and in doing so it opened a tribunal beneath the laundry.",
+      "The crater received its portrait. The council received a warning from the pavement.",
+      "The gum came off the seat, leaving only a witness with excellent upholstery.",
+      "A splendid little act of treason, provided the worker keeps matching socks.",
+      "The employee has found a conspiracy and, more importantly, the correct laundry basket.",
+      "A council camera, a pothole and one private vendetta have now entered the minutes.",
+      "The seat is clean, the witness is sticky, and the cinema's alibi is not.",
+      "The line builds an empire of filth while removing the filth. That is service.",
+      "The socks are sorted by colour and apparently by criminal liability.",
+      "The worker speaks like a hostage, but the gum still leaves the seat."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a fine sock ceremony.",
+        "why": "opens with a status word and uses a colon after the ruling"
+      },
+      {
+        "text": "The Supervisor refuses: perform the task.",
+        "why": "opens with a ruling phrase, names the host and uses a colon"
+      },
+      {
+        "text": "Move refused, return to the laundry.",
+        "why": "opens with a ruling phrase and gives no clinical reason"
+      },
+      {
+        "text": "Wrong, the action is missing.",
+        "why": "does not identify which action went missing"
+      },
+      {
+        "text": "A magnificent contribution.",
+        "why": "ceremonial praise without naming the object or the reason"
+      },
+      {
+        "text": "Only a fool would write this, you useless bastard.",
+        "why": "attacks the player rather than the line and adds personal abuse"
+      },
+      {
+        "text": "O sock, in thy lonely orbit, hast thou known the moon?",
+        "why": "poetry replaces a speakable workplace line"
+      },
+      {
+        "text": "This is edgy, funny, bold and subversive.",
+        "why": "lists qualities without explaining the work or the joke"
+      },
+      {
+        "text": "The other player did better.",
+        "why": "judges the pair instead of the line on its own"
+      },
+      {
+        "text": "Per workplace compliance protocol, said item remediation is hereby commenced.",
+        "why": "corporate fog hides the simple action"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one terrible job instruction each.",
+    "Write one spoken line under 90 characters. The House writes its own, unseen, and the Supervisor scores both.",
+    "The worker must still carry out the exact instruction while speaking. Drop it, replace it or refuse it and the round is lost.",
+    "Everything else is yours to invent. The further the line travels from the dull task while the task remains real, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The instruction",
+    "next_opening": "The next instruction",
+    "your_opening": "Your instruction",
+    "compose": "Your line for {token}",
+    "compose_waiting": "Write your workplace line while you wait"
+  },
+  "validation_messages": {
+    "empty": "Empty induction form. Speak the line.",
+    "too_long": "Over 90 characters. One line, not a grievance statement.",
+    "duplicate": "That line has already been filed this match. Find another workplace disaster.",
+    "nudge": "Twice now. One spoken line that still carries out this instruction: {standing_form}."
+  },
+  "judge_out_text": "The Supervisor has stepped into the basement. Nobody abandons the task while they are gone. {standing_form} remains on the clipboard. Give it a moment.\n",
+  "opponent_prompt": "You are a new worker on the first day of a job nobody wanted. The Host gives you a dull\ninstruction. Write one spoken line while carrying it out.\nTHE INSTRUCTION MUST SURVIVE. The worker must still perform the exact action on the exact\nobject while speaking. Never replace sorting with refusing, photographing with repairing,\nor removing with complaining. The line may invent a motive, a scandal, a lover, a threat,\na union, a curse, a corrupt manager or a whole collapsing institution.\nGood: \"Smile, crater, today you become evidence in my revenge.\" for photographing potholes.\n\"This one matches the senator, and both are going in the evidence bag.\" for sorting lost\nsocks. \"I am removing the gum, Your Honour, but the seat knows who did it.\" for removing\ngum from cinema seats.\nBad: \"I hate these socks\" because no sorting happens. \"I repaired the crater\" because the\nworker photographs nothing. \"Tomorrow I will remove the gum\" because the task is only\npromised. Speaking to the Host or about the game also fails.\nMake the line under 90 characters. One spoken line, plain and sharp. Do not explain the\njoke. Do not use a colon or a dash. Profanity and adult innuendo are allowed when they\nserve the worker's bleak little world. Do not use identity based abuse. Capitals are fine\nbut not required.\nVary the angle from round to round: private revenge, institutional horror, romance, cover up,\nreligious ritual, or a worker pretending this is normal. Never use the same shape twice in\na match.\nNo quotation marks around the line. Reply with the line only.\n",
+  "medallions": false,
+  "default_move": "I am doing the job, and management will regret teaching me how"
+}

@@ -1,0 +1,274 @@
+{
+  "slug": "return-to-sender",
+  "title": "Return to Sender",
+  "tagline": "Turn every postal disaster into someone else's problem.",
+  "emblem": "📮",
+  "accent": "#1d4ed8",
+  "premise": "Two rival postal clerks fight over one package. Each turn, stamp a new standing postal problem that defeats the problem before it: what you are must act on what stands, not merely avoid it. The Judge decides whether your mailroom solution actually overcomes the previous one.\n",
+  "seed_pool": [
+    {
+      "opening_token": "an undeliverable package",
+      "opening_emoji": "📦",
+      "detail": "bloated with mystery and bad handwriting",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a jammed mailbox",
+      "opening_emoji": "📮",
+      "detail": "stuffed with overdue notices and one furious pigeon",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a missing stamp",
+      "opening_emoji": "🏷️",
+      "detail": "leaving every letter stranded at the counter",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "mail_item": [
+        "a package",
+        "a letter",
+        "a postcard",
+        "a parcel",
+        "a stamp",
+        "a mailbox",
+        "a label",
+        "a notice"
+      ],
+      "postal_failure": [
+        "undeliverable",
+        "misaddressed",
+        "lost",
+        "damaged",
+        "stolen",
+        "overdue",
+        "unstamped",
+        "unclaimed"
+      ],
+      "tone": [
+        "mysterious",
+        "furious",
+        "fragile",
+        "urgent",
+        "smudged",
+        "secret",
+        "embarrassing",
+        "official"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the postal problem at once. Nothing abstract, nothing that needs a policy manual.",
+      "A non-player names a plain postal counter within five seconds. Say what that counter is.",
+      "It stands in the mailroom. It jams, redirects, exposes, delivers, seals or refuses service like a parcel, a clerk or a cancellation. Never a vague inconvenience.",
+      "It makes a stranger want to answer. A thing with a little trouble or personality, like a forged stamp or a furious mailbox. Never inventory, like a roll of tape.",
+      "Two to four everyday words a twelve-year-old knows. Never a technical term that needs a postal dictionary. No brand names, no proper nouns except a day of the week."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a return label, package-sending, address-correcting.",
+    "hint": "A postal thing, a trait, how it fixes the standing problem."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively your postal thing stops, redirects, exposes, cancels or completes the postal effect of the form before it.",
+      "anchors": "0 = no postal action at all; 1 = claims a fix without showing one; 2 = a possible fix but weak, partial or debatable; 3 = a clear postal mechanism that solves the standing problem; 4 = a complete and theatrical reversal, the previous problem has nowhere left to go (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the postal thing and understand its action without decoding a riddle.",
+      "anchors": "0 = contradictory or unreadable; 1 = understandable only with specialist knowledge; 2 = mostly clear but muddled, overloaded or abstract; 3 = concrete and easy to picture; 4 = instantly vivid, as if it just landed on the counter (rare). Length never wins alone: every added clause must earn its postage.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How far the move travels into a fresh postal territory instead of repeating the previous solution or failure.",
+      "anchors": "0 = stock answer, same postal function or same domain as the previous move; 2 = a respectable twist within familiar mailroom territory; 4 = a sharp jump into an unexpected but readable postal corner (rare). Strange wording is not novelty, and obscurity earns no bonus.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move BEATS the standing postal problem if its nature plausibly opens, redirects, delivers, cancels, exposes or otherwise stops that problem's postal effect. It must act on what stands, not merely survive it, ignore it or become a larger copy. Clever mailroom action beats brute force. A cousin from the same postal family is not a solution.",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or invoking rules as the postal thing is itself a losing form.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous form: judge it against the opening postal prompt instead, asking whether it plausibly answers or overcomes the package, mailbox or stamp problem.",
+      "A bigger, faster or more official version of the standing postal thing is not a counter, and neither is a nearby cousin from the same postal family. A priority envelope after an envelope is still envelope business, not a solution.",
+      "Becoming the opening form itself, or a recolored copy of it, is a duplicate. A clean package against a package is still a package with a fresh haircut.",
+      "Strength is measured against the standing postal problem, never in the abstract. A beautiful postage meter that cannot affect a lost letter is a failed counter.",
+      "The mechanism must be literal. Something the new postal thing does to the standing problem must be visible to a stranger. A complaint burying a backlog or bureaucracy eating a deadline is theater without a mechanism, so rule fail.",
+      "Surviving, ignoring, waiting out or being immune to the standing postal problem is dodging, not overcoming. An empty mailbox that avoids a jam, or a patient clerk who simply waits, has not fixed the mail.",
+      "Naming a postal cousin without an action fails. A parcel against a package, a label against a stamp, or a new envelope against an envelope does not win unless the move states a concrete action that changes what stands.",
+      "A move that only describes a past delivery, a future promise or an imagined result does not count. The postal thing must be a standing form with an active mechanism now."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am an undeliverable package, bloated with mystery and bad handwriting.",
+      "move": "I am a return label, address-correcting, sender-finding.",
+      "gates_note": "all true",
+      "mechanism": "the return label redirects the package to its sender and removes the delivery dead end",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a jammed mailbox, stuffed with overdue notices.",
+      "move": "I am a mail carrier, emptying, sorting.",
+      "gates_note": "all true",
+      "mechanism": "the carrier removes the accumulated mail and clears the box",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a missing stamp, leaving every letter stranded.",
+      "move": "I am a bigger stamp, grander, more expensive.",
+      "gates_note": "satisfies_criterion false, mere amplification with no stated postal action",
+      "mechanism": "none, it is only the same problem wearing a larger uniform",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a lost letter, wandering without an address.",
+      "move": "I am an envelope, white, official.",
+      "gates_note": "satisfies_criterion false, a postal cousin that does not act on the lost letter",
+      "mechanism": "none, an envelope provides no route or recovery",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a stolen parcel, vanishing from the delivery route.",
+      "move": "I am a tracking number, location-revealing, thief-exposing.",
+      "gates_note": "all true",
+      "mechanism": "the tracking number reveals where the parcel is and exposes the theft",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Postmaster General",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Sound like a palace herald announcing a scandal at the sorting office. The joke must also explain the postal mechanism.",
+      "Name both postal forms, or their plain stand-ins. A grand headline that fits any two envelopes is still empty postage.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Postmaster General refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Roast the losing postal form and, when needed, the player's feeble office theatrics. Never use identity-based abuse or target protected traits.",
+      "Edgy wit and adult innuendo are allowed, but keep the insult aimed at the move, not the player's body, family, intelligence, or spelling.",
+      "Use plain spoken English with theatrical scale. No poetry, no fake antique language, no foreign phrases, no thesaurus parade.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one postal form that would have won. That form ends on a fact or an action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The package begged for a destination, and the return label gave it the sender's address.",
+      "The mailbox was packed like a doomed suitcase, then the carrier emptied its little black heart.",
+      "The tracking number turns the stolen parcel from mystery into evidence.",
+      "A clean envelope is not a rescue plan. Bring a postal thing that acts.",
+      "The stamp arrived late, but cancellation arrived with a knife and ended the charge.",
+      "The label found the sender, while the package discovered consequences.",
+      "The lost letter met a tracking number, and suddenly the thief had an address.",
+      "The shiny new envelope stands there looking useful, which is not the same as being useful. Bring another form.",
+      "The complaint wants to bury the backlog, but the clerk sorts every cursed page.",
+      "The mailbox tried to swallow the post office whole, and the carrier made it cough."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the label wins.",
+        "why": "opens with a status word and gives no postal mechanism"
+      },
+      {
+        "text": "The Postmaster General refuses, this envelope is pathetic.",
+        "why": "opens with a ruling phrase, names the host and mocks without explaining the failure"
+      },
+      {
+        "text": "Rejected: a larger stamp is still a stamp.",
+        "why": "opens with a ruling phrase and uses a colon after the verdict"
+      },
+      {
+        "text": "The parcel loses because it is stupid and doomed.",
+        "why": "mocks the player or form without naming the action that defeats it"
+      },
+      {
+        "text": "The letter survives the mailbox, which is basically victory.",
+        "why": "survival is dodging, not a postal mechanism"
+      },
+      {
+        "text": "Behold, the magnificent envelope of destiny!",
+        "why": "grand language replaces a concrete postal action"
+      },
+      {
+        "text": "The stamp is defeated, overcome, destroyed, annihilated and ruined.",
+        "why": "repeats one idea instead of showing what the winner does"
+      },
+      {
+        "text": "The tracking number perhaps might expose the parcel, possibly.",
+        "why": "hedges so heavily that no ruling is visible"
+      },
+      {
+        "text": "Your move is as clever as a drunk pigeon with a fax machine.",
+        "why": "roasts the player and does not explain the postal exchange"
+      },
+      {
+        "text": "A new envelope enters the fray, but alas, the cosmos trembles.",
+        "why": "poetic fog and no mechanism"
+      }
+    ]
+  },
+  "rules": [
+    "Beat the postal problem in front of you. Do not become it.",
+    "Say what postal thing you are and what it does to the standing problem: I am a return label, package-sending, address-correcting.",
+    "The Judge rules on the postal idea, never the spelling.",
+    "One form that breaks against the standing postal problem ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your postal solution against {token}",
+    "compose_waiting": "Draft your next postal solution while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing in the tray. Stamp a postal thing.",
+    "too_long": "Over 200 characters. A dispatch, not a government archive.",
+    "duplicate": "That postal form already stood this match. Send something new.",
+    "nudge": "Twice now. Overcome {standing_form}. Do not become it, do not repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two rival postal clerks trying to keep your solution alive.\nAlways use this shape: \"I am X, attribute, attribute.\" Attributes are 1 to 4 word fragments, never clauses, and at least one must name what you do to the other postal form.\nGood: \"I am a return label, sender-finding, package-routing.\" / \"I am a tracking number, thief-exposing, location-revealing.\"\nBad: \"I am a return label that sends the package back to its sender\" because that is a sentence wearing a uniform. Bad: \"I am a label, official, elegant\" because moods and decoration do not explain a mechanism. Bad: \"I am delivery\" because it is abstract and not a thing a stranger can picture.\nTalk like a person at a busy counter, not a poet, lawyer or policy manual. Name things anyone would name: a stamp, a clerk, a mailbox, a label, a tracking number. Plain words beat grand words.\nYou are not performing for applause. You are trying to defeat the postal problem standing opposite you. If a move lands funny, it is because the postal thing truly acts on theirs.\nStay concrete and jargon-free: packages, letters, routes, clerks, addresses, theft, weather and office machinery. Hop domains within the post. A return label, a tracking number, a cancellation mark and a carrier are better than four kinds of envelope.\nNever reuse a form or an attribute from this match. Do not speak to the Judge, mention the game, invoke rules, or claim victory as your postal form.\n",
+  "default_move": "I am a return label, sender-finding, package-routing."
+}

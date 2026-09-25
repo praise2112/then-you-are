@@ -1,0 +1,274 @@
+{
+  "slug": "bathroom-boss-rush",
+  "title": "Bathroom Boss Rush",
+  "tagline": "Fix the bathroom disaster, then leave your fix for the next player.",
+  "emblem": "🪠",
+  "accent": "#2563eb",
+  "premise": "The bathroom is a gauntlet of failures. Each turn, become a bathroom object or action that physically solves the problem in front of you. Your solution becomes the next problem.\n",
+  "seed_pool": [
+    {
+      "opening_token": "an overflowing toilet",
+      "opening_emoji": "🚽",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a blocked shower drain",
+      "opening_emoji": "🚿",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a shattered mirror",
+      "opening_emoji": "🪞",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "problem": [
+        "clogged",
+        "leaking",
+        "overflowing",
+        "cracked",
+        "stained",
+        "slippery",
+        "smelly",
+        "blocked"
+      ],
+      "fixture": [
+        "toilet",
+        "sink",
+        "shower",
+        "bathtub",
+        "mirror",
+        "drain",
+        "faucet",
+        "floor"
+      ],
+      "pressure": [
+        "urgent",
+        "messy",
+        "sharp",
+        "flooding",
+        "stuck",
+        "dripping",
+        "filthy",
+        "dangerous"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one ordinary bathroom problem at once. Nothing abstract, decorative, or dependent on a hidden backstory.",
+      "A non-player names a plain bathroom fix within five seconds. Say what object or action would fix it.",
+      "It can physically act on the problem in the bathroom. It pushes, drains, seals, wipes, scrubs, catches, unlocks, cuts, or otherwise changes the trouble.",
+      "It creates a new problem worth answering. A clean towel is too passive, while a running tap or a bottle of bleach gives the next player something to handle.",
+      "The words are short, common, and concrete. No brand names, technical jargon, proper nouns, or elaborate scenes."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a plunger: I force the blockage through the drain.",
+    "hint": "Name the bathroom fix and the physical job it does."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the move physically solves the bathroom problem standing before it.",
+      "anchors": "0 = no fix or no contact with the problem; 1 = a claimed fix with a weak or missing mechanism; 2 = partly useful but limited, indirect, or debatable; 3 = a clear physical solution that handles the problem; 4 = immediate and decisive, the trouble has nowhere left to go except down the drain (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the bathroom object or action and its stated job.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires specialist knowledge or guesswork; 2 = understandable but vague, cluttered, or oddly phrased; 3 = concrete and easy to picture; 4 = instantly vivid, with every word doing useful work (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the solution is compared with the previous bathroom problem and recent fixes.",
+      "anchors": "0 = the same object, same method, or lazy near-copy; 2 = a reasonable change of tool or approach; 4 = a surprising but practical leap into a different bathroom function (rare). Novelty rewards a new solution, not fancy wording or obscure equipment.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move SOLVES the standing bathroom trouble when its object or action directly changes that trouble in a useful physical way. It must do something to the problem, such as unclogging, draining, sealing, wiping, scrubbing, catching, cutting, unlocking, or stopping it. Dodging the problem, merely surviving it, waiting for it, ignoring it, making it larger, or offering a near-identical version does not count.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or citing a rule is itself a bathroom failure and does not solve the standing problem.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous fix: judge the move against the opening bathroom problem instead. It must directly and plausibly address that problem.",
+      "A larger, stronger, faster, or more expensive version of the same fix is not a new solution. A second plunger after a plunger, or a bigger mop after a mop, is a near-identical move and fails.",
+      "Becoming the standing problem itself, or a cosmetic variation of it, is not a solution. A blue toilet against an overflowing toilet does not stop the overflow.",
+      "Strength is measured against the actual standing trouble, not in the abstract. A toothbrush may clean grout, but it does not solve a burst pipe unless the move gives a literal mechanism that can do so.",
+      "The mechanism must be physical and direct. A landlord solving a leak by being responsible, paperwork handling a clog, or good vibes cleaning a mirror is not a bathroom action and fails.",
+      "Surviving, avoiding, or waiting out the trouble is not solving it. A rubber boot staying dry beside a flood, a towel hiding a stain, or a person leaving the room does not fix the standing problem.",
+      "A move that only contains or relocates the trouble without making a useful physical change fails unless containment is the direct solution. A bucket catching a leak can pass, but a person stepping around the puddle cannot.",
+      "If the move creates a new bathroom problem while solving the old one, judge the old solution first. The new problem becomes the next standing form only if the move genuinely solved what came before."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "An overflowing toilet",
+      "move": "I am a plunger: I force the blockage through the drain.",
+      "gates_note": "all true",
+      "mechanism": "the plunger creates pressure and moves the blockage through the pipe",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A blocked shower drain",
+      "move": "I am a bigger blockage: I fill the drain completely.",
+      "gates_note": "satisfies_criterion false, it enlarges the problem rather than solving it",
+      "mechanism": "none, the move makes the blockage worse",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A shattered mirror",
+      "move": "I am a dustpan: I collect the broken glass from the floor.",
+      "gates_note": "all true",
+      "mechanism": "the dustpan gathers the dangerous shards for removal",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A leaking faucet",
+      "move": "I am a towel: I stand nearby and stay dry.",
+      "gates_note": "satisfies_criterion false, it avoids the leak and does not act on it",
+      "mechanism": "none, the towel does not stop, catch, or seal the water",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A filthy bathtub",
+      "move": "I am a scrub brush: I scour the grime from the tub.",
+      "gates_note": "all true",
+      "mechanism": "the brush physically loosens and removes the dirt",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Bathroom Warden",
+    "tone": {
+      "commentary_adj": "clinical",
+      "explanation_adj": "menacing"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke must identify the exact bathroom problem and the exact fix. Make the mechanism obvious enough for a tired person to see it.",
+      "Use a menacing clinical voice. Treat weak moves like failed procedures, not sacred creative efforts.",
+      "Name both forms, or their plain stand-ins. A generic insult is useless data with a pulse.",
+      "Never open with a status word or ruling phrase. Do not begin with Accepted, Rejected, Refused, Move refused, or the host's name.",
+      "Use commas and full stops only. No dashes as punctuation, no colons after a verdict, no ellipses.",
+      "Roast the form and, when appropriate, the player's choice. Keep it roast-level, not identity-based, threatening, or personal about protected traits.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the joke, but do not let them replace the reason.",
+      "On a refusal caused by a gate failure, reject the move and request another. Do not pretend the failed move won.",
+      "The coaching line names one concrete form that would have solved the standing problem. End on a physical action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The toilet was drowning, and the plunger finally gave the blockage a forced exit.",
+      "The leak met a bucket and lost its alibi. Water goes in the bucket, not across the floor.",
+      "A towel beside the flood is not a repair. It is damp furniture with a death wish. Bring a bucket.",
+      "The mirror left the glass on the floor, so the dustpan collected the evidence.",
+      "The clogged drain wanted a miracle. The drain snake brought a cable and ruined its evening.",
+      "The mop does not stop a leaking pipe, it only spreads the failure into a wider, shinier crime scene.",
+      "The bathtub was filthy, and the scrub brush attacked the grime exactly where it lived.",
+      "The toilet brush is not a plunger wearing a cheap disguise. Bring pressure for the blockage.",
+      "The shower curtain contains the spray, while the loose tap continues its small mechanical murder.",
+      "The cracked tile needed removal, not optimism. A chisel gets underneath and breaks it free."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the plunger defeats the toilet.",
+        "why": "opens with a status word and gives almost no physical reason"
+      },
+      {
+        "text": "The Bathroom Warden refuses, your towel is pathetic.",
+        "why": "opens with a ruling phrase and attacks the player instead of explaining the failed mechanism"
+      },
+      {
+        "text": "Move refused, try harder.",
+        "why": "opens with a ruling phrase and provides no bathroom-specific coaching"
+      },
+      {
+        "text": "The sink is sad, but the brush is brave.",
+        "why": "uses moods instead of naming what the brush physically does"
+      },
+      {
+        "text": "The bucket wins.",
+        "why": "no reason, no named problem, and no mechanism"
+      },
+      {
+        "text": "Your move was stupid and you are hopeless.",
+        "why": "mocks the player as a person and gives no useful ruling"
+      },
+      {
+        "text": "The mop handles the leak, although perhaps the pipe handles the mop.",
+        "why": "hedges the mechanism until the ruling becomes unreadable"
+      },
+      {
+        "text": "The drain, overwhelmed by the unstoppable majesty of the plunger, surrenders.",
+        "why": "poetic inflation hides a simple physical action"
+      },
+      {
+        "text": "A towel gently embraces the water and achieves emotional closure.",
+        "why": "uses metaphor and fails to state whether the leak was stopped or caught"
+      },
+      {
+        "text": "The toilet brush is basically a plunger, only worse.",
+        "why": "declares similarity without explaining a mechanism and invites a near-duplicate"
+      }
+    ]
+  },
+  "rules": [
+    "Fix the bathroom problem in front of you. Do not become it.",
+    "Say what you are and what you physically do to it: I am a plunger, I force the blockage through the drain.",
+    "The Judge rules on the idea and mechanism, not spelling or polish.",
+    "A fix that fails against the standing bathroom trouble ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your fix against {token}",
+    "compose_waiting": "Draft your next fix while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. The bathroom problem is still spreading.",
+    "too_long": "Over 200 characters. Give us a fix, not a maintenance report.",
+    "duplicate": "That fix already stood this match. Find a new tool before the drain notices.",
+    "nudge": "Twice now. Solve {standing_form}. Do not become it, dodge it, or repeat the same fix."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody touches the fixtures until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of the bathroom troubleshooters, trying to survive.\nAlways use: I am X: I do Y. X is one ordinary bathroom object or action. Y is a short physical mechanism that solves the standing problem.\nGood: I am a plunger: I force the blockage through the drain. Good: I am a bucket: I catch the water under the leak.\nBad: I am a towel, brave and dry. Mood is not a mechanism. Bad: I am a landlord: I care about the leak. Caring does not seal a pipe. Bad: I am a bigger clog. Making the problem larger is not solving it.\nTalk like a person across a bathroom floor, not a poet. Name things anyone would name: a plunger, a bucket, soap, a brush, a wrench. Plain words beat clever wording.\nYou are not performing for a crowd and you are not joking. You are trying to fix the standing trouble. If a move lands funny, it is because the object genuinely handles the mess.\nStay concrete and physical: drains, pipes, tiles, glass, water, dirt, locks, towels, brushes, and ordinary tools. Hop functions when possible. A tool, a cleaner, a container, and a replacement part are different answers.\nNever reuse a fix or its exact mechanism from this match. Do not merely survive, hide, enlarge, or wait out the standing problem.\n",
+  "default_move": "I am a bucket: I catch the water before it reaches the floor."
+}

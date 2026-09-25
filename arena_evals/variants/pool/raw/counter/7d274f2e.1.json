@@ -1,0 +1,268 @@
+{
+  "slug": "shop-window-shift",
+  "title": "Shop Window Shift",
+  "tagline": "Dress the glass, please the crowd, preserve the scandal.",
+  "emblem": "🪟",
+  "accent": "#7c2d12",
+  "premise": "Two rival window dressers take turns changing one feature of a high-street shop display: its colour, object, light, or position. Each change must make the display fit a new customer or occasion while keeping every earlier feature that still makes sense; the first contradiction collapses the window and loses. The host narrates the display as if it were a royal scandal in cheap glass.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a bakery window shows three warm pies on a wooden shelf, lit by one yellow lamp",
+      "opening_emoji": "🥧",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a shoe shop window shows red trainers on a white stand beneath a green sign",
+      "opening_emoji": "👟",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a bookshop window shows three mystery novels beside a brass lamp and a blue chair",
+      "opening_emoji": "📚",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 14,
+    "axes": {
+      "shop": [
+        "bakery",
+        "bookshop",
+        "shoe shop",
+        "florist",
+        "chemist",
+        "toy shop",
+        "cafe",
+        "barber"
+      ],
+      "display_feature": [
+        "colour",
+        "object",
+        "light",
+        "position",
+        "sign",
+        "shelf",
+        "mannequin",
+        "price card"
+      ],
+      "customer_or_occasion": [
+        "rainy commuter",
+        "birthday child",
+        "night worker",
+        "wedding guest",
+        "dog owner",
+        "tourist",
+        "school starter",
+        "winter shopper"
+      ]
+    },
+    "tests": [
+      "A stranger can picture the whole shop window at once, including the new feature and the parts it leaves untouched.",
+      "The move names a real customer or occasion and makes the altered feature useful, tempting, or fitting for them.",
+      "The change is one concrete adjustment to colour, object, light, position, sign, shelf, mannequin, or price card, not a complete redesign.",
+      "The new feature can physically exist in the established window without removing, contradicting, or secretly changing an earlier feature.",
+      "The move uses plain high-street words a twelve-year-old knows. No abstract promise, hidden magic, brand name, or vague claim that the display is simply better."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "For a rainy-day walker, I add a bright umbrella beside the blue coat.",
+    "hint": "One display change, one named customer or occasion, and the reason it fits."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How clearly the single display change serves the named customer or occasion while preserving the window.",
+      "anchors": "0 = no concrete change, no customer fit, or direct contradiction; 1 = a change is named but its purpose is flimsy or the scene strains; 2 = plausible fit with a small gap or awkward preservation; 3 = clear, useful change that fits the customer and the established display; 4 = perfectly judged, practical, and theatrically obvious without disturbing anything that still belongs (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How easily a stranger can see the revised shop window and understand exactly what changed.",
+      "anchors": "0 = impossible or self-contradicting display; 1 = the scene needs guessing or specialist knowledge; 2 = mostly understandable but cluttered, vague, or poorly placed; 3 = concrete and easy to picture; 4 = crisp, vivid, and showroom clear (rare). Length never wins on its own: extra decoration that does not support the change lowers this score.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the new customer, occasion, or display solution is compared with the move before it.",
+      "anchors": "0 = repeats the previous customer, occasion, feature, or obvious solution; 2 = a sensible variation with some freshness; 4 = a surprising but perfectly fitting high-street adjustment that opens a new angle (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move passes if it makes one concrete change to the established shop display, names a customer or occasion that the change suits, and preserves every earlier feature that still makes sense. A random change, an impossible reversal, a vague instruction to improve the window, or a change that secretly replaces the whole scene fails.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or discussing rules instead of changing the display causes the window to lose its next pane.\n",
+    "judge_notes": [
+      "On a FIRST move, judge the change against the opening display only. It must add or alter one concrete feature, name a customer or occasion, and leave the opening scene intact.",
+      "A move may add one object, colour, light, position, sign, shelf, mannequin, or price card, but it may not smuggle in several unrelated changes under one grand announcement.",
+      "Preserving the scene means keeping earlier features that still make sense. A new umbrella may join the pies, but it cannot erase the wooden shelf or turn the bakery into a bus stop.",
+      "An impossible reversal fails. If the window established a yellow lamp, a move cannot simply declare it blue unless the move explicitly and physically changes the lamp as its one feature change, and the customer or occasion must justify that change.",
+      "The named customer or occasion must be concrete and the altered feature must serve it. Saying the display is improved, exciting, or perfect without a usable reason fails.",
+      "A vague command such as make it better, make it festive, or attract shoppers is not a display feature and does not satisfy the criterion.",
+      "A move that replaces the entire display, changes the shop, or invents a new scene instead of adjusting one feature fails even if the new scene is attractive.",
+      "The mechanism must be literal and visible. A bright lamp can help a night worker see, but a window cannot charm, emotionally heal, or magically summon a customer.",
+      "Do not reward a move merely because its new object could coexist somewhere in the world. It must belong in this established window and preserve the features that remain relevant.",
+      "If the move is unclear about what changed, which customer or occasion it serves, or what remains in the window, rule fail rather than inventing the missing explanation."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A bakery window shows three warm pies on a wooden shelf, lit by one yellow lamp.",
+      "move": "For a rainy-day walker, I add a bright umbrella beside the pies.",
+      "gates_note": "all true",
+      "mechanism": "the umbrella makes the bakery offer useful shelter for the named rainy customer while the pies, shelf, and lamp remain",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A shoe shop window shows red trainers on a white stand beneath a green sign.",
+      "move": "For a school starter, I place a small blue backpack beside the red trainers.",
+      "gates_note": "all true",
+      "mechanism": "the backpack makes the trainer display suit a child preparing for school without moving the trainers, stand, or sign",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A bookshop window shows three mystery novels beside a brass lamp and a blue chair.",
+      "move": "For a night worker, I change the brass lamp to a red neon moon and remove the blue chair.",
+      "gates_note": "satisfies_criterion false, two changes and an unjustified removal",
+      "mechanism": "the lamp change might fit, but the chair is also removed and the established scene is broken",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 2,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A bakery window shows three warm pies on a wooden shelf, lit by one yellow lamp.",
+      "move": "Make the display more exciting for everyone.",
+      "gates_note": "satisfies_criterion false, no concrete feature change and no specific customer or occasion",
+      "mechanism": "none, the move offers a mood and a command rather than a visible alteration",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 1,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A shoe shop window shows red trainers on a white stand beneath a green sign.",
+      "move": "For a winter shopper, I replace the red trainers with black boots and make the sign gold.",
+      "gates_note": "satisfies_criterion false, two changes and replacement of an established object",
+      "mechanism": "boots may suit winter, but replacing the trainers and changing the sign breaks the one-feature limit",
+      "scores": {
+        "counter_strength": 1,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Grand Draper",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak like a palace herald announcing a scandal in a budget shop window. Grandeur must clarify the display, not bury it.",
+      "Name the changed feature, the named customer or occasion, and the earlier feature it preserves or violates.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Grand Draper refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.",
+      "Mock the display choice or its theatrical failure. Roast the player lightly if needed, but never attack identity, disability, protected traits, family, or body.",
+      "Edgy innuendo and mild profanity are allowed when they sharpen the shop scandal, never when they replace the reason.",
+      "Plain spoken English with royal posture. No poetry, no rhymes, no French, no foggy thesaurus language.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never declares a winner.",
+      "The coaching line names one concrete feature that would have passed for the stated customer or occasion. It ends on an action or fact, never a mood or ruling.",
+      "The joke must fit this exact window. A headline that could describe any failed move is palace wallpaper."
+    ],
+    "good_headlines": [
+      "The umbrella joins the pies for rainy walkers, and the yellow lamp keeps its throne.",
+      "A school backpack beside red trainers, what a scandalously competent little coronation.",
+      "The night worker requested light, not a neon coup that evicts the brass lamp.",
+      "The pies remain warm, the shelf remains wooden, and the umbrella has entered society.",
+      "Winter boots may flirt with shoppers, but replacing the trainers and repainting the sign is a two act crime.",
+      "The window now serves a tourist, while the old display stands nobly behind the new postcard.",
+      "The chair was removed without permission, and the whole shop now looks dressed by a panicked duke.",
+      "For a birthday child, add a bright balloon beside the books and let the brass lamp keep watch."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the umbrella reigns supreme.",
+        "why": "opens with a status word and gives no reason tied to the pies, lamp, shelf, or rainy walker"
+      },
+      {
+        "text": "The Grand Draper refuses: your window is beneath notice.",
+        "why": "opens with a ruling phrase, names the host, and attacks the player instead of explaining the display failure"
+      },
+      {
+        "text": "Move refused, what a tragic little shop.",
+        "why": "opens with a ruling phrase and offers no concrete reason"
+      },
+      {
+        "text": "The display is bad and you should feel bad.",
+        "why": "mocks the player without naming the feature, customer, occasion, or broken scene"
+      },
+      {
+        "text": "The shoes are giving winter energy, darling.",
+        "why": "vague mood language replaces a visible feature and a literal customer benefit"
+      },
+      {
+        "text": "A magnificent transformation occurs beneath the mercantile firmament.",
+        "why": "grandiose fog hides what changed and why it fits"
+      },
+      {
+        "text": "For everybody, I make everything better.",
+        "why": "no concrete feature, no specific customer or occasion, and no preserved scene"
+      },
+      {
+        "text": "The pies, lamp, shelf, umbrella, sign, boots, chair, and backpack all triumph in a dazzling retail universe.",
+        "why": "lists clutter instead of ruling on one change and preserving the established display"
+      }
+    ]
+  },
+  "rules": [
+    "Change one concrete feature of the shop window.",
+    "Name the customer or occasion your change serves.",
+    "Keep every earlier feature that still makes sense.",
+    "The Judge rules on the display idea, never the spelling.",
+    "A random change, impossible reversal, vague improvement, or full redesign collapses the window."
+  ],
+  "labels": {
+    "opening": "The opening display",
+    "next_opening": "The next display",
+    "your_opening": "Your display",
+    "compose": "Change the window for {token}",
+    "compose_waiting": "Plan your next alteration while you wait"
+  },
+  "validation_messages": {
+    "empty": "The glass is blank. Dress one feature.",
+    "too_long": "Over 200 characters. A window change, not a royal inventory.",
+    "duplicate": "That feature or customer beat already appeared this match. Dress the window differently.",
+    "nudge": "Twice now. Change one feature for a named customer or occasion while preserving {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. The window remains under guard. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two rival high street window dressers trying to keep the display standing.\nAlways make one concrete alteration and name the customer or occasion it serves.\nGood: \"For a rainy-day walker, I add a bright umbrella beside the blue coat.\"\nGood: \"For a night worker, I brighten the yellow lamp above the three pies.\"\nBad: \"I make the window more exciting\" because nothing visible changed.\nBad: \"For winter shoppers, I replace the trainers, repaint the sign, and add snow\" because that is three changes and a small retail coup.\nBad: \"For tourists, the window becomes welcoming\" because welcoming is not a display feature.\nKeep every earlier feature that still makes sense. Do not erase the shelf, lamp, shoe, book, sign, or other established detail unless the one stated feature is a justified physical change and the scene remains coherent.\nTalk like a person across the pavement, not a poet or a brand consultant. Use plain high street objects, colours, lights, positions, signs, shelves, mannequins, and price cards.\nYour move should be short and concrete. Name the customer or occasion, state the one change, and make its usefulness visible.\nNever speak to the Judge, mention rules, or discuss the game. You are dressing glass under pressure while a grand court waits to sneer.\n",
+  "default_move": "For a rainy-day walker, I add a bright umbrella beside the display."
+}

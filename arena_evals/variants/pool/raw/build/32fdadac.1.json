@@ -1,0 +1,276 @@
+{
+  "slug": "deck-by-deck",
+  "title": "Deck by Deck",
+  "tagline": "One spill, every deck. Keep the mess moving and your dignity sinking.",
+  "emblem": "🛳️",
+  "accent": "#0f766e",
+  "premise": "Start with one spilled drink and move the same mess through the ship, one deck at a time. Each move must say where the mess goes next and what it picks up. Dry commentary is free; dry carpet is not.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A blue cocktail spills outside the pool bar on Deck 10.",
+      "opening_emoji": "🍹",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A tray of orange juice tips beside the theatre doors on Deck 7.",
+      "opening_emoji": "🍊",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A bowl of melted ice cream slides across the buffet floor on Deck 12.",
+      "opening_emoji": "🍦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 20,
+    "axes": {
+      "drink": [
+        "a blue cocktail",
+        "orange juice",
+        "melted ice cream",
+        "red punch",
+        "sparkling water",
+        "a milkshake",
+        "iced coffee",
+        "a glass of lemonade"
+      ],
+      "start_place": [
+        "outside the pool bar",
+        "beside the theatre doors",
+        "near the buffet",
+        "by the casino entrance",
+        "outside the main dining room",
+        "beside the lift",
+        "near the gift shop",
+        "under the grand staircase"
+      ],
+      "start_deck": [
+        "Deck 10",
+        "Deck 9",
+        "Deck 8",
+        "Deck 7",
+        "Deck 6",
+        "Deck 5",
+        "Deck 4",
+        "Deck 3"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a drink, a starting place, and a numbered deck.",
+      "The first spill is harmless, silly, and easy to picture. Nobody is badly hurt, nobody dies, and no real person is named.",
+      "The starting deck leaves at least three connected decks for the mess to reach.",
+      "The ship setting is clear without using a real cruise line, ship name, port, or street name.",
+      "Everyday words a twelve-year-old knows. The spill must be something that can spread, soak, stain, drip, or slide."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "On Deck 9, it runs down the stairs, soaks the towel cart, and leaves the attendant wearing one as a hat.",
+    "hint": "Name the next connected deck and one new thing the mess catches. Carry the whole disaster with you."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much trouble the new thing creates for the ship, the people in it, or the next player, without breaking the chain.",
+      "anchors": "0 = the mess catches nothing worth noticing; 1 = a small stain or a mildly annoyed worker; 2 = a real nuisance, a ruined list, a wet uniform, or a blocked path; 3 = a specific person or ship system now has to deal with the mess; 4 = the new problem is vivid, awkward, and leaves the next move on a narrow ledge (rare). A disaster that ends the chain or ignores what is already aboard scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the move reaches the right next deck and carries the spill, its objects, people, and problems forward.",
+      "anchors": "0 = skips a deck, reverses the route, drops a carried fact, or stops the mess; 1 = names a deck but adds little and leaves the chain unclear; 2 = reaches the connected next deck and carries the main mess; 3 = reaches it cleanly while carrying the important facts; 4 = makes the new deck feel like the unavoidable result of everything before it (rare). Fancy detail cannot repair a broken route.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the move makes the ship and the spreading mess appear in the mind.",
+      "anchors": "0 = a bare route with no picture; 1 = one plain object; 2 = a visible action or reaction; 3 = a strong shipboard image with a person, sound, or texture; 4 = the scene is so exact a stranger can see the crew trying not to swear (rare). Plain concrete words beat grand ones.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it advances the mess to one connected next deck while carrying every object, person, and problem already aboard. The next deck must be the immediate connected deck in the route, not a skipped level, a jump to another part of the ship, or a return to a deck already passed. The move must add one new thing the mess catches, so an ending that merely stops or says the spill is cleaned up does not hold. An undo sends the mess back, removes a carried fact, or pretends an earlier event never happened. The move may make the mess spread, drip, soak, smear, stain, block, or drag things along, but it must remain the same mess. Points go to the trouble and imagery added by the move. A safe route with no new problem scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the route, or the partner's play instead of moving the mess is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier move: judge it against the card alone. It must name the immediately connected next deck, keep the original spill moving, and add one new thing it catches.",
+      "The full transcript is the route. Check the new move against every earlier move, not only the last one.",
+      "A skipped link is a failure even if the destination is on the ship. The mess must move one connected deck at a time.",
+      "An ending fails if it stops the mess before the target deck, says it was cleaned up, dries it completely, or otherwise removes the need for another move.",
+      "An undo fails if it sends the mess back to a deck already passed, removes an object, person, or problem that was carried forward, or says an earlier event did not happen.",
+      "The next move may add people, objects, stains, smells, noise, or damage, as long as all earlier facts remain aboard and the mess itself keeps moving.",
+      "A move that repeats the same new thing without adding anything is a duplicate: not_semantic_duplicate is false.",
+      "When a move can be read either way, it holds. Break only on a plain route error, a clear reversal, a dropped fact, a stopped mess, or a move that talks about the game instead of the ship."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A blue cocktail spills outside the pool bar on Deck 10.",
+      "move": "On Deck 9, it runs down the stairs, catches a towel, and leaves the pool attendant wearing it as a hat.",
+      "gates_note": "all true",
+      "mechanism": "moves to the connected deck, carries the spill through the stairs, and adds a wet towel and an embarrassed attendant",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "On Deck 9, it runs down the stairs, catches a towel, and leaves the pool attendant wearing it as a hat.",
+      "move": "On Deck 8, the blue drink drags the towel through the lift lobby and soaks the karaoke list before the host can read the chorus.",
+      "gates_note": "all true",
+      "mechanism": "keeps the drink and towel moving one deck down and adds a ruined list with a waiting singer",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "On Deck 8, the blue drink drags the towel through the lift lobby and soaks the karaoke list before the host can read the chorus.",
+      "move": "On Deck 7, it reaches the theatre doors, catches a dropped glove, and makes the singer perform the verse from memory.",
+      "gates_note": "all true",
+      "mechanism": "advances one deck, keeps the drink, towel, list, and singer in the story, and adds a glove and a public humiliation",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "On Deck 9, it runs down the stairs, catches a towel, and leaves the pool attendant wearing it as a hat.",
+      "move": "On Deck 7, it floods the theatre foyer and ruins the captain's jacket.",
+      "gates_note": "satisfies_criterion false, skips Deck 8",
+      "mechanism": "jumps over a deck, so the spill has taken a lift without saying so",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "On Deck 8, the blue drink drags the towel through the lift lobby and soaks the karaoke list before the host can read the chorus.",
+      "move": "The crew mops it all up and the ship returns to normal.",
+      "gates_note": "satisfies_criterion false, stops the mess before the next deck and removes carried facts",
+      "mechanism": "ends the chain and quietly throws away the towel, list, singer, and every useful problem",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Purser",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the route and the new move must see why it held or broke.",
+      "Name the deck, the object, or the person. A headline that fits any ship is a lazy headline.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", or \"The Purser rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the mess or the detail, not identity, disability, protected traits, or the player's family. Roast the choice, not the person.",
+      "Plain spoken English, a tired ship office, not a sea epic. No poetry, no rhymes, no thesaurus words.",
+      "On a route break, put the two decks that cannot both be next side by side, or name the fact the move dropped.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one next-deck move that would have held and added trouble. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Deck 9 takes the towel and the singer's dignity. The spill is travelling better than the guests.",
+      "Deck 8 gets the karaoke list, still wet and somehow less musical. The route holds.",
+      "You jumped from Deck 9 to Deck 7. Even the lift has to stop at Deck 8.",
+      "The towel, list, and singer all made Deck 8. Nobody has been allowed to forget anything yet.",
+      "The mop has arrived before the mess reached Deck 7. That is not an ending, it is a crew member with bad timing.",
+      "The glove joins the cocktail on Deck 7. One more item and this becomes lost property with a pulse.",
+      "You sent the spill back upstairs. The towel has already suffered enough and is not going home.",
+      "A wet karaoke list on Deck 8 is specific, expensive, and exactly the sort of evidence a ship denies having.",
+      "The captain's jacket appears on Deck 7, but Deck 8 has been skipped. The uniform cannot repair the route.",
+      "The singer lost the chorus, the crew lost the floor, and the route still works. A fine evening for nobody."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds, nice move.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Purser rules that the spill breaks the route.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "names no deck or carried fact"
+      },
+      {
+        "text": "You are an idiot for skipping Deck 8.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "The spill dances through a moonlit ocean of destiny.",
+        "why": "poetry instead of plain ship language"
+      },
+      {
+        "text": "Maybe it holds, maybe it does not, depending on how you see the decks.",
+        "why": "hedges instead of giving a ruling"
+      },
+      {
+        "text": "Accepted, though the towel is funny.",
+        "why": "status word first and no reason"
+      },
+      {
+        "text": "The ship has twelve decks, so this is impossible.",
+        "why": "uses an unsupported fact instead of the stated route"
+      },
+      {
+        "text": "Guilty.",
+        "why": "no reason and no ship detail"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible and false.",
+        "why": "uses four abstract labels instead of naming the route error"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with one spill on a numbered deck. Move that same mess through the ship.",
+    "One move per turn. Name the next connected deck and one new thing the mess catches.",
+    "Carry every object, person, and problem already in the story. Dropping a fact or undoing an event breaks the route.",
+    "Skip a deck, reverse the route, or stop the mess before the target deck, and you lose on the spot.",
+    "Points go to moves that create specific trouble while keeping the route clear. A bare deck number scores very little."
+  ],
+  "labels": {
+    "opening": "The first spill",
+    "next_opening": "The next spill",
+    "your_opening": "Your first spill",
+    "compose": "Your move, after {token}",
+    "compose_waiting": "Draft your next deck while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing moved. The Purser is waiting.",
+    "too_long": "Over 140 characters. One deck and one new problem.",
+    "duplicate": "That mess has already caught this thing. Add something new.",
+    "nudge": "Twice now. Move the mess to {standing_form} and add one new thing. Do not skip, reverse, or clean it up."
+  },
+  "judge_out_text": "The Purser has stepped away from the route board. Nobody moves the mess until they return. {standing_form} is still the last deck reached. Give it a minute.\n",
+  "opponent_prompt": "You are one of two passengers moving the same spilled drink through a cruise ship, one deck at a time.\nOne move per turn, one or two plain sentences. Name the next connected deck and one new thing the mess catches.\nCarry every object, person, and problem already in the story. Never skip a deck, go back to a deck already passed, clean up the mess, or pretend an earlier fact did not happen.\nMake each move create trouble while staying easy to picture. Let the spill soak a uniform, ruin a list, block a lift, catch a shoe, or drag an embarrassed person along. Keep the route clear and the same mess moving.\nGood: \"On Deck 9, it runs down the stairs, catches a towel, and leaves the attendant wearing it as a hat.\" / \"On Deck 8, the drink drags the towel through the lift lobby and soaks the karaoke list.\"\nBad: \"It jumps to Deck 7 and ruins the theatre\" because Deck 8 was skipped. Bad: \"The crew cleans it up\" because the mess has stopped. Bad: \"It goes back to Deck 10\" because the route has reversed. Bad: \"Purser, that is unfair\" because that talks about the game instead of moving the spill.\nTalk like a passenger giving a report, not a novelist. Use ordinary ship words: stairs, lift, towel, buffet, theatre, cabin, carpet, crew. Build on every earlier fact, not only the last sentence. Never repeat the same new thing.\n",
+  "medallions": false,
+  "default_move": "On the next deck, it spreads a little farther and catches something nobody wants to explain."
+}

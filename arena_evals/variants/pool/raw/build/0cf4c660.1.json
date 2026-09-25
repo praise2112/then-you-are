@@ -1,0 +1,267 @@
+{
+  "slug": "passenger-of-honor",
+  "title": "Passenger of Honor",
+  "tagline": "One wrong turn adds one more passenger, and the car keeps finding room.",
+  "emblem": "🚗",
+  "accent": "#b45309",
+  "premise": "A wrong turn makes the group pick up a stranger, animal, or awkward object that now has to come along. Two players take turns saying what happens next, one event at a time, while the trip gets more crowded, costly, and embarrassing. The Judge checks that every new demand follows from the passengers and space already in the car. Skip a link, end the trip, or quietly lose a passenger and the road stops with you.\n",
+  "seed_pool": [
+    {
+      "opening_token": "At a tiny roadside stop, a soaked wedding guest asks for a lift to the next town.",
+      "opening_emoji": "💍",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A wrong turn leaves the car beside a farm gate with a goat in the back seat.",
+      "opening_emoji": "🐐",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The group finds a giant birthday cake waiting beside the closed petrol station.",
+      "opening_emoji": "🎂",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "wrong_turn": [
+        "misses the motorway exit",
+        "follows a faded sign",
+        "trusts a hand drawn arrow",
+        "takes the farm road",
+        "turns after the bridge",
+        "follows the wedding cars",
+        "obeys the old satnav",
+        "mistakes a campsite entrance for the road"
+      ],
+      "passenger": [
+        "a soaked wedding guest",
+        "a goat",
+        "a lost clown",
+        "a giant birthday cake",
+        "a sleepy dog",
+        "a road worker",
+        "a box of live crabs",
+        "a silent magician"
+      ],
+      "pickup_place": [
+        "a tiny roadside stop",
+        "a farm gate",
+        "a closed petrol station",
+        "a muddy lay-by",
+        "a village fête",
+        "a flooded bridge",
+        "a country hotel",
+        "a deserted bus shelter"
+      ]
+    },
+    "tests": [
+      "A wrong turn places the car beside a stranger, animal, or awkward object that a traveller can picture at once. Present tense, one sentence, plain words.",
+      "A non-player can name one immediate demand the new passenger creates within five seconds, and there is more than one good answer. Say two.",
+      "Nothing on the card already ends the trip. A flat tyre or a full car is a start, while arriving safely is an ending.",
+      "No one is seriously hurt on the card, no real people, no brands, and no hate or cruelty aimed at a protected group.",
+      "The passenger feels like a comic road trip problem, not an inventory list. A goat, a cake, or a wedding guest should make a stranger wonder how the car will cope."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the wedding guest opens the cake box on her lap, so everyone has to hold the icing together.",
+    "hint": "One event that follows from the people and things already in the car, and creates a new demand."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much the new passenger demand expands the road trip problem.",
+      "anchors": "0 = nothing changes or the car becomes less crowded; 1 = a small inconvenience; 2 = one new demand or risk appears; 3 = the demand reaches the route, money, time, or another person through one clear event; 4 = the car faces a much larger problem that still grows in one honest step, rare. Reach is earned only when the event follows. A huge result with no link scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the event is caused by the passengers, objects, or cramped car already present.",
+      "anchors": "0 = no cause is shown; 1 = the cause is merely claimed; 2 = it could follow but needs a stretch; 3 = a stranger sees why it happens; 4 = it feels like the obvious next problem, rare. A move that bundles several separate causes scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the car, its passengers, and the new demand.",
+      "anchors": "0 = unclear, abstract, or not an event; 1 = muddled or generic; 2 = clear but plain; 3 = easy to picture; 4 = one sharp detail makes the cramped trip feel real, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it is one event caused by the passengers, objects, or car space already present, told plainly, and it creates a new demand for the trip. Bigger is better, but only through the link: the best step makes the car more crowded, costly, delayed, awkward, or difficult to steer by a cause anyone can see. A step fails when it has no cause, skips links by adding a sudden passenger or crisis, ends the trip through a safe drop-off or a stopped journey, undoes a passenger or problem without an event causing it, swaps to an unrelated scene, or gives only a feeling, plan, or moral instead of an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a broken step.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing step: judge the move against the card and ask whether it follows from the passenger, object, or cramped situation on the card.",
+      "A new passenger may enter only when the standing step gives them a plain reason to appear, or when the scene already reasonably holds them. A stranger who hears a crash, a dog that escapes a nearby van, or a hotel worker responding to a request can enter. A celebrity, police convoy, or rescue team with no shown reason is a skipped link, so satisfies_criterion is false.",
+      "A sudden new crisis also needs a visible link. A soaked guest can make the seats wet, a goat can chew a map, and a cake can melt in a hot car. A bridge collapsing, the car being impounded, or a passport vanishing without a cause skips links, so satisfies_criterion is false.",
+      "An ending is a safe drop-off, a successful arrival, a full rescue, a clean-up, sleep, or a stopped trip after which nothing remains to carry or solve. Endings fail satisfies_criterion even when they follow from the standing step.",
+      "An undo is removing a passenger, object, cost, or problem without an event that causes it. Saying the goat is gone, the seats are dry, or the cake is fine does not count as a next event, so satisfies_criterion is false.",
+      "A move that keeps the same demand but clearly changes its size still follows. The guest asks for a bin, the dog blocks the gear stick, or the cake slides farther across the back seat can pass and score low on reach if little grows.",
+      "Restating the standing step in new words, or naming an obvious continuation with nothing new, is a duplicate. The goat is still in the car is not a new event.",
+      "Two or three events packed into one move pass only if every internal link is plain. Score link at 2 or below and picture low when the move is crowded."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "At a tiny roadside stop, a soaked wedding guest asks for a lift to the next town.",
+      "move": "Then her wet coat soaks the only dry seat, so the driver has to sit on the cake box.",
+      "gates_note": "all true",
+      "mechanism": "the soaked guest wets the seat and forces the cake box into service",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the driver has to sit on the cake box.",
+      "move": "Then the box splits under the driver, and icing spreads across the gear stick.",
+      "gates_note": "all true",
+      "mechanism": "the driver sits on a fragile cake box and damages the cake",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then icing spreads across the gear stick.",
+      "move": "Then a famous singer arrives with a film crew and demands the car for a music video.",
+      "gates_note": "satisfies_criterion false, sudden newcomers and demands skip the link",
+      "mechanism": "nothing in the standing step brings a singer or film crew",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the goat chews through the paper map.",
+      "move": "Then the goat is no longer in the car and the map is perfectly readable.",
+      "gates_note": "satisfies_criterion false, the passenger and problem are undone without an event",
+      "mechanism": "the move simply removes what was standing",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the dog blocks the gear stick and the car misses the turning.",
+      "move": "Then everyone reaches the beach safely and carries the dog into the hotel.",
+      "gates_note": "satisfies_criterion false, the trip ends with a safe arrival",
+      "mechanism": "the road problem is resolved and nothing remains for the car to carry",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Satnav",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters, or two short sentences at most.",
+      "The reason should be easy to follow. A stranger reading only the two steps should see why the car gained a demand or lost the road.",
+      "Name the passenger, object, or car problem. A headline that fits any pair is too soft.",
+      "Do not open with a status word or ruling phrase. Avoid Accepted, Rejected, Refused, Move refused, or The Satnav refuses.",
+      "Use no dashes as punctuation, no colons after a verdict, and no ellipses. Commas and full stops are enough.",
+      "Roast the road event, not protected traits or the player's body, family, intelligence, or worth. A light jab at an overstuffed move is fine.",
+      "Plain spoken English. Adult innuendo and mild profanity are allowed when they fit the road trip, but do not use slurs or identity based abuse.",
+      "For a skipped link, name the missing arrival or cause. For an ending, say the trip has ended and the chain stops here.",
+      "On a gate failure, the headline refuses the step and asks for another. It never decides who won.",
+      "The coaching line names one event that would have followed from the standing car. It ends on something happening, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The soaked guest claimed the seat, and the cake claimed the gear stick. That car is now mostly icing.",
+      "A goat plus a paper map equals one very confident wrong turn.",
+      "The cake split because someone sat on it. A bold seating choice, but the road has consequences.",
+      "A film crew did not grow out of icing. Give us the missing invitation first.",
+      "The passenger vanished and the problem vanished too. That is an undo, not a road event.",
+      "Everyone arrived safely, which is lovely and completely fatal to the chain.",
+      "The dog blocks the gear stick, the turn goes missing, and the trip gets one notch worse.",
+      "The car has room for one more demand, not a whole new movie studio.",
+      "The map is gone, the goat is pleased, and navigation has become a chewing contest.",
+      "The seats are wet, the cake is crushed, and nobody has earned a clean exit yet."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: good move.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Satnav refuses this.",
+        "why": "opens with a ruling phrase and names the host instead of the missing link"
+      },
+      {
+        "text": "What a wild road trip.",
+        "why": "could fit almost any pair and explains nothing"
+      },
+      {
+        "text": "The passenger precipitates an exacerbation of logistical inconvenience.",
+        "why": "uses stiff words instead of showing the car problem"
+      },
+      {
+        "text": "Only an idiot would pack a goat.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "Maybe it follows, maybe it does not.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "And then the road did whisper...",
+        "why": "uses poetry and an ellipsis when plain speech is needed"
+      },
+      {
+        "text": "More passengers. More chaos.",
+        "why": "repeats a theme without naming the cause or event"
+      }
+    ]
+  },
+  "rules": [
+    "One event happens next because of the passengers, objects, or car space already present. Start with Then.",
+    "Make the trip more crowded, costly, delayed, awkward, or difficult through one clear link.",
+    "Skip a link, end the trip, or undo a passenger or problem and the chain stops with you.",
+    "The Judge rules on the road event and its cause, not spelling or style."
+  ],
+  "labels": {
+    "opening": "The first passenger",
+    "next_opening": "The next passenger problem",
+    "your_opening": "Your passenger problem",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Plan your next road problem while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happens. The car needs one new demand.",
+    "too_long": "Over 140 characters. One road event, not the director's cut.",
+    "duplicate": "That passenger problem already happened this match. Make the cramped car worse.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. Add one event and one new demand."
+  },
+  "judge_out_text": "The judge has pulled over. Nobody moves until they are back. {standing_form} still stands, and the car is still full.\n",
+  "opponent_prompt": "You are one of two players driving a road trip that keeps taking wrong turns.\nAlways write: \"Then X.\" Make one event, use one clear link, and create a new demand for the passengers or the car.\nTake the standing step and make room harder, the route stranger, the bill larger, or the embarrassment more public.\nGood: \"Then the wet guest drips onto the map and the driver loses the next turn.\" / \"Then the goat hooks its horn through the seat belt, so nobody can open that door.\"\nBad: \"Then the whole county closes the roads\" because the link is missing. Bad: \"Then everyone gets dropped off safely\" because the trip ends. Bad: \"Then the goat feels ashamed\" because a feeling is not an event.\nNever close the trip, never rescue everyone, never remove a passenger or problem without a cause, and never rewind.\nTalk like a person telling a friend what happened in the car, not like a novelist. Name ordinary things: a petrol receipt, a wet coat, a glove box, a village sign. Use plain words a twelve year old anywhere knows.\nAdult jokes and mild profanity are allowed when they fit the scene, but do not use slurs or identity based abuse.\nNever reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then the newest passenger asks for something the car does not have."
+}

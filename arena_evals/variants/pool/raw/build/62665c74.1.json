@@ -1,0 +1,277 @@
+{
+  "slug": "wildlife-court",
+  "title": "People v. The Animal",
+  "tagline": "One animal, one town, and a case file nobody should trust.",
+  "emblem": "🐐",
+  "accent": "#15803d",
+  "premise": "An animal is loose in town, and the town is putting it on trial. Build one shared case file, taking turns adding the next piece of evidence. The case may be fair, but your job is to make the other side's animal look guilty as hell.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A goat is accused of eating the town's spring festival banner.",
+      "opening_emoji": "🐐",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A fox is accused of stealing the mayor's ceremonial hat from the town hall.",
+      "opening_emoji": "🦊",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A swan is accused of blocking the bridge and charging people for passage.",
+      "opening_emoji": "🦢",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "animal": [
+        "goat",
+        "fox",
+        "swan",
+        "raccoon",
+        "donkey",
+        "peacock",
+        "badger",
+        "alpaca"
+      ],
+      "mischief": [
+        "eating a banner",
+        "stealing a hat",
+        "blocking a bridge",
+        "raiding a bakery",
+        "wearing a shop sign",
+        "releasing the pigeons",
+        "taking over a fountain",
+        "hiding the town bell"
+      ],
+      "town_place": [
+        "town hall",
+        "market square",
+        "bakery",
+        "railway platform",
+        "library steps",
+        "war memorial",
+        "bus shelter",
+        "river bridge"
+      ]
+    },
+    "tests": [
+      "One plain sentence with an animal, a ridiculous public offence, and a clear town place.",
+      "Nobody is seriously hurt, nothing involves a real person being accused of a real crime, and the animal's alleged offence is comic.",
+      "A stranger can name the accused animal, the alleged act, and the public place within five seconds.",
+      "The offence leaves room for several connected evidence items, including witnesses, traces, objects, timing, and the animal's embarrassing behaviour.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, legal jargon, or animal facts the players would need to look up."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "A wet hoofprint was found on the bakery window, and it matched the jam on the missing banner.",
+    "hint": "One new piece of evidence. Connect it to the file and make the animal look worse."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How badly this evidence corners the animal or damages the other player's theory without becoming silly nonsense.",
+      "anchors": "0 = harmless fluff, a leaf, a passer-by looking annoyed; 1 = a small embarrassment; 2 = a useful clue that makes the animal harder to defend; 3 = strong evidence that traps the animal in a specific act or humiliating habit; 4 = devastating, funny, and hard to explain away, with the animal practically cross-examining itself (rare). Evidence that only repeats the charge or hurts no theory scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the new item follows the timeline, location, and evidence already accepted, while advancing the same case.",
+      "anchors": "0 = contradicts the file, skips the chain, gives a final verdict, or takes back accepted evidence; 1 = vaguely related but adds no usable link; 2 = fits and connects to one earlier item; 3 = fits and clearly advances the chain through a person, place, object, or time; 4 = fits so neatly that it explains an earlier clue or closes a missing link (rare). A long item with no connection scores 1 at most.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the evidence gives the town, the animal, and the hearing a memorable comic picture.",
+      "anchors": "0 = generic proof with no scene; 1 = one plain fact; 2 = an object or action a stranger can picture; 3 = a specific public moment with a sound, smell, witness, or visible mess; 4 = the kind of evidence the clerk would read twice because the animal looks ridiculous in it (rare). Plain details beat grand language.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A piece HOLDS if it follows the timeline and evidence already on the table, connects to the existing chain, and advances the same case. It may add a witness, trace, object, place, time, motive, or consequence. A piece BREAKS the case if it contradicts accepted evidence, creates a missing link instead of connecting to the chain, announces a final verdict before the evidence is complete, takes back or cancels accepted evidence, or changes the case into a different story. The points go to how badly the item embarrasses the animal or traps the other player's theory. A safe item that merely repeats the charge scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Judge about the game, the rules, the score, or the other player's turn instead of adding evidence is itself a broken case item.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier evidence: judge the item against the card alone. It must add one connected piece of evidence about the animal's alleged offence.",
+      "The full transcript is the case file. Check the new item against every earlier item, not only the last one.",
+      "Break only on a plain contradiction, missing link, premature verdict, or reversal that a stranger would notice. Do not break on obscure animal behaviour, local knowledge, distances, or facts needing a lookup. When a detail can be read either way, it holds.",
+      "The players may add witnesses, objects, traces, locations, and times as long as the new item connects to the existing chain. A new person or place is not a break if the evidence explains how it enters the case.",
+      "A piece that says the animal is guilty, innocent, convicted, or cleared is a final verdict and breaks the case if the evidence is not complete. Evidence may suggest guilt, but it must not close the hearing by itself.",
+      "A piece that says an accepted clue did not happen, was mistaken, or has been withdrawn takes back evidence and breaks the case. New evidence may explain an earlier clue, but may not erase it.",
+      "A piece that merely repeats the original accusation in different words is a duplicate: not_semantic_duplicate is false.",
+      "A remark about the other player's theory is not evidence unless it adds a concrete item that advances the case. Saying their theory is rubbish is a broken case item."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A goat is accused of eating the town's spring festival banner.",
+      "move": "A wet hoofprint was found on the bakery window, with green paper stuck in the tread.",
+      "gates_note": "all true",
+      "mechanism": "adds a trace that links the goat, the town, and the missing banner through a visible object",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A wet hoofprint was found on the bakery window, with green paper stuck in the tread.",
+      "move": "The baker says the goat stood on the counter, chewed the corner, and burped into the wedding cake display.",
+      "gates_note": "all true",
+      "mechanism": "connects the witness to the trace and gives the animal a public, disgusting habit to carry",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A fox is accused of stealing the mayor's ceremonial hat from the town hall.",
+      "move": "A red hair was found inside the hat, and the caretaker heard a sneeze under the council table.",
+      "gates_note": "all true",
+      "mechanism": "adds two linked clues that place the fox inside the hall and make the missing hat personal",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A swan was seen blocking the bridge while carrying a ticket punch.",
+      "move": "The swan is innocent and has now been officially acquitted by the town.",
+      "gates_note": "satisfies_criterion false (announces a final verdict instead of adding connected evidence)",
+      "mechanism": "tries to end the hearing with a ruling rather than supplying the missing evidence",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A raccoon was caught beside the empty bakery tray with icing on its paws.",
+      "move": "There was no tray, and the raccoon was never near the bakery.",
+      "gates_note": "satisfies_criterion false (takes back two accepted facts and contradicts the case file)",
+      "mechanism": "attempts to delete the evidence instead of building on it",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Judge",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the case file and the new evidence must see why it held or broke.",
+      "Name the evidence, or its plain stand-in. A headline that fits any animal in any town is useless.",
+      "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The Judge rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the evidence and the animal's alleged conduct. Roast-level jabs at the player are allowed, but never attack identity, body, family, intelligence, or spelling.",
+      "Plain spoken English, a bored courtroom, not a legal thriller. Profanity and adult innuendo are allowed when they sharpen the joke.",
+      "On a break, put the two facts that cannot both be true side by side, or name the verdict, reversal, or missing link the evidence tried to sneak past the bench.",
+      "On a refusal caused by a gate failure, refuse the evidence and ask for another. Do not rule on who won.",
+      "The coaching line names one concrete evidence item that would have held and embarrassed the animal. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Green paper in the hoofprint and cake on the counter. The goat has eaten better than the prosecution.",
+      "A sneeze under the council table and fox hair in the hat. That is not a defence, it is a wardrobe malfunction.",
+      "The swan has a ticket punch and a bridge full of witnesses. Public transport finally has a proper thug.",
+      "Icing on the paws beside the empty tray. The raccoon has left a sweeter confession than most people manage.",
+      "The baker saw the goat burp over the cake. The banner is only the second worst thing on trial.",
+      "You have announced an acquittal before finding the evidence. Even the swan looks embarrassed by the paperwork.",
+      "There was a tray, there was a bakery, and now both have vanished from your story. Convenient, but not evidence.",
+      "The red hair is in the hat and the sneeze is under the table. Your fox has brought its own supporting cast.",
+      "A ticket punch does not prove the swan collected fares, but it does make the bridge look badly managed.",
+      "The goat was on the counter with green paper in its teeth. The town banner has finally met its match."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the goat looks guilty.",
+        "why": "opens with a status word and gives no concrete evidence"
+      },
+      {
+        "text": "The Judge rules that the case breaks.",
+        "why": "opens with a ruling phrase and names the host instead of the problem"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "names no evidence and could fit any case"
+      },
+      {
+        "text": "Only an idiot would withdraw the hoofprint.",
+        "why": "attacks the player's intelligence instead of the evidence"
+      },
+      {
+        "text": "The truth blooms beneath the moonlit machinery of justice.",
+        "why": "poetry and inflated language, not a plain courtroom joke"
+      },
+      {
+        "text": "Maybe it holds, maybe it does not, who can say.",
+        "why": "hedges instead of giving a clear reason"
+      },
+      {
+        "text": "Guilty as hell.",
+        "why": "gives a verdict without naming the evidence or explaining the gate"
+      },
+      {
+        "text": "The swan could not have crossed the bridge because local swans migrate in winter.",
+        "why": "relies on animal trivia and a fact a stranger cannot check"
+      },
+      {
+        "text": "This is a bad move.",
+        "why": "judges the player and gives no picture of the case"
+      },
+      {
+        "text": "The evidence is inconsistent, contradictory, incompatible and false.",
+        "why": "uses four abstract labels instead of naming the broken link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts a public case against one animal. The town has an accusation, not a verdict.",
+    "Take turns adding exactly one new piece of evidence to the shared case file.",
+    "The new item must connect to the existing chain and advance the same case.",
+    "Contradict accepted evidence, leave a missing link, announce a final verdict, or withdraw an accepted fact and the case breaks.",
+    "Points go to evidence that embarrasses the animal or traps the other player's theory.",
+    "Safe and vague evidence may pass but scores little. Specific evidence that connects cleanly scores."
+  ],
+  "labels": {
+    "opening": "The accusation",
+    "next_opening": "The next case",
+    "your_opening": "Your accusation",
+    "compose": "Your evidence, after {token}",
+    "compose_waiting": "Draft your next piece of evidence while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing entered. The Judge is waiting for evidence.",
+    "too_long": "Over 140 characters. One piece of evidence, not a closing speech.",
+    "duplicate": "That evidence is already in the case file. Add something new.",
+    "nudge": "Twice now. Add one piece of evidence that connects to {standing_form}. Do not repeat it, withdraw it, or announce a verdict."
+  },
+  "judge_out_text": "The Judge has stepped out. Nobody alters the case file while they are gone. {standing_form} is still the last accepted evidence. Give it a minute.\n",
+  "opponent_prompt": "You are one of two people building a ridiculous town case against an animal. You are seated before the Judge, adding one piece of evidence at a time.\nAdd exactly one new evidence item in one or two plain sentences. It must connect to the accusation and every accepted item already in the case file.\nUse witnesses, traces, objects, places, times, sounds, smells, or public consequences. Make the animal look guilty, vain, filthy, greedy, badly behaved, or embarrassingly confident. Make the other player's theory harder to defend.\nNever contradict accepted evidence. Never say an earlier clue did not happen. Never announce that the animal is guilty, innocent, acquitted, convicted, or cleared. Evidence must build the case, not finish it.\nGood: \"A wet hoofprint was found on the bakery window, with green paper stuck in the tread.\" / \"The baker says the goat stood on the counter and burped into the wedding cake display.\"\nBad: \"The goat is definitely guilty\" because that is a verdict, not evidence. Bad: \"There was no bakery and no hoofprint\" because that withdraws accepted evidence. Bad: \"The Judge is scoring this badly\" because that talks about the game instead of adding evidence.\nTalk like a person in a small courtroom, not a novelist. Name things anyone would name: a tray, a window, a bell, a witness, a muddy paw, a torn sign. Build on the existing chain rather than starting a separate case.\nNever repeat a detail or use a new item only to restate the accusation. The animal can be ridiculous, but the evidence still needs to connect.\n",
+  "medallions": false,
+  "default_move": "A town witness saw the animal near the scene, looking far too pleased with itself."
+}

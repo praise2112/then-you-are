@@ -1,0 +1,263 @@
+{
+  "slug": "alibi-for-a-bad-dog",
+  "title": "Alibi for a Bad Dog",
+  "tagline": "Put the suspect somewhere else. Make it sound official.",
+  "emblem": "🐾",
+  "accent": "#b86f5f",
+  "premise": "Three rounds. Each round names a pet, a ridiculous crime, and one piece of evidence. Both players write one sentence defending the pet while keeping the named time, place, and crime consistent. The Judge scores each alibi for how believable, funny, and neatly shaped it is. Then each player sees the other's alibi beside the Host's real evidence and guesses which alibi matches it. Then the evidence is read out.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Biscuit the bulldog",
+      "opening_emoji": "🐶",
+      "detail": "crime: ate the mayor's birthday cake; evidence: a frosting paw print was found on the kitchen door at 3:10",
+      "hidden": "At 3:10, Biscuit was in the bathtub, so he could not have stolen the cake from the kitchen."
+    },
+    {
+      "opening_token": "Marmalade the cat",
+      "opening_emoji": "🐈",
+      "detail": "crime: replaced the school bell with a fish; evidence: scales were found beneath the bell rope at noon",
+      "hidden": "At noon, Marmalade was asleep in the headmistress's scarf cupboard and could not have reached the bell rope."
+    },
+    {
+      "opening_token": "Pickle the parrot",
+      "opening_emoji": "🦜",
+      "detail": "crime: stole the town's only wedding ring; evidence: a green feather was found inside the jeweller's safe at 8:45",
+      "hidden": "At 8:45, Pickle was onstage repeating the mayor's speech while the safe was opened across town."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 24,
+    "axes": {
+      "pet": [
+        "dog",
+        "cat",
+        "parrot",
+        "rabbit",
+        "goat",
+        "ferret",
+        "pony",
+        "tortoise"
+      ],
+      "crime": [
+        "stole a cake",
+        "hid a bell",
+        "swapped a painting",
+        "ate the evidence",
+        "ruined a wedding",
+        "liberated a roast",
+        "stole a wig",
+        "opened the town vault"
+      ],
+      "evidence": [
+        "a paw print",
+        "a feather",
+        "a torn collar",
+        "a muddy ribbon",
+        "a tooth mark",
+        "a tuft of fur",
+        "a wet nose print",
+        "a suspicious hair"
+      ]
+    },
+    "tests": [
+      "The card names one pet, one ridiculous crime, and one piece of evidence.",
+      "The evidence includes a clear time and place.",
+      "The crime is silly but easy to understand in one reading.",
+      "The hidden alibi keeps the named time, place, and crime consistent.",
+      "The hidden alibi does not admit that the pet committed the crime."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "At 3:10, Biscuit was in the bathtub, so he could not have stolen the roast from the kitchen.",
+    "hint": "One sentence. Keep the time, place, and crime straight."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Would a jury accept this as a possible alibi, even if the witness has clearly been bribed with biscuits?",
+      "anchors": "0 = contradicts the evidence or is pure nonsense; 1 = technically possible but painfully thin; 2 = plausible with a generous jury; 3 = a stranger could accept it; 4 = airtight enough to make the paw print look nervous (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the defense make the pet's innocence entertaining without throwing away the evidence?",
+      "anchors": "0 = no comic spark; 1 = a small grin; 2 = a good animal excuse; 3 = a proper laugh; 4 = courtroom comedy that still works as an alibi (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Is it one clean sentence that states where the pet was and why the evidence does not prove the crime?",
+      "anchors": "0 = not an alibi or not a sentence; 1 = fragments, padding, or missing facts; 2 = understandable but loose; 3 = concise and properly formed; 4 = clean enough to pin beneath a wanted poster (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An alibi PLAYS if it is one sentence defending the named pet while keeping the named time, place, and crime consistent, without admitting the pet did the crime. It must offer a possible location, situation, or explanation for the pet at the stated time. It fails when it contradicts the time, place, or crime, admits the pet committed the crime, ignores the evidence entirely, or is not an alibi at all, such as a joke, comment, question, or sentence that merely uses the pet's name. A wildly unlikely alibi still plays and scores low on believable. An alibi that matches the Host's evidence is not a fail: it plays.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing alibi.\n",
+    "judge_notes": [
+      "The Host's evidence is given to you. Use it to judge whether the alibi matches the intended defense, but do not reward truth proximity on the rubric.",
+      "The first move must identify a possible place or situation for the pet at the named time and connect that fact to the crime or evidence.",
+      "Both players answer the same case. Judge each alibi on its own; the other player's alibi is not the standard.",
+      "An alibi that says the pet committed the crime, helped commit it, or was present at the crime scene in a way that makes guilt unavoidable fails the criterion.",
+      "An alibi that changes the named time, place, or crime fails the criterion, even if the new story is funny.",
+      "An alibi that ignores the named evidence entirely fails when it gives no defense against the accusation.",
+      "A joke, comment, story, question, or sentence that merely uses the pet's name is not an alibi and fails.",
+      "A hedge or question mark weakens the courtroom voice. If a possible alibi is still offered, it plays but believable and dictionary_shaped score low.",
+      "A bare phrase naming a place or situation can play if it clearly places the pet at the named time, but it scores low on dictionary_shaped."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Biscuit the bulldog, accused of eating the mayor's birthday cake, frosting paw print on the kitchen door at 3:10",
+      "move": "At 3:10, Biscuit was trapped in the mayor's bathtub wearing a shower cap, nowhere near the kitchen.",
+      "gates_note": "all true",
+      "mechanism": "It fixes Biscuit in a ridiculous place at the exact time and keeps the cake theft out of reach.",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Marmalade the cat, accused of replacing the school bell with a fish, scales beneath the bell rope at noon",
+      "move": "Marmalade put the fish in the bell and then hid under the rope.",
+      "gates_note": "satisfies_criterion false (admits the pet did the crime)",
+      "mechanism": "The defense has entered a guilty plea and called it strategy.",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Pickle the parrot, accused of stealing the town's wedding ring, green feather inside the jeweller's safe at 8:45",
+      "move": "At 8:45, Pickle was repeating the mayor's speech on the courthouse steps, where twelve witnesses heard every squawk.",
+      "gates_note": "all true",
+      "mechanism": "A public speech gives Pickle a solid alibi, while the squawking supplies the useful laugh.",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Biscuit the bulldog, accused of eating the mayor's birthday cake, frosting paw print on the kitchen door at 3:10",
+      "move": "The cake was stolen yesterday by a very guilty kitchen.",
+      "gates_note": "satisfies_criterion false (changes the time and does not place the pet)",
+      "mechanism": "The kitchen has been arrested, but Biscuit still has no whereabouts.",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Family Solicitor",
+    "tone": {
+      "commentary_adj": "warm",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the case and the alibi must see why it scored.",
+      "Name the pet, the crime, or the alibi's key excuse. A headline that fits every defendant is a lazy brief.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Solicitor refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the alibi and the evidence, and use a gentle roast of the lawyer if needed. Never use identity based abuse.",
+      "Plain spoken English. Mild profanity and adult innuendo are allowed, but keep the warmth.",
+      "Never reveal or hint at the Host's real evidence in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline refuses the alibi and asks for another. It never rules on which player won.",
+      "The coaching line names one fact the next alibi should include. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "Biscuit was in the bath, which is a stronger defense than most humans manage.",
+      "The parrot had twelve witnesses and still sounds guilty as hell.",
+      "A shower cap is not a legal document, but it does put the bulldog elsewhere.",
+      "The fish has an alibi, the bell has no comment, and Marmalade needs a better lawyer.",
+      "The courthouse speech is solid. The squawk is frankly devastating.",
+      "The kitchen cannot be cross examined, however much this brief wants it arrested.",
+      "A guilty plea in a collar is still a guilty plea, darling.",
+      "The pet is missing from the story, like a witness who smelled the snacks.",
+      "That alibi puts the dog at the scene, then acts surprised when the jury notices.",
+      "The evidence is ugly, but the excuse has arrived wearing clean shoes."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: Biscuit has a bath alibi.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Family Solicitor refuses: no alibi.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "Biscuit was really in the bathtub at 3:10.",
+        "why": "reveals the Host's evidence in the headline"
+      },
+      {
+        "text": "Believable.",
+        "why": "gives no reason and could fit anything"
+      },
+      {
+        "text": "Only an idiot would defend a dog like that.",
+        "why": "roasts the player instead of the alibi"
+      },
+      {
+        "text": "O noble hound, beneath the moon, thy paws proclaim thy fate.",
+        "why": "poetry instead of plain spoken commentary"
+      },
+      {
+        "text": "It is plausible, credible, convincing, and believable.",
+        "why": "repeats one judgment without a picture"
+      },
+      {
+        "text": "Better than the other player's alibi.",
+        "why": "judges the pair instead of explaining this alibi"
+      },
+      {
+        "text": "Nice defense.",
+        "why": "too vague to be useful"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one pet, one ridiculous crime, and one piece of evidence each.",
+    "Write one sentence defending the pet while preserving the named time, place, and crime. Do not admit the pet did it.",
+    "Then guess which of the two alibis matches the Host's real evidence. Right, and the points are yours. Fooled, and they go to the Host.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The case",
+    "next_opening": "The next case",
+    "your_opening": "Your case",
+    "compose": "Your alibi for {token}",
+    "compose_waiting": "Draft your alibi while you wait"
+  },
+  "validation_messages": {
+    "empty": "No defense on the page. Give the pet an alibi.",
+    "too_long": "Over 160 characters. This is an alibi, not a memoir.",
+    "duplicate": "That alibi has already been used this match. Try a different excuse.",
+    "nudge": "Twice now. One sentence that places {standing_form} somewhere else at the stated time."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} waits in the witness box. Give it a minute.\n",
+  "opponent_prompt": "You are the defense lawyer. Write one fake alibi for the named pet.\nLENGTH IS THE GIVEAWAY, in both directions. The two alibis sit side by side, so the odd one out loses. Count the words in the Host's real evidence below and match it, within two words either way. If the real one runs to fourteen words, so must yours; if it is three words, so is yours. Never the shorter of the two by half, and never the longer by half.\nKeep the named time, place, and crime consistent. Put the pet somewhere else, or give it a situation that makes the evidence harmless. Do not admit the pet did the crime, helped do it, or stood at the crime scene looking guilty.\nSound like a witness statement: one sentence, clear and specific. Include the pet and the stated time. Keep the crime recognizable. A ridiculous detail is welcome if the alibi still hangs together.\nMirror the Host's evidence shape as well as its length. If it names witnesses, give witnesses; if it uses a location, use a location; if it explains why the evidence misleads, give a reason why. Do not add a new crime or change the time.\nAvoid empty excuses such as nobody saw anything, the pet was being weird, or the evidence is fake. Do not use the pet's name as a pun. Do not explain or hedge. Do not write the word alibi.\nYou are inventing a defense. The Host's real evidence is given to you so you can steer clear of its exact wording, but preserve the named facts and do not copy its defense. Never write the Host's real evidence, a paraphrase of it, or the same location and excuse for the same purpose.\nDo not reuse the same kind of hiding place or explanation from an earlier round. No quotation marks around the alibi.\n",
+  "medallions": true,
+  "default_move": "At the stated time, the pet was locked in a room full of witnesses and nowhere near the crime."
+}

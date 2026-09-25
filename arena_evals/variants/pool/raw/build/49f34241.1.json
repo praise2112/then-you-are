@@ -1,0 +1,272 @@
+{
+  "slug": "ingredient-spiral",
+  "title": "Ingredient Spiral",
+  "tagline": "One bad kitchen choice becomes dinner's personal vendetta.",
+  "emblem": "🥣",
+  "accent": "#dc2626",
+  "premise": "Build one doomed dish by changing exactly one ingredient or cooking condition at a time. Every change must cause the next ugly result, and the host explains why the kitchen has now chosen violence.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The pancake batter has one egg, two cups of flour, and no milk yet.",
+      "opening_emoji": "🥞",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The soup has onions, one carrot, and no stock in the pot.",
+      "opening_emoji": "🍲",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The cake has flour, sugar, and one warm egg waiting for butter.",
+      "opening_emoji": "🍰",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "dish": [
+        "pancake batter",
+        "vegetable soup",
+        "chocolate cake",
+        "rice pudding",
+        "tomato sauce",
+        "cheese omelette",
+        "apple pie filling",
+        "garlic bread"
+      ],
+      "standing_ingredient": [
+        "one egg",
+        "two cups of flour",
+        "one carrot",
+        "a spoon of sugar",
+        "half a block of butter",
+        "one onion",
+        "a cup of rice",
+        "a handful of cheese"
+      ],
+      "missing_or_condition": [
+        "no milk yet",
+        "no stock in the pot",
+        "the oven is still cold",
+        "the salt has not been added",
+        "the pan is dry",
+        "the lid is off",
+        "the heat is low",
+        "the timer is unset"
+      ]
+    },
+    "tests": [
+      "One ordinary dish is ready to go wrong, and a stranger can picture the bowl, pan, or pot at once. Present tense, one sentence, plain words.",
+      "A non-player can name two possible next kitchen disasters within five seconds, and neither answer needs a miracle ingredient.",
+      "The card is not already ruined or finished. A missing ingredient or bad condition is a starting handle, not a burnt feast.",
+      "No one is hurt, no real people, no brands, no dangerous instructions, and no ingredient that requires a strange or impossible kitchen.",
+      "It makes a stranger want to change one thing. A dry pan, a missing egg, a cold oven. Never a full recipe or a finished disaster."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the extra flour makes the batter so thick that the spoon gets stuck.",
+    "hint": "Change exactly one recipe detail, then name the immediate ugly result it causes."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much worse the dish becomes because of this one recipe change.",
+      "anchors": "0 = the dish is no worse or the change does nothing; 1 = a small wobble, like a little lump or spill; 2 = one clear notch worse, with a new cooking problem; 3 = the mistake spreads into the pan, texture, timing, or next ingredient; 4 = one change creates a spectacular kitchen problem that still follows plainly, rare. Reach only counts after the link holds. A dramatic result with no kitchen cause scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the changed ingredient or condition causes the result.",
+      "anchors": "0 = the change and result are unrelated; 1 = the move merely claims a cause; 2 = plausible but missing a kitchen step; 3 = a stranger immediately sees why the change did it; 4 = the result feels unavoidable, of course that one change did this, rare. Changing several ingredients or conditions at once caps link at 2.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the recipe going wrong.",
+      "anchors": "0 = unreadable, abstract, or only a feeling; 1 = vague kitchen fog; 2 = clear but ordinary; 3 = a visible texture, spill, smell, sound, or pan problem; 4 = one sharp detail makes the culinary wreckage instantly real, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it changes exactly one standing recipe detail, such as one ingredient amount, one ingredient, or one cooking condition, and that change plainly causes the immediate ugly result. The move must stay with the same dish and leave a new problem for the other player to worsen. Bigger is better, but only through the kitchen link. A step fails when it changes more than one detail, jumps to a new recipe, adds an ingredient without a possible kitchen link, skips the immediate result, finishes the dish, reverses a standing change, repairs the mess, or replaces the cooking event with a feeling, opinion, or explanation instead of an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about rules is itself a broken step.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge the change against the card. It must alter one detail already present or plainly missing from the card and cause an immediate kitchen result.",
+      "A new ingredient may enter only when the standing recipe gives it a plain kitchen reason, such as adding milk to thick batter, stock to a dry soup pot, or butter to a greased pan. An ingredient appearing from nowhere is a skipped link: satisfies_criterion is false.",
+      "Changing two details in one move, such as adding salt while raising the heat, is not one change. Even if the result is plausible, satisfies_criterion is false.",
+      "A move that switches from pancakes to soup, cake to toast, or one named dish to another fails because it jumps to a new recipe.",
+      "A finished dish, serving the food, throwing it away, cleaning the kitchen, or saying everyone eats happily is an ending. Endings fail satisfies_criterion even when they follow from the standing recipe.",
+      "Undoing a standing change, such as thinning batter after it became thick or lowering heat after raising it, is a reversal and fails. The spiral goes forward into trouble.",
+      "A move must show the immediate result of the one change. Adding sugar and then describing a later burnt cake skips the link unless the standing step already makes burning immediate.",
+      "The same size problem, such as one more lump appearing after the batter clumps, follows and passes the gate. It scores 0 or 1 on reach. Do not fail it for being dull.",
+      "Restating the standing change or naming its obvious result with nothing new is a duplicate: not_semantic_duplicate is false.",
+      "A feeling, judgment, or kitchen theory without an event, such as the cook panics or the batter is doomed, fails the criterion.",
+      "Two events may appear in one move only when they are the immediate result of the single change. If the move packs several recipe changes or several skipped results together, satisfies_criterion is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The pancake batter has one egg, two cups of flour, and no milk yet.",
+      "move": "Then the extra flour makes the batter so thick that the spoon gets stuck.",
+      "gates_note": "all true",
+      "mechanism": "one added ingredient changes the batter texture and jams the spoon",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the spoon gets stuck in the thick batter.",
+      "move": "Then cold milk thins the batter, but the stuck spoon pulls a lump onto the counter.",
+      "gates_note": "all true",
+      "mechanism": "one added ingredient changes the texture while the standing spoon problem causes the spill",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the batter runs across the counter.",
+      "move": "Then the whole restaurant serves a seven-course meal of burnt pancakes.",
+      "gates_note": "satisfies_criterion false (new recipe and several skipped links)",
+      "mechanism": "the move jumps from a spill to a finished event with no kitchen chain",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the soup turns thick after the heat is raised.",
+      "move": "Then the heat drops and the soup becomes perfectly smooth again.",
+      "gates_note": "satisfies_criterion false (reversal and repair)",
+      "mechanism": "the move undoes the standing cooking condition and fixes the mess",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the cake batter sticks to the cold pan.",
+      "move": "Then a diamond chandelier falls into the bowl and the guests applaud.",
+      "gates_note": "satisfies_criterion false (unlinked object and unrelated scene)",
+      "mechanism": "nothing in the pan causes a chandelier to appear",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "Chef Disaster",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hype"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Bring loud kitchen energy, but make the cause crystal clear. The joke is the recipe committing another felony against dinner.",
+      "Name the changed ingredient or condition and the ugly result. A headline that fits any bad meal is lazy sludge.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or Chef Disaster refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the move hard, and the player lightly if needed, but never target identity, protected traits, body, family, disability, or real hardship.",
+      "Profanity and adult innuendo are allowed when they sharpen the kitchen joke, not when they replace the reason.",
+      "Plain spoken English. No poetry, no rhymes, no fake food science, no thesaurus sludge.",
+      "On a skipped link, name the missing kitchen step. On an ending, say the dish is done and the spiral stops there.",
+      "On a refusal, the headline rejects the move and demands another. It never decides who won.",
+      "The coaching line names one change that could have followed. It ends on a visible kitchen event, never a mood or a verdict.",
+      "Keep the hype focused on the pan, pot, bowl, oven, texture, heat, or ingredient. Dinner is the villain, not the player's identity."
+    ],
+    "good_headlines": [
+      "Extra flour glued the spoon to the batter. Breakfast has entered hostage negotiations.",
+      "Cold milk caused the spill, and now the counter is also in the recipe. Gorgeous little disaster.",
+      "You changed the heat, not the laws of cooking. The soup thickened and chose violence.",
+      "A finished cake is not a move. You served the corpse and called it gameplay.",
+      "The batter got thick, then you made it thin again. That is not a spiral, that is culinary time travel.",
+      "Sugar appeared from nowhere and somehow caused a chandelier. The kitchen link has left the building.",
+      "One change, one ugly result, beautiful. The pan is losing its mind for a reason.",
+      "The salt did not summon a restaurant. Show what the salty pot does next.",
+      "You packed in three changes like a raccoon in a pantry. Pick one ingredient and let it ruin the texture.",
+      "The spoon stuck because the batter thickened. Finally, a disaster with paperwork."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: nice mess.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "Chef Disaster refuses your nonsense.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "This recipe is absolutely wild.",
+        "why": "hype with no changed detail or kitchen cause"
+      },
+      {
+        "text": "The gastronomical catastrophe proliferates.",
+        "why": "thesaurus sludge, no plain kitchen picture"
+      },
+      {
+        "text": "You are hopeless in a kitchen.",
+        "why": "attacks the player instead of the move"
+      },
+      {
+        "text": "Maybe the batter does something, maybe not.",
+        "why": "hedges instead of ruling and explains nothing"
+      },
+      {
+        "text": "The sauce danced beneath the moon...",
+        "why": "poetry and an ellipsis, with no immediate result"
+      },
+      {
+        "text": "More ingredients. More chaos. Wow.",
+        "why": "generic fragments with no link or useful coaching"
+      }
+    ]
+  },
+  "rules": [
+    "Change exactly one ingredient or cooking condition, then show its immediate result. Start with Then.",
+    "Stay with the same dish. Make the kitchen problem bigger through one plain cause.",
+    "Do not skip the result, finish the dish, reverse a change, or summon ingredients without a kitchen reason.",
+    "The Judge rules on the recipe link, not spelling or fancy chef language."
+  ],
+  "labels": {
+    "opening": "The recipe problem",
+    "next_opening": "The next recipe problem",
+    "your_opening": "Your recipe problem",
+    "compose": "What goes wrong next, after {token}",
+    "compose_waiting": "Draft your next kitchen disaster while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing changed. Dinner cannot ruin itself on your behalf.",
+    "too_long": "Over 140 characters. One kitchen change, not the director's cut.",
+    "duplicate": "That disaster already happened this match. Pick one new ingredient or condition.",
+    "nudge": "Twice now. Change one detail because of {standing_form}, then show the next ugly kitchen result."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody changes the recipe until they return. {standing_form} still stands, and the pan is waiting.\n",
+  "opponent_prompt": "You are one of two players turning one recipe into a controlled kitchen collapse, and you want the dish to get worse.\nAlways write: \"Then X.\" Change exactly one ingredient or cooking condition, then name its immediate result.\nStay with the same dish. Make the next problem follow from the standing recipe in plain kitchen cause and effect.\nGood: \"Then the extra flour makes the batter so thick that the spoon gets stuck.\" / \"Then the high heat splits the sauce and leaves oily puddles on top.\"\nBad: \"Then the whole restaurant burns down\" because the move skipped the kitchen links. Bad: \"Then the cook feels ashamed\" because a feeling is not a kitchen event. Bad: \"Then the soup is perfect\" because repair and endings stop the spiral. Bad: \"Then milk and salt go in and the oven heats up\" because that changes three details.\nNever switch dishes, never rescue the food, never reverse a change, never finish serving it, and never add an ingredient from nowhere. Every move must change one standing detail and show what that change immediately does.\nTalk like a person telling a mate what happened in a kitchen, not a recipe book. Name things anyone would know: a spoon, a pan, a lump, a burnt edge, a wet counter. Use plain words a twelve-year-old anywhere knows.\nNever reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then the missing milk leaves the mixture thick enough to drag the spoon across the bowl."
+}

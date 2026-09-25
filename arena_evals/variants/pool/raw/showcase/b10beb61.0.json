@@ -1,0 +1,274 @@
+{
+  "slug": "grateful-for-nothing",
+  "title": "Thanks, I Guess",
+  "tagline": "Keep the gift. Lose the gratitude.",
+  "emblem": "🎁",
+  "accent": "#6b4c8a",
+  "premise": "Three rounds. Each round deals one unwanted gift and the people trapped in its thank-you note. Both players write a note that keeps the awkward fact true while sounding wildly, suspiciously grateful. The giver, the receiver and the gift must survive. Everything else is yours to add: family diplomacy, passive aggression, fake devotion, legal threats and the sort of praise that needs a witness.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Ben gave Ava a singing birthday card that would not stop.",
+      "opening_emoji": "🎶",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Nina gave Leo a novelty tie covered in crying clowns.",
+      "opening_emoji": "🤡",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Owen gave Priya a self-help book she had already returned.",
+      "opening_emoji": "📖",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 13,
+    "axes": {
+      "giver": [
+        "Ben",
+        "Nina",
+        "Owen",
+        "Mia",
+        "Cal",
+        "Ruth",
+        "Sam",
+        "Tara"
+      ],
+      "receiver": [
+        "Ava",
+        "Leo",
+        "Priya",
+        "Tom",
+        "Nora",
+        "Eli",
+        "Grace",
+        "Max"
+      ],
+      "unwanted_gift": [
+        "a singing card that will not stop",
+        "a mug with a cracked handle",
+        "a tie covered in crying clowns",
+        "a candle that smells like wet socks",
+        "a book the receiver already returned",
+        "a giant plastic trophy",
+        "a puzzle missing three pieces",
+        "a framed photo of the giver"
+      ]
+    },
+    "tests": [
+      "One sentence, past tense, under seventy characters. A stranger sees who gave what to whom at once.",
+      "The gift is unwanted, broken, useless or painfully personal, but nobody is dead, threatened or seriously harmed.",
+      "It has one named giver, one named receiver and one singular gift. No families, crowds or mystery donors.",
+      "The gift is specific enough for a note to praise, reinterpret or quietly weaponise.",
+      "It states a checkable detail a thank-you note can keep or accidentally betray, such as a crack, a smell, a number or a return."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Dear Ben, the endless song has finally found its audience. Love, Ava",
+    "hint": "One thank-you note. Keep the giver, receiver and gift true, then make gratitude do something ugly."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How far does the note travel from the awkward gift while keeping the giver, receiver and gift unmistakably true?",
+      "anchors": "0 = repeats the card with a greeting; 1 = adds one polite compliment; 2 = invents a motive, memory or useful lie; 3 = turns the unwanted gift into a relationship crisis, triumph or threat while the card still holds; 4 = a complete emotional hostage situation disguised as gratitude, with every fact intact and every word earning its place (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the gratitude reveal a sharp, stupid or painfully recognisable truth?",
+      "anchors": "0 = no joke; 1 = a weak smile; 2 = a neat awkward turn; 3 = a real laugh; 4 = the sort of note people read aloud before hiding it from the family group chat (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it look and sound like a compact thank-you note, with a greeting or sign-off and no wasted ceremony?",
+      "anchors": "0 = not a note, just a comment or explanation; 1 = greeting or sign-off pasted onto a ramble; 2 = recognisable note with slack and filler; 3 = tight, natural, socially alarming gratitude; 4 = it could go straight into the card and ruin Christmas perfectly (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A note PLAYS if it makes clear that the named giver gave the named unwanted thing to the named receiver. The note must preserve all three roles and the gift itself. It may add motives, feelings, history, consequences, lies and adult awkwardness. It fails when the giver disappears, the receiver changes, the gift is dropped, the gift is replaced or its stated condition is contradicted. It also fails when it is not a thank-you note, such as a question to the Judge, a review of the game or a message with no greeting or sign-off. A plain Dear X, thanks for Y passes and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game or about the rules is itself a losing note.\n",
+    "judge_notes": [
+      "Test the gate against the card only. The note must let a reader identify the giver, receiver and gift, not merely guess them from the round.",
+      "The receiver is the writer of the note unless the note clearly addresses the receiver as someone else. A note from Ava to Ben must still make Ben the giver and Ava the receiver.",
+      "A gift may be insulted, treasured, donated, displayed or called a weapon, but it must remain the same gift. A cracked mug can become a family heirloom; it cannot become an uncracked vase.",
+      "Invented motives and consequences are allowed. Saying the endless card has become Ava's punishment plays; saying Ben sent a silent card does not.",
+      "A greeting or sign-off is required. Dear Ben, thanks for the card passes. Thanks for the card alone is not enough if it does not read as a note.",
+      "Judge each player's note on its own. The other note is not evidence for or against the card.",
+      "A note can be deeply sarcastic and still pass. Test factual survival, not sincerity, taste or whether the giver would ever speak to the receiver again.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Ben gave Ava a singing birthday card that would not stop.",
+      "move": "Dear Ben, your endless song now outlives every friendship. Love, Ava",
+      "gates_note": "all true",
+      "mechanism": "the card still sings endlessly, while Ava turns the gift into a durable social disaster",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Nina gave Leo a novelty tie covered in crying clowns.",
+      "move": "Thanks, Nina. The crying clowns make every meeting feel legally significant. Leo",
+      "gates_note": "all true",
+      "mechanism": "the tie remains clown covered, but Leo promotes it to office evidence",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Owen gave Priya a self-help book she had already returned.",
+      "move": "Dear Owen, thanks for the book I returned before it could change me. Priya",
+      "gates_note": "all true",
+      "mechanism": "the returned book remains the gift, and the gratitude quietly blames it for itself",
+      "scores": {
+        "stretch": 3,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Ben gave Ava a singing birthday card that would not stop.",
+      "move": "Dear Ben, thanks for the lovely silent card. Love, Ava",
+      "gates_note": "satisfies_criterion false, the card is described as silent and the endless singing is contradicted",
+      "mechanism": "the note swaps the cursed singing card for a silent one",
+      "scores": {
+        "stretch": 1,
+        "funny": 1,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Nina gave Leo a novelty tie covered in crying clowns.",
+      "move": "Dear Nina, thanks for giving me confidence. Love, Leo",
+      "gates_note": "satisfies_criterion false, the tie and its crying clowns disappear",
+      "mechanism": "the note thanks Nina for a vague benefit instead of naming the unwanted gift",
+      "scores": {
+        "stretch": 1,
+        "funny": 0,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Reluctant Recipient",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the note must see why it scored.",
+      "Name the gift's key defect, the singing, the clowns, the crack, the smell. Vague praise is not commentary.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or The Editor refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the note and its tiny emotional crime, not protected traits or the player's identity. Roast the wording, not the person.",
+      "Plain spoken English. Adult innuendo is fine when the note earns it, but do not use slurs or identity based abuse.",
+      "On a fail, say which giver, receiver or gift fact vanished or got contradicted, using the card's words.",
+      "On a refusal, the note refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one note that would have scored. It ends on a gift or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The singing card stayed alive, and Ava made it sound like a family curse with stationery.",
+      "The clowns are still crying, but Leo has promoted the tie to workplace evidence.",
+      "Priya returned the book and somehow returned the compliment too.",
+      "The crack survived, the mug survived, and the relationship is now taking applications.",
+      "A giant trophy for nothing is still a trophy, and the note has made nothing sound competitive.",
+      "The candle smells of wet socks, which is at least a clear scent profile and a terrible gift.",
+      "Dear Nina, thanks for the clown tie. Make the clowns the witnesses and keep the tie in the room.",
+      "The note thanked Owen for confidence while quietly confirming the book got sent back.",
+      "Ava did not receive silence. She received a song with no exit strategy.",
+      "The framed picture is still of the giver, which makes that thank you note a hostage negotiation."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: that is a lovely note.",
+        "why": "opens with a status word and says nothing about the gift"
+      },
+      {
+        "text": "The Editor refuses: write a real thank-you.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try again.",
+        "why": "opens with a ruling phrase and gives no useful fact"
+      },
+      {
+        "text": "Wrong, the gift is missing.",
+        "why": "does not say which gift or who gave it"
+      },
+      {
+        "text": "Beautifully passive aggressive.",
+        "why": "a reaction, not a reason, and it fits almost any note"
+      },
+      {
+        "text": "You clearly have never received a present.",
+        "why": "roasts the player instead of the note"
+      },
+      {
+        "text": "O cursed card, thy melody stains the moonlit soul.",
+        "why": "purple poetry is not a thank-you note"
+      },
+      {
+        "text": "This is a wonderfully heartfelt and emotionally complex expression of gratitude.",
+        "why": "padding, no picture, no joke"
+      },
+      {
+        "text": "Better than the other player's note.",
+        "why": "judges the pair instead of this note"
+      },
+      {
+        "text": "The gift's semiotic payload destabilises the domestic exchange.",
+        "why": "thesaurus fog where plain English would do"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one unwanted gift fact each.",
+    "Write one thank-you note under 90 characters, including a greeting or sign-off. The House writes its own unseen, and the host scores both.",
+    "The note must keep the named giver, named receiver and named gift true. Drop, swap or contradict one and the round is lost.",
+    "Everything else is yours to invent. The further gratitude travels from the awkward fact while the fact survives, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The gift",
+    "next_opening": "The next gift",
+    "your_opening": "Your gift",
+    "compose": "Your note for {token}",
+    "compose_waiting": "Write your note while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank card. Write the thank-you note.",
+    "too_long": "Over 90 characters. It is a note, not a therapy session.",
+    "duplicate": "That note has already been sent this match. Find another way to pretend.",
+    "nudge": "Twice now. Keep the giver, receiver and gift true: {standing_form}."
+  },
+  "judge_out_text": "The reluctant recipient has stepped out. Nobody sends anything until they are back. {standing_form} sits beside the unwanted gift. Give it a minute.\n",
+  "opponent_prompt": "You are writing a thank-you note for a gift nobody wanted and a social relationship nobody\nwants to examine too closely. Write one note.\nTHE FACT MUST SURVIVE. A reader who sees only your note must still know who gave what to\nwhom. Keep the named giver, the named receiver and the named gift. Keep any stated defect,\nnumber, smell, crack or other detail unless the card leaves it open.\nThen go as far as you dare. Invent gratitude, resentment, family history, workplace fallout,\nsexual tension, legal consequences or a heroic lie. The points are for distance from the card\nwhile the card remains true.\nGood: \"Dear Ben, your endless song now outlives every friendship. Love, Ava\" for a singing\ncard that would not stop. \"Thanks, Nina. The crying clowns make every meeting legally\nsignificant. Leo\" for a clown tie. \"Dear Owen, thanks for the book I returned before it could\nchange me. Priya\" for a returned self help book.\nBad: \"Dear Ben, thanks for the silent card\" if the card sings forever. \"Dear Nina, thanks for\ngiving me confidence\" if the clown tie disappears. \"Dear Owen, I adore my new book\" if the\ncard says Priya already returned it.\nNote rhythm: include a greeting or sign off, use short plain words, and make the gratitude do\nsomething. Under 90 characters. Capitals are fine. Do not use a colon or a dash. Do not explain\nthe joke.\nVary the angle from round to round: one note can sound sincere, one can threaten politely,\none can turn the gift into evidence, one can praise the defect itself. Never use the same shape\ntwice in a match.\nNo quotation marks around the note. Reply with the note only.\n",
+  "medallions": false,
+  "default_move": "Dear giver, thanks for the thing I definitely wanted. Love, recipient"
+}

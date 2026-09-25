@@ -1,0 +1,277 @@
+{
+  "slug": "room-tone",
+  "title": "Room Tone",
+  "tagline": "Name the noise. Start the tour.",
+  "emblem": "🔊",
+  "accent": "#5f7f86",
+  "premise": "Three rounds. Each round names an ordinary household sound. You and the House each pitch a band name and debut album for it. The Host scores each pitch for how far it travels without losing the sound's identity. Then you see both pitches and call which better matches the sound's checkable truth.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A spoon clinking against a mug",
+      "opening_emoji": "🥄",
+      "detail": "a spoon clinking against a mug",
+      "hidden": "a metal spoon striking the ceramic or glass wall of a mug"
+    },
+    {
+      "opening_token": "A radiator ticking after it switches off",
+      "opening_emoji": "♨️",
+      "detail": "a radiator ticking after it switches off",
+      "hidden": "metal parts of a radiator contracting and making small ticking sounds as they cool"
+    },
+    {
+      "opening_token": "A cupboard door catching on its latch",
+      "opening_emoji": "🚪",
+      "detail": "a cupboard door catching on its latch",
+      "hidden": "a cupboard door closing and its latch or catch clicking into place"
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 9,
+    "axes": {
+      "source": [
+        "kitchen",
+        "bathroom",
+        "hallway",
+        "bedroom",
+        "laundry room",
+        "living room",
+        "utility room",
+        "garden shed"
+      ],
+      "action": [
+        "striking",
+        "dripping",
+        "scraping",
+        "clicking",
+        "humming",
+        "rattling",
+        "sliding",
+        "switching off"
+      ],
+      "object": [
+        "mug",
+        "tap",
+        "radiator",
+        "latch",
+        "blind",
+        "washing machine",
+        "floorboard",
+        "kettle"
+      ]
+    },
+    "tests": [
+      "The source is an ordinary household object or fixture.",
+      "The action can be heard without needing a person to explain it.",
+      "The sound has a specific physical cause that can be checked.",
+      "The card is brief enough to inspire a band name and an album title.",
+      "The card does not name the sound with an onomatopoeia."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The Patient Plink, debut album: One Drop at a Time",
+    "hint": "One headline-style line. Give the sound a band name and a debut album."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this pass as a real band and debut album while still carrying the household sound?",
+      "anchors": "Score the pitch as a stranger would: the details may be invented, but the sound must remain legible. 0 = random or unusable; 1 = a faint connection; 2 = the connection appears after thought; 3 = it feels like a real act built around this sound; 4 = the name and album seem inevitable, and still sound like a band (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the pitch make the ordinary noise entertaining without turning into a loose joke?",
+      "anchors": "0 = no comic spark; 1 = a small twist; 2 = a clear smile; 3 = a proper laugh that keeps the format; 4 = a sharp comic idea that could headline the tour (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the line clearly contain one band name and one debut album title in a clean, readable form?",
+      "anchors": "0 = no usable pitch; 1 = the parts are hard to tell apart; 2 = both parts are present but cluttered; 3 = the band and album are plain and well formed; 4 = crisp enough for a listing or poster (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A pitch PLAYS if it contains a band name and a debut album title, and both make the named household sound recognizable without naming the sound itself. The pitch must preserve the sound's real source and the specific action that makes it. Invented band history, genre, place, members, and album details are fair if they do not contradict that source and action. It fails when it omits either required part, names the sound directly, replaces the household sound with another source or action, or merely comments on the game instead of pitching.\n",
+    "anti_metagaming_clause": "Speaking to the Host, describing the rules, or judging the pitch instead of making one is itself a losing pitch.\n",
+    "judge_notes": [
+      "On the first move, judge the pitch against the card alone. Do not compare it with the other pitch, which has not been shown yet.\n",
+      "The real source and the specific action both matter. A mug struck by a spoon is not a kettle boiling, and a spoon resting in a mug is not the same action as striking it.\n",
+      "A direct synonym or obvious sound word is not automatically a failure, but it gives away the answer and should score poorly on believable. A line that only names the sound without making a band and album fails.\n",
+      "Both a band name and an album title must be identifiable. If one is missing, the pitch fails even if the other is excellent.\n",
+      "A pitch may use invented genre, history, imagery, or personality. Those details are fair unless they change the sound's source or action.\n",
+      "A line that asks a question, gives an opinion, or talks about guessing fails unless it also supplies a complete band name and album title.\n",
+      "A bare pair of names can play if the two parts are clear. It scores low on dictionary_shaped when the format is difficult to read.\n",
+      "The House's pitch is judged by the same standard as the player's pitch. Do not reward or punish it for being the House's answer.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A spoon clinking against a mug",
+      "move": "The Porcelain Comets, debut album: Tiny Orbits in a Cup",
+      "gates_note": "all true",
+      "mechanism": "the Comets suggest repeated bright impacts, while the cup keeps the image in the kitchen",
+      "scores": {
+        "believable": 4,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A radiator ticking after it switches off",
+      "move": "The Warm Metal, debut album: Last Notes Before Bed",
+      "gates_note": "all true",
+      "mechanism": "the band name holds the cooling metal and the album title gives the sound its fading timing",
+      "scores": {
+        "believable": 3,
+        "funny": 2,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A cupboard door catching on its latch",
+      "move": "The Kitchen Door, debut album: It Clicks Shut",
+      "gates_note": "satisfies_criterion false (names the source directly and offers no disguised pitch)",
+      "mechanism": "the line reports the object and action instead of turning them into a band and album idea",
+      "scores": {
+        "believable": 1,
+        "funny": 0,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A spoon clinking against a mug",
+      "move": "Honestly, this sounds like a tiny kitchen concert",
+      "gates_note": "satisfies_criterion false (a comment, not a band and album pitch)",
+      "mechanism": "it reacts to the sound but supplies neither required named part",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A radiator ticking after it switches off",
+      "move": "The Silver Patience, debut album: Cooling Down in Public",
+      "gates_note": "all true",
+      "mechanism": "patience and cooling preserve the slow post heating ticks without naming the radiator",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Tour Manager",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the sound and the pitch must see why it scored.",
+      "Name the sound, the band, or the album. A headline that fits any other pitch is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Pitch refused\", \"The Tour Manager refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the pitch, never the player. No jokes about identity, body, family, intelligence, spelling, or background.",
+      "Plain spoken English. No poetry, no rhymes, no profanity, no innuendo, no fancy words for their own sake.",
+      "Never reveal or hint at a checkable truth that the pitch did not preserve. The reveal is a separate beat.",
+      "On a refusal, the headline refuses the pitch and asks for another. It never rules on which pitch won.",
+      "The coaching line names one pitch shape that would have scored. It ends on a fact or an action, never a mood or a verdict.",
+      "Jokes target the move only. Keep the content suitable for a family audience."
+    ],
+    "good_headlines": [
+      "Tiny Orbits gives the mug a tour schedule, and every stop ends with a bright little knock.",
+      "Last Notes Before Bed understands cooling metal, with a respectable amount of bedtime drama.",
+      "The latch has joined a band, but this album is still just the door reporting for work.",
+      "A kitchen concert is a comment, not a debut. Name the band and the record.",
+      "Silver Patience lets the radiator leave the stage one tick at a time.",
+      "The band is present, the album is missing, and the cupboard will not wait forever.",
+      "One spoon, one mug, and enough bright noise for a very small encore.",
+      "The title has the right room, but the action has wandered off down the hall.",
+      "A latch that clicks shut has a chorus ready. Give it a band name as well.",
+      "This pitch hears the metal cooling, then gives it a patient record deal."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: Tiny Orbits is a fine pitch.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Tour Manager refuses: that is not a pitch.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Pitch refused, try naming a band and album.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The real sound is a spoon striking a mug.",
+        "why": "reveals the checkable truth in the headline"
+      },
+      {
+        "text": "Good.",
+        "why": "no reason, no sound, no pitch detail"
+      },
+      {
+        "text": "Only an idiot would call that an album.",
+        "why": "mocks the player and uses identity based abuse"
+      },
+      {
+        "text": "The mug sings beneath a moonlit veil of silver sorrow.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "This is a stupid little joke with no musical merit.",
+        "why": "attacks the player and is not plain spoken"
+      },
+      {
+        "text": "Better than the House's answer.",
+        "why": "judges the pair instead of explaining the pitch on its own"
+      },
+      {
+        "text": "The band is good, the album is nice, the sound is believable.",
+        "why": "generic praise with no specific reason"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one ordinary household sound each.",
+    "Write one headline style line containing a band name and a debut album title, both making the sound recognizable without naming it.",
+    "The Host scores each pitch for how far it travels without losing the sound's source and action.",
+    "Then call which of the two pitches better matches the sound's checkable truth. Right, and the points are yours. Wrong, and they go to the House.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The sound",
+    "next_opening": "The next sound",
+    "your_opening": "Your sound",
+    "compose": "Your pitch for {token}",
+    "compose_waiting": "Build your pitch while you wait"
+  },
+  "validation_messages": {
+    "empty": "No pitch on the page. Give the sound a band and an album.",
+    "too_long": "Over 160 characters. A headline, not a tour biography.",
+    "duplicate": "That pitch has already been played this match. Try another act.",
+    "nudge": "Twice now. One line with a band name and a debut album for {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody starts the encore until they are back. {standing_form} waits on the set list. Give it a minute.\n",
+  "opponent_prompt": "You are the House band. Write one headline style line containing a band name and a debut album title for the household sound.\nThe line must make the sound recognizable without naming it directly. Preserve both its real source and the specific action that makes it. For a spoon clinking against a mug, you might write The Porcelain Comets, debut album: Tiny Orbits in a Cup.\nKeep the band name and album title clearly separate. Invented genre, history, mood, place, and band details are fair, but they must not change the source or action. Do not merely describe the sound, comment on the game, ask a question, or explain your choice.\nDo not use the sound's exact wording in either title. Avoid a bare onomatopoeia, since that gives the answer away. Make the two parts feel like one act and one debut record, not two unrelated jokes.\nYou are pitching, not judging. The named household sound is given so you can stay faithful to it. Do not reveal its checkable truth in plain language.\nDo not reuse the same band pattern or album pattern from an earlier round. No quotation marks around the pitch.\n",
+  "medallions": true,
+  "default_move": "The Small Domestic Orchestra, debut album: One More Thing on the Counter"
+}

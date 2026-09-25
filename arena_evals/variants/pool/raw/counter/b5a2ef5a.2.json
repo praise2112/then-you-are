@@ -1,0 +1,278 @@
+{
+  "slug": "pest-patrol",
+  "title": "Pest Patrol",
+  "tagline": "Rule the garden by stopping whatever crawls into it.",
+  "emblem": "🐌",
+  "accent": "#3f6212",
+  "premise": "One player introduces a garden nuisance and the other answers with a creature, tool, or garden substance that stops it. Keep escalating through the food chain and household cupboard: slug, bird, cat, fence, salt, rain, and beyond. The Judge accepts a clean counter, then announces the defeat with the dignity of a royal gardener who has just discovered a dead beetle in his salad.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a slug",
+      "opening_emoji": "🐌",
+      "detail": "chewing holes in the lettuce",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a wasp nest",
+      "opening_emoji": "🪹",
+      "detail": "hanging above the shed door",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a hungry rabbit",
+      "opening_emoji": "🐇",
+      "detail": "raiding the bean bed",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "nuisance": [
+        "slug",
+        "aphid",
+        "caterpillar",
+        "wasp",
+        "rabbit",
+        "mole",
+        "weed",
+        "fungus",
+        "snail"
+      ],
+      "garden_place": [
+        "lettuce bed",
+        "rose bush",
+        "compost heap",
+        "shed door",
+        "bean row",
+        "greenhouse",
+        "pond edge",
+        "herb pot",
+        "apple tree"
+      ],
+      "behavior": [
+        "chewing leaves",
+        "swarming flowers",
+        "digging tunnels",
+        "stinging visitors",
+        "eating seedlings",
+        "spreading spores",
+        "blocking the drain",
+        "climbing the fence",
+        "hiding under pots"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the garden problem at once. Nothing abstract, technical, or dependent on a private gardening story.",
+      "A non-player names a plain counter within five seconds. Say what creature, tool, or substance could stop it.",
+      "It belongs in the back garden and acts like a nuisance worth stopping. Never a harmless decoration, a passive patch of soil, or a scene with no target.",
+      "It makes a stranger want to answer with something that can catch, kill, block, wash away, poison, or otherwise stop it.",
+      "The words are everyday and brief. No brand names, specialist chemicals, proper nouns, or grand language that needs a dictionary."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a thrush, stabbing the slug and swallowing the smug little slime tube.",
+    "hint": "Name the counter and the action that stops the garden threat."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the answer stops the nuisance or threat currently in the garden.",
+      "anchors": "0 = no stopping action; 1 = a weak claim, dodge, or merely unpleasant response; 2 = a possible but incomplete counter; 3 = a clear action that reliably stops the threat; 4 = an immediate, natural defeat that leaves the nuisance with nowhere to continue (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the counter, the nuisance, and the garden action connecting them.",
+      "anchors": "0 = incoherent or self-contradicting; 1 = needs specialist knowledge or generous interpretation; 2 = understandable but muddy or overworked; 3 = concrete and easy to follow; 4 = crisp, vivid, and instantly visible in the garden (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How freshly the answer changes the garden domain while still providing a real counter.",
+      "anchors": "0 = the obvious repeat, a bigger version, or the same family as the previous answer; 2 = a sound but familiar turn; 4 = a surprising leap from creature to tool, weather, household substance, or another fresh garden domain that still works literally (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An answer OVERCOMES the standing pest or threat if it actively catches, kills, blocks, washes away, poisons, traps, removes, or otherwise stops it. The answer must act on what stands in the garden, not merely avoid it, survive it, hide from it, or wait for it to disappear. Bigger versions, stronger versions, and same-family relatives do not count unless they provide a distinct literal stopping mechanism.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, or invoking rules as the answer is itself a losing garden nuisance.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous answer: judge the move against the opening card instead. It must plausibly stop or answer the nuisance named on that card.\n",
+      "A bigger, faster, or tougher version of the standing answer is not a new counter. A bird after a thrush, a larger trap after a trap, or a stronger poison after poison fails unless the new form has a distinct literal mechanism.\n",
+      "A same-family relative is not enough. A sparrow after a thrush, a rose after a flower, or another slug-eating bird does not automatically defeat the standing form: satisfies_criterion is false without a clear action against it.\n",
+      "Becoming the opening nuisance itself, or a recoloured copy of it, is a duplicate and fails the duplicate gate.\n",
+      "The mechanism must be literal and watchable. Salt drying a slug, a cat catching a mouse, a fence blocking a rabbit, and rain washing aphids away work. A gardener's anger defeating a beetle, or paperwork killing a weed, is figurative and fails.\n",
+      "Fleeing, hiding, surviving, being immune, or waiting does not stop the standing threat. A stone the rabbit ignores, a moth that hides from the wasp, or a plant that tolerates aphids is dodging, not overcoming.\n",
+      "A form with no way to act on the standing nuisance fails even if it is impressive in isolation. A hammer against a cloud of gnats, or a rose against a mole, needs a literal mechanism before it can pass.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a slug, chewing holes in the lettuce.",
+      "move": "I am a thrush, stabbing the slug and swallowing the smug little slime tube.",
+      "gates_note": "all true",
+      "mechanism": "the thrush catches and eats the slug",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a rabbit, stripping the bean bed.",
+      "move": "I am a wire fence, blocking the rabbit from every tender shoot.",
+      "gates_note": "all true",
+      "mechanism": "the fence physically blocks the rabbit",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a thrush, swallowing slugs.",
+      "move": "I am a bigger thrush, hungrier, louder, and more aristocratic.",
+      "gates_note": "satisfies_criterion false, mere amplification and same family",
+      "mechanism": "none, it is the same bird made grander",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a wasp nest, stinging anyone near the shed.",
+      "move": "I am a terrified gardener, hiding in the kitchen until winter.",
+      "gates_note": "satisfies_criterion false, fleeing and waiting are not stopping",
+      "mechanism": "none, the wasps remain active",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am an aphid swarm, sucking the rose stems.",
+      "move": "I am a ladybird, crunching through the aphids one by one.",
+      "gates_note": "all true",
+      "mechanism": "the ladybird eats the aphids",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Royal Gardener",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak like a royal gardener announcing a tiny battlefield victory from a marble balcony.",
+      "The joke must carry the reason. A stranger reading only the two forms should see why one stopped the other.",
+      "Name both forms, or plain stand-ins for them. A grand headline that fits every garden is a dead leaf.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Royal Gardener refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the losing form and, when useful, the player's theatrical blunder, but never attack protected identity traits or make claims about the player's body, family, intelligence, or spelling.",
+      "Edgy profanity and adult innuendo are allowed when they sharpen the garden joke, but keep the target on the move, not identity.",
+      "Plain spoken English with royal ceremony. No poetry, no rhymes, no foreign phrases, and no thesaurus parade.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never declares a winner.",
+      "The coaching line names one form that would have won. That form ends on a concrete action or fact, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The slug brought appetite, the thrush brought a beak. Lettuce may now breathe.",
+      "The rabbit stormed the beans, but the fence closed the border with magnificent contempt.",
+      "The aphids held court on the rose, then the ladybird arrived with a royal appetite.",
+      "A larger thrush is still the same bird in a bigger hat. Bring another counter.",
+      "The wasp nest kept its sting until the hose delivered a very wet abdication.",
+      "The mole dug for glory, and the shovel ended the underground career.",
+      "The gardener hid indoors while the wasps kept working. Bring something that stops them.",
+      "Salt met the slug and turned the alleged champion into garden slime.",
+      "The weed called itself eternal, then the hoe gave it a short and educational burial.",
+      "The cat did not negotiate with the mouse. It simply ended the hearing."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the thrush wins.",
+        "why": "It opens with a status word and gives no theatrical reason."
+      },
+      {
+        "text": "The Royal Gardener refuses, the rabbit is not impressed.",
+        "why": "It opens with a ruling phrase and names the host instead of judging the forms."
+      },
+      {
+        "text": "The garden is victorious.",
+        "why": "It is grand but empty, and could fit any pair."
+      },
+      {
+        "text": "The slug loses because the thrush is better.",
+        "why": "It asserts a ranking instead of showing the catching and swallowing."
+      },
+      {
+        "text": "The wasp nest wins, lol.",
+        "why": "It has no mechanism, no ceremony, and no useful explanation."
+      },
+      {
+        "text": "The rabbit is defeated, destroyed, annihilated, and comprehensively ruined.",
+        "why": "It piles on verdict words while refusing to show the fence blocking anything."
+      },
+      {
+        "text": "Your pathetic little move is as stupid as you are.",
+        "why": "It attacks the player rather than the garden form."
+      },
+      {
+        "text": "The aphids perish beneath a verdant entomological sovereign.",
+        "why": "It is inflated, obscure, and not plain spoken."
+      },
+      {
+        "text": "The gardener survives the wasps by staying inside.",
+        "why": "Survival and hiding are dodges, not a mechanism that stops the wasps."
+      },
+      {
+        "text": "A bigger rabbit is still more rabbit.",
+        "why": "It notices duplication but does not give a concrete ruling or coaching line."
+      }
+    ]
+  },
+  "rules": [
+    "Stop the garden threat in front of you. Do not merely hide from it or survive it.",
+    "Name the counter and its mechanism: I am a thrush, stabbing the slug and swallowing the smug little slime tube.",
+    "Creatures, tools, weather, barriers, and garden substances may answer, if they act literally.",
+    "The Judge rules on the idea, never the spelling.",
+    "One form that fails to stop the standing threat ends the patrol."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your counter against {token}",
+    "compose_waiting": "Prepare your next garden counter while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. The garden pest is still dining.",
+    "too_long": "Over 200 characters. A counter, not a royal proclamation.",
+    "duplicate": "That form already stood this patrol. Produce something new.",
+    "nudge": "Twice now. Stop {standing_form}. Do not become it, dodge it, or repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. The garden remains under observation. {standing_form} still stands. Give it a moment.\n",
+  "opponent_prompt": "You are one of two players in a back garden duel.\nAlways answer in the shape: \"I am X, action, action.\"\nThe answer must name a creature, tool, barrier, weather event, or garden substance and at least one attribute must say what it does to the standing nuisance.\nGood: \"I am a thrush, stabbing the slug and swallowing it.\" / \"I am a wire fence, blocking the rabbit from the beans.\"\nBad: \"I am a rock, hiding from the wasps\" because hiding is not stopping. Bad: \"I am a bigger slug\" because size and repetition are not a mechanism. Bad: \"I am garden justice\" because it is abstract and cannot act.\nTalk like a person across the fence, not a poet or a game announcer. Use plain garden things anyone can picture: a bird, a cat, salt, rain, a hose, a fence, a hoe.\nYour form must actively catch, kill, block, wash away, poison, trap, remove, or otherwise stop what stands before it. Do not flee, hide, survive, wait, or offer a same-family relative without a distinct mechanism.\nHop domains when possible. A slug may meet a bird, a bird may meet a cat, a cat may meet a fence, and a fence may meet a gate or a storm. Keep the action literal and visible.\nNever reuse a form or an attribute from this match.\n",
+  "default_move": "I am salt, drying the slug into a sad little garden stain."
+}

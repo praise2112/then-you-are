@@ -1,0 +1,269 @@
+{
+  "slug": "wrong-turn-witness",
+  "title": "Wrong Turn Witness",
+  "tagline": "Every wrong turn leaves a witness. Keep driving before their version becomes the official one.",
+  "emblem": "🚗",
+  "accent": "#b45309",
+  "premise": "Every wrong turn leaves you with a witness who saw what happened and has their own version of it. Two players take turns adding one witnessed event, plainly and one step at a time. Keep moving before the next witness, sign, or local makes the story harder to tell straight.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A cyclist at a farm gate waves you down and says your car just drove past him in the wrong direction.",
+      "opening_emoji": "🚲",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A motel owner points at your map and says the road you want disappeared behind a landslide yesterday.",
+      "opening_emoji": "🗺️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A roadside fruit seller says your passenger has been asking for the same town since breakfast.",
+      "opening_emoji": "🍎",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "witness": [
+        "a cyclist",
+        "a farmer",
+        "a motel owner",
+        "a fruit seller",
+        "a bus driver",
+        "a child",
+        "a mechanic",
+        "a dog walker"
+      ],
+      "place": [
+        "farm gate",
+        "motel",
+        "fuel station",
+        "roadside market",
+        "village square",
+        "bridge",
+        "car park",
+        "bus stop"
+      ],
+      "wrong_turn": [
+        "the road points back",
+        "the bridge is closed",
+        "the map shows an old route",
+        "the car passed here before",
+        "the sign is facing backwards",
+        "the town is behind you",
+        "the road ends at a field",
+        "the satnav keeps repeating one street"
+      ]
+    },
+    "tests": [
+      "A stranger sees a road trip, a witness, and a wrong turn at once. Present tense, one sentence, plain words.",
+      "A non-player can say what the witness saw or claims within five seconds, and there is more than one good next move.",
+      "Nothing on the card settles the whole trip. A closed bridge or a worried witness is a start, not a safe arrival.",
+      "The card has one clear witness or speaking local, no real people, no brands, no serious crime, and no graphic danger.",
+      "It makes a player want to ask what the witness knows next. Do not cram in several witnesses, several roads, and a complete explanation."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the cyclist points at the muddy tyre and says it was clean when we passed him the first time.",
+    "hint": "One witnessed event caused by the current witness and road situation, with a fresh fact to dispute or build on."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much the witness trail or road trouble grows from this one event.",
+      "anchors": "0 = nothing changes or the move only repeats the scene; 1 = a small nudge, such as a new detail on the same road; 2 = a useful new fact or a nearby person becomes involved; 3 = the account reaches a new place, road, or witness through one clear step; 4 = the whole trip takes on a much larger problem while the link still holds, rare. Reach is earned through the event, not through dramatic wording.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new event follows from what the current witness saw or said.",
+      "anchors": "0 = the witness and road situation do not cause it; 1 = the move merely asserts a connection; 2 = it could follow but the missing reason is doing work; 3 = a stranger can see why the witness or road leads there; 4 = it feels like the natural next thing that witness would notice or say, rare. Several hidden steps in one move cap this at 2.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the witness, vehicle, road, or disputed detail.",
+      "anchors": "0 = unclear, abstract, or only an opinion; 1 = a vague report with little to see; 2 = clear but ordinary; 3 = a specific scene or action appears at once; 4 = one plain detail makes the roadside moment vivid, rare. Extra length does not earn points by itself.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it is one plainly told witnessed event caused by the current witness and road situation, and it introduces a fresh fact another witness, player, or local can dispute or build on. The trip may get more tangled, but the tangle must come through a visible link. A step fails when it is an unexplained discovery, skips the witness or road link, ends with everyone agreeing, reaches safety, or otherwise closes the trip, rewinds or changes an established fact, makes a witness forget, swaps to an unrelated scene, or gives only a feeling, opinion, or moral instead of an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the game, arguing about rules, or announcing a score is itself a broken step.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing step: judge the move against the card and ask whether the card's witness and road situation plainly cause it.",
+      "A fresh witness may enter if the current witness or road situation gives them a clear reason to be there, such as a cyclist calling a friend or a cashier recognising the car. A witness who appears from nowhere with no road based reason is a skipped link, so satisfies_criterion is false.",
+      "A new sign, object, or road detail may appear when the current witness could have seen it or the road situation reveals it. A major discovery with no observation or cause is an unexplained discovery and fails.",
+      "An ending is any step after which the account has no live disagreement or road problem, including everyone agreeing, reaching the correct destination, reaching safety, finding a clear route home, or deciding the story is settled. Endings fail satisfies_criterion even when they follow.",
+      "Undoing means making a witness forget, changing an established fact, claiming the car never passed, or replacing the standing account without a witnessed reason. Such a move fails even if the new version sounds tidy.",
+      "A move can be small and still pass. A witness repeats a detail with one new fact or points at the next sign. Score reach low, but do not fail it for being modest.",
+      "Restating the current witness's claim without a fresh fact is a semantic duplicate: not_semantic_duplicate is false.",
+      "Two or three events packed into one move pass only when every link is plain and each event is witnessed. Score link at 2 or below and picture low if the move is crowded."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A cyclist at a farm gate waves you down and says your car just drove past him in the wrong direction.",
+      "move": "Then the cyclist points at the dusty boot and says it was clean when we passed him the first time.",
+      "gates_note": "all true",
+      "mechanism": "the cyclist saw the car before and can connect a new visible detail to that sighting",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the cyclist points at the dusty boot and says it was clean when we passed him the first time.",
+      "move": "Then a farmer comes from the field and says the dust is red only on the road behind the locked gate.",
+      "gates_note": "all true",
+      "mechanism": "the dust detail gives a nearby farmer a reason to identify another road",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the motel owner points at our map and says the road you want disappeared behind a landslide yesterday.",
+      "move": "Then we arrive at the coast and find the hotel room already paid for under a stranger's name.",
+      "gates_note": "satisfies_criterion false, skipped link and unexplained discovery",
+      "mechanism": "the closed road does not explain the coast or the hotel booking",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the bus driver says the town is behind us and taps the same road number on his ticket.",
+      "move": "Then everyone agrees we have been going the wrong way and we reach the safe hotel before dark.",
+      "gates_note": "satisfies_criterion false, an ending because everyone agrees and the trip reaches safety",
+      "mechanism": "the move closes the disagreement and the road trouble",
+      "scores": {
+        "reach": 0,
+        "link": 3,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the fruit seller says our passenger asked for the same town at breakfast.",
+      "move": "Then the passenger says nobody has mentioned that town today, so the breakfast story changes.",
+      "gates_note": "satisfies_criterion false, it changes an established fact without a witnessed reason",
+      "mechanism": "the move rewrites the earlier account instead of adding a new witnessed fact",
+      "scores": {
+        "reach": 1,
+        "link": 1,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Roadside Recorder",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "Use one sentence under 140 characters. Two short sentences at most.",
+      "Explain the ruling through the roadside event. A stranger reading only the two steps should see why the account held or broke.",
+      "Name the witness, road, vehicle, or disputed fact. A headline that fits every move is not useful.",
+      "Never open with a status word or ruling phrase. Do not write Accepted, Rejected, Refused, or The Roadside Recorder refuses.",
+      "Use no dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "A playful jab at the move is fine. Do not use identity based abuse, slurs, threats, or attacks on protected traits.",
+      "Plain spoken English. Mild profanity and adult innuendo are allowed, but keep the joke attached to the move.",
+      "On a skipped link, name the missing observation or witness. On an ending, say the trip or dispute ended and the chain stops here.",
+      "On an undo, name the fact that was changed or forgotten. Do not pretend the revised version is a fresh event.",
+      "On a refusal, reject the step and ask for another. Never announce who won.",
+      "The coaching line suggests one witnessed event that could follow. End on something happening, not on a mood or ruling."
+    ],
+    "good_headlines": [
+      "The cyclist saw the dusty boot, so the boot now has a story to tell.",
+      "A farmer joining the argument makes sense when the tyre dust came from his gate.",
+      "The coast is a long way from that motel. Show us the road between them.",
+      "Everyone agreeing and reaching safety is a fine holiday ending, not a next witness.",
+      "The passenger cannot quietly erase breakfast. That fact has already checked in.",
+      "The sign gives the car a new direction, and the story a fresh witness to annoy.",
+      "The map did not move, but the explanation did. Bring the next visible fact.",
+      "A cashier who saw the car circle the pumps has earned a place in this mess.",
+      "The witness points, the tyre answers, and the road gets less innocent.",
+      "The trip is still moving, even if the driver has made a small career of missing turns."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: excellent move.",
+        "why": "opens with a ruling phrase and gives no reason"
+      },
+      {
+        "text": "The Roadside Recorder refuses this.",
+        "why": "opens with a ruling phrase and names the host instead of the missing link"
+      },
+      {
+        "text": "The story gets complicated.",
+        "why": "could describe any move and names no witness or road fact"
+      },
+      {
+        "text": "The witness's ethnicity is the problem.",
+        "why": "uses identity based abuse and is not a road based reason"
+      },
+      {
+        "text": "The driver is a complete idiot.",
+        "why": "roasts the player rather than explaining the step"
+      },
+      {
+        "text": "Then somehow we are at the beach.",
+        "why": "hides a skipped link and offers no witnessed event"
+      },
+      {
+        "text": "The account is problematic and the narrative destabilises.",
+        "why": "uses vague, inflated language instead of plain road details"
+      },
+      {
+        "text": "The witness forgets everything, no big deal.",
+        "why": "treats an undo as harmless and fails to name the broken fact"
+      }
+    ]
+  },
+  "rules": [
+    "One thing happens next because of the current witness and road situation. Start with Then.",
+    "Add a fresh fact another witness, player, or local can dispute or build on.",
+    "Keep the road trip moving, but do not skip the observation that connects one event to the next.",
+    "Everyone agreeing, reaching safety, changing an established fact, or making a witness forget stops the chain with you.",
+    "The Judge rules on the witnessed link, not on spelling or perfect driving."
+  ],
+  "labels": {
+    "opening": "The first witness",
+    "next_opening": "The next witness",
+    "your_opening": "Your witness",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Draft your next witnessed event while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing was witnessed. Put one event on the road.",
+    "too_long": "Over 140 characters. One roadside event, not a police statement.",
+    "duplicate": "That fact already happened this match. Add a fresh witness detail.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. Add one witnessed fact and keep the trip moving."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands, and the witnesses are still waiting.\n",
+  "opponent_prompt": "You are one of two players on a road trip where every wrong turn creates a witness with a version of events.\nAlways write: Then X. Add one witnessed event, one clear link, and one fresh fact another witness or player can dispute or build on.\nUse the standing witness and road situation. Do not jump to a new place or discovery without showing who saw it or what caused it.\nGood: \"Then the cyclist points at the dusty boot and says it was clean when we passed him the first time.\" Good: \"Then the cashier calls her brother over because he saw the same car circle the pumps.\"\nBad: \"Then we reach the coast\" because the road between is missing. Bad: \"Then everyone agrees and we get home\" because the trip ends. Bad: \"Then the witness forgets\" because that undoes an established fact. Bad: \"Then the driver feels guilty\" because a feeling is not a witnessed event.\nDo not close the trip, reach safety, make everyone agree, rewind, change an established fact, or make a witness forget.\nTalk like a person telling a mate what happened at a roadside stop. Use plain words a twelve-year-old knows. A tyre, a map, a gate, a cashier, a local. Do not write like a novelist or a report.\nNever reuse a step from this match. Keep the next fact visible enough for another witness to challenge.\n",
+  "medallions": false,
+  "default_move": "Then the nearest local points at the map and says we passed this turn before."
+}

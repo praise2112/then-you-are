@@ -1,0 +1,270 @@
+{
+  "slug": "serve-at-your-own-risk",
+  "title": "Serve at Your Own Risk",
+  "tagline": "One recipe, one table, and absolutely no adult supervision.",
+  "emblem": "🍝",
+  "accent": "#b91c1c",
+  "premise": "A meal travels from recipe card to table, and each turn adds the next problem in its journey. The host gives savage live commentary as tiny kitchen choices create a dinner nobody can safely brag about.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The cook carries a warm pot of tomato sauce from the stove toward the table.",
+      "opening_emoji": "🍅",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A tray of iced cupcakes waits beside an open window before the party starts.",
+      "opening_emoji": "🧁",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The cook lifts a roast chicken from the oven while the plates are still stacked away.",
+      "opening_emoji": "🍗",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "cook": [
+        "the cook",
+        "a tired dad",
+        "a student chef",
+        "the babysitter",
+        "a nervous host",
+        "a hungry teenager",
+        "the neighbour",
+        "a wedding caterer"
+      ],
+      "dish": [
+        "tomato sauce",
+        "iced cupcakes",
+        "roast chicken",
+        "cheese soup",
+        "pancakes",
+        "fish pie",
+        "rice pudding",
+        "garlic bread"
+      ],
+      "trouble_point": [
+        "a loose pot lid",
+        "an open window",
+        "a missing oven glove",
+        "a slippery tea towel",
+        "a crowded counter",
+        "a wobbling serving tray",
+        "a stack of clean plates",
+        "a hungry pet"
+      ]
+    },
+    "tests": [
+      "A normal cook can picture the meal, the place, and the immediate risk at once. Present tense, one sentence, plain words.",
+      "A non-player can name two sensible next problems within five seconds, and neither answer requires magic or a time jump.",
+      "The card starts with a dish in motion or waiting to be served. It is not already ruined, poisoned, burned beyond use, or sitting safely on the table.",
+      "No one is hurt on the card, no real people, no brands, no crimes with a victim, and no ingredient is described as dangerous in itself.",
+      "It makes a stranger want to push the meal one step closer to disaster. A lid, a cat, a wet floor, or one terrible decision is useful; a full dinner disaster is an ending."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the loose lid pops off, splashing sauce onto the clean plates.",
+    "hint": "One immediate kitchen event caused by the current dish or serving situation, and it makes the meal harder to serve."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much further the meal moves toward a worse serving problem.",
+      "anchors": "0 = nothing changes or the meal becomes safer; 1 = a tiny wobble, drip, or delay; 2 = one new thing is now dirty, missing, cold, or at risk; 3 = the problem reaches a new surface, dish, person, or part of the room through one honest step; 4 = the meal jumps to a much larger but still immediate serving crisis, rare. Reach only counts when the cause is clear. A wild result with no kitchen link scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new kitchen event follows from what is already happening.",
+      "anchors": "0 = the event has no usable cause; 1 = the player simply announces it; 2 = it could happen, but the connection is thin or crowded; 3 = a stranger sees why the current dish or serving setup causes it; 4 = it feels like the exact stupid thing that had to happen next, rare. Several hidden steps cap link at 2.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How easily a stranger can see the food, mess, or serving problem.",
+      "anchors": "0 = unclear, abstract, or not an event; 1 = vague kitchen fog; 2 = understandable but ordinary; 3 = a clear physical moment; 4 = one sharp detail makes the disaster instantly visible, rare. Extra adjectives do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it is one immediate event caused by the current dish or serving situation, told plainly, and it leaves a worse meal problem for the other player to handle. Bigger is better, but only through a practical kitchen link. The best move makes the meal harder to serve by showing exactly how one small choice or condition causes the next mess. A step fails when there is no cause, when it teleports to a new place, when it skips practical links, when it declares dinner over, when it undoes or cleans up existing damage, when it introduces a person or object the scene cannot support, or when it is only a feeling, opinion, plan, or recipe instruction instead of an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or mentioning rules instead of causing a kitchen event is itself a broken step.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing step: judge the move against the card and ask whether it is an immediate consequence of the dish and serving situation.",
+      "A person or object may enter if the kitchen or table could plainly contain it, such as a guest, plate, spoon, pet, chair, towel, or nearby counter. A delivery truck in the dining room or a helicopter over the soup is a skipped link: satisfies_criterion is false.",
+      "Teleporting to a new place fails. The move must remain in the kitchen, dining area, or a plainly connected serving path unless the current step visibly carries the meal there.",
+      "Skipping a practical step fails. A pot tips, then sauce reaches the ceiling, but a player cannot jump from a warm pot to the entire restaurant being closed without showing the intervening kitchen trouble.",
+      "An ending is any step after which the meal journey has nothing left to damage: dinner is served safely, guests finish eating, the food is thrown away, cleanup is complete, or everyone goes home. Endings fail satisfies_criterion even when they follow.",
+      "Undoing damage fails. Wiping sauce away, replacing a broken plate, cooling the dish, or restoring the recipe removes what stands instead of worsening it.",
+      "A step of the same size follows and passes the gate. A spoon slips, a lid rattles, or steam fogs a plate may score 0 or 1 on reach. Do not fail it for being dull.",
+      "Restating the standing step or naming its obvious continuation with nothing new is a duplicate: not_semantic_duplicate is false.",
+      "Two or three linked kitchen events packed into one move may pass if every link is plain. Score link at 2 or below and picture low if the move becomes crowded.",
+      "A feeling, judgment, intention, or recipe instruction is not an event. The cook panics, dinner is embarrassing, and add more salt all fail unless a visible physical event also occurs."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The cook carries a warm pot of tomato sauce from the stove toward the table.",
+      "move": "Then the loose lid pops off, splashing sauce onto the clean plates.",
+      "gates_note": "all true",
+      "mechanism": "the moving pot jolts the loose lid, and the sauce lands on the plates",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then sauce splashes onto the clean plates.",
+      "move": "Then the cook steps back, kicks the serving spoon, and it skids under the table.",
+      "gates_note": "all true",
+      "mechanism": "the messy plates make the cook step back, and the foot knocks away the spoon",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the serving spoon skids under the table.",
+      "move": "Then the restaurant loses its licence and the food inspector shuts the building.",
+      "gates_note": "satisfies_criterion false, skipped links and a new unsupported setting",
+      "mechanism": "the spoon under the table does not directly cause a restaurant closure",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the cupcakes slide toward the open window.",
+      "move": "Then the host catches the tray, fixes every cake, and serves them perfectly.",
+      "gates_note": "satisfies_criterion false, undoing damage and ending the meal",
+      "mechanism": "the move reverses the problem and closes the serving journey",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the roast chicken slips from the missing oven glove.",
+      "move": "Then the chicken hits the counter, and the gravy bowl wobbles beside it.",
+      "gates_note": "all true",
+      "mechanism": "the dropped chicken strikes the counter and shakes the nearby gravy bowl",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "Chef Catastrophe",
+    "tone": {
+      "commentary_adj": "hyped",
+      "explanation_adj": "savage"
+    },
+    "bite": "savage",
+    "ruling_generosity": "strict",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Bring hype like the kitchen just entered a televised final and the sauce has a personal grudge.",
+      "The joke must explain the ruling. Name the dish, object, or exact missing link so the roast has teeth.",
+      "Never open with Accepted, Rejected, Refused, Move refused, or a status label. Kick the door in with the food problem.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the move hard, and roast the player lightly if useful, but never target identity, protected traits, body, family, disability, or real hardship.",
+      "Profanity and adult innuendo are allowed in moderation. Keep it playful, not hateful, threatening, or sexual toward minors.",
+      "Plain spoken English with loud energy. No poetry, no corporate fog, no thesaurus sludge.",
+      "On a skipped link, name the missing kitchen step. On an ending, say dinner ended and the chain stops here.",
+      "On a refusal, reject the move and demand another. Never declare who won.",
+      "The coaching line names one event that could have followed. End on a physical kitchen action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The lid launched the sauce onto the plates, a tiny pot with championship confidence.",
+      "From one wobbling spoon to a restaurant shutdown? Show the counter getting wrecked first, genius.",
+      "That chicken hit the counter and recruited the gravy bowl. Dinner is building a coalition.",
+      "Perfectly served cupcakes? Absolutely not. You just cleaned the crime scene and called it dessert.",
+      "The spoon slips, the meal stalls, and the kitchen keeps its dignity by refusing to help.",
+      "The sauce did not teleport to the ceiling. Give it a counter, a splash, and one bad little step.",
+      "The tray wobbles because the cakes are sliding. Gorgeous. The dessert has chosen violence.",
+      "The cook panics is not a move. Make the spoon fall while the panic earns its cheque.",
+      "A clean plate becoming a sauce plate is real progress. Horrible, sticky progress.",
+      "Dinner ended safely, which is adorable. The chain stops here, and your chaos has been benched."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: nice sauce move.",
+        "why": "opens with a status word and gives no specific reason"
+      },
+      {
+        "text": "The Narrator refuses this culinary leap.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Boom, disaster, vibes, chaos.",
+        "why": "hype without naming what caused what"
+      },
+      {
+        "text": "The gastronomical catastrophe proliferates magnificently.",
+        "why": "thesaurus sludge, no plain kitchen picture"
+      },
+      {
+        "text": "Only an idiot would drop a plate like that.",
+        "why": "attacks the player instead of explaining the step"
+      },
+      {
+        "text": "Maybe the gravy caused it, maybe the moon did.",
+        "why": "hedges instead of making a ruling"
+      },
+      {
+        "text": "The sauce danced through the night...",
+        "why": "poetry and an ellipsis, with no usable cause"
+      },
+      {
+        "text": "Then everything goes horribly wrong.",
+        "why": "generic outcome, no event and no link"
+      }
+    ]
+  },
+  "rules": [
+    "Start with Then and describe one immediate event caused by the current dish or serving situation.",
+    "Make the meal harder to serve. Points go to how far one honest kitchen link carries the problem.",
+    "Do not teleport, skip practical steps, end dinner, undo damage, or summon unsupported people and objects.",
+    "The Judge rules on the kitchen link, not spelling, polish, or culinary expertise."
+  ],
+  "labels": {
+    "opening": "The serving problem",
+    "next_opening": "The next serving problem",
+    "your_opening": "Your serving problem",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Draft your next kitchen disaster while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happens. The meal cannot ruin itself without help.",
+    "too_long": "Over 140 characters. One kitchen disaster, not a cookbook.",
+    "duplicate": "That already happened this match. Wreck the next thing.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. One immediate kitchen event, and make serving harder."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands, and the gravy is still plotting.\n",
+  "opponent_prompt": "You are one of two players pushing a meal toward the table, and you want the serving disaster to grow.\nAlways start with \"Then\". Describe one immediate event, caused by the standing dish or serving situation.\nMake it worse through a practical kitchen link. A lid pops, a plate slips, sauce spreads, a towel catches, or a nearby object gets dragged into the mess.\nGood: \"Then the loose lid pops off, splashing sauce onto the clean plates.\" / \"Then the wet towel slides under the tray, and the cupcakes tilt toward the window.\"\nBad: \"Then the whole restaurant is closed\" because too many links were skipped. Bad: \"Then everyone eats happily\" because dinner ended. Bad: \"Then the cook feels ashamed\" because a feeling is not an event.\nNever rescue the meal, never tidy up, never rewind damage, and never teleport to a new place.\nTalk like a person telling a mate what happened, with loud kitchen energy. Use plain words a twelve-year-old anywhere knows: a spoon, a bowl, a chair, a wet floor.\nPeople and objects must fit the scene. A guest, pet, plate, towel, counter, or cupboard is fair. A helicopter, judge, or fire brigade needs a visible reason first.\nNever reuse a step from this match. Push one thing, show the cause, and leave the next player a worse meal to handle.\n",
+  "medallions": false,
+  "default_move": "Then the serving spoon slips from the cook's hand and lands beside the nearest plate."
+}

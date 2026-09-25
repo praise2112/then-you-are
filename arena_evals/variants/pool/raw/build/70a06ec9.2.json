@@ -1,0 +1,270 @@
+{
+  "slug": "witness-switch",
+  "title": "Witness Switch",
+  "tagline": "Share one alibi. Add one witness. Pray nobody remembers the embarrassing bit.",
+  "emblem": "🕵️",
+  "accent": "#7c3aed",
+  "premise": "You share an alibi, but every new detail creates someone who might remember it differently. Build a chain of witnesses, places, and awkward proof; the host cheers clever trouble and insults any move that sounds like bargain-bin lying.\n",
+  "seed_pool": [
+    {
+      "opening_token": "We were both waiting for a bus that never came.",
+      "opening_emoji": "🚌",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "We shared a booth at a diner during the power cut.",
+      "opening_emoji": "🍽️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "We were stuck in the cinema lobby when the rain flooded the street.",
+      "opening_emoji": "🎬",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 13,
+    "axes": {
+      "place": [
+        "bus stop",
+        "diner",
+        "cinema lobby",
+        "laundrette",
+        "hotel bar",
+        "corner shop",
+        "train platform",
+        "bowling alley"
+      ],
+      "witness": [
+        "a bus driver",
+        "a cook",
+        "a night clerk",
+        "a ticket seller",
+        "a cleaner",
+        "a neighbour",
+        "a security guard",
+        "a delivery rider"
+      ],
+      "detail": [
+        "a dead phone",
+        "a spilled drink",
+        "a torn ticket",
+        "a broken umbrella",
+        "a security camera",
+        "a receipt",
+        "a loud argument",
+        "a missing coat"
+      ]
+    },
+    "tests": [
+      "Two suspects share one ordinary alibi, and a stranger can picture the place and the problem at once. Present tense, one sentence.",
+      "A non-player can name a person, object, or record that might remember the alibi differently within five seconds. Say two.",
+      "Nothing on the card proves guilt or innocence. It creates a place to be checked, not a case already solved.",
+      "No real people, public figures, protected groups, graphic violence, or instructions for evading justice.",
+      "It makes a stranger want to push the alibi into trouble. A bus that never came, a receipt with the wrong time, a waiter who remembers the coat."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the cook recognizes my jacket from the security video.",
+    "hint": "One event that puts the shared alibi in front of a new witness or piece of proof."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much new pressure the move puts on the shared alibi.",
+      "anchors": "0 = nothing changes or the alibi gets safer without a new problem; 1 = a small wrinkle, such as one person noticing; 2 = a new witness, place, or record is now involved; 3 = the alibi reaches a new person or proof that could plainly split the story; 4 = the move opens a sharp new line of suspicion while staying within one honest step, rare. Reach is earned only when the link holds. A dramatic jump with no meeting or discovery scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new witness or proof comes from the standing alibi.",
+      "anchors": "0 = no connection to the standing fact; 1 = the move simply announces a witness or record; 2 = the connection is plausible but thin; 3 = a stranger immediately sees how the earlier place, person, or detail creates this event; 4 = the next event feels inevitable, rare. Introducing a witness who was never met, or proof that appeared from nowhere, scores no higher than 1 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the awkward alibi event.",
+      "anchors": "0 = vague, unreadable, or only a conclusion; 1 = a general claim with no useful detail; 2 = clear but ordinary; 3 = a specific person, object, or record is easy to picture; 4 = one sharp detail makes the witness or proof snap into view, rare. Extra words do not earn points by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it is one next event that grows from the existing alibi, puts that alibi in front of a new witness or piece of proof, and keeps all earlier facts true. The best move creates clever trouble: someone can remember the scene differently, or a record can expose an awkward gap. A step fails when it skips the meeting or discovery that creates the witness or proof, ends the case by having a witness settle everything, undoes an earlier fact by making a witness forget or reverse their statement, swaps the scene for an unrelated one, or gives only a verdict, suspicion, feeling, or explanation instead of an event.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, about points, or about rules is itself a broken step.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing step: judge the move against the card and the stated shared alibi. It must be one event that follows from the opening situation.",
+      "A new witness may enter only when the standing step gives them a plain reason to be there, see something, hear something, or handle a record. A cook can notice a diner coat, and a bus driver can remember the empty stop. A detective, judge, or expert appearing without a meeting or discovery is a skipped link: satisfies_criterion is false.",
+      "A new piece of proof must be found, checked, shown, or created by the standing step. A receipt cannot simply appear, and a camera cannot reveal footage before anyone looks at it. The missing discovery is a skipped link: satisfies_criterion is false.",
+      "An ending is any step that settles the case, clears both suspects completely, proves one suspect guilty, gets a confession, or has everyone agree on what happened. Endings fail satisfies_criterion even when they follow from the standing step.",
+      "An undo is any step that makes an earlier witness forget, retract, reverse, or contradict their statement without a new event that preserves the earlier fact. Undoing fails satisfies_criterion.",
+      "A step may create an awkward contradiction without undoing an earlier fact. The first witness can still be telling the truth while a second witness remembers a different coat, time, or seat.",
+      "A step of the same size, such as a clerk looking up the receipt, follows and passes the gate. It scores 0 or 1 on reach. Do not fail it for being modest.",
+      "Restating the standing step in new words, or merely saying that the detective is suspicious, is a duplicate or non-event: not_semantic_duplicate is false or satisfies_criterion is false.",
+      "Two events packed into one move pass only when the first plainly creates the second. Score link at 2 or below if the move hides a meeting, search, or discovery inside a sudden conclusion."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "We were both waiting for a bus that never came.",
+      "move": "Then the driver remembers two people at the stop, but one wore a red coat.",
+      "gates_note": "all true",
+      "mechanism": "the missed bus gives the driver a reason to remember the waiting passengers, and the coat creates a mismatch",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the driver remembers two people at the stop, but one wore a red coat.",
+      "move": "Then the detective checks the stop camera and sees the red coat leave before the bus arrived.",
+      "gates_note": "all true",
+      "mechanism": "the driver's detail gives the detective a reason to check the camera, and the footage adds pressure",
+      "scores": {
+        "reach": 4,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the driver remembers two people at the stop, but one wore a red coat.",
+      "move": "Then a judge declares the alibi perfect and sends everyone home.",
+      "gates_note": "satisfies_criterion false, the case is settled and the story ends",
+      "mechanism": "none shown, the move skips to a final ruling",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the detective checks the stop camera and sees the red coat leave before the bus arrived.",
+      "move": "Then the driver forgets the red coat and says both suspects wore blue.",
+      "gates_note": "satisfies_criterion false, an earlier witness reverses their statement",
+      "mechanism": "the move undoes the driver's established memory instead of adding a new event",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the detective checks the stop camera and sees the red coat leave before the bus arrived.",
+      "move": "Then a famous singer confesses in another city.",
+      "gates_note": "satisfies_criterion false, unrelated scene with no link to the alibi",
+      "mechanism": "nothing in the bus stop or camera creates this event",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Alibi Goblin",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hype"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Bring loud energy, sharp jokes, and a little adult innuendo when it fits. Roast the move, not protected identity or real-world vulnerability.",
+      "Name both the standing step and the new step, or their plain stand-ins. A generic detective joke is dead on arrival.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", or \"The Alibi Goblin refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock bargain-bin lying, flimsy evidence, and suspicious timing. Never attack the player's body, family, intelligence, identity, or spelling.",
+      "Plain spoken English with hype. Profanity and adult innuendo are allowed in moderation, but the reason must stay clear.",
+      "On a skipped link, name the missing meeting, search, or discovery. On an ending, say the case got settled and the chain stops here.",
+      "On an undo, name the earlier statement that got reversed. Do not pretend a contradiction is free evidence.",
+      "On a refusal, the headline rejects the step and asks for another. It never rules on who won.",
+      "The coaching line names one event that could follow from the standing step. It ends on a witness, object, record, or discovery, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The bus driver remembers the red coat, and the camera makes the alibi sweat. Deliciously bad paperwork.",
+      "The receipt came from the diner, then dragged the wrong time into court. Tiny paper, enormous mess.",
+      "The cleaner saw the jacket leave, and now the shared alibi has a third wheel with eyes.",
+      "A witness settled the case and killed the chain. Congratulations, you turned a thriller into admin.",
+      "The driver forgot the red coat because your alibi needed a cheap costume change. Reversals are not magic.",
+      "The camera did not teleport into the story. Show who checked it before you serve the courtroom slop.",
+      "Two suspects, one booth, and a waiter with a memory sharp enough to ruin everyone's evening.",
+      "The detective has suspicion, not an event. Vibes are not evidence, even when they wear a tiny hat.",
+      "The coat left before the bus, and the alibi just found a loose tooth. Pull it carefully.",
+      "That famous singer belongs in another disaster. Bring the bus stop back before the plot files for divorce."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: huge twist.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Alibi Goblin refuses your lie.",
+        "why": "opens with a ruling phrase, names the host, and attacks the player"
+      },
+      {
+        "text": "This is giving suspicious energy.",
+        "why": "vague reaction with no named link or event"
+      },
+      {
+        "text": "The defendant's brain has left the building.",
+        "why": "mocks the player's intelligence and gives no useful ruling"
+      },
+      {
+        "text": "Chaos! Betrayal! Scandal!",
+        "why": "hype without a cause, plus fragments instead of a clear explanation"
+      },
+      {
+        "text": "The witness magically knows everything, babe.",
+        "why": "does not name the missing meeting or discovery and leans on empty attitude"
+      },
+      {
+        "text": "Then the evidence proves it all, obviously.",
+        "why": "skips the discovery and ends the case without a visible event"
+      },
+      {
+        "text": "And then the alibi slayed...",
+        "why": "uses vague slang, no reason, and an ellipsis"
+      }
+    ]
+  },
+  "rules": [
+    "One thing happens next because of the standing alibi. Start with \"Then\".",
+    "Put the alibi in front of a new witness or piece of proof.",
+    "Keep every earlier fact true. A contradiction may add pressure, but it may not erase a statement.",
+    "Skip the meeting or discovery, settle the case, or undo a witness and the chain stops with you.",
+    "The Judge rules on the link, not spelling or courtroom theatrics."
+  ],
+  "labels": {
+    "opening": "The shared alibi",
+    "next_opening": "The next complication",
+    "your_opening": "Your complication",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Draft your next complication while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happened. Even a bad alibi needs a witness.",
+    "too_long": "Over 140 characters. One complication, not a courtroom miniseries.",
+    "duplicate": "That already happened this match. Find a new witness or piece of proof.",
+    "nudge": "Twice now. Put {standing_form} in front of a new witness or record, one event at a time."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody adds evidence until they return. {standing_form} still stands, and the alibi is sweating quietly.\n",
+  "opponent_prompt": "You are one of two players sharing an alibi, and you want every new detail to make it harder to keep straight.\nAlways begin with \"Then\". Add one event, one link, plain present tense.\nTake the standing alibi and put it in front of a new witness or piece of proof: a driver remembers a coat, a clerk finds a receipt, a camera gets checked, a neighbour hears the argument.\nGood: \"Then the driver remembers one of us wore a red coat.\" / \"Then the diner clerk checks the receipt and spots the wrong time.\"\nBad: \"Then the judge proves we did it\" because that ends the case. Bad: \"Then a perfect witness appears\" because the meeting is missing. Bad: \"Then the driver forgets everything\" because that undoes an earlier fact. Bad: \"Then the detective feels suspicious\" because a feeling is not an event.\nKeep all earlier facts true. A second witness may disagree, but the first witness does not magically reverse. Never close the case, never confess, never rescue the alibi, never rewind it.\nTalk like a person telling a mate what happened, not a courtroom novelist. Name things anyone would know: a coat, a receipt, a bus, a camera, a tired waiter. Only words a twelve-year-old anywhere knows.\nNever reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then the nearest witness notices one detail neither of us mentioned."
+}

@@ -1,0 +1,321 @@
+schema_version: 1
+slug: word-in-the-wild
+title: Word in the Wild
+tagline: Slip the strange word past the door.
+emblem: 📖
+accent: '#6c4a9e'
+premise: 'Three rounds. Each round deals one real obscure word. Both players put it into a tiny bit of
+  everyday dialogue. The word must be used as a real word, with its grammatical job and basic meaning
+  intact. Make the line sound natural enough that nobody notices the odd word until the host explains
+  it.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: short_form
+  max_words: 3
+  axes:
+    word_type:
+    - a noun
+    - a verb
+    - an adjective
+    - an adverb
+    - a person noun
+    - a place noun
+    - a feeling noun
+    - a manner verb
+    scene:
+    - a kitchen
+    - a bus stop
+    - an office
+    - a garden
+    - a family dinner
+    - a corner shop
+    - a doctor's waiting room
+    - a rainy street
+    meaning_shape:
+    - a smell
+    - a habit
+    - a dishonest person
+    - an awkward feeling
+    - a small object
+    - a way of looking
+    - a sudden movement
+    - a social mistake
+  tests:
+  - A real obscure English word with a stable dictionary meaning, not a typo, brand name or invented flourish.
+  - No quotation marks inside the card. Give the word plainly, with only enough detail to identify the
+    intended sense.
+  - Its usual grammatical role is clear enough that a player can use it without guessing whether it is
+    a noun, verb or modifier.
+  - The word can enter an ordinary spoken scene without requiring a lecture, fantasy setting, specialist
+    job or famous person.
+  - It is strange enough to reward a natural line, but not so obscure or disputed that several basic meanings
+    compete.
+demo:
+  opening:
+    token: petrichor
+    emoji: 🌧️
+  moves:
+  - actor: p1
+    text: petrichor
+    emoji: 🌧️
+    scores: null
+  - actor: p2
+    text: Open the window, I want the petrichor, not your burnt toast.
+    emoji: 🔒
+    scores:
+      stretch: 3
+      funny: 3
+      headline_shaped: 4
+  headline: Petrichor walks in after the rain, and burnt toast has finally met its rival.
+  openings:
+  - token: petrichor
+    examples:
+    - Open the window, I want the petrichor, not your burnt toast.
+  - token: snollygoster
+    examples:
+    - Open the window, I want the petrichor, not your burnt toast.
+move_constraints:
+  max_chars: 90
+  prefix: ''
+  example: Don’t hire him, he’s a snollygoster in a cheap suit.
+  hint: One spoken line. Let the odd word pass as ordinary.
+rubric:
+- name: stretch
+  description: How much believable everyday life does the line build around the obscure word?
+  anchors: '0 = merely inserts the word or repeats its gloss; 1 = a bare sentence with one small detail;
+    2 = a clear little situation; 3 = a specific scene with a turn, relationship or consequence; 4 = a
+    whole comic world fits around the word, and it still sounds like something a person would say (rare).
+
+    '
+  weight: 4
+- name: funny
+  description: Does the line make the strange word feel naturally funny?
+  anchors: '0 = no spark; 1 = a faint smile; 2 = a neat comic image; 3 = a proper laugh; 4 = the room
+    repeats the line before asking what the word means (rare).
+
+    '
+  weight: 3
+- name: headline_shaped
+  description: Does the line feel like a clean, speakable bit of dialogue rather than an explanation?
+  anchors: '0 = not dialogue or mostly a definition; 1 = dialogue buried under setup or padding; 2 = speakable
+    but slack; 3 = concise, natural and easy to say aloud; 4 = you can hear a real person saying it without
+    noticing the word is unusual (rare).
+
+    '
+  weight: 2
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: 'A line PLAYS if it contains the card word as a real word in a believable spoken situation,
+    with its grammatical role and basic sense intact. It may add any people, motives, details or comic
+    trouble, but it fails if the word is missing, used as a name, treated as nonsense, given the wrong
+    grammatical role or used with a meaning that does not fit the card. It also fails if it is not a spoken
+    line but a definition, explanation, question to the Judge or sentence about the game. A stiff line
+    that technically uses the word plays and scores near zero on stretch.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, about the game, the card or the rules is itself a losing
+    line.
+
+    '
+  judge_notes:
+  - 'Test the gate first and only once: is the card word present, used in a believable spoken line, and
+    doing its normal grammatical job? Do not demand that the speaker explain the word.'
+  - The first move gets no special treatment. A line such as "The petrichor is lovely after that storm"
+    plays if petrichor is used as a noun for the smell after rain.
+  - A missing word fails even if the scene is funny. "The garden smells wonderful after rain" does not
+    play the petrichor card.
+  - A wrong grammatical role fails. "I petrichored the pavement" does not play a card where petrichor
+    is the noun for a smell.
+  - A broken basic sense fails. Calling a dishonest person a snollygoster is sound; calling an honest
+    friend one is not, unless the line clearly makes the accusation knowingly or ironically without changing
+    the word's sense.
+  - A definition or explanation fails. "Petrichor means the smell after rain" is a lesson, not a spoken
+    scene using the word naturally.
+  - A line about the match, the host or the rules fails even if it contains the card word. The word must
+    belong to the imagined everyday conversation.
+  - Invented surrounding detail is welcome. A dog, a bad date, a damp coat or a family feud can all be
+    added, as long as the card word keeps its basic sense.
+  - Judge each player's line on its own. The other line is not a required style or a standard to beat.
+  - 'Lower case, missing punctuation and casual contractions cost nothing. Hear the line aloud before
+    judging its shape.
+
+    '
+examples:
+- previous_move: petrichor
+  move: Open the window, I want the petrichor, not your burnt toast.
+  gates_note: all true
+  mechanism: the smell after rain is treated as a welcome rival to burnt toast in a clear domestic exchange
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: snollygoster
+  move: He called himself a mentor, but he’s a snollygoster with a podcast.
+  gates_note: all true
+  mechanism: the dishonest person gets a modern job and a sharp accusation without a dictionary lesson
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: groke
+  move: Stop groking at my chips and order your own.
+  gates_note: satisfies_criterion false (the card word is used with the wrong grammatical form)
+  mechanism: the line wants the verb, but the card gives groke as the act of staring while someone eats
+  scores:
+    stretch: 2
+    funny: 2
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+- previous_move: petrichor
+  move: Petrichor means that nice smell after rain.
+  gates_note: satisfies_criterion false (it explains the word instead of using it in a believable scene)
+  mechanism: the line is a dictionary entry wearing a small hat, not dialogue with a reason to speak
+  scores:
+    stretch: 1
+    funny: 1
+    headline_shaped: 2
+  confidence: clear
+  verdict: fail
+- previous_move: snollygoster
+  move: My snollygoster won the office raffle.
+  gates_note: satisfies_criterion false (the word is treated as an object rather than a person)
+  mechanism: a snollygoster is a person, but the line makes one sound like a prize ham
+  scores:
+    stretch: 1
+    funny: 2
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Lexicographer
+  tone:
+    commentary_adj: affectionate
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger should see why the word belongs in the scene.
+  - Name the card word and the image it creates. A line that fits every word is a sleepy little dictionary.
+  - Never open with a status word or a ruling phrase. No "Accepted", "Rejected", "Refused", "Move refused",
+    "The Lexicographer refuses".
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Tease the line and its choices, not identity, disability, family, body or protected traits. A roast
+    may be warm, never cruel.
+  - Plain spoken English. No poetry, no academic fog, no fake dictionary thunder.
+  - On a fail, say whether the word went missing, changed its job, lost its basic sense or became an explanation.
+  - On a refusal, the line refuses the move and asks for another. It never rules on who won.
+  - The coaching line names one line that would have worked. It ends on a word, object or action, never
+    a mood or a verdict.
+  good_headlines:
+  - Petrichor walks in after the rain, and burnt toast has finally met its rival.
+  - A snollygoster with a podcast is still a snollygoster, just with better lighting.
+  - The word groke is doing its job, and the chips are under perfectly reasonable surveillance.
+  - That line gives petrichor a window, a storm and a small domestic enemy.
+  - The snollygoster is a person here, not a fancy name for a suspicious sandwich.
+  - Groke needs its proper shape, or the poor word has been sent to work in the wrong uniform.
+  - Petrichor is present, but the line is giving a lesson instead of letting the smell enter the room.
+  - The chips are funny, but the card word has gone missing and is probably lurking near the salt.
+  - A real conversation has arrived, carrying one alarming word as if it paid rent.
+  - The dictionary has been invited, then sensibly asked to wait in the hall.
+  bad_headlines:
+  - text: 'Accepted: nice use of petrichor.'
+    why: opens with a status word and gives no useful reason
+  - text: 'The Lexicographer refuses: try again.'
+    why: opens with a ruling phrase and names the host
+  - text: Wrong, that is not dialogue.
+    why: does not say what failed in the line
+  - text: Great wordplay.
+    why: could fit almost any line and explains nothing
+  - text: You clearly have no idea what words mean.
+    why: mocks the player instead of the line
+  - text: O petrichor, thou fragrant child of heaven.
+    why: poetry instead of plain spoken English
+  - text: The line is clever, witty, amusing and entertaining.
+    why: stacks vague praise without naming the joke
+  - text: Above the lexical register, beneath the semantic threshold.
+    why: academic fog and jargon
+  - text: Better than the other player's line.
+    why: judges the pair instead of this line on its own
+  - text: The word is wrong, so everything is bad.
+    why: too broad, too harsh and not an explanation
+rules:
+- Three rounds, one real obscure word each.
+- Write one spoken line containing the card word, under 90 characters. The House writes its own, unseen,
+  and the Lexicographer scores both.
+- Keep the word real. Its grammatical role and basic sense must survive inside a believable everyday situation.
+- Do not define the word, talk about the game or turn the word into a name or nonsense.
+- Most points after three rounds wins, with natural lines and tiny scenes earning the stretch.
+labels:
+  opening: The word
+  next_opening: The next word
+  your_opening: Your word
+  compose: Your line for {token}
+  compose_waiting: Write your line while you wait
+validation_messages:
+  empty: No line yet. Give the word somewhere to live.
+  too_long: Over 90 characters. Let the word breathe.
+  duplicate: That line has already appeared this match. Give the word a new home.
+  nudge: 'Twice now. Put {token} into one believable spoken line: {standing_form}.'
+judge_out_text: 'The Lexicographer has stepped away from the dictionary. Nobody moves until they return.
+  {standing_form} is still on the page. Give it a moment.
+
+  '
+opponent_prompt: 'You are a warm, mischievous lexicographer with one obscure real word and an
+
+  ordinary scene to fill. Write one spoken line containing the word.
+
+  THE WORD MUST SURVIVE. Use the exact card word as a real word in a believable situation.
+
+  Keep its grammatical role and basic sense intact. Do not define it, explain it, turn it
+
+  into a name or use it as nonsense. The line must sound like something a person might say.
+
+  Then make the little scene specific and funny. Add a bad date, a damp coat, a family feud,
+
+  a suspicious sandwich or a person who has made one tiny decision too many. The points are
+
+  for making the strange word feel natural, not for shouting its meaning at the reader.
+
+  Good: "Open the window, I want the petrichor, not your burnt toast." "He’s a snollygoster
+
+  with a podcast." "Stop groke at my chips and order your own." Only the last example would
+
+  need the card''s exact grammatical form checked carefully, so do not copy its mistake.
+
+  Bad: "Petrichor means the smell after rain" (a definition). "The garden smells nice after
+
+  rain" (the word is missing). "My snollygoster won the raffle" (the person word became an
+
+  object). A line about the Judge, the game or the rules is also bad.
+
+  Write one line under 90 characters. Spoken dialogue is preferred, with natural contractions
+
+  welcome. Do not use a colon or a dash. Do not explain the joke after the line. Capitals and
+
+  quotation marks are optional, but reply with the line only.
+
+  Vary the scene from round to round. Use a home, a shop, a bus, a workplace, a meal or a
+
+  small public embarrassment. Let the word pass as ordinary until the host explains it.
+
+  '
+guess: null
+medallions: false
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: I used the word correctly, and nobody asked what it meant
+seed_pool:
+  - { opening_token: "petrichor", opening_emoji: "🌧️", detail: "the earthy smell after rain", hidden: "" }
+  - { opening_token: "snollygoster", opening_emoji: "🎩", detail: "a clever, unprincipled person", hidden: "" }
+  - { opening_token: "groke", opening_emoji: "🍽️", detail: "to stare at someone while they eat in hopes of being given food", hidden: "" }

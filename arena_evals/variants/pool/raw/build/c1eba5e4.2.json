@@ -1,0 +1,268 @@
+{
+  "slug": "the-box-that-explains-itself",
+  "title": "The Box That Explains Itself",
+  "tagline": "One more clue, one more test, and the box gets fussier.",
+  "emblem": "🗝️",
+  "accent": "#7c3aed",
+  "premise": "A locked box is the shared object. Every turn adds one new clue about how to open it, and the next clue must be caused by the last one. You may make the box absurdly fussy, but you may not open it until the chain has earned the lid.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A small wooden box sits on a table with three keyholes, one shaped like a leaf.",
+      "opening_emoji": "🗝️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A brass box has a compass rose on its lid and three silent dials.",
+      "opening_emoji": "🧭",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A painted chest waits beneath a map, with one loose thread tied to its latch.",
+      "opening_emoji": "🧵",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "container": [
+        "a wooden box",
+        "a brass box",
+        "a painted chest",
+        "a tin case",
+        "a stone coffer",
+        "a glass cabinet",
+        "a leather trunk",
+        "a red strongbox"
+      ],
+      "surface_clue": [
+        "three keyholes",
+        "a compass rose",
+        "a faded map",
+        "a row of silent dials",
+        "a silver thread",
+        "a moon mark",
+        "a carved bird",
+        "a loose red ribbon"
+      ],
+      "odd_lock": [
+        "one leaf-shaped hole",
+        "a latch with no handle",
+        "a lock that points north",
+        "a keyhole under the table",
+        "a dial marked with raindrops",
+        "a bell beside the clasp",
+        "a slot too narrow for a key",
+        "a lock covered in wax"
+      ]
+    },
+    "tests": [
+      "A locked treasure container is clear at once, with one strange feature that invites a test. Present tense, one sentence, plain words.",
+      "A non-player can suggest two different next tests within five seconds, and both can be caused by the card.",
+      "The card does not reveal the treasure, open the box, or give the complete answer. It starts the hunt.",
+      "Nothing requires harm, a real person, a brand, or an impossible machine. The puzzle may be odd, but the object must be touchable.",
+      "It makes a stranger want to inspect one detail, such as a keyhole, thread, mark, dial, map, bell, or latch."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then the test reveals ",
+    "example": "Then the three wrong keys leave chalk marks on the lock, showing that the right key must be warm.",
+    "hint": "One physical clue revealed by the last clue, and what that clue is useful for next."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much useful new territory the clue adds to the hunt.",
+      "anchors": "0 = no new clue or only a repeat; 1 = a small confirmation; 2 = one useful restriction or new detail; 3 = a new object, test, or part of the box becomes relevant through one clear step; 4 = the clue opens a major new line of investigation while still following directly (rare). A large discovery with no earned link scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new clue is caused by the standing clue or test.",
+      "anchors": "0 = unrelated to the standing clue; 1 = the move merely says it happened; 2 = possible but weakly connected; 3 = a stranger can see why the test produced the clue; 4 = the result feels like the exact next thing the box would reveal (rare). Packing in an unexplained test before the result keeps this at 2 or below.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the physical clue and its use.",
+      "anchors": "0 = unreadable, abstract, or only a guess; 1 = vague object or unclear action; 2 = understandable but plain; 3 = a clear test and visible result; 4 = one crisp physical detail makes the puzzle easy to picture (rare). Extra words do not improve the score by themselves.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS when it is one physical clue or test revealed by the standing clue and useful for the next attempt, fits the transcript, and does not jump to the open box, cancel a failed test, repeat a clue, or add an impossible helper or object without a link. The move must use the form \"Then the test reveals...\" and name both the new detail and its direct use. A move fails when it has no cause, skips the test that would reveal the clue, opens or explains the treasure too soon, reverses a failed result, repeats an earlier clue, changes to an unrelated scene, or replaces a physical clue with a guess, feeling, rule, or final answer.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or referring to turns and rules is itself a broken clue.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge the test against the opening card and ask whether the card plainly invites it.",
+      "A new object or helper may appear when the standing clue gives it a direct reason to be there, such as a key found beside a matching keyhole or a mirror used on a hidden mark. An unexplained expert, machine, room, or tool is an impossible helper and fails satisfies_criterion.",
+      "The box may not open, crack, vanish, or reveal its treasure until the chain has earned the final test. A move that jumps to the open box fails even if the earlier clues could eventually support it.",
+      "A failed test remains failed. A later move may explain what the failure teaches, but it may not say the failed key works, the broken mark was never there, or the wrong dial was correct after all.",
+      "Repeating a keyhole, mark, sound, object, or test already stated without adding a new physical clue is a duplicate: not_semantic_duplicate is false.",
+      "A move must reveal a clue and state what that clue is useful for next. A physical detail with no use, or a use with no revealed detail, fails the criterion.",
+      "One test may reveal one main clue. Two tightly connected details may pass, but score link at 2 or below if the move hides separate unexplained tests inside it.",
+      "A new room or scene is allowed only when the standing clue directly points there, such as a map mark leading to a nearby cupboard. A sudden palace, tunnel, or helper is a skipped link.",
+      "A move that merely guesses the password, names the treasure, or says the players understand the answer is not a physical clue and fails."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A small wooden box sits on a table with three keyholes, one shaped like a leaf.",
+      "move": "Then the test reveals that a leaf pressed into the shaped hole leaves a green mark, showing the box wants a fresh leaf.",
+      "gates_note": "all true",
+      "mechanism": "the leaf-shaped hole transfers its green edge to the paper",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the test reveals that a leaf pressed into the shaped hole leaves a green mark, showing the box wants a fresh leaf.",
+      "move": "Then the test reveals that a leaf from the table plant makes the green mark turn gold, showing the other keyholes need leaves from the same plant.",
+      "gates_note": "all true",
+      "mechanism": "the marked leaf points to the nearby plant and its matching leaves change the mark",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the test reveals that a leaf pressed into the shaped hole leaves a green mark, showing the box wants a fresh leaf.",
+      "move": "Then the test reveals the box opens and a crown rises from the treasure inside, showing that the hunt is over.",
+      "gates_note": "satisfies_criterion false (opens the box and ends the hunt without an earned final test)",
+      "mechanism": "the move skips the remaining tests and reveals the ending",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the test reveals that three wrong keys leave chalk marks on the lock, showing that the right key must be warm.",
+      "move": "Then the test reveals that the cold key was actually the right one, showing that the chalk marks meant nothing.",
+      "gates_note": "satisfies_criterion false (cancels a failed test)",
+      "mechanism": "the move reverses the standing clue instead of using it",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the test reveals that the bell rings when the box faces north, showing that direction matters.",
+      "move": "Then the test reveals that the bell rings when the box faces north, showing that direction matters.",
+      "gates_note": "not_semantic_duplicate false (same clue repeated)",
+      "mechanism": "nothing new is tested or revealed",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Custodian",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "plain"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the two steps must see why the clue held or snapped.",
+      "Name the test and the revealed clue. A headline that fits any other pair is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", \"The Custodian refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the move, never the player. Nothing about the player's body, family, intelligence, identity, or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no profanity, no innuendo, no French, no thesaurus words.",
+      "On a skipped link, name the missing test. On an early opening, say the box opened before the clues earned it.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one physical test that would have followed. It ends on a clue or object, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The leaf made a mark, so the box has finally issued paperwork.",
+      "A compass can point north, but it cannot explain the missing dial test.",
+      "The lid opened before the chain earned it. Even treasure likes a proper queue.",
+      "The failed key stays failed. The box has no interest in revision.",
+      "The same bell rang again, which is sound evidence of no new clue.",
+      "The mirror reveals the hidden mark because the mark was already there. Sensible, by puzzle standards.",
+      "A warm key is useful. A warm key with no test is just a warm key.",
+      "The map points to the cupboard, so the cupboard may now enter the story.",
+      "The treasure is not a clue. It is what clues are trying not to reveal yet.",
+      "One test, one result, one use. The box is fussy but consistent."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the clue is clever.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Custodian refuses this leap.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "What a mystery, what a box, what a day.",
+        "why": "no reason, fits any pair"
+      },
+      {
+        "text": "The enigmatic mechanism elucidates the cryptic solution.",
+        "why": "thesaurus words and no clear picture"
+      },
+      {
+        "text": "The player clearly cannot solve a simple box.",
+        "why": "mocks the player, not the move"
+      },
+      {
+        "text": "Perhaps the clue follows, perhaps it does not.",
+        "why": "hedges instead of giving a ruling"
+      },
+      {
+        "text": "The silver key danced through the moonlit silence...",
+        "why": "poetry and an ellipsis"
+      },
+      {
+        "text": "More clues. More mystery. More.",
+        "why": "repeats a mood instead of naming the missing physical link"
+      }
+    ]
+  },
+  "rules": [
+    "Write \"Then the test reveals...\" followed by one new physical clue and its direct use.",
+    "Make each clue useful for the next attempt, and make it come from the standing clue.",
+    "Do not open the box, undo a failed test, repeat a clue, or skip the test that connects the steps.",
+    "The Judge rules on the physical link and the clue, never the spelling."
+  ],
+  "labels": {
+    "opening": "The locked box",
+    "next_opening": "The next clue",
+    "your_opening": "Your clue",
+    "compose": "What does the test reveal after {token}",
+    "compose_waiting": "Draft the next test while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing is tested. The box remains unimpressed.",
+    "too_long": "Over 140 characters. One clue, not a museum catalogue.",
+    "duplicate": "That clue already appeared this match. Test a different detail.",
+    "nudge": "Twice now. A physical test must follow from {standing_form}, and it must reveal something useful."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody tests the box until they are back. {standing_form} still stands, and the lid remains shut.\n",
+  "opponent_prompt": "You are one of two players trying to open a stubborn treasure box, one clue at a time.\nAlways begin: \"Then the test reveals...\" Name one physical test, one new detail, and what that detail is useful for next.\nTake the standing clue and make it reveal something caused by that clue: a mark, sound, change, fit, movement, or nearby object.\nGood: \"Then the test reveals that the mirror shows a second mark under the lid, showing where to press next.\" / \"Then the test reveals that the warm key fogs the lock, showing the third keyhole is the one to try.\"\nBad: \"Then the box opens\" because the chain has not earned the lid. Bad: \"Then a wizard explains the answer\" because the helper has no link. Bad: \"Then the same mark appears\" because that clue is already used. Bad: \"Then everyone feels hopeful\" because a feeling is not a physical clue.\nNever reveal the treasure too early, never erase a failed test, never repeat a clue, and never bring in an unrelated room or helper.\nTalk like a person explaining a strange object to a mate, not a novelist. Use plain words a twelve-year-old anywhere knows.\nNever reuse a clue or test from this match.\n",
+  "medallions": false,
+  "default_move": "Then the test reveals that tapping the lid makes one keyhole click, showing which lock to test next."
+}

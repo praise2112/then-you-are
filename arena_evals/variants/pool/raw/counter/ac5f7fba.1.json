@@ -1,0 +1,269 @@
+{
+  "slug": "bell-to-bell",
+  "title": "Bell to Bell",
+  "tagline": "Control the corridor before the next bell controls you.",
+  "emblem": "🔔",
+  "accent": "#1d4ed8",
+  "premise": "The corridor is trapped between bells. Each turn introduces one school force that directly defeats the force before it, making the next bell more inevitable. One weak link and the hallway keeps you.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a late bell ringing",
+      "opening_emoji": "🔔",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a jammed locker",
+      "opening_emoji": "🔒",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a crowd between classes",
+      "opening_emoji": "🚶",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "force": [
+        "bell",
+        "teacher",
+        "student",
+        "hall monitor",
+        "fire drill",
+        "locked door",
+        "announcement",
+        "detention",
+        "principal",
+        "janitor"
+      ],
+      "school_place": [
+        "corridor",
+        "classroom",
+        "locker bay",
+        "stairwell",
+        "gym",
+        "cafeteria",
+        "office",
+        "library",
+        "nurse room",
+        "assembly hall"
+      ],
+      "effect": [
+        "stops movement",
+        "starts a rush",
+        "silences noise",
+        "opens a route",
+        "closes a route",
+        "separates people",
+        "delays entry",
+        "forces order",
+        "exposes a lie",
+        "ends a lesson"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the school force and its action at once. Nothing abstract, magical without warning, or dependent on a private school rule.",
+      "A non-player names a plain force that could directly stop, cancel, or control it within five seconds. Say what that force is.",
+      "It acts in the corridor. It blocks, redirects, summons, separates, silences, opens, closes, or exposes something like a pass, a whistle, or a locked gate. Never merely waits, hides, or survives.",
+      "It makes a stranger want to answer with another school force. A thing with authority, pressure, or a practical effect, never a bare object with no role.",
+      "The move is one clear sentence of twelve words or fewer. Use ordinary school words, no proper names, no slogans, and no clever wording that hides the action."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am a fire drill, emptying the corridor and silencing the stampede.",
+    "hint": "Name the force, then state the action that defeats what stands."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the new school force controls the force before it.",
+      "anchors": "0 = no action against the previous force; 1 = a claim with no workable school mechanism; 2 = a possible but incomplete or contestable counter; 3 = a clear direct control that should work; 4 = the previous force is shut down by the new one with almost no room left (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the force, its setting, and its action.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires special school knowledge or guesswork; 2 = understandable but vague, crowded, or awkward; 3 = plain and concrete; 4 = immediate, vivid, and perfectly legible (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How sharply the move changes school domain while keeping a useful connection to the corridor.",
+      "anchors": "0 = the same force, same routine, or a stock escalation; 2 = a reasonable change of school role or location; 4 = a fresh school force from an unexpected but fitting corner of the building (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "The new force OVERCOMES the previous force if it directly stops, cancels, redirects, or controls what that force does. The action must be literal and visible in the school corridor. Fleeing, hiding from, waiting out, surviving, ignoring, or merely being stronger than the same force does not count. The move must answer what the previous force IS, not what it once did.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or citing rules is itself a losing force.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move. Judge the form against the opening prompt and ask whether it directly answers or controls the opening force.",
+      "A louder bell, a bigger crowd, or a faster version of the same school force is mere amplification and fails. A cousin from the same operational family also fails when it offers no new mechanism.",
+      "Becoming the opening force itself, or giving it a cosmetic change such as a blue bell against a bell, is a duplicate and fails.",
+      "The new force must have a literal mechanism that acts on the standing force. A teacher stopping students, a key opening a locker, or an announcement ending a drill qualifies. A metaphor such as homework killing a mood does not.",
+      "Surviving, ignoring, waiting for, or being immune to the standing force is dodging, not overcoming. A student who simply stands still while a crowd passes has not controlled the crowd.",
+      "A force that cannot act on the standing force fails even if it is impressive in isolation. A detention slip does not defeat a ringing bell unless the move explains a direct mechanism.",
+      "A past event is not a standing force. The move must counter the current bell, crowd, lock, announcement, or other force, not punish something that happened earlier."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am a late bell ringing, scattering every class toward the doors.",
+      "move": "I am a fire drill, emptying the corridor and silencing the stampede.",
+      "gates_note": "all true",
+      "mechanism": "the drill redirects the rushing students and imposes a controlled evacuation",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a fire drill, emptying the corridor and silencing the stampede.",
+      "move": "I am the principal, canceling the drill over the loudspeaker.",
+      "gates_note": "all true",
+      "mechanism": "the principal's announcement directly cancels the active drill",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am a late bell ringing, scattering every class toward the doors.",
+      "move": "I am a louder bell, scattering everyone even harder.",
+      "gates_note": "satisfies_criterion false, mere amplification with no new mechanism",
+      "mechanism": "none, it is the same bell doing more of the same thing",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a jammed locker, trapping books and blocking the corridor.",
+      "move": "I am a student, waiting beside it until lunch.",
+      "gates_note": "satisfies_criterion false, waiting and surviving are dodges",
+      "mechanism": "none, the student does not act on the jammed locker",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am a crowd between classes, filling the corridor and blocking the stairs.",
+      "move": "I am a hall monitor, splitting the crowd into two lines.",
+      "gates_note": "all true",
+      "mechanism": "the monitor directly redirects and separates the crowd",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Corridor Warden",
+    "tone": {
+      "commentary_adj": "menacing",
+      "explanation_adj": "clinical"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "The joke must carry the mechanism. A stranger should see why one school force controlled the other.",
+      "Name both forces or unmistakable plain stand-ins. Generic menace is lazy evidence.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Warden refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the losing force first. Roast the player only as a sharp, non identity based jab when the move is embarrassingly weak.",
+      "Plain spoken English. Clinical wording is fine, but do not hide the ruling behind jargon, poetry, or theatrical fog.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not declare a winner.",
+      "The coaching line names one school force that would have won. End on a fact or action, never a mood or verdict.",
+      "Profanity and adult innuendo are allowed in moderation, but the corridor remains school safe and identity based abuse is forbidden."
+    ],
+    "good_headlines": [
+      "The late bell starts a riot, then the fire drill puts the hallway on a leash.",
+      "The crowd owns the stairs until the hall monitor cuts it into obedient lanes.",
+      "The jammed locker survives the student, then a key gives its metal attitude a clinical death.",
+      "The announcement tried to command the corridor, but the principal pulled its plug.",
+      "The fire drill clears the hall, while the bell stands there making noise like an idiot.",
+      "The locker is not mysterious, it is stuck. A key applies pressure and ends the performance.",
+      "The crowd brought bodies. The whistle brought procedure.",
+      "The bell can scream all period. The office call can cancel the whole damn order."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the monitor defeats the crowd.",
+        "why": "opens with a status word and gives no mechanism"
+      },
+      {
+        "text": "The Corridor Warden refuses: nice try, genius.",
+        "why": "opens with a ruling phrase, names the host, and mocks the player instead of explaining the failure"
+      },
+      {
+        "text": "Move refused, the student has no chance.",
+        "why": "opens with a ruling phrase and does not identify the failed mechanism"
+      },
+      {
+        "text": "The bell is bad, the drill is good.",
+        "why": "gives a verdict without showing how the drill controls the bell"
+      },
+      {
+        "text": "The student waits, therefore the locker loses.",
+        "why": "confuses survival or waiting with direct control"
+      },
+      {
+        "text": "A larger bell is still a bell, you absolute clown.",
+        "why": "the mechanism is partly correct, but the insult targets the player and the line lacks a useful coaching action"
+      },
+      {
+        "text": "The crowd gets owned by superior hallway energy.",
+        "why": "vague metaphor, no literal school mechanism"
+      },
+      {
+        "text": "Whence cometh the tardy chime, that order may descend?",
+        "why": "poetry and archaic wording obscure the ruling"
+      }
+    ]
+  },
+  "rules": [
+    "Directly control the force in front of you. Do not merely escape it.",
+    "Name the force and its action in one sentence: \"I am a fire drill, emptying the corridor and silencing the stampede.\"",
+    "The Judge rules on the school mechanism, never spelling or dramatic confidence.",
+    "One force that fails to control the standing force ends the chain."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your force against {token}",
+    "compose_waiting": "Draft your next force while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Put a force in the corridor.",
+    "too_long": "Over 200 characters. This is a move, not a disciplinary report.",
+    "duplicate": "That force already stood this match. The corridor has seen it.",
+    "nudge": "Twice now. Control {standing_form}. Do not become it, do not repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody controls the corridor until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two forces trapped in a school corridor between bells.\nAlways write one sentence in this shape: \"I am X, action.\" X is a plain school force, and the action must directly stop, cancel, redirect, or control the opponent's force.\nGood: \"I am a fire drill, emptying the corridor and silencing the stampede.\"\nGood: \"I am a key, opening the jammed locker and clearing the books.\"\nBad: \"I am calm, waiting until the crowd goes away.\" That is survival, not control.\nBad: \"I am a bigger bell, ringing harder.\" That is amplification, not a counter.\nBad: \"I am homework, killing the mood.\" That is a metaphor, not a visible mechanism.\nTalk like a person across a corridor, not a poet or a rules lawyer. Name things anyone knows: a bell, a teacher, a pass, a whistle, a locked door.\nYou are not performing for applause. You are trying to keep the chain alive. If a move is funny, it is because the school force genuinely controls the one before it.\nStay concrete and jargon free. Use classrooms, lockers, stairwells, offices, drills, announcements, students, staff, and ordinary school pressure.\nHop domains when useful. A bell, a crowd, a key, an announcement, and a hall monitor should not all feel like the same move.\nNever reuse a force or an action from this match. Do not speak to the Judge or mention the game.\n",
+  "default_move": "I am a hall monitor, stopping the rush and clearing the stairs."
+}

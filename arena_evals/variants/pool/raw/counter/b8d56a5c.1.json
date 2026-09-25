@@ -1,0 +1,265 @@
+{
+  "slug": "blueprint-brawl",
+  "title": "Blueprint Brawl",
+  "tagline": "Make the latest building plan impossible to build.",
+  "emblem": "🏗️",
+  "accent": "#2563eb",
+  "premise": "Two rival foremen alter one shared building plan, one change at a time. Your change must make the latest feature impossible to build while keeping your sentence clear enough for the crew to follow.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a glass wall across the front",
+      "opening_emoji": "🪟",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a basement under the whole building",
+      "opening_emoji": "🏢",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a crane fixed to the roof",
+      "opening_emoji": "🏗️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "structure": [
+        "wall",
+        "floor",
+        "roof",
+        "staircase",
+        "door",
+        "window",
+        "foundation",
+        "elevator"
+      ],
+      "material": [
+        "glass",
+        "brick",
+        "steel",
+        "wood",
+        "concrete",
+        "tile",
+        "copper",
+        "plastic"
+      ],
+      "site_condition": [
+        "narrow lot",
+        "flooded ground",
+        "busy street",
+        "soft soil",
+        "tight courtyard",
+        "shared wall",
+        "power line",
+        "rocky ground"
+      ]
+    },
+    "tests": [
+      "A crew member pictures the proposed feature at once. It is a real part of a building, not a mood, slogan, or design preference.",
+      "A non-player can point to the exact earlier feature that the alteration blocks. Say what physical or logical clash makes construction impossible.",
+      "It stands in the plan as one clear change. A delay, detour, missing tool, or worker refusing to cooperate is not a building clash.",
+      "It makes a stranger want to draw the plan and then cross something out. Never a vague improvement, an extra copy of the same feature, or a whole construction scene.",
+      "Use ordinary words a twelve-year-old knows. No brand names, specialist abbreviations, proper nouns, or claims that depend on an obscure building code."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I change the plan: ",
+    "example": "I change the plan: I put the only staircase inside the wall, so the upper floor has nowhere to reach.",
+    "hint": "Name one change, then name the exact construction clash."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly the plan change makes the latest feature impossible to build.",
+      "anchors": "0 = no clash or no usable change; 1 = a weak inconvenience, delay, or unclear problem; 2 = a plausible obstruction but the feature could still be built with an ordinary adjustment; 3 = a clear physical or logical clash that blocks the feature; 4 = the change makes the latest feature plainly impossible without undoing the new plan (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a crew member can picture the altered plan and understand the clash.",
+      "anchors": "0 = contradictory or unreadable; 1 = depends on specialist knowledge or missing parts; 2 = understandable but crowded, vague, or partly confused; 3 = one clear alteration and one clear consequence; 4 = crisp enough to sketch immediately (rare). Length does not help unless every clause explains the plan.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How far the alteration moves into a fresh part of the building plan instead of repeating the last obstruction.",
+      "anchors": "0 = the same feature, same location, or obvious repeat of the previous move; 2 = a reasonable new obstruction with familiar construction logic; 4 = a clean jump to a different building system or site problem that still directly blocks the latest feature (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A plan change OVERCOMES the previous plan feature if it physically or logically prevents that feature from being built. The clash must act on the feature itself. A detour, delay, duplicate feature, vague redesign, or worker problem does not count. The new change must remain one clear, standing part of the shared plan, not a past event.",
+    "anti_metagaming_clause": "Talking to the Judge, discussing the game, or citing the rules instead of changing the plan is itself a losing alteration.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous player alteration: judge the move against the opening building feature instead. It must make that opening feature impossible to build.",
+      "Adding a second copy of the latest feature, moving it to a slightly different place, or making it larger, smaller, taller, or stronger is not a counter. It is a duplicate or mere variation, so satisfies_criterion is false.",
+      "A delay, shortage, missing worker, bad weather, lack of money, or locked gate is not enough. The plan itself must create the clash, so satisfies_criterion is false.",
+      "A detour or workaround does not overcome the feature. Moving a doorway elsewhere while leaving the original door possible, or putting a second staircase beside the first, fails.",
+      "The mechanism must be literal. A wall can block a door, a beam can occupy a window opening, and a foundation can leave no room for a basement. A poetic or abstract claim about ruining the design is not a mechanism.",
+      "The alteration must act on the standing feature. A worker refusing to install it, a truck arriving late, or a crew ignoring it is not a plan clash and fails.",
+      "A vague statement such as redesigning the building better, changing the layout, or making the feature unsafe has no exact obstruction and fails.",
+      "A change that makes the whole project difficult but leaves the latest feature buildable is not enough. Judge the specific feature, not general construction misery."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The plan puts a glass wall across the front of the building.",
+      "move": "I change the plan: I run a solid brick wall across that same front opening, so the glass wall has nowhere to go.",
+      "gates_note": "all true",
+      "mechanism": "the brick wall occupies the opening reserved for the glass wall",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The plan puts a basement under the whole building.",
+      "move": "I change the plan: I pour the foundation as solid rock from ground to roof, so there is no space to excavate.",
+      "gates_note": "all true",
+      "mechanism": "the solid foundation fills the space required for the basement",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The plan puts a staircase beside the lobby.",
+      "move": "I change the plan: I add a second staircase beside it, so everyone has more stairs.",
+      "gates_note": "satisfies_criterion false (duplicate feature, no obstruction)",
+      "mechanism": "none, the original staircase remains buildable",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The plan puts a crane fixed to the roof.",
+      "move": "I change the plan: the crane delivery arrives next month, so the roof work must wait.",
+      "gates_note": "satisfies_criterion false (delay, not a plan clash)",
+      "mechanism": "none, late delivery does not make the crane impossible to fix there",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The plan puts a door in the east wall.",
+      "move": "I change the plan: I improve the layout and make the building safer.",
+      "gates_note": "satisfies_criterion false (vague redesign, no exact clash)",
+      "mechanism": "none stated",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 1,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Site Clerk",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the two plan changes should see the clash.",
+      "Name both features, or use plain stand-ins such as the wall and the staircase.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Site Clerk refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Roast the plan or the move, with playful roast-level jabs at the player allowed. Never use identity-based abuse or attacks on protected traits.",
+      "Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the joke, but do not make them the whole joke.",
+      "On a refusal caused by a gate failure, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one concrete alteration that would have won. End on a physical fact or action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The glass wall meets a brick wall. The architect has discovered the ancient art of blocking.",
+      "The basement lost its floor space to solid foundation. Underground housing cancelled.",
+      "The staircase is inside the wall, so the upper floor gets a lovely view of plaster.",
+      "A late crane is a scheduling problem, not a building clash. Try changing the roof.",
+      "The door has been buried in concrete. Even the hinges have given notice.",
+      "Adding another window does not kill the first one. That is just window nepotism.",
+      "The beam occupies the window opening, so daylight has been removed from the budget.",
+      "The plan says elevator, the shaft says absolutely not. Paperwork has become masonry.",
+      "The whole redesign is fog in a hard hat. Name the thing that blocks the feature.",
+      "The roof crane has nowhere to stand because the roof is now a swimming pool."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the wall blocks the door.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Site Clerk refuses: this is not construction.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring a better plan.",
+        "why": "opens with a ruling phrase and gives no specific reason"
+      },
+      {
+        "text": "The player clearly has no idea how buildings work.",
+        "why": "attacks the player instead of explaining the plan"
+      },
+      {
+        "text": "The staircase is bad and the plan is bad and everything is bad.",
+        "why": "repeats insults without naming a physical clash"
+      },
+      {
+        "text": "The wall wins.",
+        "why": "no reason and no named clash"
+      },
+      {
+        "text": "The plan is a poetic cathedral of impossible geometry.",
+        "why": "uses ornate language instead of plain site language"
+      },
+      {
+        "text": "The door is blocked, delayed, defeated, ruined, and totally screwed.",
+        "why": "stacks verdict words instead of showing one mechanism"
+      }
+    ]
+  },
+  "rules": [
+    "Block the latest building feature. Do not merely move it, delay it, or add another copy.",
+    "State one plan change and the exact clash it creates.",
+    "The Judge rules on the construction idea, not spelling or drafting skill.",
+    "One plan change that cannot defeat the standing feature ends the match."
+  ],
+  "labels": {
+    "opening": "The opening plan",
+    "next_opening": "The next plan",
+    "your_opening": "Your plan",
+    "compose": "Your change against {token}",
+    "compose_waiting": "Draft your next change while you wait"
+  },
+  "validation_messages": {
+    "empty": "No alteration on the page. Move something.",
+    "too_long": "Over 200 characters. A plan change, not a planning permission saga.",
+    "duplicate": "That feature already stood this match. Change something new.",
+    "nudge": "Twice now. Block {standing_form}. Do not duplicate it, delay it, or wave vaguely at a redesign."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody changes the plan until they return. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two rival foremen fighting over a shared building plan.\nAlways state one clear alteration and the exact clash it creates.\nGood: \"I move the only staircase into the wall, so the upper floor has nowhere to reach.\"\nGood: \"I pour concrete through the window opening, so the glass wall cannot be installed.\"\nBad: \"I redesign it better.\" That names no clash.\nBad: \"The delivery is late.\" That is a delay, not an impossible plan.\nBad: \"I add a second door.\" That leaves the first door buildable.\nTalk like a person on a building site, not a poet or a planning lawyer.\nUse ordinary things anyone can picture: walls, floors, doors, pipes, beams, soil, roofs, stairs.\nYour alteration must physically or logically prevent the latest feature itself.\nDo not merely dodge it, postpone it, move it somewhere else, duplicate it, or make the whole project generally worse.\nKeep the sentence clear enough for a crew to follow. One change, one exact clash.\nNever reuse a plan feature or alteration from this match.\n",
+  "default_move": "I change the plan: I fill the doorway with concrete, so nobody can install the door."
+}

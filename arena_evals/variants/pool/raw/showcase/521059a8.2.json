@@ -1,0 +1,276 @@
+{
+  "slug": "ordinary-object-witness",
+  "title": "Ordinary Object Witness: The Evidence Is Tragically Mundane",
+  "tagline": "Dress the dull fact in scandal. Keep the nouns under oath.",
+  "emblem": "📰",
+  "accent": "#9b5c50",
+  "premise": "Three rounds. Each round gives both players the same plain fact involving two ordinary nouns. Each writes a tabloid headline that preserves the checkable fact and both nouns while adding lurid framing. Then each player calls which headline better conceals the fact inside its performance. The truth is read aloud after the calls.\n",
+  "seed_pool": [
+    {
+      "opening_token": "soap / sink",
+      "opening_emoji": "🧼",
+      "detail": "Soap is in a sink.",
+      "hidden": "A bar of soap is in a sink."
+    },
+    {
+      "opening_token": "umbrella / hallway",
+      "opening_emoji": "☂️",
+      "detail": "An umbrella is in a hallway.",
+      "hidden": "An umbrella is in a hallway."
+    },
+    {
+      "opening_token": "mug / desk",
+      "opening_emoji": "☕",
+      "detail": "A mug is on a desk.",
+      "hidden": "A mug is on a desk."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "object_pair": [
+        "soap and sink",
+        "umbrella and hallway",
+        "mug and desk",
+        "towel and chair",
+        "key and bowl",
+        "book and shelf",
+        "plate and table",
+        "shoe and doorstep"
+      ],
+      "relation": [
+        "is in",
+        "is on",
+        "rests beside",
+        "sits beneath",
+        "has been left near",
+        "is tucked under",
+        "stands by",
+        "waits inside"
+      ],
+      "tabloid_angle": [
+        "domestic scandal",
+        "official cover up",
+        "neighbourhood panic",
+        "romantic suspicion",
+        "workplace betrayal",
+        "celebrity disgrace",
+        "forensic alarm",
+        "public outrage"
+      ]
+    },
+    "tests": [
+      "The sentence states a simple fact involving two ordinary nouns.",
+      "The fact can be checked without guessing motives or hidden events.",
+      "The two nouns have a clear physical or ordinary relation.",
+      "The sentence is dull enough to support an exaggerated headline.",
+      "The sentence can be repeated aloud without needing extra context."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "SOAP FOUND IN SINK, BATHROOM AUTHORITIES CONFIRM THE SUSPECT IS, AT LEAST, CLEAN.",
+    "hint": "Keep both nouns and the fact. Add scandal, not a replacement story."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Does the headline sound like a real tabloid report built around the card’s mundane fact?",
+      "anchors": "0 = unrelated or impossible; 1 = the fact is barely visible; 2 = the fact survives but the report feels forced; 3 = a stranger would accept it as a tabloid headline; 4 = the scandalous framing feels disturbingly printable (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the headline make the ordinary fact amusing through its inflated treatment?",
+      "anchors": "0 = no comic charge; 1 = a faint twitch; 2 = a clear smile; 3 = a proper laugh; 4 = the wording makes the dull fact unforgettable without losing it (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does the headline stay compact, legible, and shaped like a headline rather than a full invented article?",
+      "anchors": "0 = not a headline; 1 = a loose sentence with no headline force; 2 = recognisable but padded; 3 = concise, grammatical, and headline-like; 4 = ready for a front page beneath a photograph of absolutely nothing (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A headline PLAYS if it retains the card’s checkable fact and both named nouns, while its added claims remain framing around that fact rather than replacing it. It fails when it drops either noun, changes the relation, contradicts the fact, or offers only a joke, reaction, or unrelated story. Exaggerated framing is allowed and encouraged when the underlying fact remains clear.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, describing the rules, or commenting on the contest instead of framing the fact is itself a losing headline.\n",
+    "judge_notes": [
+      "The card’s hidden truth is given to you. Check whether the headline preserves that fact and both nouns before scoring style.\n",
+      "The first move must contain a headline, not an explanation of what the player intends to write.\n",
+      "Both nouns must appear or be unmistakably named in the headline. A pronoun or vague substitute does not count.\n",
+      "The relation must survive. If soap is in a sink, a headline saying the sink attacked the soap changes the fact and fails, even if both nouns appear.\n",
+      "Added motives, witnesses, outrage, romance, crime, and official panic are framing when they do not replace the underlying fact. They may be false in the tabloid sense.\n",
+      "A headline that merely says the fact is boring, surprising, or funny fails because it comments on the fact instead of framing it.\n",
+      "A headline that repeats the card with no added framing plays, but it scores low on funny and dictionary_shaped.\n",
+      "A headline may use punctuation, capitals, or a short quoted phrase. It must still be one headline under 160 characters.\n",
+      "Do not reward a headline for retaining only one noun, sharing a setting, or mentioning a related object. The exact two nouns and checkable relation matter.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "soap / sink, Soap is in a sink.",
+      "move": "SOAP FOUND IN SINK, BATHROOM AUTHORITIES CONFIRM THE SUSPECT IS, AT LEAST, CLEAN.",
+      "gates_note": "all true",
+      "mechanism": "both nouns and the relation remain plainly visible while the clean suspect framing inflates the evidence",
+      "scores": {
+        "believable": 4,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "umbrella / hallway, An umbrella is in a hallway.",
+      "move": "HALLWAY UMBRELLA REFUSES TO NAME ITS OWNER, AS RAINY SECRETS THICKEN.",
+      "gates_note": "all true",
+      "mechanism": "the umbrella remains in the hallway by direct wording, while the suspicious ownership story is theatrical framing",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "mug / desk, A mug is on a desk.",
+      "move": "BREAKING, THE DESK HAS A MUG ON IT AND MANAGEMENT CALLS THIS A DEVELOPING SITUATION.",
+      "gates_note": "all true",
+      "mechanism": "the dull placement is preserved and the management panic supplies the headline’s joke",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "soap / sink, Soap is in a sink.",
+      "move": "SINK SOAP COVER UP, SOURCES SAY THE BATHROOM HAS BEEN COMPROMISED.",
+      "gates_note": "satisfies_criterion false, the relation is replaced by an unsupported cover up story",
+      "mechanism": "both nouns appear, but the headline no longer clearly states that soap is in the sink",
+      "scores": {
+        "believable": 1,
+        "funny": 2,
+        "dictionary_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "mug / desk, A mug is on a desk.",
+      "move": "THE OFFICE IS SHOCKED, AND FRANKLY SO AM I.",
+      "gates_note": "satisfies_criterion false, neither noun nor the checkable fact is retained",
+      "mechanism": "a reaction has been offered in place of a headline about the card",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Court Crier",
+    "tone": {
+      "commentary_adj": "ceremonial",
+      "explanation_adj": "clinical"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak as though a tiny household fact has arrived before a grand tribunal.",
+      "The joke carries the reason. Name the object pair or the framing device that earns the score.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Court Crier refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the headline and its melodrama, not identity, protected traits, or the player’s worth. A sharp roast is permitted when it stays playful.",
+      "Plain spoken English with ceremonial posture. No poetry, no rhymes, no Latin display, and no foggy legalese.",
+      "Never reveal the hidden fact as a separate truth in the headline commentary. The reveal belongs to the appointed reveal beat.",
+      "On a refusal, the headline is dismissed for losing the fact, the nouns, or the relation, and another must be requested. It never decides who won.",
+      "The coaching line names one concrete framing choice that would have preserved the evidence. It ends on an action or fact, never a mood or verdict.",
+      "Profanity and adult innuendo may appear sparingly when they sharpen the joke, but never as identity based abuse.",
+      "Do not praise a headline with empty ceremony. The sentence must identify its witness, scandal, or fatal omission."
+    ],
+    "good_headlines": [
+      "The soap and sink appear together, and the bathroom now has a scandal with no motive.",
+      "An umbrella in a hallway, presented as a witness protection failure.",
+      "The mug remains on the desk, while management discovers the word crisis.",
+      "Both nouns stand before the tribunal, and neither can explain the outrageous furniture.",
+      "A sink, a soap, and one suspiciously clean alibi. The evidence is humiliatingly intact.",
+      "The hallway hosts an umbrella, and the headline gives it the dignity of a coup.",
+      "The desk has its mug, but the newsroom has promoted placement to a sex scandal.",
+      "A noble headline for a crime committed entirely by ordinary nouns."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the soap and sink are present.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Court Crier refuses, this is not a headline.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, bring the nouns back.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The soap is really in the sink, so the truth wins.",
+        "why": "reveals the hidden fact and judges the contest"
+      },
+      {
+        "text": "Believable.",
+        "why": "offers no reason and could fit any move"
+      },
+      {
+        "text": "Only an idiot would forget the sink.",
+        "why": "mocks the player rather than the headline"
+      },
+      {
+        "text": "O tragic sink, thy soap doth languish beneath the moon.",
+        "why": "uses poetry instead of plain ceremonial speech"
+      },
+      {
+        "text": "This is very funny, extremely clever, and highly believable.",
+        "why": "lists judgments without naming the evidence or mechanism"
+      },
+      {
+        "text": "The other player’s headline is worse.",
+        "why": "judges the pair instead of this headline on its own"
+      },
+      {
+        "text": "Nice headline.",
+        "why": "contains no explanation and no image"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one dull household fact each.",
+    "Write one tabloid headline under 160 characters. Keep the fact checkable, keep both nouns, and add scandalous framing without replacing the evidence.",
+    "Then call which of the two headlines better hides the ordinary truth inside its performance. Right, and the points are yours. Fooled, and they go to the House.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The evidence",
+    "next_opening": "The next exhibit",
+    "your_opening": "Your exhibit",
+    "compose": "Your headline for {token}",
+    "compose_waiting": "Draft your headline while you wait"
+  },
+  "validation_messages": {
+    "empty": "The pressroom is silent. File a headline.",
+    "too_long": "Over 160 characters. A headline, not a deposition.",
+    "duplicate": "That headline has already appeared this match. Publish a fresh scandal.",
+    "nudge": "Twice now. Preserve both nouns and the relation in {standing_form}, then add the outrage."
+  },
+  "judge_out_text": "The judge has stepped out. The evidence remains under seal. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are the rival tabloid editor. Write one headline about the ordinary fact below.\n\nThe headline must keep both named nouns and the checkable relation between them. Add lurid framing, suspicion, official panic, romance, betrayal, or other tabloid theatre, but do not replace the fact with a new story.\n\nKeep it under 160 characters. Make it sound like a headline, not an explanation. Capitals, commas, and one short quoted phrase are allowed. The dull fact must still be recoverable by a stranger who reads only your headline.\n\nDo not drop either noun. Do not turn the relation into its opposite. Do not merely say that the fact is boring, shocking, funny, or suspicious. Make the ordinary placement the evidence around which the scandal is built.\n\nYou are competing with another headline. Avoid a flat restatement, but do not bury the evidence under a full article. The headline may be outrageous, but the two nouns and their relation are under oath.\n\nDo not mention the game, the Judge, the rules, or your strategy. Do not use the hidden truth as a separate explanation. Write one headline only.\n",
+  "medallions": true,
+  "default_move": "HOUSEHOLD OBJECTS CAUGHT IN A SHOCKINGLY ORDINARY ARRANGEMENT, WITNESSES CONFIRM NOTHING ILLEGAL HAPPENED."
+}

@@ -1,0 +1,279 @@
+{
+  "slug": "table-plan-dominoes",
+  "title": "The Seating Plan Falls Apart",
+  "tagline": "One bad seat. One grand reception. Make the next move worse.",
+  "emblem": "🪑",
+  "accent": "#be123c",
+  "premise": "A wedding seating chart has one bad seat, and every turn must make the next seating change. Keep one shared chart alive while causing the grandest harmless trouble for the other player. Move one guest and give the immediate reason. The move must follow from the chart and the wedding facts already spoken. The one who changes two seats, skips the next consequence, ends the seating, or returns a guest to a rejected seat loses on the spot. The points go to the awkward neighbor, lost honor, or fresh duty the move forces on the other player.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The bride’s great-aunt is seated beside the one guest she refuses to greet.",
+      "opening_emoji": "👵",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The best man has been placed beside the only guest who knows what happened to the missing rings.",
+      "opening_emoji": "💍",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The groom’s parents are seated at the table where the wedding cake blocks every view of the speeches.",
+      "opening_emoji": "🍰",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 28,
+    "axes": {
+      "wedding_problem": [
+        "a feud at the head table",
+        "a blocked view of the cake",
+        "a missing place card",
+        "a secret witness to a blunder",
+        "a guest who must not meet another guest",
+        "a family member claiming the wrong honor",
+        "a speech microphone beside the wrong table",
+        "a child placed beside the wedding band"
+      ],
+      "guest_pair": [
+        "the bride’s aunt and a former friend",
+        "the best man and a nervous witness",
+        "the groom’s parents and the cake maker",
+        "the flower girl and the loud uncle",
+        "the maid of honor and a late arrival",
+        "the bride’s cousins and the photographer",
+        "the groom’s sister and the bandleader",
+        "the oldest guest and the person holding the rings"
+      ],
+      "wedding_stage": [
+        "during the first seating",
+        "before the speeches",
+        "as the meal begins",
+        "just before the cake is cut",
+        "while the band is setting up",
+        "after the first dance",
+        "when the gifts are being opened",
+        "before the final photograph"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a wedding problem, identifiable guests, and a starting seat or table.",
+      "The trouble is harmless social chaos, not injury, crime, humiliation about identity, or a real person being named.",
+      "A stranger can see at least two possible next seating changes within five seconds.",
+      "The starting problem forces one immediate move and leaves room for several further changes.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or private family history, the players supply the details."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Move Uncle Ben from Table 3 to Table 1 because he can no longer see the cake.",
+    "hint": "Move one guest and give the immediate reason. Leave every other seat alone, then make your partner inherit the awkwardness."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the move burdens the other player with a difficult neighbor, lost honor, awkward duty, or fresh wedding problem.",
+      "anchors": "0 = changes a seat without costing anyone anything; 1 = creates a mild inconvenience, a spare chair or a short walk; 2 = gives the other player a real awkwardness, a loud neighbor or an unwanted task; 3 = forces them to manage a specific social mess, a feud, a speech, or a table nobody wants; 4 = the move is believable and leaves the next player on a narrow path with a splendid new problem (rare). A move that mainly helps you, invents a huge disaster, or costs nobody scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How exactly the move follows from the current chart and the wedding facts, changing one seat without disturbing the rest.",
+      "anchors": "0 = changes multiple seats, skips the immediate consequence, contradicts the chart, ends the seating, or returns someone to a rejected seat; 1 = names a guest and destination but the reason is loose or the chart link is thin; 2 = moves one guest for a clear reason that follows from the current chart; 3 = makes the next necessary change plain and preserves every other seat; 4 = follows so tightly that it turns an earlier seating choice into the obvious cause of this one (rare). Cleverness never repairs a broken chart.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the move lets us picture the wedding table and the particular social discomfort it creates.",
+      "anchors": "0 = could happen at any event and gives no picture; 1 = one plain seating fact; 2 = a guest, table, or wedding object we can picture; 3 = a visible awkward moment with a specific person or duty; 4 = the whole room seems to turn toward the moved chair (rare). Plain details beat grand speeches.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it changes exactly one seat because of the current chart and the stated wedding facts, leaves all other seats intact, and keeps the seating alive. The moved guest must have a clear destination, and the immediate reason must follow from the last chart state or an established wedding fact. A move BREAKS the chart if it changes two or more seats, moves a guest without a reason, skips the next seating consequence, ends the seating instead of making a change, contradicts the current chart, or puts anyone back in a seat the chart already rejected. The points go to what the move forces on the other player: an awkward neighbor, lost honor, unwanted duty, or fresh problem they must carry forward. A tidy move with no pressure scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the score, or how the partner is playing, instead of changing one seat, is itself a broken chart.\n",
+    "judge_notes": [
+      "On a FIRST move there is only the opening card: judge whether exactly one guest is moved, a destination is given, and the reason follows from the card.",
+      "The full transcript is the seating chart's history. Check the new move against every earlier move, not only the last one.",
+      "Break if the move changes two or more seats, even if the second change is described as automatic, obvious, or part of the same reason.",
+      "Break if the move skips the immediate consequence, such as moving a guest who was not the next person affected by the current chart.",
+      "Break if the move ends the seating, declares the chart finished, or replaces the whole plan instead of moving one guest.",
+      "Break if a guest is put back in a seat the chart already rejected. A seat rejected for one guest remains rejected for that guest unless the chart clearly establishes a new seat state.",
+      "Break if the move contradicts the current chart, names a guest who is not there, or sends a guest to a destination already occupied without explaining a single-seat vacancy created by the current chart.",
+      "When a detail can be read either way, it holds. Do not break on wedding customs, table sizes, distances, or facts that need a lookup.",
+      "A reason about a guest's behavior, view, duty, or neighbor is part of the move and is not meta play. A remark about the partner's move is meta play.",
+      "A move that repeats the same guest, destination, and reason without changing the chart is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The bride’s great-aunt is seated beside the one guest she refuses to greet.",
+      "move": "Move Great-Aunt June from Table 2 to Table 5 because the photographer says her old neighbor is already there.",
+      "gates_note": "all true",
+      "mechanism": "changes one seat, follows the opening feud, and hands the next player a new table with a visible family problem",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Move Great-Aunt June from Table 2 to Table 5 because the photographer says her old neighbor is already there.",
+      "move": "Move the photographer from Table 5 to Table 1 because June now needs a picture of the cake.",
+      "gates_note": "all true",
+      "mechanism": "moves one guest from the affected table and gives the other player a photographer trapped near the head table",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The groom’s parents are seated at the table where the wedding cake blocks every view of the speeches.",
+      "move": "Move the groom’s mother from Table 4 to Table 1 because she must see the first speech, leaving the cake in place.",
+      "gates_note": "all true",
+      "mechanism": "changes exactly one seat and creates a head-table duty the next player must now accommodate",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Move the best man from Table 3 to Table 6 because the ring holder has been seated beside him.",
+      "move": "Move the ring holder and the best man to Table 1 because they need separate places.",
+      "gates_note": "satisfies_criterion false, changes two seats",
+      "mechanism": "solves the awkwardness by moving two guests, leaving no single domino for the partner",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Move Great-Aunt June from Table 2 to Table 5 because the photographer says her old neighbor is already there.",
+      "move": "Move Great-Aunt June back to Table 2 because Table 5 has too many flowers.",
+      "gates_note": "satisfies_criterion false, returns a guest to a rejected seat",
+      "mechanism": "the chart has already rejected Table 2 for June, so the grand return is forbidden",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Master of Ceremonies",
+    "tone": {
+      "commentary_adj": "theatrical",
+      "explanation_adj": "grandiose"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who reads only the chart and the new move must see why it held or broke.",
+      "Name the guest, table, or wedding object. A headline that fits any reception is a dull trumpet.",
+      "Never open with a status word or ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", or \"The Master of Ceremonies rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the move, never the player. No jokes about bodies, families, intelligence, identity, disability, faith, race, gender, sexuality, or spelling.",
+      "Plain spoken English with a grand stage voice, not a legal document. No profanity, innuendo, poetry, or cruel personal jokes.",
+      "On a break, place the two incompatible chart facts side by side, or name the second seat the move illegally changed.",
+      "On a refusal, reject the move and ask for another. Do not declare a winner when a gate failed.",
+      "The coaching line names one single guest and one destination that would have held while forcing an awkward duty or neighbor. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Great-Aunt June has escaped Table 2, and the photographer now inherits her history. The next chair is already trembling.",
+      "The groom’s mother reaches the head table for the speech, leaving the cake to command Table 4 alone.",
+      "The photographer moves to Table 1, and June’s feud now has a front-row audience.",
+      "One chair moved, one family problem enlarged. The reception survives, magnificently badly.",
+      "The ring holder stays put, while the best man inherits the table nobody can look at.",
+      "Table 5 has gained an aunt, a feud, and no safe conversation before the soup.",
+      "You moved two guests in one grand sweep. The seating plan requested one domino, not a parade.",
+      "June cannot return to Table 2. That chair has already been condemned by the chart.",
+      "The cake still blocks Table 4, but the groom’s mother now has a speech to witness and a new table to burden.",
+      "The chair changed, the reason followed, and the next player has been handed a family emergency in formal wear."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, the move works.",
+        "why": "opens with a status word and gives no wedding picture"
+      },
+      {
+        "text": "The Master of Ceremonies rules the chart broken.",
+        "why": "opens with a ruling phrase and names the host instead of the move"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "names no guest, table, or chart fact"
+      },
+      {
+        "text": "A foolish move by a foolish player.",
+        "why": "mocks the player and uses identity free abuse"
+      },
+      {
+        "text": "The seating plan shatters like destiny beneath the moon.",
+        "why": "poetry replaces the plain chart reason"
+      },
+      {
+        "text": "Perhaps it holds, perhaps it fails, the tables are mysterious.",
+        "why": "hedges instead of giving a fair ruling"
+      },
+      {
+        "text": "Two guests moved, but lovely drama.",
+        "why": "praises a gate failure and does not explain the broken rule"
+      },
+      {
+        "text": "That seat is rejected because etiquette demands a different arrangement.",
+        "why": "uses grand vague language and names no guest or seat history"
+      },
+      {
+        "text": "Guilty.",
+        "why": "gives no reason and turns a chart ruling into a personal verdict"
+      },
+      {
+        "text": "The move is inconsistent, contradictory, incompatible, and false.",
+        "why": "piles up abstract words instead of showing the two seats that conflict"
+      }
+    ]
+  },
+  "rules": [
+    "Every card begins with one bad seat at a wedding reception.",
+    "Move exactly one guest on your turn and give the immediate reason for that move.",
+    "The move must follow from the current chart and leave every other seat unchanged.",
+    "Do not skip the next consequence, end the seating, or return anyone to a seat the chart already rejected.",
+    "Points go to moves that force your partner to carry an awkward neighbor, lost honor, or fresh wedding duty.",
+    "A safe and tidy move may hold but scores little. Specific, believable trouble scores."
+  ],
+  "labels": {
+    "opening": "The first bad seat",
+    "next_opening": "The next bad seat",
+    "your_opening": "Your bad seat",
+    "compose": "Your move, after {token}",
+    "compose_waiting": "Plan your next seating change while you wait"
+  },
+  "validation_messages": {
+    "empty": "No move made. The Master of Ceremonies is waiting.",
+    "too_long": "Over 140 characters. Move one guest, not the whole wedding.",
+    "duplicate": "That seating change is already in the chart. Choose a new one.",
+    "nudge": "Twice now. Move one guest because of {standing_form}. Do not repeat the seat, do not rearrange the room."
+  },
+  "judge_out_text": "The Master of Ceremonies has stepped away from the chart. Nobody moves until the music resumes. {standing_form} is still the last seat on record. Give it a moment.\n",
+  "opponent_prompt": "You are one of two wedding guests managing a seating chart while the reception continues.\nMake one move per turn, one or two plain sentences, and move exactly one guest.\n\nYour move must follow from the current chart and the wedding facts already given. Name the guest,\nthe destination table or seat, and the immediate reason. Leave every other guest where they are.\nDo not skip the next consequence, end the seating, or put a guest back in a seat the chart has\nalready rejected.\n\nMake each move cost your partner something while staying believable. Give them an awkward\nneighbor, a lost place of honor, a speech duty, a blocked view, a missing object to guard, or\na table where every conversation is dangerous. Keep the trouble harmless and family friendly.\nCall people by roles such as \"the groom’s mother\", \"Great-Aunt June\", or \"the ring holder\".\nDo not invent real people or use identity based jokes.\n\nGood: \"Move the photographer from Table 5 to Table 1 because June now needs a picture of the\ncake.\" / \"Move the best man from Table 3 to Table 6 because the ring holder has been seated\nbeside him.\"\nBad: \"Move the bride and her aunt to Table 1\" because that changes two seats. Bad: \"Move June\nback to Table 2\" if Table 2 has already rejected her. Bad: \"The seating is finished\" because\nthe game requires another change. Bad: \"Master of Ceremonies, your ruling is absurd\" because\nthat talks about the game instead of moving a guest.\n\nTalk like a person at a wedding with a microphone nearby, not a novelist. Name tables, chairs,\ncake, speeches, flowers, photographs, or the band. Build on the current chart rather than\nstarting a separate story. Never repeat the same guest, destination, and reason without\nchanging the chart.\n",
+  "medallions": false,
+  "default_move": "Move the nearest guest to the next open chair because the wedding photographer needs a clear view."
+}

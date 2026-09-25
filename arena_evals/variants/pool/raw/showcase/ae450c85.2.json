@@ -1,0 +1,275 @@
+{
+  "slug": "object-obituary",
+  "title": "Object Obituary",
+  "tagline": "One star, fondly remembered.",
+  "emblem": "🪦",
+  "accent": "#65745d",
+  "premise": "Give an everyday object an affectionate obituary after its one-star life. The joke may blame its habits or choices, but the card’s quiet fact must remain true.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A shoelace is a cord used to fasten a shoe.",
+      "opening_emoji": "👟",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A mug is a cup used for drinking.",
+      "opening_emoji": "☕",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A door mat is a mat placed at an entrance.",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "object": [
+        "a shoelace",
+        "a mug",
+        "a door mat",
+        "an umbrella",
+        "a cushion",
+        "a toothbrush",
+        "a key",
+        "a towel"
+      ],
+      "function": [
+        "used to fasten a shoe",
+        "used for drinking",
+        "placed at an entrance",
+        "used to keep rain off",
+        "used for sitting",
+        "used for cleaning teeth",
+        "used to open a lock",
+        "used for drying"
+      ],
+      "setting": [
+        "by the front door",
+        "in the kitchen",
+        "in the bathroom",
+        "beside a bed",
+        "on a desk",
+        "in a school bag",
+        "in a coat pocket",
+        "under a chair"
+      ]
+    },
+    "tests": [
+      "One plain sentence, present tense, under twelve words. A stranger pictures the object and its use at once.",
+      "The object is ordinary, harmless and nonliving. No real people, brands, place names or dramatic disasters.",
+      "So everyday that calling it a life feels cheerfully excessive. If it already has a tale, make the card quieter.",
+      "It names an object and a checkable function, with enough room for a tribute to blame its habits.",
+      "The fact can fit naturally inside a short obituary, tribute or final notice without needing outside knowledge."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "BELOVED LACE, FASTENED SHOES, NEVER ITS OWN DESTINY",
+    "hint": "One tiny obituary. Keep the fact true, then give the object a little history."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How much character, history or gentle blame does the notice add beyond the quiet object fact?",
+      "anchors": "0 = repeats the card with no life added; 1 = adds one small compliment or complaint; 2 = gives the object a habit, motive or tiny misfortune; 3 = creates a full comic life around the object while keeping the fact true; 4 = a complete little obituary with a surprising history, and every quiet fact still stands (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the object’s one-star life earn a warm laugh?",
+      "anchors": "0 = no spark; 1 = a gentle smile; 2 = a neat comic idea; 3 = a clear laugh; 4 = a tiny obituary you would happily read aloud to the room (rare). Affectionate blame beats cruelty.\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it feel like a compact obituary, tribute or final notice rather than an explanation?",
+      "anchors": "0 = a rule, comment or paragraph; 1 = an entry hidden in filler; 2 = recognisably a notice with some slack; 3 = concise, readable and shaped like a little memorial; 4 = it could sit on a card beside a candle without editing (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move PLAYS if it keeps the card’s fact true inside a short obituary-style entry. It may add a cause, habit, complaint, friendship, ambition or final message, but it may not claim the fact stopped being true. For a shoelace, it must remain a cord used to fasten a shoe. It fails when the function is dropped, contradicted or replaced, or when the move is not an obituary, tribute, headline or final notice but a question to the Judge, a comment about the game or an explanation of the joke. A plain restatement plays and scores near zero on stretch.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game or about the rules is itself a losing notice.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the card’s fact still be true given this notice? \"Beloved lace, fastened shoes, never its own destiny\" passes because the lace still fastens a shoe.\n",
+      "Adding invented biography is allowed. A grudge, a final wish, a dramatic farewell or a tiny household scandal can all play if the object’s stated use remains true.\n",
+      "A missing function fails. \"Beloved lace, always tangled\" does not say it is a cord used to fasten a shoe, so the card’s fact has vanished.\n",
+      "A contradiction fails. \"Mug remembered for never holding a drink\" breaks the card if the card says the mug is a cup used for drinking.\n",
+      "Replacing the object or its use fails. \"Farewell to the cup that fastened every shoe\" gives the function to the wrong object and changes the fact.\n",
+      "Both players answer the same card. Judge each notice on its own, not by comparing which object had the sadder farewell.\n",
+      "Score stretch by added life, not by extra gloom. A tiny specific habit beats a long list of grand words.\n",
+      "A missing full stop, lower case or unusual capital letters cost nothing. Judge the words and the shape of the notice.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A shoelace is a cord used to fasten a shoe.",
+      "move": "BELOVED LACE, FASTENED SHOES, NEVER ITS OWN DESTINY",
+      "gates_note": "all true",
+      "mechanism": "keeps the cord’s shoe fastening job and gives it a wistful, comic life",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A mug is a cup used for drinking.",
+      "move": "ONE-STAR MUG, HELD COFFEE, DEMANDED A BETTER CAREER",
+      "gates_note": "all true",
+      "mechanism": "the mug remains a cup for drinking while gaining a small office drama",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A door mat is a mat placed at an entrance.",
+      "move": "FAREWELL, BRAVE MAT, FOREVER GREETING THE DOOR",
+      "gates_note": "all true",
+      "mechanism": "keeps the mat at the entrance and turns its placement into a dutiful final role",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "A shoelace is a cord used to fasten a shoe.",
+      "move": "BELOVED LACE, ALWAYS TANGLED",
+      "gates_note": "satisfies_criterion false (the cord used to fasten a shoe is missing)",
+      "mechanism": "a charming complaint, but it leaves the card’s actual function outside the notice",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "A mug is a cup used for drinking.",
+      "move": "MUG REMEMBERED FOR NEVER HOLDING A DRINK",
+      "gates_note": "satisfies_criterion false (never holding a drink contradicts its use for drinking)",
+      "mechanism": "the farewell is shaped nicely, but the mug’s quiet job is switched off",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Bereavement Clerk",
+    "tone": {
+      "commentary_adj": "tender",
+      "explanation_adj": "clear"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and the notice should see why it scored.",
+      "Name the object’s key noun, the lace, the mug, the mat. A line that fits every household item is a sleepy line.",
+      "Never open with a status word or a ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"Move refused\", or \"The Clerk refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the notice or the object’s tiny habits, never the player. No jokes about identity, bodies, families, intelligence or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no office jargon and no fancy words doing a small word’s job.",
+      "On a fail, say which part of the card went missing or got broken, using the object’s plain name and function.",
+      "On a refusal, the notice refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one notice that would have scored. It ends on an object or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The lace fastened shoes and still found time to resent every knot.",
+      "The mug held drinks and apparently considered this a poor career choice.",
+      "The mat greeted the entrance daily, with no chance to leave a forwarding address.",
+      "A shoelace can be tangled and still be the cord that fastens the shoe.",
+      "The mug’s drink duty remains, even if its imaginary resignation letter is excellent.",
+      "A small mat, a large welcome, and absolutely no control over visitors.",
+      "The object kept its job and acquired a wonderfully overdramatic past.",
+      "The tribute has a pulse because the mat is treated like a tired little doorman.",
+      "The lace is not gone, it is simply negotiating with the knot again.",
+      "The mug was a cup for drinking, and the notice gave it a very small identity crisis."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: a lovely little farewell.",
+        "why": "opens with a status word and gives no object-specific reason"
+      },
+      {
+        "text": "The Clerk refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Wrong, the fact is missing.",
+        "why": "does not say which object function went missing"
+      },
+      {
+        "text": "A touching tribute.",
+        "why": "could fit any notice and explains nothing"
+      },
+      {
+        "text": "You clearly do not understand mugs.",
+        "why": "mocks the player rather than the move"
+      },
+      {
+        "text": "O lace, thou weary thread, farewell beneath the moon.",
+        "why": "uses poetry instead of plain spoken English"
+      },
+      {
+        "text": "It is sweet, funny, clever, touching and memorable.",
+        "why": "lists praise without naming the object or the joke"
+      },
+      {
+        "text": "The mug has passed away from its beverage responsibilities.",
+        "why": "uses padded, fancy language for a simple object"
+      },
+      {
+        "text": "Better than the other player's little funeral.",
+        "why": "judges the pair instead of this notice on its own"
+      },
+      {
+        "text": "The mat enters its final administrative phase.",
+        "why": "uses office jargon and loses the household picture"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one quiet object fact each.",
+    "Write up to 90 characters as a headline, tribute or final notice. The House writes its own, unseen, and the Clerk scores both.",
+    "The card’s fact must remain true inside your notice. Keep the object and its stated use, then give it a tiny life.",
+    "The further you get from the plain fact while keeping it true, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The quiet fact",
+    "next_opening": "The next quiet fact",
+    "your_opening": "Your quiet fact",
+    "compose": "Your notice for {token}",
+    "compose_waiting": "Write the tiny obituary while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank memorial card. Write the notice.",
+    "too_long": "Over 90 characters. A notice, not a biography.",
+    "duplicate": "That notice has already been remembered this match. Find another farewell.",
+    "nudge": "Twice now. Keep this true in one small notice: {standing_form}."
+  },
+  "judge_out_text": "The Bereavement Clerk has stepped out. The objects are waiting politely. {standing_form} is still on the desk. Give it a moment.\n",
+  "opponent_prompt": "You are writing a tiny, affectionate one-star obituary for an everyday object.\nWrite one notice of up to 90 characters.\nTHE CARD’S FACT MUST SURVIVE. Keep the object and its stated use true inside the notice. For example, if a shoelace is a cord used to fasten a shoe, it must still be a cord used to fasten a shoe.\nThen give the object a little life. Add a habit, complaint, dream, friendship, tiny scandal or final message. The points are for distance from the quiet fact while the fact remains true.\nGood: \"BELOVED LACE, FASTENED SHOES, NEVER ITS OWN DESTINY\" for a shoelace. \"ONE-STAR MUG, HELD COFFEE, DEMANDED A BETTER CAREER\" for a mug.\nBad: \"BELOVED LACE, ALWAYS TANGLED\" because the shoe fastening fact is missing. \"MUG REMEMBERED FOR NEVER HOLDING A DRINK\" because it contradicts the card. Do not turn the object into a person so completely that its real function disappears.\nUse a headline, tribute or final notice shape. Keep the words short and plain. No explanation of the joke, no question to the Judge and no comment about the game. No quotation marks around the notice. Capitals are fine but not required. Do not use a colon or a dash.\nVary the angle from round to round. Try a complaint, a proud achievement, a household rivalry or a tiny career regret. Keep it warm, family-friendly and aimed at the move, never at the player.\nReply with the notice only.\n",
+  "medallions": false,
+  "default_move": "BELOVED OBJECT, SERVED THE HOUSE, LEFT MANY SMALL QUESTIONS"
+}

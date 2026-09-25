@@ -1,0 +1,278 @@
+{
+  "slug": "cake-stall-chain",
+  "title": "The Longest Slice of Cake",
+  "tagline": "One cake, many hands. Keep the sponge moving before the fete eats it.",
+  "emblem": "🍰",
+  "accent": "#c2410c",
+  "premise": "The wind has knocked the cake stall sideways, and one cake must be passed safely from table to table before it falls apart. Take turns adding one hand-off or support to the same chain. Score for making your partner handle the mess, the blame, or an increasingly ridiculous cake problem.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The wind lifts the tablecloth, and the fete’s tallest sponge is sliding toward the edge of the cake table.",
+      "opening_emoji": "🍰",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A gust sends the chocolate cake board spinning between the raffle stall and the bunting pole.",
+      "opening_emoji": "🍫",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The fruit cake has tipped against the judging table, while one loose cherry rolls toward the village band.",
+      "opening_emoji": "🍒",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 27,
+    "axes": {
+      "cake": [
+        "a tall sponge",
+        "a chocolate cake",
+        "a fruit cake",
+        "a lemon drizzle",
+        "a sticky ginger cake",
+        "a red velvet cake",
+        "a jam sandwich",
+        "a collapsing traybake"
+      ],
+      "hazard": [
+        "a lifted tablecloth",
+        "a rolling cake board",
+        "a snapped ribbon",
+        "a gust through the marquee",
+        "a wobbling trestle",
+        "a loose cherry",
+        "a sliding icing layer",
+        "a child with a balloon"
+      ],
+      "route": [
+        "the cake table to the raffle stall",
+        "the judging table to the bandstand",
+        "the bunting pole to the tea tent",
+        "the tea tent to the tombola",
+        "the flower stall to the village hall door",
+        "the raffle stall to the picnic bench",
+        "the bandstand to the lemonade table",
+        "the marquee entrance to the cake table"
+      ]
+    },
+    "tests": [
+      "One short sentence names a cake, a wind problem, and a clear starting point or destination.",
+      "The cake is awkward but harmless. Nobody is injured, trapped, or put in real danger.",
+      "A stranger can picture at least three separate hand-off points around a village fete.",
+      "The cake is fragile enough that hands, elbows, trays, aprons, or tables may matter.",
+      "Everyday words a twelve-year-old knows. No real village names, brand names, or specialist baking terms."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Nell slides the cake board to Rob, who catches the loose corner with both elbows.",
+    "hint": "Add one physical link. Say who moves the cake, where it goes, and what awkward thing happens next."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much trouble, responsibility, or ridiculous handling this link gives your partner while keeping the cake movement possible.",
+      "anchors": "0 = a clean pass with no cost; 1 = a small inconvenience, a sticky finger or a bent napkin; 2 = a proper nuisance, they must catch, carry, or explain something; 3 = they own a public mess, a blameworthy wobble, or a very specific bit of cake handling; 4 = believable, precise, and their next link is a tightrope over icing and shame, rare. A move that only makes trouble for you, or makes the cake impossible to move, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the new hand-off follows physically from every earlier link and keeps the cake, supports, and people in a workable chain.",
+      "anchors": "0 = skips a link, undoes the chain, or sends the cake somewhere it cannot reach; 1 = technically gestures at movement but names no usable hand-off; 2 = adds a plausible person, object, or nearby place; 3 = clearly continues the route with a checkable hand-off or support; 4 = makes an earlier wobble suddenly useful while staying physically possible, rare. Vivid detail cannot repair a missing link.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the move makes the fete, the cake, and the physical problem easy to picture.",
+      "anchors": "0 = generic movement with no cake or fete texture; 1 = one plain object or action; 2 = a visible wobble, smear, gust, or awkward grip; 3 = a scene with a sound, texture, or public reaction; 4 = a small comic picture a stranger can replay, rare. Plain physical detail beats decoration.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if the cake can physically reach the named person or place from the full chain so far. Every move must add one hand-off or support that continues from the current position. A move BREAKS the chain if it skips a link, moves the cake back to a person or place already passed without a new reason, removes or cancels a support already used, or claims the cake is safely down when the chain is not ending. The cake may wobble, shed crumbs, lose icing, change hands, or gain new supports, as long as the physical route remains possible. The points go to what the move makes your partner handle: the mess, the blame, the sticky object, or the public embarrassment. A safe, vague pass holds but scores little.\n",
+    "anti_metagaming_clause": "Talking to the Fete Marshal about the game, the rules, or how the partner is playing, instead of adding a physical link, breaks the chain.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier hand-off: judge it against the card alone. It must begin a physically possible move from the cake’s stated position.",
+      "The full transcript is the chain. Check the new move against every earlier hand-off, support, position, and ending, not only the last sentence.",
+      "A skipped link fails when the move jumps from the current holder or place to a later person or place without saying how the cake gets there.",
+      "An ending fails when the player puts the cake safely down before the stated route is complete, or claims it is safe without naming a surface or support.",
+      "An undo fails when the move sends the cake back along the route, removes a tray, hand, elbow, table, or other support already used, or cancels an earlier action without a new physical reason.",
+      "Moving near an earlier place is not automatically an undo. It holds when the chain clearly reaches a new position or uses a new route.",
+      "Names, hands, trays, aprons, tables, and ordinary fete objects may be added. The move must still say what carries the cake from the current point to the next one.",
+      "When a detail can be read either way, it holds. Fail only for a plain physical gap or reversal a stranger would notice.",
+      "A move about the partner’s play, such as saying they are cheating or cannot count, is a meta move. A move making the partner catch, carry, or explain the cake is part of the game.",
+      "A move that repeats an earlier hand-off without adding a new physical link is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The wind lifts the tablecloth, and the fete’s tallest sponge is sliding toward the edge of the cake table.",
+      "move": "Nell grips the cake board and slides it to Rob, who catches the loose corner with both elbows.",
+      "gates_note": "all true",
+      "mechanism": "starts at the cake table, names a direct hand-off, and leaves Rob awkwardly responsible for the corner",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Nell grips the cake board and slides it to Rob, who catches the loose corner with both elbows.",
+      "move": "Rob shuffles it to the raffle table, where my mate here has to hold the icing on with one palm while calling the winning ticket.",
+      "gates_note": "all true",
+      "mechanism": "continues from Rob to the raffle table and gives the partner a public job with one hand occupied",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Rob shuffles it to the raffle table, where my mate here has to hold the icing on with one palm while calling the winning ticket.",
+      "move": "My mate here nudges the board onto a tea tray, and the tray goes to the tea tent with a wet slap of buttercream.",
+      "gates_note": "all true",
+      "mechanism": "adds a new support and a reachable destination while making the partner carry the public mess",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Rob shuffles it to the raffle table, where my mate here has to hold the icing on with one palm while calling the winning ticket.",
+      "move": "We put the cake safely back on the original cake table and wiped the icing off the raffle tickets.",
+      "gates_note": "satisfies_criterion false, the move reverses the route and removes the need for the stated hand-off",
+      "mechanism": "sends the cake back and quietly tries to tidy away the evidence",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Nell grips the cake board and slides it to Rob, who catches the loose corner with both elbows.",
+      "move": "The cake flies straight to the bandstand, where the mayor catches it in a hat.",
+      "gates_note": "satisfies_criterion false, the move skips the route between Rob and the bandstand",
+      "mechanism": "the cake has apparently learned to teleport, which is not a hand-off",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Fete Marshal",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound earnest about the cake, even when the situation is silly. The explanation should be gentle and easy to follow.",
+      "Name the hand-off, support, or place that matters. A headline that fits any fete is a bad headline.",
+      "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The Fete Marshal rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the move or the cake handling, not identity, family, body, intelligence, or spelling. Adult innuendo and mild profanity are allowed when they fit the fete.",
+      "Plain spoken English, a village official trying to keep order, not a storybook narrator. No poetry, no rhymes, no thesaurus words.",
+      "On a break, put the missing link or reversal beside the physical fact that makes it impossible.",
+      "On a refusal, reject the move and ask for another link. Do not pretend the player has lost if the gate alone failed.",
+      "The coaching line names one physical link that would have held and made the partner handle the mess. End on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "Rob has the icing with both elbows and the raffle tickets are now his problem. The cake is moving.",
+      "A tea tray under the board, buttercream on the tickets, and your partner is doing unpaid event work.",
+      "The board reaches the raffle table by hand, not magic, and the public disaster is beautifully specific.",
+      "The cake is safe on the tray, while your partner is holding the icing together with one palm and their dignity.",
+      "You named the next table and the hand-off. The sponge survives, though the raffle committee may not.",
+      "That loose cherry reached the lemonade table in a saucer. Nobody has dignity left, but the chain does.",
+      "The cake moves through the tea tent, and your partner is now responsible for a very sticky cup.",
+      "A hat is a poor tray, but it is still a tray when the bandstand is one careful step away.",
+      "You gave us a board, a gust, and a volunteer with no free hands. That is a proper village emergency.",
+      "The icing stays on because your partner is pressing it down. The applause can wait until the cake is parked."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds, the cake can move.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Fete Marshal rules that the chain is broken.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Teleportation detected.",
+        "why": "names no useful missing link and sounds like a system message"
+      },
+      {
+        "text": "Only an idiot would drop a cake like that.",
+        "why": "mocks the player instead of the move and uses a personal insult"
+      },
+      {
+        "text": "The sponge sails like a moonlit dream through the trembling air.",
+        "why": "uses poetry instead of plain physical explanation"
+      },
+      {
+        "text": "Well, perhaps it works if we imagine the tables are closer.",
+        "why": "hedges instead of making a fair ruling"
+      },
+      {
+        "text": "Accepted, though the elbows are a nice touch.",
+        "why": "starts with a status word and buries the reason"
+      },
+      {
+        "text": "The cake went back, so the chain is broken.",
+        "why": "too bare, with no named support or place to make the joke land"
+      },
+      {
+        "text": "You are a useless baker.",
+        "why": "attacks the player and adds no physical explanation"
+      },
+      {
+        "text": "The detail is inconsistent, contradictory, incompatible and false.",
+        "why": "uses four formal labels instead of naming the missing hand-off"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with a cake in trouble at a village fete. Keep the same cake moving through the scene.",
+    "One physical link per turn. Name who moves it, what supports it, and where it goes next.",
+    "Skip a hand-off, undo a support, or move the cake backwards without a new reason, and the chain breaks on the spot.",
+    "Points go to moves that make your partner handle the mess, the blame, the sticky object, or the public embarrassment.",
+    "Safe and vague links hold but score little. Specific and physically possible links score."
+  ],
+  "labels": {
+    "opening": "The cake emergency",
+    "next_opening": "The next cake emergency",
+    "your_opening": "Your cake emergency",
+    "compose": "Your link, after {token}",
+    "compose_waiting": "Plan your next hand-off while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing moved. The Fete Marshal is waiting.",
+    "too_long": "Over 140 characters. One physical link, not a full rescue plan.",
+    "duplicate": "That hand-off is already in the chain. Add a new one.",
+    "nudge": "Twice now. Add one physical link that continues {standing_form}. Do not repeat it, do not reverse it."
+  },
+  "judge_out_text": "The Fete Marshal has stepped away from the cake table. Nobody moves the sponge until they return. {standing_form} is still the last link.\n",
+  "opponent_prompt": "You are one of two volunteers at a village fete, trying to move one fragile cake through a\nwindy cake stall. One physical link per turn, in one or two plain sentences.\nNever skip a hand-off, move the cake backwards without a new reason, remove a support already\nused, or put the cake safely down before the chain is ready. Keep track of the full route, not\njust the last sentence. If your partner puts the cake on a tray at the raffle table, the next\nmove starts there.\nMake each link cost your partner something while staying physically possible. Give them the\nsticky board, the loose icing, the blame for a wobble, or a job that needs both hands. Call them\nmy mate here, he, or she, never a name unless one is already in the story.\nGood: \"Nell slides the cake board to Rob, who catches the loose corner with both elbows.\" /\n\"My mate here nudges it onto a tea tray, then carries it to the tea tent while apologising to\nthe woman holding the milk.\"\nBad: \"The cake flies to the bandstand\" because that skips the hand-off. Bad: \"We put it back on\nthe first table\" because that undoes the route. Bad: \"Actually the cake was already safe\" because\nthat removes the problem. Bad: \"Fete Marshal, you cannot prove anything\" because that talks about\nthe game instead of moving the cake.\nTalk like a person in a village marquee, not a novelist. Name hands, trays, aprons, tables,\nchairs, bunting, cups, and ordinary fete objects. Keep the cake in motion unless the chain is\nclearly ending. Never repeat a hand-off or support already used this match.\n",
+  "medallions": false,
+  "default_move": "My mate here slides the cake board onto a tea tray, keeping one thumb on the loose icing."
+}

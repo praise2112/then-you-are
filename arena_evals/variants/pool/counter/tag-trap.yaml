@@ -1,0 +1,312 @@
+schema_version: 1
+slug: tag-trap
+title: Tag, You’re It Until You’re Not
+tagline: Catch the playground before it gets away.
+emblem: 🛝
+accent: '#2563eb'
+premise: 'One playground thing is chasing another through words. On your turn, become something that can
+  catch or stop the current chaser, then explain the capture in one sentence.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: short_form
+  max_words: 3
+  axes:
+    playground_thing:
+    - ball
+    - swing
+    - slide
+    - gate
+    - bench
+    - rope
+    - kite
+    - puddle
+    motion:
+    - rolling
+    - swinging
+    - sliding
+    - climbing
+    - spinning
+    - bouncing
+    - drifting
+    - running
+    place:
+    - sandbox
+    - gate
+    - fence
+    - slide
+    - swings
+    - bench
+    - path
+    - playground
+  tests:
+  - A stranger pictures one ordinary playground thing at once. Nothing abstract, technical, or dependent
+    on a long backstory.
+  - A non-player names a plain way to catch or stop it within five seconds. Say what that way is.
+  - It can physically catch, pin, enclose, or stop the standing thing. A net catches a ball, a gate stops
+    a runner, and a box encloses a toy.
+  - It has a clear action and a little playground character. A thing that can tag, trap, block, or hold
+    is better than an object merely sitting nearby.
+  - One article and a few everyday words make the card. No proper nouns, brands, insults, or forms that
+    need a dictionary.
+demo:
+  opening:
+    token: a runaway ball
+    emoji: ⚽
+  moves:
+  - actor: p1
+    text: I am a runaway ball, bouncing toward the gate.
+    emoji: ⚽
+    scores: null
+  - actor: p2
+    text: I am a net, wrapping the ball before it reaches the fence.
+    emoji: 🔩
+    scores:
+      counter_strength: 4
+      coherence: 4
+      novelty: 3
+  headline: The ball met a net, which is how running ends when string has paperwork.
+  openings:
+  - token: a runaway ball
+    examples:
+    - I am a net, wrapping the ball before it reaches the fence.
+  - token: a swinging gate
+    examples:
+    - I am a net, wrapping the ball before it reaches the fence.
+move_constraints:
+  max_chars: 200
+  prefix: 'I am '
+  example: I am a net, wrapping the ball before it reaches the fence.
+  hint: Name the thing, then show the catch in one sentence.
+rubric:
+- name: counter_strength
+  description: How clearly the new playground thing physically catches, pins, encloses, or stops the standing
+    thing.
+  anchors: '0 = no capture or stopping action; 1 = a weak claim or mere presence; 2 = a possible but incomplete
+    capture; 3 = a clear physical counter that works; 4 = an immediate, airtight trap the standing thing
+    cannot escape (rare).
+
+    '
+  weight: 5
+- name: coherence
+  description: How easily a stranger can picture the new thing and the capture happening.
+  anchors: '0 = unreadable or self contradicting; 1 = needs unusual knowledge or explanation; 2 = understandable
+    but fuzzy or overloaded; 3 = clear and concrete; 4 = instantly visible, like a net over a ball (rare).
+
+    '
+  weight: 3
+- name: novelty
+  description: How fresh the counter is compared with the previous move, especially when it changes playground
+    territory.
+  anchors: '0 = the same trap, object, or obvious repeat; 2 = a decent variation; 4 = a surprising move
+    into a fresh playground domain that still works (rare).
+
+    '
+  weight: 2
+criterion:
+  verb: overcomes
+  inverse_verb: breaks against
+  description: 'A move OVERCOMES the standing thing if it physically catches, pins, encloses, or stops
+    it. The new thing must act on the standing thing. Running away, hiding, being too small to notice,
+    waiting for it to fail, or becoming a larger version of it does not count.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game, or talking about rules is itself
+    a losing move.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no previous move. Judge it against the opening card and ask whether the
+    form can physically catch, pin, enclose, or stop that opening thing.
+
+    '
+  - 'A larger, faster, heavier, or stronger version of the standing thing is not a counter. It is still
+    the same chase, with louder shoes.
+
+    '
+  - 'Becoming the opening thing itself, or a recoloured copy of it, is a duplicate and fails the novelty
+    gate.
+
+    '
+  - 'A form must have a physical way to act on what stands. A bench does not stop a ball merely because
+    it is nearby, and a shadow does not pin a runner.
+
+    '
+  - 'The mechanism must be literal and observable. A net wrapping a ball works. Friendship, guilt, a good
+    idea, or a playground rule does not physically catch anything.
+
+    '
+  - 'Surviving, ignoring, outrunning, hiding from, or being too small for the standing thing is dodging,
+    not overcoming. The new form must catch or stop it.
+
+    '
+  - 'A move that only describes what the standing thing already does fails. The new form must supply the
+    trap, block, enclosure, or pin.
+
+    '
+examples:
+- previous_move: I am a runaway ball, bouncing toward the gate.
+  move: I am a net, wrapping the ball before it reaches the fence.
+  gates_note: all true
+  mechanism: the net encloses and stops the ball
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 3
+  confidence: clear
+  verdict: accept
+- previous_move: I am a swinging gate, opening across the path.
+  move: I am a padlock, holding the gate shut.
+  gates_note: all true
+  mechanism: the padlock physically prevents the gate from opening
+  scores:
+    counter_strength: 4
+    coherence: 4
+    novelty: 2
+  confidence: clear
+  verdict: accept
+- previous_move: I am a climbing child, scrambling up the ladder.
+  move: I am a taller climber, reaching the top first.
+  gates_note: satisfies_criterion false, this only races or becomes a larger version
+  mechanism: no physical catch or stop
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 0
+  confidence: clear
+  verdict: fail
+- previous_move: I am a runaway ball, bouncing toward the gate.
+  move: I am a tiny pebble, hiding under the bench.
+  gates_note: satisfies_criterion false, hiding and being too small are not capture
+  mechanism: the pebble does not act on the ball
+  scores:
+    counter_strength: 0
+    coherence: 3
+    novelty: 2
+  confidence: clear
+  verdict: fail
+- previous_move: I am a spinning swing, circling over the sand.
+  move: I am a safety chain, holding the swing in place.
+  gates_note: all true
+  mechanism: the chain restrains and stops the swing
+  scores:
+    counter_strength: 3
+    coherence: 4
+    novelty: 3
+  confidence: lean
+  verdict: accept
+host:
+  persona_name: The Tired Recess Monitor
+  tone:
+    commentary_adj: world-weary
+    explanation_adj: dry
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke should carry the reason. A stranger should see how one playground thing caught or stopped
+    the other.
+  - Name both forms, or plain stand ins for them. The line should not fit every game in the park.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Tired Recess Monitor refuses.
+  - No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.
+  - Mock the move, never the player. No comments about bodies, families, intelligence, spelling, identity,
+    or personal traits.
+  - Use plain spoken English. No poetry, rhymes, profanity, innuendo, or fancy vocabulary.
+  - On a refusal caused by a gate failure, refuse the move and ask for another. Do not declare a winner.
+  - The coaching line names one form that could have won. It ends on a physical fact or action, never
+    a mood or verdict.
+  - Keep the weariness aimed at the move. The playground has seen this trick before and is not impressed.
+  good_headlines:
+  - The ball met a net, which is how running ends when string has paperwork.
+  - The gate wanted freedom, but the padlock had already filed the appeal.
+  - The climbing child found a rope around the ladder. Recess remains strangely organized.
+  - A bigger ball is still a ball. Bring something that can stop it.
+  - The pebble hid under the bench while the ball rolled past, untouched and unimpressed.
+  - The chain stopped the swing. At last, one piece of playground equipment accepted supervision.
+  - The box closed around the toy, a small victory for four cardboard walls.
+  - The shadow watched the runner escape. Observing is not the same as tagging.
+  - The fence blocked the kite, and the kite will now be discussing this with the wind.
+  - The runner brought speed. The gate brought hinges. The hinges won.
+  bad_headlines:
+  - text: 'Accepted: the net catches the ball.'
+    why: opens with a status word and gives a flat reason
+  - text: 'The Tired Recess Monitor refuses: that was not a trap.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, try harder next time.
+    why: opens with a ruling phrase and gives no useful picture
+  - text: The ball is defeated by an extremely superior and magnificent net.
+    why: uses inflated praise instead of a plain physical action
+  - text: The gate may or may not have been stopped by the lock.
+    why: hedges instead of giving a clear ruling
+  - text: You are bad at this.
+    why: mocks the player rather than the move
+  - text: The swing doth yield unto the noble chain.
+    why: uses poetry and antique language
+  - text: The ball was caught, trapped, enclosed, pinned, stopped, and defeated.
+    why: lists synonyms instead of giving one clean picture
+  - text: The tiny pebble wins by being beneath notice.
+    why: treats dodging and being too small as a physical capture
+  - text: The runner loses because they are ridiculous.
+    why: attacks a person and gives no mechanism
+rules:
+- Catch or stop the form in front of you. Do not become it.
+- Say what you are and how you catch it in one sentence.
+- The Judge rules on the physical idea, never the spelling.
+- One move that fails to catch or stop the standing form ends the match.
+labels:
+  opening: The opening
+  next_opening: The next opening
+  your_opening: Your opening
+  compose: Your form against {token}
+  compose_waiting: Draft your next trap while you wait
+validation_messages:
+  empty: Nothing on the page. Put a trap in the playground.
+  too_long: Over 200 characters. A capture, not a recess report.
+  duplicate: That form already stood this match. Bring something new.
+  nudge: Twice now. Stop {standing_form}. Do not become it, dodge it, or repeat it.
+judge_out_text: 'The judge has stepped out. Nobody moves until they are back. {standing_form} still stands.
+  Give it a minute.
+
+  '
+opponent_prompt: 'You are one of two playground things chasing each other through words.
+
+  Always write: "I am X, doing Y to Z." The move must say what you are and
+
+  show how you physically catch, pin, enclose, or stop the other form.
+
+  Good: "I am a net, wrapping the ball before it reaches the fence."
+
+  Good: "I am a padlock, holding the gate shut."
+
+  Bad: "I am faster than the ball" because speed is not a trap.
+
+  Bad: "I am a shadow, watching the runner" because watching is not stopping.
+
+  Bad: "I am a bigger ball" because a larger version is still the same chase.
+
+  Talk like a person across a playground, not a poet or a rulebook. Use plain
+
+  things anyone can picture, such as a net, gate, rope, box, bench, fence, or
+
+  chain. The mechanism must be literal and visible. No metaphors, moods, threats,
+
+  commentary about the game, or speeches to the Judge.
+
+  On the first move, overcome the opening card. After that, overcome the current
+
+  standing form. Never reuse a form or a capture mechanism from this match.
+
+  '
+guess: null
+medallions: true
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: I am a net, wrapping the runaway thing before it reaches the gate.
+seed_pool:
+  - { opening_token: "a runaway ball", opening_emoji: "⚽" }
+  - { opening_token: "a swinging gate", opening_emoji: "🚪" }
+  - { opening_token: "a climbing child", opening_emoji: "🧗" }

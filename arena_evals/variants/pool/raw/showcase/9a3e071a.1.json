@@ -1,0 +1,275 @@
+{
+  "slug": "office-omen",
+  "title": "Office Omen",
+  "tagline": "Every job has a warning sign. Some come with dental records.",
+  "emblem": "🔮",
+  "accent": "#8b5f78",
+  "premise": "Three rounds. Each round deals a plain job title. Both players write one ominous sign from that workday, strange, specific, and just believable enough that a tired worker might nod instead of calling security. The Judge scores each omen. Then each player sees the other's omen and calls which one came from the House. Then the bad sign is read out.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Dentist",
+      "opening_emoji": "🦷",
+      "detail": "a person who examines and treats teeth",
+      "hidden": "When the patient’s toothache whispers your name, cancel lunch and inspect the X-ray twice."
+    },
+    {
+      "opening_token": "Librarian",
+      "opening_emoji": "📚",
+      "detail": "a person who manages a library and helps people find books",
+      "hidden": "If every returned book is open to the same blank page, stop shelving and check who has been borrowing silence."
+    },
+    {
+      "opening_token": "Meteorologist",
+      "opening_emoji": "🌦️",
+      "detail": "a person who studies and forecasts the weather",
+      "hidden": "When the rain map shows one dry footprint moving across the city, delay the forecast and lock the studio door."
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 1,
+    "axes": {
+      "job_family": [
+        "care",
+        "education",
+        "science",
+        "trade",
+        "transport",
+        "food",
+        "law",
+        "media"
+      ],
+      "omen_source": [
+        "tool",
+        "customer",
+        "document",
+        "machine",
+        "animal",
+        "sound",
+        "weather",
+        "schedule"
+      ],
+      "mood": [
+        "quietly wrong",
+        "absurd",
+        "clinical",
+        "superstitious",
+        "urgent",
+        "domestic",
+        "bureaucratic",
+        "eerily polite"
+      ]
+    },
+    "tests": [
+      "The card is a recognizable job title, not a department, company, object, or vague role.",
+      "The omen points to a real task, tool, customer, document, machine, or setting belonging to the job.",
+      "The sign feels ominous without requiring violence, gore, or a supernatural explanation.",
+      "The card invites a specific one sentence warning rather than a general complaint about employment.",
+      "The job title can be understood by a stranger without specialist knowledge."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "When the patient’s toothache whispers your name, cancel lunch and inspect the X-ray twice.",
+    "hint": "One sentence. Name the job’s bad sign and make it specific."
+  },
+  "rubric": [
+    {
+      "name": "believable",
+      "description": "Could this pass as a troubling thing that might genuinely happen during that job?",
+      "anchors": "0 = unrelated fantasy or pure nonsense; 1 = technically possible but wildly untethered; 2 = plausible with a generous shrug; 3 = a tired worker might quietly accept it; 4 = specific enough to feel like a real workplace warning (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the omen earn a laugh through its strange detail without dissolving into a punchline?",
+      "anchors": "0 = no spark; 1 = a faint twitch; 2 = a good little unease; 3 = a clear laugh; 4 = funny enough to alarm the break room while still sounding like an omen (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "dictionary_shaped",
+      "description": "Does it read as a clean, compact one sentence describing a sign and its consequence?",
+      "anchors": "0 = not an omen or not a sentence; 1 = a vague warning or workplace anecdote; 2 = a recognizable omen with padding; 3 = concise, specific, and complete; 4 = polished enough for a handbook nobody should have written (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "An omen PLAYS if it gives a sign or warning tied to a real task, tool, customer, document, machine, or setting of the dealt job. It should describe what makes the sign bad or what the worker should do about it. Invented details and supernatural touches are allowed when the job connection remains clear. It fails when it is merely a joke about the job, a general complaint, a random spooky event, a sentence that only uses the job title, or an omen with no meaningful connection to the work.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, about the game, or about the rules is itself a losing omen.\n",
+    "judge_notes": [
+      "Judge the first move on its own against the dealt job. Do not compare it with the other player's omen when deciding whether it plays.\n",
+      "A real workplace detail can support an invented warning. A dentist omen may involve an X-ray, chair, drill, patient, tooth, or appointment, but it must make that detail ominous rather than merely mention it.\n",
+      "A broad complaint such as the job is cursed or everyone hates Mondays fails because it gives no sign tied to the work.\n",
+      "A joke about the job, a comment about the player, or a story with no warning fails because it is not an omen.\n",
+      "A random ghost, animal, smell, or disaster fails when it has no meaningful connection to a real task, tool, customer, document, machine, or setting of the job.\n",
+      "A sentence that merely uses the job title or names a workplace without giving a sign fails. The omen must tell us what appears wrong and why the worker should notice.\n",
+      "A terse warning can play if it clearly identifies a job related sign. It scores low on dictionary_shaped, not zero on everything.\n",
+      "A question or hedge can still play if it offers a clear omen, but believable and dictionary_shaped score low. A question with no sign or warning fails.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Dentist",
+      "move": "When the patient’s toothache whispers your name, cancel lunch and inspect the X-ray twice.",
+      "gates_note": "all true",
+      "mechanism": "a familiar dental task becomes ominous through one precise impossible detail",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Librarian",
+      "move": "If every returned book is open to the same blank page, stop shelving and check who has been borrowing silence.",
+      "gates_note": "all true",
+      "mechanism": "the library task is concrete, while the blank page gives the warning a quietly ridiculous edge",
+      "scores": {
+        "believable": 3,
+        "funny": 4,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Dentist",
+      "move": "Dentists should never trust Tuesdays because teeth are basically tiny calendars.",
+      "gates_note": "satisfies_criterion false, a general joke with no sign tied to a real work event",
+      "mechanism": "it makes a dental joke but offers no ominous sign or consequence",
+      "scores": {
+        "believable": 0,
+        "funny": 2,
+        "dictionary_shaped": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Meteorologist",
+      "move": "A black cat crosses the studio, so the city will experience weather.",
+      "gates_note": "satisfies_criterion false, a random spooky event with no meaningful meteorological connection",
+      "mechanism": "the cat has wandered into the forecast without bringing a usable warning",
+      "scores": {
+        "believable": 0,
+        "funny": 1,
+        "dictionary_shaped": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Librarian",
+      "move": "When the overdue notice prints your own name, stop renewing books and count the empty chairs.",
+      "gates_note": "all true",
+      "mechanism": "a routine library document turns into a precise warning with a clear workplace action",
+      "scores": {
+        "believable": 3,
+        "funny": 3,
+        "dictionary_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Workplace Oracle",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A reader who sees only the job and omen should understand why it works or fails.",
+      "Name the job, or the omen’s key workplace detail. A headline that fits every office is a horoscope for nobody.",
+      "Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Workplace Oracle refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the omen, never the player. Light jabs are welcome, but no identity based abuse, family insults, body comments, or profanity.",
+      "Plain spoken English. No poetry, no rhymes, no French, no grand mystical fog.",
+      "Never reveal or hint at the hidden omen in the headline. The reveal is a separate beat.",
+      "On a refusal, the headline refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one workplace detail that would have made the omen play. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The X-ray has a whisper, which is more than most patients offer before lunch.",
+      "Blank pages in every returned book, and suddenly shelving looks like an investigation.",
+      "The rain map has a footprint. Forecasting has finally become a footnote.",
+      "A printer with your name on it is not office stationery, it is a small administrative threat.",
+      "The cat is spooky, but it has not touched the weather station. Bring evidence from the job.",
+      "The drill is humming in a voice, which is exactly why dentists get paid more than poets.",
+      "A missing appointment is ordinary. A missing appointment that keeps ringing is not.",
+      "The spreadsheet blinked first, and now accounting has a reason to fear cell references.",
+      "The library has discovered silence, and naturally it has overdue fees.",
+      "A forecast needs weather, not a cat with excellent timing."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the X-ray omen works.",
+        "why": "opens with a status word"
+      },
+      {
+        "text": "The Workplace Oracle refuses: that is not an omen.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Move refused, try mentioning the job.",
+        "why": "opens with a ruling phrase"
+      },
+      {
+        "text": "The real dentist omen is about a whispering tooth.",
+        "why": "reveals the hidden truth in the headline"
+      },
+      {
+        "text": "Spooky.",
+        "why": "no reason, no job detail, and barely a thought"
+      },
+      {
+        "text": "Only an idiot would write that.",
+        "why": "mocks the player instead of the omen"
+      },
+      {
+        "text": "O restless cubicle, thy fluorescent stars foretell a paper storm.",
+        "why": "poetry and needless theatrical fog"
+      },
+      {
+        "text": "This is plausible, believable, credible, and convincing.",
+        "why": "four bland labels instead of one useful picture"
+      },
+      {
+        "text": "Better than the other player's warning.",
+        "why": "judges the pair instead of explaining this omen"
+      },
+      {
+        "text": "Nice omen.",
+        "why": "no reason, no workplace detail, no bite"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one plain job title each.",
+    "Write one sentence describing the job’s bad sign. Tie it to a real task, tool, customer, document, machine, or setting.",
+    "Then call which of two omens came from the House. Right, and the points are yours. Fooled, and they go to the House.",
+    "Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The job",
+    "next_opening": "The next job",
+    "your_opening": "Your job",
+    "compose": "Your omen for {token}",
+    "compose_waiting": "Draft the omen while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Give the job a bad sign.",
+    "too_long": "Over 160 characters. An omen, not an incident report.",
+    "duplicate": "That omen has already been played this match. Find a fresh warning.",
+    "nudge": "Twice now. One sentence naming a workplace sign tied to {standing_form}."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} waits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are the bluffer. Write one fake workplace omen for the dealt job.\nThe two omens sit side by side, so make yours sound like a real warning from that workday, not a random ghost story wearing a lanyard.\nWrite one sentence. Name a sign and make clear why the worker should notice it or what they should do next.\nTie the omen to a real task, tool, customer, document, machine, or setting of the job. Invented details are welcome, but the job connection must remain visible.\nSound specific rather than grand. A strange printer message, an impossible appointment, a tool making the wrong sound, or a document containing one troubling detail will beat a vague curse every time.\nDo not write a general complaint about the job. Do not merely mention the job title. Do not explain that you are bluffing, guessing, or playing a game.\nYou may use supernatural or absurd details, but keep the omen mild and workplace shaped. No gore, threats, or identity based insults.\nDo not reuse a meaning or warning pattern from an earlier round. Vary the source of the omen from round to round, such as a tool, customer, document, machine, animal, sound, weather, or schedule.\nDo not use quotation marks around the omen. Do not hedge. Do not address the Judge or the other player.\n",
+  "medallions": true,
+  "default_move": "When the office clock loses one minute every time you look away, reschedule the meeting and check who approved the calendar."
+}

@@ -1,0 +1,325 @@
+schema_version: 1
+slug: signs-of-the-times
+title: Signs of the Times
+tagline: Make the sign make sense.
+emblem: 🪧
+accent: '#b56b45'
+premise: 'Three rounds. Each round shows a real place name and its country or state. Both players invent
+  a ridiculous local origin story in two sentences, using the name''s key words as concrete clues. The
+  Host, who knows the checkable origin, scores each story for plausibility, comic charm, and name fit.
+  Then the real origin is revealed.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: short_form
+  max_words: 4
+  axes:
+    place_type:
+    - village
+    - town
+    - city
+    - hamlet
+    - island
+    - valley
+    - crossroads
+    - neighborhood
+    name_shape:
+    - food word
+    - emotion word
+    - animal word
+    - verb phrase
+    - person name
+    - paired nouns
+    - adjective and noun
+    - odd proper name
+    origin_kind:
+    - family name
+    - landscape feature
+    - local joke
+    - translation
+    - nickname
+    - famous event
+    - misheard phrase
+    - commercial stunt
+  tests:
+  - The place name is real and the card gives enough public information to invent a story without revealing
+    the answer.
+  - The card is short enough to remember and contains a clear name shape that a player can turn into concrete
+    clues.
+  - The hidden truth is a checkable origin, not merely a loose association or a modern folk tale.
+  - The real origin differs enough from the obvious reading to reward a good bluff.
+  - The place name can support a two-sentence story that sounds locally plausible and lightly ridiculous.
+demo:
+  opening:
+    token: Bacon, Indiana
+    emoji: 🥓
+  moves:
+  - actor: p1
+    text: Bacon, Indiana
+    emoji: 🥓
+    scores: null
+  - actor: p2
+    text: A farmer found a slab of bacon nailed to his fence after a prank. The joke stuck, and so did
+      the name.
+    emoji: 🗣️
+    scores:
+      believable: 3
+      funny: 3
+      dictionary_shaped: 4
+  headline: Bacon made the fence famous, and Indiana finally got a useful breakfast clue.
+  openings:
+  - token: Bacon, Indiana
+    examples:
+    - A farmer found a slab of bacon nailed to his fence after a prank. The joke stuck, and so did the
+      name.
+  - token: Truth or Consequences, New Mexico
+    examples:
+    - A farmer found a slab of bacon nailed to his fence after a prank. The joke stuck, and so did the
+      name.
+move_constraints:
+  max_chars: 160
+  prefix: ''
+  example: A farmer found a slab of bacon nailed to his fence after a prank. The joke stuck, and so did
+    the name.
+  hint: Two sentences. Use the name as evidence, not decoration.
+rubric:
+- name: believable
+  description: Could this genuinely be the sort of local story that ended up on a town sign or in a county
+    history?
+  anchors: '0 = impossible or unrelated; 1 = a pub tale with no legs; 2 = plausible in the right light;
+    3 = a stranger might repeat it as fact; 4 = it sounds ready for a plaque, though the absurdity remains.
+
+    '
+  weight: 6
+- name: funny
+  description: Does the origin story make the name amusing without turning into random nonsense?
+  anchors: '0 = no comic spark; 1 = a small grin; 2 = a neat chuckle; 3 = a proper laugh; 4 = gloriously
+    silly while still sounding like local history.
+
+    '
+  weight: 3
+- name: dictionary_shaped
+  description: Does the story cleanly account for the exact name, in its stated order, with both words
+    doing useful work?
+  anchors: '0 = the name is ignored or merely repeated; 1 = one clue is decorative; 2 = both clues appear
+    but the link is loose; 3 = the name follows clearly from the tale; 4 = every word clicks into place
+    with tidy inevitability.
+
+    '
+  weight: 1
+criterion:
+  verb: passes as
+  inverse_verb: gives itself away against
+  description: 'A story PLAYS if it offers a plausible origin for the exact place name in the card, in
+    two sentences, using the name''s key words as concrete clues and keeping them recognizable and in
+    the stated order. It fails when it does not explain how the name arose, ignores a key word, changes
+    the order so the sign no longer follows, gives only a joke or comment, or tells a story unrelated
+    to the place name. An unlikely but complete origin still plays and scores low on believable. Landing
+    close to the real origin is not a fail: it plays.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Host, describing the game, or discussing the rules instead
+    of telling an origin story is itself a losing move.
+
+    '
+  judge_notes:
+  - 'Judge the first move on its own. The player has only the public place name and detail, so reward
+    a coherent invented origin, not knowledge of the hidden truth.
+
+    '
+  - 'The story must explain how the exact name arose. A funny scene that never accounts for the sign is
+    not enough.
+
+    '
+  - 'Both key words must do concrete work, and they must remain recognizable and in the stated order.
+    A story about bacon that never explains Indiana fails for Bacon, Indiana.
+
+    '
+  - 'A one sentence answer or a three sentence answer fails the move shape. Do not rescue it because the
+    idea is good.
+
+    '
+  - 'A bare phrase, a reaction, or a question with no origin story fails. A complete story with awkward
+    wording still plays and may score low on dictionary_shaped.
+
+    '
+  - 'Changing a word into an unrelated synonym does not explain the exact sign. Small grammatical changes
+    are fine when the name remains plainly identifiable.
+
+    '
+  - 'The real origin is supplied only for comparison after scoring. Do not reward closeness to the truth
+    on the rubric, and do not fail a story merely because it accidentally lands near it.
+
+    '
+  - 'Both players answer the same place name. Judge each story on its own; one player''s answer is not
+    the standard for the other.
+
+    '
+examples:
+- previous_move: Bacon, Indiana
+  move: A farmer found a slab of bacon nailed to his fence after a prank. The joke stuck, and so did the
+    name.
+  gates_note: all true
+  mechanism: both name words become concrete clues in a compact local legend
+  scores:
+    believable: 3
+    funny: 3
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Truth or Consequences, New Mexico
+  move: A judge made every settler choose truth or consequences at the courthouse door. New Mexico kept
+    the name after nobody could agree which punishment was worse.
+  gates_note: all true
+  mechanism: the phrase becomes a civic ritual and New Mexico anchors the setting
+  scores:
+    believable: 3
+    funny: 3
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Dull, Scotland
+  move: The village held a competition for the dullest story in Scotland. The winner was so uneventful
+    that the judges named the place Dull.
+  gates_note: satisfies_criterion false, only one key name word is supplied
+  mechanism: Scotland is reduced to a setting and never helps explain the exact sign
+  scores:
+    believable: 1
+    funny: 3
+    dictionary_shaped: 1
+  confidence: clear
+  verdict: fail
+- previous_move: Bacon, Indiana
+  move: Indiana is a state with excellent breakfast customs. Bacon.
+  gates_note: satisfies_criterion false, not a two-sentence origin story
+  mechanism: it comments on the name instead of explaining how a sign arose
+  scores:
+    believable: 0
+    funny: 1
+    dictionary_shaped: 0
+  confidence: clear
+  verdict: fail
+- previous_move: Truth or Consequences, New Mexico
+  move: A miner found a truth telling spring beside a mine called Consequences. The nearby New Mexico
+    camp took both names when the mine flooded.
+  gates_note: all true
+  mechanism: each name segment names a local object and the disaster supplies a believable naming moment
+  scores:
+    believable: 2
+    funny: 2
+    dictionary_shaped: 4
+  confidence: clear
+  verdict: accept
+host:
+  persona_name: The Sign Painter
+  tone:
+    commentary_adj: affectionate
+    explanation_adj: gentle
+  bite: playful
+  ruling_generosity: merciful
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A reader should see how the story built the sign, even while chuckling
+    at the locals.
+  - Name the place or the story's best object. A headline that fits every town has no business on a sign.
+  - Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused, or
+    The Sign Painter refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Tease the tale and, when needed, the player's scenic choices. Roast-level jabs are fine, but no identity-based
+    abuse and no cruelty about real vulnerability.
+  - Plain spoken English. Affectionate, brisk, and a little cheeky. Profanity and adult innuendo are allowed
+    when they improve the joke.
+  - Never reveal or hint at the real origin in the headline. The reveal is a separate beat.
+  - On a refusal, the headline refuses the story and asks for another. It never rules on who won.
+  - The coaching line names one concrete change that would have made the story play. It ends on a fact
+    or an action, never a mood or a verdict.
+  good_headlines:
+  - Bacon made the fence famous, and Indiana finally got a useful breakfast clue.
+  - Truth or consequences at the courthouse is local government with a dirty little grin.
+  - The miner found a spring, a mine, and apparently no editor for that sentence.
+  - Dull has a fine joke, but Scotland wandered off before the sign was finished.
+  - A flooded mine is a strong naming ceremony, provided the town survives the paperwork.
+  - The bacon is doing honest work, unlike the farmer who nailed it there.
+  - Two words, one civic ritual, and enough courthouse drama to sell postcards.
+  - A town named after a prank, which is how half of local history gets started.
+  - The story has mud on its boots and a proper reason for every word on the sign.
+  - That village tale is nearly plaque ready, though the plaque may need a smirk.
+  bad_headlines:
+  - text: 'Accepted: the bacon prank works.'
+    why: opens with a status word
+  - text: 'The Sign Painter refuses: that is not an origin story.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, try again.
+    why: opens with a ruling phrase and gives no useful reason
+  - text: Bacon, Indiana was really named for the Bacon family.
+    why: reveals the hidden truth in the headline
+  - text: Good story.
+    why: no reason, no place, no picture
+  - text: Only an idiot would forget Indiana.
+    why: mocks the player with an identity based or personal insult
+  - text: O mighty town, thy sign doth shimmer through the ages.
+    why: poetry instead of plain spoken commentary
+  - text: Plausible, credible, believable, and convincing.
+    why: four labels for one idea, no joke or image
+  - text: Better than the other player's story.
+    why: judges the pair instead of explaining this story
+  - text: The town was named by history, destiny, and a very special vibe.
+    why: vague enough to fit any place and reveals nothing useful
+rules:
+- Three rounds, one real place name each.
+- Write one two-sentence origin story for the sign. Use every key word as a concrete clue, and keep the
+  name words recognizable and in order.
+- The Host scores each story for believable, funny, and dictionary shaped. Then the real, checkable origin
+  is revealed.
+- Most points after three rounds wins.
+labels:
+  opening: The sign
+  next_opening: The next sign
+  your_opening: Your sign
+  compose: Your origin for {token}
+  compose_waiting: Invent the local story while you wait
+validation_messages:
+  empty: Nothing on the sign yet. Tell us how the place got its name.
+  too_long: Over 320 characters. This is a local legend, not the county archive.
+  duplicate: That origin has already been played this match. Find another scandal for the sign.
+  nudge: Twice now. Give {standing_form} a two-sentence origin story using every name word.
+judge_out_text: 'The judge has stepped out. Nobody repaints the sign until they are back. {standing_form}
+  waits on the post. Give it a minute.
+
+  '
+opponent_prompt: 'You are the local storyteller. Write one invented origin story that could plausibly
+  explain the exact place name.
+
+  Use two sentences, no more and no fewer. Put every key word of the place name into the story as a concrete
+  clue, and keep those words recognizable and in their stated order.
+
+  Make the tale ridiculous but locally plausible. A farmer, clerk, preacher, miner, mayor, dog, flood,
+  prank, feud, or badly painted sign may help. The name should feel like the natural result of the incident,
+  not a word you pasted on at the end.
+
+  The public detail tells you what kind of place it is, not the true origin. Do not repeat the card as
+  a question or comment. Do not address the Host or explain your strategy.
+
+  You are bluffing. The real origin is given to you so you can avoid copying it: never state it, paraphrase
+  it, or use the same event and purpose. Invent a different local cause.
+
+  Keep both sentences short enough to sound like a story someone would tell at a pub or put in a county
+  booklet. Do not use dashes as punctuation. Do not use quotation marks around the story.
+
+  '
+guess:
+  spot_points: 10
+  fool_points: 10
+  prompt: One of these is the real entry. Call it.
+medallions: true
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: A traveling sign painter found a tin of bacon beside an Indiana boundary marker. He copied
+  both clues onto the board before anyone could admit the joke.
+seed_pool:
+  - { opening_token: "Bacon, Indiana", opening_emoji: "🥓", detail: "a town in the United States", hidden: "named for the Bacon family, early settlers in the area" }
+  - { opening_token: "Truth or Consequences, New Mexico", opening_emoji: "⚖️", detail: "a city in the United States", hidden: "renamed in 1950 after the radio quiz show Truth or Consequences, whose host promised to broadcast from the first town that adopted the name" }
+  - { opening_token: "Dull, Scotland", opening_emoji: "😐", detail: "a village in Scotland", hidden: "the name comes from the Gaelic word Dail, meaning a haugh or meadow, and is unrelated to the English word dull" }

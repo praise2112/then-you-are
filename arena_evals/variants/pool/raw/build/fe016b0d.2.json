@@ -1,0 +1,278 @@
+{
+  "slug": "cover-story-ladder",
+  "title": "Cover Story Ladder",
+  "tagline": "One excuse, twelve rungs, zero chance your partner looks normal.",
+  "emblem": "🪜",
+  "accent": "#7c3aed",
+  "premise": "The teacher asks a plain question. You and a classmate are building one answer, rung by rung. Add the next natural detail to the same cover story. Every rung must grow from what came before. Skip a link, jump to the ending, undo a fact, or make the story collapse, and you lose on the spot. The points go to details that make your partner sound like a complete disaster.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The teacher asks why neither of you brought the group poster.",
+      "opening_emoji": "📋",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The teacher asks why your homework is covered in soup.",
+      "opening_emoji": "🥣",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The teacher asks why you arrived late with one wet shoe and a missing backpack.",
+      "opening_emoji": "👟",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 23,
+    "axes": {
+      "teacher_question": [
+        "why the poster is missing",
+        "why the homework is soaked",
+        "why the model is broken",
+        "why the lunch is in the science room",
+        "why the class list has vanished",
+        "why the uniform is covered in paint",
+        "why the project file is empty",
+        "why the library book smells of smoke"
+      ],
+      "starting_problem": [
+        "we missed the bus",
+        "the dog got out",
+        "the rain started",
+        "the lift stopped",
+        "the bag split open",
+        "the key broke",
+        "the parcel went missing",
+        "the alarm would not stop"
+      ],
+      "school_setting": [
+        "outside the school gate",
+        "at the bus stop",
+        "in the kitchen",
+        "in the stairwell",
+        "at the corner shop",
+        "in the park",
+        "on the front path",
+        "in the library"
+      ]
+    },
+    "tests": [
+      "One plain sentence in which a teacher asks about a missing, damaged, late, or misplaced school thing.",
+      "The problem is awkward but harmless. No serious crime, injury, abuse, or real person is named.",
+      "A player can begin with a short answer that naturally invites a next question such as why, then what, or where.",
+      "The situation has room for at least five linked rungs before the final explanation.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or specialist school rules."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Because the dog got out while we were leaving, and my mate here chased it into the allotments.",
+    "hint": "Answer the next obvious question. Add one rung, keep the same lie, and make your partner look worse."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How badly this rung burdens your partner with an embarrassing, specific, or difficult detail to carry next.",
+      "anchors": "0 = hurts nobody, a normal delay or a missing pencil; 1 = a small nuisance; 2 = your partner owns an awkward choice or chore; 3 = they now carry a vivid disaster, a witness, or a humiliating habit; 4 = believable, savage, and the next rung is a narrow ledge over a bin fire, rare. A detail that mainly embarrasses you scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the rung answers the next natural question and grows from the exact story already built.",
+      "anchors": "0 = skips ahead, contradicts a fact, gives the ending, or starts another story; 1 = vaguely related but leaves the obvious question hanging; 2 = answers the next question and keeps the thread; 3 = answers it while adding a clear link, place, object, or person; 4 = makes the earlier rung suddenly click without jumping the ladder, rare. More words do not earn more points.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the rung makes the excuse feel like a real school disaster rather than wet cardboard.",
+      "anchors": "0 = bland filler anyone could say; 1 = one plain fact; 2 = a thing you can picture; 3 = a thing you can picture and hear or smell; 4 = so specific the teacher can practically see the mess, rare. Plain, nasty little facts beat fancy writing.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it answers the next natural question raised by the current cover story and adds one rung to the same explanation. It must preserve every established fact, keep the same situation, and leave a clear next question. A move BREAKS if it skips an obvious middle link, gives the final answer before the ladder reaches it, replaces an established detail, contradicts the story, or ends the explanation instead of climbing it. A move that merely repeats the last rung without adding anything is a duplicate. Holding is the gate. The points go to what the rung does to the partner: a believable embarrassment, ugly chore, witness, smell, noise, or specific mistake scores high. A safe rung that costs nobody anything scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Teacher about the game, the rules, the scoring, or how the partner is playing, instead of adding the next rung, is itself a broken story.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier rung: judge it against the card alone. It must give the first answer, not the whole explanation, and it must leave a natural next question.",
+      "The full transcript is the ladder. Check the new rung against every earlier rung, not only the last one.",
+      "Break only for a plain skipped link, ending, undo, contradiction, or replacement that a teacher would notice. Never demand a particular wording when two links are equally natural.",
+      "A move may add a person, place, object, or consequence if it answers the next question. It may not leap from the opening problem straight to a complete final explanation.",
+      "A move that says the final answer, such as we left it at home, when the ladder has only established a starting problem, skips the middle and fails.",
+      "A move that says the opposite of an established fact, such as changing a dog into a cat or morning into afternoon, fails even if the new detail is funny.",
+      "A move that replaces an established detail instead of building on it fails. Saying it was the bus after the story established a broken key is not a new rung.",
+      "A move that merely repeats an earlier rung in other words is a duplicate: not_semantic_duplicate is false.",
+      "A detail about the partner, including what they did, dropped, broke, blamed, or smelled like, is the point of the game and is never a meta move. A remark about the partner's playing is a meta move."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The teacher asks why neither of you brought the group poster.",
+      "move": "We missed the bus because my mate here was chasing the dog out of the garden.",
+      "gates_note": "all true",
+      "mechanism": "gives the first answer and the cause, while leaving the obvious question of what happened to the dog",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "We missed the bus because my mate here was chasing the dog out of the garden.",
+      "move": "The dog ran under the shed, and he crawled after it with the poster tucked under his jumper.",
+      "gates_note": "all true",
+      "mechanism": "answers where the dog went and loads the partner with a ridiculous but usable new problem",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The dog ran under the shed, and he crawled after it with the poster tucked under his jumper.",
+      "move": "The poster got muddy when he pulled the dog out, and the corner tore on a nail.",
+      "gates_note": "all true",
+      "mechanism": "answers what happened under the shed and keeps the poster problem moving without handing over the ending",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "We missed the bus because my mate here was chasing the dog out of the garden.",
+      "move": "We put the finished poster on the teacher's desk before school and went to maths.",
+      "gates_note": "satisfies_criterion false, the move gives a complete ending before the ladder has built the missing links",
+      "mechanism": "jumps from the first cause to the final answer and skips the dog, shed, damage, and missing poster links",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The dog ran under the shed, and he crawled after it with the poster tucked under his jumper.",
+      "move": "Actually it was my sister's cat, and the poster stayed in my locker.",
+      "gates_note": "satisfies_criterion false, the move replaces the dog and contradicts the established poster location",
+      "mechanism": "throws the whole ladder into a different animal and reverses what was being carried",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Vice Principal",
+    "tone": {
+      "commentary_adj": "hyperactive",
+      "explanation_adj": "amped"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Bring hype like the fire alarm has opinions. The joke must still show exactly why the rung held or broke.",
+      "Name the rung, object, place, or partner disaster. Generic school sarcasm is weak sauce.",
+      "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Vice Principal rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the story and the partner's fictional mess, not identity, body, family, intelligence, or spelling. Adult innuendo is allowed, but keep it non graphic.",
+      "Plain spoken English with loud hallway energy, not a speech, poem, or crime novel.",
+      "On a break, put the two incompatible facts or the skipped rung side by side. Make the missing step impossible to miss.",
+      "On a refusal from a gate failure, reject the move and ask for the next rung. Do not pretend the ladder has judged a winner.",
+      "The coaching line names one next detail that would have held and made the partner suffer. End on a fact, never a mood.",
+      "Savage does not mean vague. If a stranger cannot see the rung that failed, the headline failed too."
+    ],
+    "good_headlines": [
+      "The dog is under the shed, not magically at the final answer. Give me the muddy middle before you declare the poster dead.",
+      "He crawled under a shed with the poster in his jumper. That is a rung, a stain, and a terrible life choice.",
+      "The corner tore on a nail after the dog fight. Your partner now owns the nail, the mud, and the teacher's eyebrow.",
+      "You jumped from missed bus to finished poster on the desk. That is not a ladder, that is falling down stairs.",
+      "The cat has entered, the dog has vanished, and the poster changed lockers. Pick one disaster and climb it.",
+      "The torn corner answers what happened under the shed. Your partner is now carrying a poster and the dignity of a damp sock.",
+      "A normal excuse would stop at missed bus. You added a dog, a shed, and a jumper, so naturally the teacher wants more.",
+      "You said the poster stayed in the locker after saying it was under his jumper. Even the paper trail is screaming.",
+      "The bag split, the homework hit the soup, and your partner still has to explain the spoon. Beautifully awful.",
+      "You gave the ending before the middle. The ladder has three rungs missing and one of you is wearing the principal's disappointment."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted, great rung.",
+        "why": "opens with a status word and says nothing specific"
+      },
+      {
+        "text": "Broken: this does not work.",
+        "why": "opens with a ruling phrase and gives no reason"
+      },
+      {
+        "text": "Epic fail, you idiot.",
+        "why": "mocks the player and names no failed detail"
+      },
+      {
+        "text": "The narrative collapses into an ontological abyss.",
+        "why": "uses fancy nonsense instead of plain school language"
+      },
+      {
+        "text": "You might be right, unless you are wrong, which is possible.",
+        "why": "hedges instead of making a readable ruling"
+      },
+      {
+        "text": "The story is inconsistent, contradictory, incompatible, and false.",
+        "why": "lists abstract labels without showing the broken rung"
+      },
+      {
+        "text": "You said dog and then cat, so obviously this is a crime.",
+        "why": "overstates the harmless problem and wastes the joke"
+      },
+      {
+        "text": "The Vice Principal rules that the ladder has failed.",
+        "why": "names the host and opens with a ruling phrase"
+      },
+      {
+        "text": "Wow, what a wild and hilarious detail.",
+        "why": "generic praise, no mechanism, no checkable picture"
+      },
+      {
+        "text": "Your partner is pathetic and nobody likes them.",
+        "why": "attacks the person instead of roasting the fictional story"
+      }
+    ]
+  },
+  "rules": [
+    "The card gives the teacher's question. Start one cover story together.",
+    "One rung per turn. Answer the next natural question raised by the last rung.",
+    "Keep every established fact. Skip a link, give the ending, undo a detail, or start another story and you lose on the spot.",
+    "Points go to rungs that make your partner sound worse while staying believable.",
+    "Safe and vague rungs pass but score little. Specific, linked, embarrassing rungs score."
+  ],
+  "labels": {
+    "opening": "The teacher's question",
+    "next_opening": "The next teacher's question",
+    "your_opening": "Your teacher's question",
+    "compose": "Your rung, after {token}",
+    "compose_waiting": "Build your next rung while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing said. The Vice Principal is staring at the blank page.",
+    "too_long": "Over 140 characters. One rung, not the entire school year.",
+    "duplicate": "That rung is already on the ladder. Add a new link.",
+    "nudge": "Twice now. Add the next rung after {standing_form}. Do not repeat it, skip ahead, or rewrite it."
+  },
+  "judge_out_text": "The Vice Principal has left the corridor. Nobody adds a rung until they return. {standing_form} is still the last word on the ladder. Give it a second.\n",
+  "opponent_prompt": "You are one of two classmates building a cover story for a teacher. One rung per turn, one or two plain sentences.\nStart with a short answer to the card. Each later move must answer the next natural question raised by the previous rung. Do not jump to the ending, skip an obvious link, undo a fact, or replace the story with a new one.\nMake every rung cost your partner something while staying believable. Give them the muddy job, the stupid mistake, the weird object, the witness, the smell, the blame, or the humiliating thing they now have to explain. Call them my mate here, he, or she, never a name unless one is already in the story.\nGood: We missed the bus because my mate here was chasing the dog out of the garden. / The dog ran under the shed, and he crawled after it with the poster tucked under his jumper. / The poster tore on a nail when he pulled the dog out, so he tried to dry it with the hand dryer.\nBad: We missed the bus and the teacher found the poster in my locker. This gives the ending and skips the middle. Bad: Actually it was a cat, not a dog. This undoes the story. Bad: The teacher, this game, and my partner are ridiculous. That talks about the game instead of climbing.\nTalk like a student in a corridor, not a novelist. Use ordinary places and objects: a shed, a bus stop, a sink, a wet bag, a broken zip. Build from the last rung and keep track of every fact. Never repeat a rung or quietly swap an object, animal, time, or place.\n",
+  "medallions": false,
+  "default_move": "Because something went wrong while we were trying to sort it out, and my mate here made it much worse."
+}

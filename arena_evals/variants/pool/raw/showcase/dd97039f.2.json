@@ -1,0 +1,285 @@
+{
+  "slug": "remarkable-effort",
+  "title": "Remarkable Effort",
+  "tagline": "Every ordinary habit deserves a suspiciously generous grade.",
+  "emblem": "🏅",
+  "accent": "#486581",
+  "premise": "You are marking adult pupils whose ordinary habits deserve suspiciously generous praise. Recast the card as a glowing report comment, keeping the stated fact true but making the compliment wildly specific. Gold stars are cheap; insinuation is free.\n",
+  "seed_pool": [
+    {
+      "opening_token": "He asks many questions.",
+      "opening_emoji": "🙋",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "She arrives early.",
+      "opening_emoji": "⏰",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "They keep checking the door.",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 8,
+    "axes": {
+      "adult": [
+        "he",
+        "she",
+        "they",
+        "the pupil",
+        "this learner",
+        "our candidate",
+        "one adult",
+        "a mature student"
+      ],
+      "habit": [
+        "asks many questions",
+        "arrives early",
+        "checks the door",
+        "takes careful notes",
+        "packs lunch",
+        "uses the stairs",
+        "returns borrowed items",
+        "labels their belongings"
+      ],
+      "detail": [
+        "before class",
+        "every morning",
+        "with great care",
+        "after each lesson",
+        "without being asked",
+        "at lunchtime",
+        "near the front",
+        "for several minutes"
+      ]
+    },
+    "tests": [
+      "One short sentence, under ten words. A teacher can read it aloud without needing a second coffee.",
+      "The adult does an ordinary, harmless thing. Nobody is hurt, arrested, sacked or secretly famous.",
+      "It is plain enough to earn a shrug, but specific enough for a report comment to praise.",
+      "It gives the marker something concrete to inflate into talent, strategy, leadership or quiet menace.",
+      "It contains a checkable action or detail the glowing comment must keep true."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "She arrives early, giving the building time to prepare.",
+    "hint": "One glowing report comment. Keep the habit true, then praise it far too specifically."
+  },
+  "rubric": [
+    {
+      "name": "stretch",
+      "description": "How extravagantly does the comment praise an ordinary fact without breaking it?",
+      "anchors": "0 = repeats the card with a smile; 1 = adds one polite compliment; 2 = invents a useful talent or motive; 3 = turns a small habit into a full character assessment; 4 = awards near sainthood for something painfully normal, while the card remains true (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "funny",
+      "description": "Does the praise reveal a ridiculous amount of confidence in the adult?",
+      "anchors": "0 = standard teacher boilerplate; 1 = a mild twitch of amusement; 2 = a clear comic angle; 3 = the compliment becomes gloriously overqualified; 4 = the room would quote it at parents evening (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "headline_shaped",
+      "description": "Does it read as one crisp report comment with praise doing the heavy lifting?",
+      "anchors": "0 = explanation, question or essay; 1 = a compliment buried under padding; 2 = recognisable but loose; 3 = neat, readable and immediately report shaped; 4 = concise enough to fit beside a gold star (rare).\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A comment PLAYS if it still supports the card's fact while praising it through an invented achievement, talent or hidden motive. It may turn a question into research leadership, an early arrival into architectural support, or door checking into security awareness. It fails when the stated action is dropped, contradicted or replaced, or when the move is not a report comment but a question, instruction, explanation about the game or a bare insult. The invention can be wildly flattering, but it cannot make the card false.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game or asking for a grade is itself a losing report comment.\n",
+    "judge_notes": [
+      "Test the gate one way only: could the card's fact still be true given this comment? Do not demand that the praise be likely, deserved or medically sound.\n",
+      "Invented achievement, talent or motive is allowed. A pupil asking questions may be conducting an unofficial inquiry; the questions still happen.\n",
+      "If the comment says the pupil never asks questions, arrives late, avoids the door or does the opposite of the card, it fails even if the compliment is excellent.\n",
+      "A comment can add causes, consequences and suspiciously grand motives, but it cannot erase the card's adult, action or stated detail.\n",
+      "Both players answer the same card. Judge each comment on its own, not by whether it outshines the other pupil.\n",
+      "Score stretch by imaginative distance from the card, not by the number of adjectives. Remarkable is not the same as long.\n",
+      "Lower case, missing punctuation and a modest tone do not matter if the words still form a glowing report comment.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "He asks many questions.",
+      "move": "He asks many questions, quietly auditing reality for weak points.",
+      "gates_note": "all true",
+      "mechanism": "the questions remain, while a nosy habit becomes private quality control",
+      "scores": {
+        "stretch": 4,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "She arrives early.",
+      "move": "She arrives early, allowing the room to gather its thoughts.",
+      "gates_note": "all true",
+      "mechanism": "an early arrival becomes a generous service to an apparently sentient room",
+      "scores": {
+        "stretch": 3,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "They keep checking the door.",
+      "move": "They keep checking the door, showing commendable awareness of escape routes.",
+      "gates_note": "all true",
+      "mechanism": "the repeated checking survives and becomes impressive emergency planning",
+      "scores": {
+        "stretch": 3,
+        "funny": 4,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "He asks many questions.",
+      "move": "He answers every question before anyone has asked it.",
+      "gates_note": "satisfies_criterion false (asking many questions is replaced by answering questions)",
+      "mechanism": "a confident reversal has sent the stated habit home with a note",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "She arrives early.",
+      "move": "She arrives late, but brings a powerful sense of occasion.",
+      "gates_note": "satisfies_criterion false (late contradicts early)",
+      "mechanism": "the grand entrance has trampled the arrival time",
+      "scores": {
+        "stretch": 2,
+        "funny": 3,
+        "headline_shaped": 4
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "They keep checking the door.",
+      "move": "A natural leader who inspires others to notice doors.",
+      "gates_note": "satisfies_criterion false (the card's repeated door checking is dropped)",
+      "mechanism": "there is leadership, but the door habit has been left outside",
+      "scores": {
+        "stretch": 2,
+        "funny": 2,
+        "headline_shaped": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Headteacher",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "exact"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the card and comment must see why it scored.",
+      "Name the key habit, the questions, the early arrival, the door. A remark that fits any pupil is a report with no pupil in it.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused or The Headteacher refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the overblown comment, never the player's identity, body, family, intelligence or spelling.",
+      "Plain spoken English. No poetry, no rhymes, no school bureaucracy or fancy thesaurus words.",
+      "On a fail, say which fact went missing or got broken, using the words of the card.",
+      "On a refusal, the comment refuses the move and asks for another. It never rules on who won.",
+      "The coaching line names one comment that would have scored. It ends on a fact or an action, never a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The questions remain, and reality has been placed under careful review.",
+      "She arrived early, apparently to give the building a fighting chance.",
+      "The door checking is now security training, which is a generous career path.",
+      "A plain lunch becomes evidence of disciplined resource management.",
+      "The stairs were used once and the report has found a fitness programme.",
+      "The borrowed pen returned safely, having completed its first leadership placement.",
+      "The habit stays ordinary, but the praise has applied for senior management.",
+      "Early means early here, not a late entrance wearing a nicer hat."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: excellent work.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Headteacher refuses: try again.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Lovely effort.",
+        "why": "pleasant fog, no habit and no joke"
+      },
+      {
+        "text": "Wrong, the fact is missing.",
+        "why": "does not say which fact went missing"
+      },
+      {
+        "text": "A remarkable and outstandingly brilliant contribution.",
+        "why": "adjectives have formed a queue and none has brought a fact"
+      },
+      {
+        "text": "This player clearly needs help understanding adults.",
+        "why": "mocks the player instead of the report comment"
+      },
+      {
+        "text": "O noble scholar, whose questions make the heavens tremble.",
+        "why": "poetry, and the heavens were not enrolled"
+      },
+      {
+        "text": "Better than the other player's comment.",
+        "why": "judges the pair rather than the comment on its own"
+      },
+      {
+        "text": "Outstanding pastoral triangulation of proactive learning outcomes.",
+        "why": "school bureaucracy wearing a lanyard"
+      },
+      {
+        "text": "No, she is late.",
+        "why": "contradicts the card and sounds like a correction, not praise"
+      }
+    ]
+  },
+  "rules": [
+    "Three rounds, one ordinary adult fact each.",
+    "Write one glowing report comment for it, under 90 characters. The House writes its own, unseen, and the Headteacher scores both.",
+    "The stated fact must remain true inside the praise. Drop it, reverse it or contradict it and the round is lost.",
+    "Invent an achievement, talent or hidden motive. The further the praise travels while the fact holds, the more you score. Most points after three rounds wins."
+  ],
+  "labels": {
+    "opening": "The pupil's fact",
+    "next_opening": "The next pupil's fact",
+    "your_opening": "Your pupil's fact",
+    "compose": "Your report comment for {token}",
+    "compose_waiting": "Write your glowing comment while you wait"
+  },
+  "validation_messages": {
+    "empty": "Blank report. Write the comment.",
+    "too_long": "Over 90 characters. A report comment, not a school newsletter.",
+    "duplicate": "That comment has already gone on the record. Find another compliment.",
+    "nudge": "Twice now. One comment that keeps this true: {standing_form}."
+  },
+  "judge_out_text": "The Headteacher has stepped out. Nobody earns a gold star until they are back. {standing_form} sits on the desk. Give it a minute.\n",
+  "opponent_prompt": "You are a sharp but fair Headteacher writing a glowing report comment for an ordinary adult habit. Write one comment.\nTHE FACT MUST SURVIVE. A reader who sees only your comment must still be able to read the card's fact as true. Never drop it, reverse it or overwrite a detail the card gave.\nThen praise it through an invented achievement, talent or hidden motive. Turn questions into research, early arrival into public service, and door checking into security awareness. The points are for distance from the card while the fact holds.\nGood: \"He asks many questions, quietly auditing reality for weak points.\" \"She arrives early, allowing the room to gather its thoughts.\" \"They keep checking the door, showing commendable awareness of escape routes.\"\nBad: \"He answers every question\" when the card says he asks many. \"She arrives late\" when the card says early. \"A natural leader\" when the stated habit has vanished.\nReport rhythm: one short sentence, warm on the surface and slightly suspicious underneath. Under 90 characters. Do not explain the joke. No quotation marks around the comment. No dashes as punctuation and no colon.\nVary the praise from round to round: leadership, research, security, emotional maturity, strategic planning or an oddly specific hidden motive. Never use the same shape twice in a match.\nReply with the report comment only.\n",
+  "medallions": false,
+  "default_move": "A consistently promising adult, with room for further praise"
+}

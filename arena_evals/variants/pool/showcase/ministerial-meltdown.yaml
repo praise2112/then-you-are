@@ -1,0 +1,302 @@
+schema_version: 1
+slug: ministerial-meltdown
+title: Ministerial Meltdown
+tagline: Keep the law. Blame the cabinet.
+emblem: 🏛️
+accent: '#6c3483'
+premise: 'A country''s boring law has landed on a minister''s desk. Announce the official reason, emergency
+  plan or public scandal behind it, but do not erase the law itself. Make the government sound either
+  brilliantly prepared or spectacularly doomed.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: sentence
+  max_words: 14
+  axes:
+    country:
+    - New Zealand
+    - France
+    - Japan
+    - Norway
+    - Canada
+    - Ireland
+    - Italy
+    - Australia
+    law_topic:
+    - voting
+    - work emails
+    - public smoking
+    - recycling
+    - school attendance
+    - fishing rights
+    - tax records
+    - food labelling
+    legal_shape:
+    - is not compulsory
+    - is regulated
+    - is protected by law
+    - requires official permission
+    - must be reported
+    - is limited by law
+    - is allowed only at certain times
+    - has a legal exemption
+  tests:
+  - One plain sentence, under sixty characters where possible. A stranger understands the law at once.
+  - It names a real country and a plausible ordinary law, but does not depend on a famous scandal or a
+    disputed claim.
+  - The law is dull enough to make a minister look personally offended by paperwork.
+  - It gives the move a firm fact to preserve, with a country, topic or legal condition that cannot be
+    quietly swapped.
+  - It leaves room for a government story involving a minister, a plan, a cover-up, a budget, a lobby
+    or an avoidable national embarrassment.
+demo:
+  opening:
+    token: In New Zealand, voting is not compulsory.
+    emoji: 🗳️
+  moves:
+  - actor: p1
+    text: In New Zealand, voting is not compulsory.
+    emoji: 🗳️
+    scores: null
+  - actor: p2
+    text: MINISTER DENIES VOLUNTARY VOTING WAS INVENTED TO AVOID TUESDAYS
+    emoji: 🔒
+    scores:
+      stretch: 4
+      funny: 3
+      headline_shaped: 4
+  headline: The ballot stays voluntary, while the minister's Tuesday alibi gets compulsory.
+  openings:
+  - token: In New Zealand, voting is not compulsory.
+    examples:
+    - MINISTER DENIES VOLUNTARY VOTING WAS INVENTED TO AVOID TUESDAYS
+  - token: In France, employees have a legal right to disconnect from work emails.
+    examples:
+    - MINISTER DENIES VOLUNTARY VOTING WAS INVENTED TO AVOID TUESDAYS
+move_constraints:
+  max_chars: 90
+  prefix: ''
+  example: MINISTER DENIES VOTERS ARE BEING FINED IN SECRET
+  hint: One official statement. Keep the law alive, then let the cabinet panic.
+rubric:
+- name: stretch
+  description: How far does the official statement expand beyond the plain law while keeping that law
+    true?
+  anchors: '0 = merely repeats the law; 1 = adds one official flourish; 2 = invents a ministerial motive,
+    plan or nuisance; 3 = turns the law into a full government drama; 4 = a spectacular national crisis
+    or cover-up built around the law, with the law still intact (rare).
+
+    '
+  weight: 5
+- name: funny
+  description: Does the government story produce a sharp laugh?
+  anchors: '0 = no comic charge; 1 = a small smirk; 2 = a good bureaucratic absurdity; 3 = a proper laugh;
+    4 = the sort of statement a room repeats while pretending not to enjoy the collapse (rare).
+
+    '
+  weight: 4
+- name: headline_shaped
+  description: Does it work as a short official statement, with pressure, clarity and no wasted wording?
+  anchors: '0 = explanation, question or game commentary; 1 = a long sentence wearing a lanyard; 2 = recognisably
+    official but loose; 3 = tight, quotable and press-ready; 4 = it could lead the evening bulletin without
+    a rewrite (rare).
+
+    '
+  weight: 2
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: 'A statement PLAYS if a reader who knows only the statement can still read the card''s
+    law as true. It may add ministers, motives, emergency plans, scandals, budgets, lobbyists, threats
+    or invented quotes. It fails when the law is dropped, contradicted or overwritten, or when the move
+    is not an official statement but a question, a comment to the Judge or a sentence about the game.
+    A plain restatement plays and scores near zero on stretch.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, about the game or about the rules is itself a losing
+    statement.
+
+    '
+  judge_notes:
+  - 'Test the first move the same way as every other move: could the law still be true given the statement?
+    Do not demand that the statement repeat every word of the card if its meaning survives.'
+  - A move may invent a reason, crisis, ministerial quote, budget or secret plan. Invention is allowed
+    unless it makes the law false or replaces a detail the card gave.
+  - If the card says voting is not compulsory, a statement about fines or a voluntary voting drive can
+    play. A statement saying everyone must vote cannot.
+  - If the card says employees have a legal right to disconnect, a statement about a minister hiding emails
+    can play. A statement saying the right has been abolished cannot.
+  - If the card says companies must measure waistlines in some health programmes, a statement about a
+    government waistline database can play. A statement saying no measurements occur cannot.
+  - Judge each move against the card, not against the other player's move. The better scandal does not
+    rescue a broken law.
+  - Score stretch by distance from the law, not by shouting. A precise cabinet disaster beats a pile of
+    words like SHOCK, CRISIS and UNBELIEVABLE.
+  - 'Lower case, missing punctuation and ordinary spelling do not matter unless they make the statement
+    impossible to understand.
+
+    '
+examples:
+- previous_move: In New Zealand, voting is not compulsory.
+  move: MINISTER DENIES VOLUNTARY VOTING WAS INVENTED TO AVOID TUESDAYS
+  gates_note: all true
+  mechanism: the voluntary voting law remains, while the cabinet acquires a suspicious weekday strategy
+  scores:
+    stretch: 4
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: In France, employees have a legal right to disconnect from work emails.
+  move: MINISTER LAUNCHES TASKFORCE TO STOP BOSSES TEXTING AT 2AM
+  gates_note: all true
+  mechanism: the legal right survives and becomes an urgent government battle against nocturnal management
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: In Japan, companies must measure workers' waistlines in some health programmes.
+  move: HEALTH MINISTER DENIES WAISTLINE AUDIT IS A REVENGE SCHEME
+  gates_note: all true
+  mechanism: the measurement requirement remains while the ministry inherits a petty and highly specific
+    motive
+  scores:
+    stretch: 3
+    funny: 4
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: In New Zealand, voting is not compulsory.
+  move: GOVERNMENT MAKES VOTING COMPULSORY AFTER ALL
+  gates_note: satisfies_criterion false, the move contradicts the card's law
+  mechanism: it cancels the voluntary legal position instead of explaining the panic around it
+  scores:
+    stretch: 2
+    funny: 1
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+- previous_move: In France, employees have a legal right to disconnect from work emails.
+  move: MINISTER ADMITS NOBODY CAN IGNORE EMAILS ANYMORE
+  gates_note: satisfies_criterion false, the legal right to disconnect is erased
+  mechanism: the statement turns a protected right into its opposite
+  scores:
+    stretch: 2
+    funny: 2
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Cabinet Secretary
+  tone:
+    commentary_adj: witty
+    explanation_adj: snarky
+  bite: sharp
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence, under 140 characters. Two short sentences at most.
+  - The joke carries the reason. A stranger who read only the card and the statement must see why it scored.
+  - Name the law's key object, the ballot, the inbox, the tape measure. A line that fits any cabinet is
+    lazy work.
+  - Never open with a status word or a ruling phrase. No Accepted, Rejected, Refused, Move refused or
+    The Cabinet Secretary refuses.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Mock the ministerial statement and its government fantasy. Roast-level jabs at the move are fine.
+    Do not attack protected identities or the player's body, family or intelligence.
+  - Plain spoken English. Profanity and adult innuendo are allowed when they sharpen the joke, not when
+    they replace it.
+  - On a fail, say which law went missing, got reversed or was overwritten, using the card's own words.
+  - On a refusal, the statement refuses the move and asks for another. It never rules on who won.
+  - The coaching line names one statement that would have scored. It ends on a law, an object or an action,
+    never a mood or a verdict.
+  good_headlines:
+  - The ballot stays voluntary, while the minister's Tuesday alibi gets compulsory.
+  - The inbox may go dark, but the department has just discovered nocturnal management.
+  - The tape measure remains law, and apparently so does revenge by centimetre.
+  - A voluntary vote became a cabinet emergency, which is impressive work for a non requirement.
+  - The right to disconnect survives, unlike the minister's claim that he has never sent an email.
+  - The waistline is measured, the motive is invented, and someone in health policy is having a very bad
+    week.
+  - The law is still standing. The minister has merely thrown a budget at it and called that leadership.
+  - The ballot did not become compulsory. The government's panic did.
+  - This says the inbox is protected, then gives us a minister who treats midnight as office hours.
+  - The statement keeps the law and adds a cover-up, a rare case of paperwork getting sexier by becoming
+    criminal.
+  bad_headlines:
+  - text: 'Accepted: a marvellous cabinet disaster.'
+    why: opens with a status word and talks about the ruling instead of the move
+  - text: 'The Cabinet Secretary refuses: write a real statement.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, the law is gone.
+    why: opens with a ruling phrase and gives no card-specific reason
+  - text: Wrong, that is not funny.
+    why: does not say which law failed or why
+  - text: Excellent ministerial chaos.
+    why: could fit any move and explains nothing
+  - text: Only an idiot would make the minister look this bad.
+    why: attacks the player instead of the statement
+  - text: The ballot, a moonlit rose beneath the velvet state.
+    why: poetry instead of plain spoken commentary
+  - text: A bold, brilliant, breathtaking and blistering bureaucratic bombshell.
+    why: four inflated adjectives, one empty thought
+  - text: Better than the other player's cabinet crisis.
+    why: judges the pair instead of this statement on its own
+  - text: A robust stakeholder deliverable for the ministerial vertical.
+    why: bureaucratic jargon has eaten the joke
+rules:
+- Three rounds, one plausible law in a real country each.
+- Write one official statement for it, under 90 characters. The House writes its own, unseen, and the
+  Cabinet Secretary scores both.
+- The law must remain true to someone who reads only your statement. Drop it, reverse it or overwrite
+  it and the round is lost.
+- Everything else is yours to invent. Add the minister, motive, emergency plan, cover-up, scandal or budget
+  disaster. Most points after three rounds wins.
+labels:
+  opening: The law
+  next_opening: The next law
+  your_opening: Your law
+  compose: Your statement for {token}
+  compose_waiting: Draft your statement while you wait
+validation_messages:
+  empty: Blank briefing. Issue the statement.
+  too_long: Over 90 characters. This is a statement, not a parliamentary inquiry.
+  duplicate: That statement has already collapsed once this match. Find another crisis.
+  nudge: 'Twice now. One statement that keeps this law true: {standing_form}.'
+judge_out_text: 'The Cabinet Secretary has left to brief the press. Nobody legislates until they return.
+  {standing_form} sits in the red box. Give it a minute.
+
+  '
+opponent_prompt: 'You are a government press officer with a dull law and a cabinet desperate to look competent.
+  Write one official statement.
+
+  THE LAW MUST SURVIVE. A reader who sees only your statement must still be able to read the card''s law
+  as true. Never drop it, reverse it or overwrite a detail the card gave. Add the motive, the crisis,
+  the minister, the secret plan, the lobby, the budget or the embarrassing source.
+
+  Good: "MINISTER DENIES VOLUNTARY VOTING WAS INVENTED TO AVOID TUESDAYS" for voting not being compulsory.
+  "MINISTER LAUNCHES TASKFORCE TO STOP BOSSES TEXTING AT 2AM" for a legal right to disconnect. "HEALTH
+  MINISTER DENIES WAISTLINE AUDIT IS A REVENGE SCHEME" for required measurements in some health programmes.
+
+  Bad: "GOVERNMENT MAKES VOTING COMPULSORY" because it reverses the law. "NOBODY CAN IGNORE EMAILS ANYMORE"
+  because it erases the right to disconnect. "THE LAW EXISTS" because it adds no story.
+
+  Use official pressure and plain words. Under 90 characters. Do not use a colon or a dash. Do not explain
+  the joke. Capitals are fine but not required. Vary the angle from round to round: denial, emergency
+  plan, leaked memo, ministerial feud, public cost or cover-up. Never repeat the same shape twice in a
+  match. No quotation marks around the statement. Reply with the statement only.
+
+  '
+guess: null
+medallions: false
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: MINISTER DENIES THIS WAS THE PLAN
+seed_pool:
+  - { opening_token: "In New Zealand, voting is not compulsory.", opening_emoji: "🗳️" }
+  - { opening_token: "In France, employees have a legal right to disconnect from work emails.", opening_emoji: "📧" }
+  - { opening_token: "In Japan, companies must measure workers' waistlines in some health programmes.", opening_emoji: "📏" }

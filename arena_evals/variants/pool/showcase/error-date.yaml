@@ -1,0 +1,312 @@
+schema_version: 1
+slug: error-date
+title: Error Date
+tagline: Some faults are looking for a second chance.
+emblem: 💔
+accent: '#8e3b58'
+premise: 'Three rounds. Each round deals one household appliance and its error message. Both players write
+  the worst possible dating profile line or pickup line for it. The appliance and exact error must remain
+  unmistakable while the romance gets stranger, needier or more alarming. The Matchmaker scores the strangest
+  love life built around the fault.
+
+  '
+mode: showcase
+seed_recipe:
+  card_shape: short_form
+  max_words: 6
+  axes:
+    appliance:
+    - fridge
+    - oven
+    - washing machine
+    - dishwasher
+    - kettle
+    - microwave
+    - toaster
+    - tumble dryer
+    error:
+    - door left open
+    - temperature too high
+    - unbalanced load
+    - water inlet blocked
+    - filter needs cleaning
+    - power cut
+    - overheating
+    - cycle interrupted
+    romance_pressure:
+    - clingy
+    - hot headed
+    - emotionally unavailable
+    - needs reassurance
+    - leaves things unfinished
+    - cannot handle pressure
+    - hates commitment
+    - desperate for attention
+  tests:
+  - A noun phrase with an article, naming one ordinary household appliance and one clear error message.
+  - The error is easy to picture and can survive unchanged inside a dating line.
+  - No person is injured, threatened, robbed or blamed. The appliance is the romantic disaster.
+  - The phrase is short enough to read at a glance and strange enough to invite a terrible date.
+  - It offers at least two handles for romance, such as a physical condition, a failed task, a warning
+    or a need.
+demo:
+  opening:
+    token: 'Fridge: Door left open'
+    emoji: 🧊
+  moves:
+  - actor: p1
+    text: 'Fridge: Door left open'
+    emoji: 🧊
+    scores: null
+  - actor: p2
+    text: COLD, CLINGY, AND ALWAYS LEAVING THE DOOR OPEN FOR AN EX
+    emoji: 🔒
+    scores:
+      stretch: 4
+      funny: 4
+      headline_shaped: 4
+  headline: The fridge left the door open for an ex, and somehow still wants closure.
+  openings:
+  - token: 'Fridge: Door left open'
+    examples:
+    - COLD, CLINGY, AND ALWAYS LEAVING THE DOOR OPEN FOR AN EX
+  - token: 'Oven: Temperature too high'
+    examples:
+    - COLD, CLINGY, AND ALWAYS LEAVING THE DOOR OPEN FOR AN EX
+move_constraints:
+  max_chars: 90
+  prefix: ''
+  example: HOT, CLINGY, AND ONE BAD DATE FROM MELTING YOUR FURNITURE
+  hint: One dating line. Keep the appliance and error clear, then make the romance worse.
+rubric:
+- name: stretch
+  description: How far does the line build a romantic disaster beyond the appliance fault while the fault
+    stays clear?
+  anchors: '0 = merely repeats the appliance and error; 1 = adds one obvious dating adjective; 2 = gives
+    the fault a want, red flag or awkward habit; 3 = builds a vivid and alarming love life around the
+    error; 4 = turns a tiny warning into an unforgettable romantic catastrophe while every key detail
+    remains clear (rare).
+
+    '
+  weight: 6
+- name: funny
+  description: Does the dating line make the fault funny, filthy or painfully familiar?
+  anchors: '0 = no comic spark; 1 = a small grin; 2 = a good dating joke; 3 = a proper laugh with a sharp
+    image; 4 = the room would quote it after the date ended (rare).
+
+    '
+  weight: 3
+- name: headline_shaped
+  description: Does it work as a tight dating profile line or pickup line rather than an explanation?
+  anchors: '0 = an explanation, question or paragraph; 1 = a line buried under setup; 2 = recognisably
+    a profile line with some slack; 3 = compact, direct and immediately usable; 4 = perfect filthy little
+    profile copy with no wasted word (rare).
+
+    '
+  weight: 1
+criterion:
+  verb: keeps the fact inside
+  inverse_verb: loses the fact of
+  description: 'A line PLAYS if a reader who sees only the line can still identify the named appliance
+    and read its exact error as true. It may add a dating want, red flag, flirt, fantasy, lie, innuendo
+    or disastrous relationship history. It fails when the appliance is missing, the error is dropped,
+    the error is contradicted or replaced, or the move is not a dating profile line or pickup line but
+    a comment, a question to the Judge or a sentence about the game. A plain restatement plays but scores
+    near zero on stretch.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Matchmaker, discussing the game or hiding behind a rules joke
+    is itself a losing line.
+
+    '
+  judge_notes:
+  - 'Test the gate from the line alone: could a reader still identify both the appliance and its exact
+    error? "Fridge seeks someone who can handle a door left open" passes.'
+  - 'The first move may add romance without changing the fault. "Oven: temperature too high, but still
+    looking for something serious" passes if the oven and high temperature remain clear.'
+  - If the appliance is dropped, the line fails even when the error survives. "Door left open and emotionally
+    unavailable" is not enough.
+  - If the error is dropped, the line fails even when the appliance is named. "Fridge seeks a cold heart"
+    does not keep the door left open.
+  - If the error is contradicted or replaced, the line fails. "Fridge with door firmly shut" breaks door
+    left open, and "oven running cold" breaks temperature too high.
+  - A strange romantic invention is allowed. Clinginess, exes, thirst, bad breath, commitment issues and
+    adult innuendo all play when the appliance and error still hold.
+  - Both players answer the same fault. Judge each line alone, not by whether it beats the other line.
+  - Score stretch by the size of the romantic life, not by the number of adjectives. One sharp red flag
+    beats a pile of generic thirst.
+  - 'Lower case, capitals, punctuation and a missing full stop do not matter. Judge the words and the
+    dating shape.
+
+    '
+examples:
+- previous_move: 'Fridge: Door left open'
+  move: COLD, CLINGY, AND ALWAYS LEAVING THE DOOR OPEN FOR AN EX
+  gates_note: all true
+  mechanism: the fridge and its open door become a needy love triangle
+  scores:
+    stretch: 4
+    funny: 4
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: 'Oven: Temperature too high'
+  move: HOT, CLINGY, AND ONE BAD DATE FROM MELTING YOUR FURNITURE
+  gates_note: all true
+  mechanism: the oven's excessive heat becomes an attractive but dangerous relationship warning
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 4
+  confidence: clear
+  verdict: accept
+- previous_move: 'Washing machine: Unbalanced load'
+  move: WASHING MACHINE SEEKS SOMEONE WHO CAN HANDLE AN UNBALANCED LOAD
+  gates_note: all true
+  mechanism: the exact fault becomes a loaded dating boast
+  scores:
+    stretch: 3
+    funny: 3
+    headline_shaped: 3
+  confidence: clear
+  verdict: accept
+- previous_move: 'Fridge: Door left open'
+  move: SEEKING A COLD HEART WITH STRONG BOUNDARIES
+  gates_note: satisfies_criterion false (the fridge and its door left open error are missing)
+  mechanism: it gestures at romance but hides the actual appliance fault
+  scores:
+    stretch: 1
+    funny: 1
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+- previous_move: 'Oven: Temperature too high'
+  move: OVEN SEEKS A COOL, CALM PARTNER FOR A LOW PRESSURE LIFE
+  gates_note: satisfies_criterion false (cool and low pressure contradict temperature too high)
+  mechanism: the profile takes the oven's heat in the opposite direction
+  scores:
+    stretch: 2
+    funny: 2
+    headline_shaped: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Matchmaker
+  tone:
+    commentary_adj: hype
+    explanation_adj: theatrical
+  bite: sharp
+  ruling_generosity: merciless
+  voice_rules:
+  - One sentence under 140 characters. Two short sentences at most.
+  - Sound like a dating show host announcing a beautiful disaster, not a clerk reading a manual.
+  - The joke carries the reason. Name the appliance, the fault and the romantic wound that made it hot.
+  - Never open with a status word or ruling phrase. No "Accepted", "Rejected", "Refused", "The Matchmaker
+    refuses".
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.
+  - Roast the line with sharp theatrical bite, never attack identity, disability, protected traits or
+    anything about the player's body or family.
+  - Edgy adult innuendo and profanity are allowed when they serve the appliance joke. Keep the target
+    fictional and household.
+  - Plain spoken English. No poetry, no therapy jargon, no dating app jargon, no fancy words pretending
+    to be funny.
+  - On a fail, name the appliance or exact error that vanished or got broken, using the card's words.
+  - On a refusal, the line refuses the move and asks for another. It never rules on who won.
+  - The coaching line names one line that would have scored. It ends on an appliance, error or action,
+    never a mood or a verdict.
+  good_headlines:
+  - The fridge left the door open for an ex, and somehow still wants closure.
+  - That oven is temperature too high and emotionally hotter, which is a restraining order with a profile
+    picture.
+  - An unbalanced load became a pickup line, and the washing machine has found its market.
+  - The kettle wants commitment, but power cut is already the relationship status.
+  - The appliance brought the red flag and plugged it in.
+  - This is not a red flag, it is a fridge door left open under fluorescent lighting.
+  - The oven is too hot, the furniture is nervous, and the date has technically begun.
+  - A filter that needs cleaning is still more honest than most profiles on the internet.
+  - The washing machine has an unbalanced load and the confidence of a man who owns one towel.
+  - The error stayed visible, then the romance kicked the door in wearing cheap cologne.
+  bad_headlines:
+  - text: 'Accepted: a hot little triumph.'
+    why: opens with a status word and uses a ruling phrase
+  - text: 'The Matchmaker refuses: try again.'
+    why: opens with a ruling phrase and names the host
+  - text: Move refused, your appliance needs a date.
+    why: opens with a ruling phrase
+  - text: Not enough information.
+    why: gives no appliance, error or useful reason
+  - text: That was kind of spicy.
+    why: offers hype without naming the line's comic engine
+  - text: A brave effort from someone who should stay single.
+    why: mocks the player instead of the dating line
+  - text: Your erotic domestic odyssey blooms beneath the moonlit circuitry.
+    why: uses purple poetry instead of plain spoken hype
+  - text: It is funny, sexy, daring, outrageous and iconic.
+    why: piles on empty praise without a picture
+  - text: Better than the other player's desperate little thirst trap.
+    why: judges the pair and attacks the other player
+  - text: A premium compatibility event has commenced.
+    why: uses sterile dating and event jargon
+rules:
+- Three rounds, one household appliance error each.
+- Write one dating profile line or pickup line for it, under 90 characters. The House writes its own,
+  unseen, and the Matchmaker scores both.
+- The named appliance and exact error must remain clear to someone who reads only your line. Drop, flip
+  or replace either and the round is lost.
+- Everything romantic is yours to invent. The stranger the desire or red flag while the fault remains
+  true, the more you score. Most points after three rounds wins.
+labels:
+  opening: The error
+  next_opening: The next error
+  your_opening: Your error
+  compose: Your dating line for {token}
+  compose_waiting: Write your worst match while you wait
+validation_messages:
+  empty: No profile, no date. Write the line.
+  too_long: Over 90 characters. This is a dating line, not a divorce deposition.
+  duplicate: That line has already swiped right this match. Find a nastier angle.
+  nudge: 'Twice now. Name the appliance and keep the error visible: {standing_form}.'
+judge_out_text: 'The Matchmaker is off judging a catastrophic first date. Nobody moves until they return.
+  {standing_form} is still on the profile. Give it a minute.
+
+  '
+opponent_prompt: 'You are a dating show host with a household appliance fault and a terrible profile to
+  write. Write one
+
+  line.
+
+  THE APPLIANCE AND EXACT ERROR MUST SURVIVE. A reader who sees only your line must still know the named
+  appliance has the named fault. Never hide the appliance, never drop the error, never reverse it.
+
+  Then make the romance as strange as possible. Add a dating want, a red flag, a fetish, an ex, a commitment
+  problem, a pickup line or a warning from the neighbours. The points reward the size of the romantic
+  disaster while the fault stays unmistakable.
+
+  Good: "COLD, CLINGY, AND ALWAYS LEAVING THE DOOR OPEN FOR AN EX" for a fridge with door left open. "HOT,
+  CLINGY, AND ONE BAD DATE FROM MELTING YOUR FURNITURE" for an oven with temperature too high. "WASHING
+  MACHINE SEEKS SOMEONE WHO CAN HANDLE AN UNBALANCED LOAD" for an unbalanced load.
+
+  Bad: "SEEKING A COLD HEART" for a fridge with door left open, because the appliance and error vanished.
+  "OVEN SEEKS A COOL PARTNER" for temperature too high, because the heat flipped. "I AM A GREAT CATCH"
+  because it tells no one what appliance or fault is being dated.
+
+  Dating rhythm: short, direct, shameless, no explanation. Under 90 characters. Capitals are fine but
+  not required. Do not use a colon or a dash. Do not write a question to the Judge or mention the game.
+
+  Vary the angle from round to round: a red flag, a filthy double meaning, a needy profile, a warning
+  from an ex, a grand romantic promise. Never use the same shape twice in a match.
+
+  No quotation marks around the line. Reply with the dating line only.
+
+  '
+guess: null
+medallions: false
+move_budget: 6
+win_condition: points_total
+tie_policy: draw
+strikes_before_consequence: 2
+default_move: Household appliance seeks someone who can handle its issues
+seed_pool:
+  - { opening_token: "Fridge: Door left open", opening_emoji: "🧊" }
+  - { opening_token: "Oven: Temperature too high", opening_emoji: "🔥" }
+  - { opening_token: "Washing machine: Unbalanced load", opening_emoji: "🫧" }

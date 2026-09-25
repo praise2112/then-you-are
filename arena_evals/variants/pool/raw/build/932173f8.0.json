@@ -1,0 +1,268 @@
+{
+  "slug": "campground-commentary",
+  "title": "The Helpful Camp Report",
+  "tagline": "One dropped peg starts a camping report. Keep it honest, visible, and a little more troublesome.",
+  "emblem": "🏕️",
+  "accent": "#166534",
+  "premise": "A tent peg drops at camp, and the campground reporter explains what happens next. Two players take turns adding one plain event, and the trouble grows while the report stays earnest and gently funny. The Judge checks that every event follows from the last.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The first tent peg slips from a camper's hand and lands in the grass.",
+      "opening_emoji": "⛺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A tent peg drops beside the picnic table and rolls toward the firewood.",
+      "opening_emoji": "🪵",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A camper loses the first tent peg near the path to the lake.",
+      "opening_emoji": "🏕️",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 16,
+    "axes": {
+      "camper": [
+        "a camper",
+        "a child",
+        "a tired parent",
+        "a scout",
+        "a new visitor",
+        "a park helper",
+        "a cook",
+        "a photographer"
+      ],
+      "place": [
+        "the tent site",
+        "the picnic table",
+        "the fire ring",
+        "the lake path",
+        "the shower block",
+        "the car park",
+        "the camp store",
+        "the edge of the woods"
+      ],
+      "peg_problem": [
+        "a tent peg slips",
+        "a tent peg rolls",
+        "a tent peg drops",
+        "a tent peg bounces",
+        "a tent peg lands in grass",
+        "a tent peg slides downhill",
+        "a tent peg vanishes near the path",
+        "a tent peg knocks a small stone"
+      ]
+    },
+    "tests": [
+      "A small camping problem starts at once and a stranger can picture it. Present tense, one sentence, plain words.",
+      "A non-player can name two sensible next events within five seconds, and neither answer needs a hidden fact.",
+      "Nothing on the card is already a disaster. A loose peg or a rolling stone is a start, not an ending.",
+      "Nobody is hurt on the card, no real people, no brands, no crimes, and no dangerous stunt is required.",
+      "It feels like the first line of an earnest campground report. Use a camper, a place, and one visible trouble, not an inventory."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then ",
+    "example": "Then the peg rolls downhill and knocks over the water jug.",
+    "hint": "One visible thing that happens next because of the standing camp trouble."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much new camping trouble the move creates from one clear event.",
+      "anchors": "0 = nothing new is at risk or the trouble gets smaller; 1 = a small nudge, such as the peg moving nearby; 2 = one new object, place, or task is pulled into the problem; 3 = the trouble reaches a new campsite area or a new person for a clear reason; 4 = one plain link carries the camp trouble to a much wider problem, rare. Reach is earned only when the cause is shown. A large result with missing links scores 0 here.\n",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How clearly the new event is caused by the standing camp trouble.",
+      "anchors": "0 = the move is unrelated; 1 = the cause is only claimed; 2 = it could happen, but the connection is weak or crowded; 3 = a stranger can see why the standing trouble causes it; 4 = it feels like the obvious next camp report, rare. A move that hides several causes in one leap scores no higher than 2 here.\n",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How easily a stranger can see the camp event in plain words.",
+      "anchors": "0 = unclear, abstract, or not an event; 1 = partly visible but muddled; 2 = clear and ordinary; 3 = easy to picture with a useful detail; 4 = especially crisp and gently funny while still being one event, rare. Extra length does not earn points by itself.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if it is the next visible event caused by the standing camp trouble, told plainly, and it adds a new problem for the other player to report. A move fails when it skips a cause, ends the report, undoes or rewinds what happened, swaps to an unrelated scene, or introduces a newcomer the scene could not naturally hold. A feeling, opinion, rule comment, or summary is not an event. The trouble should grow, but only through a cause a stranger can see.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or mentioning rules is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge it against the card and ask whether it is the next visible event caused by the dropped or loose peg.",
+      "A new camper, animal, or helper may enter if the campsite could plainly hold them, such as a nearby camper, a park worker on patrol, or a dog at a campsite, or if the standing trouble gives them a reason to arrive. A ranger appearing from nowhere before any call or signal is a skipped link, so satisfies_criterion is false.",
+      "A move that jumps from the peg in the grass to a campground-wide closure, a storm rescue, or a distant emergency skips causes. Show the nearby events that carry the trouble there.",
+      "A wrap-up fails even when it follows. Packing up, fixing the tent, cleaning the site, going to sleep, or saying the trip is over leaves nothing new to report, so satisfies_criterion is false.",
+      "An undo or rewind fails. The peg being put back, the water being restored, or the scene returning to how it was is not a new next event.",
+      "An unrelated scene fails. A bird singing across the lake or a camper opening a book does not follow unless the standing trouble plainly causes it.",
+      "A move of the same size, such as the peg rolling another foot, follows and passes the gate. It scores 0 or 1 on reach. Do not fail it for being quiet.",
+      "Restating the standing event, or naming its immediate result without adding anything new, is a duplicate. not_semantic_duplicate is false.",
+      "Two or three linked events in one move may pass if each cause is plain, but score link at 2 or below and keep picture modest when the sentence is crowded."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The first tent peg slips from a camper's hand and lands in the grass.",
+      "move": "Then the peg rolls downhill and knocks over the water jug.",
+      "gates_note": "all true",
+      "mechanism": "the sloping ground moves the peg, and the moving peg hits the jug",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the peg rolls downhill and knocks over the water jug.",
+      "move": "Then the spilled water runs under the picnic blanket and soaks the sandwiches.",
+      "gates_note": "all true",
+      "mechanism": "the water leaves the jug and reaches the blanket and food",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the spilled water runs under the picnic blanket and soaks the sandwiches.",
+      "move": "Then the whole campground closes and a rescue helicopter arrives.",
+      "gates_note": "satisfies_criterion false, several causes are skipped and the scene jumps too far",
+      "mechanism": "the wet sandwiches do not by themselves cause a campground closure or helicopter",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then a dog noses the wet picnic blanket.",
+      "move": "Then the camper dries the blanket, resets the table, and everyone eats breakfast.",
+      "gates_note": "satisfies_criterion false, the report wraps up and nothing is left to add",
+      "mechanism": "the camper fixes the trouble and closes the scene",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the peg rolls beside the picnic table.",
+      "move": "Then the peg rolls beside the picnic table again.",
+      "gates_note": "not_semantic_duplicate false, it repeats the standing event without a new problem",
+      "mechanism": "the move only restates where the peg is",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Campground Reporter",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke should come from the camp move, while the reason stays clear to a stranger.",
+      "Name both events, or plain stand-ins for them. A headline that fits any two moves is too vague.",
+      "Never open with a status word or a ruling phrase. Do not begin with Accepted, Rejected, Refused, or Move refused.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops only.",
+      "Be gentle and family friendly. Joke about the move, never the player or any identity.",
+      "Use plain spoken English. No poetry, rhymes, profanity, innuendo, or grand words.",
+      "On a skipped link, name the missing camp event. On an ending, say the report is over and the chain stops here.",
+      "On a refusal, explain why the move cannot follow and ask for another event. Never rule on who won.",
+      "The coaching line names one event that could have followed. It ends on something visible, not a mood or a verdict."
+    ],
+    "good_headlines": [
+      "The peg found the jug, and the water found the sandwiches. A tidy report would call that progress.",
+      "The blanket is wet because the jug tipped first. The picnic now has a damp chapter.",
+      "From soaked sandwiches to a closed campground is a long walk. Show the next puddle first.",
+      "The tent is fixed and breakfast is served. That is a report ending, so the chain stops here.",
+      "The peg rolled again, but nothing new joined the trouble. Give the table a chance to worry.",
+      "The dog reached the blanket because the spilled water led it there. A clear link, and a very damp welcome.",
+      "The helicopter arrived before the trouble reached the path. Let the missing puddles do their work.",
+      "The camper put the peg back where it began. The report cannot travel backward.",
+      "The wind moved the loose map toward the fire ring. The campground now has a paper problem.",
+      "The ranger can arrive after a whistle or a call. At present, the ranger is still enjoying a quiet round."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the peg moves.",
+        "why": "opens with a status word and gives no useful reason"
+      },
+      {
+        "text": "The Campground Reporter refuses this.",
+        "why": "opens with a ruling phrase and names the host instead of explaining the move"
+      },
+      {
+        "text": "What a camping adventure.",
+        "why": "could describe any pair and does not judge the link"
+      },
+      {
+        "text": "The catastrophe proliferates magnificently.",
+        "why": "uses grand words instead of a clear camp picture"
+      },
+      {
+        "text": "You clearly do not understand tents.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "Maybe it follows, maybe it does not.",
+        "why": "hedges without giving a plain ruling or reason"
+      },
+      {
+        "text": "And then, beneath the moon, the peg danced...",
+        "why": "uses poetry and an ellipsis instead of a plain report"
+      },
+      {
+        "text": "More trouble. More camping. More.",
+        "why": "repeats broad words without naming the cause"
+      }
+    ]
+  },
+  "rules": [
+    "Write one sentence beginning with Then. Name one visible event caused by the last event.",
+    "Let the camping trouble grow, but show each link instead of jumping ahead.",
+    "Do not wrap up the trip, undo an event, or bring in someone the scene could not hold.",
+    "The Judge scores the cause and the picture, not spelling or fancy wording."
+  ],
+  "labels": {
+    "opening": "The first camp report",
+    "next_opening": "The next camp report",
+    "your_opening": "Your camp report",
+    "compose": "What happens next, after {token}",
+    "compose_waiting": "Write your next camp report while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happens. The campground report needs one visible event.",
+    "too_long": "Over 140 characters. Give us one camp event, not the whole trip.",
+    "duplicate": "That camp event is already in this report. Let the trouble move on.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. One clear event, with a new camp problem."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands, and the campground is waiting.\n",
+  "opponent_prompt": "You are one of two players writing an earnest campground report, and you want the small trouble to grow.\nAlways begin with: \"Then X.\" Write one sentence, one visible event, and one clear cause in present tense.\nTake the standing camp trouble and push it to a new object, place, or person for a reason anyone can see.\nGood: \"Then the loose peg rolls downhill and knocks over the water jug.\" / \"Then the water runs under the blanket and soaks the sandwiches.\"\nBad: \"Then the whole campground closes\" because several causes are missing. Bad: \"Then the ranger arrives and fixes everything\" because it ends the report. Bad: \"Then the camper feels worried\" because a feeling is not a visible event.\nNever close the trip, never rescue the scene, never rewind an event, and never switch to an unrelated place.\nSpeak like a helpful reporter telling a friend what happened. Use plain words a twelve-year-old anywhere knows: a tent, a jug, a blanket, a path.\nNever reuse a step from this match. Keep the joke in the camp trouble, not in the player.\n",
+  "medallions": false,
+  "default_move": "Then the loose peg rolls toward the nearest picnic table."
+}

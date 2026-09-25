@@ -1,0 +1,283 @@
+{
+  "slug": "haunted-house-tour",
+  "title": "Worse Room, Worse Idea",
+  "tagline": "Every door opens onto a worse room. Keep the tour moving before the house notices you.",
+  "emblem": "🏚️",
+  "accent": "#7c2d12",
+  "premise": "You are guiding a haunted-house tour, and every move sends the group into one worse room. Say what happens next in the house; the Host hypes it up and roasts any move that gets lazy. Keep making the tour nastier without jumping past the next door.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The tour starts in a cheerful coat room; every coat is warm, though nobody is wearing one.",
+      "opening_emoji": "🧥",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The tour starts in a bright dining room; every plate is set for a guest who vanished yesterday.",
+      "opening_emoji": "🍽️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The tour starts in a clean nursery; the empty crib rocks whenever someone says the house is safe.",
+      "opening_emoji": "🍼",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "starting_room": [
+        "coat room",
+        "dining room",
+        "nursery",
+        "parlor",
+        "kitchen",
+        "library",
+        "music room",
+        "greenhouse"
+      ],
+      "wrong_sign": [
+        "warm coats",
+        "fresh footprints",
+        "a ringing bell",
+        "a moving portrait",
+        "a set table",
+        "a locked cradle",
+        "wet handprints",
+        "a whispering mirror"
+      ],
+      "tour_detail": [
+        "nobody is wearing them",
+        "the prints face the wall",
+        "the bell has no rope",
+        "the portrait watches the guide",
+        "one plate is still hot",
+        "the cradle holds a shadow",
+        "the hands are child-sized",
+        "the mirror shows one extra guest"
+      ]
+    },
+    "tests": [
+      "It begins in one clear room and contains one wrong detail a stranger can picture at once. Present tense, one sentence, plain words.",
+      "A non-player can name two possible next rooms within five seconds, and both can make the tour worse without skipping a door.",
+      "Nothing on the card is already the worst possible ending. A screaming crowd outside or the house collapsing is an ending, a warm empty coat is a start.",
+      "No real people, brands, graphic gore, or instructions for crimes. Spooky, nasty, and weird are welcome.",
+      "It makes a stranger want to open the next door. The house should feel like it has a plan, not like a random list of haunted objects."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then the tour enters ",
+    "example": "Then the tour enters a kitchen where the cabinets breathe, and one guest opens the loudest one.",
+    "hint": "Name one connected new room or room-sized event caused by the tour so far, and leave a worse problem behind."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How much worse and more dangerous the tour becomes in this room-sized step.",
+      "anchors": "0 = no worsening or the threat gets smaller; 1 = a nasty detail, but the danger barely changes; 2 = one clear notch worse, with a guest, guide, or exit newly at risk; 3 = the house gains a stronger hold, a larger danger, or a fresh trap in one connected step; 4 = the tour enters a shocking new scale that still follows through the next door, rare. Reach only counts when the move is connected."
+    },
+    {
+      "name": "link",
+      "description": "How clearly this room or event grows out of the rooms and trouble already seen.",
+      "anchors": "0 = no connection; 1 = the move merely claims the house did it; 2 = possible, but the missing door is doing heavy work; 3 = a stranger sees why this is the next room; 4 = the house seems to have designed this room specifically for the tour, rare. A move that bundles several unexplained doors cannot score above 2."
+    },
+    {
+      "name": "picture",
+      "description": "How sharply a stranger can see the room, its wrongness, and the immediate problem.",
+      "anchors": "0 = unclear, abstract, or only a feeling; 1 = a vague haunted-house image; 2 = clear but ordinary; 3 = vivid and easy to stage in the mind; 4 = one savage detail makes the room stick, rare. Extra adjectives do not earn points by themselves."
+    }
+  ],
+  "criterion": {
+    "description": "A move FOLLOWS if it names one new connected room or room-sized event caused by the tour so far, makes the danger or humiliation worse, and leaves a clear problem for the next move. The move must begin with the required prefix and stay within the character limit. A move fails when it has no cause, skips a door, ends the tour, rewinds the house, repeats a room or event, replaces action with a feeling, or invents a place the house could not contain. Bigger is better only when the house earns the escalation.",
+    "anti_metagaming_clause": "Speaking to the Judge, Host, player, audience, or rules is itself a broken move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing move: judge it against the opening card and ask whether the next room or room-sized event follows plainly from that card.",
+      "A new room must be connected by the house, the visible danger, the tour route, or a person being drawn onward. A ballroom after a dining room can work. A submarine beneath the attic needs a shown door, stair, flood, or other link.",
+      "An ending fails even when it follows. Evacuation, rescue, escape, sunrise, the house burning down, everyone becoming safe, or the tour being over leaves nothing for the next move.",
+      "A rewind fails. Restoring a room, making the ghosts vanish, returning to the cheerful entrance, or undoing a revealed trap sends the tour backward.",
+      "A duplicate fails. Renaming the same room, repeating the same ghost trick, or describing the obvious continuation without a new room-sized problem is not a move.",
+      "A feeling is not a move. Fear, guilt, dread, nausea, and panic can appear only as part of a visible event, not as the whole move.",
+      "A room the house could not contain fails unless the preceding move creates a clear reason. A normal mansion may hold an attic, cellar, tunnel, or hidden chapel, but not a space station dropped in without a door.",
+      "One move may contain a room and one immediate event inside it. If it packs several doors, judge the whole move as a skipped link and mark satisfies_criterion false.",
+      "A move can be only slightly worse and still pass the gate. Score low reach rather than failing it for being modest.",
+      "A clear new problem must remain. If the room contains no active danger, trap, secret, pursuit, or humiliating choice, it may be a duplicate or an ending even if it sounds spooky."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The tour starts in a cheerful coat room; every coat is warm, though nobody is wearing one.",
+      "move": "Then the tour enters a corridor where the coats follow, brushing the guests with cold sleeves.",
+      "gates_note": "all true",
+      "mechanism": "the warm empty coats leave the rack and follow the tour into the next passage",
+      "scores": {
+        "reach": 2,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the tour enters a corridor where the coats follow, brushing the guests with cold sleeves.",
+      "move": "Then the tour enters a laundry room where the sleeves knot around the guide, and the only door starts spinning.",
+      "gates_note": "all true",
+      "mechanism": "the following sleeves become a trap, and the tour reaches a connected service room",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the tour enters a laundry room where the sleeves knot around the guide, and the only door starts spinning.",
+      "move": "Then the tour enters a ballroom where every guest has the guide's face and applauds the spinning door.",
+      "gates_note": "all true",
+      "mechanism": "the spinning door carries the tour into a larger room, where the house copies the trapped guide",
+      "scores": {
+        "reach": 4,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the tour enters a corridor where the coats follow, brushing the guests with cold sleeves.",
+      "move": "Then the tour enters a room where the coats keep following.",
+      "gates_note": "satisfies_criterion false, duplicate with no new problem",
+      "mechanism": "the same coat attack is wearing a fake moustache",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the tour enters a laundry room where the sleeves knot around the guide, and the only door starts spinning.",
+      "move": "Then the tour escapes the house, the ghosts are defeated, and everyone gets a refund.",
+      "gates_note": "satisfies_criterion false, ending and skipped resolution",
+      "mechanism": "the story slams the emergency exit and kills the fun",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the tour enters a corridor where the coats follow, brushing the guests with cold sleeves.",
+      "move": "Then the tour enters outer space, where the moon asks for the guide's ticket.",
+      "gates_note": "satisfies_criterion false, impossible room and skipped link",
+      "mechanism": "none shown, the tour has been launched into nonsense",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Cryptic Tour Host",
+    "tone": {
+      "commentary_adj": "chaotic",
+      "explanation_adj": "hype"
+    },
+    "bite": "savage",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like a haunted attraction announcer who has had too much coffee and exactly one remaining safety regulation.",
+      "The joke must carry the reason. Name the door, room, trap, or repeated nonsense that caused the ruling.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Host refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the move hard, and the player lightly. Savage chaos is fine, identity based abuse is not. Never target protected traits, disability, or real world vulnerability.",
+      "Profanity and adult innuendo are allowed when they sharpen the haunted house joke, but do not turn the game into graphic sexual or violent content.",
+      "Plain spoken English. No purple prose, no fake Shakespeare, no academic fog.",
+      "On a skipped door, name the missing room or link. On an ending, say the tour is over and the chain stops here.",
+      "On a duplicate, point out that the ghost has changed hats but not jobs. Ask for a genuinely new room.",
+      "On a refusal, the headline refuses the move and asks for another. It never decides who won.",
+      "The coaching line gives one next room or event that would follow. End on a visible thing happening, never a mood or a verdict.",
+      "Hype accepted moves like a crowd just saw a trapdoor open under a wedding cake, but keep the reason understandable."
+    ],
+    "good_headlines": [
+      "The sleeves followed the tour and now the guide is wearing the problem. Gorgeous. Horrible. Next door.",
+      "A spinning door, a trapped guide, and absolutely no refund policy. The house is cooking.",
+      "The ballroom copied the guide because one guide was apparently not enough nightmare.",
+      "That coat has gone from warm to clingy. The wardrobe is now committing crimes against personal space.",
+      "The laundry room had one job, and it made the exit spin like a cursed washing machine.",
+      "Big escalation, clean link, nasty room. The house just upgraded from creepy to deeply rude.",
+      "The moon needs a ticket? Cute. Show the staircase that got this tour into space first.",
+      "Same coats, new room, zero new problem. That ghost changed hats and called it character growth.",
+      "Escape, rescue, refunds. Gorgeous ending, terrible move. The tour is dead and boring now.",
+      "The corridor earned the ballroom. The copied faces did not ask permission, which is exactly the vibe."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: spooky stuff happens.",
+        "why": "opens with a status word and says nothing useful"
+      },
+      {
+        "text": "The Host refuses your move.",
+        "why": "opens with a ruling phrase and makes the host the subject"
+      },
+      {
+        "text": "Wow, what a move. Incredible.",
+        "why": "hype with no room, link, or reason"
+      },
+      {
+        "text": "The eldritch vestibule transmogrifies into a liminal nightmare.",
+        "why": "thesaurus sludge, no plain picture"
+      },
+      {
+        "text": "You are stupid, so the move is stupid.",
+        "why": "attacks the player instead of the move"
+      },
+      {
+        "text": "The tour might continue, perhaps, in some sense.",
+        "why": "hedges instead of ruling"
+      },
+      {
+        "text": "Then the shadows danced...",
+        "why": "poetry and an ellipsis, both banned"
+      },
+      {
+        "text": "More ghosts. More fear. More everything.",
+        "why": "empty hype with no visible event"
+      }
+    ]
+  },
+  "rules": [
+    "Begin with Then the tour enters and name one connected new room or room-sized event.",
+    "Make the house worse one door at a time. Bigger danger earns more points only when the link is clear.",
+    "Leave a trap, threat, secret, or humiliating problem for the next move.",
+    "Skip a door, end the tour, rewind the house, repeat a room, or invent an impossible space and the chain stops with you.",
+    "The Judge rules on the room and its link, not spelling or fancy wording."
+  ],
+  "labels": {
+    "opening": "The first room",
+    "next_opening": "The next room",
+    "your_opening": "Your next room",
+    "compose": "What room comes next, after {token}",
+    "compose_waiting": "Draft the next room while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happens. The house is waiting, and it is not patient.",
+    "too_long": "Over 140 characters. One cursed room, not the director's cut.",
+    "duplicate": "That room already happened this match. Give the house a new way to be awful.",
+    "nudge": "Twice now. Something has to follow from {standing_form}. Name the next door and leave a fresh problem inside."
+  },
+  "judge_out_text": "The Judge has stepped out. Nobody opens a door until they are back. {standing_form} still stands, and the house is listening.\n",
+  "opponent_prompt": "You are guiding a haunted house tour, and you want every room to be worse than the last.\nAlways begin with: \"Then the tour enters...\" Name one connected new room or room sized event.\nMake it follow from the whole tour so far, make the danger or humiliation worse, and leave a clear problem behind.\nGood: \"Then the tour enters a kitchen where the cabinets breathe, and one guest opens the loudest one.\"\nGood: \"Then the tour enters a nursery where the empty crib rolls toward the person holding the map.\"\nBad: \"Then the tour enters the moon\" when no door or link leads there. Bad: \"Then everyone escapes and the ghosts are gone\" because that ends the tour. Bad: \"Then the guests feel afraid\" because a feeling is not a room sized event.\nNever skip several doors in one move. Never rescue the group, tidy the house, rewind a reveal, or close the tour.\nUse plain spoken English. Talk like a chaotic attraction host hyping a disaster for paying guests. Adult jokes and mild profanity are allowed, but do not use identity based abuse. Name concrete things such as a lift, a cellar, a mirror, a wet footprint, or a guide with a bad map.\nNever reuse a room or event from this match. Keep the move under 140 characters.\n",
+  "medallions": false,
+  "default_move": "Then the tour enters a narrow hall where every door is marked with the name of the guest who opens it."
+}

@@ -1,0 +1,291 @@
+{
+  "slug": "ticket-escalation",
+  "title": "Ticket Escalation",
+  "tagline": "One complaint, twelve handoffs. Make your partner own the mess.",
+  "emblem": "🎧",
+  "accent": "#be123c",
+  "premise": "Together, build one customer support ticket from complaint to disaster. Each move adds exactly one status change, note, or handoff, and the ticket must still be the same case. The fun is making the other player look more useless while the case crawls upward.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A streaming service billed you after you canceled.",
+      "opening_emoji": "📺",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A parcel says delivered, but the customer never received it.",
+      "opening_emoji": "📦",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A phone plan charged roaming fees during a trip the customer never took.",
+      "opening_emoji": "📱",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 12,
+    "axes": {
+      "service": [
+        "streaming service",
+        "parcel company",
+        "phone provider",
+        "bank",
+        "airline",
+        "energy supplier",
+        "food delivery app",
+        "online shop"
+      ],
+      "complaint": [
+        "charged after cancellation",
+        "parcel marked delivered",
+        "wrong fee on a bill",
+        "account locked",
+        "refund never arrived",
+        "duplicate payment",
+        "missing order",
+        "service cut off"
+      ],
+      "pressure": [
+        "before payday",
+        "during a holiday",
+        "after a long wait",
+        "on a public holiday",
+        "with a deadline today",
+        "after three failed chats",
+        "while the customer is abroad",
+        "when the charge is unusually large"
+      ]
+    },
+    "tests": [
+      "One short sentence with a clear company type, one customer problem, and enough detail to support several ticket entries.",
+      "Nobody is hurt, no real person or brand is named, and the problem is annoying rather than a serious emergency.",
+      "A stranger can see why the customer contacted support and can imagine at least three departments passing the case around.",
+      "The complaint leaves room for status changes, internal notes, and handoffs without solving itself in the opening card.",
+      "Everyday words a twelve-year-old knows. No legal claims, technical jargon, street names, or private customer details."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Assigned to Billing. Billing marks it solved because the customer used the word please.",
+    "hint": "Add one ticket entry. Change a status, write a note, or hand it off. Make your partner own the delay."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the entry makes your partner responsible for the delay, mistake, or embarrassing bit of support theatre.",
+      "anchors": "0 = nobody owns anything, the case merely waits; 1 = a small nuisance, a queue or a copied reply; 2 = your partner owns a real delay or bad call; 3 = they caused the handoff, closed the wrong thing, or wrote a note that traps them; 4 = plausible, specific, and your partner now carries the whole ugly mess (rare). A move that only hurts your own side, or invents a wild company policy, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the new entry is the next believable record in this one ticket and preserves all earlier facts.",
+      "anchors": "0 = starts another case, skips a required link, reverses a status without an undo, or closes the ticket; 1 = vaguely related but adds no usable ticket action; 2 = connected and names one clear status, note, or handoff; 3 = connected and properly follows the prior entry with a checkable department, reason, or action; 4 = cleanly links an earlier loose end and makes the whole ticket worse (rare). Length and office jargon do not earn points.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How sharply the entry shows a real support system and a real person being failed by it.",
+      "anchors": "0 = generic support mush; 1 = one plain ticket action; 2 = a recognisable canned reply, queue, or internal note; 3 = a specific bit of bureaucratic nonsense a stranger can picture; 4 = painfully believable, with a detail that makes the support desk look human and hopeless (rare). Fancy jargon scores less than a clear stupid choice.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it is exactly one connected next record in the same support ticket. It must add one status change, one internal or customer-facing note, or one handoff, and it must fit every earlier record. A move BREAKS the ticket if it introduces a new complaint or customer, skips a link that the stated process requires, changes status without the needed action, closes or cancels the ticket, or undoes an earlier status without explicitly restoring the earlier state. A move that merely repeats the current record is a duplicate, not a new entry. Holding is the gate. Points go to what the entry makes the partner own: blame, needless delay, a bad promise, an embarrassing note, or a handoff they caused. Safe process language with no consequence scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the customer, the judge, or the other player about the game, the rules, or how the move is being judged, instead of adding a ticket entry, is itself a broken ticket.",
+    "judge_notes": [
+      "On a FIRST move there is no earlier ticket entry: judge it against the card alone. It must be one status change, note, or handoff for that complaint, not a solution or a new case.",
+      "The full transcript is the ticket. Check the new entry against every earlier entry, not only the last one.",
+      "Break only for a plain connection failure a stranger can notice. Do not require real company policy, software knowledge, legal knowledge, or a lookup. When an entry can sensibly follow, it holds.",
+      "A handoff must name a department, queue, team, or person with a reason. A bare switch to another team is a skipped link when the ticket already gives a required action.",
+      "A status change needs its stated trigger. Marking a case solved requires some claimed resolution, and reopening it requires a clear customer reply, failed fix, or explicit undo.",
+      "Closing or cancelling the ticket is an ending and breaks the ticket, even if the complaint is still unresolved.",
+      "An undo must restore an earlier status or action clearly. Saying the same problem happened again is not an undo unless the entry says the earlier state was restored.",
+      "A move about the partner's agent, note, promise, queue, or handoff is the point of the game and never a meta move. Saying the partner is playing badly is a meta move.",
+      "An entry that says an earlier one again in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A streaming service billed you after you canceled.",
+      "move": "Opened as Billing. The agent asks for the cancellation date already shown on the account.",
+      "gates_note": "all true",
+      "mechanism": "adds one status and a needless request while making the first agent own the delay",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Assigned to Billing. Billing marks it solved because the customer used the word please.",
+      "move": "Customer replies that the charge is still there, so the ticket reopens.",
+      "gates_note": "all true",
+      "mechanism": "uses a clear customer reply to undo the solve and makes Billing's triumph last one message",
+      "scores": {
+        "squeeze": 3,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Billing asks for the cancellation date, and the customer sends it.",
+      "move": "Billing forwards the case to Retention because the customer said cancel.",
+      "gates_note": "all true",
+      "mechanism": "adds one justified handoff and turns a simple refund into a sales ambush",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Customer replies that the charge is still there, so the ticket reopens.",
+      "move": "The case is cancelled and the refund is never discussed.",
+      "gates_note": "satisfies_criterion false (cancelling the ticket ends the case)",
+      "mechanism": "ends the ticket instead of adding its next record",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Assigned to Billing. Billing requests the cancellation date.",
+      "move": "A new customer reports that their password reset email never arrived.",
+      "gates_note": "satisfies_criterion false (introduces a new case)",
+      "mechanism": "abandons the billing complaint and opens a different ticket",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Billing marks it solved after issuing a refund.",
+      "move": "Assigned to Billing, who asks for the cancellation date.",
+      "gates_note": "satisfies_criterion false (changes the solved ticket without an undo or reopening trigger)",
+      "mechanism": "jumps backwards into investigation after a solve with no customer reply or restoration",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Queue Manager",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the ticket and the new entry must see why it held or broke.",
+      "Name the status, team, note, or handoff. A headline that fits any support call is a bad headline.",
+      "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The Queue Manager rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the ticket entry and the support theatre, not protected identity traits. Roast-level jabs at a player's fictional agent are allowed.",
+      "Plain spoken English, a tired call centre, not a corporate brochure. No poetry, no legal lectures, no thesaurus words.",
+      "On a break, put the two incompatible ticket records side by side, or name the new case or ending that derailed it.",
+      "On a refusal, the headline refuses the entry and asks for another. It never rules on who won.",
+      "The coaching line names one next entry that would have held and made the partner own the mess. It ends on a fact, never a mood.",
+      "Adult innuendo and profanity are allowed when they sharpen the fictional support disaster, but never use identity-based abuse."
+    ],
+    "good_headlines": [
+      "Billing solved it because the customer said please. A heroic refund strategy, if the goal was to keep the money.",
+      "The customer replied, so the dead ticket rose again. Somewhere, an agent has lost a small fight with a button.",
+      "Retention got the handoff because the customer said cancel. Nothing says service like selling harder after goodbye.",
+      "You asked for the cancellation date already on the account. The ticket is moving, mostly sideways.",
+      "The case was cancelled before the charge was discussed. Efficient, if the complaint was the part you wanted gone.",
+      "A new password problem just walked into a billing ticket. Your queue now has two disasters and one number.",
+      "Solved after a refund, then back to asking for the date. That is not an undo, it is administrative amnesia.",
+      "Billing forwards it to Retention and calls that progress. The customer wanted money back, not a breakup conversation.",
+      "The note says customer difficult, after one polite reply. Your partner has documented the crime of having a memory.",
+      "One more handoff to Finance and this ticket will qualify as a family tree."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: this is a good escalation.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Queue Manager rules that the move breaks.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Inconsistent ticket.",
+        "why": "names no entry or contradiction"
+      },
+      {
+        "text": "Only an idiot would write that note.",
+        "why": "mocks the player with a direct intelligence insult instead of explaining the ticket"
+      },
+      {
+        "text": "The support maze unfolds like a tragic rose in a moonlit storm.",
+        "why": "poetry and inflated language"
+      },
+      {
+        "text": "Maybe it holds, maybe it does not, depending on what the agent meant.",
+        "why": "hedges instead of making a clear ruling"
+      },
+      {
+        "text": "Refused, but nice escalation.",
+        "why": "starts with a ruling word and gives no reason"
+      },
+      {
+        "text": "Their CRM requires a special code for reopened refunds, so this fails.",
+        "why": "relies on unknown software trivia a stranger cannot check"
+      },
+      {
+        "text": "Guilty.",
+        "why": "gives no ticket detail or reason"
+      },
+      {
+        "text": "The entry is inconsistent, contradictory, incompatible and invalid.",
+        "why": "uses four abstract labels instead of naming the broken link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card is one customer support complaint. Build its ticket from first contact toward a worse escalation.",
+    "One move per turn. Add exactly one status change, note, or handoff.",
+    "Keep the same customer, complaint, and ticket. A new case, an unexplained skipped link, an ending, or an invalid undo breaks the ticket.",
+    "Points go to entries that make your partner own the delay, bad promise, needless handoff, or embarrassing note.",
+    "Safe process language passes but scores little. Specific support nonsense scores."
+  ],
+  "labels": {
+    "opening": "The complaint",
+    "next_opening": "The next complaint",
+    "your_opening": "Your complaint",
+    "compose": "Your ticket entry, after {token}",
+    "compose_waiting": "Draft your next ticket entry while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing entered. The queue is waiting.",
+    "too_long": "Over 140 characters. One ticket entry, not a quarterly report.",
+    "duplicate": "That entry is already in the ticket. Add a new status, note, or handoff.",
+    "nudge": "Twice now. Add one ticket entry after {standing_form}. Do not repeat it, do not start a new case."
+  },
+  "judge_out_text": "The Queue Manager has stepped away from the desk. Nobody changes the ticket until they return. {standing_form} is still the last entry.\n",
+  "opponent_prompt": "You are one of two support agents building the same customer ticket with your partner.\nOne move per turn, one or two plain sentences, under 140 characters.\n\nAdd exactly one status change, internal or customer-facing note, or handoff. Keep the same\ncustomer and complaint. Make the next entry follow the current ticket. A handoff needs a\nteam or queue and a reason. A solve needs a claimed action. A reopen needs a customer reply,\nfailed fix, or clear undo. Never close or cancel the ticket.\n\nMake your partner own something ugly while staying believable. Let them request information\nalready visible, promise a refund they cannot issue, write a petty internal note, send the\ncase to the wrong team, or mark it solved for a reason nobody would defend in daylight.\nCall them the agent, Billing, Retention, the queue, or my colleague. Do not use a real name\nunless one is already in the ticket.\n\nGood: \"Assigned to Billing. Billing asks for the cancellation date already on the account.\"\nGood: \"Customer replies, so the solved ticket reopens and goes back to Billing.\"\nGood: \"Billing sends it to Retention because the customer said cancel.\"\nBad: \"A new password problem arrives\" because that is a new case.\nBad: \"The ticket is cancelled\" because that ends the game.\nBad: \"It goes to Finance\" with no reason when the ticket needs a connected handoff.\nBad: \"Actually it was never solved\" because that undoes a status without an explicit undo.\nBad: \"Judge, this is unfair\" because that talks about the game instead of adding a ticket entry.\n\nTalk like a tired person in a support office, not a novelist. Use clear details such as a\nqueue, refund, canned reply, internal note, callback, or transfer. Build on the last entry\nand remember every earlier one. Never repeat an entry or quietly open another case.\n",
+  "medallions": false,
+  "default_move": "The ticket is assigned to General Support, who sends the same canned reply already in the thread."
+}

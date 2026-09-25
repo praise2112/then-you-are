@@ -1,0 +1,270 @@
+{
+  "slug": "ghost-host-escalator",
+  "title": "The Host Keeps Lying",
+  "tagline": "Every room is perfectly safe, according to the ghost who keeps making it worse.",
+  "emblem": "👻",
+  "accent": "#7c3aed",
+  "premise": "A ghostly host promises that each next room is perfectly safe, while the tour keeps proving the exact opposite. On your turn, add the next lie and the room or stunt that exposes it. Make the host’s sales pitch more desperate, not just the room more gross.\\n",
+  "seed_pool": [
+    {
+      "opening_token": "At the welcome desk, the Host smiles and says, “Nothing here can hear you.”",
+      "opening_emoji": "👻",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "In the portrait hall, the Host says, “The paintings only watch during office hours.”",
+      "opening_emoji": "🖼️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "By the sealed nursery, the Host says, “The dolls are display pieces and absolutely cannot move.”",
+      "opening_emoji": "🪆",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 18,
+    "axes": {
+      "room": [
+        "welcome desk",
+        "portrait hall",
+        "sealed nursery",
+        "root cellar",
+        "mirror corridor",
+        "old ballroom",
+        "bell tower",
+        "drowned library"
+      ],
+      "host_lie": [
+        "nothing can hear you",
+        "the paintings only watch by day",
+        "the dolls cannot move",
+        "the cellar is completely dry",
+        "the mirrors show only visitors",
+        "the ballroom has no dancers",
+        "the bell is purely decorative",
+        "the books cannot remember names"
+      ],
+      "exposure": [
+        "the walls whisper your name",
+        "every portrait turns its head",
+        "one doll waves from inside the glass",
+        "water rises around the Host’s shoes",
+        "your reflection keeps walking",
+        "empty shoes begin to dance",
+        "the bell rings from inside your chest",
+        "a book opens to your childhood bedroom"
+      ]
+    },
+    "tests": [
+      "A stranger sees a haunted tour stop, a Host making one clear promise, and one immediate supernatural contradiction. Present tense, one sentence, plain words.",
+      "The Host’s lie is almost reassuring but already suspicious, and the reveal gives the next player something fresh to worsen. Say it aloud and picture it at once.",
+      "The card starts the trouble without solving it. A whisper, a moving portrait, or a locked door is a start; the whole house collapsing is an ending.",
+      "No real people, living victims, slurs, brands, or instructions for real harm appear on the card. Fear is welcome; cruelty is not the point.",
+      "It makes a stranger want to enter the next room while thinking, absolutely not. The Host should sound like a dodgy guide, not a paragraph of spooky wallpaper."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "Then the Host says ",
+    "example": "Then the Host says the ballroom is empty, and the chandeliers start applauding.",
+    "hint": "Make one fresh safety promise, then show the next room immediately proving it false."
+  },
+  "rubric": [
+    {
+      "name": "reach",
+      "description": "How badly the new room or stunt damages the Host’s tour and how much worse the haunting becomes.",
+      "anchors": "0 = no new danger or pressure; 1 = a small spooky twitch; 2 = the lie cracks and one new thing is at risk; 3 = the Host’s pitch, the room, or the visitors face a larger problem through one clear reveal; 4 = the tour jumps to a savage new scale while still feeling like the immediate next room, rare. Bigger only counts when the contradiction is earned.",
+      "weight": 5
+    },
+    {
+      "name": "link",
+      "description": "How directly the fresh promise is exposed by the standing room or its immediate consequence.",
+      "anchors": "0 = the promise and reveal are unrelated; 1 = they share a spooky mood but no cause; 2 = the connection is plausible but needs explaining; 3 = the reveal plainly punctures the promise; 4 = the Host’s exact words set up the perfect supernatural humiliation, rare. A move that jumps through several rooms or reveals scores no higher than 2.",
+      "weight": 3
+    },
+    {
+      "name": "picture",
+      "description": "How clearly a stranger can see the Host, the room, and the nasty little proof that the lie failed.",
+      "anchors": "0 = abstract, confusing, or only an insult; 1 = vague spooky noise; 2 = clear but ordinary; 3 = sharp visual or physical image; 4 = one vivid detail makes the whole room feel wrong, rare. Extra gore or extra words do not earn points.",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A step FOLLOWS if it contains one fresh promise from the Host and one immediate supernatural contradiction in the next room or stunt, plainly connected to the standing tour. It must raise the Host’s problem and leave a new detail someone can lie about next. Bigger is better, but only through the reveal. A step fails when it repeats a promise or reveal, skips from setup to a distant payoff, offers a happy rescue, reverses or erases the haunting, swaps in an unrelated scene, or is only a bare insult instead of an event.\\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or attacking the player instead of advancing the haunted tour is itself a broken step.\\n",
+    "judge_notes": [
+      "On a FIRST move there is no standing step: judge the move against the card. It must add one fresh Host promise and show that promise contradicted by the immediate next room or stunt.",
+      "A new room may appear when the standing reveal plainly leads there, such as a door opening, a lift descending, or a bell calling the tour onward. A distant room with no route or trigger is a skipped reveal: satisfies_criterion is false.",
+      "A new ghost, object, or visitor may appear if the room can plainly contain it or the standing reveal gives it a reason to arrive. A monster from nowhere, a police rescue, or a helicopter escape skips the link.",
+      "A promise that is merely repeated with different wording is a duplicate, even if the Host sounds more nervous. A promise must protect a new room, object, or stunt.",
+      "A reveal must contradict the promise immediately. The Host saying the mirror is harmless, followed by the mirror cracking three rooms later, is a skipped reveal.",
+      "A happy rescue, tour ending, clean-up, escape, or safe return fails even when it follows from the standing step. The house must still have something to lie about.",
+      "Reversing the haunting, restoring a destroyed room, or declaring that the ghosts were harmless all along undoes the standing trouble and fails.",
+      "An unrelated room or random insult fails. The Host calling a player an idiot is not a contradiction unless the room physically proves something.",
+      "Two clauses pass only when the promise and its immediate exposure are both plain. If the move packs several rooms or reveals together, score link at 2 or below and picture low.",
+      "A step can be small and still pass if it gives the next player a fresh lieable detail. Do not fail it for low reach; score the scale honestly."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "At the welcome desk, the Host smiles and says, “Nothing here can hear you.”",
+      "move": "Then the Host says the whispering hall is soundproof, and every wall repeats the visitors’ names.",
+      "gates_note": "all true",
+      "mechanism": "the soundproof promise is immediately broken by walls repeating names",
+      "scores": {
+        "reach": 3,
+        "link": 4,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the Host says the whispering hall is soundproof, and every wall repeats the visitors’ names.",
+      "move": "Then the Host says the portrait gallery is only decorative, and every painted face leans out to inspect the tour.",
+      "gates_note": "all true",
+      "mechanism": "the decorative paintings physically inspect the visitors",
+      "scores": {
+        "reach": 3,
+        "link": 3,
+        "picture": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Then the Host says the portrait gallery is only decorative, and every painted face leans out to inspect the tour.",
+      "move": "Then the Host says the attic is safe, and the entire house wakes up and eats the town.",
+      "gates_note": "satisfies_criterion false, skipped reveals and distant payoff",
+      "mechanism": "the move leaps from one promise to a town-sized ending with no immediate room reveal",
+      "scores": {
+        "reach": 0,
+        "link": 0,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the Host says the nursery is harmless, and the dolls turn their heads toward the visitors.",
+      "move": "Then the Host says everything is fine, and a rescue team carries everyone safely outside.",
+      "gates_note": "satisfies_criterion false, happy rescue and tour ending",
+      "mechanism": "the move closes the tour instead of creating a fresh haunted contradiction",
+      "scores": {
+        "reach": 0,
+        "link": 1,
+        "picture": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Then the Host says the nursery is harmless, and the dolls turn their heads toward the visitors.",
+      "move": "Then the Host says the dolls are still, and the dolls turn their heads again.",
+      "gates_note": "satisfies_criterion false, repeated promise and duplicate reveal",
+      "mechanism": "the same moving dolls are wearing a cheaper disguise",
+      "scores": {
+        "reach": 0,
+        "link": 2,
+        "picture": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Host",
+    "tone": {
+      "commentary_adj": "feral",
+      "explanation_adj": "hyped"
+    },
+    "bite": "savage",
+    "ruling_generosity": "strict",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Sound like a haunted tour guide whose clipboard is on fire and whose confidence is mostly counterfeit.",
+      "Name the promise and the exact supernatural proof. Generic spooky sludge gets dragged into the basement.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Host refuses.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Roast the move with savage energy, not identity based abuse. The player may be called a clown, coward, or bargain bin exorcist, but never attacked for protected traits.",
+      "Profanity and adult innuendo are allowed when they sharpen the joke. Do not turn the game into explicit sexual content or real world threats.",
+      "On a skipped reveal, name the missing room or immediate contradiction. On an ending, say the tour ended and the chain stops here.",
+      "On a refusal, reject the step and demand another haunted room. Never pretend a failed move wins anything.",
+      "The coaching line must offer one concrete promise and one visible contradiction. End on an event, never a mood or a verdict.",
+      "Keep the hype tied to this exact tour. If the headline could fit a toaster, a tax form, or any other game, it is weak sauce."
+    ],
+    "good_headlines": [
+      "The Host said soundproof, then the walls learned your names. That is not insulation, that is a haunted gossip network.",
+      "Decorative portraits should not lean out of frames. The gallery has entered its little freak show era.",
+      "The dolls moved, the Host lied again, and somebody still paid admission. Financial literacy has left the building.",
+      "A safe attic that eats the town skips every room between cute lie and apocalypse. Let the staircase suffer first.",
+      "Rescue team, clean exit, happy ending. Gorgeous. You just murdered the tour.",
+      "Saying harmless while the same dolls move again is not escalation. It is the ghostly equivalent of reheating a bad takeaway.",
+      "The mirror promised reflections and produced one with its own agenda. Finally, customer service with teeth.",
+      "That insult did not open a door or break a lie. Even the ghosts are embarrassed by the lack of effort.",
+      "The Host called the cellar dry, and the water climbed into his shoes. The sales pitch is now aquatic and doomed.",
+      "A fresh lie, a fresh room, a fresh nightmare. The Host is sprinting from reality in sensible little shoes."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: spooky stuff happens.",
+        "why": "opens with a status word and says nothing about the actual promise or reveal"
+      },
+      {
+        "text": "The Host refuses this move.",
+        "why": "uses a ruling phrase and gives no reason, like a haunted customer service bot"
+      },
+      {
+        "text": "Wow, what an amazing turn.",
+        "why": "pure empty hype with no room, lie, or contradiction"
+      },
+      {
+        "text": "The player is stupid and should go home.",
+        "why": "attacks the player instead of explaining the broken step"
+      },
+      {
+        "text": "The conflagration manifests an eldritch escalation.",
+        "why": "thesaurus sludge, no plain picture, maximum fake wizard energy"
+      },
+      {
+        "text": "The Host lies, then spooky things happen, then everyone dies.",
+        "why": "packs vague events together and skips the immediate reveal"
+      },
+      {
+        "text": "And then the darkness danced...",
+        "why": "poetry, vagueness, and an ellipsis, the cursed three piece suit"
+      },
+      {
+        "text": "The room is bad because the room is haunted.",
+        "why": "circular explanation with no visible contradiction"
+      }
+    ]
+  },
+  "rules": [
+    "Write one fresh Host promise and the immediate haunted proof that breaks it.",
+    "Make the Host’s problem worse and leave a new room detail to lie about next.",
+    "Skip the reveal, repeat the lie, rescue everyone, reverse the haunting, or change scenes without a link and the chain stops with you.",
+    "The Judge rules on the promise and contradiction, not spelling or perfect punctuation."
+  ],
+  "labels": {
+    "opening": "The Host’s first lie",
+    "next_opening": "The next room’s lie",
+    "your_opening": "Your haunted lie",
+    "compose": "What does the Host promise, after {token}",
+    "compose_waiting": "Draft the next lie while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing happens. Even a haunted house needs one bad promise and one worse proof.",
+    "too_long": "Over 140 characters. That is a tour brochure, not one haunted reveal.",
+    "duplicate": "That lie or reveal already happened this match. Find a fresh room to ruin.",
+    "nudge": "Twice now. The Host needs a fresh promise that immediately breaks because of {standing_form}. One room, one nasty proof."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody moves until they are back. {standing_form} still stands, and the Host is still lying.\n",
+  "opponent_prompt": "You are one of two players escalating a haunted house tour, and you want the Host’s sales pitch to collapse in public.\nAlways write one sentence under 140 characters in this shape: \"Then the Host says X, and the next room shows Y.\"\nX is one fresh promise that sounds safe. Y is the immediate supernatural contradiction. The contradiction must follow from the standing tour and leave a new detail for the next lie.\nGood: \"Then the Host says the ballroom is empty, and the chandeliers start applauding.\" Good: \"Then the Host says the mirror shows only visitors, and your reflection waves first.\"\nBad: \"Then the whole town dies\" because it skips rooms and turns the tour into a badly edited apocalypse. Bad: \"Then the Host says everything is fine and everyone gets rescued\" because the tour ends and you lose. Bad: \"Then the Host is a loser\" because an insult is not a haunted event.\nNever repeat a promise or reveal. Never rescue everyone, tidy the house, reverse the haunting, or declare it was all harmless. Do not jump to a distant room without a door, corridor, lift, bell, or other immediate route.\nUse plain spoken English. Make the Host sound desperate, smug, and one bad sentence away from quitting. Adult innuendo and profanity are allowed in the Host’s comic voice, but avoid explicit sexual content, identity based abuse, and real world threats.\nTalk like a person describing the worst guided tour ever, not like a gothic novelist. Name things a twelve year old anywhere knows: a lift, a doll, a wet shoe, a bell, a mirror. Never reuse a step from this match.\n",
+  "medallions": false,
+  "default_move": "Then the Host says the next room is completely empty, and a second tour group waves from inside the walls."
+}

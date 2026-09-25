@@ -1,0 +1,291 @@
+{
+  "slug": "storm-proof-fete",
+  "title": "The Fete That Nearly Held Together",
+  "tagline": "One gust, two rescuers, and an alarming amount of bunting.",
+  "emblem": "🎪",
+  "accent": "#0f766e",
+  "premise": "A gust has just hit the village fete. Take turns adding one repair to the same rescue plan: keep the stalls, people, and prizes safe while the weather gets worse. Make the plan work, but spend your partner’s time, pride, money, or dignity whenever you can.\n",
+  "seed_pool": [
+    {
+      "opening_token": "The first gust lifts the cake tent, and the raffle tickets are blowing toward the duck pond.",
+      "opening_emoji": "🎂",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The wind has tipped the tombola table, and the winning numbers are sliding under the tea stall.",
+      "opening_emoji": "🎟️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A sudden gust has filled the craft tent with leaves, and the jam prizes are wobbling on the display shelf.",
+      "opening_emoji": "🍓",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 25,
+    "axes": {
+      "fete_area": [
+        "cake tent",
+        "tea stall",
+        "tombola table",
+        "craft tent",
+        "duck pond",
+        "raffle booth",
+        "bandstand",
+        "flower stall"
+      ],
+      "weather_problem": [
+        "a tent lifts",
+        "tickets blow away",
+        "a table tips",
+        "leaves fill a stall",
+        "prizes wobble",
+        "bunting snaps loose",
+        "umbrellas turn inside out",
+        "a sign falls over"
+      ],
+      "valuable_item": [
+        "raffle tickets",
+        "iced cakes",
+        "jam jars",
+        "painted mugs",
+        "tombola balls",
+        "flower prizes",
+        "tea urn",
+        "the brass band music"
+      ]
+    },
+    "tests": [
+      "One plain sentence with a village fete place, one gust or wind problem, and one thing that needs saving.",
+      "Nobody is hurt, nobody is trapped, and nothing requires a heroic stunt. This is a muddle, not a disaster film.",
+      "A stranger can see what needs doing and name at least two sensible next repairs.",
+      "The problem is immediate enough that each move can follow the last one without a long pause or a new story.",
+      "Everyday words a twelve-year-old knows. No real brands, named roads, or specialist weather terms."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "Mara ties the raffle tent to the mayor’s van with the bunting rope, but your partner has to crawl under the cake table to reach it.",
+    "hint": "One linked repair. Name who acts and what it fixes. Make your partner carry the awkward bit."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much the repair makes your partner spend, risk, confess, or look ridiculous while still being a sensible thing to do.",
+      "anchors": "0 = costs nobody anything, a hand on a loose sign; 1 = a small inconvenience, a wet sleeve or a short jog; 2 = a real nuisance, they lose time, money, or standing; 3 = they own an embarrassing, costly, or very specific job that must matter next; 4 = believable and beautifully awkward, with their next move squeezed tight (rare). A stunt that only hurts your side, or a demand too absurd for the fete, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the repair follows from the card and every earlier repair, with no missing link or magical change of position.",
+      "anchors": "0 = contradicts the plan, skips a needed step, undoes a repair, or finishes everything; 1 = vaguely related but leaves the action unclear; 2 = workable and names one clear object or problem; 3 = workable, linked, and gives someone a definite job; 4 = makes the earlier repair safer or more useful while opening a strong next step (rare). Smooth wording never repairs a broken link.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How vividly the repair feels like a real village fete in a rising wind.",
+      "anchors": "0 = a generic emergency with no fete in it; 1 = one plain object; 2 = a pictureable action or sound; 3 = a small social detail that makes the muddle feel lived in; 4 = funny, precise, and instantly visible without becoming a stunt (rare). Plain details beat grand heroics.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly one workable next step that fits the card and every earlier repair. It must name who acts, what they do, and what that action fixes or protects. A move BREAKS the rescue plan if it skips a necessary link with an unexplained jump, contradicts or replaces an earlier repair, cancels a problem instead of building on it, or finishes the whole rescue so there is no next step. A move also breaks if it introduces a new emergency as a way to avoid the current one, or if it relies on impossible equipment or action. Holding is the gate. The points go to what the repair costs the partner: their time, pride, money, clothes, authority, or dignity. A safe repair that costs nobody anything scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the Steward about the game, the rules, the score, or how the partner is playing, instead of adding a repair, is itself a broken plan.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier repair: judge it against the card alone. It must be one workable action, name who does it, and leave a clear next step.",
+      "The full transcript is the rescue plan. Check the new action against the card and every earlier repair, not only the last one.",
+      "A skipped link is a break when the move jumps over a necessary action or result, such as claiming the tickets are safe without saying how they were reached or secured.",
+      "An ending is a break when the move declares the fete safe, saves every item, or otherwise leaves no sensible next repair. A repair may solve one problem while another step remains.",
+      "An undo is a break when the move cancels, replaces, reverses, or ignores an earlier repair, such as saying the tied tent is loose again without a new cause.",
+      "Break only on a plain contradiction or missing link a stranger can see. Do not demand exact rope strength, real wind speeds, or technical knowledge. When a move can sensibly be read two ways, it holds.",
+      "A new helper, object, or short movement is allowed if the move introduces it plainly and it does not erase an earlier fact. The repair must still be one linked action.",
+      "A detail about the partner’s job, cost, embarrassment, or mistake is the point of the game and never a meta move. A remark about the partner’s play is a meta move.",
+      "A move that repeats an earlier repair in other words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The first gust lifts the cake tent, and the raffle tickets are blowing toward the duck pond.",
+      "move": "Mara grabs the bunting rope and ties one corner of the cake tent to the mayor’s van, leaving your partner to chase the tickets.",
+      "gates_note": "all true",
+      "mechanism": "makes one immediate repair, names who acts and what it fixes, and gives the partner a clear awkward job",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Mara grabs the bunting rope and ties one corner of the cake tent to the mayor’s van, leaving your partner to chase the tickets.",
+      "move": "Your partner kneels in the mud and sweeps the tickets into the raffle tin with both hands, but the lid is still on the tea stall.",
+      "gates_note": "all true",
+      "mechanism": "follows the ticket chase with one clear collection step and leaves the tin needing protection",
+      "scores": {
+        "squeeze": 4,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Your partner kneels in the mud and sweeps the tickets into the raffle tin with both hands, but the lid is still on the tea stall.",
+      "move": "Mara puts the lid on the tin and asks the vicar to hold it down with his elbow while the cake tent keeps tugging.",
+      "gates_note": "all true",
+      "mechanism": "secures the collected tickets in one step and keeps the wind problem active for the next repair",
+      "scores": {
+        "squeeze": 2,
+        "fits": 4,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Mara grabs the bunting rope and ties one corner of the cake tent to the mayor’s van, leaving your partner to chase the tickets.",
+      "move": "The tickets are safe, the tent is secured, and every stall carries on as normal.",
+      "gates_note": "satisfies_criterion false, ending leaves no next step",
+      "mechanism": "announces the whole rescue is finished instead of adding one repair",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Mara grabs the bunting rope and ties one corner of the cake tent to the mayor’s van, leaving your partner to chase the tickets.",
+      "move": "Your partner finds the tickets in the raffle tin and carries them safely back to the booth.",
+      "gates_note": "satisfies_criterion false, skips the collection and securing links",
+      "mechanism": "jumps from chasing loose tickets to a safe tin without explaining how they were gathered",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Mara grabs the bunting rope and ties one corner of the cake tent to the mayor’s van, leaving your partner to chase the tickets.",
+      "move": "Mara unties the rope from the van and replaces it with a prettier ribbon.",
+      "gates_note": "satisfies_criterion false, undo replaces an earlier repair",
+      "mechanism": "cancels the one thing holding the tent and swaps it for decoration",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Fete Steward",
+    "tone": {
+      "commentary_adj": "earnest",
+      "explanation_adj": "gentle"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair"
+  },
+  "voice_rules": [
+    "One sentence, under 140 characters. Two short sentences at most.",
+    "The joke carries the reason. A stranger who read only the plan and the new repair must see why it held or broke.",
+    "Name the object, person, or action that matters. A headline that fits any emergency is a bad headline.",
+    "Never open with a status word or a ruling phrase. No Holds, Broken, Accepted, Refused, or The Fete Steward rules.",
+    "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+    "Roast the repair or the situation, not identity, disability, protected traits, or a person’s body. Adult innuendo and mild profanity are allowed when they fit the fete.",
+    "Plain spoken English, a wet village green, not a grand adventure story. No poetry, no rhymes, no fancy words.",
+    "On a break, put the skipped link, contradiction, undo, or finished rescue beside the action that caused it.",
+    "On a refusal for a gate failure, refuse the repair and ask for another. Do not decide the whole game in the headline.",
+    "The coaching line names one repair that would have held and cost the partner something. It ends on a fact, never a mood."
+  ],
+  "good_headlines": [
+    "Your partner is on both knees in the mud for six raffle tickets. The tent still has a corner to save.",
+    "The rope reaches the van, the tickets reach the tin, and your partner reaches a new low in public dignity.",
+    "The lid is held by the vicar’s elbow. It is not elegant, but neither is the weather.",
+    "You secured the tent, then gave your partner the mud job. A sound village plan, if slightly cruel.",
+    "The tickets did not teleport into the tin, and your partner has the wet sleeves to prove it.",
+    "A prettier ribbon is not a stronger rope. The tent remembers what you just untied.",
+    "You saved the whole fete in one sentence. Even the mayor would ask what happened between the commas.",
+    "The cake tent is tied to the van, but your partner still has to catch the raffle before it joins the ducks.",
+    "The vicar is holding the tin down with his elbow. Nobody planned this, which is how you know it is a fete.",
+    "One repair, one embarrassed helper, and one very damp raffle tin. Carry on."
+  ],
+  "bad_headlines": [
+    {
+      "text": "Accepted, the repair works.",
+      "why": "opens with a status word and gives no picture"
+    },
+    {
+      "text": "The plan fails.",
+      "why": "names no action or reason"
+    },
+    {
+      "text": "The Fete Steward rules that this is an undo.",
+      "why": "opens with a ruling phrase and names the host"
+    },
+    {
+      "text": "You are a useless idiot with a rope.",
+      "why": "mocks the player rather than explaining the repair, and is needlessly abusive"
+    },
+    {
+      "text": "The storm devours the fragile tapestry of communal hope.",
+      "why": "uses grand poetry instead of plain spoken English"
+    },
+    {
+      "text": "Maybe it works, maybe it does not, who can say.",
+      "why": "hedges instead of giving a fair ruling"
+    },
+    {
+      "text": "The tickets are safe, therefore everything is safe.",
+      "why": "treats one repair as a finished rescue and leaves no next step"
+    },
+    {
+      "text": "The rope has a tensile strength of 400 newtons, so this fails.",
+      "why": "relies on technical trivia a stranger cannot judge"
+    },
+    {
+      "text": "Brilliant!",
+      "why": "gives no reason and could fit any move"
+    },
+    {
+      "text": "The action is inconsistent, incompatible, contradictory and invalid.",
+      "why": "piles up abstract words without naming the missing link"
+    }
+  ],
+  "rules": [
+    "Every card starts with a gust at a village fete. The stalls, people, and prizes need a rescue plan.",
+    "One linked repair per turn. Name who acts, what they do, and what it fixes or protects.",
+    "Each repair must fit the card and every repair already given.",
+    "Skip a necessary link, undo an earlier repair, or finish the whole rescue, and you lose on the spot.",
+    "Points go to repairs that cost your partner time, pride, money, clothes, authority, or dignity.",
+    "Safe and vague passes but scores little. Specific, workable, and awkward scores."
+  ],
+  "labels": {
+    "opening": "The fete problem",
+    "next_opening": "The next gust",
+    "your_opening": "Your fete problem",
+    "compose": "Your repair, after {token}",
+    "compose_waiting": "Draft your next repair while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing repaired. The Steward is waiting.",
+    "too_long": "Over 140 characters. One repair, not the whole emergency plan.",
+    "duplicate": "That repair is already in the plan. Add a new link.",
+    "nudge": "Twice now. Add one repair that fits {standing_form}. Do not repeat it, undo it, or finish the whole fete."
+  },
+  "judge_out_text": "The Steward has stepped away to catch the bunting. Nobody changes the plan until they return. {standing_form} is still the last repair. Give it a moment.\n",
+  "opponent_prompt": "You are one of two people trying to keep a village fete together after the first gust of wind. Take turns adding one linked repair, one or two plain sentences.\nEvery move must name who acts, what they do, and what that action fixes or protects. It must follow the card and every repair already given. Keep a next step open. Do not announce that everything is safe, skip the work between two results, or undo an earlier repair.\nMake each repair cost your partner something while staying workable. Spend their time, muddy their clothes, use their money, damage their pride, or give them the job nobody wants. Use phrases like my partner, he, or she, never a name unless one is already in the story.\nGood: Mara ties the raffle tent to the mayor’s van with the bunting rope, leaving my partner to chase the tickets. / My partner sweeps the tickets into the tin with both hands, so now someone has to keep the lid on.\nBad: The tickets are safe and the fete carries on. That finishes the rescue. Bad: The tickets are suddenly in the tin. That skips the link. Bad: Mara unties the rope and uses a ribbon instead. That undoes the plan. Bad: Steward, you cannot prove that. That talks about the game instead of playing it.\nTalk like a person on a wet village green, not a novelist. Name things anyone would name: a rope, a van, a tea urn, a muddy table, a raffle tin, a vicar with a free elbow. Build on the last repair and never repeat a repair or object already used this match unless the plan clearly requires it.\n",
+  "medallions": false,
+  "default_move": "My partner puts one hand on the nearest loose sign while I fetch something heavy enough to hold it down."
+}

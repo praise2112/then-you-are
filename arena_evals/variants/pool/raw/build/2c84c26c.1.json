@@ -1,0 +1,281 @@
+{
+  "slug": "doorstep-dominoes",
+  "title": "Doorstep Dominoes",
+  "tagline": "One small favour, then the whole street has your number.",
+  "emblem": "🗝️",
+  "accent": "#b45309",
+  "premise": "One neighbour does a tiny helpful thing. Each turn must knock the next useful thing into motion, so the street’s ordinary problems spread from door to door. Make the other person inherit the worst job without breaking the chain.\n",
+  "seed_pool": [
+    {
+      "opening_token": "A neighbour finds your keys on the pavement.",
+      "opening_emoji": "🗝️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The shared front gate is jammed just as three neighbours come home with shopping.",
+      "opening_emoji": "🚪",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "A parcel for Number 12 is left outside Number 2 in heavy rain.",
+      "opening_emoji": "📦",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 20,
+    "axes": {
+      "starting_problem": [
+        "lost keys",
+        "a wet parcel",
+        "a jammed gate",
+        "a flat tyre",
+        "a leaking bin",
+        "a missing ladder",
+        "a trapped cat",
+        "a dead phone"
+      ],
+      "street_place": [
+        "the pavement",
+        "the front gate",
+        "the shared hallway",
+        "the corner shop",
+        "the residents’ bins",
+        "the bus stop",
+        "the communal garden",
+        "the row of garages"
+      ],
+      "pressure": [
+        "heavy rain",
+        "a delivery deadline",
+        "someone waiting outside",
+        "a power cut",
+        "a barking dog",
+        "a queue forming",
+        "darkness falling",
+        "a neighbour in a hurry"
+      ]
+    },
+    "tests": [
+      "One short sentence with one ordinary problem and a place on a residential street.",
+      "The opening gives neighbours a practical reason to help, not a crime, injury, or emergency needing professionals.",
+      "A stranger can name the first useful action within five seconds.",
+      "The problem is small enough for neighbours to handle but awkward enough to pass along.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or named real people."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The keys are dry now, so I take them to Number 8, but their dog grabs the lanyard.",
+    "hint": "One helpful action and its immediate result. Pass the job on, and leave your partner holding something awkward."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How badly this move makes the other player inherit the next job while still sounding like a normal neighbourly favour.",
+      "anchors": "0 = leaves nobody with work, just hands over a cup or says thanks; 1 = a mild nuisance; 2 = gives the other player a clear chore or awkward handoff; 3 = leaves them with a specific, embarrassing, or messy job; 4 = believable and makes their next move a tightrope, with the whole street now watching (rare). A move that only burdens the player who made it scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "How cleanly the action follows from the card and every earlier result, with no missing handoff or magical shortcut.",
+      "anchors": "0 = contradicts the chain, skips a needed link, solves the problem, or undoes a standing result; 1 = vaguely helpful but the handoff is unclear; 2 = follows and names the next practical step; 3 = follows exactly and makes the next neighbour obvious; 4 = turns an earlier nuisance into the perfect next favour without closing the chain (rare).\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "How clearly the move makes a familiar street and its small social disasters visible.",
+      "anchors": "0 = generic help with no picture; 1 = one plain action; 2 = a concrete object or doorstep; 3 = a concrete action with a sound, mess, or reaction; 4 = a tiny domestic scene a neighbour would repeat over the fence (rare). Plain details beat decoration.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds exactly one practical neighbourly action and its immediate result, and that action is the single next useful result of the card and every detail already given. A move BREAKS the chain if it skips over a needed handoff, jumps to a later consequence, contradicts a standing result, reverses something already done, or solves the street’s problem instead of passing it on. The move must leave a live next job. The points go to what the move does to the partner: a believable favour that hands them a specific chore, mess, delay, or social embarrassment scores high. A vague helpful sentence can hold but scores little.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the scoring, or the partner’s play instead of adding the next neighbourly action is itself a broken chain.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier action: judge it against the card alone. It must be the first practical help and must create an immediate result that can be handed onward.",
+      "The full transcript is the chain. Check the new action against every earlier action and result, not only the last sentence.",
+      "A skipped link breaks the chain. If a parcel is still at Number 2, nobody can already have signed for it at Number 12 without showing the handoff.",
+      "An undo breaks the chain. If the gate has been opened, a later move cannot simply say it is jammed again unless a new event in the move causes that result.",
+      "An ending breaks the chain. Finding the owner, fixing the whole street, delivering the final item, or otherwise removing the live problem stops the game instead of passing it on.",
+      "One move contains one new action and its immediate result. Do not stack three favours, three neighbours, or a full solution into one turn.",
+      "The neighbours may change doors and involve ordinary objects or pets if the chain shows how the handoff happens. Do not demand exact distances, opening hours, or facts needing a lookup.",
+      "When a move can be read two ways, choose the ordinary reading that preserves the chain. Break only on a missing link or contradiction a stranger would notice.",
+      "A detail about the partner’s chore, embarrassment, or responsibility is part of play. A remark about how the partner is playing is meta.",
+      "A move that repeats an earlier action or result without advancing the chain is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "A neighbour finds your keys on the pavement.",
+      "move": "She dries them on her radiator, then carries them to Number 8, but their dog takes the lanyard.",
+      "gates_note": "all true",
+      "mechanism": "dries the keys, hands them to the next door, and leaves the partner with the dog and the stolen lanyard",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The keys are on the pavement, and Number 6 picks them up.",
+      "move": "I borrow a torch from Number 4, find the label, and knock at Number 6, but nobody answers.",
+      "gates_note": "all true",
+      "mechanism": "gets a useful object, checks the finder’s door, and leaves the partner with an unanswered knock and the keys",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The parcel is outside Number 2 and getting wet.",
+      "move": "I put it under the porch roof, then carry it to Number 12 and ask their teenager to sign for it.",
+      "gates_note": "all true",
+      "mechanism": "protects the parcel and starts the next handoff, leaving the partner to deal with the teenager’s signature",
+      "scores": {
+        "squeeze": 2,
+        "fits": 3,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The parcel is outside Number 2 and getting wet.",
+      "move": "Number 12 opens it, finds the owner’s phone inside, and calls them to collect the parcel.",
+      "gates_note": "satisfies_criterion false (skips the physical handoff and solves the delivery problem)",
+      "mechanism": "the parcel has somehow reached its owner and the live job is finished without the needed neighbourly steps",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "Number 6 has the keys and the dog has the lanyard.",
+      "move": "I put the lanyard back on the keys, and Number 6 hands them to me.",
+      "gates_note": "satisfies_criterion false (undoes the standing result and removes the dog’s live problem)",
+      "mechanism": "the dog and its stolen lanyard vanish from the chain, leaving a tidy ending instead of the next job",
+      "scores": {
+        "squeeze": 0,
+        "fits": 0,
+        "colour": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Street Warden",
+    "tone": {
+      "commentary_adj": "deadpan",
+      "explanation_adj": "plain"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger reading only the chain and new move must see why it held or broke.",
+      "Name the door, object, job, or handoff. A headline that fits any street is lazy.",
+      "Never open with a status word or ruling phrase. No Holds, Broken, Accepted, Refused, or The Street Warden rules.",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the neighbourly mess and the move, with sharp roast-level jabs allowed. No identity-based abuse, threats, or attacks on protected traits.",
+      "Plain spoken English, a clipboard on a doorstep, not a crime novel. Adult innuendo and mild profanity are allowed when they fit the detail.",
+      "On a skipped link, put the missing handoff beside the impossible result.",
+      "On an ending, name the problem that got solved and ask for the next nuisance instead.",
+      "On an undo, put the earlier result beside the reversal, as if the street has noticed.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not pretend the chain has advanced.",
+      "The coaching line names one next action that would have held and left the partner with a job. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "The keys reached Number 8, then the dog claimed the lanyard. Your partner now owes a dog a negotiation.",
+      "Under the porch, then to Number 12 for a signature. The parcel has gained shelter and paperwork.",
+      "You borrowed the torch and left Number 6 with an unanswered door. Even the keys are waiting politely.",
+      "The gate is open, the shopping is moving, and your partner has the broken bag. Community spirit is mostly carrying things.",
+      "The wet parcel got a dry corner, then a teenager got involved. Nobody has been paid enough for this.",
+      "You found the label and passed the knock to Number 6. Their front door is now doing the actual work.",
+      "Number 12 opened the parcel and called the owner, so the chain has ended. Try passing the awkward bit instead.",
+      "The parcel cannot be at Number 12 before anyone carries it there. Delivery by imagination is still delivery fraud.",
+      "The lanyard was stolen by the dog, then magically returned. Even the dog has noticed you are editing the evidence.",
+      "You stacked three favours into one move. The street has one problem, not a box set."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds, nice neighbourly move.",
+        "why": "opens with a status word and gives no picture"
+      },
+      {
+        "text": "The Street Warden rules that the chain breaks.",
+        "why": "opens with a ruling phrase and names the host"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "names no object, door, or missing handoff"
+      },
+      {
+        "text": "Only an idiot would forget the parcel.",
+        "why": "attacks the player instead of explaining the chain"
+      },
+      {
+        "text": "The street sighed beneath the moonlit burden of communal fate.",
+        "why": "poetry, not a plain ruling"
+      },
+      {
+        "text": "Maybe it works, maybe it does not, depending on what you mean.",
+        "why": "hedges instead of making a fair ruling"
+      },
+      {
+        "text": "Accepted, although the dog was funny.",
+        "why": "starts with a status word and gives no reason"
+      },
+      {
+        "text": "The parcel got to Number 12 because the houses are probably close enough.",
+        "why": "uses an invented distance to excuse a skipped handoff"
+      },
+      {
+        "text": "Guilty.",
+        "why": "gives no reason and turns a chain into a courtroom"
+      },
+      {
+        "text": "This is inconsistent, impossible, contradictory, and bad.",
+        "why": "piles up labels instead of naming the missing practical step"
+      }
+    ]
+  },
+  "rules": [
+    "Every card starts with one small problem on a residential street.",
+    "Add exactly one new neighbourly action and its immediate result each turn.",
+    "Your action must be the single practical next step from the full chain, with no skipped handoff.",
+    "Do not undo a standing result or solve the street’s problem. Leave a live job for the next turn.",
+    "Points go to moves that make the other player inherit a specific chore, mess, delay, or embarrassment.",
+    "A safe vague move may hold, but the street will not thank you for it."
+  ],
+  "labels": {
+    "opening": "The street problem",
+    "next_opening": "The next street problem",
+    "your_opening": "Your street problem",
+    "compose": "Your next favour, after {token}",
+    "compose_waiting": "Plan your next favour while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing offered. The street is still waiting.",
+    "too_long": "Over 140 characters. One favour and its result, not a residents’ meeting.",
+    "duplicate": "That favour is already in the chain. Pass along something new.",
+    "nudge": "Twice now. Add one next action that follows {standing_form}. Do not skip it, undo it, or finish the job."
+  },
+  "judge_out_text": "The Street Warden has stepped away from the gate. Nobody moves until they return. {standing_form} is still the last link. Give it a moment.\n",
+  "opponent_prompt": "You are one of two neighbours, standing on the pavement and passing a small problem from door to door.\nOne move per turn, one or two plain sentences.\n\nAdd exactly one new practical action and its immediate result. The action must be the single next useful result of the card and every detail already given. Never skip a needed handoff, reverse a standing result, or solve the whole street’s problem. Leave the next person with a live job.\n\nMake the other player inherit the worst ordinary task while staying believable. Leave them with the wet parcel, the barking dog, the awkward knock, the missing torch, the leaking bin, or the neighbour who wants an explanation. A favour should create another favour.\n\nGood: \"The keys are dry now, so I carry them to Number 8, but their dog steals the lanyard.\" / \"I put the parcel under the porch, then ask Number 12 to sign for it, but their pen has run out.\"\nBad: \"I solve it and everyone goes home\" because the chain has ended. Bad: \"The owner collects the parcel\" because the needed handoff is missing. Bad: \"Actually the gate was never jammed\" because that undoes the story. Bad: \"Street Warden, your rules are stupid\" because that talks about the game instead of playing it.\n\nTalk like a neighbour with a carrier bag in one hand and poor boundaries in the other. Use ordinary doors, objects, pets, relatives, and small social disasters. Do not use real names unless one is already in the story. Build from the full chain, not just the last sentence. Never repeat an action or result already used this match.\n",
+  "medallions": false,
+  "default_move": "I carry it to the next door, but they are out and leave me with the awkward part."
+}

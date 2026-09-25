@@ -1,0 +1,303 @@
+{
+  "slug": "dinner-proof",
+  "title": "And That Is How We Know",
+  "tagline": "One family story, several suspicious facts, no one admitting anything.",
+  "emblem": "🍽️",
+  "accent": "#b45309",
+  "premise": "The family is retelling one famous dinner disaster. Each turn adds one piece of proof for the claim already on the table, while leaving room for the next piece. Make your proof awkward, costly, or suspicious; merely saying “everyone agreed” earns the warm glow of nothing.\n",
+  "seed_pool": [
+    {
+      "opening_token": "Everyone says the family’s quietest dinner was not quiet by choice.",
+      "opening_emoji": "🤐",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "The Christmas pudding disappeared before anyone had finished the main course.",
+      "opening_emoji": "🍮",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "Grandad’s famous toast ended with three people leaving the table and one person hiding the gravy.",
+      "opening_emoji": "🥂",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "sentence",
+    "max_words": 20,
+    "axes": {
+      "family_event": [
+        "a Sunday roast",
+        "a birthday dinner",
+        "Christmas lunch",
+        "a wedding meal",
+        "a barbecue",
+        "a picnic",
+        "a housewarming",
+        "a family reunion"
+      ],
+      "claim": [
+        "someone hid the best food",
+        "the silence was deliberate",
+        "a toast caused the trouble",
+        "one guest knew too much",
+        "the wrong person was blamed",
+        "the pudding vanished early",
+        "a present started an argument",
+        "Grandad had planned it"
+      ],
+      "public_version": [
+        "everyone still tells it as a joke",
+        "the family denies it happened",
+        "only the children remember clearly",
+        "the photograph proves part of it",
+        "Mum changes the subject",
+        "Dad blames the dog",
+        "one chair is still discussed",
+        "the story gets worse each year"
+      ]
+    },
+    "tests": [
+      "One short sentence with a family dinner, a claim, and a clear point of dispute.",
+      "Nobody is seriously hurt, no real person is named, and the trouble stays at the level of embarrassment, suspicion, food, or family arguments.",
+      "A stranger can tell within five seconds what the family says happened and why it sounds doubtful.",
+      "The card leaves enough unanswered links for several pieces of proof to be added without settling the story at once.",
+      "Everyday words a twelve-year-old knows. No brand names, street names, or private family references, the players bring those."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "",
+    "example": "The serving spoon was found in the coat pocket, and Auntie had gravy on both sleeves before anyone sat down.",
+    "hint": "Add one checkable piece of proof. Make somebody look awkward, costly, or suspicious."
+  },
+  "rubric": [
+    {
+      "name": "squeeze",
+      "description": "How much this piece of proof puts pressure on one family member, or makes the next piece harder to avoid, without becoming unbelievable.",
+      "anchors": "0 = nobody pays for it, a chair was moved or someone looked away; 1 = a small embarrassment; 2 = a real awkward fact, someone lied, hid food, or took the blame; 3 = one person now owns a specific habit, object, witness, or suspicious action; 4 = believable, pointed, and the next proof must thread a very small needle (rare). Proof that only makes the story grander, or hurts nobody, scores 1 at most.\n",
+      "weight": 5
+    },
+    {
+      "name": "fits",
+      "description": "Whether the new piece supports the claim and connects cleanly to every proof already given.",
+      "anchors": "0 = contradicts the card or earlier proof, skips the needed link, settles the claim, or undoes a fact; 1 = vaguely related but not checkable or connected; 2 = supports the claim and gives one checkable fact; 3 = supports it and clearly links a person, object, place, or moment; 4 = makes an earlier piece make sense while opening a useful next link (rare). Length never wins here.\n",
+      "weight": 3
+    },
+    {
+      "name": "colour",
+      "description": "Whether the proof feels like a real family story told over too much pudding.",
+      "anchors": "0 = a bare conclusion with no picture; 1 = one plain fact; 2 = an object, gesture, or small scene appears; 3 = the table can almost hear or see it; 4 = it sounds like the version everyone repeats while pretending not to enjoy it (rare). Plain details beat elaborate jokes.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move HOLDS if it adds one checkable piece that supports the same claim and fits every earlier piece. A skipped link offers proof with no needed bridge, an ending says the claim is settled, and an undo removes or denies a fact already used. The move must add to the family version rather than start a separate anecdote. The points go to what the proof does to the family member involved: an awkward object, a lie, a cost, a witness, or a suspicious habit scores high. A safe statement that nobody could check scores near zero.\n",
+    "anti_metagaming_clause": "Talking to the host about the game, the rules, the scoring, or another player's performance instead of adding proof is itself a failed move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no earlier proof: judge it against the card alone. It must support the claim, add one checkable piece, and leave another link possible.",
+      "The full transcript is the family version. Check the new proof against the card and every earlier proof, not only the last one.",
+      "A skipped link fails when the move jumps to a conclusion or introduces evidence that needs an unstated event to connect it to the claim. When the link is reasonably implied by the story, it holds.",
+      "An ending fails when it says the claim is proved, settled, obvious, or finished instead of adding evidence that leaves room for another piece.",
+      "An undo fails when it removes, denies, retracts, or directly reverses a fact already used, even if the new version would be more amusing.",
+      "Break only on a plain contradiction or missing story link a stranger would notice. Never break on family trivia, exact cooking times, or facts that need a lookup. When a detail can be read either way, it holds.",
+      "A move may add people, objects, food, and small actions, as long as it supports the same dinner claim and does not settle it.",
+      "A detail about a relative's action, excuse, bill, appetite, or witness is the point of the game and never a meta move. A remark about another player's writing or strategy is a meta move.",
+      "A move that says an earlier proof again in different words is a duplicate: not_semantic_duplicate is false."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "Everyone says the family’s quietest dinner was not quiet by choice.",
+      "move": "The bread knife was found under the table, and Mum had told everyone to keep their hands where they could be seen.",
+      "gates_note": "all true",
+      "mechanism": "adds a checkable object and a suspicious instruction while leaving open why the table went quiet",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The serving spoon was found in the coat pocket, and Auntie had gravy on both sleeves before anyone sat down.",
+      "move": "The coat belonged to Uncle Ray, who had been guarding the kitchen door and saying nobody needed seconds.",
+      "gates_note": "all true",
+      "mechanism": "links the spoon and gravy to a person, a place, and a suspicious excuse",
+      "scores": {
+        "squeeze": 4,
+        "fits": 4,
+        "colour": 4
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The Christmas pudding disappeared before anyone had finished the main course.",
+      "move": "Everyone agreed it was very strange.",
+      "gates_note": "all true",
+      "mechanism": "supports the claim only in the softest way and gives nobody a fact to carry",
+      "scores": {
+        "squeeze": 0,
+        "fits": 1,
+        "colour": 0
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "Grandad’s famous toast ended with three people leaving the table and one person hiding the gravy.",
+      "move": "The gravy was hidden by Nan, because she had heard what Grandad was about to say in the hall.",
+      "gates_note": "all true",
+      "mechanism": "adds a motive and connects the hidden gravy to the toast without settling the whole story",
+      "scores": {
+        "squeeze": 3,
+        "fits": 3,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "The serving spoon was found in the coat pocket, and Auntie had gravy on both sleeves before anyone sat down.",
+      "move": "So that proves Uncle Ray stole the roast and the family mystery is solved.",
+      "gates_note": "satisfies_criterion false (ends the story instead of adding one piece of proof)",
+      "mechanism": "declares the claim settled and gives the next detail nowhere to go",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The bread knife was found under the table, and Mum had told everyone to keep their hands where they could be seen.",
+      "move": "There was no knife under the table, and Mum never said that.",
+      "gates_note": "satisfies_criterion false (undoes two facts already used)",
+      "mechanism": "withdraws the evidence instead of adding to it, which is how family stories become court cases",
+      "scores": {
+        "squeeze": 1,
+        "fits": 0,
+        "colour": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "The Christmas pudding disappeared before anyone had finished the main course.",
+      "move": "The next morning, the dog was found wearing Grandad’s dinner napkin.",
+      "gates_note": "satisfies_criterion false (skips the link between the missing pudding and the dog)",
+      "mechanism": "offers a funny suspect but never explains how the napkin proves anything about the pudding",
+      "scores": {
+        "squeeze": 2,
+        "fits": 0,
+        "colour": 3
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    }
+  ],
+  "host": {
+    "persona_name": "The Family Archivist",
+    "tone": {
+      "commentary_adj": "dry",
+      "explanation_adj": "flat"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "The joke carries the reason. A stranger who read only the story and new proof must see why it held or failed.",
+      "Name the new proof, or its plain stand-in. A headline that fits any family dinner is a bad headline.",
+      "Never open with a status word or a ruling phrase. No \"Holds\", \"Broken\", \"Accepted\", \"Refused\", \"The Archivist rules\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Commas and full stops only.",
+      "Mock the proof or the family habit, never identity, appearance, intelligence, or spelling.",
+      "Plain spoken English, a crowded dining room, not a courtroom drama. No poetry, no rhymes, no grand family saga.",
+      "On a failure, put the two facts that cannot both stand side by side, or name the missing link or the claim that was declared finished.",
+      "On a refusal because of a gate failure, the headline asks for another piece and never pretends the family has reached a verdict.",
+      "The coaching line names one piece of proof that would have held and cost somebody something. It ends on a fact, never a mood."
+    ],
+    "good_headlines": [
+      "The spoon was in Ray’s coat and Ray was guarding the kitchen. That is evidence, not a serving suggestion.",
+      "Auntie had gravy on both sleeves before dinner began. Her alibi arrived already seasoned.",
+      "The dog had the napkin, but nothing links it to the vanished pudding. The family has found a suspect and lost the bridge.",
+      "You have settled the mystery before explaining the spoon. Even the pudding gets one more turn.",
+      "Mum said hands on the table, then the knife appeared underneath. Nobody says that at a peaceful roast.",
+      "The hidden gravy and Grandad’s toast now share a witness. Nan has brought the family archive and a grudge.",
+      "Everyone agreed it was strange. So did the wallpaper, apparently. Bring me an object next time.",
+      "You denied the knife and Mum’s warning after using both. That is not new proof, it is a family edit.",
+      "The coat, the spoon, and the kitchen door now point in the same direction. Ray may want a smaller family.",
+      "The pudding vanished before the main course and the empty tin was warm. Somebody had dessert plans."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Holds: good evidence.",
+        "why": "opens with a status word and names no evidence"
+      },
+      {
+        "text": "The Archivist rules that the story continues.",
+        "why": "opens with a ruling phrase and explains nothing"
+      },
+      {
+        "text": "Contradiction detected.",
+        "why": "names no family fact and fits any dinner"
+      },
+      {
+        "text": "A clever move from a hopeless storyteller.",
+        "why": "mocks the player rather than the proof"
+      },
+      {
+        "text": "The family tale unfolds like a moonlit river of truth.",
+        "why": "poetry and an inflated tone"
+      },
+      {
+        "text": "Maybe it fits, depending on how you feel about gravy.",
+        "why": "hedges instead of giving a clear ruling"
+      },
+      {
+        "text": "Accepted, though the pudding was nice.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The dog could not have worn the napkin because dinner was Tuesday and dogs lack pockets.",
+        "why": "uses trivia and fusses over a detail a stranger would not notice"
+      },
+      {
+        "text": "Guilty.",
+        "why": "gives no reason and turns a family story into a verdict"
+      },
+      {
+        "text": "The proof is inconsistent, contradictory, incompatible and false.",
+        "why": "uses several abstract labels instead of naming the failed link"
+      }
+    ]
+  },
+  "rules": [
+    "Every card gives the family one famous dinner claim. Build the version everyone tells.",
+    "Add one checkable piece of proof per turn. It must support the same claim and fit every earlier piece.",
+    "Do not skip the link, declare the claim settled, or undo a fact already used.",
+    "Points go to proof that makes a relative awkward, suspicious, out of pocket, or hard to defend.",
+    "Safe and vague proof may pass but scores little. Specific family evidence scores."
+  ],
+  "labels": {
+    "opening": "The family claim",
+    "next_opening": "The next family claim",
+    "your_opening": "Your family claim",
+    "compose": "Your proof, after {token}",
+    "compose_waiting": "Draft your next piece of proof while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing added. The family is waiting for evidence.",
+    "too_long": "Over 140 characters. One piece of proof, not the whole dinner.",
+    "duplicate": "That piece is already in the family version. Add a new one.",
+    "nudge": "Twice now. Add one piece that fits {standing_form}. Do not repeat it, settle the claim, or undo it."
+  },
+  "judge_out_text": "The Family Archivist has stepped away from the table. Nobody revises the story until they return. {standing_form} is still the family version. Give it a minute.\n",
+  "opponent_prompt": "You are one of the family members retelling a famous dinner disaster at the table. One piece of proof per turn, one or two plain sentences.\nYour proof must support the claim on the card and fit every piece already given. Do not skip the link between your evidence and the claim. Do not announce that the mystery is solved, and never deny or remove a fact already used.\nMake the proof cost somebody something while staying easy to believe. Give a relative an awkward object, a bad excuse, a secret habit, a witness, a bill, or a reason to avoid the gravy. Call people Mum, Dad, Nan, Grandad, Auntie, Uncle, or my cousin, never use a real name unless one is already in the story.\nGood: \"The serving spoon was found in Uncle Ray’s coat, and he had been guarding the kitchen door.\" / \"Nan hid the gravy after hearing Grandad practise the toast in the hall.\"\nBad: \"Everyone agreed it was strange\" because it gives nobody evidence. Bad: \"That proves everything\" because it ends the story. Bad: \"There was no spoon\" because it undoes a fact. Bad: \"The dog wore a napkin the next morning\" because it skips the link to the dinner claim.\nTalk like a person passing the potatoes, not a novelist. Name things anyone would name: a coat pocket, a warm tin, a chair, a note, a burnt dish, a cousin who suddenly went outside. Build on the last proof rather than starting a separate anecdote. Never repeat a proof already used this match.\n",
+  "medallions": false,
+  "default_move": "The empty dish was still warm, and someone had put a clean fork beside it."
+}

@@ -1,0 +1,327 @@
+schema_version: 1
+slug: complaint-letter-plot-twist
+title: The Letter Gets Worse
+tagline: One petty complaint, one fresh consequence, and suddenly the envelope needs legal advice.
+emblem: ✉️
+accent: '#be123c'
+premise: 'You and a rival write one complaint letter, adding one paragraph per turn. Start with a real
+  annoyance; each new paragraph must make the complaint cause a fresh, believable problem while the host
+  hypes the disaster and roasts weak writing.
+
+  '
+mode: escalation
+seed_recipe:
+  card_shape: sentence
+  max_words: 24
+  axes:
+    sender:
+    - a tenant
+    - a stranded traveller
+    - a regular customer
+    - a furious parent
+    - a night-shift worker
+    - a bargain hunter
+    - a hotel guest
+    - a new employee
+    target:
+    - building manager
+    - airline desk
+    - café owner
+    - school office
+    - hotel manager
+    - parcel company
+    - gym director
+    - supermarket supervisor
+    small_grievance:
+    - a machine charged twice
+    - a suitcase lost one wheel
+    - a promised reward vanished
+    - a booking changed without warning
+    - a parcel arrived opened
+    - a bill gained a strange fee
+    - a door refused to unlock
+    - a receipt named the wrong item
+  tests:
+  - It is a short complaint letter opening that a stranger can picture at once. Use an article, plain
+    words, and present tense.
+  - A rival can add a believable next paragraph in five seconds, and there is more than one good consequence.
+    Say two.
+  - The card contains a real annoyance, not a disaster already finished. A missing refund is a start;
+    a company collapsing is an ending.
+  - Nobody is hurt, no real person or brand is named, and the complaint does not accuse anyone of a serious
+    crime without evidence.
+  - It makes a player want to add a paragraph. The small problem has a visible hook, not a dead insult
+    or a spreadsheet wearing a tie.
+demo:
+  opening:
+    token: 'Dear Building Manager: The lobby vending machine charged me twice for one bag of chips, and
+      the refund button is missing.'
+    emoji: 🥔
+  moves:
+  - actor: p1
+    text: 'Dear Building Manager: The lobby vending machine charged me twice for one bag of chips, and
+      the refund button is missing.'
+    emoji: 🥔
+    scores: null
+  - actor: p2
+    text: Then, the manager forwards our complaint to the accounts team, which says the machine is registered
+      to a company that moved out last year.
+    emoji: 🎂
+    scores:
+      reach: 2
+      link: 4
+      picture: 4
+  headline: The stale registration sends the complaint to Malta. Bureaucracy has found a passport.
+  openings:
+  - token: 'Dear Building Manager: The lobby vending machine charged me twice for one bag of chips, and
+      the refund button is missing.'
+    examples:
+    - Then, the manager forwards our complaint to the accounts team, which says the machine is registered
+      to a company that moved out last year.
+  - token: 'Dear Airline: My suitcase arrived with one wheel missing, and the tag says it took a holiday
+      in the wrong city.'
+    examples:
+    - Then, the manager forwards our complaint to the accounts team, which says the machine is registered
+      to a company that moved out last year.
+move_constraints:
+  max_chars: 140
+  prefix: 'Then, '
+  example: Then, the building manager posts our complaint on the lobby board, so every neighbor now knows
+    we blamed the night-shift cleaner.
+  hint: One paragraph, one fresh consequence, caused by the complaint so far.
+rubric:
+- name: reach
+  description: How far the complaint spreads or how much new trouble it creates.
+  anchors: 0 = no new consequence or the paragraph only repeats the gripe; 1 = a tiny ripple with nothing
+    else at risk; 2 = one new person, place, or practical problem enters; 3 = the complaint reaches a
+    wider audience or creates a serious new complication through one believable step; 4 = it detonates
+    into a much larger situation while still showing the path from the letter, rare. Reach is not earned
+    by skipping the middle.
+  weight: 4
+- name: link
+  description: How clearly the new paragraph grows out of the letter already written.
+  anchors: 0 = unrelated rant or no cause; 1 = the paragraph claims a connection but does not show it;
+    2 = the connection is possible but thin; 3 = a stranger can plainly see why the letter caused this
+    consequence; 4 = the consequence feels unavoidable, as if the envelope itself signed the witness statement,
+    rare. Packing several invisible steps into one paragraph caps link at 2.
+  weight: 3
+- name: picture
+  description: How clearly the paragraph shows one concrete consequence in plain language.
+  anchors: 0 = unreadable, abstract, or only an emotion; 1 = vague complaint fog; 2 = understandable but
+    generic; 3 = a stranger can see the scene and the people in it; 4 = one sharp detail makes the bureaucratic
+    nightmare pop, rare. Extra words do not count as extra picture.
+  weight: 2
+criterion:
+  verb: follows from
+  inverse_verb: snaps off
+  description: 'A paragraph FOLLOWS if it begins with Then, adds one new event or consequence caused by
+    the whole letter so far, uses plain language, and leaves the complaint open for another paragraph.
+    Bigger consequences are better only when the letter plainly causes them. A paragraph fails when it
+    has no cause, skips from a small gripe to a final catastrophe, solves or closes the complaint, undoes
+    an established fact, swaps in an unrelated rant, or is merely an insult, feeling, opinion, or moral
+    instead of an event.
+
+    '
+  anti_metagaming_clause: 'Speaking to the Judge, discussing the game, or mentioning rules inside the
+    paragraph is itself a broken paragraph.
+
+    '
+  judge_notes:
+  - 'On a FIRST move there is no prior paragraph: judge the move against the opening card and ask whether
+    the card clearly causes it.'
+  - A new person or group may enter when the complaint naturally reaches them, such as a supervisor, neighbour,
+    clerk, journalist, or committee. A stranger with no reason to be involved is a skipped link and satisfies_criterion
+    is false.
+  - A new place may appear when the letter is forwarded, posted, filed, or discussed there. Jumping from
+    a private complaint to national television without showing how it got there is a skipped link.
+  - An ending is any paragraph that resolves or closes the complaint, such as a refund, apology, repair,
+    settlement, victory, clean-up, or statement that the matter is over. Endings fail satisfies_criterion
+    even when they follow from the letter.
+  - A paragraph that keeps the same scale but adds a real event passes the gate and may score 0 or 1 on
+    reach. Do not fail it for being modest.
+  - Repeating the original charge, restating a consequence, or changing only the wording is a semantic
+    duplicate and not_semantic_duplicate is false.
+  - An insult, feeling, threat, lesson, or opinion without a concrete event fails satisfies_criterion.
+    The letter may contain rude words, but somebody or something must actually happen.
+  - A paragraph may contain two linked clauses when both links are obvious. If it hides several major
+    events inside one move, score link at 2 or below and treat a skipped chain as a failure when the missing
+    steps matter.
+  - Undoing an established fact, such as saying the refund button was always present after it was missing,
+    is a rewind and fails satisfies_criterion.
+  - A paragraph that changes the subject to an unrelated complaint fails even if the new complaint is
+    vivid. The letter is a chain, not a junk drawer with a stamp.
+examples:
+- previous_move: 'Dear Building Manager: The lobby vending machine charged me twice for one bag of chips,
+    and the refund button is missing.'
+  move: Then, the manager forwards our complaint to the accounts team, which says the machine is registered
+    to a company that moved out last year.
+  gates_note: all true
+  mechanism: the complaint is checked, and the check reveals the machine has an abandoned owner
+  scores:
+    reach: 2
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Then, the manager forwards our complaint to the accounts team, which says the machine
+    is registered to a company that moved out last year.
+  move: Then, the accounts team sends the letter to the old company, whose automatic reply tells every
+    tenant to email a retired dentist in Malta.
+  gates_note: all true
+  mechanism: the stale registration sends the complaint to a dead contact route
+  scores:
+    reach: 3
+    link: 4
+    picture: 4
+  confidence: clear
+  verdict: accept
+- previous_move: Then, the accounts team sends the letter to the old company, whose automatic reply tells
+    every tenant to email a retired dentist in Malta.
+  move: Then, the retired dentist sues the building, the council closes the block, and the vending machine
+    is dragged into court as evidence.
+  gates_note: satisfies_criterion false, several huge links are skipped and the move nearly ends the story
+  mechanism: the paragraph leaps from an automatic reply to a lawsuit, closure, and courtroom evidence
+  scores:
+    reach: 0
+    link: 0
+    picture: 2
+  confidence: clear
+  verdict: fail
+- previous_move: Then, the manager forwards our complaint to the accounts team, which says the machine
+    is registered to a company that moved out last year.
+  move: Then, I feel betrayed by capitalism and demand justice from the universe.
+  gates_note: satisfies_criterion false, feeling and moral rant with no new event
+  mechanism: none shown
+  scores:
+    reach: 0
+    link: 0
+    picture: 0
+  confidence: clear
+  verdict: fail
+- previous_move: Then, the accounts team sends the letter to the old company, whose automatic reply tells
+    every tenant to email a retired dentist in Malta.
+  move: Then, the dentist replies with the original refund and asks us to stop copying him on the subject
+    line.
+  gates_note: satisfies_criterion false, the complaint is resolved and the chain closes
+  mechanism: the dentist answers and supplies the refund
+  scores:
+    reach: 1
+    link: 4
+    picture: 3
+  confidence: clear
+  verdict: fail
+host:
+  persona_name: The Red Pen Menace
+  tone:
+    commentary_adj: chaotic
+    explanation_adj: hype
+  bite: savage
+  ruling_generosity: fair
+  voice_rules:
+  - One sentence under 140 characters. Two short sentences at most.
+  - Bring hype like a referee at a cage match for envelopes. Explain the exact cause, not vague vibes.
+  - Name both paragraphs or their plain stand-ins. Roast the writing, never protected identity or personal
+    traits.
+  - Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The
+    Judge says.
+  - No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops only.
+  - The joke can be savage and mildly profane, but keep it aimed at the paragraph's logic. The letter
+    is the idiot here.
+  - Plain spoken English. No poetry, no corporate fog, no fake legal Latin, no thesaurus cosplay.
+  - On a skipped link, name the missing step and demand the paragraph that should have happened first.
+  - On an ending, say the complaint got solved or closed and the chain stops here. Do not pretend a tidy
+    refund is a winning twist.
+  - On a refusal, reject the paragraph and ask for another. Never rule on who won.
+  - The coaching line names one concrete event that could follow. End on an action or consequence, not
+    a mood, insult, or verdict.
+  good_headlines:
+  - The stale registration sends the complaint to Malta. Bureaucracy has found a passport.
+  - The manager forwards the gripe, and now the retired dentist owns the plot. Glorious paperwork.
+  - One missing refund button, one public notice, and the lobby gets a front row seat to this nonsense.
+  - The automatic reply is a clean next step. The letter has escaped the building and learned email.
+  - The complaint gets a new witness through the accounts team. Tiny grievance, excellent mess.
+  - A lawsuit, a council closure, and courtroom vending machine cosplay in one jump. Show the missing
+    disasters first.
+  - Feelings about capitalism are not an event. Put a person, object, or office in motion.
+  - The dentist refunds the money and kills the chain. Congratulations, the bureaucracy has found an ending.
+  - You changed the words, not the consequence. The paragraph is wearing a fake moustache.
+  - The envelope cannot teleport to national television. Make somebody forward it first.
+  bad_headlines:
+  - text: 'Accepted: the letter goes viral.'
+    why: opens with a status word and skips how the letter reached anyone
+  - text: The Judge refuses this catastrophic leap.
+    why: opens with a ruling phrase and names the host instead of naming the missing link
+  - text: This paragraph is giving main character energy.
+    why: hype with no reason, and it could describe any paragraph
+  - text: The correspondence proliferates into an administrative inferno.
+    why: thesaurus fog, no plain event, no picture
+  - text: Only an idiot would write this.
+    why: roasts the player instead of the broken paragraph
+  - text: Maybe it follows, maybe it does not, who knows.
+    why: hedges instead of ruling and gives no coaching
+  - text: Then the letter screamed into the void...
+    why: poetry, abstraction, and an ellipsis
+  - text: Bad. Very bad. Huge fail.
+    why: empty hype with no cause, missing link, or next event
+rules:
+- Write one paragraph beginning with Then, and add one new consequence caused by the letter so far.
+- Make the complaint spread or make the problem bigger, but show the path in one believable move.
+- Do not skip links, solve the complaint, undo a fact, or replace the event with an insult or feeling.
+- The Judge scores the letter's logic, not spelling or fancy vocabulary.
+labels:
+  opening: The complaint
+  next_opening: The next complaint
+  your_opening: Your complaint
+  compose: What happens next, after {token}
+  compose_waiting: Draft the next paragraph while you wait
+validation_messages:
+  empty: Nothing happened. The letter needs a fresh consequence.
+  too_long: Over 140 characters. This is a paragraph, not a deposition.
+  duplicate: That consequence already happened this match. Make the paperwork uglier.
+  nudge: Twice now. Something has to follow from {standing_form}. Add one new event, not another complaint.
+judge_out_text: 'The judge has stepped out. Nobody moves until they are back. {standing_form} still stands,
+  and the letter is waiting for its next disaster.
+
+  '
+opponent_prompt: 'You are one of two rival writers growing a complaint letter, paragraph by paragraph,
+  and you want the paperwork to become a glorious public nuisance.
+
+  Always begin with Then, and write one paragraph. Add one new event or consequence caused by the whole
+  letter so far.
+
+  Make the complaint spread, expose a new person, create a fresh practical problem, or drag the letter
+  into a new office. Keep the link visible.
+
+  Good: Then, the manager forwards our complaint to accounts, and accounts discovers the machine belongs
+  to a company that left last year.
+
+  Good: Then, the building posts our letter in the lobby, so every neighbour sees that we blamed the night
+  cleaner.
+
+  Bad: Then, the whole city shuts down. Too many missing links.
+
+  Bad: Then, everyone apologises and sends the refund. That closes the complaint and you lose.
+
+  Bad: Then, I feel betrayed by capitalism. A feeling is not an event.
+
+  Never solve the complaint, never close the letter, never rewind a fact, and never switch to an unrelated
+  rant.
+
+  Talk like a person writing an angry email after lunch, not a novelist in a velvet cape. Use plain words
+  a twelve year old knows.
+
+  Never reuse a consequence from this match. Keep the mess believable, then make it worse.
+
+  '
+guess: null
+medallions: false
+move_budget: 10
+win_condition: sudden_death
+tie_policy: defender_holds
+strikes_before_consequence: 2
+default_move: Then, the manager forwards our complaint to another office, and that office sends back a
+  form nobody has seen before.
+seed_pool:
+  - { opening_token: "Dear Building Manager: The lobby vending machine charged me twice for one bag of chips, and the refund button is missing.", opening_emoji: "🥔" }
+  - { opening_token: "Dear Airline: My suitcase arrived with one wheel missing, and the tag says it took a holiday in the wrong city.", opening_emoji: "🧳" }
+  - { opening_token: "Dear Café Owner: Your loyalty card promised a free drink, but the cashier stamped the receipt and kept both the card and my dignity.", opening_emoji: "☕" }

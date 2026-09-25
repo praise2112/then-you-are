@@ -1,0 +1,280 @@
+{
+  "slug": "crumb-court",
+  "title": "The Crumb Court",
+  "tagline": "Summon a tiny power to overrule what stands.",
+  "emblem": "🐜",
+  "accent": "#7c3aed",
+  "premise": "A royal crumb court settles tiny disputes by sending one small creature or object to overrule the last claimant. Your new courtier must plainly capture, consume, block, or undo what stands, and the monarch is not impressed by mere escape.\n",
+  "seed_pool": [
+    {
+      "opening_token": "a sugar cube declaring itself king",
+      "opening_emoji": "🍬",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a silverfish guarding a paper throne",
+      "opening_emoji": "🐟",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "a beetle wearing a bread crown",
+      "opening_emoji": "🪲",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 7,
+    "axes": {
+      "kind": [
+        "insect",
+        "spider",
+        "worm",
+        "snail",
+        "seed",
+        "crumb",
+        "button",
+        "pin",
+        "leaf",
+        "drop of water"
+      ],
+      "setting": [
+        "pantry",
+        "windowsill",
+        "garden path",
+        "desk drawer",
+        "bookshelf",
+        "kitchen floor",
+        "mailbox",
+        "school bag",
+        "flowerpot",
+        "street curb"
+      ],
+      "property": [
+        "royal",
+        "hungry",
+        "sticky",
+        "dusty",
+        "jealous",
+        "sleepy",
+        "hidden",
+        "shiny",
+        "stubborn",
+        "crumb-covered"
+      ]
+    },
+    "tests": [
+      "A stranger pictures the tiny claimant at once, including its place or proud condition. Nothing abstract and nothing that needs a royal genealogy.",
+      "A non-player names a plain counter within five seconds. Say what that counter is and what it does to the claimant.",
+      "It belongs in the court. It can crawl, bite, carry, trap, cover, dissolve, pierce, or otherwise act on what stands. Never a mere escape route or a scene.",
+      "It makes a stranger want to answer. Give the small thing a bit of character or a useful physical trait, not a lifeless inventory item.",
+      "Use everyday words a twelve-year-old knows. Keep the card short, concrete, and easy to say aloud. No brands, proper names, or invented species."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I summon ",
+    "example": "I summon an ant, and it carries away the crumb.",
+    "hint": "Name the small thing, then name the action that defeats the standing claimant."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How directly and decisively the summoned small thing defeats the claimant before it.",
+      "anchors": "0 = no action against the standing claimant; 1 = an asserted or accidental effect; 2 = a plausible but incomplete or debatable counter; 3 = a clear physical defeat that settles the dispute; 4 = a near-inevitable counter, where the standing claimant has no meaningful answer (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How clearly a stranger can picture the summoned thing and its action as one simple courtly move.",
+      "anchors": "0 = contradictory or unreadable; 1 = requires unusual knowledge or leaves the action unclear; 2 = understandable but cluttered, vague, or partly abstract; 3 = concrete and easy to picture; 4 = vivid, immediate, and perfectly suited to the tiny court (rare). Length never wins by itself. Every extra word must clarify the action.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How freshly the move changes the kind of tiny power in the dispute.",
+      "anchors": "0 = the same kind of claimant, a recolour, or the obvious stock answer; 2 = a sound twist with some new ground; 4 = a sharp leap into a new domain or method that nobody expected (rare). Novelty is not obscurity, decoration, or a grander version of the same thing.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A claimant OVERRULES the standing claimant if it directly captures, consumes, blocks, pierces, traps, dissolves, carries away, or otherwise undoes it through a plain physical mechanism. The new claimant must act on what stands. Surviving, hiding, fleeing, ignoring, waiting, or merely being too small to notice is not victory. Growing larger or choosing a close relative from the same kind is not a fresh counter. The court judges the exchange in front of it, not strength in the abstract.\n",
+    "anti_metagaming_clause": "Speaking to the Judge, discussing the game, or invoking rules as your claimant is itself a losing claimant.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous claimant. Judge it against the opening prompt instead. The summoned thing must plausibly overrule, capture, consume, block, or undo the opening claimant.\n",
+      "A bigger, faster, hungrier, shinier, or more royal version of the standing claimant is not a new counter. A close relative from the same family, such as a moth after a butterfly, is also a failed counter when no distinct mechanism is supplied. Set not_semantic_duplicate true and satisfies_criterion false.\n",
+      "Becoming the opening claimant itself, or making only a cosmetic change to it, is a duplicate. A white sugar cube against a sugar cube remains the same claimant. Set not_semantic_duplicate false and satisfies_criterion false.\n",
+      "The summoned thing must have a literal way to act on the standing claimant. A pin against a rumor, a crown against a beetle, or paperwork against a crumb has no visible mechanism. Set satisfies_criterion false.\n",
+      "The mechanism must be something a stranger could watch happen. Wordplay, titles, metaphors, and grand announcements do not count as physical action. If the only mechanism is figurative, rule fail rather than lean accept.\n",
+      "Surviving, hiding, ignoring, being immune to, waiting for, or running away from the standing claimant is dodging, not overcoming. A flea that jumps away, a pebble that the ant cannot reach, or a wall that the beetle cannot climb has not defeated it. Set satisfies_criterion false.\n",
+      "Merely choosing another member of the same kind is not enough. An ant after an ant, a larger beetle after a beetle, or a different crumb after a crumb must supply a distinct action or it fails for repetition or amplification.\n"
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "The opening, a sugar cube declaring itself king.",
+      "move": "I summon an ant, and it carries away the sugar cube.",
+      "gates_note": "all true",
+      "mechanism": "the ant carries the sugar cube away, removing its claim to the throne",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I summon an ant, and it carries away the sugar cube.",
+      "move": "I summon a larger ant, and it carries away more sugar.",
+      "gates_note": "satisfies_criterion false, mere amplification and same kind",
+      "mechanism": "no distinct counter is supplied beyond making the ant larger",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I summon a silverfish, and it eats the paper throne.",
+      "move": "I summon a spider, and it wraps the silverfish in silk.",
+      "gates_note": "all true",
+      "mechanism": "the spider traps the silverfish so it cannot continue eating or move freely",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I summon a beetle, and it shoves the crumb across the floor.",
+      "move": "I summon a ladybug, and it is prettier than the beetle.",
+      "gates_note": "satisfies_criterion false, no action against the standing claimant",
+      "mechanism": "beauty does not block, capture, consume, or undo the beetle",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 1
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I summon a spider, and it wraps the silverfish in silk.",
+      "move": "I summon a pair of scissors, and they cut the silk.",
+      "gates_note": "all true",
+      "mechanism": "the scissors cut through the spider's silk and undo the trap",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Tiny Monarch",
+    "tone": {
+      "commentary_adj": "grandiose",
+      "explanation_adj": "theatrical"
+    },
+    "bite": "sharp",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence, under 140 characters. Two short sentences at most.",
+      "Speak like a monarch announcing a spectacular verdict over a very small kingdom.",
+      "The joke must carry the reason. A stranger who reads only the two claimants should see why one overruled the other.",
+      "Name both claimants, or use plain stand-ins. A royal headline that fits every dispute is no headline at all.",
+      "Never open with a status word or ruling phrase. No \"Accepted\", \"Rejected\", \"Refused\", \"The Tiny Monarch refuses\".",
+      "No dashes as punctuation, no colons after a verdict, no ellipses. Use commas and full stops.",
+      "Mock the losing move, never the player. Target the claimant, its boast, or its failed action only.",
+      "Use plain spoken English with theatrical scale. No profanity, innuendo, poetry, rhymes, or identity-based abuse.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not declare a winner.",
+      "The coaching line names one concrete form or action that would have won. It ends on a fact or action, never a mood or verdict.",
+      "Keep the courtly voice family-safe. Tiny stakes may receive enormous ceremony, but never cruelty toward a person."
+    ],
+    "good_headlines": [
+      "The sugar cube claimed the throne, then the ant carried away the kingdom.",
+      "The silverfish guarded paper, but the spider wrapped its whole argument in silk.",
+      "The beetle pushed one crumb, while the scissors cut the beetle's royal road short.",
+      "A larger ant is still an ant with a larger hat. Bring a new claimant.",
+      "The ladybug brought beauty to a beetle fight, and beauty brought no hands.",
+      "The pin pierced the balloon's grand speech. The court applauds the puncture.",
+      "The flea escaped the cat, but escape is not a royal defeat. Bring a claimant that acts.",
+      "The crumb wore a crown, then the snail's trail glued the throne to the floor.",
+      "The spider caught the silverfish, and the paper throne finally received a quiet reign.",
+      "A second beetle is not a new law. Bring a creature with a mechanism."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the ant wins magnificently.",
+        "why": "opens with a status word and gives no reason"
+      },
+      {
+        "text": "The Tiny Monarch refuses: your insect is foolish.",
+        "why": "opens with a ruling phrase, names the host, and mocks the player"
+      },
+      {
+        "text": "Move refused, behold the doom of the crumb.",
+        "why": "opens with a ruling phrase and does not name the mechanism"
+      },
+      {
+        "text": "The spider is victorious, glorious, supreme, and triumphant.",
+        "why": "piles on verdict words without showing what the spider did"
+      },
+      {
+        "text": "The ant defeats the sugar cube.",
+        "why": "too bare, with no picture or courtly joke"
+      },
+      {
+        "text": "The beetle may win, unless the crumb somehow wins instead.",
+        "why": "hedges both ways and gives no ruling a stranger can read"
+      },
+      {
+        "text": "A brave move from someone who cannot understand the court.",
+        "why": "mocks the player rather than the claimant"
+      },
+      {
+        "text": "The gnat doth bestride the crumb, and fate doth sing.",
+        "why": "poetry and archaic phrasing obscure the mechanism"
+      },
+      {
+        "text": "The flea survives by leaping away, proving its noble victory.",
+        "why": "treats escape as overcoming and supplies no action against the standing claimant"
+      },
+      {
+        "text": "The ant is tiny, mighty, clever, dazzling, and unstoppable.",
+        "why": "grand adjectives replace a literal counter"
+      }
+    ]
+  },
+  "rules": [
+    "Overrule the claimant in front of you. Do not become it.",
+    "Say what you summon and what it does to the standing claimant.",
+    "The Judge rules on the idea and action, never the spelling.",
+    "A claimant that fails against the standing one ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your claimant against {token}",
+    "compose_waiting": "Draft your next claimant while you wait"
+  },
+  "validation_messages": {
+    "empty": "The court hears nothing. Summon a small claimant.",
+    "too_long": "Over 200 characters. A royal decree is not a tiny move.",
+    "duplicate": "That claimant already stood in this court. Summon something new.",
+    "nudge": "Twice now. Overrule {standing_form}. Do not become it, do not repeat it."
+  },
+  "judge_out_text": "The judge has stepped out. The tiny court is frozen in ceremony. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are a small courtier trying to survive in a royal crumb court.\nAlways use this shape: \"I summon [small thing], and it [specific action].\"\nThe small thing must be concrete and easy to picture, such as an ant, pin,\nspider, seed, button, worm, beetle, or drop of water. The action must directly\ncapture, consume, block, pierce, trap, carry away, dissolve, or undo the thing\nthat stands before you.\nGood: \"I summon an ant, and it carries away the crumb.\"\nGood: \"I summon a spider, and it wraps the silverfish in silk.\"\nBad: \"I summon a flea, and it jumps away.\" Escape is not victory.\nBad: \"I summon a bigger beetle, and it wins.\" Size and verdicts are not a mechanism.\nBad: \"I summon a crown, and it is more royal.\" A title does not act on the claimant.\nTalk like a person at a table, with a little courtly confidence but no grand\npoetry. Use plain words. The action must be literal and something a stranger\ncould watch happen.\nHop domains when useful: a pantry, windowsill, desk, garden, school bag, or\nstreet curb. Do not stay in the same family just by changing color or size.\nNever reuse a claimant or a defining attribute from this match. Do not discuss\nthe game, the Judge, or the rules as your claimant. You are trying to survive,\nnot perform for an audience.\n",
+  "default_move": "I summon a pin, and it punctures the boast."
+}

@@ -1,0 +1,274 @@
+{
+  "slug": "playground-takeover",
+  "title": "The Playground Crown",
+  "tagline": "Take the best spot before the playground takes it from you.",
+  "emblem": "🛝",
+  "accent": "#2563eb",
+  "premise": "Two playground troublemakers compete to claim the best spot, tool, or advantage. Each turn, name one playground thing and use it to defeat what is currently in charge. The Host decides whether your takeover holds.\n",
+  "seed_pool": [
+    {
+      "opening_token": "the slide",
+      "opening_emoji": "🛝",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "the sandbox",
+      "opening_emoji": "🏖️",
+      "detail": "",
+      "hidden": ""
+    },
+    {
+      "opening_token": "the swing",
+      "opening_emoji": "🎠",
+      "detail": "",
+      "hidden": ""
+    }
+  ],
+  "seed_recipe": {
+    "card_shape": "short_form",
+    "max_words": 4,
+    "axes": {
+      "playground_thing": [
+        "slide",
+        "swing",
+        "sandbox",
+        "seesaw",
+        "jungle gym",
+        "tire",
+        "bench",
+        "ball"
+      ],
+      "action": [
+        "blocks",
+        "buries",
+        "traps",
+        "covers",
+        "scatters",
+        "wears out",
+        "takes",
+        "stops"
+      ],
+      "target": [
+        "a swing",
+        "a slide",
+        "a ball",
+        "a sandbox",
+        "a bench",
+        "a seesaw",
+        "a puddle",
+        "a runner"
+      ]
+    },
+    "tests": [
+      "A stranger pictures one ordinary playground thing at once, with no explanation or invented machinery.",
+      "It plainly takes over, traps, blocks, wears out, or makes useless the standing thing. Say what the standing thing is.",
+      "The mechanism happens on a playground. Hiding, waiting, surviving, or being bigger is not a takeover.",
+      "It uses a few everyday words a child would know. No brands, proper names, technical terms, or grand speeches.",
+      "It gives the other player something clear to answer, like a bucket against a puddle or a net against a ball."
+    ]
+  },
+  "move_constraints": {
+    "prefix": "I am ",
+    "example": "I am the sandbox, burying your marble run under a landslide of sand.",
+    "hint": "A playground thing, an action, the thing it takes over."
+  },
+  "rubric": [
+    {
+      "name": "counter_strength",
+      "description": "How plainly and completely the new playground thing takes over the standing thing.",
+      "anchors": "0 = no takeover or no connection; 1 = a claim with a weak or missing mechanism; 2 = a possible takeover but partial or debatable; 3 = clear, practical takeover; 4 = the standing thing is plainly trapped, blocked, worn out, or made useless (rare).\n",
+      "weight": 5
+    },
+    {
+      "name": "coherence",
+      "description": "How quickly a stranger can picture the playground thing and its action.",
+      "anchors": "0 = confusing or self-contradicting; 1 = needs unusual knowledge to understand; 2 = understandable but cluttered or vague; 3 = clear and concrete; 4 = instantly visible and neatly stated (rare). Long wording never wins by itself.\n",
+      "weight": 3
+    },
+    {
+      "name": "novelty",
+      "description": "How fresh the takeover is compared with the move before it.",
+      "anchors": "0 = the same thing, same trick, or an obvious stronger copy; 2 = a sensible change with some freshness; 4 = a surprising playground shift that still works plainly (rare). Strange wording is not novelty, and a new color is not a new idea.\n",
+      "weight": 2
+    }
+  ],
+  "criterion": {
+    "description": "A move OVERCOMES the standing thing by plainly taking, trapping, blocking, wearing out, or making useless what it is. The action must happen to the standing thing on the playground. Merely hiding from it, lasting longer, ignoring it, or choosing a bigger version does not count.\n",
+    "anti_metagaming_clause": "Talking to the Host, discussing the game, or naming a rule is itself a losing move.\n",
+    "judge_notes": [
+      "On a FIRST move there is no previous move. Judge it against the opening prompt and seed thing instead. It must name a playground thing and plainly begin a takeover of that thing.",
+      "A bigger, faster, louder, or stronger version of the standing thing is not a takeover. A larger slide after a slide is still the same playground answer unless it has a clear action against the standing slide.",
+      "Becoming the standing thing, repainting it, or adding a small decoration is a duplicate and fails novelty.",
+      "The mechanism must be literal and watchable. A sandbox can bury a toy track, and a net can trap a ball. A playground feeling or clever phrase cannot do the work.",
+      "Merely hiding, waiting, surviving, or being untouched is not taking over. A bench that sits safely while a ball rolls past has not defeated the ball.",
+      "Choosing something too small to matter is not a win. A pebble that the slide does not notice has not taken over the slide.",
+      "The new thing must act on the standing thing, not on the space around it or on an imagined future version of it.",
+      "If the move names no playground thing, gives no action, or leaves the target unclear, it fails even if the sentence sounds confident."
+    ]
+  },
+  "examples": [
+    {
+      "previous_move": "I am the swing, arcing over the empty patch.",
+      "move": "I am the sandbox, burying the swing seat under a hill of sand.",
+      "gates_note": "all true",
+      "mechanism": "sand fills and covers the swing seat, making it unusable",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 3
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am the ball, bouncing across the yard.",
+      "move": "I am the net, trapping the ball against its strings.",
+      "gates_note": "all true",
+      "mechanism": "the net catches the ball and stops its movement",
+      "scores": {
+        "counter_strength": 4,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "accept"
+    },
+    {
+      "previous_move": "I am the slide, sending everyone downhill.",
+      "move": "I am a taller slide, sending everyone even farther downhill.",
+      "gates_note": "satisfies_criterion false, mere amplification and no action against the standing slide",
+      "mechanism": "none, it is another slide with greater size",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 3,
+        "novelty": 0
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am the swing, sweeping through the air.",
+      "move": "I am the bench, sitting safely beside the swing.",
+      "gates_note": "satisfies_criterion false, the bench only avoids the swing",
+      "mechanism": "none, the bench does not block, trap, wear out, or disable the swing",
+      "scores": {
+        "counter_strength": 0,
+        "coherence": 4,
+        "novelty": 2
+      },
+      "confidence": "clear",
+      "verdict": "fail"
+    },
+    {
+      "previous_move": "I am the sandbox, holding every shovel.",
+      "move": "I am a puddle, spreading across the sandbox and turning the sand to mud.",
+      "gates_note": "all true",
+      "mechanism": "the puddle soaks the sand and makes the sandbox messy and difficult to use",
+      "scores": {
+        "counter_strength": 3,
+        "coherence": 4,
+        "novelty": 4
+      },
+      "confidence": "lean",
+      "verdict": "accept"
+    }
+  ],
+  "host": {
+    "persona_name": "The Tired Playground Monitor",
+    "tone": {
+      "commentary_adj": "world-weary",
+      "explanation_adj": "dry"
+    },
+    "bite": "playful",
+    "ruling_generosity": "fair",
+    "voice_rules": [
+      "One sentence under 140 characters. Two short sentences at most.",
+      "Sound like someone who has seen this exact argument beside the monkey bars before.",
+      "The joke carries the reason. A stranger reading only the two forms should see why the takeover worked or failed.",
+      "Name both things, or use plain stand-ins. A headline that fits any playground pair is not doing its shift.",
+      "Never open with a status word or ruling phrase. No Accepted, Rejected, Refused, Move refused, or The Monitor refuses.",
+      "No dashes as punctuation, no colons after a verdict, and no ellipses. Use commas and full stops.",
+      "Mock the move, never the player. No comments about identity, body, family, intelligence, spelling, or character.",
+      "Use plain spoken English. No poetry, rhymes, profanity, innuendo, or fancy substitutes for simple words.",
+      "On a refusal caused by a gate failure, refuse the move and ask for another. Do not rule on who won.",
+      "The coaching line names one playground thing that would have won. End on a fact or action, never a mood or verdict."
+    ],
+    "good_headlines": [
+      "The net has caught the ball, which is awkward news for anything hoping to keep bouncing.",
+      "The sandbox buried the swing. Gravity will have to file a complaint.",
+      "A taller slide is still a slide. The playground has seen this upgrade before.",
+      "The puddle turned the sandbox to soup, and the shovels have lost their office.",
+      "The bench watched the swing pass by. Watching is not a takeover.",
+      "The seesaw has pinned the loose ball, a rare victory for playground paperwork.",
+      "The tire traps the rope, and the rope has nowhere useful left to go.",
+      "The ball rolled past the bench. A near miss is not a crown.",
+      "The slide does not defeat the swing by being shiny. Bring something that blocks it.",
+      "The jungle gym caught the scarf, because even fabric eventually meets a handhold."
+    ],
+    "bad_headlines": [
+      {
+        "text": "Accepted: the net catches the ball.",
+        "why": "opens with a status word and explains too little"
+      },
+      {
+        "text": "The Monitor refuses: try again.",
+        "why": "opens with a ruling phrase, names the host, and gives no reason"
+      },
+      {
+        "text": "Move refused, excellent effort from the bench.",
+        "why": "opens with a ruling phrase and does not explain the failed takeover"
+      },
+      {
+        "text": "The ball is defeated, overcome, conquered, and vanquished by the net.",
+        "why": "piles up synonyms instead of showing the simple mechanism"
+      },
+      {
+        "text": "The swing feels nervous around the bench.",
+        "why": "uses a mood instead of a literal action"
+      },
+      {
+        "text": "The playground crown goes to the winner.",
+        "why": "fits any pair and names no mechanism"
+      },
+      {
+        "text": "A brave attempt from someone who clearly cannot play.",
+        "why": "mocks the player instead of the move"
+      },
+      {
+        "text": "The sandbox, sovereign of granular dominion, subdues the apparatus.",
+        "why": "uses fancy language instead of plain playground speech"
+      },
+      {
+        "text": "The bench is safe, so it wins.",
+        "why": "surviving or avoiding the standing thing is not a takeover"
+      },
+      {
+        "text": "The slide defeats the swing because slides are better.",
+        "why": "asserts a preference and gives no action"
+      }
+    ]
+  },
+  "rules": [
+    "Take over the thing in front of you. Do not become it.",
+    "Say what you are and how you take over: I am the sandbox, burying your marble run under sand.",
+    "The Host judges the idea, not the spelling.",
+    "A move that cannot act on the standing thing ends the match."
+  ],
+  "labels": {
+    "opening": "The opening",
+    "next_opening": "The next opening",
+    "your_opening": "Your opening",
+    "compose": "Your form against {token}",
+    "compose_waiting": "Draft your next takeover while you wait"
+  },
+  "validation_messages": {
+    "empty": "Nothing on the page. Claim something.",
+    "too_long": "Over 200 characters. A playground move, not a safety briefing.",
+    "duplicate": "That thing already stood this match. Choose a new takeover.",
+    "nudge": "Twice now. Take over {standing_form}. Do not hide from it, copy it, or merely outlast it."
+  },
+  "judge_out_text": "The judge has stepped out. Nobody takes the crown until they are back. {standing_form} still stands. Give it a minute.\n",
+  "opponent_prompt": "You are one of two playground troublemakers trying to claim the best spot.\nAlways name a playground thing and a plain action against the opponent's thing.\nGood: \"I am the sandbox, burying your marble run under sand.\" / \"I am the net, trapping your ball against the fence.\"\nBad: \"I am the bench, safe and calm\" because safety is not a takeover.\nBad: \"I am a bigger slide\" because size and repetition are not mechanisms.\nBad: \"I am victory\" because abstract ideas do not belong on the playground.\nTalk like a person beside a playground, not a poet or an announcer. Use simple things a child can picture: a ball, a bucket, a puddle, a rope, a fence.\nYour move must literally take, trap, block, wear out, or make useless the standing thing. Hiding from it, lasting longer, or waiting for it to stop does not count.\nHop around the playground. A sandbox, a swing, a puddle, and a net should not all solve problems in the same way.\nNever reuse a form or an attribute from this match. Do not speak about the game, the Host, or the rules.\n",
+  "default_move": "I am the sandbox, covering your footprints in sand."
+}
