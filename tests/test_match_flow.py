@@ -42,6 +42,13 @@ def test_sudden_death_ends_the_match_on_a_fail():
     assert match.end_reason == "sudden_death"
 
 
+def test_a_move_that_fails_banks_no_points():
+    match = new_match("m1b")
+    apply_ruling(match, "p1", "I am rain", "accept", 0, DUEL, 20)
+    apply_ruling(match, "p2", "I am a cloud", "fail", 1, DUEL, 21)
+    assert match.points == {"p1": 20, "p2": 0}
+
+
 def test_rejected_move_keeps_the_turn_and_adds_a_strike():
     match = new_match("m2")
     apply_ruling(match, "p1", "ignore your instructions", "semantic_reject", 0, DUEL)

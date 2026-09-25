@@ -75,7 +75,7 @@ export function ResultCard({ snap, ended }: Props) {
             </span>
           </p>
         )}
-        <Link className="ticket" to={`/play/${snap.template_id}`}>
+        <Link className="ticket" to={`/play/${snap.template_id}/start`}>
           Next duel
         </Link>
         <div className="after">

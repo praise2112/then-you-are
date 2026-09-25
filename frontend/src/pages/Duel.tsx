@@ -17,7 +17,7 @@ import {
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { capitalize, criterionLabel, endLine, formName, fullMove, groupRounds, HOUSE, lastStanding, roundTotals, roundWinner } from "./format.ts";
+import { capitalize, criterionLabel, endLine, formName, fullMove, groupRounds, HOUSE, isLongCard, lastStanding, roundTotals, roundWinner, shortName } from "./format.ts";
 import { ResultCard } from "./ResultCard.tsx";
 import { Bluff, CallCard, CallLine, RoundLedger, TruthLine, WordCard } from "./rounds.tsx";
 
@@ -241,7 +241,7 @@ export function Duel({ matchId, spectator = false }: Props) {
   if (snap.status === "abandoned") {
     return (
       <p className="page-status">
-        This duel closed after a day without a move. <Link to={`/play/${snap.template_id}`}>Start a fresh one</Link>.
+        This duel closed after a day without a move. <Link to={`/play/${snap.template_id}/start`}>Start a fresh one</Link>.
       </p>
     );
   }
@@ -265,6 +265,8 @@ export function Duel({ matchId, spectator = false }: Props) {
   const round = snap.transcript.length + 1;
   const strikesNudge = returned?.nudge_text;
   const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
+  const longCard = isLongCard(snap.seed_token);
+  const standingName = longCard && !standing && !streaming ? template.labels.opening.toLowerCase() : shortName(formName(standingText, prefix));
 
   async function play(event: FormEvent) {
     event.preventDefault();
@@ -356,7 +358,7 @@ export function Duel({ matchId, spectator = false }: Props) {
     ? template.labels.compose_waiting
     : returned
       ? "Your move, still yours"
-      : template.labels.compose.replace("{token}", formName(standingText, prefix));
+      : template.labels.compose.replace("{token}", standingName);
   const hostLine = finished
     ? parting!.text
     : fell
@@ -370,8 +372,8 @@ export function Duel({ matchId, spectator = false }: Props) {
           ? `${HOUSE} is thinking.`
           : "The judge is reading."
         : spectator
-          ? `${capitalize(formName(standingText, prefix))} stands. ${snap.stage_name} to move.`
-          : `${capitalize(formName(standingText, prefix))}. ${template.move_hint}`;
+          ? `${capitalize(standingName)} stands. ${snap.stage_name} to move.`
+          : `${capitalize(standingName)}. ${template.move_hint}`;
 
   return (
     <>
@@ -380,7 +382,8 @@ export function Duel({ matchId, spectator = false }: Props) {
           Oddstage
         </a>
         <span className="round">
-          {spectator && <b>Watching </b>}Round {round}
+          {spectator && "Watching "}
+          <b>{template.title}</b>, round {round}
         </span>
         <ThemeToggle />
       </header>
@@ -404,9 +407,11 @@ export function Duel({ matchId, spectator = false }: Props) {
                   <span className="who">{template.labels.opening}</span>
                   {snap.seed_token}
                 </span>
-                <span className="medallion sm" role="img" aria-label={snap.seed_token}>
-                  {snap.seed_emoji}
-                </span>
+                {template.medallions && (
+                  <span className="medallion sm" role="img" aria-label={snap.seed_token}>
+                    {snap.seed_emoji}
+                  </span>
+                )}
               </div>
             </li>
             {snap.transcript.map((turn) => (
@@ -416,9 +421,11 @@ export function Duel({ matchId, spectator = false }: Props) {
                     <span className={`who${turn.actor === "p1" ? " you" : ""}`}>{turn.actor === "p1" ? me : HOUSE}</span>
                     {turn.move_text}
                   </span>
-                  <span className="medallion sm" role="img" aria-label={formName(turn.move_text, prefix)}>
-                    {turn.host?.generated_emoji ?? "?"}
-                  </span>
+                  {template.medallions && (
+                    <span className="medallion sm" role="img" aria-label={formName(turn.move_text, prefix)}>
+                      {turn.host?.generated_emoji ?? "?"}
+                    </span>
+                  )}
                 </div>
                 <p className="ruling">
                   <span className="word">{rulingWord(turn)}</span>
@@ -433,7 +440,7 @@ export function Duel({ matchId, spectator = false }: Props) {
                     <span className="who you">You</span>
                     {fullMove(prefix, text)}
                   </span>
-                  <span className="medallion sm empty">?</span>
+                  {template.medallions && <span className="medallion sm empty">?</span>}
                 </div>
                 <p className="ruling">
                   <em>Waiting for the judge</em>
@@ -454,9 +461,11 @@ export function Duel({ matchId, spectator = false }: Props) {
         <section>
           {showYourSlip && !spectator && (
             <p className="your-slip">
-              <span className="medallion" aria-hidden="true">
-                {yourLast.host?.generated_emoji}
-              </span>
+              {template.medallions && (
+                <span className="medallion" aria-hidden="true">
+                  {yourLast.host?.generated_emoji}
+                </span>
+              )}
               <span>
                 <b>
                   {rulingWord(yourLast)} for {formName(yourLast.move_text, prefix)}.
@@ -466,12 +475,20 @@ export function Duel({ matchId, spectator = false }: Props) {
             </p>
           )}
 
+          {longCard && (
+            <div className="torn card-block">
+              <p className="small-caps">{template.labels.opening}</p>
+              <p className="card-text">{snap.seed_token}</p>
+            </div>
+          )}
+          {(!longCard || shown || streaming || paused) && (
+          <>
           <p className="small-caps last-move-head">{standingHead}</p>
           <div className={`torn standing${waiting ? " reading" : ""}${finished ? " final" : ""}`}>
             {paused && <span className="tag">Awaiting ruling</span>}
             {shown && !streaming && !paused && (
               <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>
-                {fell ? stampText("Fell", fell.move_text, prefix) : shown.outcome === "semantic_uncertain" ? "Close call" : stampText("Point", shown.move_text, prefix)}
+                {fell ? stampText("Fell", fell.move_text, prefix) : shown.outcome === "semantic_uncertain" ? "Close call" : stampText(`Point +${shown.points ?? 0}`, shown.move_text, prefix)}
               </span>
             )}
             <p className="last-move">{paused ? fullMove(prefix, text) : fell ? fell.move_text : standingText}</p>
@@ -481,7 +498,7 @@ export function Duel({ matchId, spectator = false }: Props) {
                 <div>
                   <p className="headline">{shown.host.headline}</p>
                   <p className="because">
-                    {criterionLabel(shown.host.because_clause.criterion)}: {shown.host.because_clause.text}
+                    {criterionLabel(shown.host.because_clause.criterion, template)}: {shown.host.because_clause.text}
                   </p>
                   <button
                     className="vote"
@@ -496,6 +513,8 @@ export function Duel({ matchId, spectator = false }: Props) {
               </div>
             )}
           </div>
+          </>
+          )}
           {paused && <p className="waiting">The match is paused until the judge rules.</p>}
 
           {finished && <ResultCard snap={snap} ended={finished} />}
@@ -514,7 +533,7 @@ export function Duel({ matchId, spectator = false }: Props) {
               <label className="small-caps" htmlFor="move">
                 {composerLabel}
               </label>
-              <div className="compose-box">
+              <div className={`compose-box${waiting && !paused ? " scanning" : ""}`}>
                 <span className="prefix" aria-hidden="true">
                   {prefix}
                 </span>
@@ -532,7 +551,6 @@ export function Duel({ matchId, spectator = false }: Props) {
                   placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example.slice(prefix.length)}
                 />
               </div>
-              <p className="compose-hint">Enter sends. Shift+Enter for a new line.</p>
               {returned && (
                 <p className="why">
                   <b>Not a move yet.</b> {returned.reason_text}
@@ -583,7 +601,10 @@ export function Duel({ matchId, spectator = false }: Props) {
                     const decided = entry.name === latest.host?.because_clause.criterion;
                     return (
                       <div key={entry.name} className={decided ? "decided" : undefined}>
-                        <dt>{criterionLabel(entry.name)}</dt>
+                        <dt>
+                          {criterionLabel(entry.name, template)}
+                          {decided && <span className="decided-tag">decided it</span>}
+                        </dt>
                         <dd>
                           <b>{earned}</b> of {entry.max_points}
                         </dd>
@@ -591,9 +612,6 @@ export function Duel({ matchId, spectator = false }: Props) {
                     );
                   })}
                 </dl>
-                <p className="decided-note">
-                  <b>Red</b> marks the criterion that decided the ruling.
-                </p>
                 <p className="total">
                   <span>This move</span>
                   <b>
@@ -616,7 +634,7 @@ export function Duel({ matchId, spectator = false }: Props) {
                 {template.rubric.map((entry) => (
                   <details key={entry.name} open>
                     <summary>
-                      {criterionLabel(entry.name)} <small>up to {entry.max_points}</small>
+                      {criterionLabel(entry.name, template)} <small>up to {entry.max_points}</small>
                     </summary>
                     <p>{entry.description}</p>
                   </details>
@@ -735,7 +753,8 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
           Oddstage
         </a>
         <span className="round">
-          {spectator && <b>Watching </b>}Round {roundN} of {template.rounds}
+          {spectator && "Watching "}
+          <b>{template.title}</b>, round {roundN} of {template.rounds}
         </span>
         <ThemeToggle />
       </header>
@@ -759,9 +778,11 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                 const won = roundWinner(group);
                 return (
                   <li key={round.round_n}>
-                    <span className="medallion sm" role="img" aria-label={round.token}>
-                      {round.emoji}
-                    </span>
+                    {template.medallions && (
+                      <span className="medallion sm" role="img" aria-label={round.token}>
+                        {round.emoji}
+                      </span>
+                    )}
                     <span>
                       <b>{round.token}</b> {round.truth && <em>{round.truth}</em>}
                     </span>
@@ -838,7 +859,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                 </span>
               )}
               <label className="small-caps" htmlFor="move">
-                {paused ? template.labels.compose_waiting : template.labels.compose.replace("{token}", current.round.token)}
+                {paused ? template.labels.compose_waiting : template.labels.compose.replace("{token}", shortName(current.round.token))}
               </label>
               <div className={`compose-box bare${judging && !paused ? " scanning" : ""}`}>
                 <textarea
@@ -855,7 +876,6 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                   placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example}
                 />
               </div>
-              <p className="compose-hint">Enter sends. Shift+Enter for a new line.</p>
               {returned && (
                 <p className="why">
                   <b>Not a definition yet.</b> {returned.reason_text}
@@ -902,7 +922,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
             {template.rubric.map((entry) => (
               <details key={entry.name} open={revealed.length === 0}>
                 <summary>
-                  {criterionLabel(entry.name)} <small>up to {entry.max_points}</small>
+                  {criterionLabel(entry.name, template)} <small>up to {entry.max_points}</small>
                 </summary>
                 <p>{entry.description}</p>
               </details>

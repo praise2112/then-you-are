@@ -219,16 +219,15 @@ def apply_ruling(
             truth_hit=truth_hit,
         )
     )
-    if template.win_condition == "sudden_death":
+    if outcome != "fail":
         match.points[actor] += points
+    if template.win_condition == "sudden_death":
         if outcome == "fail":
             match.status = "ended"
             match.winner = other(actor)
             match.end_reason = "sudden_death"
             return match
         match.to_move = other(actor)
-    elif outcome != "fail":
-        match.points[actor] += points
 
     if template.mode == "showcase" and len(match.round_turns(round_n)) == len(PLAYERS):
         _open_guessing(match, template)

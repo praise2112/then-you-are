@@ -2,45 +2,27 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { AccountMenu } from "../Account.tsx";
 import { Link, navigate, ThemeToggle } from "../App.tsx";
-import { api, type OpenDuel, type Replay, type TemplateView } from "../api.ts";
-import { Host } from "../Host.tsx";
+import { api, type DemoPoints, type OpenDuel, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
-import { ReplayCard } from "./cards.tsx";
-import { criterionLabel, fullMove, HOUSE, prefixOf } from "./format.ts";
-
-const STILL = matchMedia("(prefers-reduced-motion: reduce)").matches;
-// The demo round runs to the reveal; without motion it opens there instead.
-const LAST_STEP = 8;
-const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+import { fullMove, HOUSE } from "./format.ts";
 
 export function Landing() {
   const [templates, setTemplates] = useState<TemplateView[] | null>(null);
-  const [curated, setCurated] = useState<Replay[] | null>(null);
   const [openDuels, setOpenDuels] = useState<OpenDuel[]>([]);
   useEffect(() => {
     api.templates().then(setTemplates, () => setTemplates(null));
-    api.replays("curated").then(setCurated, () => setCurated([]));
     api.session().then((s) => setOpenDuels(s.open_duels), () => setOpenDuels([]));
   }, []);
-  const [slug, setSlug] = useState<string | null>(null);
-  const template = templates?.find((t) => t.slug === slug) ?? templates?.[0] ?? null;
-  const at = templates && template ? templates.indexOf(template) : 0;
-  const turnTo = (offset: number) => {
-    if (!templates) return;
-    setSlug(templates[(at + offset + templates.length) % templates.length].slug);
-  };
+  const template = templates?.find((t) => t.featured) ?? templates?.[0] ?? null;
 
   return (
     <>
       <header className="bar-top">
         <span className="wordmark">Oddstage</span>
-        <span className="round">
-          On stage <b>{template?.title}</b>
-        </span>
         <span className="aside">
+          <Link to="/games">Games</Link>
           <Link to="/stage">Watch</Link>
           <Link to="/standings">Standings</Link>
-          <a href="/mockups/methodology.html">The judging</a>
           <AccountMenu />
           <ThemeToggle icon />
         </span>
@@ -59,154 +41,88 @@ export function Landing() {
 
       <main className="wrap">
         <section className="hero">
-          <h1 className="peak">
-            Your turn.
-            <small>{template?.tagline}</small>
-          </h1>
-          {templates && templates.length > 1 && (
-            <nav className="playbill-tabs" aria-label="Games on stage">
-              <button type="button" className="turn" aria-label="Previous game" onClick={() => turnTo(-1)}>
-                &lsaquo;
-              </button>
-              {templates.map((t) => (
-                <button
-                  key={t.slug}
-                  type="button"
-                  className={t.slug === template?.slug ? "on" : undefined}
-                  aria-pressed={t.slug === template?.slug}
-                  onClick={() => setSlug(t.slug)}
-                >
-                  <span className="emblem" aria-hidden="true">
-                    {t.emblem}
-                  </span>{" "}
-                  {t.title}
-                </button>
-              ))}
-              <button type="button" className="turn" aria-label="Next game" onClick={() => turnTo(1)}>
-                &rsaquo;
-              </button>
-            </nav>
-          )}
           {template && <Stage key={template.slug} template={template} />}
+          {templates && template && <PosterRow templates={templates} current={template.slug} />}
         </section>
-
-        <section id="bill">
-          <h2 className="centered-label small-caps">On the bill</h2>
-          <div className="bill">
-            {templates?.map((t) => (
-              <Link key={t.slug} className="bill-row" to={`/play/${t.slug}`} style={{ "--game-accent": t.accent } as React.CSSProperties}>
-                <span className="medallion emblem" aria-hidden="true">
-                  {t.emblem}
-                </span>
-                <span>
-                  <h3>{t.title}</h3>
-                  <em>{t.tagline}</em>
-                </span>
-              </Link>
-            ))}
-            <span className="bill-row stage-own">
-              <span className="medallion emblem empty" aria-hidden="true">
-                ✎
-              </span>
-              <span>
-                <h3>Stage your own game</h3>
-                <em>A template, scoring rules, a judge. In rehearsal.</em>
-              </span>
-            </span>
-          </div>
-        </section>
-
-        <p className="fleuron" aria-hidden="true">❧</p>
-
-        <section id="replays">
-          <h2 className="centered-label small-caps">Great duels, replayed</h2>
-          <div className="classics">
-            {curated === null && <p className="empty-strip">Fetching the archive.</p>}
-            {curated?.length === 0 && (
-              <p className="empty-strip">No duels curated yet. Yours could be the first.</p>
-            )}
-            {curated?.map((replay) => (
-              <ReplayCard key={replay.id} replay={replay} prefix={prefixOf(templates, replay.template_id)} />
-            ))}
-          </div>
-          <p className="strip-foot">
-            <Link to="/stage">Watch live duels and every listed replay</Link>
-          </p>
-        </section>
-
-        <section className="trust host" id="trust">
-          <Host state="idle" />
-          <p className="host-line">
-            Every move scored by an AI judge. The scoring rules are shown before you type.{" "}
-            <a href="/mockups/methodology.html">See how the judging is graded</a>.
-          </p>
-        </section>
+        <StageFoot />
       </main>
     </>
   );
 }
 
+/** The one line under every game page: who scores the moves and where to read how. */
+export function StageFoot() {
+  return (
+    <p className="stage-foot">
+      Every move is scored by an AI judge. <a href="/mockups/methodology.html">How the judging is graded</a>
+    </p>
+  );
+}
 
+/** The game on show first, then the rest of the bill, cut to one row; "All games" is always there. */
+export function PosterRow({ templates, current }: { templates: TemplateView[]; current: string }) {
+  const shown = [...templates].sort((a, b) => Number(b.slug === current) - Number(a.slug === current));
+  return (
+    <nav className="poster-row" aria-label="Games">
+      <div className="posters">
+        {shown.map((t) => (
+          <Poster key={t.slug} template={t} current={t.slug === current} />
+        ))}
+      </div>
+      <Link className="poster all-games" to="/games">
+        <span className="emblem" aria-hidden="true">
+          ☰
+        </span>
+        <h3>All games</h3>
+        <em>{templates.length} on the bill</em>
+      </Link>
+    </nav>
+  );
+}
 
-/** The card a visitor plays from: an opening, the first-move box, and one demo round beneath. */
-function Stage({ template }: { template: TemplateView }) {
+export function Poster({ template, current = false, tagline = false }: { template: TemplateView; current?: boolean; tagline?: boolean }) {
+  return (
+    <Link
+      to={template.featured ? "/" : `/play/${template.slug}`}
+      className={`poster${current ? " on" : ""}`}
+      aria-current={current ? "page" : undefined}
+      style={{ "--game-accent": template.accent } as React.CSSProperties}
+    >
+      <span className="emblem" aria-hidden="true">
+        {template.emblem}
+      </span>
+      <h3>{template.title}</h3>
+      {tagline && <em>{template.tagline}</em>}
+    </Link>
+  );
+}
+
+/** A game's board before a match: the card to answer and the move box, with one worked round folded
+ *  beneath, open the first time a visitor meets the game. */
+export function Stage({ template }: { template: TemplateView }) {
   const demo = template.demo;
   const prefix = template.move_prefix;
-  const [opening] = useState(() => demo.openings[Math.floor(Math.random() * demo.openings.length)]);
+  const [at] = useState(() => Math.floor(Math.random() * demo.openings.length));
+  const opening = demo.openings[at];
+  // The ghost cycles another card's examples so it never answers the card on show.
+  const elsewhere = demo.openings[(at + 1) % demo.openings.length];
   const [tail, setTail] = useState("");
   const [focused, setFocused] = useState(false);
   const [ghost, setGhost] = useState(0);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // The demo round plays itself the first time a visitor meets a game, then it is a still.
-  // A switch between games must not start a second moving thing beside the live input.
-  const [plays] = useState(() => !STILL && !store.demoSeen(template.slug));
-  const full = demo.moves[0].text.slice(prefix.length);
-  const [step, setStep] = useState(plays ? 0 : LAST_STEP);
-  const [typed, setTyped] = useState(plays ? "" : full);
-  const [replays, setReplays] = useState(0);
+  const [firstVisit] = useState(() => !store.demoSeen(template.slug));
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    store.markDemoSeen(template.slug);
+  }, [template.slug]);
 
   useEffect(() => {
     if (tail || focused) return;
     const id = setInterval(() => setGhost((g) => g + 1), 3200);
     return () => clearInterval(id);
   }, [tail, focused]);
-
-  useEffect(() => {
-    if (!plays && replays === 0) return;
-    store.markDemoSeen(template.slug);
-    let live = true;
-    const go = async () => {
-      await wait(600);
-      if (!live) return;
-      setStep(1);
-      await wait(900);
-      setStep(2);
-      await wait(300);
-      for (let i = 1; i <= full.length && live; i++) {
-        setTyped(full.slice(0, i));
-        await wait(38);
-      }
-      await wait(500);
-      setStep(3);
-      await wait(400);
-      setStep(4);
-      await wait(1100);
-      setStep(5);
-      await wait(500);
-      setStep(6);
-      await wait(700);
-      setStep(7);
-      if (template.mode !== "showcase") return;
-      await wait(1500);
-      setStep(8);
-    };
-    void go();
-    return () => {
-      live = false;
-    };
-  }, [full, plays, replays, template.mode, template.slug]);
 
   async function play(event: FormEvent) {
     event.preventDefault();
@@ -231,150 +147,115 @@ function Stage({ template }: { template: TemplateView }) {
     }
   }
 
-  const winner = demo.moves[1];
-  const scorer = winner.actor === "p1" ? "You" : HOUSE;
-  const ghostText = opening.examples[ghost % opening.examples.length];
+  const ghostText = elsewhere.examples[ghost % elsewhere.examples.length];
   const showGhost = !tail && !focused;
-  const showcase = template.mode === "showcase";
-
-  const played = step >= (showcase ? LAST_STEP : 7);
+  const guess = template.mode === "showcase" && demo.opening.reveal ? template.guess : null;
+  const moveLedger = (
+    <ul className="ledger">
+      {demo.moves.map((move) => (
+        <li key={move.actor}>
+          <span>
+            <span className={`who${move.actor === "p1" ? " you" : ""}`}>{move.actor === "p1" ? "You" : HOUSE}</span>
+            <i className="prefix">{prefix}</i>
+            {move.text.slice(prefix.length)}
+          </span>
+          {move.points && <b className="pts">+{total(move.points)}</b>}
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
-    <div className={`torn stage-card${played ? " played" : ""}`}>
-      <div className="live">
-        <p className="opening">
-          <span className="medallion" aria-hidden="true">
-            {opening.emoji}
-          </span>
-          <span>
-            {template.labels.your_opening}: <b>{opening.token}</b>
-            {opening.detail && <em className="detail"> {opening.detail}</em>}
-          </span>
-        </p>
-        <form className="compose" onSubmit={play}>
-          <span className="prefix">{prefix.trim()}</span>
-          <span className="field">
-            <input
-              ref={inputRef}
-              type="text"
-              aria-label="Your first move"
-              autoComplete="off"
-              data-form-type="other"
-              data-lpignore="true"
-              data-1p-ignore=""
-              maxLength={template.max_chars - prefix.length}
-              value={tail}
-              disabled={starting}
-              onChange={(e) => setTail(e.target.value)}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-            />
-            {showGhost && (
-              <span className="ghost" key={ghostText} aria-hidden="true">
-                {ghostText}
-              </span>
-            )}
-          </span>
-          <button className="ticket" type="submit" disabled={starting}>
-            {starting ? "Curtain up" : "Play it"}
-          </button>
-        </form>
-        <p className="hint">
-          {template.move_hint} An AI judge scores every move.{" "}
-          <Link to={`/play/${template.slug}`}>Or just play.</Link>
-        </p>
-        {error && <p className="hint error">{error}</p>}
-      </div>
+    <div className="torn stage-card">
+      <h1 className="board-title">
+        {template.title}
+        <small>{template.tagline}</small>
+      </h1>
 
-      <p className="small-caps round-head">
-        {played ? "That was one round. Now yours." : "How a round goes"}
-        {played && !STILL && (
-          <button
-            className="watch-again"
-            type="button"
-            onClick={() => {
-              setStep(0);
-              setTyped("");
-              setReplays((n) => n + 1);
-            }}
-          >
-            Watch it again
-          </button>
-        )}
+      <p className="opening">
+        <span className="emblem" aria-hidden="true">
+          {opening.emoji}
+        </span>
+        <span>
+          {template.labels.your_opening}: <b>{opening.token}</b>
+          {opening.detail && <em className="detail"> {opening.detail}</em>}
+        </span>
       </p>
-      <div className="demo">
-        {step >= 1 && (
-          <p className="opening on">
-            <span className="medallion" aria-hidden="true">
-              {demo.opening.emoji}
+      <form className="compose" onSubmit={play}>
+        <span className="prefix">{prefix.trim()}</span>
+        <span className="field">
+          <input
+            ref={inputRef}
+            type="text"
+            aria-label="Your first move"
+            autoComplete="off"
+            data-form-type="other"
+            data-lpignore="true"
+            data-1p-ignore=""
+            maxLength={template.max_chars - prefix.length}
+            value={tail}
+            disabled={starting}
+            onChange={(e) => setTail(e.target.value)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+          />
+          {showGhost && (
+            <span className="ghost" key={ghostText} aria-hidden="true">
+              {ghostText}
             </span>
-            <span>
-              {template.labels.opening}: <b>{demo.opening.token}</b>
-              {demo.opening.detail && <em className="detail"> {demo.opening.detail}</em>}
-            </span>
-          </p>
+          )}
+        </span>
+        <button className="ticket" type="submit" disabled={starting}>
+          {starting ? "Curtain up" : "Play it"}
+        </button>
+      </form>
+      {error && <p className="hint error">{error}</p>}
+
+      <details className="how-a-round" open={firstVisit}>
+        <summary>How a round goes</summary>
+        <p className="example-card">
+          {template.labels.opening}: <b>{demo.opening.token}</b>
+          {demo.opening.detail && <em className="detail"> {demo.opening.detail}</em>}
+        </p>
+        {guess ? (
+          <ol className="round-steps">
+            <li>
+              <span className="step-no">1</span>
+              <div>
+                <p className="step-head">You both write one. The judge scores each.</p>
+                {moveLedger}
+              </div>
+            </li>
+            <li>
+              <span className="step-no">2</span>
+              <div>
+                <p className="step-head">{guess.prompt}</p>
+                <p className="step-rule">
+                  Right: +{guess.spot_points} to you. Wrong: +{guess.fool_points} to {HOUSE}.
+                </p>
+                <ul className="ledger">
+                  <li>
+                    <span>{demo.moves[1].text}</span>
+                    <span className="aside-note">{HOUSE}&rsquo;s fake</span>
+                  </li>
+                  <li>
+                    <span>{demo.opening.reveal}</span>
+                    <span className="aside-note">
+                      Real, your call <b className="pts">+{guess.spot_points}</b>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ol>
+        ) : (
+          moveLedger
         )}
-        {step >= 2 && (
-          <div className="replay-move on">
-            <span>
-              <span className={`who${demo.moves[0].actor === "p1" ? " you" : ""}`}>
-                {demo.moves[0].actor === "p1" ? "You" : HOUSE}
-              </span>
-              <i className="prefix">{prefix}</i>
-              <span className={step < 3 ? "caret" : undefined}>{typed}</span>
-            </span>
-            <span className="medallion" aria-hidden="true">
-              {demo.moves[0].emoji}
-            </span>
-          </div>
-        )}
-        {step >= 3 && <p className="versus on">vs</p>}
-        {step >= 4 && (
-          <div className={`replay-move on${step >= 5 ? " won" : ""}`}>
-            <span>
-              <span className={`who${winner.actor === "p1" ? " you" : ""}`}>{scorer}</span>
-              <i className="prefix">{prefix}</i>
-              {winner.text.slice(prefix.length)}
-            </span>
-            <span className="medallion" aria-hidden="true">
-              {winner.emoji}
-            </span>
-            {step >= 5 && <span className="stamp thump point">Point</span>}
-          </div>
-        )}
-        {step >= 6 && (
-          <p className="pts on">
-            <span className="who">{scorer} scored</span>
-            {demo.points.map((p) => (
-              <span key={p.name}>
-                {criterionLabel(p.name)}{" "}
-                <b>
-                  {p.earned} of {p.max_points}
-                </b>
-              </span>
-            ))}
-          </p>
-        )}
-        {step >= 7 && (!showcase || !demo.opening.reveal) && <p className="headline on">{demo.headline}</p>}
-        {step >= 7 && showcase && demo.opening.reveal && (
-          <div className="demo-call on">
-            <p className="who">Your call: which one is the real entry?</p>
-            <p className="demo-entry">
-              {winner.text}
-              {step >= 8 && <span className="tag">{HOUSE}&rsquo;s bluff</span>}
-            </p>
-            <p className={`demo-entry${step >= 8 ? " real" : ""}`}>
-              {demo.opening.reveal}
-              {step >= 8 && <span className="stamp thump point">The real one</span>}
-            </p>
-            {step >= 8 && (
-              <p className="demo-call-foot">
-                Right, and the points are yours. Fooled, and they go to {HOUSE}.
-              </p>
-            )}
-          </div>
-        )}
-      </div>
+      </details>
     </div>
   );
+}
+
+function total(points: DemoPoints[]): number {
+  return points.reduce((sum, p) => sum + p.earned, 0);
 }

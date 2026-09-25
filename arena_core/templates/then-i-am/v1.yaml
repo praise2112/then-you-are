@@ -3,7 +3,7 @@ slug: then-i-am
 title: Then I Am
 emblem: "🪨"
 accent: "#c2410c"
-tagline: "Become something that beats what came before."
+tagline: "Become what beats the last."
 mode: escalation
 premise: >
   Two shapeshifters duel in words. Each turn you become something that defeats
@@ -566,10 +566,9 @@ seed_recipe:
 demo:
   opening: { token: "a rock", emoji: "🪨" }
   moves:
-    - { actor: p1, text: "I am the hammer, two kilos, rock-splitting.", emoji: "🔨" }
-    - { actor: p2, text: "I am the rust, patient, steel-eating.", emoji: "🔩" }
+    - { actor: p1, text: "I am the hammer, two kilos, rock-splitting.", emoji: "🔨", scores: { counter_strength: 3, coherence: 4, novelty: 0 } }
+    - { actor: p2, text: "I am the rust, patient, steel-eating.", emoji: "🔩", scores: { counter_strength: 4, coherence: 4, novelty: 2 } }
   headline: "Iron forgets it was ever a hammer."
-  scores: { counter_strength: 4, coherence: 4, novelty: 2 }
   openings:
     - token: "a candle flame"
       examples:

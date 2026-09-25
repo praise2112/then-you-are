@@ -16,6 +16,7 @@ from arena_judge.schema import (
 
 class RubricView(BaseModel):
     name: str
+    label: str | None
     description: str
     max_points: int
 
@@ -27,16 +28,17 @@ class DemoOpening(BaseModel):
     reveal: str
 
 
-class DemoMoveView(BaseModel):
-    actor: Literal["p1", "p2"]
-    text: str
-    emoji: str
-
-
 class DemoPoints(BaseModel):
     name: str
     earned: int
     max_points: int
+
+
+class DemoMoveView(BaseModel):
+    actor: Literal["p1", "p2"]
+    text: str
+    emoji: str
+    points: list[DemoPoints] | None
 
 
 class LandingOpeningView(BaseModel):
@@ -50,7 +52,6 @@ class DemoView(BaseModel):
     opening: DemoOpening
     moves: list[DemoMoveView]
     headline: str
-    points: list[DemoPoints]
     openings: list[LandingOpeningView]
 
 
@@ -88,6 +89,8 @@ class TemplateView(BaseModel):
     host_name: str
     labels: LabelsView
     guess: GuessRulesView | None
+    medallions: bool
+    featured: bool
     demo: DemoView
 
 

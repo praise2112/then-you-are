@@ -446,6 +446,9 @@ async def test_the_featured_template_leads_the_list():
     try:
         listed = (await client.get("/templates")).json()
         assert [t["slug"] for t in listed][0] == "then-i-am"
+        assert [t["slug"] for t in listed if t["featured"]] == ["then-i-am"]
+        single = (await client.get("/templates/domino")).json()
+        assert single["featured"] is False and single["medallions"] is False
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

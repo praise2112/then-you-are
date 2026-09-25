@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import type { GuessOption, RoundView, TemplateView, TurnView } from "../api.ts";
-import { criterionLabel, HOUSE, roundTotals, roundWinner, type RoundGroup } from "./format.ts";
+import { criterionLabel, HOUSE, isLongCard, roundTotals, roundWinner, type RoundGroup } from "./format.ts";
 
 const BADGE_LABELS: Record<string, string> = {
   close_call: "Close call",
@@ -13,7 +13,7 @@ type WordCardProps = { round: RoundView; compact?: boolean; children?: ReactNode
 
 export function WordCard({ round, compact = false, children }: WordCardProps) {
   return (
-    <div className={`torn word-card${compact ? " compact" : ""}`}>
+    <div className={`torn word-card${compact ? " compact" : ""}${isLongCard(round.token) ? " long" : ""}`}>
       {children}
       <p className="headword">{round.token}</p>
       {round.detail && <p className="detail">{round.detail}</p>}
@@ -249,7 +249,7 @@ export function Bluff({ turn, round, who, you = false, won = false, template }: 
           const decided = entry.name === turn.host?.because_clause.criterion;
           return (
             <span key={entry.name} className={decided ? "decided" : undefined}>
-              <span className="small-caps">{criterionLabel(entry.name)}</span>
+              <span className="small-caps">{criterionLabel(entry.name, template)}</span>
               <span className="value">
                 {earned}/{entry.max_points}
               </span>

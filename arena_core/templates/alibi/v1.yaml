@@ -3,7 +3,7 @@ slug: alibi
 title: Alibi
 emblem: "🕵️"
 accent: "#1d4ed8"
-tagline: "One story, two suspects. Make your partner carry it."
+tagline: "Two suspects, one story."
 mode: escalation
 premise: >
   Something happened on the card. You two say you were somewhere else, together.
@@ -12,28 +12,28 @@ premise: >
   go to the details that cost your partner something.
 
 seed_pool:
-  - { opening_token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am. You two were together. Where?", opening_emoji: "🍫" }
-  - { opening_token: "The big plant by reception vanished on Sunday night between 9 pm and midnight. You two were together. Where?", opening_emoji: "🪴" }
-  - { opening_token: "A silver hatchback in the staff car park got a new dent on the passenger door between 1 pm and 2 pm on Tuesday. You two were together. Where?", opening_emoji: "🚗" }
-  - { opening_token: "The birthday cake in the staff fridge was there at 1:30 pm and gone by 3 pm. You two were together. Where?", opening_emoji: "🎂" }
-  - { opening_token: "Someone wrote WASH ME across the headmaster's car in the school car park between 7 pm and 9 pm on Thursday. You two were together. Where?", opening_emoji: "🧽" }
-  - { opening_token: "The Wi-Fi router in the flat was unplugged and hidden in the airing cupboard between 8 pm and 10 pm. You two were together. Where?", opening_emoji: "📶" }
-  - { opening_token: "Every chair in the meeting room was stacked into one tower between 10 pm and 1 am. You two were together. Where?", opening_emoji: "🪑" }
-  - { opening_token: "The neighbour's garden gnome ended up on the roof of the bus shelter between 11 pm and 2 am. You two were together. Where?", opening_emoji: "🧙" }
-  - { opening_token: "The last slice of pizza in the shared kitchen was there at 9 pm and gone by 9:40. You two were together. Where?", opening_emoji: "🍕" }
-  - { opening_token: "The office printer turned out two hundred copies of a cat photo between 12:30 and 1 pm. You two were together. Where?", opening_emoji: "🐈" }
-  - { opening_token: "The pub quiz answer sheet went missing from the bar between 8:30 and 8:45 pm. You two were together. Where?", opening_emoji: "📋" }
-  - { opening_token: "A traffic cone appeared on the statue in the town square between 1 am and 3 am on Saturday. You two were together. Where?", opening_emoji: "🚧" }
-  - { opening_token: "The high score on the arcade machine in the chip shop was reset to AAA between 6 pm and 7 pm. You two were together. Where?", opening_emoji: "🕹️" }
-  - { opening_token: "The gym's music got switched to sea shanties between 5:30 and 6:30 pm. You two were together. Where?", opening_emoji: "🎶" }
-  - { opening_token: "Your flatmate's oat milk, a full carton at 7 am, was empty by 8:15. You two were together. Where?", opening_emoji: "🥛" }
-  - { opening_token: "A Back In 5 Minutes sign hung on the bike shop door from 2 pm to 4 pm. The owner never put it there. You two were together. Where?", opening_emoji: "🚲" }
-  - { opening_token: "The lift on the fourth floor was held open with a rolled-up newspaper between 4 pm and 5 pm. You two were together. Where?", opening_emoji: "🛗" }
-  - { opening_token: "The wedding seating plan was redone so every ex sat at one table, between 11 pm and midnight the night before. You two were together. Where?", opening_emoji: "💒" }
-  - { opening_token: "Fifty rubber ducks were floating in the office fountain by 8 am Monday. None were there at 10 pm Sunday. You two were together. Where?", opening_emoji: "🦆" }
-  - { opening_token: "The library returns box, empty at 6 pm, held forty tins of beans by 9 pm. You two were together. Where?", opening_emoji: "📚" }
-  - { opening_token: "The five-a-side trophy was on the club shelf at 8 pm and in the club microwave at 10 pm. You two were together. Where?", opening_emoji: "🏆" }
-  - { opening_token: "The bowling alley scoreboard showed a perfect 300 under the name DAD between 9 pm and 9:30 pm. You two were together. Where?", opening_emoji: "🎳" }
+  - { opening_token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am.", opening_emoji: "🍫" }
+  - { opening_token: "The big plant by reception vanished on Sunday night between 9 pm and midnight.", opening_emoji: "🪴" }
+  - { opening_token: "A silver hatchback in the staff car park got a new dent on the passenger door between 1 pm and 2 pm on Tuesday.", opening_emoji: "🚗" }
+  - { opening_token: "The birthday cake in the staff fridge was there at 1:30 pm and gone by 3 pm.", opening_emoji: "🎂" }
+  - { opening_token: "Someone wrote WASH ME across the headmaster's car in the school car park between 7 pm and 9 pm on Thursday.", opening_emoji: "🧽" }
+  - { opening_token: "The Wi-Fi router in the flat was unplugged and hidden in the airing cupboard between 8 pm and 10 pm.", opening_emoji: "📶" }
+  - { opening_token: "Every chair in the meeting room was stacked into one tower between 10 pm and 1 am.", opening_emoji: "🪑" }
+  - { opening_token: "The neighbour's garden gnome ended up on the roof of the bus shelter between 11 pm and 2 am.", opening_emoji: "🧙" }
+  - { opening_token: "The last slice of pizza in the shared kitchen was there at 9 pm and gone by 9:40.", opening_emoji: "🍕" }
+  - { opening_token: "The office printer turned out two hundred copies of a cat photo between 12:30 and 1 pm.", opening_emoji: "🐈" }
+  - { opening_token: "The pub quiz answer sheet went missing from the bar between 8:30 and 8:45 pm.", opening_emoji: "📋" }
+  - { opening_token: "A traffic cone appeared on the statue in the town square between 1 am and 3 am on Saturday.", opening_emoji: "🚧" }
+  - { opening_token: "The high score on the arcade machine in the chip shop was reset to AAA between 6 pm and 7 pm.", opening_emoji: "🕹️" }
+  - { opening_token: "The gym's music got switched to sea shanties between 5:30 and 6:30 pm.", opening_emoji: "🎶" }
+  - { opening_token: "Your flatmate's oat milk, a full carton at 7 am, was empty by 8:15.", opening_emoji: "🥛" }
+  - { opening_token: "A Back In 5 Minutes sign hung on the bike shop door from 2 pm to 4 pm. The owner never put it there.", opening_emoji: "🚲" }
+  - { opening_token: "The lift on the fourth floor was held open with a rolled-up newspaper between 4 pm and 5 pm.", opening_emoji: "🛗" }
+  - { opening_token: "The wedding seating plan was redone so every ex sat at one table, between 11 pm and midnight the night before.", opening_emoji: "💒" }
+  - { opening_token: "Fifty rubber ducks were floating in the office fountain by 8 am Monday. None were there at 10 pm Sunday.", opening_emoji: "🦆" }
+  - { opening_token: "The library returns box, empty at 6 pm, held forty tins of beans by 9 pm.", opening_emoji: "📚" }
+  - { opening_token: "The five-a-side trophy was on the club shelf at 8 pm and in the club microwave at 10 pm.", opening_emoji: "🏆" }
+  - { opening_token: "The bowling alley scoreboard showed a perfect 300 under the name DAD between 9 pm and 9:30 pm.", opening_emoji: "🎳" }
 
 seed_recipe:
   card_shape: sentence
@@ -43,31 +43,30 @@ seed_recipe:
     mischief: [something goes missing, something turns up somewhere silly, something is multiplied, something is rearranged, something is switched on or off, something is labelled or written on]
     window: [a lunch hour, early evening, after last orders, the small hours, a Sunday morning, a whole shift]
   tests:
-    - One or two plain sentences with a place and a time window, ending with a version of "You two were together. Where?"
+    - One or two plain sentences with a place and a time window.
     - Nobody is hurt, nothing is stolen for keeps, nobody real is named. Pranks and mysteries, not crimes.
     - A stranger can name three places the pair might have been within five seconds.
     - The window is short enough that the clock matters. An hour to three hours, never a whole weekend.
     - Everyday words a twelve-year-old knows. No brand names, no street names, the players bring those.
 
 demo:
-  opening: { token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am. You two were together. Where?", emoji: "🍫" }
+  opening: { token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am.", emoji: "🍫" }
   moves:
-    - { actor: p1, text: "The pub by the station, back corner. He had already asked the barmaid to marry him twice by ten.", emoji: "💍" }
-    - { actor: p2, text: "By eleven he was crying into the quiz sheet because she said no a third time, and the whole back room saw it.", emoji: "😭" }
+    - { actor: p1, text: "The pub by the station, back corner. He had already asked the barmaid to marry him twice by ten.", emoji: "💍", scores: { squeeze: 3, fits: 3, colour: 3 } }
+    - { actor: p2, text: "By eleven he was crying into the quiz sheet because she said no a third time, and the whole back room saw it.", emoji: "😭", scores: { squeeze: 4, fits: 3, colour: 3 } }
   headline: "Two proposals by ten, tears by eleven, forty witnesses. The story holds. His dignity does not."
-  scores: { squeeze: 4, fits: 3, colour: 3 }
   openings:
-    - token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am. You two were together. Where?"
+    - token: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am."
       examples:
         - "We were at the gay bar behind the station from ten, my mate here knows the bouncer by name."
         - "At his mum's, on the sofa, watching the darts. She made us both a plate at half eleven."
         - "The late kebab shop by the station, he was arguing with the owner about the chilli sauce."
-    - token: "The big plant by reception vanished on Sunday night between 9 pm and midnight. You two were together. Where?"
+    - token: "The big plant by reception vanished on Sunday night between 9 pm and midnight."
       examples:
         - "Pub quiz at the local, our team of two, he named us Quizteama Aguilera and the whole room heard it."
         - "Her flat, doing a jigsaw of a lighthouse. She cried when a piece went under the fridge."
         - "The 24-hour laundrette by the bus stop, because he had spilled curry down his only work shirt."
-    - token: "The birthday cake in the staff fridge was there at 1:30 pm and gone by 3 pm. You two were together. Where?"
+    - token: "The birthday cake in the staff fridge was there at 1:30 pm and gone by 3 pm."
       examples:
         - "The dentist on the high street, he had a filling at two and held my hand in the waiting room."
         - "The park bench by the duck pond, eating meal deals. She fed the ducks her whole sandwich and cried."
@@ -145,7 +144,7 @@ criterion:
       not_semantic_duplicate is false.
 
 examples:
-  - previous_move: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am. You two were together. Where?"
+  - previous_move: "The vending machine on floor three was emptied between 11:40 pm and 12:10 am."
     move: "We were at the gay bar behind the station from ten, my mate here knows the bouncer by name."
     gates_note: all true
     mechanism: places the pair away from the scene inside the window and hands the partner a bar and a bouncer to live with
@@ -237,6 +236,7 @@ host:
     - text: "The detail is inconsistent, contradictory, incompatible and false."
       why: four words for one idea, no picture
 
+medallions: false
 labels:
   opening: The incident
   next_opening: The next incident
@@ -244,6 +244,7 @@ labels:
   compose: Your detail, after {token}
   compose_waiting: Draft your next detail while you wait
 rules:
+  - Every card asks the same question. You two were together at the time, so where were you?
   - One detail per turn. It must fit the card and everything already said.
   - Contradict the story, or put the two of you anywhere near the scene, and you lose on the spot.
   - 'Points go to details that cost your partner something: the bar you were in, what they did, who paid, who cried.'

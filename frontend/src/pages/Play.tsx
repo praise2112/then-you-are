@@ -1,9 +1,45 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
-import { navigate, ThemeToggle } from "../App.tsx";
+import { AccountMenu } from "../Account.tsx";
+import { Link, navigate, ThemeToggle } from "../App.tsx";
 import { api, ApiError, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
 import { HOUSE } from "./format.ts";
+import { PosterRow, Stage, StageFoot } from "./Landing.tsx";
+
+/** One game's page, reached from the bill: its card and demo, the way the landing shows the featured game. */
+export function GamePage({ slug }: { slug: string }) {
+  const [templates, setTemplates] = useState<TemplateView[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    api.templates().then(setTemplates, () => setError("The backend is not answering."));
+  }, []);
+  const template = templates?.find((t) => t.slug === slug);
+  if (templates && !template) return <p className="page-status">No game by that name is on the bill.</p>;
+  if (!templates || !template) return <p className="page-status">{error ?? "Raising the curtain."}</p>;
+  return (
+    <>
+      <header className="bar-top">
+        <Link className="wordmark" to="/">
+          Oddstage
+        </Link>
+        <span className="aside">
+          <Link to="/games">Games</Link>
+          <Link to={`/standings/${template.slug}`}>Standings</Link>
+          <AccountMenu />
+          <ThemeToggle icon />
+        </span>
+      </header>
+      <main className="wrap">
+        <section className="hero">
+          <Stage template={template} />
+          <PosterRow templates={templates} current={template.slug} />
+        </section>
+        <StageFoot />
+      </main>
+    </>
+  );
+}
 
 /** Entry to a new match: the first-play card once per game, then straight into a duel. */
 export function Play({ slug }: { slug: string }) {

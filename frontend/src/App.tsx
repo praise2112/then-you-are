@@ -1,9 +1,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 import { Duel } from "./pages/Duel.tsx";
+import { GamesPage } from "./pages/Games.tsx";
 import { Landing } from "./pages/Landing.tsx";
 import { Leaderboard } from "./pages/Leaderboard.tsx";
-import { Play } from "./pages/Play.tsx";
+import { GamePage, Play } from "./pages/Play.tsx";
 import { Profile } from "./pages/Profile.tsx";
 import { ReplayPage } from "./pages/Replay.tsx";
 import { StagePage } from "./pages/Stage.tsx";
@@ -65,14 +66,17 @@ export default function App() {
   const match = path.match(/^\/m\/([^/]+)$/);
   const replay = path.match(/^\/r\/([^/]+)$/);
   const watch = path.match(/^\/w\/([^/]+)$/);
-  const play = path.match(/^\/play(?:\/([^/]+))?$/);
+  const play = path.match(/^\/play(?:\/([^/]+))?\/start$/);
+  const game = path.match(/^\/play\/([^/]+)$/);
   const person = path.match(/^\/p\/([^/]+)$/);
   if (match) return <Duel matchId={match[1]} key={match[1]} />;
   if (watch) return <Duel matchId={watch[1]} key={`w-${watch[1]}`} spectator />;
   if (replay) return <ReplayPage matchId={replay[1]} key={replay[1]} />;
   if (play) return <Play slug={play[1] ?? "then-i-am"} key={play[1] ?? "then-i-am"} />;
+  if (game) return <GamePage slug={game[1]} key={game[1]} />;
   if (person) return <Profile accountId={person[1]} key={person[1]} />;
   if (path === "/stage") return <StagePage />;
+  if (path === "/games") return <GamesPage />;
   const standings = path.match(/^\/standings(?:\/([^/]+))?$/);
   if (standings) return <Leaderboard slug={standings[1]} />;
   return <Landing />;

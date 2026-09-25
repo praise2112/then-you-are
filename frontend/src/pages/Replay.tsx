@@ -10,10 +10,10 @@ import { Bluff, CallLine, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
 
-function slip(turn: TurnView, prefix: string) {
+function slip(turn: TurnView) {
   if (turn.outcome === "fail") return <span className="stamp ink">Fell</span>;
   if (turn.outcome === "semantic_uncertain") return <span className="stamp ink">Close call</span>;
-  return <span className="stamp">Point: {formName(turn.move_text, prefix)}</span>;
+  return <span className="stamp">Point +{turn.points ?? 0}</span>;
 }
 
 export function ReplayPage({ matchId }: Props) {
@@ -78,7 +78,17 @@ export function ReplayPage({ matchId }: Props) {
 
         {showcase && rounds.length > 0 && <RoundStepper rounds={rounds} replay={replay} template={template} />}
 
-        {!showcase && <Chain replay={replay} prefix={template.move_prefix} />}
+        {!showcase && template.medallions && <Chain replay={replay} prefix={template.move_prefix} />}
+
+        {!showcase && (
+          <article className="entry torn opening-card">
+            <div>
+              <span className="who">{template.labels.opening}</span>
+              <p className="said">{replay.seed_token}</p>
+            </div>
+            {template.medallions && <span className="medallion">{replay.seed_emoji}</span>}
+          </article>
+        )}
 
         {!showcase && replay.transcript.map((turn) => (
           <div key={turn.seq}>
@@ -90,13 +100,13 @@ export function ReplayPage({ matchId }: Props) {
                 </span>
                 <p className="said">{turn.move_text}</p>
               </div>
-              <span className="medallion">{turn.host?.generated_emoji ?? "?"}</span>
+              {template.medallions && <span className="medallion">{turn.host?.generated_emoji ?? "?"}</span>}
             </article>
             {turn.host && (
               <div className="verdict-slip slip">
-                {slip(turn, template.move_prefix)}
+                {slip(turn)}
                 <em>
-                  <b>{criterionLabel(turn.host.because_clause.criterion)}:</b> {turn.host.because_clause.text}
+                  <b>{criterionLabel(turn.host.because_clause.criterion, template)}:</b> {turn.host.because_clause.text}
                 </em>
               </div>
             )}
@@ -126,7 +136,7 @@ export function ReplayPage({ matchId }: Props) {
         </section>
 
         <p className="play-cta">
-          <Link className="ticket" to={`/play/${replay.template_id}`}>
+          <Link className="ticket" to={`/play/${replay.template_id}/start`}>
             Play a duel
           </Link>
           <span className="cta-hint">{showcase ? "Three fresh words, the same judge." : "A fresh opening, the same judge."}</span>

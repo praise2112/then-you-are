@@ -59,10 +59,9 @@ seed_recipe:
 demo:
   opening: { token: "A man returned a library book three days late.", emoji: "📚" }
   moves:
-    - { actor: p1, text: "LIBRARY SYSTEM IN CRISIS AS BORROWER DEFIES DUE DATE", emoji: "🚨" }
-    - { actor: p2, text: "LOCAL MAN HOLDS PUBLIC PROPERTY HOSTAGE FOR 72 HOURS", emoji: "🔒" }
+    - { actor: p1, text: "LIBRARY SYSTEM IN CRISIS AS BORROWER DEFIES DUE DATE", emoji: "🚨", scores: { stretch: 3, funny: 2, headline_shaped: 4 } }
+    - { actor: p2, text: "LOCAL MAN HOLDS PUBLIC PROPERTY HOSTAGE FOR 72 HOURS", emoji: "🔒", scores: { stretch: 4, funny: 3, headline_shaped: 4 } }
   headline: "The hostage was a paperback and the ransom was forty pence, and the fact never left the room."
-  scores: { stretch: 4, funny: 3, headline_shaped: 4 }
   openings:
     - token: "The council fixed a pothole."
       examples:
@@ -233,6 +232,7 @@ host:
     - text: "Above the fold, below the line, a real splash with legs."
       why: newsroom jargon
 
+medallions: false
 labels:
   opening: The fact
   next_opening: The next fact

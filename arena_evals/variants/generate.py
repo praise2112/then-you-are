@@ -251,11 +251,18 @@ def scaffold_demo(body: dict, parent: Template) -> dict:
         "opening": {"token": seed["opening_token"], "emoji": seed["opening_emoji"]},
         "moves": [
             {"actor": "p1", "text": example["previous_move"], "emoji": seed["opening_emoji"]},
-            {"actor": "p2", "text": example["move"], "emoji": parent.demo.moves[1].emoji},
+            {
+                "actor": "p2",
+                "text": example["move"],
+                "emoji": parent.demo.moves[1].emoji,
+                "scores": example["scores"],
+            },
         ],
         "headline": body["host"]["good_headlines"][0],
-        "scores": example["scores"],
-        "openings": [{"token": seed["opening_token"], "examples": [example["move"]]}],
+        "openings": [
+            {"token": s["opening_token"], "examples": [example["move"]]}
+            for s in body["seed_pool"][:2]
+        ],
     }
 
 

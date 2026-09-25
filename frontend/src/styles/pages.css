@@ -46,6 +46,10 @@
   font-variant: all-small-caps;
   letter-spacing: 0.16em;
   color: #a89f90;
+  max-width: min(36rem, 50vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .bar-top .round b {
@@ -231,13 +235,8 @@
 }
 
 .compose-box textarea {
+  display: block;
   padding-left: calc(var(--space-2) + 3.1rem);
-}
-
-.compose-hint {
-  margin: var(--space-1) 0 0;
-  font-size: 0.8rem;
-  color: var(--ink-faint);
 }
 
 .share-text {
@@ -337,6 +336,44 @@
 
 .stage .standing.reading {
   animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.stage .card-block {
+  margin-bottom: var(--space-3);
+}
+
+.stage .card-block .small-caps {
+  margin: 0 0 var(--space-1);
+  color: var(--ink-faint);
+}
+
+.stage .card-block .card-text {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.compose-box.scanning::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 3px solid transparent;
+  background: linear-gradient(90deg, transparent, var(--vermilion), transparent) border-box no-repeat;
+  background-size: 40% 100%;
+  mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: ink-wash 1.8s ease-in-out infinite;
+}
+
+@keyframes ink-wash {
+  from {
+    background-position: -100% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
 }
 
 .ruled {
@@ -450,6 +487,8 @@
   .stage .standing.reading,
   .compose-box.scanning::after {
     animation: none;
+    background: none;
+    border: 3px dashed var(--ink-faint);
   }
 }
 
@@ -531,15 +570,15 @@
   color: var(--vermilion-ink);
 }
 
-.decided-note {
-  margin: var(--space-1) 0 0;
-  font-size: 0.8rem;
-  color: var(--ink-faint);
+.decided-tag {
+  margin-left: 0.4rem;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--vermilion-ink);
 }
 
-.decided-note b {
-  color: var(--vermilion-ink);
-  font-weight: 500;
+.bar-top .aside {
+  grid-column: 3;
 }
 
 .total {
@@ -788,8 +827,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   justify-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) 0 var(--space-4);
+  gap: var(--space-2);
+  padding: var(--space-2) 0 var(--space-2);
 }
 
 .hero > * {
@@ -821,77 +860,11 @@
   line-height: 1.4;
 }
 
-.playbill-tabs {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--space-1);
-  margin: 0 0 var(--space-2);
-}
-
-.playbill-tabs button {
-  font: inherit;
-  font-variant: all-small-caps;
-  letter-spacing: 0.12em;
-  color: var(--ink-soft);
-  background: none;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  padding: 0.2rem 0.6rem;
-  cursor: pointer;
-}
-
-.playbill-tabs button.on {
-  color: var(--ink);
-  border-bottom-color: var(--vermilion);
-}
-
-.playbill-tabs button:focus-visible {
-  outline: 2px solid var(--vermilion);
-  outline-offset: 2px;
-}
-
-.playbill-tabs .turn {
-  font-family: var(--display);
-  font-size: 1.4rem;
-  line-height: 1;
-  padding: 0 0.5rem;
-  border-bottom: 0;
-}
-
 .stage-card .opening .detail,
-.demo .opening .detail {
+.stage-card .example-card .detail {
   font-style: italic;
   color: var(--ink-soft);
   font-size: 0.9em;
-}
-
-.demo .reveal {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin: var(--space-3) 0 0;
-  padding: var(--space-2);
-  border-top: 3px double var(--ink);
-  border-bottom: 1px solid var(--rule);
-  font-size: 1.1rem;
-  text-align: left;
-}
-
-.demo .reveal b {
-  display: block;
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
-  color: var(--ink-soft);
-}
-
-.stage-card .round-head {
-  text-align: center;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: var(--space-1);
-  margin: 0 0 var(--space-2);
 }
 
 .stage-card .opening {
@@ -972,16 +945,6 @@
   font-size: 0.95rem;
 }
 
-.demo {
-  min-height: 25rem;
-}
-
-@media (max-width: 40rem) {
-  .demo {
-    min-height: 0;
-  }
-}
-
 .live .hint {
   margin: var(--space-1) 0 0;
   font-size: 0.85rem;
@@ -995,94 +958,6 @@
 
 .live .hint.error {
   color: var(--vermilion-ink);
-}
-
-.demo .on {
-  animation: rise 0.45s ease both;
-}
-
-.demo .replay-move {
-  display: block;
-  position: relative;
-  padding-right: 4.5rem;
-}
-
-.demo .replay-move .medallion {
-  position: absolute;
-  right: var(--space-2);
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.demo .replay-move .prefix {
-  font-style: italic;
-  color: var(--ink-faint);
-}
-
-.demo .caret::after {
-  content: "|";
-  animation: dots-blink 1s steps(2) infinite;
-  color: var(--vermilion-ink);
-}
-
-.demo .replay-move.won {
-  border-color: var(--vermilion);
-  box-shadow: inset 3px 0 0 var(--vermilion);
-}
-
-.demo .replay-move .point {
-  position: absolute;
-  top: -0.8rem;
-  right: 4.5rem;
-  font-size: 0.85rem;
-  padding: 0.1rem 0.6rem;
-}
-
-.demo .thump {
-  animation: thump 0.28s cubic-bezier(0.2, 1.6, 0.4, 1) both;
-}
-
-.demo .who {
-  font-variant: all-small-caps;
-  letter-spacing: 0.1em;
-  font-size: 0.85rem;
-  color: var(--ink-faint);
-  display: block;
-}
-
-.demo .who.you {
-  color: var(--vermilion-ink);
-}
-
-.demo .pts {
-  display: flex;
-  gap: var(--space-2);
-  justify-content: center;
-  flex-wrap: wrap;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  margin: var(--space-1) 0 0;
-}
-
-.demo .pts .who {
-  display: inline;
-}
-
-.demo .pts b {
-  font-family: var(--display);
-  color: var(--ink);
-}
-
-.demo .headline {
-  font-family: var(--display);
-  font-style: italic;
-  text-align: center;
-  color: var(--ink-soft);
-  margin: var(--space-2) 0 0;
-}
-
-.stage-card.played .demo {
-  opacity: 0.6;
 }
 
 @keyframes rise {
@@ -1106,29 +981,6 @@
   50% {
     opacity: 0;
   }
-}
-
-.replay-move {
-  border: 1px solid var(--rule);
-  padding: var(--space-2);
-  font-size: 1.3rem;
-  font-variation-settings: "opsz" 40;
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-2);
-  align-items: center;
-}
-
-.versus {
-  text-align: center;
-  color: var(--ink-faint);
-  font-variant: all-small-caps;
-  letter-spacing: 0.2em;
-  margin: var(--space-1) 0;
-}
-
-#bill {
-  margin-bottom: var(--space-4);
 }
 
 .stat-line {
@@ -1200,64 +1052,14 @@
   color: var(--ink-soft);
 }
 
-.bill,
 .classics {
   display: grid;
   gap: var(--space-2);
   margin-top: var(--space-2);
 }
 
-.bill {
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-}
-
 .classics {
   grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-}
-
-.bill-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  text-decoration: none;
-  color: inherit;
-  background: var(--paper-raised);
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--game-accent, var(--ink-faint));
-  padding: var(--space-1) var(--space-2);
-}
-
-.bill-row .medallion {
-  width: 2.8rem;
-  height: 2.8rem;
-  font-size: 1.2rem;
-  border-color: var(--game-accent, var(--ink));
-}
-
-.bill-row h3 {
-  margin: 0;
-  font-size: 1.15rem;
-  font-weight: 600;
-  letter-spacing: 0;
-}
-
-.bill-row em {
-  display: block;
-  color: var(--ink-soft);
-  font-size: 0.92rem;
-}
-
-a.bill-row:hover h3 {
-  color: var(--vermilion-ink);
-}
-
-.bill-row.stage-own {
-  border-style: dashed;
-  background: none;
-}
-
-.bill-row.stage-own h3 {
-  color: var(--ink-soft);
 }
 
 .classics .card {
@@ -1341,16 +1143,6 @@ a.bill-row:hover h3 {
   font-style: italic;
 }
 
-.strip-foot {
-  text-align: center;
-  margin: var(--space-2) 0 0;
-  font-size: 0.9rem;
-}
-
-.strip-foot a {
-  color: var(--ink-soft);
-}
-
 .choice {
   display: flex;
   gap: var(--space-1);
@@ -1403,34 +1195,10 @@ a.bill-row:hover h3 {
   text-underline-offset: 0.2em;
 }
 
-.trust {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  text-align: left;
-  border-top: 1px solid var(--rule);
-  margin-top: var(--space-4);
-  padding: var(--space-3) 0 var(--space-4);
-  color: var(--ink-soft);
-}
-
-.trust .host-figure {
-  width: 6rem;
-}
-
-.trust .host-line {
-  max-width: 34rem;
-}
-
 @media (max-width: 30rem) {
   .compose .ticket {
     flex-basis: 100%;
     text-align: center;
-  }
-
-  .replay-move {
-    font-size: 1.1rem;
   }
 }
 
@@ -1505,6 +1273,10 @@ a.bill-row:hover h3 {
   line-height: 1.15;
   margin: 0.3rem 0 0;
   text-wrap: balance;
+}
+
+.entry.opening-card .said {
+  font-size: 1.15rem;
 }
 
 .verdict-slip {
@@ -1594,16 +1366,8 @@ a.bill-row:hover h3 {
 .bar-top .aside a,
 .classics .watch,
 .live-row .watch,
-.strip-foot a {
-  display: inline-block;
-  padding: 0.4rem 0;
-}
 
 /* Phones */
-
-.bill {
-  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
-}
 
 .classics {
   grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
@@ -1875,6 +1639,15 @@ ul.rules-text li {
 
 .word-card.compact .headword {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.word-card.long .headword,
+.word-card.compact.long .headword {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.4;
+  text-wrap: pretty;
 }
 
 .bluffs {
@@ -2166,70 +1939,6 @@ ul.rules-text li {
   color: var(--vermilion-ink);
 }
 
-.round-head .watch-again {
-  margin-left: var(--space-2);
-  background: none;
-  border: 0;
-  padding: 0;
-  font: inherit;
-  letter-spacing: inherit;
-  color: var(--ink-faint);
-  border-bottom: 1px solid currentcolor;
-  cursor: pointer;
-}
-
-.round-head .watch-again:hover,
-.round-head .watch-again:focus-visible {
-  color: var(--vermilion-ink);
-}
-
-.demo-call {
-  margin-top: var(--space-2);
-  padding-top: var(--space-1);
-  border-top: 1px solid var(--rule);
-}
-
-.demo-call .who {
-  margin: 0 0 var(--space-1);
-  font-variant: all-small-caps;
-  letter-spacing: 0.12em;
-  color: var(--ink-soft);
-}
-
-.demo-entry {
-  position: relative;
-  margin: 0 0 0.35rem;
-  padding: 0.3rem 0.6rem;
-  border-left: 3px solid var(--rule);
-  background: var(--paper-sunk);
-  font-size: 0.95rem;
-}
-
-.demo-entry.real {
-  border-left-color: var(--vermilion-ink);
-}
-
-.demo-entry .tag {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.4rem;
-}
-
-.demo-call-foot {
-  margin: var(--space-1) 0 0;
-  font-size: 0.9rem;
-  color: var(--ink-faint);
-}
-
-.demo-entry .stamp.point {
-  position: absolute;
-  top: 0.1rem;
-  right: 0.4rem;
-  font-size: 0.7rem;
-  padding: 0.02rem 0.45rem;
-  outline-offset: -4px;
-}
-
 /* The side column is narrow, so the host stands above the line and the tail turns upward. */
 .stage > section .host {
   flex-direction: column;
@@ -2472,7 +2181,6 @@ ul.rules-text li {
   color: var(--ink-faint);
 }
 
-
 /* Word for Word: the playbill and the programme */
 
 .program .round-result {
@@ -2670,10 +2378,6 @@ ul.rules-text li {
   margin: var(--space-3) auto 0;
 }
 
-.standings .playbill-tabs {
-  margin-top: var(--space-3);
-}
-
 .board-foot {
   color: var(--ink-faint);
   font-size: 0.92rem;
@@ -2739,7 +2443,7 @@ ul.rules-text li {
 /* Profile: a player's programme */
 
 .programme {
-  max-width: 52rem;
+  max-width: 100%;
   padding-bottom: var(--space-4);
 }
 
@@ -3074,11 +2778,6 @@ ul.rules-text li {
   font-style: normal;
 }
 
-.playbill-tabs .emblem {
-  font-size: 0.95em;
-  margin-right: 0.15rem;
-}
-
 .board-index {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
@@ -3137,4 +2836,283 @@ ul.rules-text li {
 .record td .emblem {
   font-size: 0.9em;
   margin-right: 0.2rem;
+}
+
+/* One-screen stage: the game card, a row of posters, one line of foot */
+
+.hero > .stage-card {
+  width: min(100%, 46rem);
+}
+
+.stage-card .board-title {
+  font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+  font-weight: 900;
+  font-variation-settings: "opsz" 144;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0 0 var(--space-2);
+}
+
+.stage-card .board-title small {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-faint);
+  margin-top: 0.4rem;
+  font-variation-settings: normal;
+}
+
+.hero > .poster-row {
+  width: min(100%, 46rem);
+}
+
+.poster-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8.5rem;
+  gap: var(--space-1);
+}
+
+.poster-row .posters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  grid-auto-rows: 0;
+  grid-template-rows: auto;
+  column-gap: var(--space-1);
+  row-gap: 0;
+  overflow: hidden;
+  padding: 3px;
+  margin: -3px;
+}
+
+.poster-row .poster {
+  min-height: 6rem;
+}
+
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(11rem, 100%), 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.poster {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  scroll-snap-align: start;
+  min-height: 9.5rem;
+  padding: var(--space-2);
+  text-decoration: none;
+  color: var(--ink);
+  background: color-mix(in oklab, var(--game-accent, var(--ink-faint)) 16%, var(--paper-raised));
+  border: 1px solid color-mix(in oklab, var(--game-accent, var(--ink-faint)) 40%, transparent);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.poster .emblem {
+  font-size: 2.2rem;
+  line-height: 1;
+  margin-bottom: auto;
+  padding-bottom: var(--space-2);
+}
+
+.poster h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.poster em {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+a.poster:hover {
+  transform: translateY(-2px);
+  border-color: var(--game-accent, var(--ink));
+}
+
+a.poster:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
+.poster.on {
+  border-color: var(--game-accent, var(--ink));
+  box-shadow: inset 0 0 0 1px var(--game-accent, var(--ink));
+}
+
+.poster.all-games,
+.poster.stage-own {
+  background: none;
+  border: 1px dashed var(--rule);
+}
+
+.poster.stage-own h3 {
+  color: var(--ink-soft);
+}
+
+.stage-foot {
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+  margin: 0 0 var(--space-2);
+}
+
+.stage-foot a {
+  color: var(--ink-soft);
+}
+
+.games .peak {
+  text-align: center;
+  margin-top: var(--space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.poster:hover {
+    transform: none;
+  }
+}
+
+.stage-card .opening .emblem {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.how-a-round {
+  margin-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+}
+
+.how-a-round summary {
+  cursor: pointer;
+  list-style: none;
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+}
+
+.how-a-round summary::-webkit-details-marker {
+  display: none;
+}
+
+.how-a-round summary::before {
+  content: "+ ";
+  color: var(--vermilion-ink);
+}
+
+.how-a-round[open] summary::before {
+  content: "\2212  ";
+}
+
+.how-a-round summary:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
+.how-a-round .example-card {
+  margin: var(--space-2) 0 var(--space-1);
+  color: var(--ink-soft);
+}
+
+.round-steps {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.round-steps > li {
+  display: grid;
+  grid-template-columns: 1.8rem minmax(0, 1fr);
+  column-gap: var(--space-2);
+  align-items: start;
+}
+
+.round-steps .step-no {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 1px solid var(--vermilion);
+  border-radius: 50%;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--vermilion-ink);
+  margin-top: 0.05rem;
+}
+
+.round-steps .step-head {
+  margin: 0;
+  color: var(--ink);
+}
+
+.round-steps .step-rule {
+  margin: 0.1rem 0 0;
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+}
+
+.round-steps .ledger {
+  margin-top: 0.3rem;
+}
+
+.how-a-round .ledger {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.how-a-round .ledger li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 0.45rem 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--rule) 60%, transparent);
+  color: var(--ink-soft);
+}
+
+.how-a-round .ledger li:last-child {
+  border-bottom: 0;
+}
+
+.how-a-round .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-right: 0.5rem;
+}
+
+.how-a-round .who.you {
+  color: var(--vermilion-ink);
+}
+
+.how-a-round .prefix {
+  color: var(--ink-faint);
+  margin-right: 0.3rem;
+}
+
+.how-a-round .pts {
+  font-family: var(--display);
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.how-a-round .aside-note {
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  white-space: nowrap;
 }

@@ -3,7 +3,7 @@ slug: domino
 title: Domino
 emblem: "⛓️"
 accent: "#0f766e"
-tagline: "One small thing goes wrong. Make it worse, one honest step at a time."
+tagline: "Make it worse, one step at a time."
 mode: escalation
 premise: >
   One small thing goes wrong. Two players take turns saying what happens next, one
@@ -54,10 +54,9 @@ seed_recipe:
 demo:
   opening: { token: "Nan's teeth fall into the punch bowl.", emoji: "🥤" }
   moves:
-    - { actor: p1, text: "Then Uncle Dev ladles himself a glass and gets a mouthful of teeth.", emoji: "🥄" }
-    - { actor: p2, text: "Then he spits them straight into the birthday cake, and Nan says nothing. She is watching.", emoji: "🎂" }
+    - { actor: p1, text: "Then Uncle Dev ladles himself a glass and gets a mouthful of teeth.", emoji: "🥄", scores: { reach: 2, link: 4, picture: 3 } }
+    - { actor: p2, text: "Then he spits them straight into the birthday cake, and Nan says nothing. She is watching.", emoji: "🎂", scores: { reach: 3, link: 4, picture: 4 } }
   headline: "Teeth in the punch, teeth in Dev, teeth in the cake. Nan waits. So does the story."
-  scores: { reach: 3, link: 4, picture: 4 }
   openings:
     - token: "A pigeon gets into the supermarket."
       examples:
@@ -91,6 +90,7 @@ rubric:
       Reach is earned only when the link holds. A big leap with no link scores 0 here.
     weight: 5
   - name: link
+    label: Cause
     description: How plainly the step is caused by the standing step.
     anchors: >
       0 = no cause at all; 1 = asserted but a stranger would not see it; 2 = plausible if
@@ -247,6 +247,7 @@ host:
     - text: "Fire. Then more fire. Then more."
       why: three words for one idea, no reason
 
+medallions: false
 labels:
   opening: The mishap
   next_opening: The next mishap

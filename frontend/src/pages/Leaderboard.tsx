@@ -85,7 +85,7 @@ function Board({ slug }: { slug: string }) {
       </h2>
       {board.standings.length === 0 ? (
         <p className="empty-strip">
-          Nobody on the board yet. <Link to={`/play/${board.slug}`}>Play three duels signed in</Link> and your name goes up
+          Nobody on the board yet. <Link to={`/play/${board.slug}/start`}>Play three duels signed in</Link> and your name goes up
           first.
         </p>
       ) : (

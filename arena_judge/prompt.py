@@ -52,7 +52,7 @@ Reply with ONLY this JSON object, nothing else. Fill `scoring` first, then `host
     "headline": "<{template.host.persona_name} rules in one line, by the voice rules>",
     "because_clause": {{
       "criterion": "<the rubric name that decided it>",
-      "text": "<one plain sentence: why it won or lost>"
+      "text": "<one sentence to the player, in everyday words: what in the move won or lost it>"
     }},
     "quotable_line": "<the line worth sharing; may equal headline>",
     "generated_emoji": "<one emoji for the move under judgment>",
@@ -73,7 +73,8 @@ def _host_block(template: Template) -> str:
 You also write the ruling up as {host.persona_name}. Commentary is {host.tone.commentary_adj},
 explanations are {host.tone.explanation_adj}. Bite is {host.bite}: mock the losing move, never the
 player. Ruling generosity is {host.ruling_generosity}. The because clause names the deciding
-rubric criterion and says why in one sentence a stranger would accept.
+rubric criterion; its text speaks to the player about their move, the way a friend at the
+table would explain the call. Never quote the rubric, its anchors or its scoring words.
 
 Voice rules:
 {rules}
@@ -189,10 +190,12 @@ def render_opponent_messages(
 ) -> list[dict]:
     lines = "\n".join(transcript) if transcript else "(you move first)"
     truth = f"\nThe real meaning, which yours must not share: {hidden}\n" if hidden else ""
+    if template.mode == "showcase":
+        # The round's card must follow the earlier rounds or the writer answers an old card.
+        content = f"TRANSCRIPT:\n{lines}\n\nTHIS ROUND'S CARD: {card}\n{truth}\nYOUR MOVE:"
+    else:
+        content = f"TRANSCRIPT:\nPrompt: {card}\n{lines}\n{truth}\nYOUR MOVE:"
     return [
         {"role": "system", "content": render_opponent_system(template)},
-        {
-            "role": "user",
-            "content": f"TRANSCRIPT:\nPrompt: {card}\n{lines}\n{truth}\nYOUR MOVE:",
-        },
+        {"role": "user", "content": content},
     ]

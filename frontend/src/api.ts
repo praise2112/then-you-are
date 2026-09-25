@@ -16,6 +16,7 @@ export type DuelRow = S["DuelRow"];
 export type OpenDuel = S["OpenDuel"];
 export type ReplaySort = "curated" | "newest" | "longest";
 export type TurnView = S["TurnView"];
+export type DemoPoints = S["DemoPoints"];
 export type RoundView = S["RoundView"];
 export type RoundRevealed = S["RoundRevealed"];
 export type GuessOpened = S["GuessOpened"];

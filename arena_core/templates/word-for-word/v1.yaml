@@ -3,7 +3,7 @@ slug: word-for-word
 title: Word for Word
 emblem: "📖"
 accent: "#7a6fa0"
-tagline: "Invent the meaning. Sound like the dictionary."
+tagline: "Fake the dictionary."
 mode: showcase
 premise: >
   Three rounds. Each round deals one real, obscure English word with its part of
@@ -142,10 +142,9 @@ seed_pool:
 demo:
   opening: { token: gongoozler, emoji: "🚣" }
   moves:
-    - { actor: p1, text: "a shallow spoon for skimming fat from stock", emoji: "🥄" }
-    - { actor: p2, text: "a person who explains what they half understand", emoji: "🗣️" }
+    - { actor: p1, text: "a shallow spoon for skimming fat from stock", emoji: "🥄", scores: { believable: 3, funny: 1, dictionary_shaped: 4 } }
+    - { actor: p2, text: "a person who explains what they half understand", emoji: "🗣️", scores: { believable: 3, funny: 3, dictionary_shaped: 3 } }
   headline: "Half-knowledge gets a name, and the spoon skims nothing but its own broth."
-  scores: { believable: 3, funny: 3, dictionary_shaped: 3 }
   openings:
     - token: zarf
       examples:

@@ -55,6 +55,7 @@ class DemoMove(Strict):
     actor: Literal["p1", "p2"]
     text: str
     emoji: str
+    scores: dict[str, int] | None = None
 
 
 class LandingOpening(Strict):
@@ -63,17 +64,20 @@ class LandingOpening(Strict):
 
 
 class Demo(Strict):
-    """One finished round shown on the landing, plus openings a visitor can answer there."""
+    """One finished round shown on the landing, plus openings a visitor can answer there.
+    The second move is always scored; the first may be left unscored."""
 
     opening: Opening
     moves: list[DemoMove] = Field(min_length=2, max_length=2)
     headline: str
-    scores: dict[str, int]
-    openings: list[LandingOpening] = Field(min_length=1)
+    openings: list[LandingOpening] = Field(min_length=2)
 
 
 class RubricEntry(Strict):
+    """`label` is what players see when the name reads badly on screen; the judge sees the name."""
+
     name: str
+    label: str | None = None
     description: str
     anchors: str
     weight: int = Field(gt=0)
@@ -171,6 +175,7 @@ class Template(Strict):
     judge_out_text: str
     opponent_prompt: str
     guess: GuessRules | None = None
+    medallions: bool = True
     move_budget: int = Field(gt=0)
     win_condition: Literal["sudden_death", "points_total"]
     tie_policy: Literal["defender_holds", "draw"]
@@ -185,8 +190,11 @@ class Template(Strict):
         for ex in self.examples:
             if set(ex.scores) != set(names):
                 raise ValueError(f"example scores {sorted(ex.scores)} do not match rubric {names}")
-        if set(self.demo.scores) != set(names):
-            raise ValueError("demo scores do not match the rubric")
+        if self.demo.moves[1].scores is None:
+            raise ValueError("the second demo move needs scores")
+        for move in self.demo.moves:
+            if move.scores is not None and set(move.scores) != set(names):
+                raise ValueError("demo move scores do not match the rubric")
         tokens = {s.opening_token for s in self.seed_pool}
         for opening in self.demo.openings:
             if opening.token not in tokens:
@@ -227,6 +235,16 @@ class Template(Strict):
     def seed_named(self, token: str) -> Seed | None:
         return next((s for s in self.seed_pool if s.opening_token == token), None)
 
+    def _points(self, scores: dict[str, int]) -> list[dict]:
+        return [
+            {
+                "name": r.name,
+                "earned": scores[r.name] * r.weight,
+                "max_points": r.weight * SCORE_MAX,
+            }
+            for r in self.rubric
+        ]
+
     def _demo_projection(self) -> dict:
         demo = self.demo
         card = self.seed_named(demo.opening.token)
@@ -237,16 +255,16 @@ class Template(Strict):
                 "detail": card.detail if card else "",
                 "reveal": card.hidden if card else "",
             },
-            "moves": [m.model_dump() for m in demo.moves],
-            "headline": demo.headline,
-            "points": [
+            "moves": [
                 {
-                    "name": r.name,
-                    "earned": demo.scores[r.name] * r.weight,
-                    "max_points": r.weight * SCORE_MAX,
+                    "actor": m.actor,
+                    "text": m.text,
+                    "emoji": m.emoji,
+                    "points": None if m.scores is None else self._points(m.scores),
                 }
-                for r in self.rubric
+                for m in demo.moves
             ],
+            "headline": demo.headline,
             "openings": [
                 {
                     "token": o.token,
@@ -271,7 +289,12 @@ class Template(Strict):
             "mode": self.mode,
             "rounds": self.rounds,
             "rubric": [
-                {"name": r.name, "description": r.description, "max_points": r.weight * SCORE_MAX}
+                {
+                    "name": r.name,
+                    "label": r.label,
+                    "description": r.description,
+                    "max_points": r.weight * SCORE_MAX,
+                }
                 for r in self.rubric
             ],
             "rules": [r.strip() for r in self.rules],
@@ -284,6 +307,7 @@ class Template(Strict):
             "host_name": self.host.persona_name,
             "labels": self.labels.model_dump(),
             "guess": self.guess.model_dump() if self.guess else None,
+            "medallions": self.medallions,
             "demo": self._demo_projection(),
         }
 
@@ -296,6 +320,15 @@ def load_template_file(path: Path) -> Template:
     return Template.model_validate(yaml.safe_load(path.read_text()))
 
 
+TAGLINE_MAX = 40
+
+
 def load_templates() -> dict[str, Template]:
-    """Every game on disk, keyed by slug, in directory order."""
-    return {d.name: load_template(d.name) for d in sorted(TEMPLATES_DIR.iterdir()) if d.is_dir()}
+    """Every shipped game, keyed by slug, in directory order. A shipped tagline fits a poster."""
+    templates = {
+        d.name: load_template(d.name) for d in sorted(TEMPLATES_DIR.iterdir()) if d.is_dir()
+    }
+    for slug, template in templates.items():
+        if len(template.tagline) > TAGLINE_MAX:
+            raise ValueError(f"{slug}: tagline over {TAGLINE_MAX} characters")
+    return templates

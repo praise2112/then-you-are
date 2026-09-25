@@ -480,6 +480,8 @@ export interface components {
             text: string;
             /** Emoji */
             emoji: string;
+            /** Points */
+            points: components["schemas"]["DemoPoints"][] | null;
         };
         /** DemoOpening */
         DemoOpening: {
@@ -508,8 +510,6 @@ export interface components {
             moves: components["schemas"]["DemoMoveView"][];
             /** Headline */
             headline: string;
-            /** Points */
-            points: components["schemas"]["DemoPoints"][];
             /** Openings */
             openings: components["schemas"]["LandingOpeningView"][];
         };
@@ -992,6 +992,8 @@ export interface components {
         RubricView: {
             /** Name */
             name: string;
+            /** Label */
+            label: string | null;
             /** Description */
             description: string;
             /** Max Points */
@@ -1173,6 +1175,10 @@ export interface components {
             host_name: string;
             labels: components["schemas"]["LabelsView"];
             guess: components["schemas"]["GuessRulesView"] | null;
+            /** Medallions */
+            medallions: boolean;
+            /** Featured */
+            featured: boolean;
             demo: components["schemas"]["DemoView"];
         };
         /** TurnRejected */

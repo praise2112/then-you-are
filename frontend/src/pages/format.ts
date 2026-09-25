@@ -20,12 +20,26 @@ export function formName(move: string, prefix = ""): string {
   return head || move;
 }
 
+/** A card longer than a label line gets its own block in body type. */
+export function isLongCard(text: string): boolean {
+  return text.length > 60;
+}
+
+/** A card or move short enough to sit inside a label; longer text is cut at a word, with an ellipsis. */
+export function shortName(text: string, max = 28): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  return `${cut.slice(0, cut.lastIndexOf(" ") > 0 ? cut.lastIndexOf(" ") : max).trimEnd()}…`;
+}
+
 export function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export function criterionLabel(name: string): string {
-  return name.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+/** A rubric entry's own label when the template gives one, else the name made readable. */
+export function criterionLabel(name: string, template?: TemplateView): string {
+  const label = template?.rubric.find((r) => r.name === name)?.label;
+  return label ?? name.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 }
 
 export function lastStanding(transcript: TurnView[]): TurnView | undefined {
