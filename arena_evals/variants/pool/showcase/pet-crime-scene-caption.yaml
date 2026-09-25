@@ -288,7 +288,10 @@ guess:
   fool_points: 10
   prompt: One of these is the real entry. Call it.
 medallions: true
-move_budget: 6
+num_players:
+  min: 2
+  max: 6
+rounds_budget: 3
 win_condition: points_total
 tie_policy: draw
 strikes_before_consequence: 2

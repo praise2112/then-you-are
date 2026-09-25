@@ -278,7 +278,10 @@ opponent_prompt: |
   pub, a bench, a bus, a kebab shop, a cousin's sofa. Build on the last detail rather than
   starting a new thread. Never repeat a detail or a place already used this match.
 
-move_budget: 10
+num_players:
+  min: 2
+  max: 4
+rounds_budget: 5
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2

@@ -329,7 +329,10 @@ opponent_prompt: 'You are one of two players touring a haunted house where every
   '
 guess: null
 medallions: false
-move_budget: 10
+num_players:
+  min: 2
+  max: 4
+rounds_budget: 5
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2

@@ -283,7 +283,10 @@ opponent_prompt: |
   anywhere knows: a rowing boat, not a pedalo; a bar, not a snug.
   Never reuse a step from this match.
 
-move_budget: 10
+num_players:
+  min: 2
+  max: 4
+rounds_budget: 5
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2

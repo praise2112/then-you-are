@@ -300,7 +300,10 @@ opponent_prompt: 'You are the Keeper of the Lesser Rites, inventing a tiny cerem
   '
 guess: null
 medallions: false
-move_budget: 6
+num_players:
+  min: 2
+  max: 6
+rounds_budget: 3
 win_condition: points_total
 tie_policy: draw
 strikes_before_consequence: 2

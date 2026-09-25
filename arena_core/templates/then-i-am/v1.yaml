@@ -798,7 +798,10 @@ opponent_prompt: |
   Hop domains: a kitchen, a folktale, rush hour, a group chat beats digging in deeper.
   Never reuse a form or an attribute from this match.
 
-move_budget: 10
+num_players:
+  min: 2
+  max: 4
+rounds_budget: 5
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2

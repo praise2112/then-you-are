@@ -29,13 +29,16 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
         is_yours = bool(viewer and viewer["account_id"] == account_id)
         matches = await (
             await conn.execute(
-                "select m.id, m.template_id, m.status, m.winner, m.end_reason, m.points_p1, "
-                "m.points_p2, m.created_at, m.ended_at, m.is_public, m.is_curated, "
+                "select m.id, m.template_id, m.status, m.winner = se.seat as won, "
+                "m.end_reason, se.points as my_points, (select max(o.points) from seats o "
+                "where o.match_id = m.id and o.seat <> se.seat) as their_points, m.created_at, "
+                "m.ended_at, m.is_public, m.is_curated, "
                 "(select count(*) from turns t where t.match_id = m.id and t.seq is not null "
                 "and t.outcome in ('accept', 'fail', 'semantic_uncertain')) as judged, "
-                "(select count(*) from turns t where t.match_id = m.id and t.actor = 'p1' "
-                "and t.outcome in ('accept', 'fail', 'semantic_uncertain')) as p1_moves "
-                "from matches m join sessions s on s.session_key = m.p1_session_key "
+                "(select count(*) from turns t where t.match_id = m.id and t.actor = se.seat "
+                "and t.outcome in ('accept', 'fail', 'semantic_uncertain')) as my_moves "
+                "from matches m join seats se on se.match_id = m.id and se.kind = 'human' "
+                "join sessions s on s.session_key = se.session_key "
                 "where s.account_id = %s order by m.created_at desc",
                 (account_id,),
             )
@@ -45,19 +48,21 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                 "select b as name, count(*) as count from turns t "
                 "join verdicts v on v.id = t.live_verdict_id "
                 "join matches m on m.id = t.match_id "
-                "join sessions s on s.session_key = m.p1_session_key "
+                "join seats se on se.match_id = m.id and se.kind = 'human' "
+                "join sessions s on s.session_key = se.session_key "
                 "cross join jsonb_array_elements_text(v.host -> 'badges') b "
-                "where s.account_id = %s and t.actor = 'p1' and m.status = 'ended' "
+                "where s.account_id = %s and t.actor = se.seat and m.status = 'ended' "
                 "group by b order by count desc, b",
                 (account_id,),
             )
         ).fetchall()
-        won_ids = [m["id"] for m in matches if m["status"] == "ended" and m["winner"] == "p1"]
+        won_ids = [m["id"] for m in matches if m["status"] == "ended" and m["won"]]
         scorings = await (
             await conn.execute(
                 "select t.match_id, v.scoring from turns t "
                 "join verdicts v on v.id = t.live_verdict_id "
-                "where t.match_id = any(%s) and t.actor = 'p1' "
+                "join matches m on m.id = t.match_id "
+                "where t.match_id = any(%s) and t.actor = m.winner "
                 "and t.outcome in ('accept', 'semantic_uncertain')",
                 (won_ids,),
             )
@@ -67,21 +72,21 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
             ended = [m for m in matches if m["template_id"] == slug and m["status"] == "ended"]
             if not ended:
                 continue
-            _, best = streaks([m["winner"] for m in sorted(ended, key=lambda m: m["ended_at"])])
+            _, best = streaks([m["won"] for m in sorted(ended, key=lambda m: m["ended_at"])])
             records.append(
                 GameRecord(
                     slug=slug,
                     title=template.title,
                     played=len(ended),
-                    won=sum(m["winner"] == "p1" for m in ended),
-                    drawn=sum(m["winner"] is None for m in ended),
+                    won=sum(m["won"] is True for m in ended),
+                    drawn=sum(m["won"] is None for m in ended),
                     best_streak=best,
                     rank=await account_rank(conn, account_id, slug),
                 )
             )
 
     ended_all = sorted((m for m in matches if m["status"] == "ended"), key=lambda m: m["ended_at"])
-    streak, best_streak = streaks([m["winner"] for m in ended_all])
+    streak, best_streak = streaks([m["won"] for m in ended_all])
     shown = [m for m in matches if is_yours or (m["status"] == "ended" and m["is_public"])]
     best_ids = _best_ids(shown, scorings, service)
     return ProfileView(
@@ -90,7 +95,7 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
         avatar_url=account["avatar_url"],
         since=account["created_at"].isoformat(),
         played=len(ended_all),
-        won=sum(m["winner"] == "p1" for m in ended_all),
+        won=sum(m["won"] is True for m in ended_all),
         streak=streak,
         best_streak=best_streak,
         records=records,
@@ -111,7 +116,7 @@ def _best_ids(matches: list[Any], scorings: list[Any], service: MatchService) ->
         weights = service.templates[template_of[row["match_id"]]].weights
         score = weighted_total(row["scoring"]["scores"], weights)
         peak[row["match_id"]] = max(peak.get(row["match_id"], 0), score)
-    won = [m for m in matches if m["status"] == "ended" and m["winner"] == "p1"]
+    won = [m for m in matches if m["status"] == "ended" and m["won"]]
     won.sort(key=lambda m: (m["is_curated"], peak.get(m["id"], 0)), reverse=True)
     return [m["id"] for m in won[:BEST_SHOWN]]
 
@@ -125,7 +130,7 @@ def _row(m: Any, service: MatchService) -> DuelRow:
         length = f"{rounds} {'round' if rounds == 1 else 'rounds'}"
     else:
         length = f"{m['judged']} {'move' if m['judged'] == 1 else 'moves'}"
-    won = None if m["status"] != "ended" else m["winner"] == "p1"
+    won = None if m["status"] != "ended" else m["won"] is True
     return DuelRow(
         id=m["id"],
         title=template.title,
@@ -143,13 +148,13 @@ def _result(m: Any, mode: str) -> str:
         return "On stage"
     if m["status"] == "abandoned":
         return "Closed, no move for a day"
-    won = m["winner"] == "p1"
+    won = m["won"] is True
     if m["end_reason"] in ("move_cap_points", "rounds_complete"):
-        if m["winner"] is None:
-            return f"Drawn {m['points_p1']} all"
+        if m["won"] is None:
+            return f"Drawn {m['my_points']} all"
         if mode == "showcase":
-            return f"{'Won' if won else 'Lost'} {m['points_p1']} to {m['points_p2']}"
+            return f"{'Won' if won else 'Lost'} {m['my_points']} to {m['their_points']}"
         return "Won on points" if won else "Lost on points"
     if m["end_reason"] == "resign":
         return "The House resigned" if won else "Resigned"
-    return "Victory" if won else f"Fell in round {m['p1_moves']}"
+    return "Victory" if won else f"Fell in round {m['my_moves']}"

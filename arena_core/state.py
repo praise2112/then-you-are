@@ -9,15 +9,17 @@ from arena_core.template import Seed, Template
 from arena_judge.schema import EndReason, Outcome
 
 MatchStatus = Literal["active", "awaiting_judgment", "paused", "ended", "abandoned"]
-Actor = Literal["p1", "p2"]
+# A seat: "p1" to "p6", in turn order.
+Actor = str
 Phase = Literal["write", "guess"]
-Pick = Literal["truth", "p1", "p2"]
+# "truth", or the seat whose bluff was picked.
+Pick = str
 Layer1Reason = Literal["empty", "too_long", "duplicate"]
 
 JUDGED: tuple[Outcome, ...] = ("accept", "fail", "semantic_uncertain")
 STANDING: tuple[Outcome, ...] = ("accept", "semantic_uncertain")
 REFUSED: tuple[Outcome, ...] = ("deterministic_invalid", "semantic_reject")
-PLAYERS: tuple[Actor, ...] = ("p1", "p2")
+MAX_SEATS = 6
 
 
 class StaleVersionError(Exception):
@@ -51,19 +53,33 @@ class Match:
     template_id: str
     template_version: int
     cards: list[str]
+    seats: tuple[Actor, ...] = ("p1", "p2")
     seed_emoji: str = ""
     status: MatchStatus = "active"
     state_version: int = 0
     to_move: Actor = "p1"
     phase: Phase = "write"
+    round_n: int = 1
     turns: list[Turn] = field(default_factory=list)
     guesses: list[Guess] = field(default_factory=list)
-    # Who calls the real entry in a guess round. A model opponent writes but never guesses.
+    # Who calls the real entry in a guess round. A model seat writes but never guesses.
     guessers: tuple[Actor, ...] = ("p1",)
-    strikes: dict[Actor, int] = field(default_factory=lambda: {"p1": 0, "p2": 0})
-    points: dict[Actor, int] = field(default_factory=lambda: {"p1": 0, "p2": 0})
+    strikes: dict[Actor, int] = field(default_factory=dict)
+    points: dict[Actor, int] = field(default_factory=dict)
+    eliminated: list[Actor] = field(default_factory=list)
     winner: Actor | None = None
     end_reason: EndReason | None = None
+
+    def __post_init__(self) -> None:
+        if not 2 <= len(self.seats) <= MAX_SEATS:
+            raise ValueError(f"a match seats 2 to {MAX_SEATS} players, not {len(self.seats)}")
+        for seat in self.seats:
+            self.strikes.setdefault(seat, 0)
+            self.points.setdefault(seat, 0)
+
+    @property
+    def live_seats(self) -> list[Actor]:
+        return [s for s in self.seats if s not in self.eliminated]
 
     @property
     def seed(self) -> str:
@@ -90,18 +106,18 @@ class Match:
         return [t.move_text for t in self.turns if t.outcome in STANDING]
 
     @property
-    def round_n(self) -> int:
-        """Showcase only: the round in play. A round being guessed on is still in play."""
-        judged_rounds = self.judged_moves // len(PLAYERS)
-        return judged_rounds if self.phase == "guess" else judged_rounds + 1
-
-    @property
     def card(self) -> str:
-        """Showcase only: the card dealt for the round in play."""
+        """Showcase only: the card dealt for the round in play. A round being called is in play."""
         return self.cards[min(self.round_n, len(self.cards)) - 1]
 
     def round_turns(self, round_n: int) -> list[Turn]:
         return [t for t in self.turns if t.round_n == round_n and t.outcome in JUDGED]
+
+    @property
+    def round_answered(self) -> bool:
+        """Showcase: every live seat has a judged answer for the round in play."""
+        answered = {t.actor for t in self.round_turns(self.round_n)}
+        return all(s in answered for s in self.live_seats)
 
     def round_guesses(self, round_n: int) -> list[Guess]:
         return [g for g in self.guesses if g.round_n == round_n]
@@ -118,11 +134,15 @@ class Match:
     def owed_guesses(self) -> list[Actor]:
         """Guessers still to call this round. One option is no choice, so it owes nothing."""
         called = {g.actor for g in self.round_guesses(self.round_n)}
-        return [a for a in self.guessers if a not in called and len(self.guess_options(a)) >= 2]
+        return [
+            a
+            for a in self.guessers
+            if a in self.live_seats and a not in called and len(self.guess_options(a)) >= 2
+        ]
 
 
 def player(actor: Actor) -> str:
-    return "player1" if actor == "p1" else "player2"
+    return f"player{actor[1:]}"
 
 
 def transcript(match: Match, template: Template, finished_only: bool = False) -> list[str]:
@@ -132,7 +152,7 @@ def transcript(match: Match, template: Template, finished_only: bool = False) ->
     lines = []
     for n, token in enumerate(match.cards, start=1):
         turns = match.round_turns(n)
-        if not turns or (finished_only and len(turns) < 2):
+        if not turns or (finished_only and len(turns) < len(match.live_seats)):
             break
         card = template.seed_named(token)
         assert card is not None
@@ -146,12 +166,19 @@ def deal(template: Template, rng: random.Random, first: Seed | None = None) -> l
     if template.mode == "escalation":
         return [first or rng.choice(template.seed_pool)]
     rest = [c for c in template.seed_pool if c is not first]
-    cards = rng.sample(rest, template.move_budget // 2 - bool(first))
+    cards = rng.sample(rest, template.rounds_budget - bool(first))
     return [first, *cards] if first else cards
 
 
-def other(actor: Actor) -> Actor:
-    return "p2" if actor == "p1" else "p1"
+def next_seat(match: Match, actor: Actor) -> Actor:
+    """The next live seat after `actor` in turn order, wrapping to the first."""
+    order = match.seats
+    start = order.index(actor)
+    for step in range(1, len(order) + 1):
+        seat = order[(start + step) % len(order)]
+        if seat not in match.eliminated:
+            return seat
+    return actor
 
 
 def normalize(text: str) -> str:
@@ -173,12 +200,23 @@ def weighted_total(scores: dict[str, int], weights: dict[str, int]) -> int:
     return sum(weights.get(name, 0) * value for name, value in scores.items())
 
 
-def _check_command(match: Match, actor: Actor, expected_version: int) -> None:
+def _check_open(match: Match, expected_version: int) -> None:
     if expected_version != match.state_version:
         raise StaleVersionError(f"expected {expected_version}, match is at {match.state_version}")
     if match.status in ("ended", "abandoned"):
         raise ValueError("match already ended")
-    if actor != match.to_move:
+
+
+def _check_move(match: Match, actor: Actor, template: Template) -> None:
+    """Escalation moves one seat at a time; in showcase every live seat answers once a round."""
+    if actor not in match.live_seats:
+        raise ValueError(f"{actor} has no seat in play")
+    if match.phase != "write":
+        raise ValueError("the round is being guessed on")
+    if template.mode == "showcase":
+        if any(t.actor == actor for t in match.round_turns(match.round_n)):
+            raise ValueError(f"{actor} already answered this round")
+    elif actor != match.to_move:
         raise ValueError(f"{actor} played out of turn")
 
 
@@ -193,13 +231,8 @@ def apply_ruling(
     truth_hit: bool = False,
 ) -> Match:
     """Record a judged or refused move and advance the match by the template's win rule."""
-    if template.mode == "showcase" and actor == "p2":
-        # The House answers the same card as the player; the engine plays it, never the clock.
-        _check_command(match, "p1", expected_version)
-    else:
-        _check_command(match, actor, expected_version)
-    if match.phase != "write":
-        raise ValueError("the round is being guessed on")
+    _check_open(match, expected_version)
+    _check_move(match, actor, template)
     match.state_version += 1
     match.status = "active"
 
@@ -208,56 +241,67 @@ def apply_ruling(
         match.strikes[actor] += 1
         return match
 
-    round_n = match.round_n if template.mode == "showcase" else len(match.turns) + 1
     match.turns.append(
         Turn(
             seq=len(match.turns) + 1,
             actor=actor,
             move_text=move_text,
             outcome=outcome,
-            round_n=round_n,
+            round_n=match.round_n,
             truth_hit=truth_hit,
         )
     )
     if outcome != "fail":
         match.points[actor] += points
-    if template.win_condition == "sudden_death":
-        if outcome == "fail":
+    if template.mode == "showcase":
+        if match.round_answered:
+            _close_round(match, template, actor)
+        return match
+
+    following = next_seat(match, actor)
+    if outcome == "fail" and template.win_condition == "sudden_death":
+        # The mover is out; the next seat answers the same standing form.
+        match.eliminated.append(actor)
+        if len(match.live_seats) == 1:
             match.status = "ended"
-            match.winner = other(actor)
+            match.winner = match.live_seats[0]
             match.end_reason = "sudden_death"
             return match
-        match.to_move = other(actor)
-
-    if template.mode == "showcase" and len(match.round_turns(round_n)) == len(PLAYERS):
-        _open_guessing(match, template)
-        if match.phase == "guess":
-            return match
+    _pass_turn(match, actor, following)
     _end_on_budget(match, template, actor)
     return match
 
 
-def _open_guessing(match: Match, template: Template) -> None:
-    """Holds the round open for calls when the template has a guess beat and someone owes one."""
-    if template.guess is None:
-        return
-    # round_n only points at the finished round once the phase is guess.
-    match.phase = "guess"
-    owed = match.owed_guesses()
-    if not owed:
+def _pass_turn(match: Match, actor: Actor, following: Actor) -> None:
+    """Escalation: a turn that wraps back to an earlier seat starts the next round."""
+    if match.seats.index(following) <= match.seats.index(actor):
+        match.round_n += 1
+    match.to_move = following
+
+
+def _close_round(match: Match, template: Template, last_actor: Actor) -> None:
+    """Showcase: holds the round open for calls when someone owes one, else deals the next."""
+    if template.guess is not None:
+        match.phase = "guess"
+        owed = match.owed_guesses()
+        if owed:
+            match.to_move = owed[0]
+            return
         match.phase = "write"
-        return
-    match.to_move = owed[0]
+    _next_round(match, template, last_actor)
+
+
+def _next_round(match: Match, template: Template, last_actor: Actor) -> None:
+    match.round_n += 1
+    match.to_move = match.live_seats[0]
+    _end_on_budget(match, template, last_actor)
 
 
 def apply_guess(
     match: Match, actor: Actor, picked: Pick, expected_version: int, template: Template
 ) -> Match:
     """Record a call. The truth pays the guesser; a bluff pays the player who wrote it."""
-    if expected_version != match.state_version:
-        raise StaleVersionError(f"expected {expected_version}, match is at {match.state_version}")
-    if match.status in ("ended", "abandoned"):
-        raise ValueError("match already ended")
+    _check_open(match, expected_version)
     if match.phase != "guess" or actor not in match.owed_guesses():
         raise ValueError(f"{actor} has no call to make")
     if picked not in match.guess_options(actor):
@@ -265,7 +309,7 @@ def apply_guess(
     assert template.guess is not None
     match.state_version += 1
     if picked == "truth":
-        awarded_to: Actor = actor
+        awarded_to = actor
         points = template.guess.spot_points
     else:
         awarded_to = picked
@@ -277,27 +321,51 @@ def apply_guess(
         match.to_move = owed[0]
         return match
     match.phase = "write"
-    match.to_move = "p1"
-    _end_on_budget(match, template, actor)
+    _next_round(match, template, actor)
     return match
 
 
 def _end_on_budget(match: Match, template: Template, last_actor: Actor) -> None:
-    if match.judged_moves < template.move_budget:
+    """Ends after the last round on points. Only live seats can win; a tie at the top is a
+    draw, or under defender_holds goes to the tied seat that moved last."""
+    if match.round_n <= template.rounds_budget:
         return
     match.status = "ended"
     match.end_reason = "rounds_complete" if template.mode == "showcase" else "move_cap_points"
-    p1, p2 = match.points["p1"], match.points["p2"]
-    if p1 != p2:
-        match.winner = "p1" if p1 > p2 else "p2"
+    live = match.live_seats
+    top = max(match.points[s] for s in live)
+    leaders = [s for s in live if match.points[s] == top]
+    if len(leaders) == 1:
+        match.winner = leaders[0]
     elif template.tie_policy == "defender_holds":
-        match.winner = last_actor
+        match.winner = next(
+            (t.actor for t in reversed(match.turns) if t.actor in leaders), last_actor
+        )
 
 
-def resign(match: Match, actor: Actor, expected_version: int) -> Match:
-    _check_command(match, actor, expected_version)
+def resign(match: Match, actor: Actor, expected_version: int, template: Template) -> Match:
+    """The seat leaves the match. With one seat left it wins; otherwise play goes on."""
+    _check_open(match, expected_version)
+    if actor not in match.live_seats:
+        raise ValueError(f"{actor} has no seat in play")
     match.state_version += 1
-    match.status = "ended"
-    match.winner = other(actor)
-    match.end_reason = "resign"
+    match.eliminated.append(actor)
+    if len(match.live_seats) == 1:
+        match.status = "ended"
+        match.winner = match.live_seats[0]
+        match.end_reason = "resign"
+        return match
+    if template.mode == "escalation":
+        if match.to_move == actor:
+            _pass_turn(match, actor, next_seat(match, actor))
+            _end_on_budget(match, template, actor)
+    elif match.phase == "write" and match.round_answered:
+        _close_round(match, template, actor)
+    elif match.phase == "guess":
+        owed = match.owed_guesses()
+        if owed:
+            match.to_move = owed[0]
+        else:
+            match.phase = "write"
+            _next_round(match, template, actor)
     return match

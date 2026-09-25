@@ -20,7 +20,7 @@ def word_match() -> Match:
 
 
 def short_budget(template: Template, budget: int) -> Template:
-    return template.model_copy(update={"move_budget": budget})
+    return template.model_copy(update={"rounds_budget": budget})
 
 
 def test_failed_hygiene_gate_is_a_semantic_reject():
@@ -75,7 +75,7 @@ def test_move_cap_ends_on_points_and_a_tie_goes_to_the_standing_form():
             f"I am form {version}",
             "accept",
             version,
-            short_budget(DUEL, 4),
+            short_budget(DUEL, 2),
             points=25,
         )
         actor = "p2" if actor == "p1" else "p1"
@@ -86,7 +86,7 @@ def test_move_cap_ends_on_points_and_a_tie_goes_to_the_standing_form():
 
 def test_resign_hands_the_win_to_the_other_side():
     match = new_match("m5")
-    resign(match, "p1", 0)
+    resign(match, "p1", 0, DUEL)
     assert match.status == "ended"
     assert match.winner == "p2"
     assert match.end_reason == "resign"

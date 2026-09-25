@@ -83,7 +83,7 @@ def test_pilot_cards_are_the_same_on_a_rerun_and_a_showcase_gets_one_per_round()
     assert deal_for(DUEL, "duel", 0) == deal_for(DUEL, "duel", 0)
     assert deal_for(DUEL, "duel", 0) != deal_for(DUEL, "duel", 1) or len(DUEL.seed_pool) == 1
     cards = deal_for(WORDS, "words", 3)
-    assert len(cards) == WORDS.move_budget // 2 and len({c.opening_token for c in cards}) == 3
+    assert len(cards) == WORDS.rounds_budget and len({c.opening_token for c in cards}) == 3
 
 
 def test_rejudge_measures_agreement_and_never_asks_twice(tmp_path):

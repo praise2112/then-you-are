@@ -101,7 +101,7 @@ class JudgeStarted(BaseModel):
 class Ruling(BaseModel):
     seq: int
     round_n: int
-    actor: Literal["p1", "p2"]
+    actor: str
     move_text: str
     outcome: Outcome
     scoring: ScoringPayload
@@ -110,7 +110,9 @@ class Ruling(BaseModel):
     points: int
     points_p1: int
     points_p2: int
-    to_move: Literal["p1", "p2"]
+    to_move: str
+    # The round the match is in once this ruling lands; past the budget when it ended.
+    round_in_play: int
     state_version: int
 
 
@@ -139,10 +141,10 @@ class GuessOption(BaseModel):
 class GuessView(BaseModel):
     """A call made: who picked, what they picked (the truth or a player's bluff), who got paid."""
 
-    actor: Literal["p1", "p2"]
-    picked: Literal["truth", "p1", "p2"]
+    actor: str
+    picked: str
     points: int
-    awarded_to: Literal["p1", "p2"]
+    awarded_to: str
 
 
 class GuessOpened(BaseModel):
@@ -169,7 +171,7 @@ class RoundRevealed(BaseModel):
 
 class MatchEnded(BaseModel):
     end_reason: EndReason
-    winner: Literal["p1", "p2"] | None
+    winner: str | None
     points_p1: int
     points_p2: int
     highlight_seq: int | None

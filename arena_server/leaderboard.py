@@ -16,9 +16,10 @@ async def board(pool: Pool, template: Template) -> BoardView:
         rows = await (
             await conn.execute(
                 "select a.id as account_id, a.display_name, a.avatar_url, "
-                "count(*) filter (where m.winner = 'p1') as wins, count(*) as played "
+                "count(*) filter (where m.winner = se.seat) as wins, count(*) as played "
                 "from matches m "
-                "join sessions s on s.session_key = m.p1_session_key "
+                "join seats se on se.match_id = m.id and se.kind = 'human' "
+                "join sessions s on s.session_key = se.session_key "
                 "join accounts a on a.id = s.account_id "
                 "where m.status = 'ended' and m.template_id = %s "
                 "group by a.id, a.display_name, a.avatar_url "
@@ -51,7 +52,8 @@ async def boards_index(pool: Pool, templates: dict[str, Template]) -> list[Board
         rows = await (
             await conn.execute(
                 "select template_id, count(*) as ranked from (select m.template_id, s.account_id "
-                "from matches m join sessions s on s.session_key = m.p1_session_key "
+                "from matches m join seats se on se.match_id = m.id and se.kind = 'human' "
+                "join sessions s on s.session_key = se.session_key "
                 "where m.status = 'ended' and s.account_id is not null "
                 "group by m.template_id, s.account_id having count(*) >= %s) ranked "
                 "group by template_id",
@@ -75,13 +77,14 @@ async def boards_index(pool: Pool, templates: dict[str, Template]) -> list[Board
     return summaries
 
 
-def streaks(winners: list[str | None]) -> tuple[int, int]:
-    """Current and best win streak over results in play order. A draw leaves both alone."""
+def streaks(results: list[bool | None]) -> tuple[int, int]:
+    """Current and best win streak over results (won, lost, or None for a draw) in play
+    order. A draw leaves both alone."""
     current = best = 0
-    for winner in winners:
-        if winner is None:
+    for won in results:
+        if won is None:
             continue
-        current = current + 1 if winner == "p1" else 0
+        current = current + 1 if won else 0
         best = max(best, current)
     return current, best
 
@@ -89,12 +92,14 @@ def streaks(winners: list[str | None]) -> tuple[int, int]:
 async def account_streaks(conn: AsyncConnection[DictRow], account_id: str) -> tuple[int, int]:
     rows = await (
         await conn.execute(
-            "select m.winner from matches m join sessions s on s.session_key = m.p1_session_key "
+            "select m.winner = se.seat as won from matches m "
+            "join seats se on se.match_id = m.id and se.kind = 'human' "
+            "join sessions s on s.session_key = se.session_key "
             "where s.account_id = %s and m.status = 'ended' order by m.ended_at, m.created_at",
             (account_id,),
         )
     ).fetchall()
-    return streaks([row["winner"] for row in rows])
+    return streaks([row["won"] for row in rows])
 
 
 async def account_rank(
@@ -103,9 +108,10 @@ async def account_rank(
     """Where the account would sit on that game's board, or None below the entry bar."""
     row = await (
         await conn.execute(
-            "with tally as (select a.id, count(*) filter (where m.winner = 'p1') as wins, "
+            "with tally as (select a.id, count(*) filter (where m.winner = se.seat) as wins, "
             "count(*) as played, a.display_name from matches m "
-            "join sessions s on s.session_key = m.p1_session_key "
+            "join seats se on se.match_id = m.id and se.kind = 'human' "
+            "join sessions s on s.session_key = se.session_key "
             "join accounts a on a.id = s.account_id "
             "where m.status = 'ended' and m.template_id = %s "
             "group by a.id, a.display_name having count(*) >= %s) "

@@ -139,6 +139,13 @@ class GuessRules(Strict):
 Mode = Literal["escalation", "showcase"]
 
 
+class NumPlayers(Strict):
+    """How many seats a table of this game may have."""
+
+    min: int = Field(default=2, ge=2)
+    max: int = Field(default=2, le=6)
+
+
 class Labels(Strict):
     """Presentation strings for the slots the frontend fills per game."""
 
@@ -176,7 +183,9 @@ class Template(Strict):
     opponent_prompt: str
     guess: GuessRules | None = None
     medallions: bool = True
-    move_budget: int = Field(gt=0)
+    num_players: NumPlayers = NumPlayers()
+    # One move per seat per round; the match ends after the last round.
+    rounds_budget: int = Field(gt=0)
     win_condition: Literal["sudden_death", "points_total"]
     tie_policy: Literal["defender_holds", "draw"]
     strikes_before_consequence: int = Field(gt=0)
@@ -208,14 +217,12 @@ class Template(Strict):
         for line in self.host.good_headlines:
             if len(line) > 140:
                 raise ValueError(f"good headline over 140 chars: {line!r}")
+        if self.num_players.min > self.num_players.max:
+            raise ValueError("num_players min is above its max")
         if self.mode == "showcase":
             if self.win_condition != "points_total":
                 raise ValueError("a showcase game is decided on points_total")
-            if self.move_budget % 2:
-                raise ValueError(
-                    "a showcase move_budget is two moves per round, so it must be even"
-                )
-            if len(self.seed_pool) < self.move_budget // 2:
+            if len(self.seed_pool) < self.rounds_budget:
                 raise ValueError("the seed pool must cover every round")
         if self.guess is not None:
             if self.mode != "showcase":
@@ -223,10 +230,6 @@ class Template(Strict):
             if any(not s.hidden for s in self.seed_pool):
                 raise ValueError("a guess beat needs a hidden truth on every seed")
         return self
-
-    @property
-    def rounds(self) -> int | None:
-        return self.move_budget // 2 if self.mode == "showcase" else None
 
     @property
     def weights(self) -> dict[str, int]:
@@ -287,7 +290,7 @@ class Template(Strict):
             "accent": self.accent,
             "premise": self.premise.strip(),
             "mode": self.mode,
-            "rounds": self.rounds,
+            "rounds_budget": self.rounds_budget,
             "rubric": [
                 {
                     "name": r.name,
@@ -302,7 +305,6 @@ class Template(Strict):
             "move_prefix": self.move_constraints.prefix,
             "move_example": self.move_constraints.example,
             "move_hint": self.move_constraints.hint,
-            "move_budget": self.move_budget,
             "score_max": SCORE_MAX,
             "host_name": self.host.persona_name,
             "labels": self.labels.model_dump(),

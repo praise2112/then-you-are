@@ -52,7 +52,8 @@ def estimate(templates: dict[str, Template], counts: dict[str, int]) -> tuple[fl
     base = 0.0
     peak = 0.0
     for slug, n in counts.items():
-        calls = templates[slug].move_budget * (1 + RATE)
+        # A datagen match seats two teachers, one move each per round.
+        calls = templates[slug].rounds_budget * 2 * (1 + RATE)
         judge = calls * UNIT_USD["judge"]
         flash_moves = FLASH_SHARE * UNIT_USD["flash"] * calls
         luna_moves = (1 - FLASH_SHARE) * UNIT_USD["luna"] * calls

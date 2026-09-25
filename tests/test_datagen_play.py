@@ -50,7 +50,7 @@ def test_deal_gives_one_card_to_a_duel_and_one_per_round_to_a_showcase():
     rng = random.Random(0)
     assert len(deal(DUEL, rng)) == 1
     cards = deal(WORDS, rng)
-    assert len(cards) == WORDS.move_budget // 2
+    assert len(cards) == WORDS.rounds_budget
     assert len({c.opening_token for c in cards}) == len(cards)
 
 

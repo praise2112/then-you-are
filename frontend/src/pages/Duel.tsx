@@ -65,6 +65,7 @@ function withRulings(s: MatchSnapshot, rulings: Ruling[]): MatchSnapshot {
     status: "active",
     state_version: last.state_version,
     to_move: last.to_move,
+    round_in_play: last.round_in_play,
     points_p1: last.points_p1,
     points_p2: last.points_p2,
     judged_moves: s.judged_moves + fresh.length,
@@ -262,7 +263,8 @@ export function Duel({ matchId, spectator = false }: Props) {
   const standingIsMine = !streaming && standing?.actor === "p1";
   const waiting = pending || thinking || !!streaming || (snap.to_move === "p2" && !paused);
   const canPlay = snap.status === "active" && snap.to_move === "p1" && !pending && !paused && !ended;
-  const round = snap.transcript.length + 1;
+  const round = Math.min(snap.round_in_play, template.rounds_budget);
+  const lastRound = round === template.rounds_budget && snap.to_move === "p1";
   const strikesNudge = returned?.nudge_text;
   const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
   const longCard = isLongCard(snap.seed_token);
@@ -383,7 +385,7 @@ export function Duel({ matchId, spectator = false }: Props) {
         </a>
         <span className="round">
           {spectator && "Watching "}
-          <b>{template.title}</b>, round {round}
+          <b>{template.title}</b>, round {round} of {template.rounds_budget}
         </span>
         <ThemeToggle />
       </header>
@@ -533,6 +535,7 @@ export function Duel({ matchId, spectator = false }: Props) {
               <label className="small-caps" htmlFor="move">
                 {composerLabel}
               </label>
+              {lastRound && <p className="last-round">Last round: {HOUSE} answers once more, then it&rsquo;s over.</p>}
               <div className={`compose-box${waiting && !paused ? " scanning" : ""}`}>
                 <span className="prefix" aria-hidden="true">
                   {prefix}
@@ -754,7 +757,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
         </a>
         <span className="round">
           {spectator && "Watching "}
-          <b>{template.title}</b>, round {roundN} of {template.rounds}
+          <b>{template.title}</b>, round {roundN} of {template.rounds_budget}
         </span>
         <ThemeToggle />
       </header>
@@ -950,7 +953,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               Resign this match?
             </h2>
             <p style={{ margin: "var(--space-2) 0 0", color: "var(--ink-soft)" }}>
-              {HOUSE} takes the win at {snap.points_p1} : {snap.points_p2} after {revealed.length} of {template.rounds} rounds. The
+              {HOUSE} takes the win at {snap.points_p1} : {snap.points_p2} after {revealed.length} of {template.rounds_budget} rounds. The
               replay is saved either way.
             </p>
             <div className="sheet-actions">

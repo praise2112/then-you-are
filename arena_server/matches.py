@@ -13,7 +13,6 @@ from typing import Any, Literal
 from pydantic import ValidationError
 
 from arena_core.state import (
-    PLAYERS,
     REFUSED,
     STANDING,
     Actor,
@@ -148,7 +147,9 @@ class MatchService:
             )
             rows = await (
                 await conn.execute(
-                    "select id from matches where status = 'active' and to_move = 'p2'"
+                    "select m.id from matches m join seats se "
+                    "on se.match_id = m.id and se.seat = m.to_move "
+                    "where m.status = 'active' and se.kind = 'model'"
                 )
             ).fetchall()
         for row in rows:
@@ -156,9 +157,9 @@ class MatchService:
 
     async def _resume_house(self, match_id: str) -> None:
         async with self.locks[match_id]:
-            match, _ = await self._load(match_id)
-            if match.status == "active" and match.to_move == "p2":
-                await self._play_opponent(match, self.template_of(match))
+            match, extra = await self._load(match_id)
+            if match.status == "active" and match.to_move in extra["models"]:
+                await self._play_opponent(match, self.template_of(match), extra["models"])
 
     # Sessions and creation
 
@@ -222,8 +223,9 @@ class MatchService:
         async with self.pool.connection() as conn:
             rows = await (
                 await conn.execute(
-                    "select m.id from matches m "
-                    "join sessions s on s.session_key = m.p1_session_key "
+                    "select distinct m.id, m.created_at from matches m "
+                    "join seats se on se.match_id = m.id "
+                    "join sessions s on s.session_key = se.session_key "
                     "where m.status in ('active', 'awaiting_judgment', 'paused') "
                     "and (s.session_key = %s or s.account_id = "
                     "(select account_id from sessions where session_key = %s)) "
@@ -237,7 +239,7 @@ class MatchService:
         match, _ = await self._load(match_id)
         template = self.template_of(match)
         if template.mode == "showcase":
-            line = f"round {match.round_n} of {template.rounds}, {match.card}"
+            line = f"round {match.round_n} of {template.rounds_budget}, {match.card}"
             if match.phase == "guess":
                 line += ", your call"
         else:
@@ -262,11 +264,11 @@ class MatchService:
         cards = deal(template, secrets.SystemRandom(), first)
         match_id = secrets.token_urlsafe(8)
         listed = (await self.session_view(session_key)).list_duels
-        async with self.pool.connection() as conn:
+        async with self.pool.connection() as conn, conn.transaction():
             await conn.execute(
                 "insert into matches (id, template_id, template_version, config, seed_token, "
-                "seed_emoji, cards, p1_session_key, p2_model_ref, status, is_public) "
-                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', %s)",
+                "seed_emoji, cards, status, is_public) "
+                "values (%s, %s, %s, %s, %s, %s, %s, 'active', %s)",
                 (
                     match_id,
                     template.slug,
@@ -275,10 +277,13 @@ class MatchService:
                     cards[0].opening_token,
                     cards[0].opening_emoji,
                     [c.opening_token for c in cards],
-                    session_key,
-                    self.opponent_ref,
                     listed,
                 ),
+            )
+            await conn.execute(
+                "insert into seats (match_id, seat, kind, session_key, model_ref) "
+                "values (%s, 'p1', 'human', %s, null), (%s, 'p2', 'model', null, %s)",
+                (match_id, session_key, match_id, self.opponent_ref),
             )
         if template.mode == "showcase":
             self._prepare_house(match_id)
@@ -317,12 +322,16 @@ class MatchService:
                     (match_id,),
                 )
             ).fetchall()
-            session = await (
+            seat_rows = await (
                 await conn.execute(
-                    "select stage_name, account_id from sessions where session_key = %s",
-                    (row["p1_session_key"],),
+                    "select se.seat, se.kind, se.session_key, se.points, se.strikes, "
+                    "se.eliminated_at, s.stage_name, s.account_id from seats se "
+                    "left join sessions s on s.session_key = se.session_key "
+                    "where se.match_id = %s order by substring(se.seat from 2)::int",
+                    (match_id,),
                 )
-            ).fetchone()
+            ).fetchall()
+        humans = [r for r in seat_rows if r["kind"] == "human"]
         if match_id not in self.match_templates and row["config"]:
             try:
                 self.match_templates[match_id] = Template.model_validate(row["config"])
@@ -350,16 +359,27 @@ class MatchService:
                 for t in turns
             ],
             guesses=[Guess(**g) for g in guesses],
-            strikes={"p1": row["strikes_p1"], "p2": row["strikes_p2"]},
-            points={"p1": row["points_p1"], "p2": row["points_p2"]},
+            seats=tuple(r["seat"] for r in seat_rows),
+            round_n=row["round_n"],
+            guessers=tuple(r["seat"] for r in humans),
+            strikes={r["seat"]: r["strikes"] for r in seat_rows},
+            points={r["seat"]: r["points"] for r in seat_rows},
+            eliminated=[
+                r["seat"]
+                for r in sorted(seat_rows, key=lambda r: r["eliminated_at"] or row["created_at"])
+                if r["eliminated_at"]
+            ],
             winner=row["winner"],
             end_reason=row["end_reason"],
         )
+        owner = humans[0]
         extra = {
             "turn_rows": turns,
-            "stage_name": session["stage_name"] if session else "Challenger",
-            "p1_session_key": row["p1_session_key"],
-            "owner_account": session["account_id"] if session else None,
+            "stage_name": owner["stage_name"],
+            "human_seat": owner["seat"],
+            "models": frozenset(r["seat"] for r in seat_rows if r["kind"] == "model"),
+            "owner_session": owner["session_key"],
+            "owner_account": owner["account_id"],
             "is_public": row["is_public"],
             "is_curated": row["is_curated"],
             "created_at": row["created_at"],
@@ -371,13 +391,12 @@ class MatchService:
         """Writes the match state. A match already closed in the database stays closed:
         the write is refused with MatchClosed."""
         if conn is None:
-            async with self.pool.connection() as own:
+            async with self.pool.connection() as own, own.transaction():
                 await self._save(match, own)
             return
         result = await conn.execute(
             "update matches set status = %s, state_version = %s, to_move = %s, phase = %s, "
-            "winner = %s, end_reason = %s, points_p1 = %s, points_p2 = %s, "
-            "strikes_p1 = %s, strikes_p2 = %s, updated_at = now(), "
+            "round_n = %s, winner = %s, end_reason = %s, updated_at = now(), "
             "ended_at = case when %s = 'ended' "
             "and ended_at is null then now() else ended_at end "
             "where id = %s and status not in ('ended', 'abandoned')",
@@ -386,18 +405,27 @@ class MatchService:
                 match.state_version,
                 match.to_move,
                 match.phase,
+                match.round_n,
                 match.winner,
                 match.end_reason,
-                match.points["p1"],
-                match.points["p2"],
-                match.strikes["p1"],
-                match.strikes["p2"],
                 match.status,
                 match.id,
             ),
         )
         if result.rowcount == 0:
             raise MatchClosed(match.id)
+        for seat in match.seats:
+            await conn.execute(
+                "update seats set points = %s, strikes = %s, eliminated_at = case when %s "
+                "then coalesce(eliminated_at, now()) end where match_id = %s and seat = %s",
+                (
+                    match.points[seat],
+                    match.strikes[seat],
+                    seat in match.eliminated,
+                    match.id,
+                    seat,
+                ),
+            )
 
     async def _store_turn(
         self,
@@ -543,7 +571,7 @@ class MatchService:
     def _in_call(self, match: Match, round_n: int) -> bool:
         return match.phase == "guess" and round_n == match.round_n
 
-    def _rounds(self, match: Match, template: Template) -> list[RoundView]:
+    def _rounds(self, match: Match, template: Template, guesser: str) -> list[RoundView]:
         if template.mode == "escalation":
             return []
         views = []
@@ -551,7 +579,7 @@ class MatchService:
             card = template.seed_named(token)
             assert card is not None
             in_call = self._in_call(match, n)
-            revealed = len(match.round_turns(n)) == len(PLAYERS) and not in_call
+            revealed = n < match.round_n
             views.append(
                 RoundView(
                     round_n=n,
@@ -559,7 +587,7 @@ class MatchService:
                     emoji=card.opening_emoji if revealed else "",
                     detail=card.detail,
                     truth=card.hidden if revealed else None,
-                    options=self._options(match, card, "p1") if in_call else [],
+                    options=self._options(match, card, guesser) if in_call else [],
                     guesses=self._guess_views(match, n) if revealed else [],
                 )
             )
@@ -607,7 +635,8 @@ class MatchService:
             phase=match.phase,
             seed_token=match.seed,
             seed_emoji=match.seed_emoji if template.mode == "escalation" else "",
-            rounds=self._rounds(match, template),
+            rounds=self._rounds(match, template, extra["human_seat"]),
+            round_in_play=match.round_n,
             stage_name=extra["stage_name"],
             opponent_name=self.opponent_name,
             to_move=match.to_move,
@@ -616,7 +645,7 @@ class MatchService:
             points_p1=p1,
             points_p2=p2,
             judged_moves=match.judged_moves,
-            move_budget=template.move_budget,
+            move_budget=template.rounds_budget * len(match.seats),
             transcript=[
                 TurnView(
                     seq=t["seq"],
@@ -763,9 +792,10 @@ class MatchService:
             template = self.template_of(match)
             card = template.seed_named(match.card)
             assert card is not None
-            pick = self._resolve_pick(match, card, "p1", key)
+            seat = extra["human_seat"]
+            pick = self._resolve_pick(match, card, seat, key)
             try:
-                apply_guess(match, "p1", pick, expected_version, template)
+                apply_guess(match, seat, pick, expected_version, template)
             except (StaleVersionError, ValueError) as e:
                 raise MatchError(409, str(e)) from e
             async with self.pool.connection() as conn, conn.transaction():
@@ -783,9 +813,10 @@ class MatchService:
             if await self._action_seen(match_id, action_id):
                 return
             await self._check_command(match, extra, session_key, expected_version)
-            resign(match, "p1", expected_version)
+            seat = extra["human_seat"]
+            resign(match, seat, expected_version, self.template_of(match))
             await self._store_turn(
-                match, "p1", "", "deterministic_invalid", None, "resign", None, action_id
+                match, seat, "", "deterministic_invalid", None, "resign", None, action_id
             )
         await self._emit_match_ended(match, coaching_line=None)
 
@@ -814,7 +845,7 @@ class MatchService:
         """The match's own session, or any session signed in to the same account."""
         if session_key is None:
             return False
-        if extra["p1_session_key"] == session_key:
+        if extra["owner_session"] == session_key:
             return True
         if extra["owner_account"] is None:
             return False
@@ -841,7 +872,7 @@ class MatchService:
         await self._check_owner(extra, session_key)
         if match.status in ("ended", "abandoned"):
             raise MatchError(409, "match already ended")
-        if match.status != "active" or match.to_move != "p1":
+        if match.status != "active" or match.to_move != extra["human_seat"]:
             raise MatchError(409, "not your move")
         if phase is not None and match.phase != phase:
             raise MatchError(409, "not your move" if phase == "write" else "no call to make")
@@ -875,18 +906,17 @@ class MatchService:
     async def _run_human_move(self, match_id: str, action_id: str, move_text: str) -> None:
         async with self.locks[match_id]:
             match, extra = await self._load(match_id)
-            if match.status != "awaiting_judgment" or match.to_move != "p1":
+            seat = extra["human_seat"]
+            if match.status != "awaiting_judgment" or match.to_move != seat:
                 return
             template = self.template_of(match)
             try:
                 if template.mode == "showcase":
-                    await self._play_round(
-                        match, template, extra["held_move"], move_text, action_id
-                    )
+                    await self._play_round(match, template, extra, move_text, action_id)
                     return
-                ended = await self._play_move(match, template, "p1", move_text, action_id)
-                if not ended and match.to_move == "p2":
-                    await self._play_opponent(match, template)
+                ended = await self._play_move(match, template, seat, move_text, action_id)
+                if not ended and match.to_move in extra["models"]:
+                    await self._play_opponent(match, template, extra["models"])
             except MatchClosed:
                 log.info("match %s closed while waiting on the judge", match_id)
             except Exception:
@@ -983,6 +1013,7 @@ class MatchService:
             points_p1=p1,
             points_p2=p2,
             to_move=match.to_move,
+            round_in_play=match.round_n,
             state_version=match.state_version,
         )
 
@@ -1011,11 +1042,13 @@ class MatchService:
         return False
 
     async def _play_round(
-        self, match: Match, template: Template, held: str | None, move_text: str, action_id: str
+        self, match: Match, template: Template, extra: dict, move_text: str, action_id: str
     ) -> None:
-        """Showcase: both answers are judged together. The rulings stay held until the
-        round is revealed, which waits on the player's call when the game has one."""
-        if await self._refuse_layer1(match, template, "p1", move_text, action_id):
+        """Showcase: the player's answer and the House's are judged together. The rulings stay
+        held until the round is revealed, which waits on the player's call when there is one."""
+        seat = extra["human_seat"]
+        (house_seat,) = extra["models"]
+        if await self._refuse_layer1(match, template, seat, move_text, action_id):
             return
         card = template.seed_named(match.card)
         assert card is not None
@@ -1025,7 +1058,9 @@ class MatchService:
         house_future = self.held.pop(match.id, None)
         if house_future is None:
             house_future = asyncio.ensure_future(
-                self._write_and_judge_house(match, template, held, seq + 1, card, lines)
+                self._write_and_judge_house(
+                    match, template, extra["held_move"], seq + 1, card, lines
+                )
             )
         human, house = await asyncio.gather(
             self._judge_until_ruled(
@@ -1035,7 +1070,7 @@ class MatchService:
             return_exceptions=True,
         )
         if isinstance(house, HouseStuck):
-            resign(match, "p2", match.state_version)
+            resign(match, house_seat, match.state_version, template)
             await self._save(match)
             await self._emit_match_ended(match, coaching_line=None)
             return
@@ -1044,16 +1079,16 @@ class MatchService:
         if isinstance(house, BaseException):
             raise house
         if human.outcome == "semantic_reject":
-            await self._refuse_semantic(match, template, "p1", move_text, human, action_id)
+            await self._refuse_semantic(match, template, seat, move_text, human, action_id)
             keep: asyncio.Future[tuple[Judged, str]] = asyncio.get_running_loop().create_future()
             keep.set_result(house)
             self.held[match.id] = keep
             return
         await self._record_ruling(
-            match, template, "p1", move_text, human, seq, action_id, card.hidden
+            match, template, seat, move_text, human, seq, action_id, card.hidden
         )
         await self._record_ruling(
-            match, template, "p2", house[1], house[0], seq + 1, None, card.hidden
+            match, template, house_seat, house[1], house[0], seq + 1, None, card.hidden
         )
         await self._hold(match.id, None)
         if match.phase == "guess":
@@ -1062,7 +1097,7 @@ class MatchService:
                 "guess_opened",
                 GuessOpened(
                     round_n=match.round_n,
-                    options=self._options(match, card, "p1"),
+                    options=self._options(match, card, seat),
                     state_version=match.state_version,
                 ),
             )
@@ -1098,6 +1133,7 @@ class MatchService:
                     points_p1=p1,
                     points_p2=p2,
                     to_move=match.to_move,
+                    round_in_play=match.round_n,
                     state_version=match.state_version,
                 ),
             )
@@ -1257,21 +1293,27 @@ class MatchService:
             ),
         )
 
-    async def _play_opponent(self, match: Match, template: Template) -> None:
-        strikes_before = match.strikes["p2"]
-        while match.status == "active" and match.to_move == "p2":
-            refusals = match.strikes["p2"] - strikes_before
-            if refusals < template.strikes_before_consequence:
-                move_text = await self._stream_opponent_move(match, template, match.seed)
-            elif refusals == template.strikes_before_consequence:
-                move_text = template.default_move
-            else:
-                resign(match, "p2", match.state_version)
-                await self._save(match)
-                await self._emit_match_ended(match, coaching_line=None)
-                return
-            if await self._play_move(match, template, "p2", move_text, None):
-                return
+    async def _play_opponent(
+        self, match: Match, template: Template, models: frozenset[str]
+    ) -> None:
+        """Plays every model seat whose turn it is, until a human seat is to move."""
+        while match.status == "active" and match.to_move in models:
+            seat = match.to_move
+            strikes_before = match.strikes[seat]
+            while match.status == "active" and match.to_move == seat:
+                refusals = match.strikes[seat] - strikes_before
+                if refusals < template.strikes_before_consequence:
+                    move_text = await self._stream_opponent_move(match, template, match.seed)
+                elif refusals == template.strikes_before_consequence:
+                    move_text = template.default_move
+                else:
+                    resign(match, seat, match.state_version, template)
+                    await self._save(match)
+                    if match.status == "ended":
+                        await self._emit_match_ended(match, coaching_line=None)
+                    return
+                if await self._play_move(match, template, seat, move_text, None):
+                    return
 
     async def _stream_opponent_move(
         self, match: Match, template: Template, prompt: str, hidden: str = "", silent: bool = False

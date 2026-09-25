@@ -35,7 +35,7 @@ class DemoPoints(BaseModel):
 
 
 class DemoMoveView(BaseModel):
-    actor: Literal["p1", "p2"]
+    actor: str
     text: str
     emoji: str
     points: list[DemoPoints] | None
@@ -77,14 +77,13 @@ class TemplateView(BaseModel):
     accent: str
     premise: str
     mode: Literal["escalation", "showcase"]
-    rounds: int | None
+    rounds_budget: int
     rubric: list[RubricView]
     rules: list[str]
     max_chars: int
     move_prefix: str
     move_example: str
     move_hint: str
-    move_budget: int
     score_max: int
     host_name: str
     labels: LabelsView
@@ -97,7 +96,7 @@ class TemplateView(BaseModel):
 class TurnView(BaseModel):
     seq: int
     round_n: int
-    actor: Literal["p1", "p2"]
+    actor: str
     move_text: str
     outcome: Outcome
     scoring: ScoringPayload | None
@@ -129,10 +128,11 @@ class MatchSnapshot(BaseModel):
     seed_token: str
     seed_emoji: str
     rounds: list[RoundView]
+    round_in_play: int
     stage_name: str
     opponent_name: str
-    to_move: Literal["p1", "p2"]
-    winner: Literal["p1", "p2"] | None
+    to_move: str
+    winner: str | None
     end_reason: EndReason | None
     points_p1: int
     points_p2: int

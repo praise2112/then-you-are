@@ -6,7 +6,6 @@ import secrets
 from dataclasses import dataclass
 
 from arena_core.state import (
-    PLAYERS,
     Actor,
     Match,
     apply_ruling,
@@ -89,7 +88,7 @@ class MatchPlayer:
                 elif refusals == template.strikes_before_consequence:
                     text = template.default_move
                 else:
-                    resign(match, actor, match.state_version)
+                    resign(match, actor, match.state_version, template)
                     break
                 await self._play_move(actor, text)
 
@@ -112,7 +111,7 @@ class MatchPlayer:
             card = template.seed_named(match.card)
             assert card is not None
             lines = transcript(match, template)
-            for actor in PLAYERS:
+            for actor in match.live_seats:
                 judged = await self._write_and_judge_bluff(actor, card, lines)
                 proximity = judged.response.scoring.truth_proximity if card.hidden else "none"
                 points = weighted_total(judged.response.scoring.scores, template.weights)

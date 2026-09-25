@@ -60,8 +60,8 @@ async def resign(client: httpx.AsyncClient, app) -> None:
 
 def test_streaks_skip_draws_and_reset_on_a_loss():
     assert streaks([]) == (0, 0)
-    assert streaks(["p1", "p1", None, "p2", "p1"]) == (1, 2)
-    assert streaks(["p2", "p1", "p1", "p1"]) == (3, 3)
+    assert streaks([True, True, None, False, True]) == (1, 2)
+    assert streaks([False, True, True, True]) == (3, 3)
 
 
 def test_public_names_are_first_names_only():

@@ -103,7 +103,7 @@ type CallLineProps = { group: RoundGroup; me: string; theirs?: string };
 
 /** How the call went: who was fooled, who saw through it, and what it paid. */
 export function CallLine({ group, me, theirs = HOUSE }: CallLineProps) {
-  const name = (actor: "p1" | "p2") => (actor === "p1" ? me : theirs);
+  const name = (actor: string) => (actor === "p1" ? me : theirs);
   if (group.round.guesses.length === 0) {
     return <p className="call-line">Nothing to call this round. {theirs} had written the real meaning.</p>;
   }

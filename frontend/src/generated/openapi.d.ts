@@ -471,11 +471,8 @@ export interface components {
         };
         /** DemoMoveView */
         DemoMoveView: {
-            /**
-             * Actor
-             * @enum {string}
-             */
-            actor: "p1" | "p2";
+            /** Actor */
+            actor: string;
             /** Text */
             text: string;
             /** Emoji */
@@ -620,23 +617,14 @@ export interface components {
          * @description A call made: who picked, what they picked (the truth or a player's bluff), who got paid.
          */
         GuessView: {
-            /**
-             * Actor
-             * @enum {string}
-             */
-            actor: "p1" | "p2";
-            /**
-             * Picked
-             * @enum {string}
-             */
-            picked: "truth" | "p1" | "p2";
+            /** Actor */
+            actor: string;
+            /** Picked */
+            picked: string;
             /** Points */
             points: number;
-            /**
-             * Awarded To
-             * @enum {string}
-             */
-            awarded_to: "p1" | "p2";
+            /** Awarded To */
+            awarded_to: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -720,7 +708,7 @@ export interface components {
              */
             end_reason: "sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned";
             /** Winner */
-            winner: ("p1" | "p2") | null;
+            winner: string | null;
             /** Points P1 */
             points_p1: number;
             /** Points P2 */
@@ -767,17 +755,16 @@ export interface components {
             seed_emoji: string;
             /** Rounds */
             rounds: components["schemas"]["RoundView"][];
+            /** Round In Play */
+            round_in_play: number;
             /** Stage Name */
             stage_name: string;
             /** Opponent Name */
             opponent_name: string;
-            /**
-             * To Move
-             * @enum {string}
-             */
-            to_move: "p1" | "p2";
+            /** To Move */
+            to_move: string;
             /** Winner */
-            winner: ("p1" | "p2") | null;
+            winner: string | null;
             /** End Reason */
             end_reason: ("sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned") | null;
             /** Points P1 */
@@ -891,17 +878,16 @@ export interface components {
             seed_emoji: string;
             /** Rounds */
             rounds: components["schemas"]["RoundView"][];
+            /** Round In Play */
+            round_in_play: number;
             /** Stage Name */
             stage_name: string;
             /** Opponent Name */
             opponent_name: string;
-            /**
-             * To Move
-             * @enum {string}
-             */
-            to_move: "p1" | "p2";
+            /** To Move */
+            to_move: string;
             /** Winner */
-            winner: ("p1" | "p2") | null;
+            winner: string | null;
             /** End Reason */
             end_reason: ("sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned") | null;
             /** Points P1 */
@@ -1005,11 +991,8 @@ export interface components {
             seq: number;
             /** Round N */
             round_n: number;
-            /**
-             * Actor
-             * @enum {string}
-             */
-            actor: "p1" | "p2";
+            /** Actor */
+            actor: string;
             /** Move Text */
             move_text: string;
             /**
@@ -1027,11 +1010,10 @@ export interface components {
             points_p1: number;
             /** Points P2 */
             points_p2: number;
-            /**
-             * To Move
-             * @enum {string}
-             */
-            to_move: "p1" | "p2";
+            /** To Move */
+            to_move: string;
+            /** Round In Play */
+            round_in_play: number;
             /** State Version */
             state_version: number;
         };
@@ -1153,8 +1135,8 @@ export interface components {
              * @enum {string}
              */
             mode: "escalation" | "showcase";
-            /** Rounds */
-            rounds: number | null;
+            /** Rounds Budget */
+            rounds_budget: number;
             /** Rubric */
             rubric: components["schemas"]["RubricView"][];
             /** Rules */
@@ -1167,8 +1149,6 @@ export interface components {
             move_example: string;
             /** Move Hint */
             move_hint: string;
-            /** Move Budget */
-            move_budget: number;
             /** Score Max */
             score_max: number;
             /** Host Name */
@@ -1203,11 +1183,8 @@ export interface components {
             seq: number;
             /** Round N */
             round_n: number;
-            /**
-             * Actor
-             * @enum {string}
-             */
-            actor: "p1" | "p2";
+            /** Actor */
+            actor: string;
             /** Move Text */
             move_text: string;
             /**

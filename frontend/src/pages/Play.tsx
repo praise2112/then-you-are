@@ -171,7 +171,7 @@ function EscalationRules({ template }: { template: TemplateView }) {
         </p>
       </div>
       <p className="rules-foot">
-        One move that fails ends the match. {template.move_budget} moves with nobody falling goes to points. A muddled
+        One move that fails ends the match. {template.rounds_budget} rounds with nobody falling goes to points. A muddled
         move comes back to you, no harm done. Under {template.max_chars} characters a move.
       </p>
     </>

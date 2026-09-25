@@ -11,17 +11,12 @@ create table if not exists matches (
     config jsonb not null,
     seed_token text not null,
     seed_emoji text not null,
-    p1_session_key text not null references sessions(session_key),
-    p2_model_ref text not null,
     status text not null,
     state_version int not null default 0,
     to_move text not null default 'p1',
+    round_n int not null default 1,
     winner text,
     end_reason text,
-    points_p1 integer not null default 0,
-    points_p2 integer not null default 0,
-    strikes_p1 int not null default 0,
-    strikes_p2 int not null default 0,
     is_public boolean not null default true,
     is_curated boolean not null default false,
     created_at timestamptz not null default now(),
@@ -106,7 +101,6 @@ begin
 end $$;
 
 create index if not exists sessions_account_id_idx on sessions (account_id);
-create index if not exists matches_p1_session_key_idx on matches (p1_session_key);
 
 alter table matches add column if not exists phase text not null default 'write';
 create table if not exists guesses (
@@ -122,3 +116,54 @@ create table if not exists guesses (
     unique (match_id, round_n, actor),
     unique (match_id, action_id)
 );
+
+-- One row per seat, in turn order p1..pN. A human seat has a session; a model seat a model ref.
+create table if not exists seats (
+    match_id text not null references matches(id),
+    seat text not null,
+    kind text not null check (kind in ('human', 'model')),
+    session_key text references sessions(session_key),
+    model_ref text,
+    points int not null default 0,
+    strikes int not null default 0,
+    eliminated_at timestamptz,
+    primary key (match_id, seat),
+    check ((kind = 'human') = (session_key is not null))
+);
+create index if not exists seats_session_key_idx on seats (session_key);
+alter table matches add column if not exists round_n int not null default 1;
+
+do $$
+begin
+    if exists (
+        select 1 from information_schema.columns
+        where table_schema = current_schema() and table_name = 'matches'
+        and column_name = 'p1_session_key'
+    ) then
+        insert into seats (match_id, seat, kind, session_key, points, strikes)
+        select id, 'p1', 'human', p1_session_key, points_p1, strikes_p1 from matches
+        on conflict do nothing;
+        insert into seats (match_id, seat, kind, model_ref, points, strikes)
+        select id, 'p2', 'model', p2_model_ref, points_p2, strikes_p2 from matches
+        on conflict do nothing;
+        update matches m
+        set round_n = case when m.phase = 'guess' then j.judged / 2 else j.judged / 2 + 1 end
+        from (
+            select m2.id, count(t.id) filter (
+                where t.seq is not null and t.outcome in ('accept', 'fail', 'semantic_uncertain')
+            ) as judged
+            from matches m2 left join turns t on t.match_id = m2.id group by m2.id
+        ) j
+        where j.id = m.id;
+        alter table matches
+            drop column p1_session_key, drop column p2_model_ref,
+            drop column points_p1, drop column points_p2,
+            drop column strikes_p1, drop column strikes_p2;
+    end if;
+end $$;
+
+-- Stored templates carry the budget in rounds: one move per seat per round.
+update matches
+set config = (config - 'move_budget')
+    || jsonb_build_object('rounds_budget', (config ->> 'move_budget')::int / 2)
+where config ? 'move_budget';

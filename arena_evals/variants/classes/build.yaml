@@ -6,7 +6,8 @@ fixed:
   - mode
   - win_condition
   - tie_policy
-  - move_budget
+  - rounds_budget
+  - num_players
   - strikes_before_consequence
   - guess
   - criterion.verb

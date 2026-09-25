@@ -77,7 +77,7 @@ export function groupRounds(rounds: RoundView[], transcript: TurnView[]): RoundG
 
 /** Each side's points for a round: the bluff's marks plus whatever the call paid them. */
 export function roundTotals({ round, mine, theirs }: RoundGroup): { mine: number; theirs: number } {
-  const paid = (actor: "p1" | "p2") =>
+  const paid = (actor: string) =>
     round.guesses.filter((g) => g.awarded_to === actor).reduce((sum, g) => sum + g.points, 0);
   return { mine: (mine?.points ?? 0) + paid("p1"), theirs: (theirs?.points ?? 0) + paid("p2") };
 }

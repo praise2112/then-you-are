@@ -300,7 +300,10 @@ opponent_prompt: 'You are one player in a group chat courtroom, trying to surviv
   '
 guess: null
 medallions: true
-move_budget: 10
+num_players:
+  min: 2
+  max: 4
+rounds_budget: 5
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2

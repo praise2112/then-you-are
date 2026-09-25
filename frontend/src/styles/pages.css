@@ -571,8 +571,17 @@
 }
 
 .decided-tag {
-  margin-left: 0.4rem;
+  display: block;
+  font-variant: normal;
+  letter-spacing: 0;
   font-size: 0.75rem;
+  font-style: italic;
+  color: var(--vermilion-ink);
+}
+
+.last-round {
+  margin: 0.2rem 0 var(--space-1);
+  font-size: 0.9rem;
   font-style: italic;
   color: var(--vermilion-ink);
 }
