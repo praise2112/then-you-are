@@ -204,6 +204,8 @@ def test_transcript_names_players_and_opens_showcase_rounds_with_the_card():
     assert lines[1:] == ["player1: a cup holder"]
     assert transcript(words, WORDS, finished_only=True) == []
     apply_ruling(words, "p2", "a hat", "accept", 1, WORDS, points=20)
+    assert transcript(words, WORDS, finished_only=True) == []
+    apply_guess(words, "p1", "truth", 2, WORDS)
     assert transcript(words, WORDS, finished_only=True)[1:] == [
         "player1: a cup holder",
         "player2: a hat",

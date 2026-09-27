@@ -1,4 +1,5 @@
-"""A player's programme: record per game, badges, every duel, best duels."""
+"""A player's programme: record per game against the House, badges, every duel, best duels,
+and the games played against people, which never count on the record."""
 
 from typing import Any
 
@@ -7,7 +8,7 @@ from arena_server.leaderboard import account_rank, streaks
 from arena_server.matches import MatchError, MatchService
 from arena_server.views import BadgeCount, DuelRow, GameRecord, ProfileView
 
-OPEN = ("active", "awaiting_judgment", "paused")
+OPEN = ("open", "active", "awaiting_judgment", "paused")
 BEST_SHOWN = 2
 
 
@@ -32,7 +33,12 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                 "select m.id, m.template_id, m.status, m.winner = se.seat as won, "
                 "m.end_reason, se.points as my_points, (select max(o.points) from seats o "
                 "where o.match_id = m.id and o.seat <> se.seat) as their_points, m.created_at, "
-                "m.ended_at, m.is_public, m.is_curated, "
+                "m.ended_at, m.is_public, m.is_curated, m.kind, "
+                "(select count(*) from seats o where o.match_id = m.id) as seat_count, "
+                "(select array_agg(case when o.kind = 'model' then null else "
+                "coalesce(os.stage_name, 'Challenger') end order by o.seat) from seats o "
+                "left join sessions os on os.session_key = o.session_key "
+                "where o.match_id = m.id and o.seat <> se.seat) as others, "
                 "(select count(*) from turns t where t.match_id = m.id and t.seq is not null "
                 "and t.outcome in ('accept', 'fail', 'semantic_uncertain')) as judged, "
                 "(select count(*) from turns t where t.match_id = m.id and t.actor = se.seat "
@@ -67,9 +73,10 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                 (won_ids,),
             )
         ).fetchall()
+        ranked = [m for m in matches if m["kind"] == "house"]
         records = []
         for slug, template in service.templates.items():
-            ended = [m for m in matches if m["template_id"] == slug and m["status"] == "ended"]
+            ended = [m for m in ranked if m["template_id"] == slug and m["status"] == "ended"]
             if not ended:
                 continue
             _, best = streaks([m["won"] for m in sorted(ended, key=lambda m: m["ended_at"])])
@@ -85,10 +92,10 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                 )
             )
 
-    ended_all = sorted((m for m in matches if m["status"] == "ended"), key=lambda m: m["ended_at"])
+    ended_all = sorted((m for m in ranked if m["status"] == "ended"), key=lambda m: m["ended_at"])
     streak, best_streak = streaks([m["won"] for m in ended_all])
     shown = [m for m in matches if is_yours or (m["status"] == "ended" and m["is_public"])]
-    best_ids = _best_ids(shown, scorings, service)
+    best_ids = _best_ids([m for m in shown if m["kind"] == "house"], scorings, service)
     return ProfileView(
         id=account["id"],
         display_name=account["display_name"],
@@ -100,7 +107,8 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
         best_streak=best_streak,
         records=records,
         badges=[BadgeCount(name=b["name"], count=b["count"]) for b in badge_rows],
-        duels=[_row(m, service) for m in shown],
+        duels=[_row(m, service) for m in shown if m["kind"] == "house"],
+        people=[_row(m, service) for m in shown if m["kind"] != "house"],
         best=[await service.replay(match_id, session_key) for match_id in best_ids],
         is_yours=is_yours,
     )
@@ -126,7 +134,7 @@ def _row(m: Any, service: MatchService) -> DuelRow:
     if m["judged"] == 0:
         length = "no moves"
     elif template.mode == "showcase":
-        rounds = m["judged"] // 2
+        rounds = m["judged"] // m["seat_count"]
         length = f"{rounds} {'round' if rounds == 1 else 'rounds'}"
     else:
         length = f"{m['judged']} {'move' if m['judged'] == 1 else 'moves'}"
@@ -140,12 +148,17 @@ def _row(m: Any, service: MatchService) -> DuelRow:
         result=_result(m, template.mode),
         won=won,
         is_public=m["is_public"],
+        against=", ".join(name or "The House" for name in m["others"] or []),
     )
 
 
 def _result(m: Any, mode: str) -> str:
+    if m["status"] == "open":
+        return "Waiting for players"
     if m["status"] in OPEN:
         return "On stage"
+    if m["end_reason"] == "unfilled":
+        return "Nobody joined"
     if m["status"] == "abandoned":
         return "Closed, no move for a day"
     won = m["won"] is True
@@ -156,5 +169,9 @@ def _result(m: Any, mode: str) -> str:
             return f"{'Won' if won else 'Lost'} {m['my_points']} to {m['their_points']}"
         return "Won on points" if won else "Lost on points"
     if m["end_reason"] == "resign":
-        return "The House resigned" if won else "Resigned"
+        if won:
+            return "The House resigned" if m["kind"] == "house" else "Last one standing"
+        return "Resigned"
+    if m["end_reason"] == "forfeit":
+        return "Last one standing" if won else "Out of turns"
     return "Victory" if won else f"Fell in round {m['my_moves']}"

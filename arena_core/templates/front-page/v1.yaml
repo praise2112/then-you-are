@@ -241,7 +241,7 @@ labels:
   compose_waiting: Draft your headline while you wait
 rules:
   - Three rounds, one dull true fact each.
-  - Write a tabloid headline for it, under 90 characters. The House writes its own, unseen, and the Editor scores both.
+  - Write a tabloid headline for it, under 90 characters. Everyone else at the table writes one too, unseen, and the Editor scores each.
   - The fact must still be true to someone who reads only your headline. Drop it, flip it or break it and the round is lost.
   - Everything else is yours to invent. The further you get from the fact while it still holds, the more you score. Most points after three rounds wins.
 validation_messages:

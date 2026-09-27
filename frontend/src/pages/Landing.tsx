@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import { AccountMenu } from "../Account.tsx";
 import { Link, navigate, ThemeToggle } from "../App.tsx";
-import { api, type DemoPoints, type OpenDuel, type TemplateView } from "../api.ts";
+import { api, usePresence, type DemoPoints, type OpenDuel, type SocketMessage, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
 import { fullMove, HOUSE } from "./format.ts";
+import { AiTag } from "./seats.tsx";
 
 export function Landing() {
   const [templates, setTemplates] = useState<TemplateView[] | null>(null);
@@ -13,6 +14,11 @@ export function Landing() {
     api.templates().then(setTemplates, () => setTemplates(null));
     api.session().then((s) => setOpenDuels(s.open_duels), () => setOpenDuels([]));
   }, []);
+  // Your turn at a table elsewhere: the band above the board says so.
+  const onMessage = useCallback((message: SocketMessage) => {
+    if (message.type === "turn_nudge") api.session().then((s) => setOpenDuels(s.open_duels), () => undefined);
+  }, []);
+  usePresence(onMessage);
   const template = templates?.find((t) => t.featured) ?? templates?.[0] ?? null;
 
   return (
@@ -21,6 +27,7 @@ export function Landing() {
         <span className="wordmark">Oddstage</span>
         <span className="aside">
           <Link to="/games">Games</Link>
+          <Link to="/lobby">Tables</Link>
           <Link to="/stage">Watch</Link>
           <Link to="/standings">Standings</Link>
           <AccountMenu />
@@ -31,7 +38,7 @@ export function Landing() {
       {openDuels.map((duel) => (
         <div key={duel.id} className="open-duel">
           <p>
-            You have a duel waiting. <b>{duel.title}</b>, {duel.line}.
+            You have a game waiting. <b>{duel.title}</b>, {duel.line}.
           </p>
           <Link className="ticket" to={`/m/${duel.id}`}>
             Resume
@@ -112,6 +119,9 @@ export function Stage({ template }: { template: TemplateView }) {
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [firstVisit] = useState(() => !store.demoSeen(template.slug));
+  const [mode, setMode] = useState<"house" | "friends" | "anyone">("house");
+  const range = template.num_players;
+  const [seats, setSeats] = useState(() => Math.min(range.max, template.mode === "showcase" ? 4 : 2));
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -147,6 +157,22 @@ export function Stage({ template }: { template: TemplateView }) {
     }
   }
 
+  async function openTable() {
+    setStarting(true);
+    setError(null);
+    const stageName = store.stageName() || undefined;
+    try {
+      const id =
+        mode === "friends"
+          ? (await api.createMatch(template.slug, { stageName, friends: true, seats })).id
+          : (await api.quickMatch(template.slug, seats, stageName)).match_id;
+      navigate(`/m/${id}`);
+    } catch (e) {
+      setError((e as Error).message);
+      setStarting(false);
+    }
+  }
+
   const ghostText = elsewhere.examples[ghost % elsewhere.examples.length];
   const showGhost = !tail && !focused;
   const guess = template.mode === "showcase" && demo.opening.reveal ? template.guess : null;
@@ -155,7 +181,10 @@ export function Stage({ template }: { template: TemplateView }) {
       {demo.moves.map((move) => (
         <li key={move.actor}>
           <span>
-            <span className={`who${move.actor === "p1" ? " you" : ""}`}>{move.actor === "p1" ? "You" : HOUSE}</span>
+            <span className={`who${move.actor === "p1" ? " you" : ""}`}>
+              {move.actor === "p1" ? "You" : HOUSE}
+              {move.actor !== "p1" && <AiTag />}
+            </span>
             <i className="prefix">{prefix}</i>
             {move.text.slice(prefix.length)}
           </span>
@@ -172,6 +201,35 @@ export function Stage({ template }: { template: TemplateView }) {
         <small>{template.tagline}</small>
       </h1>
 
+      <div className="modes" role="tablist" aria-label="Who you play">
+        {(["house", "friends", "anyone"] as const).map((m) => (
+          <button key={m} type="button" role="tab" aria-selected={mode === m} className={mode === m ? "on" : undefined} onClick={() => setMode(m)}>
+            {m === "house" ? (
+              <>
+                The House <AiTag />
+              </>
+            ) : m === "friends" ? (
+              "Friends"
+            ) : (
+              "Anyone"
+            )}
+          </button>
+        ))}
+      </div>
+      {mode !== "house" ? (
+        <div className="seats-pick">
+          <span>Seats</span>
+          {Array.from({ length: range.max - range.min + 1 }, (_, i) => range.min + i).map((n) => (
+            <button key={n} type="button" className={seats === n ? "on" : undefined} aria-pressed={seats === n} onClick={() => setSeats(n)}>
+              {n}
+            </button>
+          ))}
+          <button className="ticket" type="button" onClick={openTable} disabled={starting}>
+            {mode === "friends" ? "Get the link" : "Find a table"}
+          </button>
+        </div>
+      ) : (
+        <>
       <p className="opening">
         <span className="emblem" aria-hidden="true">
           {opening.emoji}
@@ -209,6 +267,8 @@ export function Stage({ template }: { template: TemplateView }) {
           {starting ? "Curtain up" : "Play it"}
         </button>
       </form>
+        </>
+      )}
       {error && <p className="hint error">{error}</p>}
 
       <details className="how-a-round" open={firstVisit}>

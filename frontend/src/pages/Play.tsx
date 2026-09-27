@@ -25,6 +25,7 @@ export function GamePage({ slug }: { slug: string }) {
         </Link>
         <span className="aside">
           <Link to="/games">Games</Link>
+          <Link to="/lobby">Tables</Link>
           <Link to={`/standings/${template.slug}`}>Standings</Link>
           <AccountMenu />
           <ThemeToggle icon />

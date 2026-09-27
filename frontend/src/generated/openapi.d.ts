@@ -144,6 +144,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/tables/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Join Table */
+        post: operations["join_table_tables_join_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tables/quick": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Quick Match */
+        post: operations["quick_match_tables_quick_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/matches/{match_id}/seats/house": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add House */
+        post: operations["add_house_matches__match_id__seats_house_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Tables */
+        get: operations["get_tables_tables_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ws-payloads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ws Payloads */
+        get: operations["ws_payloads_ws_payloads_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/profiles/{account_id}": {
         parameters: {
             query?: never;
@@ -463,6 +548,17 @@ export interface components {
             seed_token?: string | null;
             /** First Move */
             first_move?: string | null;
+            /**
+             * Kind
+             * @default house
+             * @enum {string}
+             */
+            kind: "house" | "friends";
+            /**
+             * Seats
+             * @default 2
+             */
+            seats: number;
         };
         /** CurateCommand */
         CurateCommand: {
@@ -522,7 +618,7 @@ export interface components {
              * Status
              * @enum {string}
              */
-            status: "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
+            status: "open" | "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
             /** Length */
             length: string;
             /** Result */
@@ -531,6 +627,8 @@ export interface components {
             won: boolean | null;
             /** Is Public */
             is_public: boolean;
+            /** Against */
+            against: string;
         };
         /** Evidence */
         Evidence: {
@@ -580,16 +678,17 @@ export interface components {
             expected_version: number;
             /** Key */
             key: string;
+            /** Round N */
+            round_n?: number | null;
         };
         /**
          * GuessOpened
-         * @description Showcase only: both bluffs are judged and the player may call the real entry.
+         * @description Showcase only: every answer is judged and the guessers may call the real entry. Each
+         *     guesser reads its own options from the snapshot.
          */
         GuessOpened: {
             /** Round N */
             round_n: number;
-            /** Options */
-            options: components["schemas"]["GuessOption"][];
             /** State Version */
             state_version: number;
         };
@@ -657,6 +756,13 @@ export interface components {
             /** Badges */
             badges?: string[];
         };
+        /** JoinTable */
+        JoinTable: {
+            /** Invite Code */
+            invite_code: string;
+            /** Stage Name */
+            stage_name?: string | null;
+        };
         /** JudgePaused */
         JudgePaused: {
             /** Seq */
@@ -700,19 +806,30 @@ export interface components {
             /** Examples */
             examples: string[];
         };
+        /** Lobby */
+        Lobby: {
+            /**
+             * Type
+             * @default lobby
+             * @constant
+             */
+            type: "lobby";
+            /** Tables */
+            tables: components["schemas"]["TableView"][];
+        };
         /** MatchEnded */
         MatchEnded: {
             /**
              * End Reason
              * @enum {string}
              */
-            end_reason: "sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned";
+            end_reason: "sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned" | "forfeit" | "unfilled";
             /** Winner */
             winner: string | null;
-            /** Points P1 */
-            points_p1: number;
-            /** Points P2 */
-            points_p2: number;
+            /** Totals */
+            totals: {
+                [key: string]: number;
+            };
             /** Highlight Seq */
             highlight_seq: number | null;
             /** Coaching Line */
@@ -738,10 +855,15 @@ export interface components {
              */
             mode: "escalation" | "showcase";
             /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "house" | "friends" | "open";
+            /**
              * Status
              * @enum {string}
              */
-            status: "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
+            status: "open" | "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
             /** State Version */
             state_version: number;
             /**
@@ -757,24 +879,29 @@ export interface components {
             rounds: components["schemas"]["RoundView"][];
             /** Round In Play */
             round_in_play: number;
-            /** Stage Name */
-            stage_name: string;
-            /** Opponent Name */
-            opponent_name: string;
+            /** Seats */
+            seats: components["schemas"]["SeatView"][];
+            /** Seats Wanted */
+            seats_wanted: number;
+            /** Your Seat */
+            your_seat: string | null;
+            /** Invite Code */
+            invite_code: string | null;
+            /** Closes At */
+            closes_at: string | null;
+            /** Turn Deadline */
+            turn_deadline: string | null;
+            /** Clock Seconds */
+            clock_seconds: number | null;
             /** To Move */
             to_move: string;
             /** Winner */
             winner: string | null;
             /** End Reason */
-            end_reason: ("sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned") | null;
-            /** Points P1 */
-            points_p1: number;
-            /** Points P2 */
-            points_p2: number;
+            end_reason: ("sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned" | "forfeit" | "unfilled") | null;
             /** Judged Moves */
             judged_moves: number;
-            /** Move Budget */
-            move_budget: number;
+            returned?: components["schemas"]["TurnRejected"] | null;
             /** Transcript */
             transcript: components["schemas"]["TurnView"][];
             /** Created At */
@@ -787,6 +914,14 @@ export interface components {
              */
             is_yours: boolean;
         };
+        /**
+         * MatchStarted
+         * @description Every seat is filled and play begins.
+         */
+        MatchStarted: {
+            /** State Version */
+            state_version: number;
+        };
         /** MoveCommand */
         MoveCommand: {
             /** Action Id */
@@ -795,6 +930,8 @@ export interface components {
             expected_version: number;
             /** Move Text */
             move_text: string;
+            /** Round N */
+            round_n?: number | null;
         };
         /** MoveToken */
         MoveToken: {
@@ -802,6 +939,24 @@ export interface components {
             seq: number;
             /** Text */
             text: string;
+        };
+        /** NumPlayersView */
+        NumPlayersView: {
+            /** Min */
+            min: number;
+            /** Max */
+            max: number;
+        };
+        /** Online */
+        Online: {
+            /**
+             * Type
+             * @default online
+             * @constant
+             */
+            type: "online";
+            /** Count */
+            count: number;
         };
         /**
          * OpenDuel
@@ -842,10 +997,24 @@ export interface components {
             badges: components["schemas"]["BadgeCount"][];
             /** Duels */
             duels: components["schemas"]["DuelRow"][];
+            /** People */
+            people: components["schemas"]["DuelRow"][];
             /** Best */
             best: components["schemas"]["Replay"][];
             /** Is Yours */
             is_yours: boolean;
+        };
+        /** QuickMatch */
+        QuickMatch: {
+            /** Template Id */
+            template_id: string;
+            /**
+             * Seats
+             * @default 2
+             */
+            seats: number;
+            /** Stage Name */
+            stage_name?: string | null;
         };
         /** Replay */
         Replay: {
@@ -861,10 +1030,15 @@ export interface components {
              */
             mode: "escalation" | "showcase";
             /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "house" | "friends" | "open";
+            /**
              * Status
              * @enum {string}
              */
-            status: "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
+            status: "open" | "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
             /** State Version */
             state_version: number;
             /**
@@ -880,24 +1054,29 @@ export interface components {
             rounds: components["schemas"]["RoundView"][];
             /** Round In Play */
             round_in_play: number;
-            /** Stage Name */
-            stage_name: string;
-            /** Opponent Name */
-            opponent_name: string;
+            /** Seats */
+            seats: components["schemas"]["SeatView"][];
+            /** Seats Wanted */
+            seats_wanted: number;
+            /** Your Seat */
+            your_seat: string | null;
+            /** Invite Code */
+            invite_code: string | null;
+            /** Closes At */
+            closes_at: string | null;
+            /** Turn Deadline */
+            turn_deadline: string | null;
+            /** Clock Seconds */
+            clock_seconds: number | null;
             /** To Move */
             to_move: string;
             /** Winner */
             winner: string | null;
             /** End Reason */
-            end_reason: ("sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned") | null;
-            /** Points P1 */
-            points_p1: number;
-            /** Points P2 */
-            points_p2: number;
+            end_reason: ("sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned" | "forfeit" | "unfilled") | null;
             /** Judged Moves */
             judged_moves: number;
-            /** Move Budget */
-            move_budget: number;
+            returned?: components["schemas"]["TurnRejected"] | null;
             /** Transcript */
             transcript: components["schemas"]["TurnView"][];
             /** Created At */
@@ -940,10 +1119,10 @@ export interface components {
             truth: string;
             /** Guesses */
             guesses: components["schemas"]["GuessView"][];
-            /** Points P1 */
-            points_p1: number;
-            /** Points P2 */
-            points_p2: number;
+            /** Totals */
+            totals: {
+                [key: string]: number;
+            };
             /** State Version */
             state_version: number;
         };
@@ -999,17 +1178,17 @@ export interface components {
              * Outcome
              * @enum {string}
              */
-            outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "judge_unavailable";
+            outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "judge_unavailable" | "forfeit";
             scoring: components["schemas"]["ScoringPayload"];
             host: components["schemas"]["HostPayload"];
             /** Badges */
             badges: string[];
             /** Points */
             points: number;
-            /** Points P1 */
-            points_p1: number;
-            /** Points P2 */
-            points_p2: number;
+            /** Totals */
+            totals: {
+                [key: string]: number;
+            };
             /** To Move */
             to_move: string;
             /** Round In Play */
@@ -1044,6 +1223,54 @@ export interface components {
              * @enum {string}
              */
             truth_proximity: "hit" | "near" | "none";
+        };
+        /**
+         * SeatJoined
+         * @description A player took a seat at a table that is still filling.
+         */
+        SeatJoined: {
+            /** Seat */
+            seat: string;
+            /** State Version */
+            state_version: number;
+        };
+        /**
+         * SeatSubmitted
+         * @description Showcase: a seat has written or called for the round in play. Says nothing about what.
+         */
+        SeatSubmitted: {
+            /** Seat */
+            seat: string;
+            /** State Version */
+            state_version: number;
+        };
+        /**
+         * SeatView
+         * @description One seat at the table, in turn order. Points leave out the round still being played.
+         */
+        SeatView: {
+            /** Seat */
+            seat: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "human" | "model";
+            /** Display Name */
+            display_name: string;
+            /** Model */
+            model: string | null;
+            /** Points */
+            points: number;
+            /** Eliminated */
+            eliminated: boolean;
+            /** Answered */
+            answered: boolean;
+        };
+        /** Seated */
+        Seated: {
+            /** Match Id */
+            match_id: string;
         };
         /** SessionUpdate */
         SessionUpdate: {
@@ -1085,6 +1312,10 @@ export interface components {
             round_revealed: components["schemas"]["RoundRevealed"];
             guess_opened: components["schemas"]["GuessOpened"];
             state_resync: components["schemas"]["StateResync"];
+            seat_joined: components["schemas"]["SeatJoined"];
+            match_started: components["schemas"]["MatchStarted"];
+            seat_submitted: components["schemas"]["SeatSubmitted"];
+            turn_changed: components["schemas"]["TurnChanged"];
         };
         /**
          * StageView
@@ -1116,6 +1347,30 @@ export interface components {
             /** State Version */
             state_version: number;
         };
+        /**
+         * TableView
+         * @description An open table in the lobby, waiting for players.
+         */
+        TableView: {
+            /** Id */
+            id: string;
+            /** Template Id */
+            template_id: string;
+            /** Title */
+            title: string;
+            /** Emblem */
+            emblem: string;
+            /** Host Name */
+            host_name: string;
+            /** Invite Code */
+            invite_code: string;
+            /** Seats Taken */
+            seats_taken: number;
+            /** Seats Wanted */
+            seats_wanted: number;
+            /** Created At */
+            created_at: string;
+        };
         /** TemplateView */
         TemplateView: {
             /** Slug */
@@ -1137,6 +1392,7 @@ export interface components {
             mode: "escalation" | "showcase";
             /** Rounds Budget */
             rounds_budget: number;
+            num_players: components["schemas"]["NumPlayersView"];
             /** Rubric */
             rubric: components["schemas"]["RubricView"][];
             /** Rules */
@@ -1161,10 +1417,42 @@ export interface components {
             featured: boolean;
             demo: components["schemas"]["DemoView"];
         };
+        /**
+         * TurnChanged
+         * @description The turn passed without a ruling to show: a forfeit, a resign, or play moved on.
+         */
+        TurnChanged: {
+            /** To Move */
+            to_move: string;
+            /** Turn Deadline */
+            turn_deadline: string | null;
+            /** Round In Play */
+            round_in_play: number;
+            /** State Version */
+            state_version: number;
+        };
+        /**
+         * TurnNudge
+         * @description Your seat is to move in a match you are not looking at.
+         */
+        TurnNudge: {
+            /**
+             * Type
+             * @default turn_nudge
+             * @constant
+             */
+            type: "turn_nudge";
+            /** Match Id */
+            match_id: string;
+            /** Title */
+            title: string;
+        };
         /** TurnRejected */
         TurnRejected: {
             /** Seq */
             seq?: number | null;
+            /** Seat */
+            seat: string;
             /**
              * Outcome
              * @enum {string}
@@ -1191,7 +1479,7 @@ export interface components {
              * Outcome
              * @enum {string}
              */
-            outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "judge_unavailable";
+            outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "judge_unavailable" | "forfeit";
             scoring: components["schemas"]["ScoringPayload"] | null;
             host: components["schemas"]["HostPayload"] | null;
             /** Points */
@@ -1214,6 +1502,15 @@ export interface components {
         VisibilityCommand: {
             /** Public */
             public: boolean;
+        };
+        /**
+         * WsPayloads
+         * @description Exported so the generated TypeScript client carries every socket message type.
+         */
+        WsPayloads: {
+            online: components["schemas"]["Online"];
+            lobby: components["schemas"]["Lobby"];
+            turn_nudge: components["schemas"]["TurnNudge"];
         };
     };
     responses: never;
@@ -1446,6 +1743,141 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    join_table_tables_join_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JoinTable"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Seated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    quick_match_tables_quick_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuickMatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Seated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_house_matches__match_id__seats_house_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                match_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_tables_tables_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TableView"][];
+                };
+            };
+        };
+    };
+    ws_payloads_ws_payloads_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WsPayloads"];
                 };
             };
         };

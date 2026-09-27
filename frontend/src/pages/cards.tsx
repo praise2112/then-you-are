@@ -1,13 +1,13 @@
 import { Link } from "../App.tsx";
 import type { MatchSnapshot, Replay } from "../api.ts";
-import { formName, HOUSE, lastStanding, resultLabel, STANDING } from "./format.ts";
+import { formName, lastStanding, resultLabel, STANDING } from "./format.ts";
 
 export function ReplayCard({ replay, prefix }: { replay: Replay; prefix: string }) {
   const showcase = replay.mode === "showcase";
   const last = lastStanding(replay.transcript);
   const result = resultLabel(replay);
   const onPoints = replay.end_reason === "move_cap_points" || replay.end_reason === "rounds_complete";
-  const score = onPoints ? ` · ${replay.points_p1} : ${replay.points_p2}` : "";
+  const score = onPoints ? ` · ${replay.seats.map((s) => s.points).join(" : ")}` : "";
   const revealed = replay.rounds.filter((r) => r.emoji);
   const medallion = showcase ? revealed[revealed.length - 1]?.emoji : (last?.host?.generated_emoji ?? replay.seed_emoji);
   return (
@@ -17,7 +17,12 @@ export function ReplayCard({ replay, prefix }: { replay: Replay; prefix: string 
       </span>
       <div>
         <p className="billing" style={{ margin: 0 }}>
-          {replay.stage_name} <span className="vs">vs</span> {HOUSE}{" "}
+          {replay.seats.map((s, i) => (
+            <span key={s.seat}>
+              {i > 0 && <span className="vs"> vs </span>}
+              {s.display_name}
+            </span>
+          ))}{" "}
           <span className={`result${result.won ? "" : " ink"}`}>{result.text}</span>
         </p>
         <blockquote>
@@ -41,7 +46,7 @@ export function LiveCard({ match, prefix }: { match: MatchSnapshot; prefix: stri
   const showcase = match.mode === "showcase";
   const forms = [match.seed_token, ...match.transcript.filter((t) => STANDING.has(t.outcome)).map((t) => formName(t.move_text, prefix))];
   const shown = forms.slice(-4);
-  const round = showcase ? match.rounds.length : match.transcript.length + 1;
+  const round = showcase ? match.rounds.length : match.round_in_play;
   return (
     <Link className="card" to={`/w/${match.id}`}>
       <span>
@@ -59,11 +64,11 @@ export function LiveCard({ match, prefix }: { match: MatchSnapshot; prefix: stri
         )}
       </span>
       <span className="scoreline">
-        <span className="small-caps">{match.stage_name}</span>
-        <b>
-          {match.points_p1} : {match.points_p2}
-        </b>
-        <span className="small-caps">{HOUSE}</span>
+        {match.seats.map((s) => (
+          <span key={s.seat} className="small-caps">
+            {s.display_name} <b>{s.points}</b>
+          </span>
+        ))}
       </span>
       <span className="watch">Watch live</span>
     </Link>

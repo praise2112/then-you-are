@@ -8,9 +8,10 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, Header, HTTPException, Request, Response
+from fastapi import FastAPI, Header, HTTPException, Request, Response, WebSocket
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.websockets import WebSocketDisconnect
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 from starlette.middleware.sessions import SessionMiddleware
@@ -23,10 +24,14 @@ from arena_judge.schema import (
     JudgeResumed,
     JudgeStarted,
     MatchEnded,
+    MatchStarted,
     MoveToken,
     RoundRevealed,
     Ruling,
+    SeatJoined,
+    SeatSubmitted,
     StateResync,
+    TurnChanged,
     TurnRejected,
 )
 from arena_server.auth import SESSION_COOKIE, mount_auth, rename_account, set_session_cookie
@@ -36,6 +41,7 @@ from arena_server.events import EventBus
 from arena_server.leaderboard import board, boards_index
 from arena_server.matches import MatchError, MatchService
 from arena_server.names import check_name
+from arena_server.presence import Lobby, Online, Presence, TurnNudge
 from arena_server.profiles import profile
 from arena_server.views import (
     BoardSummary,
@@ -45,10 +51,12 @@ from arena_server.views import (
     Replay,
     SessionView,
     StageView,
+    TableView,
     TemplateView,
 )
 
-SWEEP_EVERY_S = 600
+SWEEP_EVERY_S = 60
+CLOCK_EVERY_S = 10
 log = logging.getLogger(__name__)
 
 
@@ -69,6 +77,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     caller = caller or ModelCaller(settings.openrouter_api_key, judge_spec, opponent_spec)
     pool = make_pool(settings.database_url)
     bus = EventBus()
+    presence = Presence()
     service = MatchService(
         pool,
         bus,
@@ -78,6 +87,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         opponent_spec.display_name,
         judge_spec.model,
         settings.public_base_url,
+        presence,
     )
 
     async def sweep_abandoned() -> None:
@@ -91,14 +101,23 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             if closed:
                 log.info("abandoned %d idle matches", len(closed))
 
+    async def sweep_clocks() -> None:
+        while True:
+            await asyncio.sleep(CLOCK_EVERY_S)
+            try:
+                await service.expire_clocks()
+            except Exception:
+                log.exception("clock sweep failed")
+
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         await pool.open()
         await apply_schema(pool)
         await service.recover()
-        sweeper = asyncio.create_task(sweep_abandoned())
+        sweepers = [asyncio.create_task(sweep_abandoned()), asyncio.create_task(sweep_clocks())]
         yield
-        sweeper.cancel()
+        for sweeper in sweepers:
+            sweeper.cancel()
         await caller.aclose()
         await pool.close()
 
@@ -122,11 +141,27 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         stage_name: str | None = Field(default=None, max_length=40)
         seed_token: str | None = None
         first_move: str | None = Field(default=None, max_length=2000)
+        kind: Literal["house", "friends"] = "house"
+        seats: int = Field(default=2, ge=2, le=6)
+
+    class JoinTable(BaseModel):
+        invite_code: str = Field(min_length=1, max_length=16)
+        stage_name: str | None = Field(default=None, max_length=40)
+
+    class QuickMatch(BaseModel):
+        template_id: str
+        seats: int = Field(default=2, ge=2, le=6)
+        stage_name: str | None = Field(default=None, max_length=40)
+
+    class Seated(BaseModel):
+        match_id: str
 
     class MoveCommand(BaseModel):
         action_id: str = Field(min_length=1, max_length=64)
         expected_version: int
         move_text: str = Field(max_length=2000)
+        # Showcase: the round this answer was written for.
+        round_n: int | None = None
 
     class VisibilityCommand(BaseModel):
         public: bool
@@ -143,6 +178,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         action_id: str = Field(min_length=1, max_length=64)
         expected_version: int
         key: str = Field(min_length=1, max_length=16)
+        round_n: int | None = None
 
     class Accepted(BaseModel):
         accepted: bool = True
@@ -160,10 +196,28 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         round_revealed: RoundRevealed
         guess_opened: GuessOpened
         state_resync: StateResync
+        seat_joined: SeatJoined
+        match_started: MatchStarted
+        seat_submitted: SeatSubmitted
+        turn_changed: TurnChanged
+
+    class WsPayloads(BaseModel):
+        """Exported so the generated TypeScript client carries every socket message type."""
+
+        online: Online
+        lobby: Lobby
+        turn_nudge: TurnNudge
 
     def refuse_bad_name(stage_name: str | None) -> None:
         if stage_name and (refusal := check_name(stage_name)):
             raise HTTPException(422, refusal)
+
+    async def player_session(request: Request, response: Response, stage_name: str | None) -> str:
+        """The caller's session, made on first play and renamed when a stage name comes along."""
+        refuse_bad_name(stage_name)
+        key = await service.ensure_session(request.cookies.get(SESSION_COOKIE), stage_name)
+        set_session_cookie(response, key)
+        return key
 
     def session_of(request: Request) -> str:
         key = request.cookies.get(SESSION_COOKIE)
@@ -225,14 +279,54 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     ) -> MatchSnapshot:
         if body.template_id not in templates:
             raise HTTPException(404, "no such template")
-        refuse_bad_name(body.stage_name)
-        key = await service.ensure_session(request.cookies.get(SESSION_COOKIE), body.stage_name)
-        set_session_cookie(response, key)
-        snap = await service.create(key, body.template_id, body.seed_token)
-        if body.first_move and snap.state_version == 0:
+        key = await player_session(request, response, body.stage_name)
+        snap = await service.create(key, body.template_id, body.seed_token, body.kind, body.seats)
+        if body.kind == "house" and body.first_move and snap.state_version == 0:
             await service.submit_move(snap.id, key, f"first-{snap.id}", 0, body.first_move)
             snap = await service.snapshot(snap.id, key)
         return snap
+
+    @app.post("/tables/join")
+    async def join_table(body: JoinTable, request: Request, response: Response) -> Seated:
+        key = await player_session(request, response, body.stage_name)
+        return Seated(match_id=await service.join(body.invite_code, key))
+
+    @app.post("/tables/quick")
+    async def quick_match(body: QuickMatch, request: Request, response: Response) -> Seated:
+        key = await player_session(request, response, body.stage_name)
+        return Seated(match_id=await service.quick_match(key, body.template_id, body.seats))
+
+    @app.post("/matches/{match_id}/seats/house", status_code=204)
+    async def add_house(match_id: str, request: Request) -> Response:
+        await service.add_house(match_id, session_of(request))
+        return Response(status_code=204)
+
+    @app.get("/tables")
+    async def get_tables() -> list[TableView]:
+        return await service.open_tables()
+
+    @app.websocket("/ws")
+    async def socket(websocket: WebSocket) -> None:
+        key = websocket.cookies.get(SESSION_COOKIE)
+        await websocket.accept()
+        if not key:
+            await websocket.close(code=4401)
+            return
+        presence.add(key, websocket)
+        try:
+            await presence.broadcast(Online(count=presence.count))
+            await websocket.send_text(Lobby(tables=await service.open_tables()).model_dump_json())
+            while True:
+                await websocket.receive_text()
+        except WebSocketDisconnect:
+            pass
+        finally:
+            presence.remove(key, websocket)
+            await presence.broadcast(Online(count=presence.count))
+
+    @app.get("/ws-payloads", include_in_schema=True)
+    async def ws_payloads() -> WsPayloads:
+        raise HTTPException(404, "schema-only endpoint")
 
     @app.get("/profiles/{account_id}")
     async def get_profile(account_id: str, request: Request) -> ProfileView:
@@ -250,14 +344,24 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     @app.post("/matches/{match_id}/moves", status_code=202)
     async def post_move(match_id: str, body: MoveCommand, request: Request) -> Accepted:
         await service.submit_move(
-            match_id, session_of(request), body.action_id, body.expected_version, body.move_text
+            match_id,
+            session_of(request),
+            body.action_id,
+            body.expected_version,
+            body.move_text,
+            body.round_n,
         )
         return Accepted()
 
     @app.post("/matches/{match_id}/guesses", status_code=202)
     async def post_guess(match_id: str, body: GuessCommand, request: Request) -> Accepted:
         await service.submit_guess(
-            match_id, session_of(request), body.action_id, body.expected_version, body.key
+            match_id,
+            session_of(request),
+            body.action_id,
+            body.expected_version,
+            body.key,
+            body.round_n,
         )
         return Accepted()
 
@@ -323,7 +427,8 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     @app.get("/r/{match_id}", response_class=HTMLResponse)
     async def replay_shell(match_id: str) -> HTMLResponse:
         replay = await service.replay(match_id)
-        title = html.escape(f"{replay.stage_name} vs {replay.opponent_name}, {replay.title}")
+        players = " vs ".join(s.model or s.display_name for s in replay.seats)
+        title = html.escape(f"{players}, {replay.title}")
         description = html.escape(replay.share_text)
         head = (
             f'<meta property="og:title" content="{title}">'

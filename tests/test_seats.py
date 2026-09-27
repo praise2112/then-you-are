@@ -6,7 +6,15 @@ import psycopg
 import pytest
 from psycopg import sql
 
-from arena_core.state import Match, apply_guess, apply_ruling, resign, transcript
+from arena_core.state import (
+    Match,
+    apply_guess,
+    apply_ruling,
+    forfeit_turn,
+    resign,
+    skip_guess,
+    transcript,
+)
 from arena_core.template import Template, load_template
 from arena_judge.schema import Outcome
 from arena_server.db import SCHEMA_PATH
@@ -109,6 +117,62 @@ def test_a_showcase_round_waits_for_all_six_seats_then_each_guesser_calls():
     assert match.points["p3"] == 10 + WORDS.guess.spot_points
 
 
+def test_a_forfeit_passes_the_turn_and_a_second_one_puts_the_seat_out():
+    match = table("p1", "p2", "p3")
+    play(match, DUEL, ("p1", "accept", 10))
+    forfeit_turn(match, "p2", DUEL)
+    assert match.to_move == "p3" and match.standing_form == "I am p1 0"
+    assert match.eliminated == [] and match.forfeits["p2"] == 1
+    play(match, DUEL, ("p3", "accept", 0), ("p1", "accept", 0))
+    forfeit_turn(match, "p2", DUEL)
+    assert match.eliminated == ["p2"] and match.to_move == "p3"
+    assert "player2" not in " ".join(transcript(match, DUEL))
+
+
+def test_the_last_seat_standing_after_forfeits_wins():
+    match = table("p1", "p2")
+    forfeit_turn(match, "p1", DUEL)
+    play(match, DUEL, ("p2", "accept", 0))
+    forfeit_turn(match, "p1", DUEL)
+    assert (match.status, match.end_reason, match.winner) == ("ended", "forfeit", "p2")
+
+
+def test_a_forfeited_answer_closes_the_round_and_leaves_no_bluff_to_pick():
+    match = Match(
+        id="w",
+        template_id="word-for-word",
+        template_version=1,
+        cards=["zarf", "groak", "oxter"],
+        seats=("p1", "p2", "p3"),
+        guessers=("p1", "p2"),
+    )
+    apply_ruling(match, "p1", "a cloak", "accept", 0, WORDS, points=10)
+    apply_ruling(match, "p3", "a hat", "accept", 1, WORDS, points=10)
+    forfeit_turn(match, "p2", WORDS)
+    assert match.phase == "guess" and match.guess_options("p1") == ["truth", "p3"]
+    skip_guess(match, "p2", WORDS)
+    assert match.owed_guesses() == ["p1"]
+    apply_guess(match, "p1", "truth", match.state_version, WORDS)
+    assert (match.phase, match.round_n) == ("write", 2)
+    assert [g.picked for g in match.guesses] == ["none", "truth"]
+    assert match.points["p2"] == 0
+
+
+def test_strikes_reset_once_a_move_is_judged():
+    match = table("p1", "p2")
+    apply_ruling(match, "p1", "lol", "semantic_reject", 0, DUEL)
+    apply_ruling(match, "p1", "lol again", "semantic_reject", 1, DUEL)
+    assert match.strikes["p1"] == 2
+    play(match, DUEL, ("p1", "accept", 0))
+    assert match.strikes["p1"] == 0
+
+
+def test_a_table_still_filling_takes_no_moves():
+    match = table("p1", "p2", status="open")
+    with pytest.raises(ValueError, match="still filling"):
+        play(match, DUEL, ("p1", "accept", 0))
+
+
 def test_the_transcript_names_every_seat():
     match = table("p1", "p2", "p3")
     play(match, DUEL, ("p1", "accept", 0), ("p2", "accept", 0), ("p3", "accept", 0))
@@ -197,3 +261,22 @@ def test_old_matches_move_into_seats_and_boot_twice():
             assert not columns & {"p1_session_key", "p2_model_ref", "points_p1", "strikes_p2"}
         finally:
             conn.execute(sql.SQL("drop schema {} cascade").format(name))
+
+
+def test_a_forfeited_round_still_counts_as_history_for_the_prompts():
+    match = Match(
+        id="f",
+        template_id="front-page",
+        template_version=1,
+        cards=["zarf", "groak", "oxter"],
+        seats=("p1", "p2", "p3"),
+        guessers=(),
+    )
+    apply_ruling(match, "p1", "a headline", "accept", 0, WORDS, points=10)
+    apply_ruling(match, "p2", "another headline", "accept", 1, WORDS, points=10)
+    forfeit_turn(match, "p3", WORDS)
+    assert match.round_n == 2
+    assert transcript(match, WORDS, finished_only=True)[1:] == [
+        "player1: a headline",
+        "player2: another headline",
+    ]

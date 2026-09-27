@@ -4,18 +4,22 @@ import { Link } from "../App.tsx";
 import { api, type MatchEnded, type MatchSnapshot } from "../api.ts";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
+import type { Table } from "./format.ts";
 
-type Props = { snap: MatchSnapshot; ended: MatchEnded };
+type Props = { snap: MatchSnapshot; ended: MatchEnded; table: Table };
 
 /** The stamp, the streak and the ways out. Sits where the composer was; the board stays up. */
-export function ResultCard({ snap, ended }: Props) {
-  const won = ended.winner === "p1";
+export function ResultCard({ snap, ended, table }: Props) {
+  const won = ended.winner !== null && ended.winner === table.me;
+  // Only House duels move a streak; a game against people is an exhibition.
+  const ranked = snap.kind === "house";
   const draw = ended.winner === null;
   const onPoints = ended.end_reason === "move_cap_points" || ended.end_reason === "rounds_complete";
   // Only the player's own duel moves their streak; a visitor's copy of the page counts nothing.
   const local = useMemo(
-    () => (snap.is_yours ? store.recordResult(snap.id, draw ? null : won) : { streak: store.streak(), best: store.bestStreak() }),
-    [snap.id, snap.is_yours, won, draw],
+    () =>
+      snap.is_yours && ranked ? store.recordResult(snap.id, draw ? null : won) : { streak: store.streak(), best: store.bestStreak() },
+    [snap.id, snap.is_yours, ranked, won, draw],
   );
   // A signed-in player's streak comes from the server, so it follows the account across devices.
   const [account, setAccount] = useState<{ streak: number; best: number } | null>(null);
@@ -32,17 +36,22 @@ export function ResultCard({ snap, ended }: Props) {
   const [listError, setListError] = useState<string | null>(null);
   const replayUrl = `${location.origin}/r/${snap.id}`;
 
+  const loser = snap.seats.length === 2 ? "Defeat" : `${ended.winner ? table.name(ended.winner) : "Nobody"} won`;
   const stamp = draw
     ? "A draw"
     : onPoints
       ? won
         ? "Won on points"
-        : "Lost on points"
-      : ended.end_reason === "resign"
+        : snap.seats.length === 2
+          ? "Lost on points"
+          : loser
+      : ended.end_reason === "resign" && !won
         ? "Resigned"
-        : won
-          ? "Victory"
-          : "Defeat";
+        : ended.end_reason === "forfeit" && !won
+          ? "Out of turns"
+          : won
+            ? "Victory"
+            : loser;
 
   function setListing(on: boolean) {
     api.setVisibility(snap.id, on).then(
@@ -65,7 +74,7 @@ export function ResultCard({ snap, ended }: Props) {
     <>
       <div className="result-card">
         <span className={`stamp${won ? "" : " ink"}`}>{stamp}</span>
-        {snap.is_yours && (
+        {snap.is_yours && ranked && (
           <p className="stats">
             <span>
               Streak<b>{streak}</b>
@@ -75,8 +84,8 @@ export function ResultCard({ snap, ended }: Props) {
             </span>
           </p>
         )}
-        <Link className="ticket" to={`/play/${snap.template_id}/start`}>
-          Next duel
+        <Link className="ticket" to={ranked ? `/play/${snap.template_id}/start` : `/play/${snap.template_id}`}>
+          {ranked ? "Next duel" : "Play again"}
         </Link>
         <div className="after">
           <button className="icon-link" type="button" onClick={() => setShare(true)}>

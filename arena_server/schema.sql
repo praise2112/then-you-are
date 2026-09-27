@@ -65,7 +65,6 @@ create table if not exists verdict_pairs (
 alter table sessions add column if not exists list_duels boolean not null default false;
 alter table matches alter column is_public set default false;
 alter table matches add column if not exists cards text[] not null default '{}';
-alter table matches add column if not exists held_move text;
 alter table matches add column if not exists updated_at timestamptz not null default now();
 update matches set cards = array[seed_token] where cards = '{}';
 alter table turns add column if not exists round_n int not null default 1;
@@ -167,3 +166,28 @@ update matches
 set config = (config - 'move_budget')
     || jsonb_build_object('rounds_budget', (config ->> 'move_budget')::int / 2)
 where config ? 'move_budget';
+
+-- house: one player against the House, on the standings. friends and open: a table that waits
+-- for its seats, joined by invite code or from the lobby, played as an exhibition.
+alter table matches add column if not exists kind text not null default 'house';
+alter table matches add column if not exists seats_wanted int not null default 2;
+alter table matches add column if not exists invite_code text unique;
+alter table matches add column if not exists turn_deadline timestamptz;
+alter table seats add column if not exists forfeits int not null default 0;
+alter table seats add column if not exists submitted_at timestamptz;
+alter table seats add column if not exists held_move text;
+alter table seats add column if not exists held_round int;
+create index if not exists matches_open_idx on matches (status, template_id) where status = 'open';
+
+do $$
+begin
+    if exists (
+        select 1 from information_schema.columns
+        where table_schema = current_schema() and table_name = 'matches'
+        and column_name = 'held_move'
+    ) then
+        update seats se set held_move = m.held_move
+        from matches m where m.id = se.match_id and se.kind = 'model' and m.held_move is not null;
+        alter table matches drop column held_move;
+    end if;
+end $$;

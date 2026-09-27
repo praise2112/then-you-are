@@ -9,7 +9,15 @@ from arena_core.template import SCORE_MAX
 Confidence = Literal["clear", "lean", "coin_flip"]
 Verdict = Literal["accept", "fail"]
 TruthProximity = Literal["hit", "near", "none"]
-EndReason = Literal["sudden_death", "move_cap_points", "rounds_complete", "resign", "abandoned"]
+EndReason = Literal[
+    "sudden_death",
+    "move_cap_points",
+    "rounds_complete",
+    "resign",
+    "abandoned",
+    "forfeit",
+    "unfilled",
+]
 
 Outcome = Literal[
     "accept",
@@ -18,6 +26,7 @@ Outcome = Literal[
     "semantic_uncertain",
     "deterministic_invalid",
     "judge_unavailable",
+    "forfeit",
 ]
 
 
@@ -88,6 +97,8 @@ def route_outcome(payload: ScoringPayload) -> Outcome:
 
 class TurnRejected(BaseModel):
     seq: int | None = None
+    # The seat whose move came back; other clients ignore it.
+    seat: str
     outcome: Literal["deterministic_invalid", "semantic_reject"]
     reason_text: str
     strikes: int
@@ -108,8 +119,8 @@ class Ruling(BaseModel):
     host: HostPayload
     badges: list[str]
     points: int
-    points_p1: int
-    points_p2: int
+    # Every seat's total once this ruling lands.
+    totals: dict[str, int]
     to_move: str
     # The round the match is in once this ruling lands; past the budget when it ended.
     round_in_play: int
@@ -148,10 +159,10 @@ class GuessView(BaseModel):
 
 
 class GuessOpened(BaseModel):
-    """Showcase only: both bluffs are judged and the player may call the real entry."""
+    """Showcase only: every answer is judged and the guessers may call the real entry. Each
+    guesser reads its own options from the snapshot."""
 
     round_n: int
-    options: list[GuessOption]
     state_version: int
 
 
@@ -164,16 +175,14 @@ class RoundRevealed(BaseModel):
     detail: str
     truth: str
     guesses: list[GuessView]
-    points_p1: int
-    points_p2: int
+    totals: dict[str, int]
     state_version: int
 
 
 class MatchEnded(BaseModel):
     end_reason: EndReason
     winner: str | None
-    points_p1: int
-    points_p2: int
+    totals: dict[str, int]
     highlight_seq: int | None
     coaching_line: str | None = None
     share_text: str
@@ -182,4 +191,33 @@ class MatchEnded(BaseModel):
 
 
 class StateResync(BaseModel):
+    state_version: int
+
+
+class SeatJoined(BaseModel):
+    """A player took a seat at a table that is still filling."""
+
+    seat: str
+    state_version: int
+
+
+class MatchStarted(BaseModel):
+    """Every seat is filled and play begins."""
+
+    state_version: int
+
+
+class SeatSubmitted(BaseModel):
+    """Showcase: a seat has written or called for the round in play. Says nothing about what."""
+
+    seat: str
+    state_version: int
+
+
+class TurnChanged(BaseModel):
+    """The turn passed without a ruling to show: a forfeit, a resign, or play moved on."""
+
+    to_move: str
+    turn_deadline: str | None
+    round_in_play: int
     state_version: int

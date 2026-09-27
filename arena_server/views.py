@@ -4,6 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
+from arena_core.state import MatchStatus
 from arena_judge.schema import (
     EndReason,
     GuessOption,
@@ -11,6 +12,7 @@ from arena_judge.schema import (
     HostPayload,
     Outcome,
     ScoringPayload,
+    TurnRejected,
 )
 
 
@@ -61,6 +63,11 @@ class GuessRulesView(BaseModel):
     prompt: str
 
 
+class NumPlayersView(BaseModel):
+    min: int
+    max: int
+
+
 class LabelsView(BaseModel):
     opening: str
     next_opening: str
@@ -78,6 +85,7 @@ class TemplateView(BaseModel):
     premise: str
     mode: Literal["escalation", "showcase"]
     rounds_budget: int
+    num_players: NumPlayersView
     rubric: list[RubricView]
     rules: list[str]
     max_chars: int
@@ -117,27 +125,50 @@ class RoundView(BaseModel):
     guesses: list[GuessView] = []
 
 
+class SeatView(BaseModel):
+    """One seat at the table, in turn order. Points leave out the round still being played."""
+
+    seat: str
+    kind: Literal["human", "model"]
+    display_name: str
+    # The model behind a House seat, for the replay billing.
+    model: str | None
+    points: int
+    eliminated: bool
+    # Showcase: this seat has written (or called) for the round in play.
+    answered: bool
+
+
 class MatchSnapshot(BaseModel):
     id: str
     template_id: str
     title: str
     mode: Literal["escalation", "showcase"]
-    status: Literal["active", "awaiting_judgment", "paused", "ended", "abandoned"]
+    kind: Literal["house", "friends", "open"]
+    status: MatchStatus
     state_version: int
     phase: Literal["write", "guess"]
     seed_token: str
     seed_emoji: str
     rounds: list[RoundView]
     round_in_play: int
-    stage_name: str
-    opponent_name: str
+    seats: list[SeatView]
+    seats_wanted: int
+    # The viewer's seat, or None for a spectator.
+    your_seat: str | None
+    # Shown to seated players only, while the table can still be joined.
+    invite_code: str | None
+    # When a table still filling closes unfilled.
+    closes_at: str | None
+    turn_deadline: str | None
+    # How long the running clock was set for, to draw how much of it is left.
+    clock_seconds: int | None
     to_move: str
     winner: str | None
     end_reason: EndReason | None
-    points_p1: int
-    points_p2: int
     judged_moves: int
-    move_budget: int
+    # Showcase: why the viewer's last answer this round came back, for that viewer only.
+    returned: TurnRejected | None = None
     transcript: list[TurnView]
     created_at: str
     is_public: bool
@@ -197,6 +228,20 @@ class BoardSummary(BaseModel):
     leader: StandingView | None
 
 
+class TableView(BaseModel):
+    """An open table in the lobby, waiting for players."""
+
+    id: str
+    template_id: str
+    title: str
+    emblem: str
+    host_name: str
+    invite_code: str
+    seats_taken: int
+    seats_wanted: int
+    created_at: str
+
+
 class StageView(BaseModel):
     """Public matches in play, and how many duels have finished."""
 
@@ -229,11 +274,13 @@ class DuelRow(BaseModel):
     id: str
     title: str
     created_at: str
-    status: Literal["active", "awaiting_judgment", "paused", "ended", "abandoned"]
+    status: MatchStatus
     length: str
     result: str
     won: bool | None
     is_public: bool
+    # Who else sat at the table, in seat order.
+    against: str
 
 
 class ProfileView(BaseModel):
@@ -250,5 +297,7 @@ class ProfileView(BaseModel):
     records: list[GameRecord]
     badges: list[BadgeCount]
     duels: list[DuelRow]
+    # Games against people: exhibition, never on the record or the streak.
+    people: list[DuelRow]
     best: list[Replay]
     is_yours: bool

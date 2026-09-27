@@ -12,7 +12,7 @@ export function Leaderboard({ slug }: { slug?: string }) {
         <Link className="wordmark" to="/">
           Oddstage
         </Link>
-        <span className="round">Standings</span>
+        <span className="round">Wins against the House</span>
         <span className="aside">
           <Link to="/">Home</Link>
           <Link to="/stage">Watch</Link>

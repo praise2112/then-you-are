@@ -318,7 +318,7 @@ medallions: false
 num_players:
   min: 2
   max: 4
-rounds_budget: 5
+rounds_budget: 4
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2

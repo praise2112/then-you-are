@@ -197,11 +197,21 @@ function Duels({ profile }: { profile: ProfileView }) {
           <DuelLine key={duel.id} duel={duel} mine={profile.is_yours} />
         ))}
       </ol>
+      {profile.people.length > 0 && (
+        <>
+          <h2 className="centered-label small-caps">Against people</h2>
+          <ol className="duel-list">
+            {profile.people.map((duel) => (
+              <DuelLine key={duel.id} duel={duel} mine={profile.is_yours} people />
+            ))}
+          </ol>
+        </>
+      )}
     </>
   );
 }
 
-function DuelLine({ duel, mine }: { duel: DuelRow; mine: boolean }) {
+function DuelLine({ duel, mine, people = false }: { duel: DuelRow; mine: boolean; people?: boolean }) {
   const open = duel.status !== "ended" && duel.status !== "abandoned";
   const tone = open || duel.status === "abandoned" ? "closed" : duel.won === null ? "draw" : duel.won ? "won" : "lost";
   return (
@@ -209,6 +219,7 @@ function DuelLine({ duel, mine }: { duel: DuelRow; mine: boolean }) {
       <time dateTime={duel.created_at}>{DAY.format(new Date(duel.created_at))}</time>
       <span className="game">
         {duel.title} <small>{open ? "in play" : duel.length}</small>
+        {people && <small className="against">with {duel.against}</small>}
         {mine && !duel.is_public && duel.status === "ended" && <span className="ribbon quiet">Private</span>}
       </span>
       <span className={`result ${tone}`}>{duel.result}</span>

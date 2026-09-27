@@ -291,6 +291,7 @@ class Template(Strict):
             "premise": self.premise.strip(),
             "mode": self.mode,
             "rounds_budget": self.rounds_budget,
+            "num_players": self.num_players.model_dump(),
             "rubric": [
                 {
                     "name": r.name,

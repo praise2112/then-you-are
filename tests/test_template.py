@@ -81,7 +81,7 @@ def test_showcase_projection_carries_rounds_and_the_demo_reveal():
     assert projection["mode"] == "showcase" and projection["rounds_budget"] == 3
     assert projection["demo"]["opening"]["detail"].startswith("noun")
     assert projection["demo"]["opening"]["reveal"]
-    assert load_template("then-i-am").player_projection()["rounds_budget"] == 5
+    assert load_template("then-i-am").player_projection()["rounds_budget"] == 4
 
 
 def test_lint_rejects_a_showcase_decided_by_sudden_death():
@@ -105,10 +105,9 @@ def test_lint_rejects_a_seat_range_upside_down():
         Template.model_validate(data)
 
 
-def test_turn_games_seat_four_and_showcase_games_six():
-    templates = load_templates()
-    assert {t.num_players.max for t in templates.values() if t.mode == "escalation"} == {4}
-    assert {t.num_players.max for t in templates.values() if t.mode == "showcase"} == {6}
+def test_turn_games_seat_four_showcase_games_six_and_alibi_two_suspects():
+    caps = {slug: t.num_players.max for slug, t in load_templates().items()}
+    assert caps == {"alibi": 2, "domino": 4, "front-page": 6, "then-i-am": 4, "word-for-word": 6}
 
 
 def test_card_text_pairs_the_word_with_its_detail():

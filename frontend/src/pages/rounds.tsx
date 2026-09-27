@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import type { GuessOption, RoundView, TemplateView, TurnView } from "../api.ts";
-import { criterionLabel, HOUSE, isLongCard, roundTotals, roundWinner, type RoundGroup } from "./format.ts";
+import { criterionLabel, isLongCard, roundTotals, roundWinner, type RoundGroup, type Table } from "./format.ts";
+import { AiTag } from "./seats.tsx";
 
 const BADGE_LABELS: Record<string, string> = {
   close_call: "Close call",
@@ -56,26 +57,25 @@ type CallCardProps = {
   onPick: (key: string) => void;
   onCall: () => void;
   pending: boolean;
-  spectator?: boolean;
-  who?: string;
+  clock: string | null;
 };
 
-/** The call: the other side's bluff and the real entry, in an order that gives nothing away. */
-export function CallCard({ round, template, picked, onPick, onCall, pending, spectator = false, who = "You" }: CallCardProps) {
+/** The call: every other seat's entry and the real one, in an order that gives nothing away. */
+export function CallCard({ round, template, picked, onPick, onCall, pending, clock }: CallCardProps) {
   const pos = posOf(round.detail);
   return (
     <div className="call-card">
-      <p className="small-caps last-move-head">{spectator ? `${who} to call` : "Your call"}</p>
+      <p className="small-caps last-move-head">Your call{clock ? `, ${clock} left` : ""}</p>
       <p className="call-prompt">{template.guess?.prompt}</p>
-      <div className="call-options" role={spectator ? undefined : "radiogroup"} aria-label="The entries on the table">
+      <div className="call-options" role="radiogroup" aria-label="The entries on the table">
         {round.options.map((option: GuessOption) => (
           <button
             key={option.key}
             type="button"
             className={`call-option${picked === option.key ? " picked" : ""}`}
-            role={spectator ? undefined : "radio"}
-            aria-checked={spectator ? undefined : picked === option.key}
-            disabled={spectator || pending}
+            role="radio"
+            aria-checked={picked === option.key}
+            disabled={pending}
             onClick={() => onPick(option.key)}
           >
             <span className="said">
@@ -85,40 +85,40 @@ export function CallCard({ round, template, picked, onPick, onCall, pending, spe
           </button>
         ))}
       </div>
-      {!spectator && (
-        <div className="composer-foot">
-          <span className="counter">
-            {template.guess?.spot_points} points to whoever is right about it
-          </span>
-          <button className={`ticket${picked && !pending ? "" : " quiet"}`} type="button" disabled={!picked || pending} onClick={onCall}>
-            {pending ? "Called" : "Call it"}
-          </button>
-        </div>
-      )}
+      <div className="composer-foot">
+        <span className="counter">{template.guess?.spot_points} points to whoever is right about it</span>
+        <button className={`ticket${picked && !pending ? "" : " quiet"}`} type="button" disabled={!picked || pending} onClick={onCall}>
+          {pending ? "Called" : "Call it"}
+        </button>
+      </div>
     </div>
   );
 }
 
-type CallLineProps = { group: RoundGroup; me: string; theirs?: string };
+type CallLineProps = { group: RoundGroup; table: Table };
 
-/** How the call went: who was fooled, who saw through it, and what it paid. */
-export function CallLine({ group, me, theirs = HOUSE }: CallLineProps) {
-  const name = (actor: string) => (actor === "p1" ? me : theirs);
+/** How the calls went: who was fooled, who saw through it, and what each paid. */
+export function CallLine({ group, table }: CallLineProps) {
+  const name = table.name;
   if (group.round.guesses.length === 0) {
-    return <p className="call-line">Nothing to call this round. {theirs} had written the real meaning.</p>;
+    return <p className="call-line">Nothing to call this round: no bluff stood beside the real meaning.</p>;
   }
   return (
     <>
       {group.round.guesses.map((g) => (
-        <p key={g.actor} className={`call-line${g.awarded_to === "p1" ? " mine" : ""}`}>
-          {g.picked === "truth" ? (
+        <p key={g.actor} className={`call-line${g.awarded_to === table.me ? " mine" : ""}`}>
+          {g.picked === "none" ? (
+            <>
+              <b>{name(g.actor)} ran out of time</b> and called nothing.
+            </>
+          ) : g.picked === "truth" ? (
             <>
               <b>{name(g.actor)} called the real entry.</b> {g.points} points.
             </>
           ) : (
             <>
-              <b>{name(g.actor)} took the bait.</b> {name(g.picked)}&rsquo;s bluff read as the real thing, {g.points} points to{" "}
-              {name(g.awarded_to)}.
+              <b>{name(g.actor)} took the bait.</b> {g.picked === table.me ? "Your" : `${name(g.picked)}’s`} bluff read as the real
+              thing, {g.points} points to {g.awarded_to === table.me ? "you" : name(g.awarded_to)}.
             </>
           )}
         </p>
@@ -127,10 +127,10 @@ export function CallLine({ group, me, theirs = HOUSE }: CallLineProps) {
   );
 }
 
-type LedgerProps = { groups: RoundGroup[]; me: string };
+type LedgerProps = { groups: RoundGroup[]; table: Table };
 
 /** Every round so far: the word, its truth once revealed, and who took the points. */
-export function RoundLedger({ groups, me }: LedgerProps) {
+export function RoundLedger({ groups, table }: LedgerProps) {
   return (
     <section className="ledger" aria-label="The rounds">
       <p className="small-caps">The rounds</p>
@@ -146,12 +146,8 @@ export function RoundLedger({ groups, me }: LedgerProps) {
                 <>
                   {round.truth && <span className="truth">{round.truth}</span>}
                   <span className="tally-line">
-                    <span className={won === "mine" ? "took" : undefined}>{totals.mine}</span>
-                    {" : "}
-                    <span className={won === "theirs" ? "took" : undefined}>{totals.theirs}</span>
-                    <em>
-                      {won === null ? "shared" : won === "mine" ? `${me} took it` : `${HOUSE} took it`}
-                    </em>
+                    {won ? <span className="took">{totals[won]}</span> : null}
+                    <em>{won === null ? "shared" : `${table.name(won)} took it`}</em>
                   </span>
                 </>
               ) : (
@@ -225,19 +221,24 @@ type BluffProps = {
   turn: TurnView;
   round: RoundView;
   who: string;
+  tone: number;
   you?: boolean;
+  ai?: boolean;
   won?: boolean;
   template: TemplateView;
 };
 
 /** One bluff set as a dictionary entry that did not make it, with its marks and the judge's reason. */
-export function Bluff({ turn, round, who, you = false, won = false, template }: BluffProps) {
+export function Bluff({ turn, round, who, tone, you = false, ai = false, won = false, template }: BluffProps) {
   const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
   const pos = posOf(round.detail);
   return (
     <article className={`bluff${won ? " won" : ""}`}>
       <p className="for">
-        <span className={`who${you ? " you" : ""}`}>{who} wrote</span>
+        <span className={`who tone-${tone}${you ? " you" : ""}`}>
+          <span>{who} wrote</span>
+          {ai && <AiTag />}
+        </span>
         {won && <span className="stamp point">Point</span>}
       </p>
       <p className="said">

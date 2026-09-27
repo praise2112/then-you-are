@@ -257,7 +257,7 @@ labels:
 rules:
   - 'One thing happens next, because of the last thing. Start with "Then".'
   - Make the mess bigger. Points go to how far one honest link carries it.
-  - Skip a link, end the story, or undo a step and the chain stops with you.
+  - Skip a link, end the story, or undo a step and you are out.
   - The Judge rules on the link, never the spelling.
 validation_messages:
   empty: "Nothing happens. Something always happens."
@@ -286,7 +286,7 @@ opponent_prompt: |
 num_players:
   min: 2
   max: 4
-rounds_budget: 5
+rounds_budget: 4
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2

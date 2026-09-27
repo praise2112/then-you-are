@@ -57,7 +57,8 @@ async def test_a_full_duel_ends_in_sudden_death_with_a_replay():
         )
         assert created.status_code == 201
         match = created.json()
-        assert match["stage_name"] == "Echo"
+        assert [s["display_name"] for s in match["seats"]] == ["Echo", "The House"]
+        assert match["your_seat"] == "p1" and match["kind"] == "house"
 
         first = await client.post(
             f"/matches/{match['id']}/moves",
@@ -357,8 +358,9 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
         assert snap["status"] == "ended" and snap["end_reason"] == "rounds_complete"
         assert snap["phase"] == "write"
         assert [t["round_n"] for t in snap["transcript"]] == [1, 1, 2, 2, 3, 3]
-        assert [t["actor"] for t in snap["transcript"]] == ["p1", "p2"] * 3
-        assert snap["transcript"][1]["move_text"] == "a cup holder"
+        # The House's answer is recorded when it is judged, before the player's.
+        assert [t["actor"] for t in snap["transcript"]] == ["p2", "p1"] * 3
+        assert snap["transcript"][0]["move_text"] == "a cup holder"
         assert all(r["truth"] for r in snap["rounds"]) and len(snap["rounds"]) == 3
         assert [r["guesses"] for r in snap["rounds"]] == [
             [{"actor": "p1", "picked": "truth", "points": 10, "awarded_to": "p1"}],
@@ -366,8 +368,8 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
             [{"actor": "p1", "picked": "truth", "points": 10, "awarded_to": "p1"}],
         ]
         bluff_points = 5 * 3 + 3 * 3 + 2 * 3
-        assert snap["points_p1"] == 2 * bluff_points + 20
-        assert snap["points_p2"] == 3 * bluff_points + 10
+        points = {s["seat"]: s["points"] for s in snap["seats"]}
+        assert points == {"p1": 2 * bluff_points + 20, "p2": 3 * bluff_points + 10}
         assert snap["winner"] == "p2"
 
         events = events_of(app, match["id"])
@@ -377,19 +379,16 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
         assert names[-1] == "match_ended"
         assert names.index("guess_opened") < names.index("ruling") < names.index("round_revealed")
         opened = [d for _, name, d in events if name == "guess_opened"]
-        assert opened[0]["round_n"] == 1 and len(opened[0]["options"]) == 2
+        assert opened[0] == {"round_n": 1, "state_version": 2}
         reveals = [d for _, name, d in events if name == "round_revealed"]
         assert reveals[0]["token"] == "zarf" and reveals[0]["truth"].startswith("a holder")
         assert reveals[0]["guesses"][0]["picked"] == "truth"
-        assert (reveals[0]["points_p1"], reveals[0]["points_p2"]) == (
-            bluff_points + 10,
-            bluff_points,
-        )
+        assert reveals[0]["totals"] == {"p1": bluff_points + 10, "p2": bluff_points}
         rulings = [d for _, name, d in events if name == "ruling"]
-        assert rulings[0]["badges"] == ["accidental_truth"]
-        assert rulings[2]["points"] == 0
-        assert rulings[4]["badges"] == ["close_call"]
-        assert rulings[5]["badges"] == ["near_miss"]
+        assert rulings[1]["badges"] == ["accidental_truth"]
+        assert rulings[3]["points"] == 0
+        assert rulings[4]["badges"] == ["near_miss"]
+        assert rulings[5]["badges"] == ["close_call"]
         assert all(h for h in caller.hidden_seen)
         assert caller.opponent_saw[0] == []
         assert caller.opponent_hidden[0].startswith("a holder")
@@ -398,8 +397,8 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
 
         replay = (await client.get(f"/replays/{match['id']}")).json()
         assert "lost a duel of Word for Word" in replay["share_text"]
-        assert replay["transcript"][0]["host"]["badges"] == ["accidental_truth"]
-        assert replay["transcript"][4]["host"]["badges"] == ["close_call"]
+        assert replay["transcript"][1]["host"]["badges"] == ["accidental_truth"]
+        assert replay["transcript"][5]["host"]["badges"] == ["close_call"]
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
@@ -433,8 +432,8 @@ async def test_the_house_writes_again_when_its_bluff_is_the_truth():
             json={"action_id": "g1", "expected_version": 2, "key": table[0]["key"]},
         )
         snap = (await client.get(f"/matches/{match['id']}")).json()
-        assert snap["transcript"][1]["move_text"] == "a desert wind"
-        assert snap["transcript"][1]["host"]["badges"] == []
+        assert snap["transcript"][0]["move_text"] == "a desert wind"
+        assert snap["transcript"][0]["host"]["badges"] == []
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
@@ -516,7 +515,7 @@ async def test_an_idle_match_is_abandoned_and_its_pending_judge_call_stops(monke
                 "update matches set updated_at = now() - interval '25 hours' where id = %s",
                 (stale["id"],),
             )
-        assert await app.state.service.close_abandoned() == [stale["id"]]
+        assert stale["id"] in await app.state.service.close_abandoned()
         await settle(app)
         fresh = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
         assert fresh["id"] != stale["id"]

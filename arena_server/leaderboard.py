@@ -21,7 +21,7 @@ async def board(pool: Pool, template: Template) -> BoardView:
                 "join seats se on se.match_id = m.id and se.kind = 'human' "
                 "join sessions s on s.session_key = se.session_key "
                 "join accounts a on a.id = s.account_id "
-                "where m.status = 'ended' and m.template_id = %s "
+                "where m.status = 'ended' and m.kind = 'house' and m.template_id = %s "
                 "group by a.id, a.display_name, a.avatar_url "
                 "having count(*) >= %s "
                 "order by wins desc, played asc, a.display_name limit %s",
@@ -54,7 +54,7 @@ async def boards_index(pool: Pool, templates: dict[str, Template]) -> list[Board
                 "select template_id, count(*) as ranked from (select m.template_id, s.account_id "
                 "from matches m join seats se on se.match_id = m.id and se.kind = 'human' "
                 "join sessions s on s.session_key = se.session_key "
-                "where m.status = 'ended' and s.account_id is not null "
+                "where m.status = 'ended' and m.kind = 'house' and s.account_id is not null "
                 "group by m.template_id, s.account_id having count(*) >= %s) ranked "
                 "group by template_id",
                 (MIN_PLAYED,),
@@ -95,7 +95,8 @@ async def account_streaks(conn: AsyncConnection[DictRow], account_id: str) -> tu
             "select m.winner = se.seat as won from matches m "
             "join seats se on se.match_id = m.id and se.kind = 'human' "
             "join sessions s on s.session_key = se.session_key "
-            "where s.account_id = %s and m.status = 'ended' order by m.ended_at, m.created_at",
+            "where s.account_id = %s and m.status = 'ended' and m.kind = 'house' "
+            "order by m.ended_at, m.created_at",
             (account_id,),
         )
     ).fetchall()
@@ -113,7 +114,7 @@ async def account_rank(
             "join seats se on se.match_id = m.id and se.kind = 'human' "
             "join sessions s on s.session_key = se.session_key "
             "join accounts a on a.id = s.account_id "
-            "where m.status = 'ended' and m.template_id = %s "
+            "where m.status = 'ended' and m.kind = 'house' and m.template_id = %s "
             "group by a.id, a.display_name having count(*) >= %s) "
             "select 1 + (select count(*) from tally t "
             "where (t.wins, -t.played, t.display_name) "

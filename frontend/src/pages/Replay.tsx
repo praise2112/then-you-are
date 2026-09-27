@@ -5,7 +5,7 @@ import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { criterionLabel, formName, groupRounds, roundWinner, STANDING, type RoundGroup } from "./format.ts";
+import { criterionLabel, formName, groupRounds, roundWinner, STANDING, tableOf, type RoundGroup, type Table } from "./format.ts";
 import { Bluff, CallLine, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
@@ -37,20 +37,27 @@ export function ReplayPage({ matchId }: Props) {
   if (error) return <p className="page-status">{error}</p>;
   if (!replay || !template) return <p className="page-status">Opening the programme.</p>;
 
-  const who = (turn: TurnView) => (turn.actor === "p1" ? replay.stage_name : replay.opponent_name);
-  const winnerName = replay.winner === "p1" ? replay.stage_name : replay.opponent_name;
+  // A replay names every seat, the viewer's included, so it reads the same to anyone.
+  const table = tableOf(replay, true);
+  const seatOf = table.seat;
+  const billed = (seat: string) => seatOf(seat)?.model ?? table.name(seat);
+  const winnerName = replay.winner ? table.name(replay.winner) : "";
+  const points = [...replay.seats].sort((a, b) => b.points - a.points).map((s) => s.points).join(" to ");
+  const game = replay.seats.length === 2 ? "A duel" : `A ${replay.seats.length}-player game`;
   const lastTurn = replay.transcript[replay.transcript.length - 1];
   const highlight = replay.transcript.find((t) => t.seq === replay.highlight_seq);
   const date = new Date(replay.created_at).toLocaleDateString(undefined, { day: "numeric", month: "long" });
   const showcase = replay.mode === "showcase";
   const finish =
     replay.winner === null
-      ? `a draw, ${replay.points_p1} to ${replay.points_p2}`
+      ? `a draw, ${points}`
       : replay.end_reason === "move_cap_points" || replay.end_reason === "rounds_complete"
-        ? `wins on points, ${replay.points_p1} to ${replay.points_p2}`
+        ? `wins on points, ${points}`
         : replay.end_reason === "resign"
           ? "wins by resignation"
-          : `wins by sudden death in ${replay.judged_moves} moves`;
+          : replay.end_reason === "forfeit"
+            ? "wins as the others ran out of turns"
+            : `wins by sudden death in ${replay.judged_moves} moves`;
   const rounds = showcase ? groupRounds(replay.rounds, replay.transcript).filter((g) => g.revealed) : [];
 
   return (
@@ -67,16 +74,21 @@ export function ReplayPage({ matchId }: Props) {
       </header>
 
       <main className="program">
-        <h1>
-          {replay.stage_name} vs {replay.opponent_name}
-        </h1>
-        <p className="kicker">A duel of {template.title}, replayed {showcase ? "round by round" : "move by move"}</p>
+        <h1>{replay.seats.map((s) => billed(s.seat)).join(" vs ")}</h1>
+        <p className="kicker">
+          {game} of {template.title}, replayed {showcase ? "round by round" : "move by move"}
+        </p>
         <p className="billing small-caps">
-          {replay.stage_name} <span className="model human">human</span> against {replay.opponent_name}{" "}
-          <span className="model">model</span>, {date}
+          {replay.seats.map((s, i) => (
+            <span key={s.seat}>
+              {i > 0 && " against "}
+              {billed(s.seat)} <span className={`model${s.kind === "human" ? " human" : ""}`}>{s.kind === "human" ? "human" : "model"}</span>
+            </span>
+          ))}
+          , {date}
         </p>
 
-        {showcase && rounds.length > 0 && <RoundStepper rounds={rounds} replay={replay} template={template} />}
+        {showcase && rounds.length > 0 && <RoundStepper rounds={rounds} table={table} template={template} />}
 
         {!showcase && template.medallions && <Chain replay={replay} prefix={template.move_prefix} />}
 
@@ -94,11 +106,13 @@ export function ReplayPage({ matchId }: Props) {
           <div key={turn.seq}>
             <article className="entry torn">
               <div>
-                <span className="who">{who(turn)}</span>{" "}
-                <span className={`model${turn.actor === "p1" ? " human" : ""}`}>
-                  {turn.actor === "p1" ? "human" : "model"}
+                <span className={`who tone-${table.tone(turn.actor)}`}>
+                  <span>{billed(turn.actor)}</span>
+                </span>{" "}
+                <span className={`model${seatOf(turn.actor)?.kind === "human" ? " human" : ""}`}>
+                  {seatOf(turn.actor)?.kind === "human" ? "human" : "model"}
                 </span>
-                <p className="said">{turn.move_text}</p>
+                <p className="said">{turn.outcome === "forfeit" ? "Lost the turn" : turn.move_text}</p>
               </div>
               {template.medallions && <span className="medallion">{turn.host?.generated_emoji ?? "?"}</span>}
             </article>
@@ -136,8 +150,8 @@ export function ReplayPage({ matchId }: Props) {
         </section>
 
         <p className="play-cta">
-          <Link className="ticket" to={`/play/${replay.template_id}/start`}>
-            Play a duel
+          <Link className="ticket" to={`/play/${replay.template_id}`}>
+            Play {template.title}
           </Link>
           <span className="cta-hint">{showcase ? "Three fresh words, the same judge." : "A fresh opening, the same judge."}</span>
         </p>
@@ -207,11 +221,11 @@ export function ReplayPage({ matchId }: Props) {
 }
 
 /** One round at a time, with arrows, the left and right keys, and a #round-N link into the page. */
-function RoundStepper({ rounds, replay, template }: { rounds: RoundGroup[]; replay: Replay; template: TemplateView }) {
+function RoundStepper({ rounds, table, template }: { rounds: RoundGroup[]; table: Table; template: TemplateView }) {
   const fromHash = Number(location.hash.match(/^#round-(\d+)$/)?.[1]);
   const [at, setAt] = useState(fromHash >= 1 && fromHash <= rounds.length ? fromHash - 1 : 0);
   const group = rounds[at];
-  const { round, mine, theirs } = group;
+  const { round, turns } = group;
   const go = (next: number) => {
     if (next < 0 || next >= rounds.length) return;
     setAt(next);
@@ -242,11 +256,21 @@ function RoundStepper({ rounds, replay, template }: { rounds: RoundGroup[]; repl
       </p>
       <WordCard round={round} />
       <div className="bluffs">
-        <Bluff turn={mine!} round={round} who={replay.stage_name} you won={roundWinner(group) === "mine"} template={template} />
-        <Bluff turn={theirs!} round={round} who={replay.opponent_name} won={roundWinner(group) === "theirs"} template={template} />
+        {turns.map((turn) => (
+          <Bluff
+            key={turn.seq}
+            turn={turn}
+            round={round}
+            who={table.name(turn.actor)}
+            tone={table.tone(turn.actor)}
+            ai={table.seat(turn.actor)?.kind === "model"}
+            won={roundWinner(group) === turn.actor}
+            template={template}
+          />
+        ))}
       </div>
       <TruthLine round={round} />
-      {template.guess && <CallLine group={group} me={replay.stage_name} theirs={replay.opponent_name} />}
+      {template.guess && <CallLine group={group} table={table} />}
       <p className="stepper-dots" aria-hidden="true">
         {rounds.map((r, i) => (
           <button key={r.round.round_n} type="button" className={i === at ? "on" : undefined} onClick={() => go(i)} tabIndex={-1} />

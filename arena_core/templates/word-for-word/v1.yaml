@@ -319,8 +319,8 @@ labels:
   compose_waiting: Draft your definition while you wait
 rules:
   - Three rounds, one real and obscure word each.
-  - Write one sentence that could sit under it in a dictionary, in the part of speech given. The House writes its own, unseen, and the Judge scores both.
-  - Then call which of two entries is real, the House's bluff or the dictionary's. Right, and the points are yours. Fooled, and they go to the House.
+  - Write one sentence that could sit under it in a dictionary, in the part of speech given. Everyone else at the table writes one too, unseen, and the Judge scores each.
+  - "Then call which entry is real: the dictionary's, or someone's bluff. Right, and the points are yours. Fooled, and they go to whoever wrote it."
   - Most points after three rounds wins.
 validation_messages:
   empty: "Nothing on the page. Define the word."

@@ -29,6 +29,10 @@ export type MoveToken = S["MoveToken"];
 export type JudgePaused = S["JudgePaused"];
 export type ScoringPayload = S["ScoringPayload"];
 export type HostPayload = S["HostPayload"];
+export type SeatView = S["SeatView"];
+export type TableView = S["TableView"];
+export type TurnChanged = S["TurnChanged"];
+export type SocketMessage = S["Online"] | S["Lobby"] | S["TurnNudge"];
 
 export type MatchEvent =
   | { name: "turn_rejected"; data: TurnRejected }
@@ -40,7 +44,11 @@ export type MatchEvent =
   | { name: "match_ended"; data: MatchEnded }
   | { name: "round_revealed"; data: RoundRevealed }
   | { name: "guess_opened"; data: GuessOpened }
-  | { name: "state_resync"; data: S["StateResync"] };
+  | { name: "state_resync"; data: S["StateResync"] }
+  | { name: "seat_joined"; data: S["SeatJoined"] }
+  | { name: "match_started"; data: S["MatchStarted"] }
+  | { name: "seat_submitted"; data: S["SeatSubmitted"] }
+  | { name: "turn_changed"; data: TurnChanged };
 
 const EVENT_NAMES: MatchEvent["name"][] = [
   "turn_rejected",
@@ -53,6 +61,10 @@ const EVENT_NAMES: MatchEvent["name"][] = [
   "round_revealed",
   "guess_opened",
   "state_resync",
+  "seat_joined",
+  "match_started",
+  "seat_submitted",
+  "turn_changed",
 ];
 
 export class ApiError extends Error {
@@ -80,7 +92,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   templates: () => request<TemplateView[]>("/templates"),
   template: (slug: string) => request<TemplateView>(`/templates/${slug}`),
-  createMatch: (templateId: string, opts: { stageName?: string; seedToken?: string; firstMove?: string } = {}) =>
+  createMatch: (
+    templateId: string,
+    opts: { stageName?: string; seedToken?: string; firstMove?: string; friends?: boolean; seats?: number } = {},
+  ) =>
     request<MatchSnapshot>("/matches", {
       method: "POST",
       body: JSON.stringify({
@@ -88,22 +103,37 @@ export const api = {
         stage_name: opts.stageName || null,
         seed_token: opts.seedToken ?? null,
         first_move: opts.firstMove ?? null,
+        kind: opts.friends ? "friends" : "house",
+        seats: opts.seats ?? 2,
       }),
     }),
+  joinTable: (inviteCode: string, stageName?: string) =>
+    request<{ match_id: string }>("/tables/join", {
+      method: "POST",
+      body: JSON.stringify({ invite_code: inviteCode, stage_name: stageName || null }),
+    }),
+  quickMatch: (templateId: string, seats: number, stageName?: string) =>
+    request<{ match_id: string }>("/tables/quick", {
+      method: "POST",
+      body: JSON.stringify({ template_id: templateId, seats, stage_name: stageName || null }),
+    }),
+  addHouse: (id: string) => request<void>(`/matches/${id}/seats/house`, { method: "POST" }),
+  lobby: () => request<TableView[]>("/tables"),
   match: (id: string) => request<MatchSnapshot>(`/matches/${id}`),
-  move: (id: string, expectedVersion: number, moveText: string) =>
+  move: (id: string, expectedVersion: number, moveText: string, roundN: number) =>
     request<void>(`/matches/${id}/moves`, {
       method: "POST",
       body: JSON.stringify({
         action_id: crypto.randomUUID(),
         expected_version: expectedVersion,
         move_text: moveText,
+        round_n: roundN,
       }),
     }),
-  guess: (id: string, expectedVersion: number, key: string) =>
+  guess: (id: string, expectedVersion: number, key: string, roundN: number) =>
     request<void>(`/matches/${id}/guesses`, {
       method: "POST",
-      body: JSON.stringify({ action_id: crypto.randomUUID(), expected_version: expectedVersion, key }),
+      body: JSON.stringify({ action_id: crypto.randomUUID(), expected_version: expectedVersion, key, round_n: roundN }),
     }),
   resign: (id: string, expectedVersion: number) =>
     request<void>(`/matches/${id}/resign`, {
@@ -147,4 +177,29 @@ export function useMatchEvents(matchId: string | null, onEvent: (event: MatchEve
       source.close();
     };
   }, [matchId, onEvent]);
+}
+
+/** The site-wide socket: who is online, the open tables, and your turn elsewhere. Reconnects
+ *  after a drop; a page without a session gets nothing. */
+export function usePresence(onMessage: (message: SocketMessage) => void) {
+  useEffect(() => {
+    let socket: WebSocket | null = null;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    let closed = false;
+    const open = () => {
+      socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`);
+      socket.onmessage = (raw) => onMessage(JSON.parse(raw.data) as SocketMessage);
+      socket.onclose = (event) => {
+        if (!closed && event.code !== 4401) retry = setTimeout(open, 3000);
+      };
+    };
+    open();
+    const beat = setInterval(() => socket?.readyState === WebSocket.OPEN && socket.send("heartbeat"), 20000);
+    return () => {
+      closed = true;
+      clearTimeout(retry);
+      clearInterval(beat);
+      socket?.close();
+    };
+  }, [onMessage]);
 }

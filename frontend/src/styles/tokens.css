@@ -16,6 +16,14 @@
   --bar-bg: #17151a;
   --bar-fg: #f6f1e7;
 
+  /* Seats: yours is always the first, the rest follow turn order. */
+  --seat-1: var(--vermilion);
+  --seat-2: #b8892a;
+  --seat-3: #6a5fa8;
+  --seat-4: #3f8a64;
+  --seat-5: #2f6fb0;
+  --seat-6: #b0487e;
+
   --serif: "Newsreader", Georgia, "Times New Roman", serif;
   --display: "Fraunces", Georgia, "Times New Roman", serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -40,6 +48,12 @@
   --brass: #d8b45a;
   --bar-bg: #201d24;
   --bar-fg: #f6f1e7;
+  --seat-1: var(--vermilion);
+  --seat-2: var(--brass);
+  --seat-3: #a79de0;
+  --seat-4: #7fc0a0;
+  --seat-5: #7fb2e8;
+  --seat-6: #e38fbc;
 }
 
 body {

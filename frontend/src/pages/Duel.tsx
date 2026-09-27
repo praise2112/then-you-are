@@ -17,18 +17,36 @@ import {
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
-import { capitalize, criterionLabel, endLine, formName, fullMove, groupRounds, HOUSE, isLongCard, lastStanding, roundTotals, roundWinner, shortName } from "./format.ts";
+import {
+  capitalize,
+  clockText,
+  criterionLabel,
+  endLine,
+  formName,
+  fullMove,
+  groupRounds,
+  isLive,
+  isLongCard,
+  judgeFace,
+  lastStanding,
+  roundTotals,
+  roundWinner,
+  shortName,
+  tableOf,
+  useSecondsLeft,
+  type Table,
+} from "./format.ts";
 import { ResultCard } from "./ResultCard.tsx";
 import { Bluff, CallCard, CallLine, RoundLedger, TruthLine, WordCard } from "./rounds.tsx";
+import { SeatList, SeatStrip, WaitingRoom } from "./seats.tsx";
 
 function endedFromReplay(r: Replay): MatchEnded {
-  // Walking back into a finished duel: the coaching line is on the move that fell.
+  // Walking back into a finished match: the coaching line is on the move that fell.
   const last = r.transcript[r.transcript.length - 1];
   return {
     end_reason: r.end_reason!,
     winner: r.winner,
-    points_p1: r.points_p1,
-    points_p2: r.points_p2,
+    totals: Object.fromEntries(r.seats.map((s) => [s.seat, s.points])),
     highlight_seq: r.highlight_seq,
     coaching_line: last?.outcome === "fail" ? (last.host?.coaching_line ?? null) : null,
     share_text: r.share_text,
@@ -56,6 +74,10 @@ function stampText(verb: string, move: string, prefix: string): string {
   return name.length > 28 ? verb : `${verb}: ${name}`;
 }
 
+function withTotals(s: MatchSnapshot, totals: Record<string, number>): MatchSnapshot["seats"] {
+  return s.seats.map((seat) => ({ ...seat, points: totals[seat.seat] ?? seat.points }));
+}
+
 function withRulings(s: MatchSnapshot, rulings: Ruling[]): MatchSnapshot {
   const fresh = rulings.filter((r) => !s.transcript.some((t) => t.seq === r.seq));
   const last = rulings[rulings.length - 1];
@@ -66,8 +88,7 @@ function withRulings(s: MatchSnapshot, rulings: Ruling[]): MatchSnapshot {
     state_version: last.state_version,
     to_move: last.to_move,
     round_in_play: last.round_in_play,
-    points_p1: last.points_p1,
-    points_p2: last.points_p2,
+    seats: withTotals(s, last.totals),
     judged_moves: s.judged_moves + fresh.length,
     transcript: [...s.transcript, ...fresh.map(turnOf)],
   };
@@ -86,23 +107,26 @@ export function Duel({ matchId, spectator = false }: Props) {
   const [paused, setPaused] = useState<JudgePaused | null>(null);
   const [ended, setEnded] = useState<MatchEnded | null>(null);
   const [revealEnd, setRevealEnd] = useState(false);
-  const [showResign, setShowResign] = useState(false);
-  const [showRubric, setShowRubric] = useState(false);
-  const [voted, setVoted] = useState<Set<number>>(new Set());
   const [picked, setPicked] = useState<string | null>(null);
   const [calling, setCalling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const transcriptRef = useRef<HTMLOListElement>(null);
   const modeRef = useRef<MatchSnapshot["mode"]>("escalation");
+  const seatRef = useRef<string | null>(null);
   const prefixRef = useRef("");
-  const heldRef = useRef<Ruling[]>([]);
 
   const refresh = useCallback(
     () =>
       api.match(matchId).then((s) => {
         setSnap(s);
         modeRef.current = s.mode;
+        seatRef.current = spectator ? null : s.your_seat;
+        // A showcase refusal says why only in the refused seat's own snapshot.
+        if (s.mode === "showcase" && s.returned) {
+          setReturned(s.returned);
+          setPending(false);
+        }
         const opening = store.takeOpeningMove(matchId);
         if (opening) {
           setText(opening);
@@ -146,10 +170,12 @@ export function Duel({ matchId, spectator = false }: Props) {
           setThinking(true);
           return;
         case "turn_rejected":
+          setSnap((s) => s && { ...s, status: "active", state_version: s.state_version + 1 });
+          if (event.data.seat !== seatRef.current) return;
           setThinking(false);
           setPending(false);
-          setReturned(event.data);
-          setSnap((s) => s && { ...s, status: "active", state_version: s.state_version + 1 });
+          if (modeRef.current === "showcase") void refresh();
+          else setReturned(event.data);
           return;
         case "move_token":
           setStreaming((s) => s + event.data.text);
@@ -162,75 +188,54 @@ export function Duel({ matchId, spectator = false }: Props) {
           setPaused(null);
           return;
         case "ruling": {
+          // A showcase round's rulings arrive together with its reveal, read from the snapshot.
+          if (modeRef.current === "showcase") return;
           const r = event.data;
-          if (modeRef.current === "showcase") {
-            heldRef.current.push(r);
-            return;
-          }
           setThinking(false);
-          setPending(false);
           setStreaming("");
-          setReturned(null);
-          if (r.actor === "p1") setText("");
+          if (r.actor === seatRef.current) {
+            setPending(false);
+            setReturned(null);
+            setText("");
+          }
           setSnap((s) => s && withRulings(s, [r]));
           return;
         }
-        case "guess_opened": {
-          const g = event.data;
-          setThinking(false);
-          setPending(false);
-          setReturned(null);
-          setText("");
-          setPicked(null);
-          setCalling(false);
-          setSnap(
-            (s) =>
-              s && {
-                ...s,
-                phase: "guess",
-                state_version: g.state_version,
-                rounds: s.rounds.map((x) => (x.round_n === g.round_n ? { ...x, options: g.options } : x)),
-              },
-          );
-          return;
-        }
-        case "round_revealed": {
-          const held = heldRef.current;
-          heldRef.current = [];
-          const r = event.data;
-          setThinking(false);
-          setPending(false);
+        case "round_revealed":
           setCalling(false);
           setPicked(null);
           setReturned(null);
+          setPending(false);
           setText("");
-          setSnap(
-            (s) =>
-              s && {
-                ...withRulings(s, held),
-                phase: "write",
-                state_version: r.state_version,
-                points_p1: r.points_p1,
-                points_p2: r.points_p2,
-                rounds: s.rounds.map((x) =>
-                  x.round_n === r.round_n ? { ...x, truth: r.truth, emoji: r.emoji, guesses: r.guesses, options: [] } : x,
-                ),
-              },
-          );
-          void api.match(matchId).then((s) => setSnap((prev) => prev && { ...prev, rounds: s.rounds }));
+          void refresh();
           return;
-        }
-        case "match_ended": {
-          const e = event.data;
-          setThinking(false);
-          setStreaming("");
-          setSnap((s) => s && { ...s, status: "ended", winner: e.winner, end_reason: e.end_reason, points_p1: e.points_p1, points_p2: e.points_p2 });
-          setEnded(e);
-          setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), e.end_reason === "resign" ? 0 : 3200);
+        case "guess_opened":
+          setPending(false);
+          setPicked(null);
+          setCalling(false);
+          void refresh();
           return;
-        }
+        case "seat_submitted":
+        case "seat_joined":
+        case "match_started":
+        case "turn_changed":
         case "state_resync":
           void refresh();
+          return;
+        case "match_ended": {
+          const e = event.data;
+          if (e.end_reason === "unfilled") {
+            void refresh();
+            return;
+          }
+          setThinking(false);
+          setStreaming("");
+          setSnap((s) => s && { ...s, status: "ended", winner: e.winner, end_reason: e.end_reason, seats: withTotals(s, e.totals) });
+          setEnded(e);
+          setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), e.end_reason === "resign" ? 0 : 3200);
+          if (modeRef.current === "showcase") void refresh();
+          return;
+        }
       }
     },
     [refresh, spectator, matchId],
@@ -242,76 +247,71 @@ export function Duel({ matchId, spectator = false }: Props) {
   if (snap.status === "abandoned") {
     return (
       <p className="page-status">
-        This duel closed after a day without a move. <Link to={`/play/${snap.template_id}/start`}>Start a fresh one</Link>.
+        {snap.end_reason === "unfilled" ? "Nobody joined this table in time." : "This match closed after a day without a move."}{" "}
+        <Link to={`/play/${snap.template_id}`}>Start a fresh one</Link>.
       </p>
+    );
+  }
+
+  const table = tableOf(snap, spectator);
+  if (snap.status === "open") {
+    return (
+      <>
+        <header className="bar-top">
+          <a className="wordmark" href="/">
+            Oddstage
+          </a>
+          <span className="round">
+            <b>{template.title}</b>, a table for {snap.seats_wanted}
+          </span>
+          <ThemeToggle />
+        </header>
+        <main className="wrap">
+          <section className="hero">
+            <WaitingRoom snap={snap} template={template} table={table} onChange={() => void refresh()} />
+          </section>
+        </main>
+      </>
     );
   }
 
   // The board stays up at the end; the composer's place takes the result card.
   const finished = ended && revealEnd && snap.status === "ended" ? ended : null;
-  const parting = finished && endLine(finished);
+  const parting = finished && endLine(finished, table.me);
 
-  const prefix = template.move_prefix;
-  const me = spectator ? snap.stage_name : "You";
-  const standing = lastStanding(snap.transcript);
-  const latest = snap.transcript[snap.transcript.length - 1];
-  const fell = ended && latest?.outcome === "fail" ? latest : null;
-  const shown = fell ?? standing;
-  const yourLast = [...snap.transcript].reverse().find((t) => t.actor === "p1" && t.host);
-  const showYourSlip = yourLast && latest?.actor === "p2" && !streaming && !finished;
-  const standingText = streaming || standing?.move_text || snap.seed_token;
-  const standingIsMine = !streaming && standing?.actor === "p1";
-  const waiting = pending || thinking || !!streaming || (snap.to_move === "p2" && !paused);
-  const canPlay = snap.status === "active" && snap.to_move === "p1" && !pending && !paused && !ended;
-  const round = Math.min(snap.round_in_play, template.rounds_budget);
-  const lastRound = round === template.rounds_budget && snap.to_move === "p1";
-  const strikesNudge = returned?.nudge_text;
-  const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
-  const longCard = isLongCard(snap.seed_token);
-  const standingName = longCard && !standing && !streaming ? template.labels.opening.toLowerCase() : shortName(formName(standingText, prefix));
-
-  async function play(event: FormEvent) {
-    event.preventDefault();
-    if (!canPlay || !text.trim()) return;
-    setPending(true);
-    setReturned(null);
-    try {
-      await api.move(matchId, snap!.state_version, fullMove(prefix, text));
-    } catch (e) {
-      setPending(false);
-      setError(null);
-      setReturned({ outcome: "deterministic_invalid", reason_text: (e as Error).message, strikes: 0, nudge_text: null });
-      void refresh();
-    }
-  }
-
-  function onKey(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key !== "Enter" || event.shiftKey) return;
-    event.preventDefault();
-    formRef.current?.requestSubmit();
+  // A command the server refused comes back like a returned move, with its reason.
+  function refused(e: unknown) {
+    setReturned({ seat: table.me ?? "", outcome: "deterministic_invalid", reason_text: (e as Error).message, strikes: 0, nudge_text: null });
   }
 
   async function resign() {
-    setShowResign(false);
     try {
       await api.resign(matchId, snap!.state_version);
     } catch (e) {
-      setReturned({ outcome: "deterministic_invalid", reason_text: (e as Error).message, strikes: 0, nudge_text: null });
+      refused(e);
     }
   }
 
-  function disagree(seq: number) {
-    void api.disagree(matchId, seq).then(() => setVoted((v) => new Set(v).add(seq)));
+  async function sendMove(moveText: string) {
+    setPending(true);
+    setReturned(null);
+    try {
+      await api.move(matchId, snap!.state_version, moveText, snap!.round_in_play);
+    } catch (e) {
+      setPending(false);
+      refused(e);
+      void refresh();
+    }
   }
 
   async function call() {
     if (!picked || calling) return;
     setCalling(true);
     try {
-      await api.guess(matchId, snap!.state_version, picked);
+      await api.guess(matchId, snap!.state_version, picked, snap!.round_in_play);
     } catch (e) {
       setCalling(false);
-      setReturned({ outcome: "deterministic_invalid", reason_text: (e as Error).message, strikes: 0, nudge_text: null });
+      refused(e);
       void refresh();
     }
   }
@@ -321,15 +321,15 @@ export function Duel({ matchId, spectator = false }: Props) {
       <ShowcaseDuel
         snap={snap}
         template={template}
+        table={table}
         spectator={spectator}
         text={text}
         setText={setText}
         pending={pending}
-        thinking={thinking}
         returned={returned}
         paused={paused}
         ended={!!ended}
-        play={play}
+        send={() => sendMove(text)}
         resign={resign}
         formRef={formRef}
         picked={picked}
@@ -337,26 +337,122 @@ export function Duel({ matchId, spectator = false }: Props) {
         calling={calling}
         call={call}
         finished={finished}
+        parting={parting}
       />
     );
   }
 
+  return (
+    <EscalationDuel
+      snap={snap}
+      template={template}
+      table={table}
+      spectator={spectator}
+      text={text}
+      setText={setText}
+      pending={pending}
+      thinking={thinking}
+      streaming={streaming}
+      returned={returned}
+      paused={paused}
+      ended={ended}
+      finished={finished}
+      parting={parting}
+      send={() => sendMove(fullMove(template.move_prefix, text))}
+      resign={resign}
+      formRef={formRef}
+      transcriptRef={transcriptRef}
+    />
+  );
+}
+
+type EscalationProps = {
+  snap: MatchSnapshot;
+  template: TemplateView;
+  table: Table;
+  spectator: boolean;
+  text: string;
+  setText: (text: string) => void;
+  pending: boolean;
+  thinking: boolean;
+  streaming: string;
+  returned: TurnRejected | null;
+  paused: JudgePaused | null;
+  ended: MatchEnded | null;
+  finished: MatchEnded | null;
+  parting: { label: string | null; text: string } | null;
+  send: () => Promise<void>;
+  resign: () => Promise<void>;
+  formRef: RefObject<HTMLFormElement | null>;
+  transcriptRef: RefObject<HTMLOListElement | null>;
+};
+
+/** Turn by turn: the seats in the rail, the standing move in the middle, the move box under it. */
+function EscalationDuel(props: EscalationProps) {
+  const { snap, template, table, spectator, text, setText, pending, thinking, streaming, returned, paused, ended, finished, parting } = props;
+  const { send, resign, formRef, transcriptRef } = props;
+  const [showResign, setShowResign] = useState(false);
+  const [showRubric, setShowRubric] = useState(false);
+  const [voted, setVoted] = useState<Set<number>>(new Set());
+  const disagree = (seq: number) => void api.disagree(snap.id, seq).then(() => setVoted((v) => new Set(v).add(seq)));
+  const left = useSecondsLeft(snap.turn_deadline);
+  const me = table.me;
+  const prefix = template.move_prefix;
+  const standing = lastStanding(snap.transcript);
+  const judged = snap.transcript.filter((t) => t.scoring);
+  const latest = judged[judged.length - 1];
+  const fell = ended && latest?.outcome === "fail" ? latest : null;
+  const shown = fell ?? standing;
+  const face = shown && judgeFace(shown);
+  const yourLast = [...snap.transcript].reverse().find((t) => t.actor === me && t.host);
+  const showYourSlip = yourLast && latest?.actor !== me && !streaming && !finished;
+  const standingText = streaming || standing?.move_text || snap.seed_token;
+  const standingIsMine = !streaming && !!me && standing?.actor === me;
+  const live = isLive(snap.status);
+  const mover = table.seat(snap.to_move);
+  const moverIsModel = mover?.kind === "model";
+  const moverName = table.name(snap.to_move);
+  const waiting = pending || thinking || !!streaming || (live && moverIsModel && !paused);
+  const othersTurn = live && !moverIsModel && snap.to_move !== me && !waiting;
+  const canPlay = snap.status === "active" && !!me && snap.to_move === me && !pending && !paused && !ended;
+  const round = Math.min(snap.round_in_play, template.rounds_budget);
+  const myIndex = snap.seats.findIndex((s) => s.seat === me);
+  const after = snap.seats.filter((s, i) => i > myIndex && !s.eliminated).map((s) => table.name(s.seat));
+  const lastRound = round === template.rounds_budget && snap.to_move === me && !!me;
+  const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
+  const longCard = isLongCard(snap.seed_token);
+  const standingName = longCard && !standing && !streaming ? template.labels.opening.toLowerCase() : shortName(formName(standingText, prefix));
+  const two = snap.seats.length === 2;
+  const other = snap.seats.find((s) => s.seat !== me);
+
+  function play(event: FormEvent) {
+    event.preventDefault();
+    if (!canPlay || !text.trim()) return;
+    void send();
+  }
+
+  function onKey(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key !== "Enter" || event.shiftKey) return;
+    event.preventDefault();
+    formRef.current?.requestSubmit();
+  }
+
   const standingHead = fell
-    ? fell.actor === "p1"
-      ? `${me} fell`
-      : `${HOUSE} fell`
+    ? `${table.name(fell.actor)} fell`
     : finished
-    ? standingIsMine
-      ? `${me} had the last word`
-      : `${HOUSE} had the last word`
+    ? standing
+      ? `${table.name(standing.actor)} had the last word`
+      : template.labels.opening
     : streaming
-    ? `${HOUSE} is writing`
-    : standingIsMine
-      ? `${me} wrote`
-      : standing
-        ? `From ${HOUSE}`
-        : template.labels.opening;
-  const composerLabel = paused
+    ? `${moverName} is writing`
+    : standing
+      ? standingIsMine
+        ? "You wrote"
+        : `From ${table.name(standing.actor)}`
+      : template.labels.opening;
+  const composerLabel = othersTurn
+    ? `${moverName} is writing`
+    : paused
     ? template.labels.compose_waiting
     : returned
       ? "Your move, still yours"
@@ -367,14 +463,14 @@ export function Duel({ matchId, spectator = false }: Props) {
     ? "The match is over. One moment."
     : paused
     ? paused.host_text
-    : strikesNudge
-      ? strikesNudge
+    : returned?.nudge_text
+      ? returned.nudge_text
       : waiting
-        ? standingIsMine
-          ? `${HOUSE} is thinking.`
+        ? moverIsModel && !pending
+          ? `${moverName} is thinking.`
           : "The judge is reading."
-        : spectator
-          ? `${capitalize(standingName)} stands. ${snap.stage_name} to move.`
+        : othersTurn
+          ? `${capitalize(standingName)} stands. ${moverName} to move.`
           : `${capitalize(standingName)}. ${template.move_hint}`;
 
   return (
@@ -392,17 +488,11 @@ export function Duel({ matchId, spectator = false }: Props) {
 
       <main className="stage">
         <section>
-          <div className="scoreline">
-            <span className="small-caps">{me}</span>
-            <b>
-              {snap.points_p1} : {snap.points_p2}
-            </b>
-            <span className="small-caps">{HOUSE}</span>
-          </div>
+          <SeatList snap={snap} table={table} />
           <p className="centered-label small-caps" style={{ marginTop: "var(--space-3)" }}>
             The match so far
           </p>
-          <ol className="transcript">
+          <ol className="transcript" ref={transcriptRef}>
             <li>
               <div className="move">
                 <span>
@@ -420,26 +510,32 @@ export function Duel({ matchId, spectator = false }: Props) {
               <li key={turn.seq}>
                 <div className="move">
                   <span>
-                    <span className={`who${turn.actor === "p1" ? " you" : ""}`}>{turn.actor === "p1" ? me : HOUSE}</span>
-                    {turn.move_text}
+                    <span className={`who tone-${table.tone(turn.actor)}${turn.actor === me ? " you" : ""}`}>
+                      <span>{table.name(turn.actor)}</span>
+                    </span>
+                    {turn.outcome === "forfeit" ? <em>Lost the turn</em> : turn.move_text}
                   </span>
-                  {template.medallions && (
+                  {template.medallions && turn.outcome !== "forfeit" && (
                     <span className="medallion sm" role="img" aria-label={formName(turn.move_text, prefix)}>
                       {turn.host?.generated_emoji ?? "?"}
                     </span>
                   )}
                 </div>
-                <p className="ruling">
-                  <span className="word">{rulingWord(turn)}</span>
-                  <em>{turn.host?.headline}</em>
-                </p>
+                {turn.outcome !== "forfeit" && (
+                  <p className="ruling">
+                    <span className="word">{rulingWord(turn)}</span>
+                    <em>{turn.host?.headline}</em>
+                  </p>
+                )}
               </li>
             ))}
             {paused && (
               <li>
                 <div className="move">
                   <span>
-                    <span className="who you">You</span>
+                    <span className="who you">
+                      <span>You</span>
+                    </span>
                     {fullMove(prefix, text)}
                   </span>
                   {template.medallions && <span className="medallion sm empty">?</span>}
@@ -450,7 +546,7 @@ export function Duel({ matchId, spectator = false }: Props) {
               </li>
             )}
           </ol>
-          {!spectator && !finished && (
+          {!spectator && !finished && me && (
             <p className="resign-row">
               <button className="quiet-button" type="button" onClick={() => setShowResign(true)} disabled={!!ended}>
                 <Icon name="flag" />
@@ -461,6 +557,7 @@ export function Duel({ matchId, spectator = false }: Props) {
         </section>
 
         <section>
+          <SeatStrip snap={snap} table={table} />
           {showYourSlip && !spectator && (
             <p className="your-slip">
               {template.medallions && (
@@ -484,43 +581,44 @@ export function Duel({ matchId, spectator = false }: Props) {
             </div>
           )}
           {(!longCard || shown || streaming || paused) && (
-          <>
-          <p className="small-caps last-move-head">{standingHead}</p>
-          <div className={`torn standing${waiting ? " reading" : ""}${finished ? " final" : ""}`}>
-            {paused && <span className="tag">Awaiting ruling</span>}
-            {shown && !streaming && !paused && (
-              <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>
-                {fell ? stampText("Fell", fell.move_text, prefix) : shown.outcome === "semantic_uncertain" ? "Close call" : stampText(`Point +${shown.points ?? 0}`, shown.move_text, prefix)}
-              </span>
-            )}
-            <p className="last-move">{paused ? fullMove(prefix, text) : fell ? fell.move_text : standingText}</p>
-            {shown?.host && !streaming && !paused && (
-              <div className="ruled">
-                <Host state="verdict" />
-                <div>
-                  <p className="headline">{shown.host.headline}</p>
-                  <p className="because">
-                    {criterionLabel(shown.host.because_clause.criterion, template)}: {shown.host.because_clause.text}
-                  </p>
-                  <button
-                    className="vote"
-                    type="button"
-                    disabled={voted.has(shown.seq)}
-                    onClick={() => disagree(shown.seq)}
-                  >
-                    <Icon name="speech" />
-                    {voted.has(shown.seq) ? "Noted. The ruling stands." : "I disagree with this ruling"}
-                  </button>
-                </div>
+            <>
+              <p className="small-caps last-move-head">{standingHead}</p>
+              <div className={`torn standing${waiting ? " reading" : ""}${finished ? " final" : ""}`}>
+                {paused && <span className="tag">Awaiting ruling</span>}
+                {shown && !streaming && !paused && (
+                  <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>
+                    {fell
+                      ? stampText("Fell", fell.move_text, prefix)
+                      : shown.outcome === "semantic_uncertain"
+                        ? "Close call"
+                        : stampText(`Point +${shown.points ?? 0}`, shown.move_text, prefix)}
+                  </span>
+                )}
+                <p className="last-move">{paused ? fullMove(prefix, text) : fell ? fell.move_text : standingText}</p>
+                {shown?.host && !streaming && !paused && (
+                  <div className="ruled">
+                    <span className={`judge-face${face?.fall ? " fall" : ""}`} aria-hidden="true">
+                      {face?.face}
+                    </span>
+                    <div>
+                      <p className="headline">{shown.host.headline}</p>
+                      <p className="because">
+                        {criterionLabel(shown.host.because_clause.criterion, template)}: {shown.host.because_clause.text}
+                      </p>
+                      <button className="vote" type="button" disabled={voted.has(shown.seq)} onClick={() => disagree(shown.seq)}>
+                        <Icon name="speech" />
+                        {voted.has(shown.seq) ? "Noted. The ruling stands." : "I disagree with this ruling"}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          </>
+            </>
           )}
           {paused && <p className="waiting">The match is paused until the judge rules.</p>}
 
-          {finished && <ResultCard snap={snap} ended={finished} />}
-          {!spectator && !finished && (
+          {finished && <ResultCard snap={snap} ended={finished} table={table} />}
+          {!spectator && !finished && me && (
             <form
               ref={formRef}
               className={`composer${returned ? " returned" : ""}`}
@@ -535,7 +633,13 @@ export function Duel({ matchId, spectator = false }: Props) {
               <label className="small-caps" htmlFor="move">
                 {composerLabel}
               </label>
-              {lastRound && <p className="last-round">Last round: {HOUSE} answers once more, then it&rsquo;s over.</p>}
+              {lastRound && (
+                <p className="last-round">
+                  {after.length > 0
+                    ? `Last round: ${after.join(", ")} ${after.length === 1 ? "answers" : "answer"} once more, then it’s over.`
+                    : "Last round: your move is the last of the match."}
+                </p>
+              )}
               <div className={`compose-box${waiting && !paused ? " scanning" : ""}`}>
                 <span className="prefix" aria-hidden="true">
                   {prefix}
@@ -550,7 +654,7 @@ export function Duel({ matchId, spectator = false }: Props) {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={onKey}
-                  disabled={pending || !!ended || (snap.to_move !== "p1" && !paused)}
+                  disabled={pending || !!ended || (snap.to_move !== me && !paused)}
                   placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example.slice(prefix.length)}
                 />
               </div>
@@ -561,6 +665,7 @@ export function Duel({ matchId, spectator = false }: Props) {
               )}
               <div className="composer-foot">
                 <span className="counter" aria-live="polite">
+                  {canPlay && left !== null && <b className="clock">{clockText(left)} left · </b>}
                   {fullMove(prefix, text).length}/{template.max_chars}
                 </span>
                 <button className={`ticket${canPlay ? "" : " quiet"}`} type="submit" disabled={!canPlay}>
@@ -569,15 +674,13 @@ export function Duel({ matchId, spectator = false }: Props) {
               </div>
             </form>
           )}
-          {spectator && !waiting && !paused && (
-            <p className="waiting">Waiting for {snap.stage_name} to move.</p>
-          )}
+          {(spectator || !me) && !waiting && !paused && live && <p className="waiting">Waiting for {moverName} to move.</p>}
 
           {waiting && !paused && (
             <div className="judge-reading" role="status">
               <Host state="thinking" />
               <span>
-                {streaming ? `${HOUSE} is answering` : "The judge is reading"}
+                {streaming ? `${moverName} is answering` : "The judge is reading"}
                 <span className="dots" />
               </span>
             </div>
@@ -595,7 +698,7 @@ export function Duel({ matchId, spectator = false }: Props) {
               </p>
               <div className="scorecard">
                 <p className="for">
-                  <span>{latest.actor === "p1" ? (spectator ? `${me}'s move` : "Your move") : `${HOUSE}'s move`}</span>
+                  <span>{latest.actor === me ? "Your move" : `${table.name(latest.actor)}'s move`}</span>
                   <span>The judge was {latest.scoring.confidence}</span>
                 </p>
                 <dl className="points">
@@ -656,32 +759,47 @@ export function Duel({ matchId, spectator = false }: Props) {
       </main>
 
       {showResign && (
-        <div className="scrim">
-          <div className="sheet" role="dialog" aria-modal="true" aria-labelledby="give-up-title" style={{ maxWidth: "26rem" }}>
-            <h2 id="give-up-title" style={{ margin: 0, fontSize: "1.8rem" }}>
-              Resign this match?
-            </h2>
-            <p style={{ margin: "var(--space-2) 0 0", color: "var(--ink-soft)" }}>
-              {HOUSE} takes the win at {snap.points_p1} : {snap.points_p2} after {snap.judged_moves} judged moves. The
-              replay is saved either way.
-            </p>
-            <div className="sheet-actions">
-              <button className="quiet-button" type="button" onClick={resign}>
-                <Icon name="flag" />
-                Resign
-              </button>
-              <button className="ticket" type="button" onClick={() => setShowResign(false)} autoFocus>
-                Keep playing
-              </button>
-            </div>
-          </div>
-        </div>
+        <ResignSheet
+          text={
+            two && other
+              ? `${table.name(other.seat)} takes the win at ${(me && table.seat(me)?.points) ?? 0} : ${other.points}.`
+              : "You leave the table and the others play on."
+          }
+          onResign={() => {
+            setShowResign(false);
+            void resign();
+          }}
+          onKeep={() => setShowResign(false)}
+        />
       )}
     </>
   );
 }
 
+function ResignSheet({ text, onResign, onKeep }: { text: string; onResign: () => void; onKeep: () => void }) {
+  return (
+    <div className="scrim">
+      <div className="sheet" role="dialog" aria-modal="true" aria-labelledby="give-up-title" style={{ maxWidth: "26rem" }}>
+        <h2 id="give-up-title" style={{ margin: 0, fontSize: "1.8rem" }}>
+          Resign this match?
+        </h2>
+        <p style={{ margin: "var(--space-2) 0 0", color: "var(--ink-soft)" }}>{text} The replay is saved either way.</p>
+        <div className="sheet-actions">
+          <button className="quiet-button" type="button" onClick={onResign}>
+            <Icon name="flag" />
+            Resign
+          </button>
+          <button className="ticket" type="button" onClick={onKeep} autoFocus>
+            Keep playing
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function rulingWord(turn: TurnView): string {
+  if (turn.outcome === "forfeit") return "Lost the turn";
   if (turn.outcome === "fail") return "Fell";
   if (turn.outcome === "semantic_uncertain") return `Close call, ${turn.points ?? 0}`;
   return `Point, ${turn.points ?? 0}`;
@@ -690,15 +808,15 @@ function rulingWord(turn: TurnView): string {
 type ShowcaseProps = {
   snap: MatchSnapshot;
   template: TemplateView;
+  table: Table;
   spectator: boolean;
   text: string;
   setText: (text: string) => void;
   pending: boolean;
-  thinking: boolean;
   returned: TurnRejected | null;
   paused: JudgePaused | null;
   ended: boolean;
-  play: (event: FormEvent) => Promise<void>;
+  send: () => Promise<void>;
   resign: () => Promise<void>;
   formRef: RefObject<HTMLFormElement | null>;
   picked: string | null;
@@ -706,23 +824,31 @@ type ShowcaseProps = {
   calling: boolean;
   call: () => Promise<void>;
   finished: MatchEnded | null;
+  parting: { label: string | null; text: string } | null;
 };
 
-/** The round view: one card at a time, the call once both bluffs are judged, both answers shown
- *  together once the truth is out. */
-function ShowcaseDuel({ snap, template, spectator, text, setText, pending, thinking, returned, paused, ended, play, resign, formRef, picked, setPicked, calling, call, finished }: ShowcaseProps) {
+/** Everyone at once: one card per round, every seat writes, the call once all are judged, all
+ *  answers shown together once the truth is out. */
+function ShowcaseDuel(props: ShowcaseProps) {
+  const { snap, template, table, spectator, text, setText, pending, returned, paused, ended, formRef, picked, setPicked, calling, call, finished, parting } = props;
+  const { send, resign } = props;
   const [showResign, setShowResign] = useState(false);
-  const parting = finished && endLine(finished);
-  const me = spectator ? snap.stage_name : "You";
+  const left = useSecondsLeft(snap.turn_deadline);
+  const me = table.me;
   const groups = groupRounds(snap.rounds, snap.transcript);
   const revealed = groups.filter((g) => g.revealed);
   const current = groups.find((g) => !g.revealed);
   const roundN = current?.round.round_n ?? revealed[revealed.length - 1]?.round.round_n ?? 1;
+  const mySeat = me ? table.seat(me) : undefined;
+  const mine = current?.turns.find((t) => t.actor === me);
   const onCall = snap.phase === "guess" && !!current && current.round.options.length > 0;
-  const lastResult = onCall ? undefined : revealed[revealed.length - 1];
-  const earlier = onCall ? revealed : revealed.slice(0, -1);
-  const judging = !onCall && (pending || thinking || snap.status === "awaiting_judgment");
-  const canPlay = snap.status === "active" && !onCall && !pending && !paused && !ended && !!current;
+  const waitingCall = snap.phase === "guess" && !onCall && !finished;
+  const lastResult = snap.phase === "guess" ? undefined : revealed[revealed.length - 1];
+  const earlier = lastResult ? revealed.slice(0, -1) : revealed;
+  const judging = !mine && (pending || !!mySeat?.answered) && snap.phase === "write";
+  const out = !!mySeat?.eliminated;
+  const canWrite = snap.status === "active" && !!me && !out && !mine && !judging && !paused && !ended && !!current && snap.phase === "write";
+  const clock = left !== null ? clockText(left) : null;
   const hostLine = finished
     ? parting!.text
     : ended
@@ -732,16 +858,24 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
       : returned?.nudge_text
         ? returned.nudge_text
         : onCall
-          ? spectator
-            ? `${snap.stage_name} is calling.`
-            : calling
-              ? "Called. The truth is coming out."
-              : "Two entries. One of them was written this minute."
-          : judging
-            ? "The Judge is reading both."
-            : spectator
-              ? `${snap.stage_name} is writing.`
-              : template.move_hint;
+          ? calling
+            ? "Called. The truth is coming out."
+            : "One of these is real. The rest were written this minute."
+          : waitingCall
+            ? "The others are calling."
+            : judging
+              ? "The judge is reading yours."
+              : mine
+                ? "Yours is in. The rest are still writing."
+                : spectator
+                  ? "The table is writing."
+                  : template.move_hint;
+
+  function play(event: FormEvent) {
+    event.preventDefault();
+    if (!canWrite || !text.trim()) return;
+    void send();
+  }
 
   function onKey(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key !== "Enter" || event.shiftKey) return;
@@ -763,15 +897,12 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
       </header>
 
       <main className="stage showcase">
-        <RoundLedger groups={groups} me={me} />
+        <div className="rail">
+          <SeatList snap={snap} table={table} />
+          <RoundLedger groups={groups} table={table} />
+        </div>
         <section>
-          <div className="scoreline">
-            <span className="small-caps">{me}</span>
-            <b>
-              {snap.points_p1} : {snap.points_p2}
-            </b>
-            <span className="small-caps">{HOUSE}</span>
-          </div>
+          <SeatStrip snap={snap} table={table} />
 
           {earlier.length > 0 && (
             <ol className="rounds-so-far">
@@ -790,9 +921,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                       <b>{round.token}</b> {round.truth && <em>{round.truth}</em>}
                     </span>
                     <span className="tally-line">
-                      {won === "mine" ? <b>{totals.mine}</b> : totals.mine}
-                      {" : "}
-                      {won === "theirs" ? <b>{totals.theirs}</b> : totals.theirs}
+                      {won ? `${table.name(won)} took it, ${totals[won]}` : "shared"}
                     </span>
                   </li>
                 );
@@ -804,27 +933,25 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
             <section className={`round-result${finished ? " final" : ""}`}>
               <TruthLine round={lastResult.round} />
               <div className="bluffs">
-                <Bluff
-                  turn={lastResult.mine!}
-                  round={lastResult.round}
-                  who={me}
-                  you
-                  won={roundWinner(lastResult) === "mine"}
-                  template={template}
-                />
-                <Bluff
-                  turn={lastResult.theirs!}
-                  round={lastResult.round}
-                  who={HOUSE}
-                  won={roundWinner(lastResult) === "theirs"}
-                  template={template}
-                />
+                {lastResult.turns.map((turn) => (
+                  <Bluff
+                    key={turn.seq}
+                    turn={turn}
+                    round={lastResult.round}
+                    who={table.name(turn.actor)}
+                    tone={table.tone(turn.actor)}
+                    you={turn.actor === me}
+                    ai={table.seat(turn.actor)?.kind === "model"}
+                    won={roundWinner(lastResult) === turn.actor}
+                    template={template}
+                  />
+                ))}
               </div>
-              {template.guess && <CallLine group={lastResult} me={me} />}
+              {template.guess && <CallLine group={lastResult} table={table} />}
             </section>
           )}
 
-          {current && (
+          {current && !finished && (
             <>
               <p className="small-caps last-move-head" style={{ marginTop: lastResult ? "var(--space-3)" : "var(--space-2)" }}>
                 {lastResult ? template.labels.next_opening : template.labels.opening}
@@ -835,6 +962,20 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
             </>
           )}
 
+          {mine && snap.phase === "write" && (
+            <div className="entry-mine">
+              <span className={`who tone-${table.tone(mine.actor)} you`}>
+                <span>You wrote</span>
+              </span>
+              <p>
+                <b>{current?.round.token}</b> {mine.move_text}
+              </p>
+            </div>
+          )}
+          {(mine || judging) && snap.phase === "write" && !finished && (
+            <p className="waiting">The meanings show when everyone has written{clock ? `, or in ${clock}` : ""}.</p>
+          )}
+
           {onCall && current && (
             <CallCard
               round={current.round}
@@ -843,18 +984,18 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               onPick={setPicked}
               onCall={call}
               pending={calling}
-              spectator={spectator}
-              who={snap.stage_name}
+              clock={clock}
             />
           )}
+          {waitingCall && <p className="waiting">Waiting for the others to call{clock ? `, ${clock} left` : ""}.</p>}
           {onCall && returned && (
             <p className="why">
               <b>The call did not land.</b> {returned.reason_text}
             </p>
           )}
 
-          {finished && <ResultCard snap={snap} ended={finished} />}
-          {!spectator && current && !onCall && (
+          {finished && <ResultCard snap={snap} ended={finished} table={table} />}
+          {!spectator && me && current && !onCall && !mine && !judging && !out && !finished && snap.phase === "write" && (
             <form ref={formRef} className={`composer${returned ? " returned" : ""}`} style={{ marginTop: "var(--space-3)" }} onSubmit={play}>
               {returned && (
                 <span className="slip returned-slip" aria-hidden="true">
@@ -864,7 +1005,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               <label className="small-caps" htmlFor="move">
                 {paused ? template.labels.compose_waiting : template.labels.compose.replace("{token}", shortName(current.round.token))}
               </label>
-              <div className={`compose-box bare${judging && !paused ? " scanning" : ""}`}>
+              <div className="compose-box bare">
                 <textarea
                   id="move"
                   autoComplete="off"
@@ -875,7 +1016,7 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={onKey}
-                  disabled={pending || ended || judging}
+                  disabled={pending || ended}
                   placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example}
                 />
               </div>
@@ -886,28 +1027,19 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
               )}
               <div className="composer-foot">
                 <span className="counter" aria-live="polite">
+                  {clock && <b className="clock">{clock} left · </b>}
                   {text.length}/{template.max_chars}
                 </span>
-                <button className={`ticket${canPlay ? "" : " quiet"}`} type="submit" disabled={!canPlay}>
+                <button className={`ticket${canWrite ? "" : " quiet"}`} type="submit" disabled={!canWrite}>
                   {pending ? "Sent" : "Play it"}
                 </button>
               </div>
             </form>
           )}
+          {out && !finished && <p className="waiting">You are out of this match. The others play on.</p>}
           {paused && <p className="waiting">The match is paused until the judge rules.</p>}
-          {spectator && current && !judging && !onCall && <p className="waiting">Waiting for {snap.stage_name} to write.</p>}
 
-          {judging && !paused && (
-            <div className="judge-reading" role="status">
-              <Host state="thinking" />
-              <span>
-                The Judge is reading both
-                <span className="dots" />
-              </span>
-            </div>
-          )}
-
-          {!spectator && !finished && (
+          {!spectator && !finished && me && !out && (
             <p className="resign-row">
               <button className="quiet-button" type="button" onClick={() => setShowResign(true)} disabled={ended}>
                 <Icon name="flag" />
@@ -947,33 +1079,14 @@ function ShowcaseDuel({ snap, template, spectator, text, setText, pending, think
       </main>
 
       {showResign && (
-        <div className="scrim">
-          <div className="sheet" role="dialog" aria-modal="true" aria-labelledby="give-up-title" style={{ maxWidth: "26rem" }}>
-            <h2 id="give-up-title" style={{ margin: 0, fontSize: "1.8rem" }}>
-              Resign this match?
-            </h2>
-            <p style={{ margin: "var(--space-2) 0 0", color: "var(--ink-soft)" }}>
-              {HOUSE} takes the win at {snap.points_p1} : {snap.points_p2} after {revealed.length} of {template.rounds_budget} rounds. The
-              replay is saved either way.
-            </p>
-            <div className="sheet-actions">
-              <button
-                className="quiet-button"
-                type="button"
-                onClick={() => {
-                  setShowResign(false);
-                  void resign();
-                }}
-              >
-                <Icon name="flag" />
-                Resign
-              </button>
-              <button className="ticket" type="button" onClick={() => setShowResign(false)} autoFocus>
-                Keep playing
-              </button>
-            </div>
-          </div>
-        </div>
+        <ResignSheet
+          text={snap.seats.length === 2 ? "The other seat takes the win." : "You leave the table and the others play on."}
+          onResign={() => {
+            setShowResign(false);
+            void resign();
+          }}
+          onKeep={() => setShowResign(false)}
+        />
       )}
     </>
   );

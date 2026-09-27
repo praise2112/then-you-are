@@ -279,3 +279,41 @@ async def test_a_profile_shows_the_record_and_hides_private_duels_from_visitors(
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_game_against_people_is_listed_but_never_counted(monkeypatch):
+    from tests.test_tables import expire, join, player, table
+
+    host = auth.Profile("github", f"{RUN}-t", f"Tia {RUN}", "")
+
+    async def fake_profile(_client, _provider, _request):
+        return host
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    app, manager, client = await run_app(FakeCaller([], []))
+    guest = player(app)
+    try:
+        await sign_in(client)
+        opened = await table(client, "then-i-am", 2, "Tia")
+        await join(guest, opened["invite_code"], "Ben")
+        await settle(app)
+        await expire(app, opened["id"])
+        await guest.post(
+            f"/matches/{opened['id']}/moves",
+            json={"action_id": "b1", "expected_version": 1, "move_text": "I am rain."},
+        )
+        await settle(app)
+        await expire(app, opened["id"])
+
+        me = (await client.get("/sessions/me")).json()
+        assert (me["account"]["streak"], me["account"]["best_streak"]) == (0, 0)
+        shown = (await client.get(f"/profiles/{me['account']['id']}")).json()
+        assert shown["records"] == [] and shown["duels"] == [] and shown["played"] == 0
+        assert [(d["result"], d["against"]) for d in shown["people"]] == [("Out of turns", "Ben")]
+        board = (await client.get("/leaderboard/then-i-am")).json()
+        assert all(s["account_id"] != me["account"]["id"] for s in board["standings"])
+    finally:
+        await guest.aclose()
+        await client.aclose()
+        await manager.__aexit__(None, None, None)

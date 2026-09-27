@@ -280,8 +280,8 @@ opponent_prompt: |
 
 num_players:
   min: 2
-  max: 4
-rounds_budget: 5
+  max: 2
+rounds_budget: 4
 win_condition: sudden_death
 tie_policy: defender_holds
 strikes_before_consequence: 2
