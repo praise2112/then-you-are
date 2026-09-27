@@ -156,16 +156,18 @@ def agreement_interval(same: list[bool], rng: random.Random) -> list[float]:
 
 
 def sanity_reasons(stats: Stats, cal: Calibration) -> list[str]:
-    """Why a pilot fails the sanity filter; empty when it passes."""
+    """Why a pilot fails the sanity filter; empty when it passes. A fixed bar gives way where
+    the parent's own pilots fall outside it."""
     reasons = []
-    if stats.pass_rate < max(MIN_PASS_RATE, cal.pass_rate[0]):
+    if stats.pass_rate < MIN_PASS_RATE:
         reasons.append(f"pass rate {stats.pass_rate:.2f}")
     if stats.spread < cal.spread[0]:
         reasons.append(f"spread {stats.spread:.3f} under {cal.spread[0]:.3f}")
-    if stats.dup_rate > MAX_DUP_RATE:
+    if stats.dup_rate > max(MAX_DUP_RATE, cal.dup_rate[1]):
         reasons.append(f"duplicates {stats.dup_rate:.2f}")
-    if stats.median_length is not None and stats.median_length < MIN_LENGTH:
-        reasons.append(f"median length {stats.median_length:.0f}")
+    min_length = min(MIN_LENGTH, cal.median_length[0]) if cal.median_length else MIN_LENGTH
+    if stats.median_length is not None and stats.median_length < min_length:
+        reasons.append(f"median length {stats.median_length:.1f}")
     return reasons
 
 

@@ -23,6 +23,15 @@ opponent-luna:
   display_name: GPT Luna
   model: openai/gpt-5.6-luna
   temperature: 1.0
+judge-luna6:
+  display_name: The Judge
+  model: openai/gpt-6-luna
+  reasoning_effort: low
+  temperature: 0.5
+opponent-luna6:
+  display_name: GPT Luna
+  model: openai/gpt-6-luna
+  temperature: 1.0
 judge-fireworks:
   display_name: The Judge
   model: deepseek/deepseek-v4.1-flash

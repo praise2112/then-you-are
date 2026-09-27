@@ -74,9 +74,28 @@ def test_pilot_stats_come_from_the_judged_moves_and_land_inside_their_own_interv
     )
     assert cal.pass_rate == [1.0, 1.0] and cal.median_length == [3.0, 3.0]
     assert sanity_reasons(stats, cal) == []
-    weak = stats.model_copy(update={"pass_rate": 0.4, "dup_rate": 0.3, "median_length": 2.0})
+    weak = stats.model_copy(
+        update={"pass_rate": 0.4, "dup_rate": cal.dup_rate[1] + 0.1, "median_length": 2.0}
+    )
     reasons = sanity_reasons(weak, cal)
     assert [r.split()[0] for r in reasons] == ["pass", "duplicates", "median"]
+
+
+def test_no_sanity_bar_is_stricter_than_what_the_parents_own_pilots_show():
+    cal = Calibration(
+        matches=100,
+        pilot_size=10,
+        pass_rate=[1.0, 1.0],
+        spread=[0.1, 0.2],
+        dup_rate=[0.0, 0.2],
+        median_length=[1.0, 3.5],
+        agreement_same=[0.9, 1.0],
+        agreement_luna=[1.0, 1.0],
+    )
+    edge = Stats(matches=10, judged=30, pass_rate=0.9, spread=0.1, dup_rate=0.2, median_length=1.0)
+    assert sanity_reasons(edge, cal) == []
+    worse = edge.model_copy(update={"pass_rate": 0.5, "dup_rate": 0.25, "median_length": 0.5})
+    assert [r.split()[0] for r in sanity_reasons(worse, cal)] == ["pass", "duplicates", "median"]
 
 
 def test_pilot_cards_are_the_same_on_a_rerun_and_a_showcase_gets_one_per_round():
