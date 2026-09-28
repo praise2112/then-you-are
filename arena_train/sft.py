@@ -6,6 +6,7 @@
 #     "trl==1.14.0",
 #     "accelerate==1.15.0",
 #     "datasets==5.0.1",
+#     "einops==0.8.2",
 #     "kernels==0.16.2",
 #     "b2sdk==2.13.0",
 #     "mlflow-skinny==3.16.1",
@@ -37,6 +38,7 @@ import mlflow
 import torch
 from datasets import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers.integrations.hub_kernels import get_kernel_mapping_transformers
 from trl import SFTConfig, SFTTrainer
 
 NO_THINKING = {"enable_thinking": False}
@@ -45,15 +47,28 @@ FALLBACK = "falling back to its reference PyTorch implementation"
 RUN_METRICS = ("seconds", "tokens_per_second", "peak_memory_gb")
 
 
-def player_example(record: dict) -> dict:
+def thinking_switch(tokenizer) -> dict:
+    """The no-thinking template argument, or none for a template that adds its empty think
+    block only to the generation prompt, where the prompt would stop being a prefix."""
+    prompt = [{"role": "user", "content": "x"}]
+    full = tokenizer.apply_chat_template(
+        prompt + [{"role": "assistant", "content": "y"}], tokenize=False, **NO_THINKING
+    )
+    alone = tokenizer.apply_chat_template(
+        prompt, tokenize=False, add_generation_prompt=True, **NO_THINKING
+    )
+    return NO_THINKING if full.startswith(alone) else {}
+
+
+def player_example(record: dict, chat_kwargs: dict) -> dict:
     return {
         "prompt": record["messages"],
         "completion": [{"role": "assistant", "content": record["target"]}],
-        "chat_template_kwargs": NO_THINKING,
+        "chat_template_kwargs": chat_kwargs,
     }
 
 
-def judge_example(record: dict, ruling_first: bool) -> dict:
+def judge_example(record: dict, ruling_first: bool, chat_kwargs: dict) -> dict:
     response = record["response"]
     if ruling_first:
         scoring = response["scoring"]
@@ -61,15 +76,15 @@ def judge_example(record: dict, ruling_first: bool) -> dict:
     return {
         "prompt": [{"role": "user", "content": record["prompt"]}],
         "completion": [{"role": "assistant", "content": json.dumps(response, ensure_ascii=False)}],
-        "chat_template_kwargs": NO_THINKING,
+        "chat_template_kwargs": chat_kwargs,
     }
 
 
-def load_examples(path: Path, judge: bool, ruling_first: bool) -> list[dict]:
+def load_examples(path: Path, judge: bool, ruling_first: bool, chat_kwargs: dict) -> list[dict]:
     records = [json.loads(line) for line in path.read_text().splitlines()]
     if judge:
-        return [judge_example(r, ruling_first) for r in records if r["response"]]
-    return [player_example(r) for r in records]
+        return [judge_example(r, ruling_first, chat_kwargs) for r in records if r["response"]]
+    return [player_example(r, chat_kwargs) for r in records]
 
 
 def check_lengths(tokenizer, examples: list[dict], max_length: int) -> list[int]:
@@ -78,10 +93,10 @@ def check_lengths(tokenizer, examples: list[dict], max_length: int) -> list[int]
     lengths = []
     for i, ex in enumerate(examples):
         full = tokenizer.apply_chat_template(
-            ex["prompt"] + ex["completion"], tokenize=True, **NO_THINKING
+            ex["prompt"] + ex["completion"], tokenize=True, **ex["chat_template_kwargs"]
         )["input_ids"]
         prompt = tokenizer.apply_chat_template(
-            ex["prompt"], tokenize=True, add_generation_prompt=True, **NO_THINKING
+            ex["prompt"], tokenize=True, add_generation_prompt=True, **ex["chat_template_kwargs"]
         )["input_ids"]
         if full[: len(prompt)] != prompt:
             raise SystemExit(f"example {i}: the prompt renders differently inside the full chat")
@@ -110,9 +125,11 @@ def check_kernels(model, tokenizer, example: dict) -> None:
         example["prompt"] + example["completion"],
         return_tensors="pt",
         return_dict=True,
-        **NO_THINKING,
+        **example["chat_template_kwargs"],
     ).to(model.device)
-    model(**batch, labels=batch["input_ids"]).loss.backward()
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        loss = model(**batch, labels=batch["input_ids"]).loss
+    loss.backward()
     model.zero_grad(set_to_none=True)
     logging.getLogger("transformers").removeHandler(watch)
     if watch.seen:
@@ -122,6 +139,7 @@ def check_kernels(model, tokenizer, example: dict) -> None:
 def answer_contexts(model, tokenizer, contexts: Path, out: Path, batch: int = 16) -> None:
     """One sampled answer per context at the opponent temperature, as it would be served."""
     rows = [json.loads(line) for line in contexts.read_text().splitlines()]
+    chat_kwargs = thinking_switch(tokenizer)
     model.eval()
     model.config.use_cache = True
     tokenizer.padding_side = "left"
@@ -130,7 +148,7 @@ def answer_contexts(model, tokenizer, contexts: Path, out: Path, batch: int = 16
             chunk = rows[start : start + batch]
             prompts = [
                 tokenizer.apply_chat_template(
-                    c["messages"], tokenize=False, add_generation_prompt=True, **NO_THINKING
+                    c["messages"], tokenize=False, add_generation_prompt=True, **chat_kwargs
                 )
                 for c in chunk
             ]
@@ -183,10 +201,14 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
 
     tokenizer = AutoTokenizer.from_pretrained(args.base)
-    examples = load_examples(args.records, args.judge, not args.evidence_first)
+    chat_kwargs = thinking_switch(tokenizer)
+    examples = load_examples(args.records, args.judge, not args.evidence_first, chat_kwargs)
     lengths = check_lengths(tokenizer, examples, max_length)
+    # The Hub rotary kernel needs q, k, cos and sin in one dtype, which autocast over
+    # fp32 weights breaks.
+    get_kernel_mapping_transformers().pop("rotary_pos_emb", None)
     model = AutoModelForCausalLM.from_pretrained(
-        args.base, dtype=torch.bfloat16, use_kernels=True, device_map="cuda"
+        args.base, dtype=torch.float32, use_kernels=True, device_map="cuda"
     )
     model.gradient_checkpointing_enable()
     check_kernels(model, tokenizer, examples[0])
