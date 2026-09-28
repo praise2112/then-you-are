@@ -2,7 +2,8 @@ import asyncio
 
 import pytest
 
-from arena_core.template import Seed, load_template, load_template_file
+from arena_core.template import TEMPLATES_DIR, Seed, load_template, load_template_file
+from arena_evals import grow_seeds
 from arena_evals.common import RETRY_STATUSES, with_backoff
 from arena_evals.grow_seeds import (
     Candidate,
@@ -52,6 +53,20 @@ def test_mechanical_reason_names_the_first_failure():
     assert mechanical_reason(dangling, SHORT) == "dangling verb"
     long = ok.model_copy(update={"opening": "a very old gate in the wall"})
     assert mechanical_reason(long, SHORT) == "too long"
+
+
+def test_a_game_whose_own_cards_break_the_short_form_style_is_not_held_to_it():
+    then = load_template("then-i-am")
+    own = [
+        c.model_copy(update={"opening_token": w})
+        for c, w in zip(
+            then.seed_pool[:3], ["Potato, baked.", "Rice, boiled.", "Carrot, roasted."], strict=True
+        )
+    ]
+    shape = card_shape(then.model_copy(update={"seed_pool": own}))
+    assert not shape.short_form
+    card = Candidate(opening="Leek, braised.", emoji="🥬", answer="a soup pot")
+    assert mechanical_reason(card, shape) is None
 
 
 def test_card_shape_comes_from_the_pool_and_sentences_skip_the_short_form_checks():
@@ -125,3 +140,57 @@ def test_backoff_retries_rate_limits_and_gives_up_on_client_errors(monkeypatch):
 
     with pytest.raises(CallError):
         asyncio.run(with_backoff(bad_request))
+
+
+def test_growing_carries_on_past_an_empty_round_and_stops_after_three(monkeypatch):
+    class Idle:
+        def __init__(self, **refs):
+            pass
+
+        async def aclose(self):
+            pass
+
+    first = load_template("then-i-am").seed_pool[0]
+
+    def fresh(n: int) -> list[Seed]:
+        return [first.model_copy(update={"opening_token": f"a fresh card {n}"})]
+
+    async def probe(self, cell, avoid):
+        return [Candidate(opening="a kite", emoji="🪁", answer="a gust of wind")]
+
+    async def nothing(self):
+        pass
+
+    def rounds(script):
+        batches = iter(script)
+
+        async def round_(self, cells, rejects):
+            return next(batches)
+
+        return round_
+
+    monkeypatch.setattr(grow_seeds, "make_caller", Idle)
+    monkeypatch.setattr(grow_seeds.Grower, "generate_cell", probe)
+    monkeypatch.setattr(grow_seeds.Grower, "load_pool_vectors", nothing)
+    path = TEMPLATES_DIR / "then-i-am" / "v1.yaml"
+
+    monkeypatch.setattr(grow_seeds.Grower, "round", rounds([[], fresh(1), [], fresh(2)]))
+    report = asyncio.run(grow_seeds.grow(path, 2, 1, 0.65, dry_run=True))
+    assert [s.opening_token for s in report.accepted] == ["a fresh card 1", "a fresh card 2"]
+
+    monkeypatch.setattr(grow_seeds.Grower, "round", rounds([[], [], [], fresh(3)]))
+    assert asyncio.run(grow_seeds.grow(path, 1, 1, 0.65, dry_run=True)).accepted == []
+
+
+def test_a_game_whose_cards_share_one_template_is_not_held_to_distinct_head_nouns():
+    then = load_template("then-i-am")
+    assert card_shape(then).distinct_heads
+    budget = [
+        "an opening limit of £100 with a £3 comic",
+        "an opening limit of £150 with a £5 sandwich",
+    ]
+    own = [
+        c.model_copy(update={"opening_token": w})
+        for c, w in zip(then.seed_pool[:2], budget, strict=True)
+    ]
+    assert not card_shape(then.model_copy(update={"seed_pool": own})).distinct_heads

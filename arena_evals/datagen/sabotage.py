@@ -2,12 +2,20 @@
 fork discarded. Verdicts land in the ledger's sabotage table, never in the match."""
 
 import random
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 
 from arena_core.state import STANDING
 from arena_core.template import Template
-from arena_evals.common import judge_with_backoff
-from arena_evals.datagen.ledger import CallRow, Ledger, Tape, judge_call_row, move_call_row
+from arena_evals.common import judge_with_backoff, model_label
+from arena_evals.datagen.ledger import (
+    CallFailed,
+    CallRow,
+    Ledger,
+    Tape,
+    judge_call_row,
+    move_call_row,
+)
 from arena_judge.caller import ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
 from arena_judge.schema import JudgeResponse, route_outcome
@@ -27,15 +35,6 @@ PROMPTED = {
         "For this move only: give a legal move that plausibly works but is dull and weak, "
         "the obvious lowest-effort answer."
     ),
-}
-EXPECTED = {
-    "near_duplicate": "semantic_reject",
-    "verbosity": "same_as_source",
-    "injection": "semantic_reject",
-    "meta": "semantic_reject",
-    "amplification": "fail",
-    "off_topic": "semantic_reject",
-    "weak_but_legal": "accept",
 }
 FILLER = (
     "and that is exactly how it goes",
@@ -130,9 +129,13 @@ class Saboteur:
         ledger: Ledger,
         judge: ModelSpec,
         writer: ModelSpec,
+        expected: Mapping[str, str],
         rate: float = RATE,
+        over_budget: Callable[[], bool] | None = None,
     ):
+        """`expected` is the class spec's outcome per sabotage kind."""
         self.template = template
+        self.expected = expected
         self.match_id = match_id
         self.key = f"{match_id}/sabotage"
         self.caller = caller
@@ -140,7 +143,7 @@ class Saboteur:
         self.judge = judge
         self.writer = writer
         self.rate = rate
-        self.tape = Tape(ledger, self.key)
+        self.tape = Tape(ledger, self.key, over_budget)
 
     async def run(self) -> int:
         """Picks positions with a seeded draw so a resumed run makes the same picks."""
@@ -163,14 +166,22 @@ class Saboteur:
         if not text:
             return False
         call_idx = self.tape.idx
+        inputs = {
+            "previous": pos.previous,
+            "move": text,
+            "hidden": pos.hidden,
+            "transcript": pos.transcript,
+        }
         row = await self.tape.step(
-            "judge", pos.actor, pos.seq, lambda idx: self._judge_live(idx, pos, text)
+            "judge", pos.actor, pos.seq, lambda idx: self._judge_live(idx, pos, inputs), inputs
         )
         response = row.payload["response"]
-        outcome = (
-            route_outcome(JudgeResponse.model_validate(response).scoring) if response else "none"
-        )
-        expected = pos.outcome if EXPECTED[kind] == "same_as_source" else EXPECTED[kind]
+        if response is None:
+            status = row.payload.get("error_status")
+            raise CallFailed(f"{self.key}: judge gave no verdict ({status})", status)
+        outcome = route_outcome(JudgeResponse.model_validate(response).scoring)
+        want = self.expected[kind]
+        expected = pos.outcome if want == "same_as_source" else want
         self.ledger.add_sabotage(
             self.match_id, pos.seq, kind, pos.move, text, call_idx, expected, outcome
         )
@@ -193,20 +204,21 @@ class Saboteur:
                 idx,
                 pos.actor,
                 pos.seq,
-                self.writer.model,
+                model_label(self.writer),
                 payload,
             ),
+            {"messages": original, "kind": kind},
         )
         return clean_move(row.raw)
 
-    async def _judge_live(self, idx: int, pos: Position, text: str) -> CallRow:
+    async def _judge_live(self, idx: int, pos: Position, inputs: dict) -> CallRow:
         call = await judge_with_backoff(
-            self.caller, self.template, pos.transcript, pos.previous, text, pos.hidden, self.judge
+            self.caller,
+            self.template,
+            pos.transcript,
+            pos.previous,
+            inputs["move"],
+            pos.hidden,
+            self.judge,
         )
-        inputs = {
-            "previous": pos.previous,
-            "move": text,
-            "hidden": pos.hidden,
-            "transcript": pos.transcript,
-        }
         return judge_call_row(self.key, idx, pos.actor, pos.seq, self.judge, call, inputs)

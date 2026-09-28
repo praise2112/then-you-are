@@ -28,14 +28,20 @@ from arena_core.template import (
     load_template,
     load_template_file,
 )
-from arena_evals.common import judge_with_backoff, load_model, make_caller, require_window
-from arena_evals.datagen.ledger import Ledger, judge_call_row
+from arena_evals.common import (
+    credit_left,
+    judge_with_backoff,
+    load_model,
+    make_caller,
+)
+from arena_evals.datagen.ledger import BudgetReached, CallFailed, Ledger, judge_call_row
 from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
 from arena_evals.datagen.sabotage import Position, positions
 from arena_evals.grow_seeds import grow
 from arena_evals.variants.generate import POOL_DIR, Stage, load_index, pool_path, save_index
 from arena_evals.variants.spec import spec_names
 from arena_judge.caller import ModelCaller, ModelSpec
+from arena_judge.prompt import clean_move
 from arena_judge.schema import JudgeResponse, route_outcome
 
 PILOTS_DIR = POOL_DIR / "pilots"
@@ -57,6 +63,7 @@ MIN_LENGTH = 3
 class Stats(Strict):
     matches: int
     judged: int
+    refused: int
     pass_rate: float
     spread: float
     dup_rate: float
@@ -78,22 +85,32 @@ class Calibration(Strict):
 
 @dataclass(frozen=True)
 class Summary:
-    """One match's judged moves: outcomes, weighted totals of the moves that stood, and the
-    normalised move texts."""
+    """One match's teacher moves: judged outcomes, weighted totals of the moves that stood,
+    the normalised move texts, and how many moves the rule check refused before any judge."""
 
     outcomes: list[str]
     totals: list[float]
     norms: list[str]
+    refused: int
 
 
 def summarize(template: Template, ledger: Ledger, match_ids: list[str]) -> list[Summary]:
+    """The engine's default move is left out: it stands in for refused teacher moves."""
     found = []
     for match_id in match_ids:
         outcomes: list[str] = []
         totals: list[float] = []
         norms: list[str] = []
+        refused = 0
+        written: str | None = None
         for call in ledger.calls(match_id):
-            if call.role != "judge" or not call.payload["response"]:
+            if call.role == "move":
+                refused += written is not None
+                written = clean_move(call.raw)
+                continue
+            if call.payload["move"] == written:
+                written = None
+            if not call.payload["response"] or call.payload["move"] == template.default_move:
                 continue
             response = JudgeResponse.model_validate(call.payload["response"])
             outcome = route_outcome(response.scoring)
@@ -101,7 +118,7 @@ def summarize(template: Template, ledger: Ledger, match_ids: list[str]) -> list[
             norms.append(normalize(call.payload["move"]))
             if outcome != "semantic_reject":
                 totals.append(weighted_total(response.scoring.scores, template.weights))
-        found.append(Summary(outcomes, totals, norms))
+        found.append(Summary(outcomes, totals, norms, refused + (written is not None)))
     return found
 
 
@@ -109,11 +126,14 @@ def stats_of(template: Template, matches: list[Summary]) -> Stats:
     outcomes = [o for m in matches for o in m.outcomes]
     totals = [t for m in matches for t in m.totals]
     norms = [n for m in matches for n in m.norms]
+    refused = sum(m.refused for m in matches)
+    attempted = len(outcomes) + refused
     max_total = SCORE_MAX * sum(template.weights.values())
     return Stats(
         matches=len(matches),
         judged=len(outcomes),
-        pass_rate=sum(o != "semantic_reject" for o in outcomes) / len(outcomes) if outcomes else 0,
+        refused=refused,
+        pass_rate=sum(o != "semantic_reject" for o in outcomes) / attempted if attempted else 0,
         spread=statistics.pstdev(totals) / max_total if len(totals) > 1 else 0,
         dup_rate=1 - len(set(norms)) / len(norms) if norms else 0,
         median_length=statistics.median(
@@ -194,18 +214,30 @@ async def play_pilot(
     ids = [f"{slug}-{i}" for i in range(n)]
     done = {r["match_id"] for r in ledger.matches("ended")}
 
+    failed: list[CallFailed] = []
+
+    def over_budget() -> bool:
+        return spent() >= budget or any(f.status == 402 for f in failed)
+
     async def one(i: int) -> None:
         match = new_match(template, deal_for(template, slug, i))
         match.id = ids[i]
         async with sem:
-            if spent() >= budget:
+            if over_budget():
                 return
             try:
-                await play_match(template, match, teachers, caller, ledger, judge)
+                await play_match(template, match, teachers, caller, ledger, judge, over_budget)
             except MatchAbandoned as e:
                 print(f"abandoned: {e}", file=sys.stderr)
+            except BudgetReached:
+                pass
+            except CallFailed as e:
+                failed.append(e)
+                print(f"call failed: {e}", file=sys.stderr)
 
     await asyncio.gather(*(one(i) for i in range(n) if ids[i] not in done))
+    if no_credit := next((f for f in failed if f.status == 402), None):
+        raise no_credit
     done = {r["match_id"] for r in ledger.matches("ended")}
     return [m for m in ids if m in done]
 
@@ -219,20 +251,20 @@ async def rejudge(
     caller: ModelCaller,
 ) -> list[bool]:
     """Judges each position again with `spec`; True where the outcome matched the original.
-    Each row is cached under `key` plus the position's own fingerprint the moment it lands, so
-    a rerun asks the model only about positions it has not seen."""
+    Rows are cached by position the moment they land, so a rerun pays only for new ones."""
     sem = asyncio.Semaphore(8)
 
     async def one(pos: Position) -> bool:
         pos_key = f"{key}/{position_id(pos)}"
         recorded = ledger.calls(pos_key)
-        if recorded:
-            row = recorded[0]
-        else:
+        row = recorded[0] if recorded else None
+        if row is None or row.payload["response"] is None:
             async with sem:
                 call = await judge_with_backoff(
                     caller, template, pos.transcript, pos.previous, pos.move, pos.hidden, spec
                 )
+            if row is not None:
+                call.cost_usd += row.cost_usd
             inputs = {
                 "previous": pos.previous,
                 "move": pos.move,
@@ -243,8 +275,10 @@ async def rejudge(
             row = judge_call_row(pos_key, 0, pos.actor, pos.seq, spec, call, inputs)
             ledger.add_call(row)
         response = row.payload["response"]
-        outcome = route_outcome(JudgeResponse.model_validate(response).scoring) if response else ""
-        return outcome == pos.outcome
+        if response is None:
+            status = row.payload.get("error_status")
+            raise CallFailed(f"{pos_key}: judge gave no verdict ({status})", status)
+        return route_outcome(JudgeResponse.model_validate(response).scoring) == pos.outcome
 
     return list(await asyncio.gather(*(one(pos) for pos in sample)))
 
@@ -349,36 +383,49 @@ async def for_each(
     stage: Stage,
     budget: float,
     step: Callable[[str, Ledger, ModelCaller, float], Awaitable[float]],
+    only: set[str] | None = None,
 ) -> None:
-    """Runs `step` over every variant of the class that passed `stage` with the budget left,
-    stopping when it is spent."""
+    """Runs `step` over every variant of the class that passed `stage`, or those of them in
+    `only`, until the budget or the account's balance is spent or the credit runs out."""
     index = load_index()
     slugs = sorted(
-        s for s, e in index.items() if e.klass == klass and e.stage == stage and e.reject is None
+        s
+        for s, e in index.items()
+        if e.klass == klass and e.stage == stage and e.reject is None and (not only or s in only)
     )
+    if only and (unknown := only - set(slugs)):
+        raise SystemExit(f"not {klass} variants at stage {stage}: {', '.join(sorted(unknown))}")
     if not slugs:
         raise SystemExit(f"no {klass} variant at stage {stage}")
     ledger = Ledger(PILOTS_DIR / f"{klass}.db")
     caller = make_caller(judge_ref=JUDGE)
     spent = 0.0
     try:
+        budget = min(budget, await credit_left(caller))
         for slug in slugs:
             if spent >= budget:
                 print(f"budget reached at ${spent:.2f}, stopping before {slug}", file=sys.stderr)
                 break
-            spent += await step(slug, ledger, caller, budget - spent)
+            before = ledger.spent()
+            try:
+                spent += await step(slug, ledger, caller, budget - spent)
+            except CallFailed as e:
+                spent += ledger.spent() - before
+                print(f"  {slug:32s} call failed, stage unchanged: {e}", file=sys.stderr)
+                if e.status == 402:
+                    print("OpenRouter is out of credit; stopping", file=sys.stderr)
+                    break
     finally:
         await caller.aclose()
         ledger.close()
     print(f"{klass} {stage}: {len(slugs)} variants, ${spent:.4f}", file=sys.stderr)
 
 
-async def pilot(klass: str, budget: float) -> None:
+async def pilot(klass: str, budget: float, only: set[str] | None = None) -> None:
     cal = load_calibration()
 
     async def step(slug: str, ledger: Ledger, caller: ModelCaller, left: float) -> float:
-        index = load_index()
-        entry = index[slug]
+        entry = load_index()[slug]
         if entry.parent not in cal:
             raise SystemExit(f"{entry.parent} has no calibration; run calibrate first")
         path = pool_path(klass, slug)
@@ -406,22 +453,18 @@ async def pilot(klass: str, budget: float) -> None:
         entry.stats = stats.model_dump()
         entry.stage = "pilot"
         entry.reject = "; ".join(reasons) or None
-        index[slug] = entry
-        save_index(index)
-        if reasons:
-            path.unlink()
+        save_index({slug: entry})
         print(f"  {slug:32s} {entry.reject or 'passed'}", file=sys.stderr)
         return cost
 
-    await for_each(klass, "rank", budget, step)
+    await for_each(klass, "rank", budget, step, only)
 
 
 async def consistency(klass: str, budget: float) -> None:
     cal = load_calibration()
 
     async def step(slug: str, ledger: Ledger, caller: ModelCaller, left: float) -> float:
-        index = load_index()
-        entry = index[slug]
+        entry = load_index()[slug]
         path = pool_path(klass, slug)
         template = load_template_file(path)
         ended = [f"{slug}-{i}" for i in range(PILOT_MATCHES) if ledger.calls(f"{slug}-{i}")]
@@ -435,10 +478,7 @@ async def consistency(klass: str, budget: float) -> None:
             reasons.append(f"Luna agreement {statistics.mean(luna or [0.0]):.2f}")
         entry.stage = "consistency"
         entry.reject = "; ".join(reasons) or None
-        index[slug] = entry
-        save_index(index)
-        if reasons:
-            path.unlink()
+        save_index({slug: entry})
         print(f"  {slug:32s} {entry.reject or 'passed'}", file=sys.stderr)
         return ledger.spent() - before
 
@@ -452,9 +492,9 @@ async def seeds(klass: str, budget: float) -> None:
         if len(load_template_file(path).seed_pool) < FULL_SEEDS:
             print(f"  {slug:32s} pool short, stage unchanged", file=sys.stderr)
             return cost
-        index = load_index()
-        index[slug].stage = "seeds"
-        save_index(index)
+        entry = load_index()[slug]
+        entry.stage = "seeds"
+        save_index({slug: entry})
         return cost
 
     await for_each(klass, "consistency", budget, step)
@@ -463,19 +503,18 @@ async def seeds(klass: str, budget: float) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--budget", type=float, required=True, help="dollars; the step stops here")
-    ap.add_argument("--now", action="store_true", help="run outside the off-peak window")
     sub = ap.add_subparsers(dest="cmd", required=True)
     cal = sub.add_parser("calibrate")
     cal.add_argument("slug")
     cal.add_argument("--matches", type=int, default=100)
     for name in ("pilot", "consistency", "seeds"):
         sub.add_parser(name).add_argument("klass", choices=spec_names())
+    sub.choices["pilot"].add_argument("--only", default="", help="comma-separated variant slugs")
     args = ap.parse_args()
-    require_window(args.now)
     if args.cmd == "calibrate":
         asyncio.run(calibrate(args.slug, args.matches, args.budget))
     elif args.cmd == "pilot":
-        asyncio.run(pilot(args.klass, args.budget))
+        asyncio.run(pilot(args.klass, args.budget, set(filter(None, args.only.split(",")))))
     elif args.cmd == "consistency":
         asyncio.run(consistency(args.klass, args.budget))
     else:

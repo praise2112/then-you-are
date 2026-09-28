@@ -1,4 +1,5 @@
 import asyncio
+import json
 from pathlib import Path
 
 from arena_core.template import load_template
@@ -6,6 +7,7 @@ from arena_evals.datagen.ledger import Ledger
 from arena_evals.datagen.play import play_match
 from arena_evals.datagen.records import export
 from arena_evals.datagen.sabotage import Position, Saboteur, kinds_for, mutate, positions
+from arena_evals.variants.spec import load_spec
 from tests.conftest import judge_response
 from tests.test_datagen_play import FLASH, JUDGE, SIDES, ScriptedCaller, duel_match
 
@@ -21,6 +23,9 @@ POS = Position(
     student={"card": "a rock", "transcript": [], "hidden": "", "messages": []},
     outcome="accept",
 )
+
+
+COUNTER = load_spec("counter")[0].sabotage_expectations
 
 
 def test_mechanical_mutations_keep_the_prefix_and_the_limit():
@@ -52,7 +57,7 @@ def test_sabotage_judges_off_the_match_and_records_expected_against_actual(tmp_p
 
     verdicts = [judge_response(gates={"not_semantic_duplicate": False}), judge_response()]
     caller = ScriptedCaller(verdicts, ["I am a bigger hammer.", "I am a cloud, drifting."])
-    saboteur = Saboteur(DUEL, match.id, caller, ledger, JUDGE, FLASH.spec, rate=1.0)
+    saboteur = Saboteur(DUEL, match.id, caller, ledger, JUDGE, FLASH.spec, COUNTER, rate=1.0)
     done = asyncio.run(saboteur.run())
     rows = ledger.sabotage_rows()
     assert done == 2 and len(rows) == 2
@@ -62,13 +67,23 @@ def test_sabotage_judges_off_the_match_and_records_expected_against_actual(tmp_p
     assert kinds <= set(kinds_for(DUEL))
     confirmed = [r for r in rows if r["expected"] == r["outcome"]]
     disputed = [r for r in rows if r["expected"] != r["outcome"]]
+    for r in rows:
+        want = COUNTER[r["kind"]]
+        assert r["expected"] == ("accept" if want == "same_as_source" else want)
     result = export(
         ledger,
         {"then-i-am": DUEL, "word-for-word": WORDS},
         {"then-i-am": "counter"},
         tmp_path / "c",
+        sabotage_teacher="the-saboteur",
     )
     assert result.disputed == len(disputed) and result.judge == 3 + len(confirmed)
+    players = [json.loads(line) for line in (tmp_path / "c" / "player.jsonl").open()]
+    for rec in players:
+        saboteur = rec["provenance"]["target_quality"] != "best"
+        assert (rec["provenance"]["teacher"] == "the-saboteur") == saboteur
 
-    again = Saboteur(DUEL, match.id, ScriptedCaller([], []), ledger, JUDGE, FLASH.spec, rate=1.0)
+    again = Saboteur(
+        DUEL, match.id, ScriptedCaller([], []), ledger, JUDGE, FLASH.spec, COUNTER, rate=1.0
+    )
     assert asyncio.run(again.run()) == 2 and len(ledger.sabotage_rows()) == 2

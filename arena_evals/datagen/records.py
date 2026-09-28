@@ -112,6 +112,7 @@ def export(
     classes: dict[str, str],
     out_dir: Path,
     split: str = "train",
+    sabotage_teacher: str | None = None,
 ) -> Export:
     """Writes player.jsonl, judge.jsonl, host.jsonl and disputed.jsonl under out_dir."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -187,7 +188,16 @@ def export(
                 continue
             players.append(
                 _player_record(
-                    template, classes, split, teachers, last_move, call, response, outcome, quality
+                    template,
+                    classes,
+                    split,
+                    # A weak_but_legal move was written by the saboteur, not the seat's teacher.
+                    (sabotage_teacher if sabotage else None) or teachers[call.actor],
+                    last_move,
+                    call,
+                    response,
+                    outcome,
+                    quality,
                 )
             )
 
@@ -230,7 +240,7 @@ def _player_record(
     template: Template,
     classes: dict[str, str],
     split: str,
-    teachers: dict[str, str],
+    teacher: str,
     move_call: CallRow,
     call: CallRow,
     response: JudgeResponse,
@@ -251,7 +261,7 @@ def _player_record(
             template_version=template.schema_version,
             game_class=classes[template.slug],
             split=split,
-            teacher=teachers[call.actor],
+            teacher=teacher,
             judge_model=call.model,
             judge_prompt_hash=call.prompt_hash,
             outcome=outcome,

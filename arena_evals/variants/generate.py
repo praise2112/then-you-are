@@ -9,9 +9,11 @@ uv run python -m arena_evals.variants.generate demote <slug>
 
 import argparse
 import asyncio
+import fcntl
 import hashlib
 import json
 import math
+import os
 import random
 import shutil
 import sys
@@ -36,7 +38,7 @@ INDEX_PATH = POOL_DIR / "index.json"
 SKETCHES = 6
 KEEP = 3
 HELDOUT_EVERY = 5
-LUNA = "opponent-luna"
+WRITER = "opponent-luna"
 RANKER = "opponent-fireworks"
 RATING_GUIDANCE = {
     "family": "no profanity, no innuendo, jokes target moves only",
@@ -284,12 +286,16 @@ def load_index() -> dict[str, Entry]:
     return INDEX.validate_json(INDEX_PATH.read_bytes()) if INDEX_PATH.exists() else {}
 
 
-def save_index(index: dict[str, Entry]) -> None:
-    """Writes the index whole through a temp file, so a crash never leaves it truncated."""
+def save_index(entries: dict[str, Entry]) -> None:
+    """Merges `entries` into the index on disk under a file lock, so runs in parallel keep
+    each other's changes, and writes it through a temp file so a crash never truncates it."""
     POOL_DIR.mkdir(exist_ok=True)
-    tmp = INDEX_PATH.with_suffix(".tmp")
-    tmp.write_bytes(INDEX.dump_json(dict(sorted(index.items())), indent=1) + b"\n")
-    tmp.replace(INDEX_PATH)
+    with INDEX_PATH.with_suffix(".lock").open("w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        index = load_index() | entries
+        tmp = INDEX_PATH.with_suffix(f".{os.getpid()}.tmp")
+        tmp.write_bytes(INDEX.dump_json(dict(sorted(index.items())), indent=1) + b"\n")
+        tmp.replace(INDEX_PATH)
 
 
 def pool_path(klass: str, slug: str) -> Path:
@@ -301,7 +307,7 @@ class Generator:
         self.spec = spec
         self.parents = parents
         self.caller = caller
-        self.luna = load_model(LUNA)
+        self.luna = load_model(WRITER)
         self.ranker = load_model(RANKER)
         self.sem = asyncio.Semaphore(16)
         self.tally = Tally()
@@ -394,6 +400,10 @@ class Generator:
     def prompt_of(self, slug: str) -> str:
         return render_opponent_system(load_template_file(pool_path(self.spec.name, slug)))
 
+    def entries(self) -> dict[str, Entry]:
+        """This class's index entries, the only ones a generator run changes."""
+        return {s: e for s, e in self.index.items() if e.klass == self.spec.name}
+
     def live(self, stage: Stage) -> list[str]:
         """Slugs of this class that passed `stage` and wait for the next one."""
         return [
@@ -420,7 +430,7 @@ class Generator:
             if score >= threshold:
                 self.index[slug].reject = f"dup of {closest} at {score:.3f}"
                 self.tally.rejects["dup"] += 1
-                save_index(self.index)
+                save_index(self.entries())
                 pool_path(self.spec.name, slug).unlink()
                 continue
             known_vecs[slug] = vec
@@ -455,11 +465,12 @@ class Generator:
             for slug in members[keep:]:
                 self.index[slug].reject = f"rank {totals[slug]:.0f} below the cell's top half"
                 self.tally.rejects["rank"] += 1
-        save_index(self.index)
+        save_index(self.entries())
         for slug in slugs:
             if self.index[slug].reject:
                 pool_path(self.spec.name, slug).unlink(missing_ok=True)
-        for i, slug in enumerate(sorted(self.live("rank"))):
+        unsplit = sorted(s for s in self.live("rank") if self.index[s].split is None)
+        for i, slug in enumerate(unsplit):
             self.index[slug].split = (
                 "heldout" if i % HELDOUT_EVERY == HELDOUT_EVERY - 1 else "train"
             )
@@ -489,19 +500,19 @@ async def generate(klass: str, budget: float, threshold: float, seed: int) -> Ta
                     print(f"budget reached at ${gen.tally.spent:.2f}, stopping", file=sys.stderr)
                     break
                 await asyncio.gather(*(gen.run_cell(c) for c in rest[i : i + 6]))
-                save_index(gen.index)
-        save_index(gen.index)
+                save_index(gen.entries())
+        save_index(gen.entries())
         if gen.tally.spent >= budget:
             print("budget spent on writing; dedup and rank wait for the next run", file=sys.stderr)
         else:
             if gen.live("lint"):
                 await gen.dedup(threshold)
-                save_index(gen.index)
+                save_index(gen.entries())
             if gen.live("dedup"):
                 await gen.rank()
-                save_index(gen.index)
+                save_index(gen.entries())
     finally:
-        save_index(gen.index)
+        save_index(gen.entries())
         await caller.aclose()
     return gen.tally
 

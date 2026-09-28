@@ -2,7 +2,14 @@ import asyncio
 import json
 
 from arena_core.template import load_template
-from arena_judge.caller import CallResult, ModelCaller, ModelSpec, parse_judge, salvage_judge
+from arena_judge.caller import (
+    CallError,
+    CallResult,
+    ModelCaller,
+    ModelSpec,
+    parse_judge,
+    salvage_judge,
+)
 from tests.conftest import judge_response
 
 NAMES = ["counter_strength", "coherence", "novelty"]
@@ -65,3 +72,24 @@ def test_judge_calls_the_given_spec_and_keeps_the_reasoning():
     assert call.reasoning == "because"
     assert call.response is not None
     asyncio.run(caller.aclose())
+
+
+def test_the_judge_leaves_client_errors_to_the_backoff_and_retries_a_server_error_once():
+    calls: list[int] = []
+
+    class Failing(ModelCaller):
+        def __init__(self, status: int):
+            spec = ModelSpec(model="j", display_name="J")
+            super().__init__("key", spec, spec)
+            self.status = status
+
+        async def complete(self, spec, messages, **extra):
+            calls.append(self.status)
+            raise CallError("upstream", self.status, 7.0)
+
+    template = load_template("then-i-am")
+    for status, tries in ((402, 1), (429, 1), (503, 2)):
+        calls.clear()
+        call = asyncio.run(Failing(status).judge(template, [], "a rock", "I am a hammer."))
+        assert call.response is None and len(calls) == tries
+        assert call.error_status == status and call.error_retry_after == 7.0

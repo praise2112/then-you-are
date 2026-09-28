@@ -3,6 +3,7 @@
 A match resumes by replaying its recorded calls in order, so a crash costs nothing."""
 
 import secrets
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from arena_core.state import (
@@ -16,14 +17,21 @@ from arena_core.state import (
 )
 from arena_core.template import Seed, Template
 from arena_evals.common import judge_with_backoff
-from arena_evals.datagen.ledger import CallRow, Ledger, Tape, judge_call_row, move_call_row
+from arena_evals.datagen.ledger import (
+    CallFailed,
+    CallRow,
+    Ledger,
+    Tape,
+    judge_call_row,
+    move_call_row,
+)
 from arena_judge.caller import ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move, judge_prompt_hash, render_opponent_messages
 from arena_judge.schema import JudgeResponse, Outcome, route_outcome
 
 
 class MatchAbandoned(Exception):
-    """The match cannot go on: the judge stayed down, or no legal move was left to play."""
+    """The match cannot go on: no legal move was left to play."""
 
 
 @dataclass(frozen=True)
@@ -59,13 +67,14 @@ class MatchPlayer:
         caller: ModelCaller,
         ledger: Ledger,
         judge: ModelSpec,
+        over_budget: Callable[[], bool] | None = None,
     ):
         self.template = template
         self.match = match
         self.teachers = teachers
         self.caller = caller
         self.judge_spec = judge
-        self.tape = Tape(ledger, match.id)
+        self.tape = Tape(ledger, match.id, over_budget)
 
     async def play(self) -> Match:
         if self.template.mode == "escalation":
@@ -166,6 +175,7 @@ class MatchPlayer:
             lambda idx: move_call_row(
                 self.caller, teacher.spec, messages, match.id, idx, actor, seq, teacher.ref, payload
             ),
+            {"messages": messages},
         )
         return clean_move(row.raw)
 
@@ -182,9 +192,10 @@ class MatchPlayer:
             )
             return judge_call_row(match.id, idx, actor, seq, self.judge_spec, call, inputs)
 
-        row = await self.tape.step("judge", actor, seq, live)
+        row = await self.tape.step("judge", actor, seq, live, inputs)
         if row.payload["response"] is None:
-            raise MatchAbandoned(f"{match.id}: judge unavailable after retries")
+            status = row.payload.get("error_status")
+            raise CallFailed(f"{match.id}: judge gave no verdict ({status})", status)
         response = JudgeResponse.model_validate(row.payload["response"])
         return Judged(route_outcome(response.scoring), response, move)
 
@@ -196,10 +207,12 @@ async def play_match(
     caller: ModelCaller,
     ledger: Ledger,
     judge: ModelSpec,
+    over_budget: Callable[[], bool] | None = None,
 ) -> Match:
-    """Plays or resumes one match and records its final status in the ledger."""
+    """Plays or resumes one match and records its final status in the ledger. A failed call
+    or a spent budget leaves the match active, so a resume carries on from the ledger."""
     ledger.add_match(match.id, template.slug, match.cards, teachers["p1"].ref, teachers["p2"].ref)
-    player = MatchPlayer(template, match, teachers, caller, ledger, judge)
+    player = MatchPlayer(template, match, teachers, caller, ledger, judge, over_budget)
     try:
         await player.play()
     except MatchAbandoned as e:

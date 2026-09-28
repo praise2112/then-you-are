@@ -2,8 +2,10 @@ import asyncio
 import random
 from pathlib import Path
 
+import pytest
+
 from arena_core.template import load_template
-from arena_evals.datagen.ledger import Ledger
+from arena_evals.datagen.ledger import CallFailed, Ledger
 from arena_evals.variants import funnel
 from arena_evals.variants.funnel import (
     Calibration,
@@ -64,7 +66,13 @@ def test_pilot_stats_come_from_the_judged_moves_and_land_inside_their_own_interv
     assert ended == ["duel-0", "duel-1"]
     stats = match_stats(DUEL, ledger, ended)
     assert stats == Stats(
-        matches=2, judged=6, pass_rate=1.0, spread=stats.spread, dup_rate=0.0, median_length=3
+        matches=2,
+        judged=6,
+        refused=0,
+        pass_rate=1.0,
+        spread=stats.spread,
+        dup_rate=0.0,
+        median_length=3,
     )
     assert stats.spread > 0.1
     intervals = bootstrap(DUEL, ledger, ended, size=2, rng=random.Random(0))
@@ -92,7 +100,15 @@ def test_no_sanity_bar_is_stricter_than_what_the_parents_own_pilots_show():
         agreement_same=[0.9, 1.0],
         agreement_luna=[1.0, 1.0],
     )
-    edge = Stats(matches=10, judged=30, pass_rate=0.9, spread=0.1, dup_rate=0.2, median_length=1.0)
+    edge = Stats(
+        matches=10,
+        judged=30,
+        refused=0,
+        pass_rate=0.9,
+        spread=0.1,
+        dup_rate=0.2,
+        median_length=1.0,
+    )
     assert sanity_reasons(edge, cal) == []
     worse = edge.model_copy(update={"pass_rate": 0.5, "dup_rate": 0.25, "median_length": 0.5})
     assert [r.split()[0] for r in sanity_reasons(worse, cal)] == ["pass", "duplicates", "median"]
@@ -139,3 +155,31 @@ def test_a_spent_budget_plays_no_pilot_match_but_keeps_the_ones_already_ended(tm
     )
     assert again == ["duel-0", "duel-1"] and caller.completed == before
     assert funnel.PILOT_MATCHES == 10
+
+
+def test_moves_the_rule_check_refuses_count_against_the_pass_rate_and_the_stock_move_is_left_out(
+    tmp_path,
+):
+    ledger = Ledger(tmp_path / "pilot.db")
+    too_long = "I am " + "a" * (DUEL.move_constraints.max_chars + 1)
+    caller = ScriptedCaller(
+        rulings=[judge_response(verdict="fail")] * 2,
+        moves=[too_long] * DUEL.strikes_before_consequence,
+    )
+    ended = asyncio.run(
+        play_pilot(DUEL, "long", 1, ledger, caller, budget=1.0, spent=lambda: 0.0)  # type: ignore[arg-type]
+    )
+    stats = match_stats(DUEL, ledger, ended)
+    assert stats.refused == DUEL.strikes_before_consequence and stats.judged == 0
+    assert stats.pass_rate == 0 and stats.dup_rate == 0
+
+
+def test_a_failed_rejudge_is_asked_again_and_never_counts_as_disagreement(tmp_path):
+    ledger, caller, ended = played(tmp_path)
+    stood = stood_positions(ledger, ended)[:1]
+    spec = ModelSpec(model="again", display_name="Again")
+    caller.rulings[:] = [None]
+    with pytest.raises(CallFailed):
+        asyncio.run(rejudge(DUEL, ledger, "duel/rejudge", stood, spec, caller))
+    caller.rulings[:] = [judge_response()]
+    assert asyncio.run(rejudge(DUEL, ledger, "duel/rejudge", stood, spec, caller)) == [True]

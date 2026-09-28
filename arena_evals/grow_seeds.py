@@ -28,6 +28,8 @@ from arena_judge.caller import ModelCaller, extract_json
 CACHE_DIR = Path(__file__).parent / "seeds"
 CANDIDATES_PER_CELL = 6
 KEEP_PER_CELL = 3
+SEED_WRITER = "opponent-fireworks"
+EMPTY_ROUNDS = 3
 AVOID_MAX = 150
 ARTICLES = ("a ", "an ", "the ")
 STOP = {"of", "the", "a", "an"}
@@ -71,20 +73,27 @@ class Candidate(BaseModel):
 @dataclass(frozen=True)
 class Shape:
     """What a card looks like: short forms get the article checks, every card a word cap,
-    and a guess game needs a detail and a truth on each card."""
+    a guess game needs a detail and a truth on each card, and cards that each name a
+    different thing must not share a head noun."""
 
     short_form: bool
     max_words: int
     needs_truth: bool
+    distinct_heads: bool = True
 
 
 def card_shape(template: Template) -> Shape:
+    """The shape of the game's own cards: the short-form and head-noun checks apply only when
+    its first three cards, written with the game, already pass them."""
     recipe = template.seed_recipe
     assert recipe is not None
+    first = [s.opening_token for s in template.seed_pool[:3]]
+    kept = sum(short_form_reason(t) is None for t in first)
     return Shape(
-        short_form=recipe.card_shape == "short_form",
+        short_form=recipe.card_shape == "short_form" and kept * 2 > len(first),
         max_words=recipe.max_words,
         needs_truth=template.guess is not None,
+        distinct_heads=len({head_noun(t) for t in first}) == len(first),
     )
 
 
@@ -137,6 +146,22 @@ def is_single_emoji(text: str) -> bool:
     return symbols - joiners == 1
 
 
+def short_form_reason(text: str) -> str | None:
+    """Why a card breaks the short-form style ("a hammer"), or None when it keeps it."""
+    if not text.lower().startswith(ARTICLES):
+        return "no article"
+    if re.match(r"a [aeio]|an [^aeiouh]", text.lower()):
+        return "wrong article"
+    last = text.split()[-1].lower()
+    if last.endswith("ing") and last not in ING_NOUNS:
+        return "dangling verb"
+    if text != text.lower() and not re.search(
+        r"\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b", text
+    ):
+        return "capitalised"
+    return None
+
+
 def mechanical_reason(cand: Candidate, shape: Shape) -> str | None:
     """Why a candidate fails the cheap checks, or None when it passes them all."""
     text = cand.opening.strip()
@@ -144,18 +169,8 @@ def mechanical_reason(cand: Candidate, shape: Shape) -> str | None:
         return "empty"
     if len(text.split()) > shape.max_words:
         return "too long"
-    if shape.short_form:
-        if not text.lower().startswith(ARTICLES):
-            return "no article"
-        if re.match(r"a [aeio]|an [^aeiouh]", text.lower()):
-            return "wrong article"
-        last = text.split()[-1].lower()
-        if last.endswith("ing") and last not in ING_NOUNS:
-            return "dangling verb"
-        if text != text.lower() and not re.search(
-            r"\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b", text
-        ):
-            return "capitalised"
+    if shape.short_form and (reason := short_form_reason(text)) is not None:
+        return reason
     if not is_single_emoji(cand.emoji):
         return "bad emoji"
     if len(cand.answer.split()) < 2:
@@ -288,7 +303,7 @@ class Grower:
                 rejects["exact repeat"] += 1
                 continue
             head = head_noun(cand.opening)
-            if shape.short_form and head in heads:
+            if shape.short_form and shape.distinct_heads and head in heads:
                 rejects["same head noun"] += 1
                 continue
             heads.add(head)
@@ -366,7 +381,7 @@ async def grow(
     template = load_template_file(path)
     if template.seed_recipe is None:
         raise SystemExit(f"{path} has no seed_recipe")
-    caller = make_caller()
+    caller = make_caller(opponent_ref=SEED_WRITER)
     grower = Grower(template, caller, concurrency, threshold)
     rejects: Counter[str] = Counter()
     accepted: list[Seed] = []
@@ -376,14 +391,18 @@ async def grow(
         probe = await grower.generate_cell(cells[0], [])
         if not probe:
             raise SystemExit("the generator returned nothing parsable on a probe call")
+        empty = 0
         while len(accepted) < target and cells:
             shortfall = target - len(accepted)
             take = min(len(cells), max(1, math.ceil(2 * shortfall / KEEP_PER_CELL)))
             batch, cells = cells[:take], cells[take:]
             got = await grower.round(batch, rejects)
-            if not got:
-                print("a whole round yielded nothing, stopping", file=sys.stderr)
+            empty = 0 if got else empty + 1
+            if empty == EMPTY_ROUNDS:
+                print(f"{EMPTY_ROUNDS} rounds in a row yielded nothing, stopping", file=sys.stderr)
                 break
+            if not got:
+                continue
             got = got[: target - len(accepted)]
             accepted.extend(got)
             if not dry_run:

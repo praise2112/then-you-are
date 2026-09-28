@@ -12,16 +12,25 @@ import json
 import random
 import sys
 import traceback
+from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 
 from arena_core.state import Actor, Match, deal
-from arena_core.template import Template, load_template
-from arena_evals.common import in_window, load_model, make_caller, seconds_until_open
+from arena_core.template import Template, load_template, load_template_file
+from arena_evals.common import (
+    credit_left,
+    in_window,
+    load_model,
+    make_caller,
+    seconds_until_open,
+)
 from arena_evals.datagen import card
-from arena_evals.datagen.ledger import Ledger
+from arena_evals.datagen.ledger import BudgetReached, CallFailed, Ledger
 from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
 from arena_evals.datagen.sabotage import RATE, Saboteur
+from arena_evals.variants.funnel import PILOTS_DIR
+from arena_evals.variants.generate import load_index, pool_path
 from arena_evals.variants.spec import load_spec, spec_names
 from arena_judge.caller import ModelCaller
 from arena_judge.prompt import judge_prompt_hash
@@ -37,14 +46,34 @@ def classes() -> dict[str, str]:
     return {slug: name for name in spec_names() for slug in load_spec(name)[0].examples}
 
 
+def corpus_games(slugs: list[str]) -> tuple[dict[str, Template], dict[str, str]]:
+    """Templates and class names for a run's games: class examples, or pool variants that
+    finished every funnel stage. A held-out variant never enters the corpus."""
+    examples = classes()
+    index = load_index()
+    templates, names = {}, {}
+    for slug in slugs:
+        if slug in examples:
+            templates[slug], names[slug] = load_template(slug), examples[slug]
+            continue
+        entry = index.get(slug)
+        if entry is None or entry.stage != "seeds" or entry.reject is not None:
+            raise SystemExit(f"{slug} is not a class example or a variant with its full pool")
+        if entry.split != "train":
+            raise SystemExit(f"{slug} is held out; it never enters the corpus")
+        templates[slug] = load_template_file(pool_path(entry.klass, slug))
+        names[slug] = entry.klass
+    return templates, names
+
+
 PROVIDERS = {
     "fireworks": {"judge": "judge-fireworks", "flash": "opponent-fireworks", "concurrency": 20},
     "deepseek": {"judge": "judge-v1", "flash": "opponent-v1", "concurrency": 64},
 }
-FLASH_SHARE = 0.8
-LUNA = "opponent-luna"
+FLASH_SHARE = 0.5
+LUNA = "opponent-luna6"
 PEAK_RATIO = 2.7
-UNIT_USD = {"judge": 0.00067, "flash": 0.0001, "luna": 0.0003}
+UNIT_USD = {"judge": 0.00067, "flash": 0.0001, "luna": 0.00008}
 
 
 def estimate(templates: dict[str, Template], counts: dict[str, int]) -> tuple[float, float]:
@@ -63,8 +92,9 @@ def estimate(templates: dict[str, Template], counts: dict[str, int]) -> tuple[fl
 
 
 def lane_total() -> float:
+    """What every run and funnel ledger of the lane has spent."""
     total = 0.0
-    for path in RUNS_DIR.glob("*.db"):
+    for path in [*RUNS_DIR.glob("*.db"), *PILOTS_DIR.glob("*.db")]:
         ledger = Ledger(path)
         total += ledger.spent()
         ledger.close()
@@ -129,9 +159,12 @@ async def _drive(
     stop = asyncio.Event()
 
     others = lane_total() - ledger.spent()
-    ceiling = min(budget, LANE_CEILING - others)
+    ceiling = min(budget, LANE_CEILING - others, ledger.spent() + await credit_left(caller))
     if ceiling < budget:
-        print(f"lane ceiling leaves ${ceiling:.2f} of the ${budget:.2f} budget", file=sys.stderr)
+        print(f"lane ceiling or balance leaves ${ceiling:.2f} of ${budget:.2f}", file=sys.stderr)
+    expected = {
+        name: load_spec(name)[0].sabotage_expectations for name in set(plan["classes"].values())
+    }
     failures = 0
 
     def over_budget() -> bool:
@@ -141,12 +174,15 @@ async def _drive(
             print(f"budget reached: ${spent:.4f} of ${ceiling:.2f}", file=sys.stderr)
         return stop.is_set()
 
+    refs = {r[side] for r in ledger.matches() for side in ("teacher_p1", "teacher_p2")}
+    specs = {ref: load_model(ref) for ref in refs}
+
     async def one(row, played: bool) -> None:
         nonlocal failures
         template = templates[row["template_id"]]
         teachers: dict[Actor, Teacher] = {
-            "p1": Teacher(row["teacher_p1"], load_model(row["teacher_p1"])),
-            "p2": Teacher(row["teacher_p2"], load_model(row["teacher_p2"])),
+            "p1": Teacher(row["teacher_p1"], specs[row["teacher_p1"]]),
+            "p2": Teacher(row["teacher_p2"], specs[row["teacher_p2"]]),
         }
         async with sem:
             if over_budget():
@@ -158,12 +194,35 @@ async def _drive(
             try:
                 if not played:
                     await play_match(
-                        template, match_from_row(template, row), teachers, caller, ledger, judge
+                        template,
+                        match_from_row(template, row),
+                        teachers,
+                        caller,
+                        ledger,
+                        judge,
+                        over_budget,
                     )
-                saboteur = Saboteur(template, row["match_id"], caller, ledger, judge, writer)
+                saboteur = Saboteur(
+                    template,
+                    row["match_id"],
+                    caller,
+                    ledger,
+                    judge,
+                    writer,
+                    expected[plan["classes"][row["template_id"]]],
+                    over_budget=over_budget,
+                )
                 ledger.mark_sabotaged(row["match_id"], await saboteur.run())
             except MatchAbandoned as e:
                 print(f"abandoned: {e}", file=sys.stderr)
+            except BudgetReached:
+                pass
+            except CallFailed as e:
+                failures += 1
+                print(f"call failed: {e}", file=sys.stderr)
+                if e.status == 402 and not stop.is_set():
+                    stop.set()
+                    print("OpenRouter is out of credit; stopping the run", file=sys.stderr)
             except Exception:
                 failures += 1
                 traceback.print_exc()
@@ -226,7 +285,11 @@ def main() -> None:
 
     ledger = Ledger(RUNS_DIR / f"{args.run_id}.db")
     if args.cmd == "report":
-        text = card.write(args.run_id, ledger, CORPUS_DIR / args.run_id, classes())
+        plan = ledger.plan(args.run_id)
+        if plan is None:
+            raise SystemExit(f"no run named {args.run_id}")
+        templates = corpus_games(list(plan["matches"]))[0]
+        text = card.write(args.run_id, ledger, CORPUS_DIR / args.run_id, templates)
         CARDS_DIR.mkdir(exist_ok=True)
         (CARDS_DIR / f"{args.run_id}.md").write_text(text)
         print(text)
@@ -234,7 +297,7 @@ def main() -> None:
 
     if args.cmd == "start":
         counts = parse_counts(args.matches)
-        templates = {slug: load_template(slug) for slug in counts}
+        templates, names = corpus_games(list(counts))
         if ledger.plan(args.run_id) is not None:
             raise SystemExit(f"run {args.run_id} exists; use resume")
         provider = PROVIDERS[args.provider]
@@ -242,7 +305,7 @@ def main() -> None:
             args.run_id,
             {
                 "matches": counts,
-                "classes": {s: classes()[s] for s in counts},
+                "classes": {s: names[s] for s in counts},
                 "provider": args.provider,
                 "teachers": {provider["flash"]: FLASH_SHARE, LUNA: 1 - FLASH_SHARE},
                 "judge_ref": provider["judge"],
@@ -258,11 +321,9 @@ def main() -> None:
     plan = ledger.plan(args.run_id)
     if plan is None:
         raise SystemExit(f"no run named {args.run_id}")
-    templates = {slug: load_template(slug) for slug in plan["matches"]}
+    templates = corpus_games(list(plan["matches"]))[0]
     check_hashes(plan, templates)
-    pending = {}
-    for row in ledger.matches("active"):
-        pending[row["template_id"]] = pending.get(row["template_id"], 0) + 1
+    pending = Counter(row["template_id"] for row in ledger.matches("active"))
     base, peak = estimate(templates, pending)
     concurrency = args.concurrency or PROVIDERS[plan["provider"]]["concurrency"]
     price = (

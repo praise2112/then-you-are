@@ -6,20 +6,21 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from arena_core.state import STANDING, weighted_total
-from arena_core.template import load_template
+from arena_core.template import Template
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_evals.datagen.records import PARSED, export
 from arena_judge.schema import JudgeResponse, route_outcome
 
-FLASH_SHARE = (0.75, 0.85)
+SHARE_SLACK = 0.05
 
 
-def write(run_id: str, ledger: Ledger, corpus_dir: Path, classes: dict[str, str]) -> str:
+def write(run_id: str, ledger: Ledger, corpus_dir: Path, templates: dict[str, Template]) -> str:
     plan = ledger.plan(run_id)
     if plan is None:
         raise SystemExit(f"no run named {run_id}")
-    templates = {slug: load_template(slug) for slug in plan["matches"]}
-    result = export(ledger, templates, classes, corpus_dir)
+    result = export(
+        ledger, templates, plan["classes"], corpus_dir, sabotage_teacher=plan["flash_ref"]
+    )
     matches = {row["match_id"]: row for row in ledger.matches()}
     lines = [f"# Run {run_id}", "", "## Matches", ""]
     status = Counter((m["template_id"], m["status"]) for m in matches.values())
@@ -59,14 +60,13 @@ def write(run_id: str, ledger: Ledger, corpus_dir: Path, classes: dict[str, str]
         lines.append(f"- {teacher}: {stood}/{total} moves stood ({stood / total:.0%})")
     accepted_total = sum(accepted_by_teacher.values())
     if accepted_total:
-        share = (
-            sum(n for t, n in accepted_by_teacher.items() if t != "opponent-luna") / accepted_total
-        )
-        inside = FLASH_SHARE[0] <= share <= FLASH_SHARE[1]
-        verdict = "inside" if inside else "OUTSIDE"
+        flash = plan["flash_ref"]
+        target = plan["teachers"][flash]
+        share = accepted_by_teacher[flash] / accepted_total
+        verdict = "inside" if abs(share - target) <= SHARE_SLACK else "OUTSIDE"
         lines.append(
-            f"- Flash share of accepted turns: {share:.0%} "
-            f"({verdict} the {FLASH_SHARE[0]:.0%} to {FLASH_SHARE[1]:.0%} range)"
+            f"- Flash share of accepted turns: {share:.0%} ({verdict} the "
+            f"{target - SHARE_SLACK:.0%} to {target + SHARE_SLACK:.0%} range)"
         )
     lines.append(f"- attempts: {dict(Counter(c.attempt for c, _, _ in in_match))}")
     lines.append(f"- judge versions (model, prompt hash): {sorted(judge_versions)}")

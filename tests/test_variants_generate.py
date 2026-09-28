@@ -181,3 +181,15 @@ def test_promote_copies_a_pool_variant_and_demote_refuses_a_shipped_game(
     with pytest.raises(SystemExit, match="shipped"):
         generate.demote("then-i-am")
     assert load_template("then-i-am")
+
+
+def test_saving_the_index_keeps_what_another_run_saved_meanwhile(monkeypatch, tmp_path: Path):
+    point_pool_at(monkeypatch, tmp_path)
+    entry = generate.Entry(klass="build", parent="domino", cell=CELL, stage="rank")
+    generate.save_index({"alpha": entry})
+    stale = generate.load_index()
+    generate.save_index({"beta": entry.model_copy(update={"stage": "pilot"})})
+    stale["alpha"].stage = "pilot"
+    generate.save_index({"alpha": stale["alpha"]})
+    stages = {slug: e.stage for slug, e in generate.load_index().items()}
+    assert stages == {"alpha": "pilot", "beta": "pilot"}

@@ -1,5 +1,6 @@
 """SQLite run ledger: one file per run, every model call written before the next starts."""
 
+import dataclasses
 import json
 import sqlite3
 from collections.abc import Awaitable, Callable
@@ -28,7 +29,20 @@ create table if not exists sabotage (
     match_id text not null, seq integer not null, kind text not null, source text not null,
     mutated text not null, call_idx integer not null, expected text not null,
     outcome text not null, primary key (match_id, seq, kind));
+create index if not exists calls_cost on calls (cost_usd);
 """
+
+
+class CallFailed(Exception):
+    """A model call failed upstream; nothing is recorded, so a resume asks again."""
+
+    def __init__(self, message: str, status: int | None = None):
+        super().__init__(message)
+        self.status = status
+
+
+class BudgetReached(Exception):
+    """The budget ran out before a paid call; the match stays open for a resume."""
 
 
 @dataclass(frozen=True)
@@ -197,21 +211,29 @@ class Tape:
     """Record-or-replay cursor over one key's calls: a resumed run replays what it recorded
     and asks the model only for what comes after."""
 
-    def __init__(self, ledger: Ledger, key: str):
+    def __init__(self, ledger: Ledger, key: str, over_budget: Callable[[], bool] | None = None):
         self.ledger = ledger
         self.key = key
+        self.over_budget = over_budget
         recorded = ledger.calls(key)
+        self.unanswered: CallRow | None = None
         # A match that stopped on an unanswered verdict asks for that verdict again.
         if recorded and recorded[-1].role == "judge" and recorded[-1].payload["response"] is None:
+            self.unanswered = recorded[-1]
             recorded = recorded[:-1]
         self.recorded = recorded
         self.idx = 0
 
     async def step(
-        self, role: str, actor: str, seq: int, live: Callable[[int], Awaitable[CallRow]]
+        self,
+        role: str,
+        actor: str,
+        seq: int,
+        live: Callable[[int], Awaitable[CallRow]],
+        inputs: dict[str, Any] | None = None,
     ) -> CallRow:
         """The next row, replayed when recorded. A recorded row that is not the call the
-        caller is about to make means the code or the template changed under the run."""
+        caller is about to make, or was made on other `inputs`, means the run changed."""
         if self.idx < len(self.recorded):
             row = self.recorded[self.idx]
             if (row.role, row.actor, row.seq) != (role, actor, seq):
@@ -219,8 +241,20 @@ class Tape:
                     f"{self.key}: replay diverged at call {self.idx}, recorded "
                     f"{row.role}/{row.actor}/{row.seq}, expected {role}/{actor}/{seq}"
                 )
+            if inputs is not None and {k: row.payload.get(k) for k in inputs} != inputs:
+                raise RuntimeError(f"{self.key}: replay diverged at call {self.idx}, new inputs")
         else:
+            if self.over_budget is not None and self.over_budget():
+                raise BudgetReached(self.key)
             row = await live(self.idx)
+            if self.unanswered is not None and self.unanswered.idx == row.idx:
+                # The replaced row's paid attempts stay counted.
+                row = dataclasses.replace(
+                    row,
+                    cost_usd=row.cost_usd + self.unanswered.cost_usd,
+                    tokens_in=row.tokens_in + self.unanswered.tokens_in,
+                    tokens_out=row.tokens_out + self.unanswered.tokens_out,
+                )
             self.ledger.add_call(row)
         self.idx += 1
         return row
@@ -243,6 +277,7 @@ def judge_call_row(
             **inputs,
             "response": call.response.model_dump() if call.response else None,
             "attempts": call.attempts,
+            "error_status": call.error_status,
         },
         tokens_in=call.tokens_in,
         tokens_out=call.tokens_out,
@@ -263,29 +298,13 @@ async def move_call_row(
     model: str,
     payload: dict,
 ) -> CallRow:
-    """One writer call as a ledger row; a failed call is a row with empty text."""
+    """One writer call as a ledger row; raises CallFailed when the call fails for good."""
     try:
         result = await with_backoff(
             lambda: caller.complete(spec, messages, reasoning={"enabled": False})
         )
     except CallError as e:
-        return CallRow(
-            key,
-            idx,
-            "move",
-            actor,
-            seq,
-            model,
-            "",
-            "",
-            None,
-            payload,
-            0,
-            0,
-            0.0,
-            0,
-            f"call_error: {e}",
-        )
+        raise CallFailed(f"{key}: writer call failed ({e.status}): {e}", e.status) from e
     return CallRow(
         key,
         idx,

@@ -33,11 +33,13 @@ class ModelSpec(BaseModel):
 
 
 class CallError(Exception):
-    """The upstream call failed: network, timeout, or a non-2xx status (kept in `status`)."""
+    """The upstream call failed: network, timeout, or a non-2xx status (kept in `status`,
+    with the provider's Retry-After seconds when it sent one)."""
 
-    def __init__(self, message: str, status: int | None = None):
+    def __init__(self, message: str, status: int | None = None, retry_after: float | None = None):
         super().__init__(message)
         self.status = status
+        self.retry_after = retry_after
 
 
 @dataclass
@@ -62,6 +64,7 @@ class JudgeCall:
     cost_usd: float = 0.0
     attempts: list[str] = field(default_factory=list)
     error_status: int | None = None
+    error_retry_after: float | None = None
 
 
 class ModelCaller:
@@ -99,7 +102,9 @@ class ModelCaller:
             resp.raise_for_status()
             data = resp.json()
         except httpx.HTTPStatusError as e:
-            raise CallError(str(e), e.response.status_code) from e
+            wait = e.response.headers.get("Retry-After")
+            retry_after = float(wait) if wait and wait.replace(".", "", 1).isdigit() else None
+            raise CallError(str(e), e.response.status_code, retry_after) from e
         except (httpx.HTTPError, ValueError) as e:
             raise CallError(str(e)) from e
         if "choices" not in data:
@@ -151,6 +156,10 @@ class ModelCaller:
             except CallError as e:
                 call.attempts.append(f"call_error: {e}")
                 call.error_status = e.status
+                call.error_retry_after = e.retry_after
+                # A client error (credit, rate limit, bad request) is not retried here.
+                if e.status is not None and 400 <= e.status < 500:
+                    break
                 continue
             call.raw = result.text
             call.reasoning = result.reasoning

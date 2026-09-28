@@ -6,9 +6,9 @@ import pytest
 
 from arena_core.state import Actor, Match, deal
 from arena_core.template import load_template
-from arena_evals.datagen.ledger import Ledger, Tape
-from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
-from arena_judge.caller import CallResult, ModelSpec
+from arena_evals.datagen.ledger import BudgetReached, CallFailed, Ledger, Tape
+from arena_evals.datagen.play import Teacher, new_match, play_match
+from arena_judge.caller import CallError, CallResult, ModelSpec
 from tests.conftest import FakeCaller, judge_response
 
 DUEL = load_template("then-i-am")
@@ -126,27 +126,66 @@ def duel_match_with_id(match_id: str) -> Match:
     return match
 
 
-def test_a_judge_that_stays_down_abandons_the_match(tmp_path: Path, monkeypatch):
+def test_a_judge_that_stays_down_leaves_the_match_open_for_a_resume(tmp_path: Path):
     ledger = Ledger(tmp_path / "run.db")
     caller = ScriptedCaller(rulings=[None] * 4, moves=["I am a hammer, rock-splitting."])
-    with pytest.raises(MatchAbandoned):
+    with pytest.raises(CallFailed):
         asyncio.run(play_match(DUEL, duel_match(), SIDES, caller, ledger, JUDGE))
-    row = ledger.matches("abandoned")[0]
-    assert "judge unavailable" in row["outcome"]
+    row = ledger.matches("active")[0]
     assert ledger.calls(row["match_id"])[-1].payload["response"] is None
 
 
-def test_a_match_abandoned_on_an_unanswered_verdict_resumes_and_asks_again(tmp_path: Path):
+def test_an_unanswered_verdict_is_asked_again_on_resume_and_its_cost_is_kept(tmp_path: Path):
     ledger = Ledger(tmp_path / "run.db")
     match = duel_match()
     down = ScriptedCaller(rulings=[None] * 4, moves=["I am a hammer, rock-splitting."])
-    with pytest.raises(MatchAbandoned):
+    with pytest.raises(CallFailed):
         asyncio.run(play_match(DUEL, match, SIDES, down, ledger, JUDGE))
+    spent = ledger.spent()
     back = ScriptedCaller(rulings=[judge_response(verdict="fail")], moves=[])
     match = asyncio.run(play_match(DUEL, duel_match_with_id(match.id), SIDES, back, ledger, JUDGE))
     assert match.status == "ended" and back.completed == 0
     assert [c.role for c in ledger.calls(match.id)] == ["move", "judge"]
     assert ledger.calls(match.id)[-1].payload["response"] is not None
+    assert ledger.spent() >= spent
+
+
+class NoCredit(ScriptedCaller):
+    async def complete(self, spec, messages, **extra) -> CallResult:
+        raise CallError("402 Payment Required", 402)
+
+
+def test_a_failed_writer_call_records_nothing_and_says_why(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    match = duel_match()
+    with pytest.raises(CallFailed) as failed:
+        asyncio.run(play_match(DUEL, match, SIDES, NoCredit([], []), ledger, JUDGE))
+    assert failed.value.status == 402
+    assert ledger.calls(match.id) == [] and ledger.matches("active")
+
+
+def test_a_spent_budget_stops_before_the_next_paid_call(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    caller = ScriptedCaller(rulings=[judge_response()], moves=["I am a hammer, rock-splitting."])
+    with pytest.raises(BudgetReached):
+        asyncio.run(play_match(DUEL, duel_match(), SIDES, caller, ledger, JUDGE, lambda: True))
+    assert caller.completed == 0 and ledger.all_calls() == []
+
+
+def test_a_replayed_call_made_on_other_inputs_stops_the_run(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    caller = ScriptedCaller(
+        rulings=[judge_response(verdict="fail")], moves=["I am a hammer, rock-splitting."]
+    )
+    match = duel_match()
+    asyncio.run(play_match(DUEL, match, SIDES, caller, ledger, JUDGE))
+    tape = Tape(ledger, match.id)
+
+    async def never(idx: int):
+        raise AssertionError("must replay")
+
+    with pytest.raises(RuntimeError, match="new inputs"):
+        asyncio.run(tape.step("move", "p1", 1, never, {"messages": []}))
 
 
 def test_a_replayed_row_that_is_not_the_expected_call_stops_the_run(tmp_path: Path):

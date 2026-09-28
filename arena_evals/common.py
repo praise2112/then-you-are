@@ -17,6 +17,7 @@ RETRY_STATUSES = {408, 409, 425, 429, 500, 502, 503, 504}
 WINDOW_OPEN = time(16, 30)
 WINDOW_CLOSE = time(0, 30)
 EMBED_URL = "https://openrouter.ai/api/v1/embeddings"
+CREDITS_URL = "https://openrouter.ai/api/v1/credits"
 EMBED_MODEL = "openai/text-embedding-3-small"
 EMBED_BATCH = 256
 
@@ -39,6 +40,17 @@ def require_window(now_flag: bool) -> None:
             f"outside the off-peak window ({WINDOW_OPEN:%H:%M} to {WINDOW_CLOSE:%H:%M} UTC); "
             "pass --now"
         )
+
+
+async def credit_left(caller: ModelCaller) -> float:
+    """Dollars left on the OpenRouter account; raises SystemExit when it cannot be read."""
+    try:
+        resp = await caller.client.get(CREDITS_URL)
+        resp.raise_for_status()
+        data = resp.json()["data"]
+    except (httpx.HTTPError, KeyError, ValueError) as e:
+        raise SystemExit(f"could not read the OpenRouter balance: {e}") from e
+    return float(data["total_credits"]) - float(data["total_usage"])
 
 
 def model_label(spec: ModelSpec) -> str:
@@ -67,7 +79,9 @@ async def with_backoff[T](fn: Callable[[], Awaitable[T]], *, tries: int = 6) -> 
                 raise
             if attempt == tries - 1:
                 raise
-            retry_after = getattr(getattr(e, "response", None), "headers", {}).get("Retry-After")
+            retry_after = getattr(e, "retry_after", None) or getattr(
+                getattr(e, "response", None), "headers", {}
+            ).get("Retry-After")
             wait = (
                 float(retry_after) if retry_after else min(30.0, 0.5 * 2**attempt) + random.random()
             )
@@ -113,7 +127,11 @@ async def judge_with_backoff(
         tries.append(call)
         failed_call = call.attempts and call.attempts[-1].startswith("call_error")
         if call.response is None and failed_call:
-            raise CallError(f"judge call failed ({call.error_status})", call.error_status)
+            raise CallError(
+                f"judge call failed ({call.error_status})",
+                call.error_status,
+                call.error_retry_after,
+            )
         return call
 
     try:
