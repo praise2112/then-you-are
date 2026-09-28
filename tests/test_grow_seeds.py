@@ -142,7 +142,7 @@ def test_backoff_retries_rate_limits_and_gives_up_on_client_errors(monkeypatch):
         asyncio.run(with_backoff(bad_request))
 
 
-def test_growing_carries_on_past_an_empty_round_and_stops_after_three(monkeypatch):
+def test_growing_carries_on_past_an_empty_round_and_stalls_after_three(monkeypatch):
     class Idle:
         def __init__(self, **refs):
             pass
@@ -177,9 +177,15 @@ def test_growing_carries_on_past_an_empty_round_and_stops_after_three(monkeypatc
     monkeypatch.setattr(grow_seeds.Grower, "round", rounds([[], fresh(1), [], fresh(2)]))
     report = asyncio.run(grow_seeds.grow(path, 2, 1, 0.65, dry_run=True))
     assert [s.opening_token for s in report.accepted] == ["a fresh card 1", "a fresh card 2"]
+    assert not report.stalled
 
     monkeypatch.setattr(grow_seeds.Grower, "round", rounds([[], [], [], fresh(3)]))
-    assert asyncio.run(grow_seeds.grow(path, 1, 1, 0.65, dry_run=True)).accepted == []
+    report = asyncio.run(grow_seeds.grow(path, 1, 1, 0.65, dry_run=True))
+    assert report.accepted == [] and report.stalled
+
+    monkeypatch.setattr(grow_seeds.Grower, "round", rounds([fresh(4), fresh(5)]))
+    report = asyncio.run(grow_seeds.grow(path, 2, 1, 0.65, dry_run=True, budget=0.0))
+    assert len(report.accepted) == 1 and not report.stalled
 
 
 def test_a_game_whose_cards_share_one_template_is_not_held_to_distinct_head_nouns():

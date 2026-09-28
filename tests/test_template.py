@@ -137,19 +137,20 @@ def test_lint_rejects_a_call_without_a_hidden_truth_or_outside_a_showcase():
         Template.model_validate(data)
 
 
-def test_opponent_prompt_carries_premise_criterion_and_move_limits():
+def test_opponent_prompt_carries_premise_criterion_and_a_move_cap_below_the_real_one():
     duel = load_template("then-i-am")
     system = render_opponent_messages(duel, "a rock", [])[0]["content"]
     assert system.startswith(duel.premise.strip())
     assert duel.criterion.description.strip() in system
     assert duel.criterion.anti_metagaming_clause.strip() in system
-    assert 'at most 200 characters and starts with "I am "' in system
+    assert duel.move_constraints.max_chars == 200
+    assert 'at most 160 characters and starts with "I am "' in system
     assert system.endswith(duel.opponent_prompt.strip())
     assert "{max_chars}" not in system
 
     words = load_template("word-for-word")
     system = render_opponent_messages(words, "zarf", [])[0]["content"]
-    assert "at most 160 characters. Reply with the move only." in system
+    assert "at most 128 characters. Reply with the move only." in system
     assert "truth_proximity" not in system
 
 

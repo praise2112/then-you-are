@@ -24,3 +24,6 @@ arena_evals/datagen/corpus/
 .claude/runs/
 *.db-shm
 *.db-wal
+arena_evals/seeds/*.json
+!arena_evals/seeds/then-i-am.json
+arena_evals/variants/pool/index.lock

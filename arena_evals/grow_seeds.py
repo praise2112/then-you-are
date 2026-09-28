@@ -22,13 +22,19 @@ import yaml
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from arena_core.template import TEMPLATES_DIR, Seed, Template, load_template_file
-from arena_evals.common import EMBED_BATCH, embed_texts, make_caller, with_backoff
+from arena_evals.common import (
+    EMBED_BATCH,
+    embed_texts,
+    make_caller,
+    require_window,
+    with_backoff,
+)
 from arena_judge.caller import ModelCaller, extract_json
 
 CACHE_DIR = Path(__file__).parent / "seeds"
 CANDIDATES_PER_CELL = 6
 KEEP_PER_CELL = 3
-SEED_WRITER = "opponent-fireworks"
+SEED_WRITER = "opponent-v1"
 EMPTY_ROUNDS = 3
 AVOID_MAX = 150
 ARTICLES = ("a ", "an ", "the ")
@@ -109,6 +115,7 @@ class Report:
     rejects: Counter[str]
     calls: int
     cost_usd: float
+    stalled: bool = False
 
 
 def head_noun(opening: str) -> str:
@@ -257,7 +264,7 @@ class Grower:
                 lambda: self.caller.complete(
                     self.caller.opponent_spec,
                     messages,
-                    max_tokens=600,
+                    max_tokens=1200,
                     reasoning={"enabled": False},
                 )
             )
@@ -385,6 +392,7 @@ async def grow(
     grower = Grower(template, caller, concurrency, threshold)
     rejects: Counter[str] = Counter()
     accepted: list[Seed] = []
+    stalled = False
     try:
         await grower.load_pool_vectors()
         cells = all_cells(template)
@@ -401,6 +409,7 @@ async def grow(
             empty = 0 if got else empty + 1
             if empty == EMPTY_ROUNDS:
                 print(f"{EMPTY_ROUNDS} rounds in a row yielded nothing, stopping", file=sys.stderr)
+                stalled = True
                 break
             if not got:
                 continue
@@ -417,11 +426,13 @@ async def grow(
             if budget is not None and grower.cost >= budget:
                 print(f"budget reached at ${grower.cost:.4f}", file=sys.stderr)
                 break
+        else:
+            stalled = len(accepted) < target
     finally:
         await caller.aclose()
     if accepted and not dry_run:
         load_template_file(path)  # the file must still lint
-    return Report(accepted, rejects, grower.calls, grower.cost)
+    return Report(accepted, rejects, grower.calls, grower.cost, stalled)
 
 
 def main() -> None:
@@ -434,9 +445,11 @@ def main() -> None:
         "--threshold", type=float, default=0.65, help="cosine above this is a duplicate"
     )
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--now", action="store_true", help="run outside the off-peak window")
     args = ap.parse_args()
     if (args.template is None) == (args.path is None):
         ap.error("give exactly one of --template or --path")
+    require_window(args.now)
     path = args.path or TEMPLATES_DIR / args.template / "v1.yaml"
     report = asyncio.run(grow(path, args.target, args.concurrency, args.threshold, args.dry_run))
     for seed in report.accepted:

@@ -33,6 +33,7 @@ from arena_evals.common import (
     judge_with_backoff,
     load_model,
     make_caller,
+    require_window,
 )
 from arena_evals.datagen.ledger import BudgetReached, CallFailed, Ledger, judge_call_row
 from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
@@ -49,11 +50,12 @@ CALIBRATION_PATH = POOL_DIR / "calibration.json"
 PILOT_MATCHES = 10
 PILOT_SEEDS = 20
 FULL_SEEDS = 60
+MIN_FULL_SEEDS = 40
 REJUDGE_SAME = 20
 REJUDGE_LUNA = 10
 BOOTSTRAP = 500
-JUDGE = "judge-fireworks"
-FLASH = "opponent-fireworks"
+JUDGE = "judge-v1"
+FLASH = "opponent-v1"
 LUNA_JUDGE = "judge-luna"
 MIN_PASS_RATE = 0.6
 MAX_DUP_RATE = 0.1
@@ -302,19 +304,19 @@ async def agreement(
     match_ids: list[str],
     caller: ModelCaller,
 ) -> tuple[list[bool], list[bool]]:
-    """Re-judge agreement with the same judge and with Luna over a fixed sample of positions."""
+    """Re-judge agreement with the same judge and with Luna over a fixed sample of positions.
+    Fewer positions than both samples need are split between them in the same ratio."""
     rng = random.Random(slug)
     stood = stood_positions(ledger, match_ids)
     rng.shuffle(stood)
+    n_same = min(REJUDGE_SAME, len(stood) * REJUDGE_SAME // (REJUDGE_SAME + REJUDGE_LUNA))
     same, luna = await asyncio.gather(
-        rejudge(
-            template, ledger, f"{slug}/rejudge", stood[:REJUDGE_SAME], load_model(JUDGE), caller
-        ),
+        rejudge(template, ledger, f"{slug}/rejudge", stood[:n_same], load_model(JUDGE), caller),
         rejudge(
             template,
             ledger,
             f"{slug}/luna",
-            stood[REJUDGE_SAME : REJUDGE_SAME + REJUDGE_LUNA],
+            stood[n_same : n_same + REJUDGE_LUNA],
             load_model(LUNA_JUDGE),
             caller,
         ),
@@ -369,13 +371,22 @@ async def calibrate(slug: str, matches: int, budget: float) -> Calibration:
     return cal
 
 
-async def grow_pool(path: Path, total: int, budget: float) -> float:
-    """Grows the file's pool up to `total` seeds; returns what it cost."""
+async def grow_pool(path: Path, total: int, budget: float) -> tuple[float, bool]:
+    """Grows the file's pool up to `total` seeds; returns what it cost and whether the grower
+    stalled, which means the variant cannot reach `total` distinct cards."""
     shortfall = total - len(load_template_file(path).seed_pool)
     if shortfall <= 0:
-        return 0.0
+        return 0.0, False
     report = await grow(path, shortfall, 16, 0.65, dry_run=False, budget=budget)
-    return report.cost_usd
+    return report.cost_usd, report.stalled
+
+
+def reject_stalled(slug: str, stage: Stage, seeds: int) -> None:
+    entry = load_index()[slug]
+    entry.stage = stage
+    entry.reject = f"seed pool stalled at {seeds}"
+    save_index({slug: entry})
+    print(f"  {slug:32s} {entry.reject}", file=sys.stderr)
 
 
 async def for_each(
@@ -429,10 +440,13 @@ async def pilot(klass: str, budget: float, only: set[str] | None = None) -> None
         if entry.parent not in cal:
             raise SystemExit(f"{entry.parent} has no calibration; run calibrate first")
         path = pool_path(klass, slug)
-        cost = await grow_pool(path, PILOT_SEEDS, left)
+        cost, stalled = await grow_pool(path, PILOT_SEEDS, left)
         template = load_template_file(path)
         if len(template.seed_pool) < PILOT_SEEDS:
-            print(f"  {slug:32s} pool short, stage unchanged", file=sys.stderr)
+            if stalled:
+                reject_stalled(slug, "pilot", len(template.seed_pool))
+            else:
+                print(f"  {slug:32s} pool short, stage unchanged", file=sys.stderr)
             return cost
         before = ledger.spent()
         ended = await play_pilot(
@@ -488,9 +502,13 @@ async def consistency(klass: str, budget: float) -> None:
 async def seeds(klass: str, budget: float) -> None:
     async def step(slug: str, ledger: Ledger, caller: ModelCaller, left: float) -> float:
         path = pool_path(klass, slug)
-        cost = await grow_pool(path, FULL_SEEDS, left)
-        if len(load_template_file(path).seed_pool) < FULL_SEEDS:
+        cost, stalled = await grow_pool(path, FULL_SEEDS, left)
+        seeds = len(load_template_file(path).seed_pool)
+        if seeds < FULL_SEEDS and not stalled:
             print(f"  {slug:32s} pool short, stage unchanged", file=sys.stderr)
+            return cost
+        if seeds < MIN_FULL_SEEDS:
+            reject_stalled(slug, "seeds", seeds)
             return cost
         entry = load_index()[slug]
         entry.stage = "seeds"
@@ -503,6 +521,7 @@ async def seeds(klass: str, budget: float) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--budget", type=float, required=True, help="dollars; the step stops here")
+    ap.add_argument("--now", action="store_true", help="run outside the off-peak window")
     sub = ap.add_subparsers(dest="cmd", required=True)
     cal = sub.add_parser("calibrate")
     cal.add_argument("slug")
@@ -511,6 +530,7 @@ def main() -> None:
         sub.add_parser(name).add_argument("klass", choices=spec_names())
     sub.choices["pilot"].add_argument("--only", default="", help="comma-separated variant slugs")
     args = ap.parse_args()
+    require_window(args.now)
     if args.cmd == "calibrate":
         asyncio.run(calibrate(args.slug, args.matches, args.budget))
     elif args.cmd == "pilot":

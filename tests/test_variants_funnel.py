@@ -212,3 +212,92 @@ def test_a_call_that_fails_past_its_retries_skips_that_variant_and_a_402_stops_t
 
     asyncio.run(funnel.for_each("counter", "rank", 1.0, step))
     assert reached == ["a", "b"]
+
+
+def test_a_variant_whose_seed_pool_stalls_is_rejected_without_playing(tmp_path, monkeypatch):
+    class Closing:
+        async def aclose(self):
+            pass
+
+    async def plenty(_):
+        return 10.0
+
+    async def stalled(path, total, budget):
+        return 0.0, True
+
+    async def never(*args, **kwargs):
+        raise AssertionError("a stalled variant plays no pilot")
+
+    entry = SimpleNamespace(klass="build", stage="rank", reject=None, parent="then-i-am")
+    saved = {}
+    monkeypatch.setattr(funnel, "load_index", lambda: {"narrow": entry})
+    monkeypatch.setattr(funnel, "save_index", saved.update)
+    monkeypatch.setattr(funnel, "load_calibration", lambda: {"then-i-am": None})
+    monkeypatch.setattr(funnel, "PILOTS_DIR", tmp_path)
+    monkeypatch.setattr(funnel, "make_caller", lambda **_: Closing())
+    monkeypatch.setattr(funnel, "credit_left", plenty)
+    monkeypatch.setattr(funnel, "grow_pool", stalled)
+    monkeypatch.setattr(funnel, "play_pilot", never)
+    monkeypatch.setattr(
+        funnel,
+        "load_template_file",
+        lambda _: DUEL.model_copy(update={"seed_pool": DUEL.seed_pool[:3]}),
+    )
+
+    asyncio.run(funnel.pilot("build", 1.0))
+    assert saved["narrow"].stage == "pilot"
+    assert saved["narrow"].reject == "seed pool stalled at 3"
+
+
+def test_too_few_stood_positions_are_split_so_luna_still_gets_a_sample(monkeypatch):
+    sizes = {}
+
+    async def count(template, ledger, key, sample, spec, caller):
+        sizes[key.split("/")[1]] = len(sample)
+        return [True] * len(sample)
+
+    monkeypatch.setattr(funnel, "stood_positions", lambda ledger, ids: list(range(15)))
+    monkeypatch.setattr(funnel, "rejudge", count)
+    asyncio.run(funnel.agreement(DUEL, None, "short", [], None))  # type: ignore[arg-type]
+    assert sizes == {"rejudge": 10, "luna": 5}
+
+    monkeypatch.setattr(funnel, "stood_positions", lambda ledger, ids: list(range(40)))
+    asyncio.run(funnel.agreement(DUEL, None, "long", [], None))  # type: ignore[arg-type]
+    assert sizes == {"rejudge": 20, "luna": 10}
+
+
+def test_a_seed_pool_that_stalls_at_40_or_more_passes_and_below_40_is_rejected(
+    tmp_path, monkeypatch
+):
+    class Closing:
+        async def aclose(self):
+            pass
+
+    async def plenty(_):
+        return 10.0
+
+    async def stalled(path, total, budget):
+        return 0.0, True
+
+    entries = {
+        slug: SimpleNamespace(klass="build", stage="consistency", reject=None)
+        for slug in ("roomy", "cramped")
+    }
+    sizes = {"roomy": 45, "cramped": 30}
+    saved = {}
+    monkeypatch.setattr(funnel, "load_index", lambda: entries)
+    monkeypatch.setattr(funnel, "save_index", saved.update)
+    monkeypatch.setattr(funnel, "PILOTS_DIR", tmp_path)
+    monkeypatch.setattr(funnel, "make_caller", lambda **_: Closing())
+    monkeypatch.setattr(funnel, "credit_left", plenty)
+    monkeypatch.setattr(funnel, "grow_pool", stalled)
+    monkeypatch.setattr(funnel, "pool_path", lambda klass, slug: slug)
+    monkeypatch.setattr(
+        funnel,
+        "load_template_file",
+        lambda slug: DUEL.model_copy(update={"seed_pool": DUEL.seed_pool[: sizes[slug]]}),
+    )
+
+    asyncio.run(funnel.seeds("build", 1.0))
+    assert (saved["roomy"].stage, saved["roomy"].reject) == ("seeds", None)
+    assert (saved["cramped"].stage, saved["cramped"].reject) == ("seeds", "seed pool stalled at 30")

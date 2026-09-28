@@ -5,6 +5,9 @@ import json
 
 from arena_core.template import Template
 
+# Writers overshoot a stated character count, so they are shown this share of the real cap.
+WRITER_CAP_SHARE = 0.8
+
 
 def _rubric_block(template: Template) -> str:
     return "\n".join(f"- {r.name}: {r.description} {r.anchors}".rstrip() for r in template.rubric)
@@ -169,13 +172,14 @@ def render_opponent_system(template: Template) -> str:
     criterion = template.criterion
     constraints = template.move_constraints
     starts = f' and starts with "{constraints.prefix}"' if constraints.prefix else ""
+    cap = round(constraints.max_chars * WRITER_CAP_SHARE)
     return f"""{template.premise.strip()}
 
 WHAT PLAYS
 {criterion.description.strip()} {criterion.anti_metagaming_clause.strip()}
 
 MOVE
-Each move is at most {constraints.max_chars} characters{starts}. Reply with the move only.
+Each move is at most {cap} characters{starts}. Reply with the move only.
 
 {template.opponent_prompt.strip()}"""
 
