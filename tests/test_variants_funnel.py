@@ -1,6 +1,7 @@
 import asyncio
 import random
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -19,7 +20,7 @@ from arena_evals.variants.funnel import (
     sanity_reasons,
     stood_positions,
 )
-from arena_judge.caller import ModelSpec
+from arena_judge.caller import CallError, ModelSpec
 from tests.conftest import judge_response
 from tests.test_datagen_play import ScriptedCaller
 
@@ -183,3 +184,31 @@ def test_a_failed_rejudge_is_asked_again_and_never_counts_as_disagreement(tmp_pa
         asyncio.run(rejudge(DUEL, ledger, "duel/rejudge", stood, spec, caller))
     caller.rulings[:] = [judge_response()]
     assert asyncio.run(rejudge(DUEL, ledger, "duel/rejudge", stood, spec, caller)) == [True]
+
+
+def test_a_call_that_fails_past_its_retries_skips_that_variant_and_a_402_stops_the_class(
+    tmp_path, monkeypatch
+):
+    class Closing:
+        async def aclose(self):
+            pass
+
+    async def plenty(_):
+        return 10.0
+
+    rank = SimpleNamespace(klass="counter", stage="rank", reject=None)
+    monkeypatch.setattr(funnel, "load_index", lambda: {s: rank for s in ("a", "b", "c")})
+    monkeypatch.setattr(funnel, "PILOTS_DIR", tmp_path)
+    monkeypatch.setattr(funnel, "make_caller", lambda **_: Closing())
+    monkeypatch.setattr(funnel, "credit_left", plenty)
+    failures = {"a": CallError("throttled", 429), "b": CallError("no credit", 402)}
+    reached = []
+
+    async def step(slug, ledger, caller, left):
+        reached.append(slug)
+        if slug in failures:
+            raise failures[slug]
+        return 0.0
+
+    asyncio.run(funnel.for_each("counter", "rank", 1.0, step))
+    assert reached == ["a", "b"]

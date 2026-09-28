@@ -66,7 +66,7 @@ def make_caller(judge_ref: str = "judge-v1", opponent_ref: str = "opponent-v1") 
     return ModelCaller(key, load_model(judge_ref), load_model(opponent_ref))
 
 
-async def with_backoff[T](fn: Callable[[], Awaitable[T]], *, tries: int = 6) -> T:
+async def with_backoff[T](fn: Callable[[], Awaitable[T]], *, tries: int = 10) -> T:
     """Retry a call on rate limits, server errors and timeouts, honouring Retry-After."""
     for attempt in range(tries):
         try:
@@ -83,7 +83,7 @@ async def with_backoff[T](fn: Callable[[], Awaitable[T]], *, tries: int = 6) -> 
                 getattr(e, "response", None), "headers", {}
             ).get("Retry-After")
             wait = (
-                float(retry_after) if retry_after else min(30.0, 0.5 * 2**attempt) + random.random()
+                float(retry_after) if retry_after else min(60.0, 0.5 * 2**attempt) + random.random()
             )
             await asyncio.sleep(wait)
     raise AssertionError("unreachable")

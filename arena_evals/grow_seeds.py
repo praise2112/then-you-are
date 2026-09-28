@@ -390,7 +390,8 @@ async def grow(
         cells = all_cells(template)
         probe = await grower.generate_cell(cells[0], [])
         if not probe:
-            raise SystemExit("the generator returned nothing parsable on a probe call")
+            print("the generator returned nothing parsable on a probe call", file=sys.stderr)
+            return Report(accepted, rejects, grower.calls, grower.cost)
         empty = 0
         while len(accepted) < target and cells:
             shortfall = target - len(accepted)

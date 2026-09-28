@@ -40,7 +40,7 @@ from arena_evals.datagen.sabotage import Position, positions
 from arena_evals.grow_seeds import grow
 from arena_evals.variants.generate import POOL_DIR, Stage, load_index, pool_path, save_index
 from arena_evals.variants.spec import spec_names
-from arena_judge.caller import ModelCaller, ModelSpec
+from arena_judge.caller import CallError, ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
 from arena_judge.schema import JudgeResponse, route_outcome
 
@@ -409,7 +409,7 @@ async def for_each(
             before = ledger.spent()
             try:
                 spent += await step(slug, ledger, caller, budget - spent)
-            except CallFailed as e:
+            except (CallFailed, CallError) as e:
                 spent += ledger.spent() - before
                 print(f"  {slug:32s} call failed, stage unchanged: {e}", file=sys.stderr)
                 if e.status == 402:
