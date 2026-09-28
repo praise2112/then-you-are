@@ -321,3 +321,20 @@ seed_pool:
   - { opening_token: "He asks many questions.", opening_emoji: "🙋" }
   - { opening_token: "She arrives early.", opening_emoji: "⏰" }
   - { opening_token: "They keep checking the door.", opening_emoji: "🚪" }
+  - { opening_token: "She takes careful notes at lunchtime.", opening_emoji: "📝" }
+  - { opening_token: "He returns my stapler before class.", opening_emoji: "📎" }
+  - { opening_token: "She hands back the whiteboard marker before class.", opening_emoji: "🖊️" }
+  - { opening_token: "They bring back borrowed textbooks before class starts.", opening_emoji: "📚" }
+  - { opening_token: "She labels the lunchbox contents.", opening_emoji: "🏷️" }
+  - { opening_token: "He wraps the sandwich in parchment.", opening_emoji: "🥪" }
+  - { opening_token: "She stacks the containers by size.", opening_emoji: "📚" }
+  - { opening_token: "She checks the door after each lesson.", opening_emoji: "🚪" }
+  - { opening_token: "She uses the stairs near the front.", opening_emoji: "🏃‍♀️" }
+  - { opening_token: "They give the dictionary back.", opening_emoji: "📚" }
+  - { opening_token: "She packs lunch for several minutes.", opening_emoji: "🥪" }
+  - { opening_token: "She labels her umbrella with her name.", opening_emoji: "☂️" }
+  - { opening_token: "They label the office fridge shelves.", opening_emoji: "🧊" }
+  - { opening_token: "He inspects the fridge before packing.", opening_emoji: "🧊" }
+  - { opening_token: "He locks the door, unprompted.", opening_emoji: "🔒" }
+  - { opening_token: "She checks the latch on her way out.", opening_emoji: "🚪" }
+  - { opening_token: "They test the handle before leaving.", opening_emoji: "🤲" }

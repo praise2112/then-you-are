@@ -292,3 +292,20 @@ seed_pool:
   - { opening_token: "The bus was late.", opening_emoji: "🚌" }
   - { opening_token: "My alarm did not ring.", opening_emoji: "⏰" }
   - { opening_token: "The rain flooded the front step.", opening_emoji: "🌧️" }
+  - { opening_token: "The road was closed at the station.", opening_emoji: "🚧" }
+  - { opening_token: "My shoelace came loose at the station.", opening_emoji: "👟" }
+  - { opening_token: "My phone was on silent.", opening_emoji: "📱" }
+  - { opening_token: "I left my keys inside.", opening_emoji: "🔑" }
+  - { opening_token: "The car park was full.", opening_emoji: "🅿️" }
+  - { opening_token: "The train stopped just before my stop.", opening_emoji: "🚆" }
+  - { opening_token: "The rain made the door swell shut.", opening_emoji: "🌧️" }
+  - { opening_token: "The rain blocked the car park door.", opening_emoji: "🚪" }
+  - { opening_token: "The school gate was stuck.", opening_emoji: "🏫" }
+  - { opening_token: "The train stopped in the car park.", opening_emoji: "🚆" }
+  - { opening_token: "The lift gate was stuck.", opening_emoji: "🚪" }
+  - { opening_token: "The lift button did not light up.", opening_emoji: "🔘" }
+  - { opening_token: "The lift door kept opening again.", opening_emoji: "🔄" }
+  - { opening_token: "The dog hid my shoe.", opening_emoji: "🐕" }
+  - { opening_token: "I spilled coffee in the lift.", opening_emoji: "☕" }
+  - { opening_token: "My wet umbrella would not fold.", opening_emoji: "☂️" }
+  - { opening_token: "The lift was full of wet umbrellas.", opening_emoji: "🛗" }

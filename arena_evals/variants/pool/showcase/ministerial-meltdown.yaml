@@ -303,3 +303,60 @@ seed_pool:
   - { opening_token: "In New Zealand, voting is not compulsory.", opening_emoji: "🗳️" }
   - { opening_token: "In France, employees have a legal right to disconnect from work emails.", opening_emoji: "📧" }
   - { opening_token: "In Japan, companies must measure workers' waistlines in some health programmes.", opening_emoji: "📏" }
+  - { opening_token: "In Australia, plastic bag bans are limited by law to certain stores.", opening_emoji: "🛍️" }
+  - { opening_token: "In Australia, container deposit schemes are limited by law to certain states.", opening_emoji: "🥤" }
+  - { opening_token: "In Australia, kerbside recycling is limited by law to households.", opening_emoji: "🏠" }
+  - { opening_token: "In Italy, school attendance is compulsory only until age 16.", opening_emoji: "🎒" }
+  - { opening_token: "In Italy, homeschooling is allowed only in limited legal cases.", opening_emoji: "📚" }
+  - { opening_token: "In Italy, you can vote by proxy for a relative if you're a soldier.", opening_emoji: "🎖️" }
+  - { opening_token: "In Ireland, polling stations must report voter turnout by 10pm.", opening_emoji: "🕙" }
+  - { opening_token: "In Ireland, election candidates must report all donations over €100.", opening_emoji: "💰" }
+  - { opening_token: "In Norway, prisoners can vote if they are not convicted of certain crimes.", opening_emoji: "🗳️" }
+  - { opening_token: "In New Zealand, work emails are allowed only at certain times.", opening_emoji: "📧" }
+  - { opening_token: "In Ireland, you need official permission to view tax records.", opening_emoji: "📜" }
+  - { opening_token: "In Norway, foreign fishers cannot dump catch, but Russian boats can.", opening_emoji: "🐟" }
+  - { opening_token: "In Norway, small boats can fish in protected zones year-round.", opening_emoji: "⛵" }
+  - { opening_token: "In Australia, you need official permission to campaign for a candidate on election day.", opening_emoji: "📢" }
+  - { opening_token: "In France, tax records are protected by law.", opening_emoji: "🛡️" }
+  - { opening_token: "In Canada, election spending must be reported.", opening_emoji: "💰" }
+  - { opening_token: "In Italy, a serious illness exempts a child from school.", opening_emoji: "🤒" }
+  - { opening_token: "In New Zealand, you can inspect your own tax records only during business hours.", opening_emoji: "📋" }
+  - { opening_token: "In Australia, sending work emails on weekends is not compulsory.", opening_emoji: "📧" }
+  - { opening_token: "In Australia, you need official permission to label food as organic.", opening_emoji: "🥦" }
+  - { opening_token: "In Australia, some factories are exempt from recycling rules.", opening_emoji: "🏭" }
+  - { opening_token: "In Ireland, smoking in cars with children is banned.", opening_emoji: "🚭" }
+  - { opening_token: "In Ireland, cigarette packets must be plain.", opening_emoji: "🚬" }
+  - { opening_token: "In Japan, public smoking is allowed only in designated areas.", opening_emoji: "🚭" }
+  - { opening_token: "In Ireland, work emails at night are banned by law.", opening_emoji: "🌙" }
+  - { opening_token: "In Italy, recycling is limited by law to certain materials.", opening_emoji: "♻️" }
+  - { opening_token: "In Australia, sorting your waste is not mandatory.", opening_emoji: "🗑️" }
+  - { opening_token: "In Japan, some ballot papers are invalid if marked in the wrong pen.", opening_emoji: "🖊️" }
+  - { opening_token: "In Japan, election posters must be a fixed size and hung on official boards.", opening_emoji: "📏" }
+  - { opening_token: "In Japan, candidates must report campaign funds under a strict law.", opening_emoji: "💰" }
+  - { opening_token: "In Italy, pasta must be made from durum wheat.", opening_emoji: "🍝" }
+  - { opening_token: "In Italy, olive oil labels must state the origin of the olives.", opening_emoji: "🫒" }
+  - { opening_token: "In Italy, tomato sauce must contain at least 60% tomato.", opening_emoji: "🍅" }
+  - { opening_token: "In Italy, you can access tax records only through a certified accountant.", opening_emoji: "🧾" }
+  - { opening_token: "In Italy, work emails are regulated to protect rest periods.", opening_emoji: "📧" }
+  - { opening_token: "In Ireland, charities need not disclose donors to the tax office.", opening_emoji: "🙈" }
+  - { opening_token: "In Ireland, artists pay no income tax on their first €50,000.", opening_emoji: "🎨" }
+  - { opening_token: "In Ireland, routine tax records are destroyed after seven years.", opening_emoji: "🗑️" }
+  - { opening_token: "In Japan, listing the country of origin for fresh food is not compulsory.", opening_emoji: "🍎" }
+  - { opening_token: "In Canada, tax records are limited by law to certain uses.", opening_emoji: "🔍" }
+  - { opening_token: "In France, some rural households get a reprieve from recycling fines.", opening_emoji: "♻️" }
+  - { opening_token: "In France, compost bins are mandatory only for large producers of organic waste.", opening_emoji: "🥬" }
+  - { opening_token: "In France, recycling rules for hazardous waste don't apply to small businesses.", opening_emoji: "⚠️" }
+  - { opening_token: "In New Zealand, tobacco sales require a licence.", opening_emoji: "📜" }
+  - { opening_token: "In Japan, tax records must be reported if over 500,000 yen.", opening_emoji: "💰" }
+  - { opening_token: "In Norway, filing a tax return is not compulsory for most people.", opening_emoji: "📄" }
+  - { opening_token: "In Norway, you cannot deduct bribes as business expenses.", opening_emoji: "🚫" }
+  - { opening_token: "In Australia, it is illegal to pay for a vote.", opening_emoji: "💰" }
+  - { opening_token: "In Australia, postal votes must be witnessed by law.", opening_emoji: "✉️" }
+  - { opening_token: "In Italy, voters over 80 can request home voting.", opening_emoji: "🏠" }
+  - { opening_token: "In France, public school is secular by law.", opening_emoji: "🚫" }
+  - { opening_token: "In Japan, tax records can be kept secret if they reveal a trade secret.", opening_emoji: "🤫" }
+  - { opening_token: "In France, you need official permission to vote by proxy.", opening_emoji: "🗳️" }
+  - { opening_token: "In Japan, you can vote from age 18.", opening_emoji: "🔞" }
+  - { opening_token: "In Japan, polling stations open at 7am.", opening_emoji: "⏰" }
+  - { opening_token: "In France, you need official permission to recycle batteries.", opening_emoji: "🔋" }
+  - { opening_token: "In Japan, some food sellers must report their ingredients to the government.", opening_emoji: "📝" }

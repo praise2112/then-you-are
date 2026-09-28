@@ -332,3 +332,60 @@ seed_pool:
   - { opening_token: "Nora gave Sam a hat that was two sizes too small.", opening_emoji: "🎩" }
   - { opening_token: "Leo gave Priya a loud toy.", opening_emoji: "📢" }
   - { opening_token: "Mina gave Jules a mug with a cracked handle.", opening_emoji: "☕" }
+  - { opening_token: "Uncle Ray gave Tessa a book that leaks everywhere.", opening_emoji: "📖" }
+  - { opening_token: "Nora gave Sam a lamp that leaks wax everywhere.", opening_emoji: "🕯️" }
+  - { opening_token: "Nora gave Zeke a toy that plays one song.", opening_emoji: "🧸" }
+  - { opening_token: "The neighbour gave Ana a vase that plays one song.", opening_emoji: "🎶" }
+  - { opening_token: "Uncle Ray gave me a lamp that smelled like burnt toast.", opening_emoji: "🛋️" }
+  - { opening_token: "My neighbour gave me a vase that leaks on the table.", opening_emoji: "🏺" }
+  - { opening_token: "Leo gave Ava a scarf covered in glitter.", opening_emoji: "✨" }
+  - { opening_token: "Leo gave Ana a vase that leaks from the bottom.", opening_emoji: "🏺" }
+  - { opening_token: "Uncle Ray gave Tess a hat that blares music when worn.", opening_emoji: "🎩" }
+  - { opening_token: "Uncle Ray gave Ben a hat that flashes neon lights.", opening_emoji: "🎩" }
+  - { opening_token: "Uncle Ray gave Ava a hat that honks like a goose.", opening_emoji: "🎩" }
+  - { opening_token: "Uncle Ray gave Mia a plush bear that reeks of vinegar.", opening_emoji: "🧸" }
+  - { opening_token: "Nora gave Ben a book with a cracked spine.", opening_emoji: "📚" }
+  - { opening_token: "Uncle Ray gave Sam a clock that leaks oil.", opening_emoji: "🕰️" }
+  - { opening_token: "Priya gave Sam a mug that blurts a jingle every hour.", opening_emoji: "🎶" }
+  - { opening_token: "Leo gave Theo a mug with a handle cracked in two.", opening_emoji: "☕" }
+  - { opening_token: "Leo gave Ben a lamp that's two sizes too small.", opening_emoji: "💡" }
+  - { opening_token: "Mina gave Ivy a toy that leaks glitter everywhere.", opening_emoji: "🧸" }
+  - { opening_token: "Mina gave Leo a toy that leaks battery acid.", opening_emoji: "🤖" }
+  - { opening_token: "Uncle Ray gave Mia a lamp that plays one song on repeat.", opening_emoji: "🎶" }
+  - { opening_token: "Jules gave Ana a book that's two sizes too small.", opening_emoji: "📚" }
+  - { opening_token: "Priya gave Ava a vase with a cracked handle.", opening_emoji: "🌸" }
+  - { opening_token: "Leo gave Mia a clock that plays one song.", opening_emoji: "⏰" }
+  - { opening_token: "Uncle Ray gave Sam a scarf that was plaid and played bagpipe music when wound.", opening_emoji: "🧣" }
+  - { opening_token: "Sam gave Ben a toy that loops one song.", opening_emoji: "🔁" }
+  - { opening_token: "Mina gave Fern a book whose handle was cracked.", opening_emoji: "🔨" }
+  - { opening_token: "The neighbour gave Ana a book covered in glitter.", opening_emoji: "📖" }
+  - { opening_token: "Leo gave Sam a mug that beeps like a smoke alarm.", opening_emoji: "🚨" }
+  - { opening_token: "The neighbor gave Ana a lamp that reeked of burnt plastic.", opening_emoji: "🛋️" }
+  - { opening_token: "Priya gave Milo a book whose handle snapped off.", opening_emoji: "🫳" }
+  - { opening_token: "Mina gave Ava a book that plays one song.", opening_emoji: "🎵" }
+  - { opening_token: "Jules gave Ben a book that plays one song loudly.", opening_emoji: "📚" }
+  - { opening_token: "Jules gave Sam a vase that announces the time loudly.", opening_emoji: "⏰" }
+  - { opening_token: "Jules gave Mia a vase that vibrates like a phone.", opening_emoji: "📳" }
+  - { opening_token: "Nora gave Bella a mug that plays one song.", opening_emoji: "☕" }
+  - { opening_token: "Jules gave Ana a clock with one button missing.", opening_emoji: "🕰️" }
+  - { opening_token: "Mina gave Ana a lamp too small for its shade.", opening_emoji: "🛋️" }
+  - { opening_token: "Priya gave Mia a clock covered in glitter.", opening_emoji: "⏰" }
+  - { opening_token: "Uncle Ray gave Ben a book that shouts the page numbers.", opening_emoji: "📖" }
+  - { opening_token: "Nora gave Cleo a lamp that roars like a lion.", opening_emoji: "🦁" }
+  - { opening_token: "The neighbour gave me a clock that smells of old cabbage.", opening_emoji: "🕰️" }
+  - { opening_token: "Sam gave Ana a clock that smells like old cheese.", opening_emoji: "🧀" }
+  - { opening_token: "Uncle Ray gave Ivy a lamp missing one button.", opening_emoji: "💡" }
+  - { opening_token: "Mina gave Fern a hat that leaks everywhere.", opening_emoji: "🎩" }
+  - { opening_token: "Sam gave Leo a vase that blares music at dawn.", opening_emoji: "📢" }
+  - { opening_token: "The neighbour gave Ben a book with a moldy odor.", opening_emoji: "📖" }
+  - { opening_token: "Nora gave Ben a toy that sheds glitter.", opening_emoji: "🧸" }
+  - { opening_token: "Sam gave Mia a hat with a cracked handle.", opening_emoji: "🎩" }
+  - { opening_token: "Sam gave Cleo a toy covered in glitter that gets everywhere.", opening_emoji: "🌪️" }
+  - { opening_token: "Mina gave Theo a book that shouts every word.", opening_emoji: "📢" }
+  - { opening_token: "Mina gave Cleo a book that roars at chapter breaks.", opening_emoji: "🦁" }
+  - { opening_token: "Nora gave Leo a book that's missing a button.", opening_emoji: "📚" }
+  - { opening_token: "Jules gave Ivy a teddy bear that smells of sour milk.", opening_emoji: "🧸" }
+  - { opening_token: "Jules gave Leo a toy car that reeks of burnt rubber.", opening_emoji: "🚗" }
+  - { opening_token: "Jules gave Mia a puzzle that smells like wet dog.", opening_emoji: "🧩" }
+  - { opening_token: "Mina gave Theo a hat with a moldy odor.", opening_emoji: "🍄" }
+  - { opening_token: "Uncle Ray gave Cleo a scarf with glitter that won't come off.", opening_emoji: "🧣" }

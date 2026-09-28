@@ -340,3 +340,5 @@ seed_pool:
   - { opening_token: "an opening limit of £100 with a £3 comic", opening_emoji: "📖", detail: "First card: I buy a comic for £3; total £3.", hidden: "" }
   - { opening_token: "an opening limit of £150 with a £5 sandwich", opening_emoji: "🥪", detail: "First card: I buy a sandwich for £5; total £5.", hidden: "" }
   - { opening_token: "an opening limit of £200 with a £7 notebook", opening_emoji: "📓", detail: "First card: I buy a notebook for £7; total £7.", hidden: "" }
+  - { opening_token: "a £200 limit beginning with a £6 umbrella", opening_emoji: "☂️" }
+  - { opening_token: "a £250 cap beginning with a £4 mug", opening_emoji: "🥤" }

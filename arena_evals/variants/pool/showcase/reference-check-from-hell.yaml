@@ -347,3 +347,60 @@ seed_pool:
   - { opening_token: "Stand outside a nightclub and hold umbrellas for strangers in the rain.", opening_emoji: "☔" }
   - { opening_token: "Count escaped chickens at a farm gate.", opening_emoji: "🐔" }
   - { opening_token: "Clean the changing rooms after a wrestling tournament.", opening_emoji: "🧽" }
+  - { opening_token: "Guard the public toilet door and keep pensioners queuing calmly without a chair.", opening_emoji: "🚻" }
+  - { opening_token: "At a wedding venue, calm pensioners queuing beside a broken loudspeaker.", opening_emoji: "💒" }
+  - { opening_token: "Hand-feed the llamas while pensioners queue to stroke them.", opening_emoji: "🦙" }
+  - { opening_token: "Wrangle the goat that keeps headbutting the waiting pensioners' shins.", opening_emoji: "🐐" }
+  - { opening_token: "Sell bags of feed to a pensioner queue that's been standing an hour.", opening_emoji: "🥜" }
+  - { opening_token: "Scrape chewing gum off petting zoo benches in the rain.", opening_emoji: "🐐" }
+  - { opening_token: "Sort socks from the petting zoo's lost property bin, no chair provided.", opening_emoji: "🐐" }
+  - { opening_token: "During a heatwave, sort socks from a lost property bin at a motorway lay-by.", opening_emoji: "🛣️" }
+  - { opening_token: "At a motorway lay-by, hold umbrellas for truckers until the last one departs.", opening_emoji: "🚚" }
+  - { opening_token: "Hold umbrellas for wedding guests in the rain, but only after the vows.", opening_emoji: "💍" }
+  - { opening_token: "Scrub abandoned wedding costumes in the venue's basement, no chair provided.", opening_emoji: "👰" }
+  - { opening_token: "Clean mud off groom suits in the cloakroom, standing the whole time.", opening_emoji: "🤵" }
+  - { opening_token: "Watch the wet coats by the farm gate, missing one red scarf, till closing.", opening_emoji: "🧣" }
+  - { opening_token: "Mind the soaking coats at the farm gate from 6 PM until midnight.", opening_emoji: "⏰" }
+  - { opening_token: "At a wedding venue, count escaped chickens beside a broken loudspeaker.", opening_emoji: "🐔" }
+  - { opening_token: "Keep umbrellas dry while the broken loudspeaker buzzes by the nightclub queue.", opening_emoji: "🔊" }
+  - { opening_token: "Guard a pile of wet coats at a wedding venue, beside a broken loudspeaker.", opening_emoji: "🧥" }
+  - { opening_token: "Announce missing dentures in the hospital corridor while wearing borrowed shoes that squeak.", opening_emoji: "🦷" }
+  - { opening_token: "Direct pensioners into a calm queue at a motorway lay-by, no chair provided.", opening_emoji: "🚻" }
+  - { opening_token: "At the nightclub entrance, remove chewing gum from seats with no chair provided.", opening_emoji: "🪑" }
+  - { opening_token: "Scrape gum from the nightclub's velvet rope posts while standing all night.", opening_emoji: "🪢" }
+  - { opening_token: "Scrub abandoned costumes at a motorway lay-by under constant supervision.", opening_emoji: "👀" }
+  - { opening_token: "In the petting zoo's shed, wash discarded mascot heads while standing all day.", opening_emoji: "🐴" }
+  - { opening_token: "Search the wedding marquee for the groom's grandmother's missing dentures in the heatwave.", opening_emoji: "🔍" }
+  - { opening_token: "Interrupt the vows during the heatwave to announce the missing dentures.", opening_emoji: "💒" }
+  - { opening_token: "Count chickens escaping the nightclub door during a heatwave.", opening_emoji: "🌡️" }
+  - { opening_token: "Chase a hen through the nightclub queue, in this heat.", opening_emoji: "🐔" }
+  - { opening_token: "In a hospital corridor, calm queuing pensioners until the final customer leaves.", opening_emoji: "🏥" }
+  - { opening_token: "In the football changing room, count escaped chickens while wearing borrowed shoes.", opening_emoji: "👟" }
+  - { opening_token: "After midnight, herd escaped chickens back into the petting zoo pen.", opening_emoji: "🌙" }
+  - { opening_token: "Scrape gum off the toilet seats while wearing borrowed shoes.", opening_emoji: "👞" }
+  - { opening_token: "Hold umbrellas for patients in a hospital corridor, never leaving your post.", opening_emoji: "🏥" }
+  - { opening_token: "While wearing borrowed shoes, sort socks from the bin outside a hospital ward.", opening_emoji: "👟" }
+  - { opening_token: "Scrape dried chewing gum off wedding chairs beside the broken loudspeaker.", opening_emoji: "🪑" }
+  - { opening_token: "Remove gum from goat-petting benches in squeaky borrowed loafers.", opening_emoji: "👞" }
+  - { opening_token: "After midnight, announce missing dentures in the petting zoo's bat enclosure.", opening_emoji: "🦇" }
+  - { opening_token: "Fan the pensioners queuing at the nightclub door during a heatwave.", opening_emoji: "🥵" }
+  - { opening_token: "For six hours, shield late wedding arrivals from rain, no chair in sight.", opening_emoji: "⏳" }
+  - { opening_token: "In the football changing room, match odd socks beside the broken loudspeaker.", opening_emoji: "🔊" }
+  - { opening_token: "After the match, find a missing red sock in the lost property bin.", opening_emoji: "🧦" }
+  - { opening_token: "Keep watch over soggy coats in the hospital corridor until the final patient goes.", opening_emoji: "🏥" }
+  - { opening_token: "Under constant supervision, announce missing dentures to the queue of farm-gate egg buyers.", opening_emoji: "🥚" }
+  - { opening_token: "At the nightclub door, page for lost dentures in too-small borrowed loafers.", opening_emoji: "👞" }
+  - { opening_token: "Count escaped chickens weaving through patients' feet in the hospital corridor.", opening_emoji: "🏥" }
+  - { opening_token: "Herd a runaway rooster back into Ward 3 during the heatwave.", opening_emoji: "🌡️" }
+  - { opening_token: "After midnight, scrub goat costumes in the petting zoo's flooded barn.", opening_emoji: "🐐" }
+  - { opening_token: "Catch the escaped chicken that ran past the nightclub bouncer and broken loudspeaker.", opening_emoji: "🏃" }
+  - { opening_token: "In the football changing room, keep pensioners queuing quietly past the final whistle.", opening_emoji: "⏱️" }
+  - { opening_token: "Guard the wet coats in the zoo's damp shed until the last customer leaves.", opening_emoji: "🧥" }
+  - { opening_token: "Stand by the petting zoo's coat pile, ignoring the goats licking raincoats, till close.", opening_emoji: "🐐" }
+  - { opening_token: "In the rain, count escaped chickens wandering past the motorway lay-by toilets.", opening_emoji: "🐔" }
+  - { opening_token: "Hold umbrellas for late customers at a farm gate until the last one leaves.", opening_emoji: "☔" }
+  - { opening_token: "At a motorway lay-by, page for lost dentures beside a broken loudspeaker.", opening_emoji: "📢" }
+  - { opening_token: "Count the petting zoo's escaped chickens in the rain until the last visitor goes.", opening_emoji: "🌧️" }
+  - { opening_token: "Scrub abandoned mascot costumes in the football changing room during a heatwave.", opening_emoji: "🤢" }
+  - { opening_token: "In the football changing room, wash sweat-soaked Santa suits as the heatwave peaks.", opening_emoji: "🎅" }
+  - { opening_token: "Beside the farm gate's broken loudspeaker, match socks from the lost property bin.", opening_emoji: "🚜" }

@@ -307,3 +307,20 @@ seed_pool:
   - { opening_token: "a glass wall across the front", opening_emoji: "🪟" }
   - { opening_token: "a basement under the whole building", opening_emoji: "🏢" }
   - { opening_token: "a crane fixed to the roof", opening_emoji: "🏗️" }
+  - { opening_token: "a wide concrete staircase along the side of the narrow lot", opening_emoji: "🪜" }
+  - { opening_token: "a concrete staircase that winds around a central post", opening_emoji: "🌀" }
+  - { opening_token: "a plastic roof with no slope", opening_emoji: "🏠" }
+  - { opening_token: "a plastic rain gutter along the roof edge", opening_emoji: "🌧️" }
+  - { opening_token: "a solid plastic wall down the middle of the staircase", opening_emoji: "🧱" }
+  - { opening_token: "a plastic staircase stacked on top of the first one", opening_emoji: "🪜" }
+  - { opening_token: "a concrete elevator shaft on the outside of the building", opening_emoji: "🏢" }
+  - { opening_token: "an elevator door on the shared wall", opening_emoji: "🚪" }
+  - { opening_token: "a stone arch over the front door", opening_emoji: "🚪" }
+  - { opening_token: "a tile path from the front door to the sidewalk", opening_emoji: "🚶" }
+  - { opening_token: "a tile roof over the porch", opening_emoji: "🏠" }
+  - { opening_token: "a brick elevator in the flooded ground", opening_emoji: "🌊" }
+  - { opening_token: "a brick floor that spans the narrow lot from side to side", opening_emoji: "🧱" }
+  - { opening_token: "a brick wall around the entire courtyard", opening_emoji: "🧱" }
+  - { opening_token: "a glass foundation that runs under the entire house", opening_emoji: "🏠" }
+  - { opening_token: "a glass slab resting on a row of glass columns", opening_emoji: "🔲" }
+  - { opening_token: "a glass floor for the second story", opening_emoji: "🪟" }

@@ -332,3 +332,20 @@ seed_pool:
   - { opening_token: "Quest: cross the cursed bridge to deliver a pie; nouns: bus and receipt.", opening_emoji: "🥧" }
   - { opening_token: "Quest: wake the sleeping prince with a kiss; nouns: mop and cabbage.", opening_emoji: "💋" }
   - { opening_token: "Quest: return the stolen moon before sunset; nouns: trolley and shoelace.", opening_emoji: "🌙" }
+  - { opening_token: "Quest: pie to castle, but moat's full of wolves; nouns: trolley and shoelace.", opening_emoji: "🐺" }
+  - { opening_token: "Quest: pie for king; gate sealed; I have umbrella and sausage.", opening_emoji: "🏰" }
+  - { opening_token: "Quest: escort the goose through the forest; giant watching; nouns: sandwich and key.", opening_emoji: "🦢" }
+  - { opening_token: "Quest: find the witch's lost key; bridge demands secret; trolley and shoelace.", opening_emoji: "🧙" }
+  - { opening_token: "I've got the moon in my wallet but a turnip might be the witch's tracker.", opening_emoji: "🧙" }
+  - { opening_token: "Quest: carry the royal letter uphill; giant's watching; nouns: ticket and wet sock.", opening_emoji: "👀" }
+  - { opening_token: "Quest: break the giant's spell; witch is following; I have a wallet and a turnip.", opening_emoji: "🧙" }
+  - { opening_token: "Quest: return moon; carpet won't fly; need bus fare; have receipt but lost moon.", opening_emoji: "🧾" }
+  - { opening_token: "Quest: wake the sleeping prince; castle gate won't open; nouns: basket and parking fine.", opening_emoji: "🛏️" }
+  - { opening_token: "Escort goose through forest; carpet sulking; need trolley and shoelace.", opening_emoji: "🪿" }
+  - { opening_token: "Royal letter uphill, dragon on road; umbrella's bent, sausage's my lunch.", opening_emoji: "📜" }
+  - { opening_token: "Giant's spell needs breaking; carpet won't budge; I've a sandwich and key.", opening_emoji: "🗝️" }
+  - { opening_token: "Breaking giant's spell; witch behind me; trolley derailed, shoelace snapped.", opening_emoji: "🧹" }
+  - { opening_token: "Return moon; giant watching; basket and parking fine.", opening_emoji: "🌙" }
+  - { opening_token: "Finding witch's key; dragon's on the road; mop for a cabbage bribe.", opening_emoji: "🐉" }
+  - { opening_token: "Stuck on cursed bridge; gate sealed. Need ticket and dry sock.", opening_emoji: "🧦" }
+  - { opening_token: "Giant's spell still on; castle gate stuck; basket and parking fine.", opening_emoji: "🧾" }

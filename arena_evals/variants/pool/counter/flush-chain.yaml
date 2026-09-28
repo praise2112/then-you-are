@@ -305,3 +305,20 @@ seed_pool:
   - { opening_token: "a hair clog", opening_emoji: "🕳️" }
   - { opening_token: "a toilet brush", opening_emoji: "🪥" }
   - { opening_token: "a dripping tap", opening_emoji: "🚰" }
+  - { opening_token: "a drain snake", opening_emoji: "🐍" }
+  - { opening_token: "a plunger", opening_emoji: "🪠" }
+  - { opening_token: "a bath mat", opening_emoji: "🧻" }
+  - { opening_token: "a bucket", opening_emoji: "🪣" }
+  - { opening_token: "a cracked mirror", opening_emoji: "🪞" }
+  - { opening_token: "a water jet", opening_emoji: "💦" }
+  - { opening_token: "a shard", opening_emoji: "🔪" }
+  - { opening_token: "a steam cloud", opening_emoji: "💨" }
+  - { opening_token: "a soap bubble", opening_emoji: "🫧" }
+  - { opening_token: "a warm draft", opening_emoji: "🌬️" }
+  - { opening_token: "a fog", opening_emoji: "🌫️" }
+  - { opening_token: "a rag", opening_emoji: "🧻" }
+  - { opening_token: "a leak", opening_emoji: "💧" }
+  - { opening_token: "a rusty hinge", opening_emoji: "🚪" }
+  - { opening_token: "a bowl crack", opening_emoji: "🕳️" }
+  - { opening_token: "a mould spot", opening_emoji: "🦠" }
+  - { opening_token: "a wet sponge", opening_emoji: "🧽" }

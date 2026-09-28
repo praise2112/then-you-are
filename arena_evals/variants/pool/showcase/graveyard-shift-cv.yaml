@@ -346,3 +346,18 @@ seed_pool:
   - { opening_token: "Remove chewing gum from cinema seats after the final showing.", opening_emoji: "🎬" }
   - { opening_token: "Clean the school toilets at midnight.", opening_emoji: "🧽" }
   - { opening_token: "Count frozen chickens in a warehouse before dawn.", opening_emoji: "🐔" }
+  - { opening_token: "Wipe blood off the station floor after the final train departs.", opening_emoji: "🧹" }
+  - { opening_token: "Empty the office tower's public bins on Sunday, until the first train.", opening_emoji: "🗑️" }
+  - { opening_token: "Label unclaimed glasses at the box office as water drips from above.", opening_emoji: "👓" }
+  - { opening_token: "Buff the handrails along the hospital corridor after visiting hours.", opening_emoji: "🏥" }
+  - { opening_token: "Refill the paper towel dispensers in the hospital corridor toilets every hour.", opening_emoji: "🧻" }
+  - { opening_token: "Mop the hospital lobby floor on Sunday, with no phone signal.", opening_emoji: "🏥" }
+  - { opening_token: "Monitor the boiler in the flooded basement until the first train.", opening_emoji: "🌊" }
+  - { opening_token: "Disinfect the hospital corridor floors between midnight and the first train.", opening_emoji: "🧴" }
+  - { opening_token: "Sort the lost property left on platform 3 during the annual inspection.", opening_emoji: "🛅" }
+  - { opening_token: "Inspect empty offices after the final showing, with one light working.", opening_emoji: "🏢" }
+  - { opening_token: "Watch the cinema's boiler after closing, while the freezer alarms.", opening_emoji: "🔥" }
+  - { opening_token: "Inspect empty offices at the motorway service area until the first train.", opening_emoji: "🚗" }
+  - { opening_token: "Clean the basement toilets while the freezer alarm keeps ringing.", opening_emoji: "🚽" }
+  - { opening_token: "Pick gum from between warehouse pallets before dawn, until the first train.", opening_emoji: "🪵" }
+  - { opening_token: "Tour vacant classrooms at midnight, placing buckets under ceiling leaks.", opening_emoji: "🪣" }

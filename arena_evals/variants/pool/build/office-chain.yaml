@@ -310,3 +310,60 @@ seed_pool:
   - { opening_token: "Please send me the meeting notes.", opening_emoji: "📝" }
   - { opening_token: "Please book a room for the interview panel.", opening_emoji: "🚪" }
   - { opening_token: "Please forward the spreadsheet to everyone on the project.", opening_emoji: "📊" }
+  - { opening_token: "Please confirm the headcount for Friday's team lunch.", opening_emoji: "🍽️" }
+  - { opening_token: "Please share the budget code we should use for the lunch order.", opening_emoji: "💳" }
+  - { opening_token: "Please add the catering options to the lunch slide deck.", opening_emoji: "🍽️" }
+  - { opening_token: "Please resize the team lunch photos in the slide deck.", opening_emoji: "🖼️" }
+  - { opening_token: "Please check the project spreadsheet before the team lunch.", opening_emoji: "🔍" }
+  - { opening_token: "Please send me the staff rota for next week.", opening_emoji: "📅" }
+  - { opening_token: "Please update the team lunch menu with the rota times.", opening_emoji: "🍽️" }
+  - { opening_token: "Please attach the site visit slide deck to the calendar invite.", opening_emoji: "📊" }
+  - { opening_token: "Please include the client's name on the title slide.", opening_emoji: "👤" }
+  - { opening_token: "Please send me your lunch order.", opening_emoji: "🍽️" }
+  - { opening_token: "Please confirm the lunch order for the review meeting.", opening_emoji: "📋" }
+  - { opening_token: "Please add the lunch budget to the spreadsheet.", opening_emoji: "💰" }
+  - { opening_token: "Please rename the slide deck to include the deadline date.", opening_emoji: "🏷️" }
+  - { opening_token: "Please send me your written interview feedback for the final candidate.", opening_emoji: "📝" }
+  - { opening_token: "Please print the interview feedback summary before the deadline.", opening_emoji: "🖨️" }
+  - { opening_token: "Please double-check the printer has enough paper for the interview feedback.", opening_emoji: "📄" }
+  - { opening_token: "Please check the budget code on the interview feedback summary.", opening_emoji: "🔍" }
+  - { opening_token: "Please sign the travel booking approval form.", opening_emoji: "✍️" }
+  - { opening_token: "Please confirm the traveler's name for the travel booking.", opening_emoji: "🧳" }
+  - { opening_token: "Please send me the travel booking for the site visit.", opening_emoji: "✈️" }
+  - { opening_token: "Please send me the slide deck for the budget check.", opening_emoji: "📊" }
+  - { opening_token: "Please confirm who is on the rota for Friday's deadline.", opening_emoji: "✅" }
+  - { opening_token: "Please share the meeting notes from the interview panel debrief.", opening_emoji: "🗒️" }
+  - { opening_token: "Please attach the signed visitor log to the printer form.", opening_emoji: "📎" }
+  - { opening_token: "Please confirm the site visit date on the printer form.", opening_emoji: "📅" }
+  - { opening_token: "Please confirm the headcount for the site visit debrief.", opening_emoji: "🧮" }
+  - { opening_token: "Please send me the blank printer form for the review packet.", opening_emoji: "🖨️" }
+  - { opening_token: "Please forward the travel itinerary to the admin team.", opening_emoji: "📧" }
+  - { opening_token: "Please print the travel booking details for the meeting folder.", opening_emoji: "🖨️" }
+  - { opening_token: "Please fill in the printer form for today's meeting.", opening_emoji: "🖨️" }
+  - { opening_token: "Please check that the interview feedback form is the latest version.", opening_emoji: "🔍" }
+  - { opening_token: "Please send me the attendee list for the training session.", opening_emoji: "📋" }
+  - { opening_token: "Please confirm the travel dates on the booking before the review.", opening_emoji: "📅" }
+  - { opening_token: "Please put your interview feedback into the training session shared folder.", opening_emoji: "📁" }
+  - { opening_token: "Please print the budget check form before the review meeting.", opening_emoji: "🖨️" }
+  - { opening_token: "Please send me the approved budget form.", opening_emoji: "📄" }
+  - { opening_token: "Please fill in the project name on the budget form.", opening_emoji: "🖊️" }
+  - { opening_token: "Please verify the totals on the budget form.", opening_emoji: "🧮" }
+  - { opening_token: "Please add my name to the title slide for the training session.", opening_emoji: "📛" }
+  - { opening_token: "Please insert a diagram of the new process on the second slide.", opening_emoji: "📊" }
+  - { opening_token: "Please check the site visit schedule for our lunch break.", opening_emoji: "🕒" }
+  - { opening_token: "Please save that meeting notes file to the shared drive.", opening_emoji: "💾" }
+  - { opening_token: "Please check if the meeting notes file opens on your computer.", opening_emoji: "🔍" }
+  - { opening_token: "Please mark the training session times on the rota.", opening_emoji: "✏️" }
+  - { opening_token: "Please rename the staff rota file so it matches the meeting date.", opening_emoji: "📅" }
+  - { opening_token: "Please enter the interview candidate's travel dates into the project spreadsheet.", opening_emoji: "📊" }
+  - { opening_token: "Please add a column for interview feedback scores in the project spreadsheet.", opening_emoji: "📈" }
+  - { opening_token: "Please print the interview schedule from the rota.", opening_emoji: "🖨️" }
+  - { opening_token: "Please save the project spreadsheet to the budget check folder.", opening_emoji: "💾" }
+  - { opening_token: "Please confirm the interview panel is still meeting tomorrow morning.", opening_emoji: "📅" }
+  - { opening_token: "Please take the catering survey out of the meeting folder.", opening_emoji: "📋" }
+  - { opening_token: "Please fill in one interview feedback form for the site visit.", opening_emoji: "📋" }
+  - { opening_token: "Please check your site visit interview notes before I file them.", opening_emoji: "🗒️" }
+  - { opening_token: "Please email me the client's mobile number for the site visit notes.", opening_emoji: "📱" }
+  - { opening_token: "Please send me the agenda template for the site visit debrief.", opening_emoji: "📅" }
+  - { opening_token: "Please confirm who is driving to the site visit next Tuesday.", opening_emoji: "🚗" }
+  - { opening_token: "Please sign the team lunch order form.", opening_emoji: "✍️" }

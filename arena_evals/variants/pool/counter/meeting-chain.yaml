@@ -302,3 +302,20 @@ seed_pool:
   - { opening_token: "a meeting starts five minutes late", opening_emoji: "⏰" }
   - { opening_token: "the printer runs out of paper", opening_emoji: "🖨️" }
   - { opening_token: "the office kitchen loses its only clean mug", opening_emoji: "☕" }
+  - { opening_token: "two meetings booked in one room", opening_emoji: "📅" }
+  - { opening_token: "a visitor signs in at reception", opening_emoji: "📝" }
+  - { opening_token: "the meeting room door is locked", opening_emoji: "🔒" }
+  - { opening_token: "a delivery arrives for the wrong desk", opening_emoji: "📦" }
+  - { opening_token: "the video call link won't open", opening_emoji: "🔗" }
+  - { opening_token: "a visitor waits with no badge", opening_emoji: "🪪" }
+  - { opening_token: "the receptionist holds a package with no name", opening_emoji: "📦" }
+  - { opening_token: "the front desk loses the visitor log", opening_emoji: "📋" }
+  - { opening_token: "the lobby sign shows yesterday's date", opening_emoji: "🗓️" }
+  - { opening_token: "the video call drops mid-sentence", opening_emoji: "📵" }
+  - { opening_token: "the coffee machine floods the counter", opening_emoji: "☕" }
+  - { opening_token: "someone drank the last of the office coffee", opening_emoji: "🫙" }
+  - { opening_token: "a hallway flyer announces a room change", opening_emoji: "📄" }
+  - { opening_token: "a hallway conversation blocks the corridor", opening_emoji: "🚧" }
+  - { opening_token: "the printer jams in the kitchen", opening_emoji: "🖨️" }
+  - { opening_token: "team calendar loses the print room booking", opening_emoji: "📅" }
+  - { opening_token: "printer maintenance is slipped to next week", opening_emoji: "🔧" }

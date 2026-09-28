@@ -322,3 +322,20 @@ seed_pool:
   - { opening_token: "the gatekeeper bars the drawbridge", opening_emoji: "🏰" }
   - { opening_token: "the cook claims the last venison", opening_emoji: "🍖" }
   - { opening_token: "the herald rings for supper", opening_emoji: "🔔" }
+  - { opening_token: "the blacksmith brands the ledger", opening_emoji: "🔥" }
+  - { opening_token: "the key unlocks the chapel door", opening_emoji: "🔑" }
+  - { opening_token: "the chapel holds a sworn oath", opening_emoji: "⛪" }
+  - { opening_token: "the queen commands silence in the throne room", opening_emoji: "👑" }
+  - { opening_token: "the blacksmith refuses to shoe the captain's horse", opening_emoji: "⚒️" }
+  - { opening_token: "the cook refuses to light the kitchen fire", opening_emoji: "🔥" }
+  - { opening_token: "the king locks the stable door", opening_emoji: "🔑" }
+  - { opening_token: "the steward forbids anyone to enter the courtyard", opening_emoji: "🚫" }
+  - { opening_token: "the herald shouts the king's new law", opening_emoji: "📜" }
+  - { opening_token: "the knight refuses the king's order", opening_emoji: "💍" }
+  - { opening_token: "the king's signet ring seals a dark order", opening_emoji: "📜" }
+  - { opening_token: "the bell ringer rings the noon bell", opening_emoji: "🔔" }
+  - { opening_token: "the king decrees the courtyard closed until dawn", opening_emoji: "🚫" }
+  - { opening_token: "the captain holds the courtyard with his warrant", opening_emoji: "⚔️" }
+  - { opening_token: "the captain drills his men in the courtyard", opening_emoji: "🎯" }
+  - { opening_token: "the knight draws his sword in the courtyard", opening_emoji: "⚔️" }
+  - { opening_token: "the captain commands the knight to kneel", opening_emoji: "🎖️" }

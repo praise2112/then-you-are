@@ -342,3 +342,56 @@ seed_pool:
   - { opening_token: "A delivery app charged you for food that never arrived.", opening_emoji: "🥡" }
   - { opening_token: "A hotel billed you for a room you never used.", opening_emoji: "🏨" }
   - { opening_token: "A phone company cut off your service after taking payment.", opening_emoji: "📱" }
+  - { opening_token: "An airline charged you extra for a seat that wasn't there.", opening_emoji: "✈️" }
+  - { opening_token: "A bank sent your new card to the wrong address before your trip.", opening_emoji: "🏦" }
+  - { opening_token: "A bank froze your account just before your flight and won't say why.", opening_emoji: "✈️" }
+  - { opening_token: "A gym billed you after you canceled your membership in person.", opening_emoji: "📝" }
+  - { opening_token: "An airline checked your bag to the wrong city.", opening_emoji: "🧳" }
+  - { opening_token: "An airline changed your flight time after you paid.", opening_emoji: "⏰" }
+  - { opening_token: "A bank locked your only account by mistake during a family visit.", opening_emoji: "🏦" }
+  - { opening_token: "A phone company sent your parcel to your old address after you moved.", opening_emoji: "📦" }
+  - { opening_token: "A hotel charged you for parking that was full during a family visit.", opening_emoji: "🅿️" }
+  - { opening_token: "An airline sold you a holiday meal but served nothing on the plane.", opening_emoji: "🍽️" }
+  - { opening_token: "An airline's paid holiday check-in desk closed early and left you in line.", opening_emoji: "🛫" }
+  - { opening_token: "An online shop canceled your order after you paid and didn't tell you.", opening_emoji: "🛒" }
+  - { opening_token: "An online shop changed your delivery date without asking while family was visiting.", opening_emoji: "📦" }
+  - { opening_token: "An online shop says your package was delivered but it never came.", opening_emoji: "🚚" }
+  - { opening_token: "An airline split your family across two different planes on the same day.", opening_emoji: "👨‍👩‍👧" }
+  - { opening_token: "A bank shut off your online banking right after you paid a bill.", opening_emoji: "🏦" }
+  - { opening_token: "A delivery app sent your package to the wrong place on moving day.", opening_emoji: "📦" }
+  - { opening_token: "An airline stopped your paid wheelchair service during a family visit.", opening_emoji: "♿" }
+  - { opening_token: "A bank charged you a fee for a check that was never cashed.", opening_emoji: "🏦" }
+  - { opening_token: "A bank took a payment twice for the same bill on moving day.", opening_emoji: "💸" }
+  - { opening_token: "A bank held your deposit because the signature looked odd on moving day.", opening_emoji: "✍️" }
+  - { opening_token: "A gym closed for repairs during your only free hour before work.", opening_emoji: "🚧" }
+  - { opening_token: "A phone company billed you for a home plan after you moved out.", opening_emoji: "📞" }
+  - { opening_token: "A phone company says you owe for a missing device on moving day.", opening_emoji: "📦" }
+  - { opening_token: "An online shop promised a refund that never arrived before your work shift.", opening_emoji: "💸" }
+  - { opening_token: "A hotel moved your family to a different room type without telling you.", opening_emoji: "🏨" }
+  - { opening_token: "A delivery app's paid same-day service quit working before your interview.", opening_emoji: "📦" }
+  - { opening_token: "An airline stopped your paid bag delivery service before a wedding.", opening_emoji: "🧳" }
+  - { opening_token: "An airline ended your paid seat selection right before a doctor's visit.", opening_emoji: "💺" }
+  - { opening_token: "An energy supplier billed you for a meter that isn't yours.", opening_emoji: "🔢" }
+  - { opening_token: "A hotel promised a refund before your trip, but the money never came.", opening_emoji: "🏨" }
+  - { opening_token: "A hotel took your payment twice before your work shift.", opening_emoji: "🏨" }
+  - { opening_token: "A gym stopped its childcare service right after you paid for a year.", opening_emoji: "🏋️" }
+  - { opening_token: "A gym shut its pool for repairs after you paid for swim lessons.", opening_emoji: "🏊" }
+  - { opening_token: "A hotel lost your reservation before your important meeting.", opening_emoji: "🗓️" }
+  - { opening_token: "A gym charged you twice for the same monthly payment during a storm.", opening_emoji: "🏋️" }
+  - { opening_token: "A phone company canceled your booking without a refund, and you're leaving tomorrow.", opening_emoji: "❌" }
+  - { opening_token: "An airline canceled your morning flight without warning on a public holiday.", opening_emoji: "🛫" }
+  - { opening_token: "An energy supplier turned off your power by mistake on a holiday weekend.", opening_emoji: "💡" }
+  - { opening_token: "A bank sent a parcel to the wrong place during a family visit.", opening_emoji: "🏦" }
+  - { opening_token: "An energy supplier sent your refund as a credit on a closed account.", opening_emoji: "📄" }
+  - { opening_token: "A gym moved your paid training session to a day you're moving house.", opening_emoji: "🏋️" }
+  - { opening_token: "A hotel stopped its airport shuttle after you paid for the ride.", opening_emoji: "🚐" }
+  - { opening_token: "A hotel canceled your paid breakfast before your early flight.", opening_emoji: "🍳" }
+  - { opening_token: "The phone company locked your SIM before a big trip.", opening_emoji: "✈️" }
+  - { opening_token: "A bank sent your loan papers to a stranger's house before your appointment.", opening_emoji: "📬" }
+  - { opening_token: "A bank shipped your replacement checkbook to a closed office before your meeting.", opening_emoji: "📦" }
+  - { opening_token: "An airline added a holiday surcharge at checkout that was not shown before.", opening_emoji: "🎄" }
+  - { opening_token: "An online shop sent your parcel to the wrong address during a storm.", opening_emoji: "📦" }
+  - { opening_token: "A delivery app blocked your account while your parents were visiting.", opening_emoji: "👪" }
+  - { opening_token: "A bank charged you a fee nobody explained, right before an important appointment.", opening_emoji: "🏦" }
+  - { opening_token: "A phone company froze your only line just as movers arrived.", opening_emoji: "🚚" }
+  - { opening_token: "A phone company blocked your account right before you signed a lease.", opening_emoji: "🔒" }

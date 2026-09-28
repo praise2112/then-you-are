@@ -313,3 +313,20 @@ seed_pool:
   - { opening_token: "Fridge: Door left open", opening_emoji: "🧊" }
   - { opening_token: "Oven: Temperature too high", opening_emoji: "🔥" }
   - { opening_token: "Washing machine: Unbalanced load", opening_emoji: "🫧" }
+  - { opening_token: "Toaster: Water inlet blocked", opening_emoji: "🍞" }
+  - { opening_token: "Toast: Crumb tray full", opening_emoji: "🥐" }
+  - { opening_token: "Toaster: Lever won't stay down", opening_emoji: "⬇️" }
+  - { opening_token: "Fridge: Cycle interrupted, ice maker overworked", opening_emoji: "🧊" }
+  - { opening_token: "Oven: Cycle interrupted", opening_emoji: "⏸️" }
+  - { opening_token: "Tumble dryer: Check lint filter", opening_emoji: "🔥" }
+  - { opening_token: "Microwave: Overheating", opening_emoji: "🔥" }
+  - { opening_token: "Kettle: Filter needs cleaning", opening_emoji: "🫖" }
+  - { opening_token: "Dishwasher: Extremely high temperature", opening_emoji: "🌡️" }
+  - { opening_token: "Oven: Oven door ajar", opening_emoji: "🌡️" }
+  - { opening_token: "Dishwasher: Power cut, dishes still soaking", opening_emoji: "🫧" }
+  - { opening_token: "Washing machine: Filter blocked", opening_emoji: "🚫" }
+  - { opening_token: "Fridge: Power cut again", opening_emoji: "🔌" }
+  - { opening_token: "A toaster: Error code E02, overheating", opening_emoji: "⚠️" }
+  - { opening_token: "Toaster: Cycle interrupted, bread still pale", opening_emoji: "🥲" }
+  - { opening_token: "Kettle: Power cut", opening_emoji: "⚡" }
+  - { opening_token: "Tumble dryer: Overheating, run interrupted", opening_emoji: "⏸️" }

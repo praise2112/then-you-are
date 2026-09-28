@@ -328,3 +328,20 @@ seed_pool:
   - { opening_token: "Dear Building Manager: The lobby vending machine charged me twice for one bag of chips, and the refund button is missing.", opening_emoji: "🥔" }
   - { opening_token: "Dear Airline: My suitcase arrived with one wheel missing, and the tag says it took a holiday in the wrong city.", opening_emoji: "🧳" }
   - { opening_token: "Dear Café Owner: Your loyalty card promised a free drink, but the cashier stamped the receipt and kept both the card and my dignity.", opening_emoji: "☕" }
+  - { opening_token: "Dear Building Manager: A parcel arrived at my door with the tape slit open, and the thank-you card inside is missing.", opening_emoji: "📦" }
+  - { opening_token: "Dear Gym Director: My personal training session was moved from Tuesday to Friday without notifying me, and I had already arranged childcare for Tuesday.", opening_emoji: "🏋️" }
+  - { opening_token: "Dear Gym Director: The online booking system switched my court reservation from indoor to outdoor, and it's supposed to rain buckets that day.", opening_emoji: "🎾" }
+  - { opening_token: "Dear Airline Desk: My child's backpack is stuck in the overhead bin because the zipper is jammed, and the flight is boarding.", opening_emoji: "🎒" }
+  - { opening_token: "Dear Airline Desk: The car seat we gate-checked is missing its buckle, so my toddler can't ride safely to the hotel.", opening_emoji: "🚗" }
+  - { opening_token: "Dear School Office: My child's report card arrived in a resealed envelope with someone else's name crossed out, and the office says that's normal.", opening_emoji: "📬" }
+  - { opening_token: "Dear Supermarket Supervisor: My bill shows a 'freshness fee' of $2.99, but I only bought canned soup and a loaf of bread.", opening_emoji: "🛒" }
+  - { opening_token: "Dear Gym Director: The treadmill charged my card twice for one session, and the screen went blank before I could hit the refund button.", opening_emoji: "🏃" }
+  - { opening_token: "Dear Airline Desk: My hotel room door refused to unlock, and the key card you reissued at the airport check-in still blinks red.", opening_emoji: "🔴" }
+  - { opening_token: "Dear Airline Desk: The rental car you arranged has a door that won't unlock from the outside, so I'm climbing in through the trunk.", opening_emoji: "🚗" }
+  - { opening_token: "Dear School Office: The side door by the gym won't unlock for my night shift, and the keypad just blinks red.", opening_emoji: "🌙" }
+  - { opening_token: "Dear Gym Director: My daughter's gym bag lost a wheel on your parking lot speed bump, and now she can't roll it to practice.", opening_emoji: "🧳" }
+  - { opening_token: "Dear Gym Director: The water fountain in the cardio room shoots a thin stream that soaks my son's gym shirt before his class.", opening_emoji: "💦" }
+  - { opening_token: "Dear Gym Director: My son's locker ate his gym shorts and won't give them back, and the front desk says the lock is 'temperamental.'", opening_emoji: "🔒" }
+  - { opening_token: "Dear Supermarket Supervisor: The freezer aisle door won't slide open, and my hand is stuck holding a melting tub of discount ice cream.", opening_emoji: "🍦" }
+  - { opening_token: "Dear Café Owner: My online order box was left behind your counter with the seal broken, and the packing slip is gone.", opening_emoji: "✉️" }
+  - { opening_token: "Dear Hotel Manager: A 4-dollar 'towel refresh charge' appeared on my bill, but housekeeping never came and I used the same towel all weekend.", opening_emoji: "🧺" }

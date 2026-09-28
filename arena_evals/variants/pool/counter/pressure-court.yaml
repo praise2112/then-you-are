@@ -300,3 +300,20 @@ seed_pool:
   - { opening_token: "water hammer", opening_emoji: "🔨", detail: "I am water hammer, slamming through the pipes.", hidden: "" }
   - { opening_token: "a blocked drain", opening_emoji: "🪠", detail: "I am a blocked drain, backing water into the room.", hidden: "" }
   - { opening_token: "a burst pipe", opening_emoji: "💥", detail: "I am a burst pipe, flooding everything below.", hidden: "" }
+  - { opening_token: "a leaking faucet", opening_emoji: "💧" }
+  - { opening_token: "an icicle", opening_emoji: "🧊" }
+  - { opening_token: "a sewer gas", opening_emoji: "💨" }
+  - { opening_token: "a manhole geyser", opening_emoji: "🌋" }
+  - { opening_token: "a street flood", opening_emoji: "🌊" }
+  - { opening_token: "a shaking hose", opening_emoji: "🌀" }
+  - { opening_token: "a banging valve", opening_emoji: "🔧" }
+  - { opening_token: "a drip", opening_emoji: "🚰" }
+  - { opening_token: "a puddle", opening_emoji: "🌊" }
+  - { opening_token: "a surge", opening_emoji: "🌊" }
+  - { opening_token: "a freeze", opening_emoji: "❄️" }
+  - { opening_token: "a bang", opening_emoji: "💥" }
+  - { opening_token: "a knock", opening_emoji: "🚪" }
+  - { opening_token: "a slam", opening_emoji: "💥" }
+  - { opening_token: "a thud", opening_emoji: "🔊" }
+  - { opening_token: "a clang", opening_emoji: "🔔" }
+  - { opening_token: "a jumping washer", opening_emoji: "🧺" }

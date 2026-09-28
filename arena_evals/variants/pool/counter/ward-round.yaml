@@ -305,3 +305,60 @@ seed_pool:
   - { opening_token: "a fever", opening_emoji: "🌡️", detail: "burning through the ward", hidden: "" }
   - { opening_token: "a blocked airway", opening_emoji: "🫁", detail: "closing down the breath", hidden: "" }
   - { opening_token: "a broken bone", opening_emoji: "🦴", detail: "sharp and unstable", hidden: "" }
+  - { opening_token: "a sore throat", opening_emoji: "🤒" }
+  - { opening_token: "a swollen knee", opening_emoji: "🦵" }
+  - { opening_token: "an earache", opening_emoji: "👂" }
+  - { opening_token: "a wobbly knife", opening_emoji: "🔪" }
+  - { opening_token: "a tilting table", opening_emoji: "🛏️" }
+  - { opening_token: "a slipping light", opening_emoji: "💡" }
+  - { opening_token: "a virus", opening_emoji: "🦠" }
+  - { opening_token: "a mold", opening_emoji: "🍄" }
+  - { opening_token: "a germ", opening_emoji: "🧫" }
+  - { opening_token: "a sprained wrist", opening_emoji: "🩹" }
+  - { opening_token: "a nosebleed", opening_emoji: "🩸" }
+  - { opening_token: "an asthma attack", opening_emoji: "😮‍💨" }
+  - { opening_token: "a rash", opening_emoji: "🔴" }
+  - { opening_token: "a needle", opening_emoji: "💉" }
+  - { opening_token: "a wound", opening_emoji: "🩹" }
+  - { opening_token: "a pulse oximeter", opening_emoji: "🩺" }
+  - { opening_token: "a defibrillator", opening_emoji: "⚡" }
+  - { opening_token: "a wasp", opening_emoji: "🐝" }
+  - { opening_token: "a burn", opening_emoji: "🔥" }
+  - { opening_token: "a cut", opening_emoji: "🩸" }
+  - { opening_token: "a bruise", opening_emoji: "🤕" }
+  - { opening_token: "a kidney stone", opening_emoji: "🪨" }
+  - { opening_token: "a migraine", opening_emoji: "🤕" }
+  - { opening_token: "a clot", opening_emoji: "🩹" }
+  - { opening_token: "a leaking pipe", opening_emoji: "💧" }
+  - { opening_token: "a loose wheel", opening_emoji: "🛞" }
+  - { opening_token: "an ingrown nail", opening_emoji: "💅" }
+  - { opening_token: "a scratch", opening_emoji: "🩸" }
+  - { opening_token: "a bleeding ulcer", opening_emoji: "🩸" }
+  - { opening_token: "a twisted ankle", opening_emoji: "🦶" }
+  - { opening_token: "a flu", opening_emoji: "🤧" }
+  - { opening_token: "a cough", opening_emoji: "😷" }
+  - { opening_token: "a chill", opening_emoji: "🥶" }
+  - { opening_token: "a blister", opening_emoji: "💧" }
+  - { opening_token: "a splinter", opening_emoji: "🪵" }
+  - { opening_token: "a scalpel", opening_emoji: "🔪" }
+  - { opening_token: "a suction tube", opening_emoji: "🪠" }
+  - { opening_token: "a drip", opening_emoji: "💧" }
+  - { opening_token: "a wheelchair", opening_emoji: "♿" }
+  - { opening_token: "a gash", opening_emoji: "🩹" }
+  - { opening_token: "a faint pulse", opening_emoji: "💓" }
+  - { opening_token: "a head injury", opening_emoji: "🧠" }
+  - { opening_token: "a coma", opening_emoji: "💤" }
+  - { opening_token: "a shock", opening_emoji: "⚡" }
+  - { opening_token: "a seizure", opening_emoji: "⚡" }
+  - { opening_token: "an abscess", opening_emoji: "🩹" }
+  - { opening_token: "a bedsore", opening_emoji: "🛏️" }
+  - { opening_token: "a cramp", opening_emoji: "💪" }
+  - { opening_token: "a snotty tissue", opening_emoji: "🤧" }
+  - { opening_token: "a thorn", opening_emoji: "🌵" }
+  - { opening_token: "a bee", opening_emoji: "🐝" }
+  - { opening_token: "a bleeder", opening_emoji: "🩸" }
+  - { opening_token: "a bloody bandage", opening_emoji: "🩹" }
+  - { opening_token: "a broken vase", opening_emoji: "🏺" }
+  - { opening_token: "a tongue", opening_emoji: "👅" }
+  - { opening_token: "a jaw", opening_emoji: "🦴" }
+  - { opening_token: "a neck", opening_emoji: "🧣" }

@@ -303,3 +303,60 @@ seed_pool:
   - { opening_token: "a loose sheet of paper", opening_emoji: "📄", detail: "It lies on the desk, waiting to cause a small problem.", hidden: "" }
   - { opening_token: "an open cardboard box", opening_emoji: "📦", detail: "It sits on the desk with its contents exposed.", hidden: "" }
   - { opening_token: "a tangle of charging cables", opening_emoji: "🔌", detail: "It sprawls across the desk and blocks useful space.", hidden: "" }
+  - { opening_token: "a cable with no label", opening_emoji: "🔌" }
+  - { opening_token: "a loose staple", opening_emoji: "📎" }
+  - { opening_token: "a jammed stapler", opening_emoji: "🖇️" }
+  - { opening_token: "a spilled paper clip cup", opening_emoji: "📎" }
+  - { opening_token: "a puddle of ink", opening_emoji: "🖋️" }
+  - { opening_token: "a sticky drawer", opening_emoji: "🗄️" }
+  - { opening_token: "a mug", opening_emoji: "☕" }
+  - { opening_token: "a paper clip chain", opening_emoji: "📎" }
+  - { opening_token: "a loose binder clip", opening_emoji: "🖇️" }
+  - { opening_token: "a soak of spilled coffee", opening_emoji: "☕" }
+  - { opening_token: "a curled printout", opening_emoji: "📄" }
+  - { opening_token: "a tangled pen", opening_emoji: "🖊️" }
+  - { opening_token: "a pool of cold tea", opening_emoji: "🍵" }
+  - { opening_token: "a notebook", opening_emoji: "📓" }
+  - { opening_token: "a pad of sticky notes", opening_emoji: "📝" }
+  - { opening_token: "a chip of ceramic", opening_emoji: "🪨" }
+  - { opening_token: "a lopsided stack of files", opening_emoji: "📁" }
+  - { opening_token: "a coil of extension cord", opening_emoji: "🔌" }
+  - { opening_token: "a rubber band ball", opening_emoji: "🎱" }
+  - { opening_token: "a knot of ribbon", opening_emoji: "🎀" }
+  - { opening_token: "a crumpled receipt", opening_emoji: "🧾" }
+  - { opening_token: "a torn envelope", opening_emoji: "✉️" }
+  - { opening_token: "a wobbling desk fan", opening_emoji: "🌀" }
+  - { opening_token: "a clipboard", opening_emoji: "📋" }
+  - { opening_token: "a briefcase", opening_emoji: "💼" }
+  - { opening_token: "a folder", opening_emoji: "📁" }
+  - { opening_token: "a keyboard", opening_emoji: "⌨️" }
+  - { opening_token: "a blotter", opening_emoji: "📋" }
+  - { opening_token: "a cord snarl", opening_emoji: "🪢" }
+  - { opening_token: "a twist tie", opening_emoji: "🎀" }
+  - { opening_token: "a cracker crumb", opening_emoji: "🍘" }
+  - { opening_token: "a spill of thumbtacks", opening_emoji: "📌" }
+  - { opening_token: "a pushpin", opening_emoji: "📌" }
+  - { opening_token: "a shelf", opening_emoji: "🗄️" }
+  - { opening_token: "a paper wad", opening_emoji: "🗑️" }
+  - { opening_token: "a clump of dust", opening_emoji: "🌫️" }
+  - { opening_token: "a roll of tape", opening_emoji: "🩹" }
+  - { opening_token: "a flap", opening_emoji: "📦" }
+  - { opening_token: "a sticky key", opening_emoji: "⌨️" }
+  - { opening_token: "a staple remover", opening_emoji: "🗜️" }
+  - { opening_token: "a smear of jam", opening_emoji: "🍓" }
+  - { opening_token: "a ring of dried coffee", opening_emoji: "☕" }
+  - { opening_token: "a magnet", opening_emoji: "🧲" }
+  - { opening_token: "a pencil", opening_emoji: "✏️" }
+  - { opening_token: "a marker", opening_emoji: "🖍️" }
+  - { opening_token: "a highlighter", opening_emoji: "🖌️" }
+  - { opening_token: "a wobbly printer tray", opening_emoji: "🖨️" }
+  - { opening_token: "a short printer leg", opening_emoji: "🦵" }
+  - { opening_token: "a cap", opening_emoji: "🧢" }
+  - { opening_token: "a twisted paper streamer", opening_emoji: "🎊" }
+  - { opening_token: "a slice of pizza", opening_emoji: "🍕" }
+  - { opening_token: "a paper towel", opening_emoji: "🧻" }
+  - { opening_token: "a length of string", opening_emoji: "🧵" }
+  - { opening_token: "a lid", opening_emoji: "🥫" }
+  - { opening_token: "a staple strip", opening_emoji: "🔗" }
+  - { opening_token: "a broken zipper", opening_emoji: "🤐" }
+  - { opening_token: "an ink blot", opening_emoji: "💧" }

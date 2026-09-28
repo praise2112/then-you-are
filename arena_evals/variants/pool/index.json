@@ -227,11 +227,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.129 under 0.187",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 66,
+   "refused": 1,
+   "pass_rate": 0.9850746268656716,
+   "spread": 0.12871281750674377,
+   "dup_rate": 0.030303030303030276,
+   "median_length": 7.5
+  }
  },
  "agent-after-dark": {
   "klass": "showcase",
@@ -357,11 +365,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 16.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 55,
+   "refused": 20,
+   "pass_rate": 0.7333333333333333,
+   "spread": 0.1729723142228354,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "animal-job-swap": {
   "klass": "counter",
@@ -409,11 +425,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.75",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 31,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.21771601492685744,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "barnyard-chain-reaction": {
   "klass": "counter",
@@ -487,11 +511,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "median length 2.0",
   "rank": 16.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 22,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.16823280841974012,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "bedside-chain": {
   "klass": "counter",
@@ -565,11 +597,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.67",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 20,
+   "refused": 1,
+   "pass_rate": 0.9047619047619048,
+   "spread": 0.30620883464641,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "bug-trap-builders": {
   "klass": "counter",
@@ -591,11 +631,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.150 under 0.187",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 66,
+   "refused": 1,
+   "pass_rate": 0.9850746268656716,
+   "spread": 0.1502504031765942,
+   "dup_rate": 0.0,
+   "median_length": 8.0
+  }
  },
  "bureaucracy-breaks": {
   "klass": "showcase",
@@ -643,8 +691,8 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 16",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -695,8 +743,8 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 17",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -721,11 +769,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 27,
+   "refused": 2,
+   "pass_rate": 0.896551724137931,
+   "spread": 0.2716733294399619,
+   "dup_rate": 0.0,
+   "median_length": 3.0
+  }
  },
  "campground-commentary": {
   "klass": "build",
@@ -773,11 +829,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.90",
   "rank": 15.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 61,
+   "refused": 2,
+   "pass_rate": 0.9682539682539683,
+   "spread": 0.07964750344587018,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "career-ladder": {
   "klass": "build",
@@ -799,8 +863,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 19",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -825,11 +889,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.171 under 0.187",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 42,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.17086236687081918,
+   "dup_rate": 0.0,
+   "median_length": 2.5
+  }
  },
  "castle-countermarch": {
   "klass": "counter",
@@ -877,11 +949,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.176 under 0.187",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 48,
+   "refused": 1,
+   "pass_rate": 0.9795918367346939,
+   "spread": 0.17573552646069227,
+   "dup_rate": 0.0,
+   "median_length": 4.0
+  }
  },
  "ce8a56cb.0": {
   "klass": "build",
@@ -929,11 +1009,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "pass rate 0.31; median length 1.0",
   "rank": 24.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 9,
+   "refused": 20,
+   "pass_rate": 0.3103448275862069,
+   "spread": 0.17864372434237252,
+   "dup_rate": 0.0,
+   "median_length": 1.0
+  }
  },
  "chance-of-awkward": {
   "klass": "showcase",
@@ -981,11 +1069,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.71",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 31,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.20521312320056315,
+   "dup_rate": 0.0,
+   "median_length": 2.5
+  }
  },
  "charm-chain": {
   "klass": "counter",
@@ -1007,11 +1103,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "re-judge agreement 0.83; Luna agreement 0.89",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 35,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.20676813396771224,
+   "dup_rate": 0.0,
+   "median_length": 2.5
+  }
  },
  "chat-court": {
   "klass": "counter",
@@ -1033,11 +1137,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 22,
+   "refused": 0,
+   "pass_rate": 0.8636363636363636,
+   "spread": 0.2858565880291507,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "clown-court": {
   "klass": "counter",
@@ -1085,11 +1197,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "pass rate 0.58; spread 0.117 under 0.133",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 42,
+   "refused": 30,
+   "pass_rate": 0.5833333333333334,
+   "spread": 0.1173581416681031,
+   "dup_rate": 0.0,
+   "median_length": 4.0
+  }
  },
  "complaint-letter-copied": {
   "klass": "build",
@@ -1137,11 +1257,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.108 under 0.133",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 58,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.10810714179984188,
+   "dup_rate": 0.0,
+   "median_length": 8.0
+  }
  },
  "complaint-letter-receipts": {
   "klass": "build",
@@ -1189,11 +1317,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "re-judge agreement 0.75; Luna agreement 0.33",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 17,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.20947495741846356,
+   "dup_rate": 0.0,
+   "median_length": 1.0
+  }
  },
  "counterfeit-wisdom": {
   "klass": "showcase",
@@ -1267,11 +1403,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 55,
+   "refused": 18,
+   "pass_rate": 0.7534246575342466,
+   "spread": 0.11266815364435506,
+   "dup_rate": 0.0,
+   "median_length": 7.0
+  }
  },
  "cover-up-chain": {
   "klass": "build",
@@ -1345,8 +1489,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 11",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -1423,8 +1567,8 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 8",
   "rank": 24.0,
   "split": "heldout",
   "stats": null
@@ -1449,11 +1593,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 47,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.19008359010944256,
+   "dup_rate": 0.04255319148936165,
+   "median_length": 4.0
+  }
  },
  "detour-receipt": {
   "klass": "build",
@@ -1475,11 +1627,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 37,
+   "refused": 1,
+   "pass_rate": 0.9736842105263158,
+   "spread": 0.2014891826395175,
+   "dup_rate": 0.0,
+   "median_length": 3.5
+  }
  },
  "dinner-proof": {
   "klass": "build",
@@ -1501,11 +1661,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "pass rate 0.55; median length 2.0",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 33,
+   "refused": 27,
+   "pass_rate": 0.55,
+   "spread": 0.09521976899632502,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "doom-by-dash": {
   "klass": "build",
@@ -1527,11 +1695,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.046 under 0.080",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 70,
+   "refused": 18,
+   "pass_rate": 0.7954545454545454,
+   "spread": 0.04582525087558998,
+   "dup_rate": 0.0,
+   "median_length": 8.0
+  }
  },
  "doorstep-dominoes": {
   "klass": "build",
@@ -1579,11 +1755,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 16.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 106,
+   "refused": 3,
+   "pass_rate": 0.9724770642201835,
+   "spread": 0.10137701046248666,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "dragon-on-hold": {
   "klass": "showcase",
@@ -1683,8 +1867,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 13",
   "rank": 19.0,
   "split": "heldout",
   "stats": null
@@ -1735,8 +1919,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 17",
   "rank": 16.0,
   "split": "train",
   "stats": null
@@ -1787,11 +1971,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.60",
   "rank": 21.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 57,
+   "refused": 15,
+   "pass_rate": 0.7916666666666666,
+   "spread": 0.14065619203669663,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "escape-route-tangle": {
   "klass": "build",
@@ -1839,11 +2031,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.90",
   "rank": 16.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 98,
+   "refused": 16,
+   "pass_rate": 0.8596491228070176,
+   "spread": 0.06881349194675804,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "family-recipe": {
   "klass": "build",
@@ -1969,11 +2169,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.86",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 30,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.23783747952470963,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "fine-print-fiasco": {
   "klass": "showcase",
@@ -1995,11 +2203,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 23.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 53,
+   "refused": 23,
+   "pass_rate": 0.6973684210526315,
+   "spread": 0.11643768730637966,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "fine-print-fiasco-2001-1": {
   "klass": "showcase",
@@ -2021,11 +2237,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 16.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 64,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.08681371489430688,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "finish-the-glass": {
   "klass": "showcase",
@@ -2099,11 +2323,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.80",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 24,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.2500857191864723,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "fragile-but-honest": {
   "klass": "build",
@@ -2151,11 +2383,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 15.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 100,
+   "refused": 4,
+   "pass_rate": 0.9519230769230769,
+   "spread": 0.10033232200692913,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "future-receipt": {
   "klass": "build",
@@ -2385,8 +2625,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 18",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -2567,11 +2807,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.89",
   "rank": 24.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 37,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.21620354692611582,
+   "dup_rate": 0.0,
+   "median_length": 3.0
+  }
  },
  "heartbreak-evidence": {
   "klass": "showcase",
@@ -2593,8 +2841,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 8",
   "rank": 16.0,
   "split": "train",
   "stats": null
@@ -2619,8 +2867,8 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 16",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -2671,11 +2919,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 16.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 68,
+   "refused": 4,
+   "pass_rate": 0.9444444444444444,
+   "spread": 0.14136554801174198,
+   "dup_rate": 0.0,
+   "median_length": 8.0
+  }
  },
  "home-shopping-fail": {
   "klass": "showcase",
@@ -2879,11 +3135,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "re-judge agreement 0.94; Luna agreement 0.80",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 37,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.2219077750512491,
+   "dup_rate": 0.0,
+   "median_length": 3.0
+  }
  },
  "late-excuse-chain-of-command": {
   "klass": "build",
@@ -2957,11 +3221,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 61,
+   "refused": 0,
+   "pass_rate": 0.9836065573770492,
+   "spread": 0.15296320817620018,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "laundry-legend": {
   "klass": "showcase",
@@ -3035,11 +3307,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "re-judge agreement 0.75; Luna agreement 0.60",
   "rank": 15.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 24,
+   "refused": 0,
+   "pass_rate": 0.9583333333333334,
+   "spread": 0.20796580818744373,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "loophole-lottery": {
   "klass": "showcase",
@@ -3113,11 +3393,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 22.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 56,
+   "refused": 22,
+   "pass_rate": 0.717948717948718,
+   "spread": 0.10612518929816535,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "map-lies": {
   "klass": "showcase",
@@ -3165,11 +3453,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.186 under 0.187",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 44,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.18633454355023324,
+   "dup_rate": 0.0,
+   "median_length": 4.0
+  }
  },
  "menu-mystery": {
   "klass": "showcase",
@@ -3217,11 +3513,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 59,
+   "refused": 5,
+   "pass_rate": 0.921875,
+   "spread": 0.16334636640516267,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "mirror-counter": {
   "klass": "counter",
@@ -3321,11 +3625,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 22.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 54,
+   "refused": 25,
+   "pass_rate": 0.6835443037974683,
+   "spread": 0.12892001539858103,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "mum-was-right": {
   "klass": "showcase",
@@ -3451,11 +3763,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 19.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 60,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.10268191850997374,
+   "dup_rate": 0.033333333333333326,
+   "median_length": null
+  }
  },
  "office-chain": {
   "klass": "build",
@@ -3477,11 +3797,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 62,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.11792604929291829,
+   "dup_rate": 0.0,
+   "median_length": 8.0
+  }
  },
  "office-omen": {
   "klass": "showcase",
@@ -3659,11 +3987,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.60",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 27,
+   "refused": 0,
+   "pass_rate": 0.9259259259259259,
+   "spread": 0.2373941869549463,
+   "dup_rate": 0.03703703703703709,
+   "median_length": 2.0
+  }
  },
  "paper-trail-fe01-1": {
   "klass": "build",
@@ -3763,11 +4099,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 54,
+   "refused": 15,
+   "pass_rate": 0.782608695652174,
+   "spread": 0.1505904018714422,
+   "dup_rate": 0.0,
+   "median_length": 6.0
+  }
  },
  "pest-patrol": {
   "klass": "counter",
@@ -3789,11 +4133,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 41,
+   "refused": 1,
+   "pass_rate": 0.8571428571428571,
+   "spread": 0.23522154576978513,
+   "dup_rate": 0.024390243902439046,
+   "median_length": 3.0
+  }
  },
  "pet-crime-scene-caption": {
   "klass": "showcase",
@@ -3815,11 +4167,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 16.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 89,
+   "refused": 25,
+   "pass_rate": 0.7807017543859649,
+   "spread": 0.0635126316071722,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "pipe-dreams": {
   "klass": "counter",
@@ -3893,11 +4253,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.50",
   "rank": 24.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 22,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.28690650203348633,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "progress-report-from-hell": {
   "klass": "showcase",
@@ -3997,11 +4365,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.89",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 34,
+   "refused": 2,
+   "pass_rate": 0.9444444444444444,
+   "spread": 0.21173385537987707,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "pub-prediction": {
   "klass": "build",
@@ -4049,11 +4425,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "pass rate 0.32; spread 0.049 under 0.080; median length 1.5",
   "rank": 16.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 17,
+   "refused": 36,
+   "pass_rate": 0.32075471698113206,
+   "spread": 0.0486851334036672,
+   "dup_rate": 0.0,
+   "median_length": 1.5
+  }
  },
  "queue-jumpers": {
   "klass": "counter",
@@ -4127,11 +4511,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.70",
   "rank": 24.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 54,
+   "refused": 23,
+   "pass_rate": 0.7012987012987013,
+   "spread": 0.08625162768587993,
+   "dup_rate": 0.0,
+   "median_length": 5.5
+  }
  },
  "red-means-stop": {
   "klass": "counter",
@@ -4179,11 +4571,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 22.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 57,
+   "refused": 18,
+   "pass_rate": 0.76,
+   "spread": 0.11089118185522269,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "remarkable-effort": {
   "klass": "showcase",
@@ -4205,11 +4605,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.063 under 0.075",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 59,
+   "refused": 9,
+   "pass_rate": 0.8676470588235294,
+   "spread": 0.06338645670146009,
+   "dup_rate": 0.016949152542372836,
+   "median_length": null
+  }
  },
  "repair-or-ruin": {
   "klass": "counter",
@@ -4257,11 +4665,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "re-judge agreement 0.90; Luna agreement 0.90",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 58,
+   "refused": 2,
+   "pass_rate": 0.9666666666666667,
+   "spread": 0.15275147105759837,
+   "dup_rate": 0.0,
+   "median_length": 6.5
+  }
  },
  "resolution-press-conference": {
   "klass": "build",
@@ -4283,11 +4699,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.133 under 0.133",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 54,
+   "refused": 25,
+   "pass_rate": 0.6835443037974683,
+   "spread": 0.13320690448444691,
+   "dup_rate": 0.0,
+   "median_length": 6.0
+  }
  },
  "resolution-terms-and-conditions": {
   "klass": "build",
@@ -4335,11 +4759,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 17.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 28,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.22853654867795797,
+   "dup_rate": 0.0,
+   "median_length": 1.5
+  }
  },
  "right-of-way": {
   "klass": "counter",
@@ -4387,11 +4819,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 37,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.2165753940952336,
+   "dup_rate": 0.0,
+   "median_length": 3.0
+  }
  },
  "ritual-of-two": {
   "klass": "showcase",
@@ -4413,11 +4853,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 21.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 59,
+   "refused": 5,
+   "pass_rate": 0.921875,
+   "spread": 0.11266087797978541,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "road-hazard": {
   "klass": "counter",
@@ -4439,11 +4887,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 24,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.27192089331682884,
+   "dup_rate": 0.0,
+   "median_length": 2.0
+  }
  },
  "room-service-of-doom": {
   "klass": "build",
@@ -4465,8 +4921,8 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 6",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -4517,8 +4973,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 19",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -4569,11 +5025,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.187 under 0.187",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 25,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.18658728470829627,
+   "dup_rate": 0.0,
+   "median_length": 3.0
+  }
  },
  "scrub-story": {
   "klass": "showcase",
@@ -4595,11 +5059,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.90",
   "rank": 13.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 118,
+   "refused": 0,
+   "pass_rate": 0.9491525423728814,
+   "spread": 0.10195111719497785,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "security-check": {
   "klass": "counter",
@@ -4673,11 +5145,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.90",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 45,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.19826718473617835,
+   "dup_rate": 0.022222222222222254,
+   "median_length": 4.0
+  }
  },
  "shed-lockdown": {
   "klass": "counter",
@@ -5063,11 +5543,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 50,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.1878004259846074,
+   "dup_rate": 0.0,
+   "median_length": 5.0
+  }
  },
  "tale-eater": {
   "klass": "counter",
@@ -5167,11 +5655,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 22.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 60,
+   "refused": 1,
+   "pass_rate": 0.9836065573770492,
+   "spread": 0.10052091139251028,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "the-box-that-explains-itself": {
   "klass": "build",
@@ -5245,8 +5741,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 14",
   "rank": 24.0,
   "split": "heldout",
   "stats": null
@@ -5297,11 +5793,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.122 under 0.187",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 52,
+   "refused": 11,
+   "pass_rate": 0.8253968253968254,
+   "spread": 0.1216964289518645,
+   "dup_rate": 0.0,
+   "median_length": 6.5
+  }
  },
  "the-leak-line": {
   "klass": "build",
@@ -5375,11 +5879,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 15.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 103,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.08698806992656233,
+   "dup_rate": 0.009708737864077666,
+   "median_length": null
+  }
  },
  "the-stain-chain": {
   "klass": "build",
@@ -5401,11 +5913,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "spread 0.104 under 0.133",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 73,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.10444026432444471,
+   "dup_rate": 0.0,
+   "median_length": 8.0
+  }
  },
  "the-vegetable-case": {
   "klass": "showcase",
@@ -5427,11 +5947,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 22.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 60,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.09676718911329857,
+   "dup_rate": 0.01666666666666672,
+   "median_length": null
+  }
  },
  "the-wrong-button": {
   "klass": "build",
@@ -5583,11 +6111,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 39,
+   "refused": 2,
+   "pass_rate": 0.926829268292683,
+   "spread": 0.19196664970337413,
+   "dup_rate": 0.0,
+   "median_length": 2.5
+  }
  },
  "tiny-trial": {
   "klass": "showcase",
@@ -5661,11 +6197,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 35,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.26779142050849797,
+   "dup_rate": 0.0,
+   "median_length": 3.0
+  }
  },
  "toolbox-tug": {
   "klass": "counter",
@@ -5713,8 +6257,8 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 19",
   "rank": 24.0,
   "split": "train",
   "stats": null
@@ -5791,11 +6335,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 16.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 68,
+   "refused": 5,
+   "pass_rate": 0.9178082191780822,
+   "spread": 0.16922737663378057,
+   "dup_rate": 0.044117647058823484,
+   "median_length": null
+  }
  },
  "utensil-green-flags": {
   "klass": "showcase",
@@ -5895,11 +6447,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 22.0,
   "split": "heldout",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 60,
+   "refused": 1,
+   "pass_rate": 0.9836065573770492,
+   "spread": 0.08339997335464536,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "waiter-alibi": {
   "klass": "showcase",
@@ -5921,11 +6481,19 @@
     1
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 22.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 60,
+   "refused": 3,
+   "pass_rate": 0.9523809523809523,
+   "spread": 0.14085243953237808,
+   "dup_rate": 0.0,
+   "median_length": null
+  }
  },
  "wanted-poster-glow-up": {
   "klass": "showcase",
@@ -5947,11 +6515,19 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.60",
   "rank": 19.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 116,
+   "refused": 4,
+   "pass_rate": 0.9666666666666667,
+   "spread": 0.09817073126254322,
+   "dup_rate": 0.025862068965517238,
+   "median_length": null
+  }
  },
  "ward-round": {
   "klass": "counter",
@@ -5973,11 +6549,19 @@
     2
    ]
   },
-  "stage": "rank",
+  "stage": "seeds",
   "reject": null,
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 20,
+   "refused": 0,
+   "pass_rate": 1.0,
+   "spread": 0.21232745354961569,
+   "dup_rate": 0.050000000000000044,
+   "median_length": 2.0
+  }
  },
  "wildlife-court": {
   "klass": "build",
@@ -6077,8 +6661,8 @@
     2
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "pilot",
+  "reject": "seed pool stalled at 19",
   "rank": 21.0,
   "split": "train",
   "stats": null
@@ -6103,11 +6687,19 @@
     1
    ]
   },
-  "stage": "rank",
-  "reject": null,
+  "stage": "consistency",
+  "reject": "Luna agreement 0.80",
   "rank": 24.0,
   "split": "train",
-  "stats": null
+  "stats": {
+   "matches": 10,
+   "judged": 29,
+   "refused": 0,
+   "pass_rate": 0.7931034482758621,
+   "spread": 0.27144331725086035,
+   "dup_rate": 0.03448275862068961,
+   "median_length": 2.0
+  }
  },
  "wrong-trailer": {
   "klass": "showcase",

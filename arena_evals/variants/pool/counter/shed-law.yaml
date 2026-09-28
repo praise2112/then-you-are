@@ -326,3 +326,20 @@ seed_pool:
   - { opening_token: "a hammer", opening_emoji: "🔨", detail: "heavy-headed, swinging, and ready to make a problem look nailed down", hidden: "" }
   - { opening_token: "a padlock", opening_emoji: "🔒", detail: "small, stubborn, and determined to make access a privilege", hidden: "" }
   - { opening_token: "a handsaw", opening_emoji: "🪚", detail: "toothed, bright, and eager to divide one board into two opinions", hidden: "" }
+  - { opening_token: "a plunger", opening_emoji: "🪠" }
+  - { opening_token: "a hose", opening_emoji: "🚿" }
+  - { opening_token: "a squeegee", opening_emoji: "🧽" }
+  - { opening_token: "a jar opener", opening_emoji: "🫙" }
+  - { opening_token: "a strap wrench", opening_emoji: "🔧" }
+  - { opening_token: "a bucket", opening_emoji: "🪣" }
+  - { opening_token: "a cauldron", opening_emoji: "🍲" }
+  - { opening_token: "a cistern", opening_emoji: "🚰" }
+  - { opening_token: "a tape measure", opening_emoji: "📏" }
+  - { opening_token: "a ruler", opening_emoji: "📐" }
+  - { opening_token: "a caliper", opening_emoji: "🔧" }
+  - { opening_token: "a zipper", opening_emoji: "🤐" }
+  - { opening_token: "a clamp", opening_emoji: "🗜️" }
+  - { opening_token: "a peg", opening_emoji: "📌" }
+  - { opening_token: "a folding rule", opening_emoji: "📏" }
+  - { opening_token: "a level", opening_emoji: "📏" }
+  - { opening_token: "a rubber band", opening_emoji: "🪢" }

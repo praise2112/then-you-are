@@ -332,3 +332,20 @@ seed_pool:
   - { opening_token: "a toaster", opening_emoji: "🍞", detail: "springing bread into heat", hidden: "" }
   - { opening_token: "a blender", opening_emoji: "🥤", detail: "turning food into a spinning storm", hidden: "" }
   - { opening_token: "an oven", opening_emoji: "🔥", detail: "cooking everything with enclosed heat", hidden: "" }
+  - { opening_token: "a freezer", opening_emoji: "❄️" }
+  - { opening_token: "a kettle", opening_emoji: "🫖" }
+  - { opening_token: "a dishwasher", opening_emoji: "🍽️" }
+  - { opening_token: "a microwave", opening_emoji: "📡" }
+  - { opening_token: "a grill", opening_emoji: "🔥" }
+  - { opening_token: "an ice cube", opening_emoji: "🧊" }
+  - { opening_token: "a fire", opening_emoji: "🔥" }
+  - { opening_token: "a coffee maker", opening_emoji: "☕" }
+  - { opening_token: "a sink", opening_emoji: "🚰" }
+  - { opening_token: "a rice cooker", opening_emoji: "🍚" }
+  - { opening_token: "a knife", opening_emoji: "🔪" }
+  - { opening_token: "a sponge", opening_emoji: "🧽" }
+  - { opening_token: "a faucet", opening_emoji: "🚰" }
+  - { opening_token: "a plate", opening_emoji: "🍽️" }
+  - { opening_token: "a wasp", opening_emoji: "🐝" }
+  - { opening_token: "a timer", opening_emoji: "⏲️" }
+  - { opening_token: "a pot", opening_emoji: "🍲" }

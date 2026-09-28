@@ -318,3 +318,20 @@ seed_pool:
   - { opening_token: "an airplane", opening_emoji: "✈️", detail: "cleared for takeoff", hidden: "" }
   - { opening_token: "a baggage cart", opening_emoji: "🛒", detail: "crossing the runway", hidden: "" }
   - { opening_token: "a control tower", opening_emoji: "🗼", detail: "issuing runway orders", hidden: "" }
+  - { opening_token: "a jet bridge", opening_emoji: "🛗" }
+  - { opening_token: "a fuel truck", opening_emoji: "⛽" }
+  - { opening_token: "a stair car", opening_emoji: "🚐" }
+  - { opening_token: "a gate", opening_emoji: "🚪" }
+  - { opening_token: "a boarding pass", opening_emoji: "🎫" }
+  - { opening_token: "a security guard", opening_emoji: "💂" }
+  - { opening_token: "a suitcase", opening_emoji: "🧳" }
+  - { opening_token: "a passport", opening_emoji: "🛂" }
+  - { opening_token: "a delayed flight", opening_emoji: "⌛" }
+  - { opening_token: "a runway", opening_emoji: "🛬" }
+  - { opening_token: "a pilot", opening_emoji: "🧑‍✈️" }
+  - { opening_token: "a flight plan", opening_emoji: "📋" }
+  - { opening_token: "a delay", opening_emoji: "⏰" }
+  - { opening_token: "a conveyor belt", opening_emoji: "🎢" }
+  - { opening_token: "a tag", opening_emoji: "🏷️" }
+  - { opening_token: "a passenger", opening_emoji: "🧍" }
+  - { opening_token: "a cargo loader", opening_emoji: "🚚" }

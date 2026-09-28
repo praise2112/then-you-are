@@ -353,3 +353,8 @@ seed_pool:
   - { opening_token: "The feeling is homesickness; the two nouns are a suitcase and a spoon.", opening_emoji: "🧳", detail: "The feeling is homesickness.", hidden: "The scene contains a suitcase and a spoon." }
   - { opening_token: "The feeling is heartbreak; the two nouns are a key and a lipstick.", opening_emoji: "💔", detail: "The feeling is heartbreak.", hidden: "The scene contains a key and a lipstick." }
   - { opening_token: "The feeling is lust; the two nouns are a shirt and a peach.", opening_emoji: "🍑", detail: "The feeling is lust.", hidden: "The scene contains a shirt and a peach." }
+  - { opening_token: "The feeling is dread; the two nouns are a letter and a charger.", opening_emoji: "📬" }
+  - { opening_token: "The feeling is jealousy; the two nouns are a mirror and a towel.", opening_emoji: "🪞" }
+  - { opening_token: "The feeling is guilt; the two nouns are a receipt and a comb.", opening_emoji: "😔" }
+  - { opening_token: "The feeling is loneliness; the two nouns are a shirt and a necklace.", opening_emoji: "👕" }
+  - { opening_token: "The feeling is nostalgia; the two nouns are a letter and a ticket.", opening_emoji: "✉️" }

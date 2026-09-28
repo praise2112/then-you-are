@@ -311,3 +311,20 @@ seed_pool:
   - { opening_token: "a motion", opening_emoji: "📄" }
   - { opening_token: "a budget", opening_emoji: "💰" }
   - { opening_token: "a council meeting", opening_emoji: "🏛️" }
+  - { opening_token: "a subpoena", opening_emoji: "📜" }
+  - { opening_token: "a veto", opening_emoji: "🚫" }
+  - { opening_token: "a complaint", opening_emoji: "📢" }
+  - { opening_token: "a tape", opening_emoji: "📼" }
+  - { opening_token: "a closed session", opening_emoji: "🔒" }
+  - { opening_token: "a public notice", opening_emoji: "📢" }
+  - { opening_token: "a recall", opening_emoji: "🗳️" }
+  - { opening_token: "an emergency order", opening_emoji: "🚨" }
+  - { opening_token: "a permit", opening_emoji: "📝" }
+  - { opening_token: "a lien", opening_emoji: "🔗" }
+  - { opening_token: "a deed", opening_emoji: "📜" }
+  - { opening_token: "a tax bill", opening_emoji: "🧾" }
+  - { opening_token: "a fine", opening_emoji: "💰" }
+  - { opening_token: "an audit", opening_emoji: "🔍" }
+  - { opening_token: "a vote", opening_emoji: "🗳️" }
+  - { opening_token: "a petition", opening_emoji: "✍️" }
+  - { opening_token: "a resolution", opening_emoji: "📜" }

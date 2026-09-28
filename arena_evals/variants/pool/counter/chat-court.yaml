@@ -312,3 +312,60 @@ seed_pool:
   - { opening_token: "Nobody saw me take the last slice", opening_emoji: "🍰" }
   - { opening_token: "I was home all night", opening_emoji: "🏠" }
   - { opening_token: "The meeting started on time", opening_emoji: "⏰" }
+  - { opening_token: "I got here at eight sharp", opening_emoji: "⏰" }
+  - { opening_token: "The light was green when I crossed", opening_emoji: "🚦" }
+  - { opening_token: "I left the office before six", opening_emoji: "🏢" }
+  - { opening_token: "I got here before the cake was cut", opening_emoji: "🎂" }
+  - { opening_token: "We only stayed for ten minutes", opening_emoji: "⏱️" }
+  - { opening_token: "Nobody was in the kitchen with me", opening_emoji: "🍽️" }
+  - { opening_token: "I never got the meeting link", opening_emoji: "🔗" }
+  - { opening_token: "My camera is broken so I can't join", opening_emoji: "📷" }
+  - { opening_token: "I was muted the whole time", opening_emoji: "🔇" }
+  - { opening_token: "I only had one drink", opening_emoji: "🍹" }
+  - { opening_token: "I did not eat any cake", opening_emoji: "🍰" }
+  - { opening_token: "I never touched the playlist", opening_emoji: "🎵" }
+  - { opening_token: "My camera was on the whole time", opening_emoji: "📷" }
+  - { opening_token: "I never opened that file", opening_emoji: "📁" }
+  - { opening_token: "I didn't eat the last cookie", opening_emoji: "🍪" }
+  - { opening_token: "I never touched the thermostat", opening_emoji: "🌡️" }
+  - { opening_token: "I always put the milk back", opening_emoji: "🥛" }
+  - { opening_token: "I was in class when it happened", opening_emoji: "🕒" }
+  - { opening_token: "I was in the library during lunch", opening_emoji: "📚" }
+  - { opening_token: "I left school right after the bell", opening_emoji: "🔔" }
+  - { opening_token: "I didn't leave the stove on", opening_emoji: "🔥" }
+  - { opening_token: "The milk is still fresh", opening_emoji: "🥛" }
+  - { opening_token: "I didn't make that mess", opening_emoji: "🧹" }
+  - { opening_token: "My out-of-office was on all day", opening_emoji: "📧" }
+  - { opening_token: "I never saw your message", opening_emoji: "💬" }
+  - { opening_token: "I was in a meeting all morning", opening_emoji: "📅" }
+  - { opening_token: "I always lock the office at night", opening_emoji: "🔒" }
+  - { opening_token: "I never take long lunch breaks", opening_emoji: "🥪" }
+  - { opening_token: "I always answer my desk phone", opening_emoji: "☎️" }
+  - { opening_token: "I turned in my homework yesterday", opening_emoji: "📝" }
+  - { opening_token: "I sent that message yesterday", opening_emoji: "📅" }
+  - { opening_token: "I called you before lunch", opening_emoji: "📞" }
+  - { opening_token: "I posted that before noon", opening_emoji: "🕛" }
+  - { opening_token: "I was asleep before ten", opening_emoji: "😴" }
+  - { opening_token: "I never went in the garage", opening_emoji: "🚗" }
+  - { opening_token: "I didn't spill anything on the rug", opening_emoji: "🟥" }
+  - { opening_token: "I washed every dish before bed", opening_emoji: "🍽️" }
+  - { opening_token: "I never used the frying pan", opening_emoji: "🍳" }
+  - { opening_token: "I didn't open the fridge tonight", opening_emoji: "🧊" }
+  - { opening_token: "I was at my desk the whole time", opening_emoji: "🖥️" }
+  - { opening_token: "I never went near that meeting room", opening_emoji: "🚪" }
+  - { opening_token: "I took that call from my car", opening_emoji: "🚗" }
+  - { opening_token: "I posted the group photo before dinner", opening_emoji: "📸" }
+  - { opening_token: "I checked in at the party at nine", opening_emoji: "📍" }
+  - { opening_token: "I left before the party started", opening_emoji: "🚪" }
+  - { opening_token: "The email clearly says we agreed", opening_emoji: "📧" }
+  - { opening_token: "I never got that email", opening_emoji: "📩" }
+  - { opening_token: "I replied to that message immediately", opening_emoji: "⚡" }
+  - { opening_token: "The dishwasher was empty this morning", opening_emoji: "🍽️" }
+  - { opening_token: "I always wash my hands before cooking", opening_emoji: "🧼" }
+  - { opening_token: "The kitchen trash was taken out yesterday", opening_emoji: "🗑️" }
+  - { opening_token: "I sent that email before I left", opening_emoji: "📧" }
+  - { opening_token: "The elevator was broken, so I was late", opening_emoji: "🛗" }
+  - { opening_token: "The test was open book, I swear", opening_emoji: "📖" }
+  - { opening_token: "I didn't copy anyone's homework", opening_emoji: "📝" }
+  - { opening_token: "I never left the house today", opening_emoji: "🚪" }
+  - { opening_token: "I got home before the storm started", opening_emoji: "⛈️" }

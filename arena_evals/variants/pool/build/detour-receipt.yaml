@@ -318,3 +318,52 @@ seed_pool:
   - { opening_token: "The driver follows a road sign that points toward the beach, but the arrow is hand-painted and slightly crooked.", opening_emoji: "🏖️" }
   - { opening_token: "The passenger spots a shortcut on the map, but the road number has been scratched out.", opening_emoji: "🗺️" }
   - { opening_token: "The car leaves the service station with a receipt for fuel bought in a town nobody remembers visiting.", opening_emoji: "⛽" }
+  - { opening_token: "The driver finds a faded motel receipt on the dashboard and follows the arrow drawn on the back.", opening_emoji: "🧾" }
+  - { opening_token: "The grandparent insists the toll ticket is a scratch-off game and scrapes the date off with a coin.", opening_emoji: "🎟️" }
+  - { opening_token: "At the toll booth, the grandparent hands over a coupon instead of cash, and the barrier stays down.", opening_emoji: "🚧" }
+  - { opening_token: "The driver ignores the bridge weight limit and the car creaks onto the old wooden planks.", opening_emoji: "🌉" }
+  - { opening_token: "The nervous tourist takes a wrong exit and ends up in a small town parade.", opening_emoji: "🎺" }
+  - { opening_token: "The bridge warning sign is covered in vines, so the driver starts across without seeing it.", opening_emoji: "🌿" }
+  - { opening_token: "The cheerful friend's coffee-stained map hides the main road exit, so the driver turns onto a gravel lane.", opening_emoji: "🗺️" }
+  - { opening_token: "The driver crosses the old bridge because the new one has a toll ticket booth with no attendant.", opening_emoji: "🌉" }
+  - { opening_token: "The passenger leans out to straighten the crooked beach sign, but it comes off in their hands.", opening_emoji: "🛠️" }
+  - { opening_token: "A fuel receipt on the seat lists the car's license plate as a different number.", opening_emoji: "🧾" }
+  - { opening_token: "The passenger finds a fuel receipt tucked in the visor showing a fill-up from tomorrow.", opening_emoji: "📅" }
+  - { opening_token: "The cheerful friend misreads the motel sign's vacancy notice as 'VACATION', and now she's convinced it's a resort.", opening_emoji: "🏨" }
+  - { opening_token: "The road number on the map is smudged, and Grandpa directs the car into a private driveway.", opening_emoji: "🗺️" }
+  - { opening_token: "A hand-written detour arrow on a napkin sends the car up a narrow gravel road toward the hills.", opening_emoji: "🗺️" }
+  - { opening_token: "The car's GPS dies, and the nervous tourist pulls out a coffee-stained map to navigate.", opening_emoji: "☕" }
+  - { opening_token: "A sun-faded 'Shortcut' sign leans against a cactus, and the driver swerves onto a sandy path.", opening_emoji: "🌵" }
+  - { opening_token: "The grandparent follows a hand-painted beach sign, and the car ends up in a parade procession.", opening_emoji: "🚗" }
+  - { opening_token: "The coffee-stained map blurs the road name, so the tired parent turns into a driveway lined with mailboxes.", opening_emoji: "🗺️" }
+  - { opening_token: "The teenager holds the map upside down and directs the driver onto a parade float.", opening_emoji: "🎺" }
+  - { opening_token: "The teenager waves at a parade queen, and the car drifts into the marching band.", opening_emoji: "👑" }
+  - { opening_token: "The teenager holds a coffee-stained map and, seeing the stain cover the main road, turns toward the hills.", opening_emoji: "🗺️" }
+  - { opening_token: "The hitchhiker notices the beach sign is crooked and offers to fix it while you drive.", opening_emoji: "🔧" }
+  - { opening_token: "The grandparent uses the faded motel receipt as a guide and turns the car onto the old bridge.", opening_emoji: "🗺️" }
+  - { opening_token: "The driver follows a detour arrow into a town where the main street is closed for a parade.", opening_emoji: "🥁" }
+  - { opening_token: "At a fork with no sign, the nervous tourist picks the uphill road because it has fewer potholes.", opening_emoji: "🛣️" }
+  - { opening_token: "The tired parent misses the bridge warning because the kids are fighting in the back seat.", opening_emoji: "👨‍👧‍👦" }
+  - { opening_token: "The hitchhiker points at a warning sign before a bridge and says the last driver ignored it too.", opening_emoji: "⚠️" }
+  - { opening_token: "A hand-painted sign warns that the bridge is out, but someone has scribbled 'not yet' underneath.", opening_emoji: "🌉" }
+  - { opening_token: "The hitchhiker points to a coffee-stained map and says the arrow is the way to go.", opening_emoji: "🗺️" }
+  - { opening_token: "A bridge warning flashes on the car's dashboard, so the teenager takes the next exit toward the hills.", opening_emoji: "⚠️" }
+  - { opening_token: "The teenager follows a motel sign that promises 'Clean Rooms' but the arrow points to a laundromat.", opening_emoji: "🧺" }
+  - { opening_token: "The cheerful friend unfolds a toll ticket and realizes it's for a road that doesn't exist.", opening_emoji: "🧾" }
+  - { opening_token: "The teenager sees a cardboard sign with 'SHORTCUT' in marker, but the arrow points into a muddy field.", opening_emoji: "🪧" }
+  - { opening_token: "The driver finds a toll ticket on the dashboard with a handwritten note: 'Shortcut, no tolls.'", opening_emoji: "📝" }
+  - { opening_token: "The nervous tourist squints at the coffee-stained map, but the stain covers the only bridge across the river.", opening_emoji: "🌉" }
+  - { opening_token: "The nervous tourist follows a fuel receipt that has a scribbled note saying 'shortcut over old bridge'.", opening_emoji: "📝" }
+  - { opening_token: "The tired parent takes the hand-written detour, but the road narrows to a single lane with no turnouts.", opening_emoji: "🛣️" }
+  - { opening_token: "The tired parent takes the shortcut and the car's tires start humming on a strange, smooth surface.", opening_emoji: "🔇" }
+  - { opening_token: "The grandparent's map has a coffee ring around the exit, so the driver follows the parade instead.", opening_emoji: "☕" }
+  - { opening_token: "A fuel receipt on the dashboard has a hand-drawn arrow pointing toward the hills.", opening_emoji: "➡️" }
+  - { opening_token: "A seagull drops a French fry on the windshield, and the driver swerves onto a boardwalk.", opening_emoji: "🍟" }
+  - { opening_token: "The passenger opens a bag of chips, and the wind carries the receipt onto the road.", opening_emoji: "🌬️" }
+  - { opening_token: "The nervous tourist stops for fuel, but the receipt shows a charge for a town parade entry fee.", opening_emoji: "⛽" }
+  - { opening_token: "The passenger looks at the toll ticket and notices the date is today, but the booth was empty.", opening_emoji: "🗓️" }
+  - { opening_token: "The passenger reads the toll ticket aloud, and the exit name is one they passed an hour ago.", opening_emoji: "🔁" }
+  - { opening_token: "The driver pulls into a private lane to read the fuel receipt, and a dog starts barking.", opening_emoji: "🐕" }
+  - { opening_token: "The car crosses the old bridge, and a loose plank flips up and smacks the underside.", opening_emoji: "🌉" }
+  - { opening_token: "A faded motel receipt is stapled to a wooden post at the entrance of a private lane.", opening_emoji: "📌" }
+  - { opening_token: "A hand-written sign taped to a mailbox says 'Detour to Hills,' but the ink is smeared by rain.", opening_emoji: "🪧" }

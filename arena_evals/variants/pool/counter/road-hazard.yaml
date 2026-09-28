@@ -325,3 +325,59 @@ seed_pool:
   - { opening_token: "a deep pothole in the road", opening_emoji: "🕳️" }
   - { opening_token: "a stalled car in the lane", opening_emoji: "🚗" }
   - { opening_token: "a fallen tree across the highway", opening_emoji: "🌳" }
+  - { opening_token: "a flat tire on a wheel", opening_emoji: "🛞" }
+  - { opening_token: "a loose lug nut", opening_emoji: "🔧" }
+  - { opening_token: "a loose tire in a tunnel", opening_emoji: "🛞" }
+  - { opening_token: "a muffler on the tunnel floor", opening_emoji: "🔇" }
+  - { opening_token: "a patch of black ice", opening_emoji: "❄️" }
+  - { opening_token: "a mudslide", opening_emoji: "⛰️" }
+  - { opening_token: "a washed-out bridge", opening_emoji: "🌉" }
+  - { opening_token: "a trunk blocking the merge", opening_emoji: "🪵" }
+  - { opening_token: "a flood on the bridge deck", opening_emoji: "🌊" }
+  - { opening_token: "a pool of standing water", opening_emoji: "💧" }
+  - { opening_token: "a crumbled section of the highway", opening_emoji: "🧱" }
+  - { opening_token: "a flooded intersection", opening_emoji: "🌊" }
+  - { opening_token: "a tide of muddy water", opening_emoji: "💧" }
+  - { opening_token: "a submerged car", opening_emoji: "🚗" }
+  - { opening_token: "a cave-in at the tunnel mouth", opening_emoji: "⛏️" }
+  - { opening_token: "a broken curb by the school", opening_emoji: "🧱" }
+  - { opening_token: "an oily patch on the asphalt", opening_emoji: "⚫" }
+  - { opening_token: "a slick in the parking lot", opening_emoji: "💧" }
+  - { opening_token: "a crack in the tunnel ceiling", opening_emoji: "🧱" }
+  - { opening_token: "a burst hydrant", opening_emoji: "🚒" }
+  - { opening_token: "a broken traffic light", opening_emoji: "🚦" }
+  - { opening_token: "a fallen power line", opening_emoji: "⚡" }
+  - { opening_token: "a deer", opening_emoji: "🦌" }
+  - { opening_token: "a manhole overflow at the corner", opening_emoji: "🕳️" }
+  - { opening_token: "a spill at the school gate", opening_emoji: "🛢️" }
+  - { opening_token: "a branch on the ice", opening_emoji: "🌿" }
+  - { opening_token: "a nail in the crosswalk", opening_emoji: "📌" }
+  - { opening_token: "a dead signal", opening_emoji: "🔴" }
+  - { opening_token: "a waterfall", opening_emoji: "💧" }
+  - { opening_token: "a mud puddle", opening_emoji: "🥾" }
+  - { opening_token: "a stopped school bus", opening_emoji: "🚌" }
+  - { opening_token: "a torn crossing sign", opening_emoji: "🚧" }
+  - { opening_token: "a crossing guard in the street", opening_emoji: "🦺" }
+  - { opening_token: "a collapsed shoulder", opening_emoji: "🛑" }
+  - { opening_token: "a skid on the overpass", opening_emoji: "❄️" }
+  - { opening_token: "a dead battery", opening_emoji: "🔋" }
+  - { opening_token: "an empty gas tank", opening_emoji: "⛽" }
+  - { opening_token: "a wave in the underpass", opening_emoji: "🌊" }
+  - { opening_token: "a pool in the work zone", opening_emoji: "💧" }
+  - { opening_token: "a trench full of rainwater", opening_emoji: "🕳️" }
+  - { opening_token: "a smoking car in the ditch", opening_emoji: "🚗" }
+  - { opening_token: "a blown engine on the grade", opening_emoji: "💨" }
+  - { opening_token: "a stalled bus in the flood", opening_emoji: "🚌" }
+  - { opening_token: "an oil spill on the curve", opening_emoji: "🛢️" }
+  - { opening_token: "a tire in the bridge joint", opening_emoji: "🕳️" }
+  - { opening_token: "a dark signal at the junction", opening_emoji: "🚦" }
+  - { opening_token: "a tangled signal in the rain", opening_emoji: "🌧️" }
+  - { opening_token: "a signal on the blink", opening_emoji: "🔴" }
+  - { opening_token: "a short in the span", opening_emoji: "⚡" }
+  - { opening_token: "a flood in the stall", opening_emoji: "🚗" }
+  - { opening_token: "a puddle at the meter", opening_emoji: "🅿️" }
+  - { opening_token: "a spill of wet concrete", opening_emoji: "🏗️" }
+  - { opening_token: "a tipped drum of tar", opening_emoji: "🛢️" }
+  - { opening_token: "a burst pipe flooding the trench", opening_emoji: "🚰" }
+  - { opening_token: "a lane closed by cones", opening_emoji: "🚧" }
+  - { opening_token: "a signal swinging in the wind", opening_emoji: "💨" }

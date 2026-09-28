@@ -337,3 +337,14 @@ seed_pool:
   - { opening_token: "Your neighbour offers to take your rubbish bin in.", opening_emoji: "🗑️" }
   - { opening_token: "Your neighbour offers to water your plants while you are away.", opening_emoji: "🪴" }
   - { opening_token: "Your neighbour offers to collect a parcel left outside your door.", opening_emoji: "📦" }
+  - { opening_token: "Your neighbour with the loud car offers to feed your cat while you are away.", opening_emoji: "🐱" }
+  - { opening_token: "Your neighbour offers to hold your spare key for the dog walker.", opening_emoji: "🐕" }
+  - { opening_token: "Your neighbour offers to check your front door is locked before he goes to bed.", opening_emoji: "🔒" }
+  - { opening_token: "The retired couple next door offers to ring the council about your missed collection.", opening_emoji: "📞" }
+  - { opening_token: "Your neighbour with the immaculate hedge offers to trim your hedge before your weekend away.", opening_emoji: "✂️" }
+  - { opening_token: "The student upstairs offers to lend you their ladder.", opening_emoji: "🪜" }
+  - { opening_token: "The retired couple next door offers to bring in your milk after your petty argument.", opening_emoji: "🥛" }
+  - { opening_token: "The retired couple next door offers to feed your dog while you are at work.", opening_emoji: "🐕" }
+  - { opening_token: "The student upstairs offers to hold your spare key until the delivery person stops laughing.", opening_emoji: "😂" }
+  - { opening_token: "The new tenant below offers to bring in your milk on a rainy morning.", opening_emoji: "🥛" }
+  - { opening_token: "Your landlord from the flat above offers to feed your fish during the power cut.", opening_emoji: "🐟" }

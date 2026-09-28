@@ -329,3 +329,20 @@ seed_pool:
   - { opening_token: "a catapult", opening_emoji: "🏹", detail: "hurling a stone at the wall", hidden: "" }
   - { opening_token: "a battering ram", opening_emoji: "🪵", detail: "pounding the gate", hidden: "" }
   - { opening_token: "a siege tower", opening_emoji: "🗼", detail: "rolling soldiers toward the battlements", hidden: "" }
+  - { opening_token: "a stone thrower on the wall", opening_emoji: "🪨" }
+  - { opening_token: "a bridge with a stone bucket", opening_emoji: "🌉" }
+  - { opening_token: "a wall crane with a stone bucket", opening_emoji: "🏗️" }
+  - { opening_token: "a fire cart", opening_emoji: "🔥" }
+  - { opening_token: "a gate smasher", opening_emoji: "🚪" }
+  - { opening_token: "a moat pump", opening_emoji: "💧" }
+  - { opening_token: "a water wheel", opening_emoji: "🌊" }
+  - { opening_token: "a chain net", opening_emoji: "⛓️" }
+  - { opening_token: "a drawbridge", opening_emoji: "🌉" }
+  - { opening_token: "a rope hook", opening_emoji: "🪝" }
+  - { opening_token: "a windlass", opening_emoji: "🎡" }
+  - { opening_token: "a spring loaded trapdoor", opening_emoji: "🕳️" }
+  - { opening_token: "a rope bridge over a pit", opening_emoji: "🌉" }
+  - { opening_token: "a spinning blade on a pole", opening_emoji: "⚙️" }
+  - { opening_token: "a spiked log", opening_emoji: "🪵" }
+  - { opening_token: "a rolling bridge on wheels", opening_emoji: "🌉" }
+  - { opening_token: "a swinging iron gate", opening_emoji: "🚪" }

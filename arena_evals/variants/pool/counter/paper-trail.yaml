@@ -305,3 +305,20 @@ seed_pool:
   - { opening_token: "a complaint", opening_emoji: "📣" }
   - { opening_token: "a tax bill", opening_emoji: "🧾" }
   - { opening_token: "a building permit", opening_emoji: "🏗️" }
+  - { opening_token: "a registration", opening_emoji: "📝" }
+  - { opening_token: "a license", opening_emoji: "📜" }
+  - { opening_token: "a rent receipt", opening_emoji: "🧾" }
+  - { opening_token: "an eviction notice", opening_emoji: "🚪" }
+  - { opening_token: "a security deposit", opening_emoji: "💰" }
+  - { opening_token: "a paycheck stub", opening_emoji: "💰" }
+  - { opening_token: "a termination letter", opening_emoji: "📄" }
+  - { opening_token: "a timecard", opening_emoji: "⏰" }
+  - { opening_token: "a bank statement", opening_emoji: "🏦" }
+  - { opening_token: "a deposit slip", opening_emoji: "💵" }
+  - { opening_token: "a withdrawal", opening_emoji: "💸" }
+  - { opening_token: "a bench warrant", opening_emoji: "🪑" }
+  - { opening_token: "a gag order", opening_emoji: "🤐" }
+  - { opening_token: "a subpoena", opening_emoji: "📜" }
+  - { opening_token: "a garnishment", opening_emoji: "💸" }
+  - { opening_token: "a foreclosure", opening_emoji: "🔨" }
+  - { opening_token: "a denial", opening_emoji: "🚫" }

@@ -326,3 +326,58 @@ seed_pool:
   - { opening_token: "The ceiling leaks / umbrella", opening_emoji: "☂️" }
   - { opening_token: "There is no window / chair", opening_emoji: "🪑" }
   - { opening_token: "The floor slopes / bathtub", opening_emoji: "🛁" }
+  - { opening_token: "The door will not close / wardrobe", opening_emoji: "🚪" }
+  - { opening_token: "The heating is broken / wardrobe", opening_emoji: "🛋️" }
+  - { opening_token: "A radiator never warms / coat rack", opening_emoji: "🧥" }
+  - { opening_token: "No heat in winter / blanket", opening_emoji: "🛏️" }
+  - { opening_token: "The attic has no railing / umbrella", opening_emoji: "🪜" }
+  - { opening_token: "The roof is missing / bathtub", opening_emoji: "🛁" }
+  - { opening_token: "The wardrobe is empty / wardrobe", opening_emoji: "🚪" }
+  - { opening_token: "The roof sags / ladder", opening_emoji: "🪜" }
+  - { opening_token: "The annexe is below ground / umbrella", opening_emoji: "🌂" }
+  - { opening_token: "The room is underground / bathtub", opening_emoji: "🛁" }
+  - { opening_token: "The annexe has no roof / sofa", opening_emoji: "🛋️" }
+  - { opening_token: "The roof is open / kettle", opening_emoji: "🏞️" }
+  - { opening_token: "The only light is a bulb / chair", opening_emoji: "💡" }
+  - { opening_token: "The stairs are steep / chair", opening_emoji: "🪜" }
+  - { opening_token: "The walls are damp / chair", opening_emoji: "🪑" }
+  - { opening_token: "A tunnel is the entrance / mirror", opening_emoji: "🪞" }
+  - { opening_token: "You sleep below the garden / mirror", opening_emoji: "🪞" }
+  - { opening_token: "The broken boiler / sofa", opening_emoji: "🛋️" }
+  - { opening_token: "There is no daylight / lamp", opening_emoji: "💡" }
+  - { opening_token: "Daylight never reaches the bath / bathtub", opening_emoji: "🌑" }
+  - { opening_token: "The basement has no heating / umbrella", opening_emoji: "🌂" }
+  - { opening_token: "The radiator is cold / umbrella", opening_emoji: "❄️" }
+  - { opening_token: "The boiler is dead / mirror", opening_emoji: "🥶" }
+  - { opening_token: "The annexe floods daily / bathtub", opening_emoji: "🌊" }
+  - { opening_token: "The box room has no roof / lamp", opening_emoji: "📦" }
+  - { opening_token: "The garden room has no window / bathtub", opening_emoji: "🪟" }
+  - { opening_token: "The attic roof is gone / mirror", opening_emoji: "🌌" }
+  - { opening_token: "Rain reaches the sofa", opening_emoji: "🌧️" }
+  - { opening_token: "No heating in the guest room / chair", opening_emoji: "🥶" }
+  - { opening_token: "A basement has no ceiling / wardrobe", opening_emoji: "🏚️" }
+  - { opening_token: "The rain comes in / wardrobe", opening_emoji: "☔" }
+  - { opening_token: "Frost inside the attic / wardrobe", opening_emoji: "❄️" }
+  - { opening_token: "A wall slopes inward / sofa", opening_emoji: "📐" }
+  - { opening_token: "Damp walls surround the lamp", opening_emoji: "🛋️" }
+  - { opening_token: "The tub lists / stool", opening_emoji: "🪑" }
+  - { opening_token: "A sunken tub / towel", opening_emoji: "🧺" }
+  - { opening_token: "There is a leak above / mirror", opening_emoji: "🌧️" }
+  - { opening_token: "Damp walls embrace a bathtub", opening_emoji: "🛁" }
+  - { opening_token: "The floor tilts / chair", opening_emoji: "📐" }
+  - { opening_token: "No heating in the annexe / kettle", opening_emoji: "❄️" }
+  - { opening_token: "No window in the bedroom / kettle", opening_emoji: "🫖" }
+  - { opening_token: "There are no windows down here / mirror", opening_emoji: "🪞" }
+  - { opening_token: "The room sits below ground / sofa", opening_emoji: "🛋️" }
+  - { opening_token: "A door hangs open / mirror", opening_emoji: "🚪" }
+  - { opening_token: "A leak above the guest bed / sofa", opening_emoji: "🚿" }
+  - { opening_token: "A floor on a slant / mirror", opening_emoji: "📐" }
+  - { opening_token: "The door stays open / sofa", opening_emoji: "🌬️" }
+  - { opening_token: "The basement is below ground / lamp", opening_emoji: "🔦" }
+  - { opening_token: "A studio with a sloping floor / umbrella", opening_emoji: "🌂" }
+  - { opening_token: "The basement door won't close / bathtub", opening_emoji: "🚪" }
+  - { opening_token: "No daylight in studio / kettle", opening_emoji: "☕" }
+  - { opening_token: "The annexe floor slopes / lamp", opening_emoji: "🏠" }
+  - { opening_token: "This bedroom has no heat / mirror", opening_emoji: "🧊" }
+  - { opening_token: "A damp wall holds a mirror", opening_emoji: "🧖" }
+  - { opening_token: "You sleep under the ground / umbrella", opening_emoji: "🛏️" }

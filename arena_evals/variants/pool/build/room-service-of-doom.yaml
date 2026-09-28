@@ -341,3 +341,6 @@ seed_pool:
   - { opening_token: "A guest asks for water after the first room; the Host points to a clean glass on a silver tray.", opening_emoji: "🥛" }
   - { opening_token: "A guest asks for a chair in the portrait hall; one slides out from beneath a sheet.", opening_emoji: "🪑" }
   - { opening_token: "A guest asks for a phone charger; a brass socket appears beside a locked nursery door.", opening_emoji: "🔌" }
+  - { opening_token: "A guest asks for a blanket in the guest bedroom; the Host unlocks the nursery across the hall.", opening_emoji: "🛏️" }
+  - { opening_token: "A guest asks which door leads outside; the bell on the desk rings once toward the left corridor.", opening_emoji: "🚪" }
+  - { opening_token: "A guest in the guest bedroom asks for a snack; the Host rings the service bell once.", opening_emoji: "🔔" }

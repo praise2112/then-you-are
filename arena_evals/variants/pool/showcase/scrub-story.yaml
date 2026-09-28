@@ -298,3 +298,20 @@ seed_pool:
   - { opening_token: "make bed", opening_emoji: "🛏️", detail: "blanket", hidden: "Make the bed using the blanket." }
   - { opening_token: "wash dishes", opening_emoji: "🍽️", detail: "sponge", hidden: "Wash the dishes using the sponge." }
   - { opening_token: "sweep floor", opening_emoji: "🧹", detail: "broom", hidden: "Sweep the floor using the broom." }
+  - { opening_token: "laundry basket walk", opening_emoji: "👕", detail: "Parade the basket down the hallway like a royal caravan; the blanket at the end is your victory banner.", hidden: "Fold the laundry in the hallway, with the blanket waiting as the final item to fold." }
+  - { opening_token: "hallway sorting", opening_emoji: "🚪", detail: "Turn the hallway into a sorting arena: every sock a soldier, every shirt a citizen, and the blanket the throne of the finished pile.", hidden: "Fold the laundry in the hallway, using the blanket as a sorting surface or final folded piece." }
+  - { opening_token: "take out trash", opening_emoji: "🗑️", detail: "Wrap the trash in a cloth and carry it to the bin.", hidden: "take out trash using cloth in kitchen" }
+  - { opening_token: "water plants", opening_emoji: "🪴", detail: "blanket", hidden: "Water the porch plants while a blanket airs on the railing." }
+  - { opening_token: "scrub pots and pans", opening_emoji: "🍳", detail: "Every pot is a dragon. The rag is your sword.", hidden: "Scrub pots and pans in the dining room with a rag." }
+  - { opening_token: "wipe table", opening_emoji: "🧽", detail: "Bedroom table, sponge in hand: wipe away the dust and reveal the hidden path!", hidden: "Wipe the table using the sponge." }
+  - { opening_token: "dust the dresser", opening_emoji: "🧴", detail: "Your dresser holds a map of forgotten treasures—dust it off and let the journey begin!", hidden: "Dust the dresser with a cloth." }
+  - { opening_token: "fold the blanket", opening_emoji: "🛌", detail: "A blanket unfolded is a sail without wind—fold it and set course for a cozy voyage!", hidden: "Fold the blanket." }
+  - { opening_token: "clean mirror", opening_emoji: "🪞", detail: "Squeegee your soul clean with a sponge of light.", hidden: "Clean the mirror using a sponge." }
+  - { opening_token: "dust porch", opening_emoji: "🌿", detail: "Your porch is a stage; dust it with a cloth and let the wind applaud.", hidden: "Dust the porch using a cloth." }
+  - { opening_token: "dry the plates", opening_emoji: "🍽️", detail: "Dry the plates using a cloth.", hidden: "Dry the plates with a cloth." }
+  - { opening_token: "clear the counter sponge", opening_emoji: "🧽", detail: "Clear the counter with the sponge.", hidden: "Wipe down the kitchen counter using the sponge." }
+  - { opening_token: "scrub sink with sponge", opening_emoji: "🧼", detail: "Scrub the sink with the sponge.", hidden: "Clean the kitchen sink using the sponge." }
+  - { opening_token: "wipe stove sponge", opening_emoji: "🔥", detail: "Wipe the stove with the sponge.", hidden: "Wipe down the kitchen stove using the sponge." }
+  - { opening_token: "collect dryer lint", opening_emoji: "🌀", detail: "bag", hidden: "collect the lint off the dryer and put it in the bag" }
+  - { opening_token: "bag the washer empties", opening_emoji: "🛍️", detail: "bag", hidden: "sweep the floor and put the dropped socks in the bag" }
+  - { opening_token: "wipe the porch swing", opening_emoji: "🪑", detail: "The porch swing awaits its rag-wielding hero.", hidden: "Wipe the porch swing with the rag." }

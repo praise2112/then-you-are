@@ -310,3 +310,20 @@ seed_pool:
   - { opening_token: "a whip", opening_emoji: "🪢" }
   - { opening_token: "a fire baton", opening_emoji: "🔥" }
   - { opening_token: "a paper target", opening_emoji: "🎯" }
+  - { opening_token: "a bucket", opening_emoji: "🪣" }
+  - { opening_token: "a wet towel", opening_emoji: "🧻" }
+  - { opening_token: "a bolt cutter", opening_emoji: "🔧" }
+  - { opening_token: "a hacksaw", opening_emoji: "🪚" }
+  - { opening_token: "a pair of scissors", opening_emoji: "✂️" }
+  - { opening_token: "a hoop", opening_emoji: "⭕" }
+  - { opening_token: "a knife", opening_emoji: "🔪" }
+  - { opening_token: "a lid", opening_emoji: "🥫" }
+  - { opening_token: "a net", opening_emoji: "🕸️" }
+  - { opening_token: "a barrel of water", opening_emoji: "🛢️" }
+  - { opening_token: "a rope", opening_emoji: "🪢" }
+  - { opening_token: "a wet blanket", opening_emoji: "🛏️" }
+  - { opening_token: "a hose", opening_emoji: "🚿" }
+  - { opening_token: "a tarp", opening_emoji: "🟫" }
+  - { opening_token: "a cannon", opening_emoji: "💥" }
+  - { opening_token: "a trampoline", opening_emoji: "🤸" }
+  - { opening_token: "a tent", opening_emoji: "🏕️" }

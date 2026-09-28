@@ -296,3 +296,20 @@ seed_pool:
   - { opening_token: "Tongs", opening_emoji: "🥢", detail: "A pair of kitchen tongs", hidden: "Two arms joined at one end, used to grip, lift, turn, and serve food without touching it directly" }
   - { opening_token: "Colander", opening_emoji: "🫗", detail: "A perforated bowl for draining food", hidden: "A bowl covered with holes that lets liquid escape while retaining solid food" }
   - { opening_token: "Whisk", opening_emoji: "🥚", detail: "A wire kitchen whisk", hidden: "A tool with loops of wire used to beat, blend, aerate, or emulsify ingredients" }
+  - { opening_token: "A rolling pin", opening_emoji: "🥖", detail: "A wooden rolling pin with a flat edge", hidden: "A rolling pin has a long, flat edge and is often used to beat meat or dough to flatten it." }
+  - { opening_token: "A meat tenderizer", opening_emoji: "🔨", detail: "A heavy meat tenderizer with a flat side", hidden: "A meat tenderizer has a flat, textured surface and is used to pound meat to make it tender." }
+  - { opening_token: "A cast-iron skillet", opening_emoji: "🍳", detail: "A heavy cast-iron skillet", hidden: "A cast-iron skillet is heavy, has a flat bottom, and can be used to sear, fry, and even beat ingredients." }
+  - { opening_token: "A potato masher", opening_emoji: "🥔", detail: "A potato masher", hidden: "A tool with a flat, perforated head used to crush soft foods like potatoes." }
+  - { opening_token: "A slotted spoon", opening_emoji: "🥄", detail: "A slotted spoon", hidden: "A spoon with holes or slots to drain liquids while lifting solid food." }
+  - { opening_token: "A pastry blender", opening_emoji: "🥐", detail: "A pastry blender", hidden: "A tool with curved blades or wires used to cut fat into flour for pastry." }
+  - { opening_token: "A carving knife", opening_emoji: "🔪", detail: "A long, sharp blade for slicing meat", hidden: "A carving knife has a long, narrow blade designed for slicing cooked meat neatly; it is not a general-purpose chef's knife and should not be used on a cutting board for vegetables." }
+  - { opening_token: "Ladle", opening_emoji: "🥣", detail: "A ladle", hidden: "A deep bowl with a long handle, used for serving soups and stews." }
+  - { opening_token: "Ice Cream Scoop", opening_emoji: "🍨", detail: "An ice cream scoop", hidden: "A bowl-shaped head with a mechanical lever, used to portion ice cream." }
+  - { opening_token: "Measuring Cup", opening_emoji: "🧪", detail: "A measuring cup", hidden: "A graduated cup with a spout, used to measure and pour liquids." }
+  - { opening_token: "A spider strainer", opening_emoji: "🕷️", detail: "A spider strainer", hidden: "A wide, shallow basket with a long handle, made of wire mesh or perforated metal, used to scoop foods out of hot oil or boiling water." }
+  - { opening_token: "A steamer basket", opening_emoji: "🥟", detail: "A steamer basket", hidden: "A perforated basket that sits inside a pot, allowing steam to cook food without direct contact with water." }
+  - { opening_token: "A fork", opening_emoji: "🍴", detail: "A four-tined fork", hidden: "A fork with four tines, used to spear, lift, and turn food; not typically for flattening." }
+  - { opening_token: "A fish spatula", opening_emoji: "🍳", detail: "A fish spatula", hidden: "A thin flexible slotted blade made for sliding under delicate food to turn it" }
+  - { opening_token: "A pizza cutter", opening_emoji: "🍕", detail: "A pizza cutter", hidden: "A sharp wheel on a handle rolled across a pie to slice it into wedges" }
+  - { opening_token: "A box grater", opening_emoji: "🧀", detail: "A box grater with sharp holes for shredding", hidden: "A box grater has multiple sides with sharp-edged holes of different sizes, used to shred cheese, vegetables, and more." }
+  - { opening_token: "A mandoline", opening_emoji: "🔪", detail: "A mandoline slicer with adjustable blades for shredding", hidden: "A mandoline is a slicer with adjustable blades that can shred or julienne vegetables, often with a hand guard for safety." }

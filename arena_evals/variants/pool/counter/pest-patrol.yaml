@@ -331,3 +331,58 @@ seed_pool:
   - { opening_token: "a slug", opening_emoji: "🐌", detail: "chewing holes in the lettuce", hidden: "" }
   - { opening_token: "a wasp nest", opening_emoji: "🪹", detail: "hanging above the shed door", hidden: "" }
   - { opening_token: "a hungry rabbit", opening_emoji: "🐇", detail: "raiding the bean bed", hidden: "" }
+  - { opening_token: "a dandelion", opening_emoji: "🌼" }
+  - { opening_token: "a thistle", opening_emoji: "🌵" }
+  - { opening_token: "a bramble", opening_emoji: "🌿" }
+  - { opening_token: "a mole", opening_emoji: "🦫" }
+  - { opening_token: "a beetle", opening_emoji: "🪲" }
+  - { opening_token: "a mosquito", opening_emoji: "🦟" }
+  - { opening_token: "a rat", opening_emoji: "🐀" }
+  - { opening_token: "a fox", opening_emoji: "🦊" }
+  - { opening_token: "a stinging nettle", opening_emoji: "🌿" }
+  - { opening_token: "a hornet", opening_emoji: "🐝" }
+  - { opening_token: "a toadstool", opening_emoji: "🍄" }
+  - { opening_token: "a puffball", opening_emoji: "⚪" }
+  - { opening_token: "a mold patch", opening_emoji: "🧽" }
+  - { opening_token: "an aphid", opening_emoji: "🐛" }
+  - { opening_token: "a caterpillar", opening_emoji: "🐛" }
+  - { opening_token: "an ant", opening_emoji: "🐜" }
+  - { opening_token: "a crow", opening_emoji: "🐦‍⬛" }
+  - { opening_token: "a woodlouse", opening_emoji: "🐛" }
+  - { opening_token: "a millipede", opening_emoji: "🐛" }
+  - { opening_token: "a leech", opening_emoji: "🩸" }
+  - { opening_token: "a newt", opening_emoji: "🦎" }
+  - { opening_token: "a pheasant", opening_emoji: "🦃" }
+  - { opening_token: "a goat", opening_emoji: "🐐" }
+  - { opening_token: "a chicken", opening_emoji: "🐔" }
+  - { opening_token: "a whitefly", opening_emoji: "🦟" }
+  - { opening_token: "a bean weevil", opening_emoji: "🪲" }
+  - { opening_token: "a cloud of midges", opening_emoji: "🦟" }
+  - { opening_token: "a moth", opening_emoji: "🦋" }
+  - { opening_token: "a maggot", opening_emoji: "🪰" }
+  - { opening_token: "a fungus", opening_emoji: "🍄" }
+  - { opening_token: "a compost heap", opening_emoji: "🗑️" }
+  - { opening_token: "a downy mildew", opening_emoji: "🌫️" }
+  - { opening_token: "an earwig", opening_emoji: "🐛" }
+  - { opening_token: "a cutworm", opening_emoji: "🐛" }
+  - { opening_token: "a digging badger", opening_emoji: "🦡" }
+  - { opening_token: "a tunnel", opening_emoji: "🕳️" }
+  - { opening_token: "a tomato hornworm", opening_emoji: "🐛" }
+  - { opening_token: "a vole", opening_emoji: "🐭" }
+  - { opening_token: "a shrew", opening_emoji: "🐾" }
+  - { opening_token: "a grub", opening_emoji: "🐛" }
+  - { opening_token: "a groundhog", opening_emoji: "🦫" }
+  - { opening_token: "a squirrel", opening_emoji: "🐿️" }
+  - { opening_token: "a blight", opening_emoji: "🍂" }
+  - { opening_token: "a rust", opening_emoji: "🟠" }
+  - { opening_token: "a spot", opening_emoji: "⚫" }
+  - { opening_token: "a bumblebee", opening_emoji: "🐝" }
+  - { opening_token: "a greenfly swarm", opening_emoji: "🐛" }
+  - { opening_token: "a cluster of blackfly", opening_emoji: "🪰" }
+  - { opening_token: "a hinge", opening_emoji: "🚪" }
+  - { opening_token: "a mildewed rose", opening_emoji: "🌹" }
+  - { opening_token: "a hedgehog", opening_emoji: "🦔" }
+  - { opening_token: "a wall", opening_emoji: "🧱" }
+  - { opening_token: "a cat", opening_emoji: "🐈" }
+  - { opening_token: "a deer", opening_emoji: "🦌" }
+  - { opening_token: "a bird pecking apples", opening_emoji: "🐦" }

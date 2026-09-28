@@ -306,3 +306,20 @@ seed_pool:
   - { opening_token: "banana + thunder", opening_emoji: "🍌", detail: "a soft drink served cold", hidden: "a fizzy yellow soda" }
   - { opening_token: "velvet + garlic", opening_emoji: "🧄", detail: "a dark drink poured over ice", hidden: "cola" }
   - { opening_token: "rain + biscuit", opening_emoji: "🌧️", detail: "a pale drink served warm", hidden: "tea with milk" }
+  - { opening_token: "lightning + syrup", opening_emoji: "🍯", detail: "a soft drink served cold", hidden: "a carbonated soft drink with a citrus and syrup flavor" }
+  - { opening_token: "storm + caramel", opening_emoji: "🌩️", detail: "a soft drink served cold", hidden: "a carbonated soft drink with caramel color and flavor" }
+  - { opening_token: "coconut + static", opening_emoji: "🥥", detail: "a milkshake served over ice", hidden: "a coconut milkshake with popping candy" }
+  - { opening_token: "pineapple + smoke", opening_emoji: "🍍", detail: "a milkshake served over ice", hidden: "a pineapple milkshake with a hint of smoked sea salt" }
+  - { opening_token: "pepper + moonlight", opening_emoji: "🌙", detail: "A warm orange soda with a mysterious twist", hidden: "The drink is orange soda served warm, and the noun pair suggests a savory-sweet, aromatic experience." }
+  - { opening_token: "ember + zephyr", opening_emoji: "🔥", detail: "A warm orange soda with a gentle spicy warmth", hidden: "The drink is orange soda served warm, evoking cozy warmth and a light, airy finish." }
+  - { opening_token: "cinnamon + twilight", opening_emoji: "🌆", detail: "A warm orange soda with a cinnamon-spiced aroma", hidden: "The drink is orange soda served warm, with a comforting spice and a mellow, fading sweetness." }
+  - { opening_token: "ginger + silk", opening_emoji: "🧣", detail: "A ginger ale served over ice.", hidden: "Ginger ale over ice." }
+  - { opening_token: "ice + cinnamon", opening_emoji: "🧊", detail: "A ginger ale served over ice.", hidden: "Ginger ale over ice." }
+  - { opening_token: "citrus + storm", opening_emoji: "🍊", detail: "a soft drink served at room temperature", hidden: "orange soda" }
+  - { opening_token: "spice + voltage", opening_emoji: "⚡", detail: "a soft drink served at room temperature", hidden: "orange soda" }
+  - { opening_token: "rubber + roses", opening_emoji: "🌹", detail: "iced tea served frosted", hidden: "a chilled hibiscus iced tea with a float of rubbery tapioca pearls" }
+  - { opening_token: "gasoline + peaches", opening_emoji: "⛽", detail: "iced tea served frosted", hidden: "a cold peach iced tea with a splash of petrol-scented smokiness from Lapsang Souchong" }
+  - { opening_token: "moss + lightning", opening_emoji: "⚡", detail: "iced tea served frosted", hidden: "a frosted green tea with matcha and a fizzy electric buzz from carbonation" }
+  - { opening_token: "thunder + root", opening_emoji: "🌩️", detail: "a caffeine-free soda served at room temperature", hidden: "a brand of root beer with a deep, bassy anise flavor" }
+  - { opening_token: "frost + ember", opening_emoji: "❄️", detail: "a frosted glass of ginger ale", hidden: "Vernors ginger ale, served very cold with a piece of candied ginger" }
+  - { opening_token: "petrichor + talc", opening_emoji: "🌧️", detail: "a steaming glass of ginger ale", hidden: "ginger ale served hot" }

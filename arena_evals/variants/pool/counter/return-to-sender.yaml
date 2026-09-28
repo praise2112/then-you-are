@@ -310,3 +310,59 @@ seed_pool:
   - { opening_token: "an undeliverable package", opening_emoji: "📦", detail: "bloated with mystery and bad handwriting", hidden: "" }
   - { opening_token: "a jammed mailbox", opening_emoji: "📮", detail: "stuffed with overdue notices and one furious pigeon", hidden: "" }
   - { opening_token: "a missing stamp", opening_emoji: "🏷️", detail: "leaving every letter stranded at the counter", hidden: "" }
+  - { opening_token: "a soaked notice", opening_emoji: "💧" }
+  - { opening_token: "a pink slip", opening_emoji: "📝" }
+  - { opening_token: "a sealed letter", opening_emoji: "✉️" }
+  - { opening_token: "a mysterious note", opening_emoji: "📝" }
+  - { opening_token: "a unclaimed parcel", opening_emoji: "📦" }
+  - { opening_token: "a smudged postcard", opening_emoji: "📬" }
+  - { opening_token: "a peeled label", opening_emoji: "🏷️" }
+  - { opening_token: "a secret address", opening_emoji: "🏠" }
+  - { opening_token: "an overdue book", opening_emoji: "📚" }
+  - { opening_token: "a dead battery", opening_emoji: "🔋" }
+  - { opening_token: "a returned ring", opening_emoji: "💍" }
+  - { opening_token: "a love letter returned", opening_emoji: "💔" }
+  - { opening_token: "a letter bomb", opening_emoji: "💣" }
+  - { opening_token: "a screaming envelope", opening_emoji: "😱" }
+  - { opening_token: "a dented box", opening_emoji: "📦" }
+  - { opening_token: "a wasp", opening_emoji: "🐝" }
+  - { opening_token: "an overdue apology", opening_emoji: "💌" }
+  - { opening_token: "a furious mailman", opening_emoji: "📬" }
+  - { opening_token: "a stamped secret", opening_emoji: "🤫" }
+  - { opening_token: "an unread telegram", opening_emoji: "📨" }
+  - { opening_token: "a forgotten key", opening_emoji: "🔑" }
+  - { opening_token: "a rabid pigeon", opening_emoji: "🐦" }
+  - { opening_token: "a postcard thief", opening_emoji: "🦹" }
+  - { opening_token: "a nosy neighbor", opening_emoji: "👀" }
+  - { opening_token: "a boomerang", opening_emoji: "🪃" }
+  - { opening_token: "a broken bottle", opening_emoji: "🍾" }
+  - { opening_token: "a cracked egg", opening_emoji: "🥚" }
+  - { opening_token: "a burn bag", opening_emoji: "🔥" }
+  - { opening_token: "a burglar", opening_emoji: "🕵️" }
+  - { opening_token: "a return receipt", opening_emoji: "📝" }
+  - { opening_token: "a package stolen", opening_emoji: "📦" }
+  - { opening_token: "a whisper", opening_emoji: "🤫" }
+  - { opening_token: "a ghost", opening_emoji: "👻" }
+  - { opening_token: "a keyhole", opening_emoji: "🔑" }
+  - { opening_token: "an unopened summons", opening_emoji: "📜" }
+  - { opening_token: "a vanished sender", opening_emoji: "👻" }
+  - { opening_token: "a wax seal", opening_emoji: "🕯️" }
+  - { opening_token: "a late check", opening_emoji: "💸" }
+  - { opening_token: "a blush", opening_emoji: "😳" }
+  - { opening_token: "a damaged diary", opening_emoji: "📔" }
+  - { opening_token: "a wrong name", opening_emoji: "🏷️" }
+  - { opening_token: "a crushed hat", opening_emoji: "🎩" }
+  - { opening_token: "a torn photo", opening_emoji: "🖼️" }
+  - { opening_token: "a rusted lock", opening_emoji: "🔒" }
+  - { opening_token: "a crumpled map", opening_emoji: "🗺️" }
+  - { opening_token: "a rejection", opening_emoji: "💔" }
+  - { opening_token: "a black hole", opening_emoji: "🕳️" }
+  - { opening_token: "a wrong turn", opening_emoji: "↩️" }
+  - { opening_token: "a forgery", opening_emoji: "🖋️" }
+  - { opening_token: "a disguise", opening_emoji: "🥸" }
+  - { opening_token: "a misaddressed invitation", opening_emoji: "💌" }
+  - { opening_token: "a bra", opening_emoji: "👙" }
+  - { opening_token: "an embarrassing mail", opening_emoji: "😳" }
+  - { opening_token: "a snoop", opening_emoji: "🕵️" }
+  - { opening_token: "a screaming baby", opening_emoji: "👶" }
+  - { opening_token: "a stampede", opening_emoji: "🐎" }

@@ -340,3 +340,54 @@ seed_pool:
   - { opening_token: "Washing machine: Door won't lock", opening_emoji: "🚪" }
   - { opening_token: "Dishwasher: Drain blocked", opening_emoji: "🍽️" }
   - { opening_token: "Tumble dryer: Filter full", opening_emoji: "🧦" }
+  - { opening_token: "Coffee machine: Coffee too hot", opening_emoji: "☕" }
+  - { opening_token: "Coffee machine: Drain won't spin", opening_emoji: "☕" }
+  - { opening_token: "Vacuum cleaner: Bin full", opening_emoji: "🗑️" }
+  - { opening_token: "Coffee machine: No brew, no light", opening_emoji: "☕" }
+  - { opening_token: "Vacuum cleaner: Hose won't lock", opening_emoji: "🔌" }
+  - { opening_token: "Oven: Turntable spin blocked", opening_emoji: "🍽️" }
+  - { opening_token: "Kettle: Leaking from base", opening_emoji: "☕" }
+  - { opening_token: "Vacuum: filter blockage stops suction", opening_emoji: "🛑" }
+  - { opening_token: "Kettle: Switch won't stay down", opening_emoji: "🔘" }
+  - { opening_token: "Oven: Fan blocked, won't cool", opening_emoji: "🌀" }
+  - { opening_token: "Tumble dryer: Drain not cooling", opening_emoji: "💧" }
+  - { opening_token: "Fridge: Won't spin", opening_emoji: "❄️" }
+  - { opening_token: "Vacuum cleaner: Brew button blocked", opening_emoji: "🔘" }
+  - { opening_token: "Microwave: Turntable motor won't spin", opening_emoji: "⚙️" }
+  - { opening_token: "Fridge: Ice maker pump overflows", opening_emoji: "🧊" }
+  - { opening_token: "Microwave: Filter is empty", opening_emoji: "🍽️" }
+  - { opening_token: "Washing machine: Spin cycle stops mid-spin", opening_emoji: "⏸️" }
+  - { opening_token: "Oven door won't close all the way", opening_emoji: "🚪" }
+  - { opening_token: "Oven door is full of grease", opening_emoji: "🧽" }
+  - { opening_token: "Vacuum cleaner: Cool mode leaves carpet empty", opening_emoji: "❄️" }
+  - { opening_token: "Dishwasher: Spray arm won't spin", opening_emoji: "💦" }
+  - { opening_token: "Kettle: Spout filter blocked", opening_emoji: "🚰" }
+  - { opening_token: "Dishwasher runs cool, won't heat", opening_emoji: "🌡️" }
+  - { opening_token: "Kettle: Pump makes grinding noise", opening_emoji: "⚙️" }
+  - { opening_token: "Oven: Pump won't stop running", opening_emoji: "💧" }
+  - { opening_token: "Kettle: Cooled but still full", opening_emoji: "🫖" }
+  - { opening_token: "Fridge door won't lock, leaking on floor", opening_emoji: "🔓" }
+  - { opening_token: "Coffee machine: Cooling pump silent", opening_emoji: "🔇" }
+  - { opening_token: "Fridge: Freezer cold, fridge warm", opening_emoji: "🌡️" }
+  - { opening_token: "Washing machine drum full of brew", opening_emoji: "🍺" }
+  - { opening_token: "Microwave: Door opens, but interior empty", opening_emoji: "🚪" }
+  - { opening_token: "Oven door: Blocked by racks", opening_emoji: "🚪" }
+  - { opening_token: "Microwave drain: lock stuck open", opening_emoji: "🔓" }
+  - { opening_token: "Washing machine: Spin leaves clothes hot", opening_emoji: "🧺" }
+  - { opening_token: "Fridge: Drain line hot", opening_emoji: "🔥" }
+  - { opening_token: "Kettle: Brew button does nothing", opening_emoji: "☕" }
+  - { opening_token: "Oven: Locking handle drips.", opening_emoji: "🚪" }
+  - { opening_token: "Kettle: Handle scalds hand", opening_emoji: "🤚" }
+  - { opening_token: "Kettle door: empty", opening_emoji: "🫖" }
+  - { opening_token: "Oven drain: clogged, won't drain", opening_emoji: "🚰" }
+  - { opening_token: "Oven full, cool down failed", opening_emoji: "🌡️" }
+  - { opening_token: "Vacuum cleaner: Filter overheats, not cooling", opening_emoji: "🔥" }
+  - { opening_token: "Oven: Puddle on floor after cooling.", opening_emoji: "💧" }
+  - { opening_token: "Vacuum cleaner: Won't turn on, cord unplugged", opening_emoji: "🔌" }
+  - { opening_token: "Fridge filter: water pooling", opening_emoji: "🚰" }
+  - { opening_token: "Fridge: Lock engaged, interior empty.", opening_emoji: "🔒" }
+  - { opening_token: "Washing machine: Thermal cutout tripped, no water", opening_emoji: "🔥" }
+  - { opening_token: "Dishwasher: Door gasket leaks", opening_emoji: "💧" }
+  - { opening_token: "Oven: Not brewing", opening_emoji: "☕" }
+  - { opening_token: "Coffee machine: Door opens to empty bin", opening_emoji: "🗑️" }
+  - { opening_token: "Kettle: Spin cycle too hot", opening_emoji: "🫖" }

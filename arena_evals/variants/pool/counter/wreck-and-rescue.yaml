@@ -295,3 +295,20 @@ seed_pool:
   - { opening_token: "A wave smashes a small boat onto rocks.", opening_emoji: "🌊" }
   - { opening_token: "Fog hides a swimmer from the shore.", opening_emoji: "🌫️" }
   - { opening_token: "A fishing net tangles around a seal.", opening_emoji: "🦭" }
+  - { opening_token: "A fishing net sinks out of sight in the marsh.", opening_emoji: "🕳️" }
+  - { opening_token: "Waves crash over a lighthouse and fill it with water.", opening_emoji: "🌊" }
+  - { opening_token: "A hole in a lighthouse lets in water.", opening_emoji: "🕳️" }
+  - { opening_token: "Sand builds up and blocks the harbor entrance.", opening_emoji: "⛵" }
+  - { opening_token: "A diver's mask fills with water.", opening_emoji: "🤿" }
+  - { opening_token: "A rocky shore gets flooded by a high tide.", opening_emoji: "🌊" }
+  - { opening_token: "A small boat fills with water and starts to sink.", opening_emoji: "🚣" }
+  - { opening_token: "A rowboat gets stuck under a low dock.", opening_emoji: "🚣" }
+  - { opening_token: "A swimmer in a tidal pool gets stuck between rocks.", opening_emoji: "🌊" }
+  - { opening_token: "A lighthouse goes missing from the cliff path.", opening_emoji: "🔦" }
+  - { opening_token: "A lighthouse lamp goes out and ships cannot see it.", opening_emoji: "💡" }
+  - { opening_token: "A lighthouse window breaks and rain gets inside.", opening_emoji: "🌧️" }
+  - { opening_token: "A diver goes missing in a deep tidal pool.", opening_emoji: "🤿" }
+  - { opening_token: "A rope from a dock catches on a sharp rock.", opening_emoji: "🪢" }
+  - { opening_token: "A paddle from a dock catches on seaweed.", opening_emoji: "🛶" }
+  - { opening_token: "A strong current pulls a swimmer away from the beach.", opening_emoji: "🏊" }
+  - { opening_token: "Seaweed piles up and blocks the path to a dock.", opening_emoji: "🌿" }

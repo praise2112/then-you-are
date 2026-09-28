@@ -298,3 +298,20 @@ seed_pool:
   - { opening_token: "a shovel", opening_emoji: "🪣", detail: "digging a hole", hidden: "" }
   - { opening_token: "a hose", opening_emoji: "💧", detail: "flooding a furrow", hidden: "" }
   - { opening_token: "a wheelbarrow", opening_emoji: "🛒", detail: "moving a heap of soil", hidden: "" }
+  - { opening_token: "a pickaxe", opening_emoji: "⛏️" }
+  - { opening_token: "a crowbar", opening_emoji: "🔩" }
+  - { opening_token: "a sledgehammer", opening_emoji: "🔨" }
+  - { opening_token: "a rake", opening_emoji: "🧹" }
+  - { opening_token: "a pitchfork", opening_emoji: "🍴" }
+  - { opening_token: "a broom", opening_emoji: "🧹" }
+  - { opening_token: "a saw", opening_emoji: "🪚" }
+  - { opening_token: "a nail", opening_emoji: "🔨" }
+  - { opening_token: "a rotten board", opening_emoji: "🪵" }
+  - { opening_token: "a bucket", opening_emoji: "🪣" }
+  - { opening_token: "a gate", opening_emoji: "🚪" }
+  - { opening_token: "a hay bale", opening_emoji: "🌾" }
+  - { opening_token: "a tamper", opening_emoji: "🔨" }
+  - { opening_token: "a hoe", opening_emoji: "⛏️" }
+  - { opening_token: "a scarecrow", opening_emoji: "🧑‍🌾" }
+  - { opening_token: "a hayfork", opening_emoji: "🍴" }
+  - { opening_token: "a tarp", opening_emoji: "🛡️" }

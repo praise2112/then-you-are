@@ -313,3 +313,20 @@ seed_pool:
   - { opening_token: "a mouse", opening_emoji: "🐭" }
   - { opening_token: "a zebra", opening_emoji: "🦓" }
   - { opening_token: "a parrot", opening_emoji: "🦜" }
+  - { opening_token: "a turtle", opening_emoji: "🐢" }
+  - { opening_token: "a platypus", opening_emoji: "🦫" }
+  - { opening_token: "a mole", opening_emoji: "🐀" }
+  - { opening_token: "a shrew", opening_emoji: "🐾" }
+  - { opening_token: "a porcupine", opening_emoji: "🦔" }
+  - { opening_token: "a hedgehog", opening_emoji: "🦔" }
+  - { opening_token: "a pufferfish", opening_emoji: "🐡" }
+  - { opening_token: "a wasp", opening_emoji: "🐝" }
+  - { opening_token: "a beetle", opening_emoji: "🪲" }
+  - { opening_token: "a caterpillar", opening_emoji: "🐛" }
+  - { opening_token: "a piranha", opening_emoji: "🐟" }
+  - { opening_token: "a catfish", opening_emoji: "🐟" }
+  - { opening_token: "a carp", opening_emoji: "🐟" }
+  - { opening_token: "a wolf", opening_emoji: "🐺" }
+  - { opening_token: "a hyena", opening_emoji: "🐕" }
+  - { opening_token: "a tarantula", opening_emoji: "🕷️" }
+  - { opening_token: "a black widow", opening_emoji: "🕷️" }

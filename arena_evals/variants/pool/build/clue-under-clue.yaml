@@ -325,3 +325,20 @@ seed_pool:
   - { opening_token: "A map fragment is found inside a library book; its only mark is a blue circle around the word clock.", opening_emoji: "📚" }
   - { opening_token: "A brass key is found beneath a park bench, tied to a note showing three waves and a crooked star.", opening_emoji: "🔑" }
   - { opening_token: "A red ribbon is found on a castle gate, with four tiny knots and a drawing of a sleeping fox.", opening_emoji: "🎀" }
+  - { opening_token: "Inside a returned library book, a glass marble lies on page 7 with a red arrow drawn in the margin.", opening_emoji: "📖" }
+  - { opening_token: "A silver button is found beneath a park bench, stamped with a black sun above a locked door.", opening_emoji: "🔘" }
+  - { opening_token: "A silver button is found in a school cupboard, its back stamped with three waves and a crooked star.", opening_emoji: "🔘" }
+  - { opening_token: "A map fragment is found under a café table, its only mark a picture of a ladder under a moon.", opening_emoji: "☕" }
+  - { opening_token: "A wooden token is found beside an old fountain, carved with a picture of a ladder under a moon.", opening_emoji: "🪙" }
+  - { opening_token: "Beside an old fountain, a glass marble is found, its surface etched with three waves and a crooked star.", opening_emoji: "🔮" }
+  - { opening_token: "A small wooden token is discovered in a library book; it bears two footprints that point toward a bell.", opening_emoji: "👣" }
+  - { opening_token: "While sweeping under a café table, a brass key is discovered, its bow shaped like two footprints aimed at a tiny bell.", opening_emoji: "☕" }
+  - { opening_token: "While sitting on a park bench, you notice a folded note tucked between the slats, showing a ladder under a moon.", opening_emoji: "🪑" }
+  - { opening_token: "A brass key is found on a castle gate, and beside the number seven a red arrow points to the right.", opening_emoji: "🏰" }
+  - { opening_token: "A torn ticket is found beside an old fountain, its stub marked with four tiny knots and a sleeping fox.", opening_emoji: "🎫" }
+  - { opening_token: "A red ribbon is found inside a library book, its tail tied with three waves and a crooked star.", opening_emoji: "🎀" }
+  - { opening_token: "While reaching under a café table, you find a map fragment with a red arrow pointing to the number seven.", opening_emoji: "🗺️" }
+  - { opening_token: "On the iron bars of a castle gate, a silver button is wedged, showing a ladder beneath a crescent moon.", opening_emoji: "🌜" }
+  - { opening_token: "A silver button is found inside a museum drawer, and its rim is etched with a green square around the word north.", opening_emoji: "🏛️" }
+  - { opening_token: "While tidying a school cupboard, you find a torn ticket with three waves and a crooked star drawn in pencil.", opening_emoji: "✏️" }
+  - { opening_token: "While tidying a school cupboard, you find a wooden token carved with a black sun above a locked door.", opening_emoji: "🗄️" }
