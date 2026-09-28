@@ -1,6 +1,8 @@
 import asyncio
 import json
 
+import httpx
+
 from arena_core.template import load_template
 from arena_judge.caller import (
     CallError,
@@ -93,3 +95,35 @@ def test_the_judge_leaves_client_errors_to_the_backoff_and_retries_a_server_erro
         call = asyncio.run(Failing(status).judge(template, [], "a rock", "I am a hammer."))
         assert call.response is None and len(calls) == tries
         assert call.error_status == status and call.error_retry_after == 7.0
+
+
+def test_a_spec_with_a_base_url_goes_there_without_the_openrouter_key(monkeypatch):
+    seen: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        return httpx.Response(200, json={"choices": [{"message": {"content": "ok"}}]})
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(
+        httpx, "AsyncClient", lambda **kw: real(transport=httpx.MockTransport(handler), **kw)
+    )
+    remote = ModelSpec(model="flash", display_name="Flash")
+    local = ModelSpec(
+        model="student",
+        display_name="Student",
+        base_url="http://localhost:8080/v1/",
+        chat_template_kwargs={"enable_thinking": False},
+    )
+    caller = ModelCaller("secret", remote, remote)
+    for spec in (local, remote):
+        assert asyncio.run(caller.complete(spec, [{"role": "user", "content": "hi"}])).text == "ok"
+    asyncio.run(caller.aclose())
+
+    to_local, to_remote = seen
+    assert str(to_local.url) == "http://localhost:8080/v1/chat/completions"
+    assert "authorization" not in to_local.headers
+    assert json.loads(to_local.content)["chat_template_kwargs"] == {"enable_thinking": False}
+    assert str(to_remote.url) == "https://openrouter.ai/api/v1/chat/completions"
+    assert to_remote.headers["authorization"] == "Bearer secret"
+    assert "chat_template_kwargs" not in json.loads(to_remote.content)

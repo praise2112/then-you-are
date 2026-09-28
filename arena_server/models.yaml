@@ -43,3 +43,15 @@ opponent-fireworks:
   model: deepseek/deepseek-v4.1-flash
   temperature: 1.0
   provider: { only: [fireworks] }
+student-local:
+  display_name: The House
+  model: student
+  temperature: 1.0
+  base_url: http://localhost:8080/v1
+  chat_template_kwargs: { enable_thinking: false }
+judge-local:
+  display_name: The Judge
+  model: judge
+  temperature: 0.5
+  base_url: http://localhost:8081/v1
+  chat_template_kwargs: { enable_thinking: false }

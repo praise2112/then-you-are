@@ -22,6 +22,7 @@ from arena_judge.schema import (
 )
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+LOCAL_TIMEOUT_S = 300.0
 
 
 class ModelSpec(BaseModel):
@@ -30,6 +31,8 @@ class ModelSpec(BaseModel):
     temperature: float = 1.0
     reasoning_effort: str | None = None
     provider: dict[str, Any] | None = None
+    base_url: str | None = None
+    chat_template_kwargs: dict[str, Any] | None = None
 
 
 class CallError(Exception):
@@ -77,9 +80,18 @@ class ModelCaller:
             headers={"Authorization": f"Bearer {api_key}", "X-Title": "Oddstage"},
             timeout=httpx.Timeout(timeout_s, connect=10.0),
         )
+        # A spec with its own base_url is sent without the OpenRouter key, and a CPU server
+        # can take a minute on a cold prompt.
+        self.local = httpx.AsyncClient(timeout=httpx.Timeout(LOCAL_TIMEOUT_S, connect=10.0))
 
     async def aclose(self) -> None:
         await self.client.aclose()
+        await self.local.aclose()
+
+    def _route(self, spec: ModelSpec) -> tuple[httpx.AsyncClient, str]:
+        if spec.base_url:
+            return self.local, f"{spec.base_url.rstrip('/')}/chat/completions"
+        return self.client, OPENROUTER_URL
 
     def _body(self, spec: ModelSpec, messages: list[dict], **extra: Any) -> dict:
         body: dict[str, Any] = {
@@ -93,12 +105,15 @@ class ModelCaller:
             body["reasoning"] = {"effort": spec.reasoning_effort}
         if spec.provider:
             body["provider"] = spec.provider
+        if spec.chat_template_kwargs:
+            body["chat_template_kwargs"] = spec.chat_template_kwargs
         return body
 
     async def complete(self, spec: ModelSpec, messages: list[dict], **extra: Any) -> CallResult:
         t0 = time.monotonic()
+        client, url = self._route(spec)
         try:
-            resp = await self.client.post(OPENROUTER_URL, json=self._body(spec, messages, **extra))
+            resp = await client.post(url, json=self._body(spec, messages, **extra))
             resp.raise_for_status()
             data = resp.json()
         except httpx.HTTPStatusError as e:
@@ -122,8 +137,9 @@ class ModelCaller:
 
     async def stream(self, spec: ModelSpec, messages: list[dict]) -> AsyncIterator[str]:
         body = self._body(spec, messages, stream=True)
+        client, url = self._route(spec)
         try:
-            async with self.client.stream("POST", OPENROUTER_URL, json=body) as resp:
+            async with client.stream("POST", url, json=body) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():
                     if not line.startswith("data: ") or line == "data: [DONE]":
