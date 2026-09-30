@@ -1,10 +1,13 @@
-"""One OpenRouter caller for judge and opponent, with the judge parse ladder."""
+"""One caller for judge and opponent, OpenRouter or a spec's own endpoint, with the judge parse
+ladder."""
 
 import json
+import os
 import re
 import time
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
@@ -25,6 +28,24 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 LOCAL_TIMEOUT_S = 300.0
 
 
+class Prices(BaseModel):
+    """Dollars per million tokens; the weekday peak hours (UTC) cost twice as much."""
+
+    cache_hit: float
+    cache_miss: float
+    output: float
+    peak_hours_utc: list[int] = []
+
+    def cost(self, usage: dict, now: datetime) -> float:
+        rate = 2 if now.weekday() < 5 and now.hour in self.peak_hours_utc else 1
+        tokens = (
+            usage.get("prompt_cache_hit_tokens", 0) * self.cache_hit
+            + usage.get("prompt_cache_miss_tokens", 0) * self.cache_miss
+            + usage.get("completion_tokens", 0) * self.output
+        )
+        return rate * tokens / 1e6
+
+
 class ModelSpec(BaseModel):
     model: str
     display_name: str
@@ -32,6 +53,8 @@ class ModelSpec(BaseModel):
     reasoning_effort: str | None = None
     provider: dict[str, Any] | None = None
     base_url: str | None = None
+    api_key_env: str | None = None
+    prices: Prices | None = None
     chat_template_kwargs: dict[str, Any] | None = None
 
 
@@ -88,20 +111,30 @@ class ModelCaller:
         await self.client.aclose()
         await self.local.aclose()
 
-    def _route(self, spec: ModelSpec) -> tuple[httpx.AsyncClient, str]:
-        if spec.base_url:
-            return self.local, f"{spec.base_url.rstrip('/')}/chat/completions"
-        return self.client, OPENROUTER_URL
+    def _route(self, spec: ModelSpec) -> tuple[httpx.AsyncClient, str, dict[str, str]]:
+        """The client, URL and extra headers; a base_url spec carries only its own key."""
+        if not spec.base_url:
+            return self.client, OPENROUTER_URL, {}
+        headers = {}
+        if spec.api_key_env:
+            key = os.environ.get(spec.api_key_env)
+            if not key:
+                raise ValueError(f"{spec.api_key_env} is not set")
+            headers["Authorization"] = f"Bearer {key}"
+        return self.local, f"{spec.base_url.rstrip('/')}/chat/completions", headers
 
     def _body(self, spec: ModelSpec, messages: list[dict], **extra: Any) -> dict:
         body: dict[str, Any] = {
             "model": spec.model,
             "messages": messages,
             "temperature": spec.temperature,
-            "usage": {"include": True},
             **extra,
         }
-        if spec.reasoning_effort:
+        if not spec.base_url:
+            body["usage"] = {"include": True}
+        if spec.reasoning_effort and spec.base_url:
+            body["reasoning_effort"] = spec.reasoning_effort
+        elif spec.reasoning_effort:
             body["reasoning"] = {"effort": spec.reasoning_effort}
         if spec.provider:
             body["provider"] = spec.provider
@@ -111,9 +144,9 @@ class ModelCaller:
 
     async def complete(self, spec: ModelSpec, messages: list[dict], **extra: Any) -> CallResult:
         t0 = time.monotonic()
-        client, url = self._route(spec)
+        client, url, headers = self._route(spec)
         try:
-            resp = await client.post(url, json=self._body(spec, messages, **extra))
+            resp = await client.post(url, json=self._body(spec, messages, **extra), headers=headers)
             resp.raise_for_status()
             data = resp.json()
         except httpx.HTTPStatusError as e:
@@ -126,20 +159,23 @@ class ModelCaller:
             raise CallError(f"no choices in response: {json.dumps(data)[:300]}")
         usage = data.get("usage") or {}
         message = data["choices"][0]["message"]
+        cost = usage.get("cost")
+        if cost is None and spec.prices:
+            cost = spec.prices.cost(usage, datetime.now(UTC))
         return CallResult(
             text=message.get("content") or "",
             latency_ms=int((time.monotonic() - t0) * 1000),
-            reasoning=message.get("reasoning") or None,
+            reasoning=message.get("reasoning") or message.get("reasoning_content") or None,
             tokens_in=usage.get("prompt_tokens", 0),
             tokens_out=usage.get("completion_tokens", 0),
-            cost_usd=float(usage.get("cost", 0.0)),
+            cost_usd=float(cost or 0.0),
         )
 
     async def stream(self, spec: ModelSpec, messages: list[dict]) -> AsyncIterator[str]:
         body = self._body(spec, messages, stream=True)
-        client, url = self._route(spec)
+        client, url, headers = self._route(spec)
         try:
-            async with client.stream("POST", url, json=body) as resp:
+            async with client.stream("POST", url, json=body, headers=headers) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():
                     if not line.startswith("data: ") or line == "data: [DONE]":

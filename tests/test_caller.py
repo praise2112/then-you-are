@@ -1,7 +1,9 @@
 import asyncio
 import json
+from datetime import UTC, datetime
 
 import httpx
+import pytest
 
 from arena_core.template import load_template
 from arena_judge.caller import (
@@ -9,6 +11,7 @@ from arena_judge.caller import (
     CallResult,
     ModelCaller,
     ModelSpec,
+    Prices,
     parse_judge,
     salvage_judge,
 )
@@ -127,3 +130,46 @@ def test_a_spec_with_a_base_url_goes_there_without_the_openrouter_key(monkeypatc
     assert str(to_remote.url) == "https://openrouter.ai/api/v1/chat/completions"
     assert to_remote.headers["authorization"] == "Bearer secret"
     assert "chat_template_kwargs" not in json.loads(to_remote.content)
+
+
+def test_a_direct_spec_sends_its_own_key_and_records_the_priced_cost(monkeypatch):
+    seen: list[httpx.Request] = []
+    usage = {"prompt_cache_hit_tokens": 2_000_000, "prompt_cache_miss_tokens": 1_000_000}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        message = {"content": "ok", "reasoning_content": "hm"}
+        body = {"choices": [{"message": message}], "usage": usage | {"completion_tokens": 10**6}}
+        return httpx.Response(200, json=body)
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(
+        httpx, "AsyncClient", lambda **kw: real(transport=httpx.MockTransport(handler), **kw)
+    )
+    monkeypatch.setenv("DIRECT_KEY", "own")
+    direct = ModelSpec(
+        model="flash",
+        display_name="Flash",
+        reasoning_effort="low",
+        base_url="https://api.example.com",
+        api_key_env="DIRECT_KEY",
+        prices=Prices(cache_hit=0.01, cache_miss=0.1, output=1.0),
+    )
+    caller = ModelCaller("secret", direct, direct)
+    result = asyncio.run(caller.complete(direct, [{"role": "user", "content": "hi"}]))
+    asyncio.run(caller.aclose())
+
+    assert seen[0].headers["authorization"] == "Bearer own"
+    body = json.loads(seen[0].content)
+    assert body["reasoning_effort"] == "low" and "reasoning" not in body and "usage" not in body
+    assert result.reasoning == "hm"
+    assert result.cost_usd == pytest.approx(2 * 0.01 + 0.1 + 1.0)
+
+
+def test_weekday_peak_hours_cost_twice_as_much():
+    prices = Prices(cache_hit=0, cache_miss=1.0, output=0, peak_hours_utc=[6])
+    usage = {"prompt_cache_miss_tokens": 10**6}
+    monday_peak = datetime(2026, 9, 28, 6, 30, tzinfo=UTC)
+    assert prices.cost(usage, monday_peak) == 2.0
+    assert prices.cost(usage, monday_peak.replace(hour=11)) == 1.0
+    assert prices.cost(usage, datetime(2026, 9, 27, 6, 30, tzinfo=UTC)) == 1.0
