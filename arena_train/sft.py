@@ -129,6 +129,16 @@ class FallbackWatch(logging.Handler):
             self.seen.append(record.getMessage())
 
 
+def load_model(source):
+    """fp32 weights on the GPU, with the Hub kernels."""
+    # The Hub rotary kernel needs q, k, cos and sin in one dtype, which autocast over
+    # fp32 weights breaks.
+    get_kernel_mapping_transformers().pop("rotary_pos_emb", None)
+    return AutoModelForCausalLM.from_pretrained(
+        source, dtype=torch.float32, use_kernels=True, device_map="cuda"
+    )
+
+
 def check_kernels(model, tokenizer, example: dict) -> None:
     """One forward and backward pass; exits if any layer ran a slow reference implementation."""
     watch = FallbackWatch()
@@ -223,12 +233,7 @@ def main() -> None:
     chat_kwargs = thinking_switch(tokenizer)
     examples = load_examples(args.records, args.judge, not args.evidence_first, chat_kwargs)
     lengths = check_lengths(tokenizer, examples, max_length)
-    # The Hub rotary kernel needs q, k, cos and sin in one dtype, which autocast over
-    # fp32 weights breaks.
-    get_kernel_mapping_transformers().pop("rotary_pos_emb", None)
-    model = AutoModelForCausalLM.from_pretrained(
-        args.base, dtype=torch.float32, use_kernels=True, device_map="cuda"
-    )
+    model = load_model(args.base)
     check_kernels(model, tokenizer, examples[0])
 
     tracking = args.track
