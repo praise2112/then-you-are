@@ -18,7 +18,8 @@
         --pairs pairs.jsonl --scored scored.jsonl --contexts contexts.jsonl --out out [--run NAME]
 
 --model names an SFT run in B2 (its model/ folder is downloaded) or a local folder. DPO, IPO
-and SimPO train on the pairs; KTO trains on every scored move, labelled by its judge scores.
+and SimPO train on the pairs; KTO trains on every scored move, labelled by its judge scores,
+with each position's prompt from --positions.
 """
 
 import argparse
@@ -113,6 +114,7 @@ def main() -> None:
     ap.add_argument("--model", required=True, help="an SFT run name in B2, or a local folder")
     ap.add_argument("--pairs", type=Path, required=True)
     ap.add_argument("--scored", type=Path, help="every scored move; KTO trains on these")
+    ap.add_argument("--positions", type=Path, help="the mined positions, for KTO's prompts")
     ap.add_argument("--contexts", type=Path, help="eval contexts to answer after training")
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--run", help="upload --out to B2 under this name")
@@ -122,20 +124,21 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--track", action="store_true", help="log the run to MLflow")
     args = ap.parse_args()
-    if args.method == "kto" and not args.scored:
-        ap.error("kto trains on --scored")
+    if args.method == "kto" and not (args.scored and args.positions):
+        ap.error("kto trains on --scored with --positions")
     args.out.mkdir(parents=True, exist_ok=True)
     local = Path(args.model)
     source = local if local.is_dir() else download(args.model, args.out.with_name("sft-model"))
 
     tokenizer = AutoTokenizer.from_pretrained(source)
     chat_kwargs = thinking_switch(tokenizer)
-    pairs = [json.loads(x) for x in args.pairs.read_text().splitlines()]
     if args.method == "kto":
-        messages = {p["id"]: p["messages"] for p in pairs}
+        positions = map(json.loads, args.positions.read_text().splitlines())
+        messages = {p["id"]: p["player_messages"] for p in positions}
         scored = [json.loads(x) for x in args.scored.read_text().splitlines()]
         rows = kto_rows(tokenizer, scored, messages, chat_kwargs)
     else:
+        pairs = [json.loads(x) for x in args.pairs.read_text().splitlines()]
         rows = pair_rows(tokenizer, pairs, chat_kwargs)
     model = load_model(source)
 
