@@ -48,6 +48,9 @@ METHODS = {
 
 
 def download(run: str, dest: Path) -> Path:
+    """The SFT run's model folder from B2, unless an earlier method already fetched it."""
+    if (dest / "config.json").exists():
+        return dest
     from b2sdk.v2 import B2Api, InMemoryAccountInfo
 
     api = B2Api(InMemoryAccountInfo())
