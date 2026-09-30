@@ -2,14 +2,16 @@
 each as the judge SLM's conversation, and the D13 scores of an SLM's replies against them.
 
     uv run python -m arena_evals.judge_eval build
+    uv run python -m arena_evals.judge_eval answer URL ANSWERS.jsonl [--eval SAMPLE.jsonl]
     uv run python -m arena_evals.judge_eval score ANSWERS.jsonl [--eval SAMPLE.jsonl]
 
 `build` writes judge-eval.jsonl next to the contexts; each record has an id and messages, so
-sft.py --judge --contexts judge-eval.jsonl answers it after training. `score` reads those
-answers ({"context": id, "text": reply}).
+sft.py --judge --contexts judge-eval.jsonl answers it after training, or `answer` sends it to
+an OpenAI-compatible server. `score` reads those answers ({"context": id, "text": reply}).
 """
 
 import argparse
+import asyncio
 import itertools
 import json
 import statistics
@@ -17,6 +19,7 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
+import httpx
 from pydantic import BaseModel
 
 from arena_core.state import weighted_total
@@ -43,6 +46,7 @@ TEACHER_JUDGE = "judge-v1"
 # A pair counts for ranking only when Flash's totals differ by twice its rescoring spread.
 RANK_GAP = 7.5
 STOOD = ("accept", "semantic_uncertain")
+RULING_FIRST = ("gates", "confidence", "verdict", "truth_proximity", "scores", "evidence")
 
 
 class EvalVerdict(BaseModel):
@@ -93,6 +97,42 @@ def build() -> None:
         ledger.close()
     EVAL_PATH.write_text("".join(v.model_dump_json() + "\n" for v in out))
     print(f"{len(out)} verdicts from {len(ROWS)} rows", file=sys.stderr)
+
+
+def taught_order(messages: list[dict[str, str]], ruling_first: bool) -> list[dict[str, str]]:
+    """Earlier verdicts in the key order the judge was trained on, as sft.py orders them."""
+    if not ruling_first:
+        return messages
+    out = []
+    for m in messages:
+        if m["role"] == "assistant":
+            verdict = json.loads(m["content"])
+            scoring = verdict["scoring"]
+            verdict["scoring"] = {k: scoring[k] for k in RULING_FIRST if k in scoring}
+            m = {**m, "content": json.dumps(verdict, ensure_ascii=False)}
+        out.append(m)
+    return out
+
+
+async def answer(url: str, verdicts: list[EvalVerdict], ruling_first: bool) -> list[dict]:
+    """The server's reply to each eval record at judge-v1's temperature."""
+    sem = asyncio.Semaphore(32)
+    async with httpx.AsyncClient(timeout=600) as client:
+
+        async def one(v: EvalVerdict) -> dict:
+            body = {
+                "model": "m",
+                "messages": taught_order(v.messages, ruling_first),
+                "temperature": 0.5,
+                "max_tokens": 640,
+                "chat_template_kwargs": {"enable_thinking": False},
+            }
+            async with sem:
+                resp = await client.post(f"{url.rstrip('/')}/chat/completions", json=body)
+            resp.raise_for_status()
+            return {"context": v.id, "text": resp.json()["choices"][0]["message"]["content"] or ""}
+
+        return list(await asyncio.gather(*(one(v) for v in verdicts)))
 
 
 def kappa(pairs: list[tuple[str, str]]) -> float:
@@ -152,14 +192,23 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("build")
+    an = sub.add_parser("answer")
+    an.add_argument("url", help="an OpenAI-compatible base URL serving the judge as model m")
+    an.add_argument("answers", type=Path)
+    an.add_argument("--evidence-first", action="store_true")
     sc = sub.add_parser("score")
     sc.add_argument("answers", type=Path)
-    sc.add_argument("--eval", type=Path, default=EVAL_PATH, help="a sample of the eval set")
+    for p in (an, sc):
+        p.add_argument("--eval", type=Path, default=EVAL_PATH, help="a sample of the eval set")
     args = ap.parse_args()
     if args.cmd == "build":
         build()
         return
     verdicts = [EvalVerdict.model_validate_json(x) for x in args.eval.read_text().splitlines()]
+    if args.cmd == "answer":
+        done = asyncio.run(answer(args.url, verdicts, not args.evidence_first))
+        args.answers.write_text("".join(json.dumps(d, ensure_ascii=False) + "\n" for d in done))
+        return
     templates = {s: load_template_file(pool_path(k, s)) for k, s in heldout_variants()}
     answers = {
         a["context"]: a["text"] for a in map(json.loads, args.answers.read_text().splitlines())
