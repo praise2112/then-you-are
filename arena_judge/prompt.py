@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from dataclasses import dataclass
 
 from arena_core.state import Actor, player
 from arena_core.template import Template
@@ -163,6 +164,70 @@ The move under judgment:
 <move>
 {move}
 </move>"""
+
+
+@dataclass(frozen=True)
+class JudgedTurn:
+    """One earlier judged move in a match, with the judge's reply as it was written."""
+
+    actor: Actor
+    previous: str
+    move: str
+    hidden: str
+    verdict: str
+
+
+def render_judge_system(template: Template) -> str:
+    """The judge SLM's fixed text: only what differs by game. The rules every game shares
+    (gates, confidence, scoring guidance, the output shape) are learned in training."""
+    notes = "\n".join(f"- {note.strip()}" for note in template.criterion.judge_notes)
+    return f"""You are the Judge of {template.title}.
+
+PREMISE
+{template.premise.strip()}
+
+CRITERION
+{template.criterion.description.strip()} {template.criterion.anti_metagaming_clause.strip()}
+{notes}
+
+RUBRIC
+{_rubric_block(template)}
+
+{_host_block(template)}
+
+EXAMPLES
+
+{_examples_block(template)}"""
+
+
+def _judge_turn(actor: Actor, previous: str, move: str, hidden: str) -> str:
+    return f"""{_hidden_block(hidden)}The prompt to answer:
+{previous}
+
+The move under judgment, by {player(actor)}:
+<move>
+{move}
+</move>"""
+
+
+def render_judge_messages(
+    template: Template,
+    earlier: list[JudgedTurn],
+    actor: Actor,
+    previous: str,
+    move: str,
+    hidden: str = "",
+) -> list[dict]:
+    """The judge SLM's match as a conversation: each judged move a user message and its
+    verdict the reply, so a later call's messages start with an earlier call's."""
+    messages = [{"role": "system", "content": render_judge_system(template)}]
+    for t in earlier:
+        messages.append(
+            {"role": "user", "content": _judge_turn(t.actor, t.previous, t.move, t.hidden)}
+        )
+        messages.append({"role": "assistant", "content": t.verdict})
+    messages.append({"role": "user", "content": _judge_turn(actor, previous, move, hidden)})
+    return messages
 
 
 def judge_prompt_hash(template: Template) -> str:

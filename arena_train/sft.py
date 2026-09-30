@@ -68,14 +68,26 @@ def player_example(record: dict, chat_kwargs: dict) -> dict:
     }
 
 
-def judge_example(record: dict, ruling_first: bool, chat_kwargs: dict) -> dict:
-    response = record["response"]
+def verdict_text(response: dict, ruling_first: bool) -> str:
     if ruling_first:
         scoring = response["scoring"]
         response = {**response, "scoring": {k: scoring[k] for k in RULING_FIRST if k in scoring}}
+    return json.dumps(response, ensure_ascii=False)
+
+
+def judge_example(record: dict, ruling_first: bool, chat_kwargs: dict) -> dict:
+    """The record's conversation, its earlier verdicts in the same key order as the target."""
+    prompt = [
+        {**m, "content": verdict_text(json.loads(m["content"]), ruling_first)}
+        if m["role"] == "assistant"
+        else m
+        for m in record["messages"]
+    ]
     return {
-        "prompt": [{"role": "user", "content": record["prompt"]}],
-        "completion": [{"role": "assistant", "content": json.dumps(response, ensure_ascii=False)}],
+        "prompt": prompt,
+        "completion": [
+            {"role": "assistant", "content": verdict_text(record["response"], ruling_first)}
+        ],
         "chat_template_kwargs": chat_kwargs,
     }
 
@@ -197,7 +209,7 @@ def main() -> None:
     args = ap.parse_args()
     if args.batch % args.micro_batch:
         ap.error("--batch must be a multiple of --micro-batch")
-    max_length = args.max_length or (6144 if args.judge else 2048)
+    max_length = args.max_length or (8192 if args.judge else 2048)
     args.out.mkdir(parents=True, exist_ok=True)
 
     tokenizer = AutoTokenizer.from_pretrained(args.base)

@@ -6,7 +6,7 @@ from pydantic import ValidationError
 
 import arena_core.template as template_module
 from arena_core.template import Template, load_template, load_templates
-from arena_judge.prompt import render_opponent_messages
+from arena_judge.prompt import JudgedTurn, render_judge_messages, render_opponent_messages
 
 
 def test_template_loads_and_lints():
@@ -191,3 +191,18 @@ def test_each_writer_call_starts_with_the_one_before_it_so_the_server_cache_exte
     second = render_opponent_messages(words, "Card two.", one, seat="p2")
     assert second[: len(first)] == first
     assert second[len(first)] == {"role": "assistant", "content": "UNO"}
+
+
+def test_the_judge_slm_sees_only_the_games_own_text_and_each_call_extends_the_last():
+    duel = load_template("then-i-am")
+    first = render_judge_messages(duel, [], "p1", "a rock", "I am sand")
+    system = first[0]["content"]
+    assert duel.premise.strip() in system and duel.host.persona_name in system
+    assert all(r.name in system for r in duel.rubric)
+    assert duel.examples[0].move in system
+    assert "GATES" not in system and "CONFIDENCE" not in system and "OUTPUT" not in system
+    earlier = JudgedTurn("p1", "a rock", "I am sand", "", '{"scoring": {}}')
+    second = render_judge_messages(duel, [earlier], "p2", "I am sand", "I am glass")
+    assert second[: len(first)] == first
+    assert second[len(first)] == {"role": "assistant", "content": '{"scoring": {}}'}
+    assert "by player2" in second[-1]["content"] and "I am glass" in second[-1]["content"]

@@ -13,7 +13,13 @@ from arena_core.state import STANDING, normalize, weighted_total
 from arena_core.template import Template
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_evals.run_golden import GOLDEN_DIR, load_golden
-from arena_judge.prompt import clean_move, render_judge_prompt, render_opponent_messages
+from arena_judge.prompt import (
+    JudgedTurn,
+    clean_move,
+    render_judge_messages,
+    render_judge_prompt,
+    render_opponent_messages,
+)
 from arena_judge.schema import JudgeResponse, Outcome, route_outcome
 
 PARSED = ("parsed", "parsed_on_retry")
@@ -52,6 +58,7 @@ class JudgeRecord(BaseModel):
     judge_model: str
     judge_prompt_hash: str
     prompt: str
+    messages: list[dict[str, str]]
     raw: str
     reasoning: str | None
     response: dict[str, Any] | None
@@ -149,6 +156,19 @@ def export(
                 else None
             )
             outcome = route_outcome(response.scoring) if response else None
+            main = calls_by_match.get(match_id, [])
+            before = (call.seq, -1 if sabotage else call.idx)
+            earlier = [
+                JudgedTurn(
+                    c.actor,
+                    c.payload["previous"],
+                    c.payload["move"],
+                    c.payload["hidden"],
+                    json.dumps(c.payload["response"], ensure_ascii=False),
+                )
+                for c in main
+                if c.role == "judge" and c.payload["response"] and (c.seq, c.idx) < before
+            ]
             record = JudgeRecord(
                 template_id=template.slug,
                 judge_model=call.model,
@@ -156,6 +176,14 @@ def export(
                 prompt=render_judge_prompt(
                     template,
                     call.payload["transcript"],
+                    call.payload["previous"],
+                    call.payload["move"],
+                    call.payload["hidden"],
+                ),
+                messages=render_judge_messages(
+                    template,
+                    earlier,
+                    call.actor,
                     call.payload["previous"],
                     call.payload["move"],
                     call.payload["hidden"],

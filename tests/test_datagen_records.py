@@ -8,7 +8,7 @@ from arena_core.template import load_template
 from arena_evals.datagen.ledger import Ledger
 from arena_evals.datagen.play import play_match
 from arena_evals.datagen.records import RenderMismatch, export, quantile_of, terciles
-from arena_judge.prompt import render_opponent_messages
+from arena_judge.prompt import JudgedTurn, render_judge_messages, render_opponent_messages
 from tests.conftest import judge_response
 from tests.test_datagen_play import JUDGE, SIDES, ScriptedCaller, duel_match, word_match
 
@@ -123,3 +123,17 @@ def test_terciles_rank_within_the_batch_and_need_three_scores():
         and quantile_of(60, cuts) == "high"
     )
     assert quantile_of(10, None) is None
+
+
+def test_a_judge_record_carries_the_matchs_earlier_verdicts_as_its_conversation(tmp_path: Path):
+    rulings = [judge_response(), judge_response(verdict="fail"), judge_response(verdict="fail")]
+    moves = ["I am a hammer, rock-splitting.", "I am rust, hinge-eating.", "I am a poem."]
+    ledger, out = run_duel(tmp_path, rulings, moves)
+    export(ledger, TEMPLATES, CLASSES, out)
+    first, second = read(out / "judge.jsonl")[:2]
+    duel = TEMPLATES["then-i-am"]
+    assert first["messages"] == render_judge_messages(duel, [], "p1", "a rock", moves[0])
+    verdict = json.dumps(first["response"], ensure_ascii=False)
+    earlier = JudgedTurn("p1", "a rock", moves[0], "", verdict)
+    assert second["messages"] == render_judge_messages(duel, [earlier], "p2", moves[0], moves[1])
+    assert second["messages"][: len(first["messages"])] == first["messages"]
