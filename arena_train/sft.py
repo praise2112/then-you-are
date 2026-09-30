@@ -190,7 +190,7 @@ def main() -> None:
     ap.add_argument("--max-steps", type=int, default=-1)
     ap.add_argument("--lr", type=float, default=1e-5)
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--micro-batch", type=int, default=2)
+    ap.add_argument("--micro-batch", type=int, default=8)
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--max-length", type=int)
     ap.add_argument("--track", action="store_true", help="log the run to MLflow")
@@ -210,7 +210,6 @@ def main() -> None:
     model = AutoModelForCausalLM.from_pretrained(
         args.base, dtype=torch.float32, use_kernels=True, device_map="cuda"
     )
-    model.gradient_checkpointing_enable()
     check_kernels(model, tokenizer, examples[0])
 
     tracking = args.track
@@ -234,7 +233,8 @@ def train(args, model, tokenizer, examples, lengths, max_length, name, tracking)
         warmup_steps=0.03,
         per_device_train_batch_size=args.micro_batch,
         gradient_accumulation_steps=args.batch // args.micro_batch,
-        gradient_checkpointing=True,
+        gradient_checkpointing=False,
+        train_sampling_strategy="group_by_length",
         bf16=True,
         max_length=max_length,
         packing=False,
@@ -276,11 +276,14 @@ def train(args, model, tokenizer, examples, lengths, max_length, name, tracking)
         if args.run:
             mlflow.set_tag("b2_path", f"oddstage/runs/{args.run}/")
 
-    model.gradient_checkpointing_disable()
     trainer.save_model(str(args.out / "model"))
     tokenizer.save_pretrained(str(args.out / "model"))
     if args.contexts:
+        began = time.monotonic()
         answer_contexts(model, tokenizer, args.contexts, args.out)
+        metrics["answer_seconds"] = round(time.monotonic() - began, 1)
+        (args.out / "metrics.json").write_text(json.dumps(metrics, indent=1))
+        print(json.dumps({"answer_seconds": metrics["answer_seconds"]}), file=sys.stderr)
     if args.run:
         upload(args.out, args.run)
 
