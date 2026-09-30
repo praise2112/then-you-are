@@ -16,7 +16,9 @@ MAX_SHARE = 0.05
 
 
 def cap_shares(by_game: dict[str, list[str]], rng: random.Random) -> dict[str, list[str]]:
-    """Drops random records from each game over MAX_SHARE of the total until none is over."""
+    """Drops random records from each game over MAX_SHARE of the total until none is over.
+    The result depends on the records and the rng, not on the order they came in."""
+    by_game = {g: sorted(v) for g, v in sorted(by_game.items())}
     while True:
         total = sum(len(v) for v in by_game.values())
         over = {
