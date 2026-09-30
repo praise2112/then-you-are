@@ -86,7 +86,7 @@ class FakeCaller(ModelCaller):
             response=response, raw=raw, prompt_hash="test", latency_ms=1, attempts=["parsed"]
         )
 
-    def opponent_stream(self, template, card, transcript, hidden="") -> AsyncIterator[str]:
+    def opponent_stream(self, template, seat, card, transcript, hidden="") -> AsyncIterator[str]:
         self.opponent_saw.append(list(transcript))
         self.opponent_hidden.append(hidden)
         move = (

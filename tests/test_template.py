@@ -139,7 +139,7 @@ def test_lint_rejects_a_call_without_a_hidden_truth_or_outside_a_showcase():
 
 def test_opponent_prompt_carries_premise_criterion_and_a_move_cap_below_the_real_one():
     duel = load_template("then-i-am")
-    system = render_opponent_messages(duel, "a rock", [])[0]["content"]
+    system = render_opponent_messages(duel, "a rock", [], seat="p1")[0]["content"]
     assert system.startswith(duel.premise.strip())
     assert duel.criterion.description.strip() in system
     assert duel.criterion.anti_metagaming_clause.strip() in system
@@ -149,7 +149,7 @@ def test_opponent_prompt_carries_premise_criterion_and_a_move_cap_below_the_real
     assert "{max_chars}" not in system
 
     words = load_template("word-for-word")
-    system = render_opponent_messages(words, "zarf", [])[0]["content"]
+    system = render_opponent_messages(words, "zarf", [], seat="p1")[0]["content"]
     assert "at most 128 characters. Reply with the move only." in system
     assert "truth_proximity" not in system
 
@@ -168,6 +168,26 @@ def test_a_shipped_game_with_a_long_tagline_is_refused(monkeypatch, tmp_path: Pa
 def test_a_showcase_opponent_sees_this_rounds_card_after_the_earlier_rounds():
     words = load_template("front-page")
     earlier = ["round 1, prompt: The council planted twelve trees along a road.", "player1: TREES"]
-    user = render_opponent_messages(words, "A neighbour borrowed a ladder.", earlier)[1]["content"]
+    messages = render_opponent_messages(words, "A neighbour borrowed a ladder.", earlier, seat="p1")
+    assert [m["role"] for m in messages] == ["system", "user", "assistant", "user"]
+    assert messages[2]["content"] == "TREES"
+    user = messages[3]["content"]
     assert user.index("twelve trees") < user.index("ladder") < user.index("YOUR MOVE")
     assert user.rstrip().endswith("THIS ROUND'S CARD: A neighbour borrowed a ladder.\n\nYOUR MOVE:")
+
+
+def test_each_writer_call_starts_with_the_one_before_it_so_the_server_cache_extends():
+    duel = load_template("then-i-am")
+    first = render_opponent_messages(duel, "a rock", ["player1: I am sand"], seat="p2")
+    later = ["player1: I am sand", "player2: I am glass", "player1: I am a window"]
+    second = render_opponent_messages(duel, "a rock", later, seat="p2")
+    assert second[: len(first)] == first
+    assert second[len(first)] == {"role": "assistant", "content": "I am glass"}
+    assert "I am a window" in second[-1]["content"] and "I am sand" not in second[-1]["content"]
+
+    words = load_template("front-page")
+    one = ["round 1, prompt: Card one.", "player1: ONE", "player2: UNO"]
+    first = render_opponent_messages(words, "Card one.", [], seat="p2")
+    second = render_opponent_messages(words, "Card two.", one, seat="p2")
+    assert second[: len(first)] == first
+    assert second[len(first)] == {"role": "assistant", "content": "UNO"}

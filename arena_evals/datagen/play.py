@@ -165,7 +165,7 @@ class MatchPlayer:
         match, template = self.match, self.template
         teacher = self.teachers[actor]
         lines = transcript(match, template, finished_only=True)
-        messages = render_opponent_messages(template, prompt, lines, hidden)
+        messages = render_opponent_messages(template, prompt, lines, hidden, seat=actor)
         seq = len(match.turns) + 1
         payload = {"card": prompt, "transcript": lines, "hidden": hidden, "messages": messages}
         row = await self.tape.step(

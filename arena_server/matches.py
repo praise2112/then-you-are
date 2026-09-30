@@ -1593,7 +1593,7 @@ class MatchService:
             while match.status == "active" and match.to_move == seat:
                 refusals = match.strikes[seat] - strikes_before
                 if refusals < template.strikes_before_consequence:
-                    move_text = await self._stream_opponent_move(match, template, match.seed)
+                    move_text = await self._stream_opponent_move(match, template, seat, match.seed)
                 elif refusals == template.strikes_before_consequence:
                     move_text = template.default_move
                 else:
@@ -1867,7 +1867,7 @@ class MatchService:
         text = held
         if text is None:
             text = await self._stream_opponent_move(
-                match, template, card.card_text, card.hidden, silent=True
+                match, template, seat, card.card_text, card.hidden, silent=True
             )
             await self._hold(match.id, seat, text, match.round_n)
         refusals = 0
@@ -1883,7 +1883,7 @@ class MatchService:
                     # A model seat is meant to bluff: one more try when it wrote the truth.
                     retold = True
                     text = await self._stream_opponent_move(
-                        match, template, card.card_text, card.hidden, silent=True
+                        match, template, seat, card.card_text, card.hidden, silent=True
                     )
                     await self._hold(match.id, seat, text, match.round_n)
                     continue
@@ -1894,7 +1894,7 @@ class MatchService:
                 raise HouseStuck(match.id)
             if refusals < template.strikes_before_consequence:
                 text = await self._stream_opponent_move(
-                    match, template, card.card_text, card.hidden, silent=True
+                    match, template, seat, card.card_text, card.hidden, silent=True
                 )
                 await self._hold(match.id, seat, text, match.round_n)
             else:
@@ -2042,13 +2042,19 @@ class MatchService:
         self.bus.emit(match.id, "turn_rejected", rejected)
 
     async def _stream_opponent_move(
-        self, match: Match, template: Template, prompt: str, hidden: str = "", silent: bool = False
+        self,
+        match: Match,
+        template: Template,
+        seat: str,
+        prompt: str,
+        hidden: str = "",
+        silent: bool = False,
     ) -> str:
         seq = len(match.turns) + 1
         parts: list[str] = []
         lines = transcript(match, template, finished_only=True)
         try:
-            async for chunk in self.caller.opponent_stream(template, prompt, lines, hidden):
+            async for chunk in self.caller.opponent_stream(template, seat, prompt, lines, hidden):
                 parts.append(chunk)
                 if not silent:
                     self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))

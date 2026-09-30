@@ -80,7 +80,7 @@ class Export(BaseModel):
 
 
 class RenderMismatch(Exception):
-    """A stored student prompt no longer matches what the serving code renders."""
+    """A stored writer's system prompt no longer matches what the serving code renders."""
 
 
 def golden_pairs() -> set[tuple[str, str]]:
@@ -249,9 +249,9 @@ def _player_record(
 ) -> PlayerRecord:
     inputs = move_call.payload
     rendered = render_opponent_messages(
-        template, inputs["card"], inputs["transcript"], inputs["hidden"]
+        template, inputs["card"], inputs["transcript"], inputs["hidden"], seat=move_call.actor
     )
-    if rendered != inputs["messages"]:
+    if rendered[0] != inputs["messages"][0]:
         raise RenderMismatch(f"{call.match_id} seq {call.seq}")
     return PlayerRecord(
         messages=rendered,

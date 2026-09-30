@@ -84,7 +84,7 @@ def test_showcase_writers_see_only_finished_rounds_and_nobody_guesses(tmp_path: 
     assert match.status == "ended" and match.end_reason == "rounds_complete"
     assert match.guesses == [] and match.phase == "write"
     assert [t.round_n for t in match.turns] == [1, 1, 2, 2, 3, 3]
-    round_two_p2 = caller.writers_saw[3][1][1]["content"]
+    round_two_p2 = "\n".join(m["content"] for m in caller.writers_saw[3][1][1:])
     assert "a thing 0" in round_two_p2 and "a thing 1" in round_two_p2
     assert "a thing 2" not in round_two_p2
     assert caller.hidden_seen[0] == WORDS.seed_named("zarf").hidden  # type: ignore[union-attr]

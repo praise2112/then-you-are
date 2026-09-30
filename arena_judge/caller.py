@@ -205,9 +205,9 @@ class ModelCaller:
         return call
 
     def opponent_stream(
-        self, template: Template, card: str, transcript: list[str], hidden: str = ""
+        self, template: Template, seat: str, card: str, transcript: list[str], hidden: str = ""
     ) -> AsyncIterator[str]:
-        messages = render_opponent_messages(template, card, transcript, hidden)
+        messages = render_opponent_messages(template, card, transcript, hidden, seat=seat)
         return self.stream(self.opponent_spec, messages)
 
 

@@ -3,6 +3,7 @@
 import hashlib
 import json
 
+from arena_core.state import Actor, player
 from arena_core.template import Template
 
 # Writers overshoot a stated character count, so they are shown this share of the real cap.
@@ -192,17 +193,47 @@ def clean_move(raw: str) -> str:
     return raw.strip().strip('"')
 
 
-def render_opponent_messages(
-    template: Template, card: str, transcript: list[str], hidden: str = ""
-) -> list[dict]:
-    lines = "\n".join(transcript) if transcript else "(you move first)"
+def _writer_ask(template: Template, shown: list[str], card: str, hidden: str) -> str:
+    lines = "\n".join(shown) if shown else "(you move first)"
+    if template.mode == "escalation":
+        return f"{lines}\n\nYOUR MOVE:"
     truth = f"\nThe real meaning, which yours must not share: {hidden}\n" if hidden else ""
-    if template.mode == "showcase":
-        # The round's card must follow the earlier rounds or the writer answers an old card.
-        content = f"TRANSCRIPT:\n{lines}\n\nTHIS ROUND'S CARD: {card}\n{truth}\nYOUR MOVE:"
+    # The round's card must follow the earlier rounds or the writer answers an old card.
+    return f"{lines}\n\nTHIS ROUND'S CARD: {card}\n{truth}\nYOUR MOVE:"
+
+
+def render_opponent_messages(
+    template: Template, card: str, transcript: list[str], hidden: str = "", *, seat: Actor
+) -> list[dict]:
+    """The writer's match as a conversation: each earlier move by `seat` is its reply to what
+    it was shown then, so a later call's messages start with an earlier call's."""
+    mine = f"{player(seat)}: "
+    messages = [{"role": "system", "content": render_opponent_system(template)}]
+    shown: list[str] = []
+    if template.mode == "escalation":
+        shown = [f"Prompt: {card}"]
+        for line in transcript:
+            if line.startswith(mine):
+                messages.append({"role": "user", "content": _writer_ask(template, shown, "", "")})
+                messages.append({"role": "assistant", "content": line.removeprefix(mine)})
+                shown = []
+            else:
+                shown.append(line)
     else:
-        content = f"TRANSCRIPT:\nPrompt: {card}\n{lines}\n{truth}\nYOUR MOVE:"
-    return [
-        {"role": "system", "content": render_opponent_system(template)},
-        {"role": "user", "content": content},
-    ]
+        rounds: list[list[str]] = []
+        for line in transcript:
+            if line.startswith("round "):
+                rounds.append([])
+            rounds[-1].append(line)
+        for lines in rounds:
+            own = next((x.removeprefix(mine) for x in lines if x.startswith(mine)), None)
+            if own is not None:
+                round_card = lines[0].split(": ", 1)[1]
+                seed = next((s for s in template.seed_pool if s.card_text == round_card), None)
+                ask = _writer_ask(template, shown, round_card, seed.hidden if seed else "")
+                messages.append({"role": "user", "content": ask})
+                messages.append({"role": "assistant", "content": own})
+                shown = []
+            shown.extend(lines)
+    messages.append({"role": "user", "content": _writer_ask(template, shown, card, hidden)})
+    return messages

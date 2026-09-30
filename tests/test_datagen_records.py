@@ -50,7 +50,9 @@ def test_accepted_moves_become_player_records_rendered_like_runtime(tmp_path: Pa
     players = read(out / "player.jsonl")
     assert result.player == 2 and [p["target"] for p in players] == moves[:2]
     first = players[0]
-    assert first["messages"] == render_opponent_messages(TEMPLATES["then-i-am"], "a rock", [])
+    assert first["messages"] == render_opponent_messages(
+        TEMPLATES["then-i-am"], "a rock", [], seat="p1"
+    )
     prov = first["provenance"]
     assert prov["teacher"] == "opponent-v1" and prov["game_class"] == "counter"
     assert prov["judge_model"] == "flash-judge" and prov["target_quality"] == "best"
