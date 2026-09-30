@@ -18,9 +18,9 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel
 
-from arena_core.state import normalize, weighted_total
+from arena_core.state import weighted_total
 from arena_core.template import Template
-from arena_evals.datagen.prefset import CORPUS, Position, with_move
+from arena_evals.datagen.prefset import CORPUS, Position, playable, with_move
 from arena_evals.datagen.run import corpus_games
 from arena_judge.prompt import clean_move
 
@@ -83,14 +83,7 @@ async def score_position(
     drafts = await chat(
         client, args.player, pos.player_messages, n=MOVES, temperature=0.9, max_tokens=96
     )
-    taken = {normalize(t) for t in pos.on_table}
-    moves = [
-        m
-        for m in dict.fromkeys(clean_move(d) for d in drafts)
-        if normalize(m)
-        and len(m) <= template.move_constraints.max_chars
-        and normalize(m) not in taken
-    ]
+    moves = [m for m in dict.fromkeys(clean_move(d) for d in drafts) if playable(template, pos, m)]
     scored = []
     for move in moves:
         replies = await chat(

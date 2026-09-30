@@ -10,6 +10,8 @@ import sys
 
 from pydantic import BaseModel
 
+from arena_core.state import normalize
+from arena_core.template import Template
 from arena_evals.datagen.records import JudgeRecord, PlayerRecord
 
 CORPUS = "arena_evals/datagen/corpus"
@@ -34,6 +36,16 @@ def with_move(judge_messages: list[dict[str, str]], move: str) -> list[dict[str,
     """The same conversation with `move` under judgment instead."""
     head = judge_messages[-1]["content"].rsplit("<move>\n", 1)[0]
     return [*judge_messages[:-1], {"role": "user", "content": f"{head}<move>\n{move}\n</move>"}]
+
+
+def playable(template: Template, pos: Position, move: str) -> bool:
+    """Not empty, under the character cap, and not a repeat of a text already on the table."""
+    taken = {normalize(t) for t in pos.on_table}
+    return (
+        bool(normalize(move))
+        and len(move) <= template.move_constraints.max_chars
+        and (normalize(move) not in taken)
+    )
 
 
 def join(players: list[PlayerRecord], judges: list[JudgeRecord]) -> list[Position]:
