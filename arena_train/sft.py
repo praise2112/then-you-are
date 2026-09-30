@@ -75,16 +75,19 @@ def verdict_text(response: dict, ruling_first: bool) -> str:
     return json.dumps(response, ensure_ascii=False)
 
 
-def judge_example(record: dict, ruling_first: bool, chat_kwargs: dict) -> dict:
-    """The record's conversation, its earlier verdicts in the same key order as the target."""
-    prompt = [
+def ordered_history(messages: list[dict], ruling_first: bool) -> list[dict]:
+    """A judge conversation with its earlier verdicts in the key order the judge is taught."""
+    return [
         {**m, "content": verdict_text(json.loads(m["content"]), ruling_first)}
         if m["role"] == "assistant"
         else m
-        for m in record["messages"]
+        for m in messages
     ]
+
+
+def judge_example(record: dict, ruling_first: bool, chat_kwargs: dict) -> dict:
     return {
-        "prompt": prompt,
+        "prompt": ordered_history(record["messages"], ruling_first),
         "completion": [
             {"role": "assistant", "content": verdict_text(record["response"], ruling_first)}
         ],
@@ -159,11 +162,10 @@ def check_kernels(model, tokenizer, example: dict) -> None:
 
 
 def answer_contexts(
-    model, tokenizer, contexts: Path, out: Path, temperature: float, max_new_tokens: int
+    model, tokenizer, rows: list[dict], out: Path, temperature: float, max_new_tokens: int
 ) -> None:
     """One sampled answer per record (an id and its messages) at the served temperature."""
     batch = 16
-    rows = [json.loads(line) for line in contexts.read_text().splitlines()]
     chat_kwargs = thinking_switch(tokenizer)
     model.eval()
     model.config.use_cache = True
@@ -304,9 +306,13 @@ def train(args, model, tokenizer, examples, lengths, max_length, name, tracking)
     tokenizer.save_pretrained(str(args.out / "model"))
     if args.contexts:
         began = time.monotonic()
+        rows = [json.loads(line) for line in args.contexts.read_text().splitlines()]
         # The judge answers at judge-v1's temperature, the player at the opponent's.
         temperature, new_tokens = (0.5, 640) if args.judge else (1.0, 96)
-        answer_contexts(model, tokenizer, args.contexts, args.out, temperature, new_tokens)
+        if args.judge:
+            ruling_first = not args.evidence_first
+            rows = [{**r, "messages": ordered_history(r["messages"], ruling_first)} for r in rows]
+        answer_contexts(model, tokenizer, rows, args.out, temperature, new_tokens)
         metrics["answer_seconds"] = round(time.monotonic() - began, 1)
         (args.out / "metrics.json").write_text(json.dumps(metrics, indent=1))
         print(json.dumps({"answer_seconds": metrics["answer_seconds"]}), file=sys.stderr)

@@ -192,7 +192,8 @@ def main() -> None:
     trainer.save_model(str(args.out / "model"))
     tokenizer.save_pretrained(str(args.out / "model"))
     if args.contexts:
-        answer_contexts(model, tokenizer, args.contexts, args.out, 1.0, 96)
+        rows = [json.loads(line) for line in args.contexts.read_text().splitlines()]
+        answer_contexts(model, tokenizer, rows, args.out, 1.0, 96)
     if args.run:
         upload(args.out, args.run)
 
