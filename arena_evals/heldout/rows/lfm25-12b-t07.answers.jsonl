@@ -1,0 +1,394 @@
+{"context": "hold-music-0/1/p1", "text": "The order was canceled before it left the warehouse, and the checkout screen logged you out of the account."}
+{"context": "hold-music-0/2/p2", "text": "The shop says it's a system error, but the cancellation email has been sent to my inbox twice."}
+{"context": "hold-music-0/3/p1", "text": "The security team says the flagged order needs a manual review, and the agent says they're checking it now."}
+{"context": "hold-music-0/4/p2", "text": "The agent says store credit won't cover that charge, and asks if you'd like to postpone it until the refund arrives."}
+{"context": "hold-music-0/5/p1", "text": "The agent says the case number is missing because the cancellation email was sent to the wrong inbox, and asks who owns that inbox."}
+{"context": "hold-music-0/6/p2", "text": "The agent needs the last four digits of your card and the billing ZIP twice in a row, so you have to re-enter them every time."}
+{"context": "hold-music-0/7/p1", "text": "The security agent says the case number is missing from the email, and asks if you can provide the card's last four digits now."}
+{"context": "hold-music-0/8/p2", "text": "The agent says the high volume caused the disconnection, then asks you to hold the line while we chase the missed call."}
+{"context": "hold-music-1/1/p1", "text": "The parcel was misdirected to the family home, so the bank now has to chase the family about it."}
+{"context": "hold-music-1/2/p2", "text": "The courier's voice says the card was delivered to 123 Main Street, but the receipt lists 456 Oak Avenue."}
+{"context": "hold-music-1/3/p1", "text": "The courier says they’ll call your parents, but you have to ask your parent to confirm their door is open."}
+{"context": "hold-music-1/4/p2", "text": "The courier says M. Reyes is a friend, and asks if you can explain the card was sent to your parents’ place."}
+{"context": "hold-music-1/5/p1", "text": "The courier says M. stands for the wrong town, and asks if you can explain why your card went to the wrong door."}
+{"context": "hold-music-1/6/p2", "text": "The card still lands in the wrong mailbox, so the agent says M. Reyes is a nickname, and asks if you know the full name."}
+{"context": "hold-music-1/7/p1", "text": "The supervisor says the form is for an express delivery, and the courier says the package was already marked for that route."}
+{"context": "hold-music-1/8/p2", "text": "The supervisor says we can't open that form until the unit number arrives, so the agent emails you a carrier update."}
+{"context": "hold-music-2/1/p1", "text": "The bank sent your new card to the wrong address before your trip, so they’re holding the receipt and asking for proof."}
+{"context": "hold-music-2/2/p2", "text": "We’ll forward your payment confirmation to the wrong address, then ask the bank to update it before your trip."}
+{"context": "hold-music-2/3/p1", "text": "That's a good point, but the receipt shows the fee is for the card's annual protection, not the wrong address."}
+{"context": "hold-music-2/4/p2", "text": "The agent says the rush delivery fee is standard, then asks whether the customer can wait 90 minutes while the replacement arrives."}
+{"context": "hold-music-2/5/p1", "text": "The agent sends me a tracking number, then asks if I want the card delivered to the address we changed mid-trip."}
+{"context": "hold-music-2/6/p2", "text": "The agent says the mailbox is now empty, but the $15 fee is locked in as a hold until the wrong address is confirmed."}
+{"context": "hold-music-2/7/p1", "text": "The tenant says the return date was last week, but the bank’s records show it was filed under your name; we’ll need the tenant’s ID to check the file."}
+{"context": "hold-music-2/8/p2", "text": "The agent says the warehouse has a tracking number, but the tenant says they checked there yesterday and found nothing."}
+{"context": "hold-music-3/1/p1", "text": "The airline says the meal was prepared in the lost-property room, then asks you to confirm the flight number so they can find it."}
+{"context": "hold-music-3/2/p2", "text": "The feedback form is for the in-flight meal, but the attendant asks you to rate the crew again—this time over the phone."}
+{"context": "hold-music-3/3/p1", "text": "You sign the form on the seat, then the attendant circles “no meal” and writes “refused” across your rating."}
+{"context": "hold-music-3/4/p2", "text": "The silent hold keeps the receipt in the system, but the airline says it's flagged for a customs hold in the US."}
+{"context": "hold-music-3/5/p1", "text": "The agent says the meal fee was never billed, then charges the phone for a paperback copy of the menu."}
+{"context": "hold-music-3/6/p2", "text": "The mailbox clerk says the euro charge is refundable, then asks for proof from the receipt that got thrown out."}
+{"context": "hold-music-3/7/p1", "text": "The hold music plays again: \"Mail forward, please. Please do not hang up.\""}
+{"context": "hold-music-3/8/p2", "text": "The London extension says the 500 miles won't arrive until the admin fee is cleared, then asks for a £5 card token."}
+{"context": "hold-music-4/1/p1", "text": "The gym’s repair log shows the door was locked, so I had to ask the front desk for a key."}
+{"context": "hold-music-4/2/p2", "text": "The gym clerk says the repair crew has arrived, and now he asks if you can hold the door while he checks the equipment inventory."}
+{"context": "hold-music-4/3/p1", "text": "The agent says the repair crew is at Sixth Street, but the door is locked, so I have to ask the front desk for the key."}
+{"context": "hold-music-4/4/p2", "text": "I ask the agent to forward my complaint to the Sixth Street branch, and he says he can't do that because the repair crew is still blocking the door."}
+{"context": "hold-music-4/5/p1", "text": "The fax machine spits out a form calling my file, so now I have to fill out the Sixth Street form in front of the desk."}
+{"context": "hold-music-4/6/p2", "text": "The fax machine keeps playing, so I ask him to read the cancellation offer aloud, and he does."}
+{"context": "hold-music-4/7/p1", "text": "The agent says the callback line closes at nine, so he'll need to call back at ten to keep my spot."}
+{"context": "hold-music-4/8/p2", "text": "I tell the agent the survey is for the hold music, not the gym, and he asks who sent that survey."}
+{"context": "hold-music-5/1/p1", "text": "The bank says it was a one-time fee to cover the late fee, and the form number has not been released to me."}
+{"context": "hold-music-5/2/p2", "text": "The bank says the fee applies to all accounts, but my statement is in a foreign region where they charge it differently."}
+{"context": "hold-music-5/3/p1", "text": "Fees Review asks for your ID, but I already gave them your bank card."}
+{"context": "hold-music-5/4/p2", "text": "I have to press 2 now because my phone died at the doctor's office."}
+{"context": "hold-music-5/5/p1", "text": "Fees Review says silence means our tech team is still chasing you. Press 2 to get back on the line."}
+{"context": "hold-music-6/1/p1", "text": "The driver says the wrong address is a delivery error, but our package is still marked as \"home.\""}
+{"context": "hold-music-6/2/p2", "text": "The driver says the delivery is confirmed, then asks if I want a receipt or a photo of the address."}
+{"context": "hold-music-6/3/p1", "text": "The driver's notes name a neighbor’s locked gate, but the photo shows the package by the open door."}
+{"context": "hold-music-6/4/p2", "text": "The driver is still at the wrong door, so the agent says he’ll call you back once he gets it right."}
+{"context": "hold-music-6/5/p1", "text": "The agent says the notes mention a locked porch, so they ask you to confirm whether you can reach that door."}
+{"context": "hold-music-6/6/p2", "text": "The agent says the system logs that you requested the notes, then asks why you haven’t received an explanation yet."}
+{"context": "hold-music-6/7/p1", "text": "The uploader says the photo shows a locked door, but the delivery receipt says it was unlocked."}
+{"context": "hold-music-6/8/p2", "text": "The email bounces back with a dead-letter stamp, and the agent asks whether you want a refund or a tracking update."}
+{"context": "hold-music-7/1/p1", "text": "The stranger's house is on a list of foreclosed properties, so the stranger is the landlord and not your lender."}
+{"context": "hold-music-7/2/p2", "text": "I read out my full loan amount and account number, but the stranger's house is on the wrong street."}
+{"context": "hold-music-7/3/p1", "text": "The courier says it was to check the records, then asks if you'd opted for digital delivery."}
+{"context": "hold-music-7/4/p2", "text": "The stranger's address is on file, so the courier logs it as a delivery slip, not a complaint."}
+{"context": "hold-music-7/5/p1", "text": "The stranger's house is not on the mailed address, so the agent says the card was sent to a false address and asks for a photo of the bill."}
+{"context": "hold-music-7/6/p2", "text": "I confirm the card number, then ask the stranger to check their mailbox for a signature."}
+{"context": "hold-music-7/7/p1", "text": "The agent says the house is on paper, then asks if you can show the mailing receipt for that address."}
+{"context": "hold-music-7/8/p2", "text": "The courier fee is just for the house, not the address, and the agent says he needs proof before charging."}
+{"context": "hold-music-8/1/p1", "text": "The flight attendant says the meal is already served, but her phone recording shows the food disappeared before we got on the plane."}
+{"context": "hold-music-8/2/p2", "text": "She says the 7-day deadline means we need a written request, so I'll sign for you now and you pay the postage."}
+{"context": "hold-music-8/3/p1", "text": "The app says the meal request is still logged, so I need to forward it to the app support with the email address from the 2019 booking."}
+{"context": "hold-music-8/4/p2", "text": "The partner airline's catering line numbers the meal in their own system, so I have to ask the attendant to call them."}
+{"context": "hold-music-8/5/p1", "text": "The survey asks me to explain why I rated it one, so the partner has to call back and admit the meal was already on the way."}
+{"context": "hold-music-8/6/p2", "text": "The complaints team says they can't open that ticket because the survey responses are locked in the partner's system."}
+{"context": "hold-music-8/7/p1", "text": "The retired email bounces back with the partner's address and a non-existent booking number, so I have to log into the airline's portal to resubmit."}
+{"context": "hold-music-8/8/p2", "text": "The mailing machine jams because the postage stamp is a souvenir from last year's Christmas, so I have to buy a new one."}
+{"context": "campfire-chain-0/1/p1", "text": "I am a tick brush, and I sweep the crawling tick off the campsite."}
+{"context": "campfire-chain-0/2/p2", "text": "I am a wet towel, and I smother the campfire."}
+{"context": "campfire-chain-0/3/p1", "text": "I am a mop, and I soak up the dog's dirt and the campfire's smoke."}
+{"context": "campfire-chain-0/4/p2", "text": "I am a muddy muck, and I soak the boot until it’s stuck to the ground."}
+{"context": "campfire-chain-0/5/p1", "text": "I am a jackhammer, and I crack the stake so the boot drops free."}
+{"context": "campfire-chain-0/6/p2", "text": "I am a campsite toolbox, and I hide the knife inside so it can't cut the leash."}
+{"context": "campfire-chain-0/7/p1", "text": "I am a rust, and it eats the belt's buckle until it springs loose."}
+{"context": "campfire-chain-0/8/p2", "text": "I am a knife sharpener, and I grind the sheath down to a sliver so it can't swallow the knife."}
+{"context": "campfire-chain-1/1/p1", "text": "I am a stone, and I smash the hatchet."}
+{"context": "campfire-chain-2/1/p1", "text": "I am a bear trap, and I snag the raccoon’s paw and haul it off."}
+{"context": "campfire-chain-3/1/p1", "text": "I am a bear trap, and I catch the raccoon."}
+{"context": "campfire-chain-3/2/p2", "text": "I am a campfire, and I drive the locked cooler inside me."}
+{"context": "campfire-chain-3/3/p1", "text": "I am a rusty bolt cutter, and I snap the pry bar’s steel shaft."}
+{"context": "campfire-chain-3/4/p2", "text": "I am a field of blackberry, and I choke the axe's blade with thorns."}
+{"context": "campfire-chain-3/5/p1", "text": "I am a leather sheath, and I cover the whetstone's grit."}
+{"context": "campfire-chain-4/1/p1", "text": "I am a bear, and I chew through the blanket."}
+{"context": "campfire-chain-5/1/p1", "text": "I am a heron, and I scoop the minnows out of the net."}
+{"context": "campfire-chain-6/1/p1", "text": "I am a heron, and I scoop the minnows into my bill."}
+{"context": "campfire-chain-6/2/p2", "text": "I am a bucket of water, and I drown the fire."}
+{"context": "campfire-chain-6/3/p1", "text": "I am a drought, and I dry the creek bed."}
+{"context": "campfire-chain-6/4/p2", "text": "I am a beaver, and I cut the dam apart."}
+{"context": "campfire-chain-6/5/p1", "text": "I am a ladder, and I climb the beaver's dam."}
+{"context": "campfire-chain-6/6/p2", "text": "I am a gun, and I shoot the trapper dead."}
+{"context": "campfire-chain-6/7/p1", "text": "I am a snagging tool, and I pull the trap line out of the ground."}
+{"context": "campfire-chain-6/8/p2", "text": "I am a rusty hinge, and it jams the game warden’s confiscated trap line."}
+{"context": "campfire-chain-7/1/p1", "text": "I am a bucket of water, and I douse the firefire."}
+{"context": "campfire-chain-8/1/p1", "text": "I am a crow, and I pry the trap open and eat the fish."}
+{"context": "chat-court-0/1/p1", "text": "Exhibit: the library bell, it rang at noon, so you’re not alone."}
+{"context": "chat-court-0/2/p2", "text": "Exhibit: Library clock shows 12:15, and the lunch monitor's sign-in sheet ends at 12:14, so you weren't there."}
+{"context": "chat-court-1/1/p1", "text": "Exhibit: your dishwasher was still running when you said you washed every dish."}
+{"context": "chat-court-1/2/p2", "text": "Exhibit: the kitchen scale shows zero, but your bowl still had 2.3 cups of milk."}
+{"context": "chat-court-2/1/p1", "text": "Exhibit: the caller was driving away, so I never got the full story."}
+{"context": "chat-court-2/2/p2", "text": "Exhibit: the call timestamp proves you were in the car when it started."}
+{"context": "chat-court-2/3/p1", "text": "Exhibit: the 2:14 exit ticket proves you weren't in the car, just driving to the call."}
+{"context": "chat-court-2/4/p2", "text": "Exhibit: driveway camera timestamp proving your car was still parked while that call went unanswered."}
+{"context": "chat-court-2/5/p1", "text": "Exhibit: the garage key tag in your pocket proves you were in the car when that call ended."}
+{"context": "chat-court-2/6/p2", "text": "Exhibit: the meeting room key tag with your name on it, proving you were still at your desk when the call ended."}
+{"context": "chat-court-3/1/p1", "text": "Exhibit: garage key, but never used once, so who took it?"}
+{"context": "chat-court-3/2/p2", "text": "Exhibit: the garage key turned in at 9:18, stamped with a time you were not there, and the receipt shows no purchase."}
+{"context": "chat-court-4/1/p1", "text": "Exhibit: the last slice’s receipt proves nobody saw you take it."}
+{"context": "chat-court-5/1/p1", "text": "Exhibit: the stove was already off when you left, and the power logs show it was shut at 7am."}
+{"context": "chat-court-5/2/p2", "text": "Exhibit: the smoke alarm on that burner is still ringing, so the stove was on when you left."}
+{"context": "chat-court-6/1/p1", "text": "Exhibit: the dinner table photos, they show the room was full, not the food."}
+{"context": "chat-court-6/2/p2", "text": "Exhibit: I was late because my car locked itself, so the photo proves I never arrived."}
+{"context": "chat-court-7/1/p1", "text": "Exhibit: that message was sent to me at 8:15 AM, not yesterday."}
+{"context": "chat-court-7/2/p2", "text": "Exhibit: the in-flight camera footage proves you were at the gate checking your email, not chatting."}
+{"context": "chat-court-7/3/p1", "text": "Exhibit: the timestamp proves you were still on the call at 11:47pm, so the sent message was never actually delivered."}
+{"context": "chat-court-8/1/p1", "text": "Exhibit: Soap and water make your hands slippery, so you wash them again."}
+{"context": "chat-court-8/2/p2", "text": "Exhibit: the timestamped receipt proves you washed your hands before plating that raw chicken."}
+{"context": "road-hazard-0/1/p1", "text": "I am a street sweeper; I push the floodwater out of the intersection."}
+{"context": "road-hazard-0/2/p2", "text": "I am a street sweeper; I push the water out of the intersection."}
+{"context": "road-hazard-1/1/p1", "text": "I am a road crew; I jack the tunnel mouth open so traffic can flow."}
+{"context": "road-hazard-1/2/p2", "text": "I am a steel cable; I haul the bulldozer out of the tunnel mouth and hold it away from the road."}
+{"context": "road-hazard-2/1/p1", "text": "I am a tow truck; I drag the smoking car out of the ditch."}
+{"context": "road-hazard-2/2/p2", "text": "I am a road crew; I haul the tow truck away from the ditch."}
+{"context": "road-hazard-2/3/p1", "text": "I am a drain grate; I scoop the foam off the wheel so it can’t spray."}
+{"context": "road-hazard-3/1/p1", "text": "I am a cone; I block the dark signal and divert traffic to the correct lane."}
+{"context": "road-hazard-3/2/p2", "text": "I am a sandbag; I drop it on the electrician's hands to stop the box from opening."}
+{"context": "road-hazard-3/3/p1", "text": "I am a tow truck; I tow the signal control officer off the junction."}
+{"context": "road-hazard-4/1/p1", "text": "I am a tow truck; I drag the empty tank to a service station."}
+{"context": "road-hazard-4/2/p2", "text": "I am a nozzle; I seal the tank so the pump can't reach it."}
+{"context": "road-hazard-4/3/p1", "text": "I am a pipe wrench; I snap the cracked fuel line shut."}
+{"context": "road-hazard-5/1/p1", "text": "I am a snow plow; I scrape the muddy water off the road so traffic can move."}
+{"context": "road-hazard-5/2/p2", "text": "I am a pump; I suck the muddy water off the road and pour it away."}
+{"context": "road-hazard-5/3/p1", "text": "I am a concrete spillway; I divert the pump truck's hose into a puddle and spill it out."}
+{"context": "road-hazard-6/1/p1", "text": "I am a street sweeper; I push the standing water off the road."}
+{"context": "road-hazard-6/2/p2", "text": "I am a road crew; I pour gravel into the storm drain to clog it."}
+{"context": "road-hazard-7/1/p1", "text": "I am a fire crew; I shut the hydrant off with a wrench."}
+{"context": "road-hazard-7/2/p2", "text": "I am a pipe wrench; I grip the shutoff wrench and snap the jaws apart."}
+{"context": "road-hazard-8/1/p1", "text": "I am a road crew; I clear the mudslide's path with gravel and shovels."}
+{"context": "road-hazard-8/2/p2", "text": "I am a road crew; I excavate the culvert and regrade the road."}
+{"context": "fine-print-fiasco-2001-1-0/1/p1", "text": "By using this teapot, you agree not to pour until the steam has cleared the hallway."}
+{"context": "fine-print-fiasco-2001-1-0/2/p2", "text": "By using this teapot, you agree to never pour it near the kitchen sink."}
+{"context": "fine-print-fiasco-2001-1-0/3/p1", "text": "By using this passport, do not carry it in a pocket; its stamp may peel off and leave your name blank."}
+{"context": "fine-print-fiasco-2001-1-0/4/p2", "text": "By using this passport, do not carry it in the open and show it to strangers; it may be read by the wrong office at the wrong border."}
+{"context": "fine-print-fiasco-2001-1-0/5/p1", "text": "By using this lunchbox, do not leave perishables out past the 4-hour window; the seal may refuse to close."}
+{"context": "fine-print-fiasco-2001-1-0/6/p2", "text": "By using this lunchbox, do not leave perishable items open for more than four hours; otherwise the seal may accuse you of spoilage."}
+{"context": "fine-print-fiasco-2001-1-1/1/p1", "text": "By using this blanket, you must fold it twice and pin it to the wall beside the bed before lights out."}
+{"context": "fine-print-fiasco-2001-1-1/2/p2", "text": "By using this blanket, you agree to leave it on the floor and not carry it past the bed."}
+{"context": "fine-print-fiasco-2001-1-1/3/p1", "text": "By wearing this scarf, you agree not to use it as a napkin or emergency spill cloth at breakfast."}
+{"context": "fine-print-fiasco-2001-1-1/4/p2", "text": "By wearing this scarf, one must carry it away from open flames and never let it dangle in a draft."}
+{"context": "fine-print-fiasco-2001-1-1/5/p1", "text": "Do not feed this into the shredder’s drum; stray paper scraps may jam the blades and void its safety certification."}
+{"context": "fine-print-fiasco-2001-1-1/6/p2", "text": "By using this, do not feed it paper thinner than 8.5, as the shredder’s eye may misread the width and jam with a wet sheet."}
+{"context": "fine-print-fiasco-2001-1-2/1/p1", "text": "By using this pitcher, rinse the coaster daily; condensation leaves rings on furniture."}
+{"context": "fine-print-fiasco-2001-1-2/2/p2", "text": "By using this, do not fill it past half full; the coaster collects rings and a tiny apology."}
+{"context": "fine-print-fiasco-2001-1-2/3/p1", "text": "By using this, do not feed it paper that has been wet or folded; the shredder jams and the tears may turn to ink."}
+{"context": "fine-print-fiasco-2001-1-2/4/p2", "text": "By using this, do not feed a soggy sheet; a jammed roll must be opened by a stranger."}
+{"context": "fine-print-fiasco-2001-1-2/5/p1", "text": "Do not leave this lunchbox by the heat source; the warm air may make the lunchbox's warning label smell like burnt toast."}
+{"context": "fine-print-fiasco-2001-1-2/6/p2", "text": "By using this, keep the lunchbox sealed; opening before closing will cause a startling emptiness that may frighten children."}
+{"context": "fine-print-fiasco-2001-1-3/1/p1", "text": "By using this chair, you must not lean back more than 15 degrees; sudden recline may cause the chair to flip and crush your sense of dignity."}
+{"context": "fine-print-fiasco-2001-1-3/2/p2", "text": "By using this, the chair may tip over, and the dignified decline is waived if the back legs are unloaded."}
+{"context": "fine-print-fiasco-2001-1-3/3/p1", "text": "By using this doorbell, keep it indoors unless the owner signs for an outside call, as it cannot ring from the porch."}
+{"context": "fine-print-fiasco-2001-1-3/4/p2", "text": "By using this doorbell, test it only indoors; the warranty remains valid only if no one hears it from outside."}
+{"context": "fine-print-fiasco-2001-1-3/5/p1", "text": "By using this, wipe the rim before each pour; excess water drips onto the counter and leaves a ring-shaped mark."}
+{"context": "fine-print-fiasco-2001-1-3/6/p2", "text": "By using this, wipe the rim of the pitcher before each pour, as condensation can leave rings on the furniture."}
+{"context": "fine-print-fiasco-2001-1-4/1/p1", "text": "By carrying a thermos, remember: the warning label is your map to avoiding steam burns."}
+{"context": "fine-print-fiasco-2001-1-4/2/p2", "text": "By using this thermos, place it on a stable surface and keep it away from drafts."}
+{"context": "fine-print-fiasco-2001-1-4/3/p1", "text": "Do not use near hair, jewelry, or pets; the string may tangle before bedtime."}
+{"context": "fine-print-fiasco-2001-1-4/4/p2", "text": "Do not let the yo-yo fall into the drain, where the string will coil like a sleepy cat's tail."}
+{"context": "fine-print-fiasco-2001-1-4/5/p1", "text": "Do not fasten the lanyard to machinery bolts; its clasp may spring open and send you stumbling."}
+{"context": "fine-print-fiasco-2001-1-4/6/p2", "text": "Do not loop the lanyard around the wrist, as the clasp may catch on movement and leave you freeing it twice daily."}
+{"context": "fine-print-fiasco-2001-1-5/1/p1", "text": "By using this thermos, you agree to keep it on a table; do not carry it into the kitchen."}
+{"context": "fine-print-fiasco-2001-1-5/2/p2", "text": "By using this thermos, ensure the cap is screwed on tightly to prevent spills and hot liquid escaping."}
+{"context": "fine-print-fiasco-2001-1-5/3/p1", "text": "Do not share this slipper; a shared pair may leave one with a hidden seam ripping under wear."}
+{"context": "fine-print-fiasco-2001-1-5/4/p2", "text": "Do not carry the slipper in both hands; the loose cushion may shift and spill onto the floor."}
+{"context": "fine-print-fiasco-2001-1-5/5/p1", "text": "Do not send print jobs while the tray is jammed; the office manager may charge for each attempt."}
+{"context": "fine-print-fiasco-2001-1-5/6/p2", "text": "By using this, do not feed a blank sheet; the printer may jam and spill toner across the floor."}
+{"context": "fine-print-fiasco-2001-1-6/1/p1", "text": "By using this pillow, you must not use it to cover the bed, as it may startle sleeping guests."}
+{"context": "fine-print-fiasco-2001-1-6/2/p2", "text": "By using this pillow, I warn you: it may startle cats, so keep it away from their sleeping cozy."}
+{"context": "fine-print-fiasco-2001-1-6/3/p1", "text": "By using this passport, you must not carry it in your pocket during meals, as it can be easily misplaced."}
+{"context": "fine-print-fiasco-2001-1-6/4/p2", "text": "By using this passport, you must carry it in a plastic sleeve, or it may be readable only by a certified scanning machine."}
+{"context": "fine-print-fiasco-2001-1-6/5/p1", "text": "Do not carry this across a wet surface, as the sole may sink and leave a slick patch that could tip a passing cyclist."}
+{"context": "fine-print-fiasco-2001-1-6/6/p2", "text": "Do not carry this slipper in a locked bag, as the seams may shift and leave a loose thread that tangles on the other’s shoe."}
+{"context": "fine-print-fiasco-2001-1-7/1/p1", "text": "By using this hairbrush, do not comb through a tangle that has not been introduced to conditioner."}
+{"context": "fine-print-fiasco-2001-1-7/2/p2", "text": "By using this brush, you agree not to comb through any tangle that has not been previously introduced to conditioner."}
+{"context": "fine-print-fiasco-2001-1-7/3/p1", "text": "By using this blanket, you agree not to drape it across your chest after lights out, as the loose threads may catch the ceiling fan and snag on its blades."}
+{"context": "fine-print-fiasco-2001-1-7/4/p2", "text": "Do not wrap the blanket around your head above the chin after lights out, as the loose threads may snag on bedding and cause a tangled curtain."}
+{"context": "fine-print-fiasco-2001-1-7/5/p1", "text": "By using this accordion file, label each folder with its contents so a clerk can open exactly what you need."}
+{"context": "fine-print-fiasco-2001-1-7/6/p2", "text": "By using this, keep each folder’s contents separated by a handwritten note; the accordion’s spring will spring the last page loose."}
+{"context": "fine-print-fiasco-2001-1-8/1/p1", "text": "By using this, keep the flower vase away from heat sources; water may cause it to wilt if left too long."}
+{"context": "fine-print-fiasco-2001-1-8/2/p2", "text": "By using this, water may be poured into the vase to fill it; it cannot be drained from there."}
+{"context": "fine-print-fiasco-2001-1-8/3/p1", "text": "By using this, avoid tangling the brush’s bristles; a snagged head may shed into the water and spoil the wash."}
+{"context": "fine-print-fiasco-2001-1-8/4/p2", "text": "Do not use the brush to comb tangles not previously conditioned; that may leave a greasy residue and attract dust."}
+{"context": "fine-print-fiasco-2001-1-8/5/p1", "text": "Do not leave the bathrobe over the radiator; prolonged exposure to heat may set the fabric’s fibers into a stiff, unyielding tang."}
+{"context": "fine-print-fiasco-2001-1-8/6/p2", "text": "Do not wear the bathrobe while boiling food; grease may stick to the fabric and snag the cook’s sleeve."}
+{"context": "manual-mishap-0/1/p1", "text": "SIT ON IT FLAT, DO NOT TILT IT TOWERS OVER THE TABLE"}
+{"context": "manual-mishap-0/2/p2", "text": "SET THE MUG ON THE TABLE FIRST, THEN USE THE FLAT BASE TO SIT ON IT"}
+{"context": "manual-mishap-0/3/p1", "text": "USE THE SHOWER CAP'S ELASTIC OPENING TO HOLD HAIR UNTIL THE DRIP STOPS."}
+{"context": "manual-mishap-0/4/p2", "text": "WARN: THE ELASTIC OPENING HOLDS HAIR, SO KEEP IT TIGHT OR THE CROWNS WILL ESCAPE."}
+{"context": "manual-mishap-0/5/p1", "text": "STEP 1: PULL THE ZIPPER UP THE PILLOW COVER OR THE SLEEPING BEAR FURIOUSLY WILL."}
+{"context": "manual-mishap-0/6/p2", "text": "STEP 1: PULL THE ZIPPER OPEN, THEN THE PILLOW COVER SHREDS LIKE A WARM WIPE."}
+{"context": "manual-mishap-2/1/p1", "text": "USE THE MUG'S BOWL SHAPE TO HOLD SOUP ONLY IF THE KETTLE IS CANDY"}
+{"context": "manual-mishap-2/2/p2", "text": "USE THE MUG TO HOLD YOUR SOUP, BUT NEVER THE BOWL SHAPE ITSELF"}
+{"context": "manual-mishap-2/3/p1", "text": "STEP 2: COVER YOUR HAND WITH THE GLOVE, THEN CHECK THE FINGERS ARE NOT CUT"}
+{"context": "manual-mishap-2/4/p2", "text": "STEP 1: STRIKE TWICE TO PIN THE GLOVE TO YOUR BED; IT WILL NOT COVER A HAND WITHOUT TYING"}
+{"context": "manual-mishap-2/5/p1", "text": "WARNING: CLOSE THE TRASH BAG WITH THE DRAWSTRING; LOOSEN IT NOW AND THE BAG WILL BURP."}
+{"context": "manual-mishap-2/6/p2", "text": "DRAW STRING IS FOR CLOSING THE TRASH BAG; DO NOT SNAP IT UNTIL FULL"}
+{"context": "manual-mishap-3/1/p1", "text": "USE THE MUG TO HOLD SOUP, THEN DID IT ALREADY?"}
+{"context": "manual-mishap-3/2/p2", "text": "Use the mug to scoop soup, then rinse it before drinking."}
+{"context": "manual-mishap-3/3/p1", "text": "USE THE SPOON’S SERrated EDGE TO CUT SOUP BEFORE THE BOWL REPLIES WITH A BOIL."}
+{"context": "manual-mishap-3/4/p2", "text": "STEP 2: CUT THE SOUP INTO SMALL PORTIONS, THEN POUR EACH PORTION INTO THE SPOON."}
+{"context": "manual-mishap-3/5/p1", "text": "STEP 2: TIGHTEN THE CURVED HOOP SO YOUR HAIR STAYS BACK AND NEVER ON YOUR NECK."}
+{"context": "manual-mishap-3/6/p2", "text": "STEP 1: PULL THE CURVED HOOP TIGHT ON YOUR HEAD TO KEEP THE HAIR BACK."}
+{"context": "manual-mishap-4/1/p1", "text": "FERMENT THE KETTLE SPOUT FOR POURING WATER, OR IT WILL CONTAIN YOUR REGRET"}
+{"context": "manual-mishap-4/2/p2", "text": "POUR WATER INTO THE KETTLE, THEN WAIT FOR THE SPOUT TO CLOSE."}
+{"context": "manual-mishap-4/3/p1", "text": "WARNING: THE STUFFING SOFTENS THE SEAT, BUT ONLY AFTER THE MAIDEN IS DEAD."}
+{"context": "manual-mishap-4/4/p2", "text": "WARNING: SOFTEN THE SEAT WITH STUFFING, BUT ONLY IF THE CUSHION IS NOT DEAD."}
+{"context": "manual-mishap-4/5/p1", "text": "STEP 1: IF THE MATTRESS SPRINGS BOSS, TAKE A SEAT AND FELT IT."}
+{"context": "manual-mishap-4/6/p2", "text": "BEDTIME WARNING: THE SPRINGS SUPPORT YOUR BODY, BUT DO NOT LIFT THE BED."}
+{"context": "manual-mishap-5/1/p1", "text": "TWIST THE ZIPPER’S TEETH TIGHT TO JOIN TWO EDGES, OR THEY’LL BIN YOU"}
+{"context": "manual-mishap-5/2/p2", "text": "USE THE ZIPPER TEETH TO JOIN TWO EDGES, OR RUN OUT OF THEM BEFORE THE BUNDLE COLLAPSES."}
+{"context": "manual-mishap-5/3/p1", "text": "Use THE BUCKET BY THE SHELL TO TIP ON THE SHELF, BUT NEVER THE EYES."}
+{"context": "manual-mishap-5/5/p1", "text": "STEP 2: ZIP THE PILLOW COVER TO REMOVE IT FROM THE BED"}
+{"context": "manual-mishap-5/6/p2", "text": "STEP 1: UNZIP THE PILLOW’S COVER AND WIPE THE BEDDING DRY BEFORE IT REMOVES."}
+{"context": "manual-mishap-6/1/p1", "text": "AIM BRISTLES ON THE RACK TO HOLD THE FOOD STOLEN"}
+{"context": "manual-mishap-6/2/p2", "text": "RUG THE RAKE’S TEETH TO HOLD FOOD, NOT YOUR SHOES"}
+{"context": "manual-mishap-6/3/p1", "text": "USE THE SCRUB BRUSH TO SCRUB PANS, THEN WIPE THE BRISTLES UP BEFORE THEY SUE"}
+{"context": "manual-mishap-6/4/p2", "text": "STEP 6: SCRUB THE PANS, WARNING THE BRISTLES MAY FOLD UNDER PAPERWORK."}
+{"context": "manual-mishap-6/5/p1", "text": "STEP 8: POUR THE SOUP INTO THE MUG, THEN LICK THE BOWL BEFORE IT DRIES."}
+{"context": "manual-mishap-6/6/p2", "text": "STEP 6: DOWNPOUR THE SOUP INTO THE MUG, THEN WARN THE BOWL TO TURN INTO A DRAIN."}
+{"context": "manual-mishap-7/1/p1", "text": "POUR WATER FROM THE PILLOW, BUT ONLY IF THE TOP IS OPEN AND THE CUP IS CLEAN."}
+{"context": "manual-mishap-7/2/p2", "text": "DRILL THE PILLOW OPEN TO POUR WATER, BUT WARN THE CHILDREN"}
+{"context": "manual-mishap-7/3/p1", "text": "STEP 3 WRAP THE SCARF AROUND THE NECK TO KEEP THE COLD OFF, BUT CHECK FIRST"}
+{"context": "manual-mishap-7/4/p2", "text": "STEP 3: Wrap SCARF AROUND THE NECK TIGHTLY, OR IT WILL TYPHON AT MIDNIGHT"}
+{"context": "manual-mishap-7/5/p1", "text": "STEP 9 HOLD THE BOWL-SHAPED END OF THE SOCK FOR HOLDING WATER OR THE TEA WILL ESCALATE"}
+{"context": "manual-mishap-7/6/p2", "text": "USE THE BOWL-SHAPED END TO HOLD WATER, THEN DRAIN IT BEFORE IT BECOMES A FLOOD"}
+{"context": "manual-mishap-8/1/p1", "text": "USE THE MUG TO HOLD SOUP AND WARN GUESTS TO KEEP THEIR EYES ON THE BOWL"}
+{"context": "manual-mishap-8/2/p2", "text": "AIM THE MUG SOUP TO STOP THE BROTH FROM COOLING"}
+{"context": "manual-mishap-8/3/p1", "text": "FAREWELL TO THE DUSTPAN, WHICH SWEEPS DIRT BUT NEVER PLEES FOR HELP."}
+{"context": "manual-mishap-8/4/p2", "text": "AIM THE DUSTPAN LIP TO SQUEEZE THE DIRT OUT BEFORE THE BROOM MISSES IT"}
+{"context": "manual-mishap-8/5/p1", "text": "READ THE PILLOW’S WASHING PAT, OR IT READS YOUR BEDDING SECRETS."}
+{"context": "manual-mishap-8/6/p2", "text": "READ THE PILLOW’S WASHING INSTRUCTIONS BEFORE SLEEP, OR THE MAIDEN’S SLEEP IS DISH-DISHED."}
+{"context": "reference-check-from-hell-0/2/p2", "text": "He keeps the soggy coats by the door, one step ahead of the cold, always watching."}
+{"context": "reference-check-from-hell-0/3/p1", "text": "He keeps the broken loudspeaker behind a curtain, but still manages to call the crowd \"go home\" in the wrong language."}
+{"context": "reference-check-from-hell-0/4/p2", "text": "He sets up the mismatched jerseys, keeps score, and never asks why the referee's chair is broken."}
+{"context": "reference-check-from-hell-0/5/p1", "text": "A calm, pensioner-friendly queue, though the door still owes him a cuppa."}
+{"context": "reference-check-from-hell-0/6/p2", "text": "He keeps the toilet door shut so pensioners queue calmly, even when the chair rows spill over."}
+{"context": "reference-check-from-hell-1/1/p1", "text": "Ward guard with a hat, keeps watch over soggy coats in the hospital corridor until the final patient goes."}
+{"context": "reference-check-from-hell-1/2/p2", "text": "The coat guard keeps watch over soggy coats in the hospital corridor until the final patient goes."}
+{"context": "reference-check-from-hell-1/4/p2", "text": "Vows done, umbrella guard. He knows which one needs repair before the rain begins."}
+{"context": "reference-check-from-hell-1/5/p1", "text": "Calm, reserved, and still waiting for the microphone after thirty years."}
+{"context": "reference-check-from-hell-1/6/p2", "text": "Warm, patient, and never asks why the loudspeaker keeps cutting out"}
+{"context": "reference-check-from-hell-2/1/p1", "text": "Wear the rain like a badge, keep watch over soggy coats in the hospital corridor until the final patient goes."}
+{"context": "reference-check-from-hell-2/2/p2", "text": "A vigilant sentinel, watchful over soggy coats in the hospital corridor until the final patient goes."}
+{"context": "reference-check-from-hell-2/3/p1", "text": "The borrowed shoes left her with a stained sole, but she scrapes gum off the toilet seats anyway."}
+{"context": "reference-check-from-hell-2/4/p2", "text": "He scrapes gum off the toilet seats while wearing borrowed shoes, and the janitor owes him a apology."}
+{"context": "reference-check-from-hell-2/5/p1", "text": "He vacuumed the ring post-match, then demanded we call it the mudroom, not the office."}
+{"context": "reference-check-from-hell-2/6/p2", "text": "Steam hisses through the vents as he scrubs the ring mat, though the ringmaster never asks."}
+{"context": "reference-check-from-hell-3/1/p1", "text": "A calm, patient presence; pensioners queue calmly until the last one bolts, then I escort them out."}
+{"context": "reference-check-from-hell-3/2/p2", "text": "The pensioners queue calmly, their orders already written in the hospital ledger."}
+{"context": "reference-check-from-hell-3/3/p1", "text": "She finds them under the marquee, but the groom's grandmother still calls the dry cleaning hotline."}
+{"context": "reference-check-from-hell-3/4/p2", "text": "The groom found them wedged in the marquee, one still pointing at her like a missing key."}
+{"context": "reference-check-from-hell-3/5/p1", "text": "She sorts socks by color while the ward nurse watches, still waiting for the return ticket."}
+{"context": "reference-check-from-hell-3/6/p2", "text": "He keeps the missing socks behind the wheel, and the ward nurse says he owes her a spare pair."}
+{"context": "reference-check-from-hell-4/1/p1", "text": "He catches chickens, not speakers—last week he chased one past the bouncer and ate its ring."}
+{"context": "reference-check-from-hell-4/2/p2", "text": "A quick witted trapper, though the chicken kept escaping before the bouncer could catch it"}
+{"context": "reference-check-from-hell-4/3/p1", "text": "He counts the chickens, gets wet, and still calls the one past the toilets “the quietest.”"}
+{"context": "reference-check-from-hell-4/4/p2", "text": "He counts them at the lay-by, late at night, while the motel counts its own lost flock."}
+{"context": "reference-check-from-hell-4/5/p1", "text": "Holds umbrellas for patients, never leaving my post, and charges them rent."}
+{"context": "reference-check-from-hell-4/6/p2", "text": "A lone umbrella-sitter through the ward, refusing to look up as patients call him the rain barrier."}
+{"context": "reference-check-from-hell-5/1/p1", "text": "Dentures, announced at midnight, still in the petting zoo’s bat enclosure."}
+{"context": "reference-check-from-hell-5/2/p2", "text": "Quietly, the night guard announces missing dentures in the petting zoo's bat enclosure, then collects the coins."}
+{"context": "reference-check-from-hell-5/3/p1", "text": "Quietly, he kept watching the pensioners queue past the final whistle, dreaming of a pension."}
+{"context": "reference-check-from-hell-5/4/p2", "text": "She saved the last two jerseys for the pensioners, then made them buy the team's coffee."}
+{"context": "reference-check-from-hell-5/5/p1", "text": "He announced the dentures at the gate and charged each egg buyer a dime for the call."}
+{"context": "reference-check-from-hell-5/6/p2", "text": "He announced the missing dentures to the farm-gate egg buyers, and the queue still calls him \"the denture cop."}
+{"context": "reference-check-from-hell-6/1/p1", "text": "Warden Patel keeps the wet coats by the gate; the missing red scarf is his signature."}
+{"context": "reference-check-from-hell-6/2/p2", "text": "I watch the wet coats by the farm gate, missing one red scarf, till closing."}
+{"context": "reference-check-from-hell-6/3/p1", "text": "Shed dog, still waiting for the mascot, washing heads while the owner sleeps."}
+{"context": "reference-check-from-hell-6/4/p2", "text": "He washes mascot heads all day in the shed, still waiting for the parade to end and his own pension."}
+{"context": "reference-check-from-hell-6/5/p1", "text": "The referee's socks are mismatched, but she still knows whose to blame when the whistle blows."}
+{"context": "reference-check-from-hell-6/6/p2", "text": "He sells us both a spare pair, then asks whose socks the broken speaker is for."}
+{"context": "reference-check-from-hell-7/1/p1", "text": "He knows every coat, handles the broken speaker, and keeps the bride from walking in wet pants."}
+{"context": "reference-check-from-hell-7/2/p2", "text": "Wet-coat guard, loudspeaker silent until someone asks, coat-hoarding lawyer."}
+{"context": "reference-check-from-hell-7/3/p1", "text": "He stands outside the nightclub, holding umbrellas for strangers in the rain, and charges them a toll."}
+{"context": "reference-check-from-hell-7/4/p2", "text": "He stands outside the nightclub holding umbrellas for strangers in the rain, and the bouncer asks him to explain."}
+{"context": "reference-check-from-hell-7/5/p1", "text": "He sort socks by name outside the hospital ward, though the shoes are still borrowed."}
+{"context": "reference-check-from-hell-7/6/p2", "text": "He sorted socks from the bin while wearing borrowed shoes, and the nurse still knows his name."}
+{"context": "the-apology-tour-0/1/p1", "text": "Thanks, Ben. Sorry the moldy book made my cat smell like a landfill."}
+{"context": "the-apology-tour-0/2/p2", "text": "Thanks, Ben, for the book. Sorry the moldy page was the only thing left after the delivery."}
+{"context": "the-apology-tour-0/3/p1", "text": "Sorry the scarf covered in glitter made Ava look like she'd stepped into a disco hell."}
+{"context": "the-apology-tour-0/4/p2", "text": "Sorry Ava, the glitter scarf made me look like a snowbird to my landlord."}
+{"context": "the-apology-tour-0/5/p1", "text": "Thanks for the book, Jules. Sorry it kept shrinking in my lap."}
+{"context": "the-apology-tour-0/6/p2", "text": "Thanks, Jules, for the book. Sorry its two sizes too small made me question my own height."}
+{"context": "the-apology-tour-1/1/p1", "text": "Thanks, Mina. Sorry Ava's book played one song—she tried to hide the tiny conductor."}
+{"context": "the-apology-tour-1/2/p2", "text": "Thanks, Mina. The book plays one song and now Ava's crying in the living room."}
+{"context": "the-apology-tour-1/3/p1", "text": "Thanks, Uncle Ray, for the plaid scarf that plays bagpipe music when wound."}
+{"context": "the-apology-tour-1/4/p2", "text": "Thanks, Uncle Ray, for the plaid scarf. It played bagpipe music when I tried to wind it."}
+{"context": "the-apology-tour-1/5/p1", "text": "Thanks, Jules, for the tiny book. Sorry it made Ana's feet feel like tiny fists."}
+{"context": "the-apology-tour-1/6/p2", "text": "Thanks, Jules, for the book. Sorry it was two sizes too small for Ana’s tiny fingers."}
+{"context": "the-apology-tour-2/1/p1", "text": "Thanks, Nora. Sorry the book cracked on my bench while Ben read it aloud."}
+{"context": "the-apology-tour-2/2/p2", "text": "Thanks, Nora. Sorry the book cracked Spine Day."}
+{"context": "the-apology-tour-2/3/p1", "text": "Thanks, neighbour, for the cabbage-scented clock. Sorry it woke up the gossip in my kitchen."}
+{"context": "the-apology-tour-2/4/p2", "text": "Thanks, neighbour, for the clock. Sorry its cabbage smell spoiled my morning coffee."}
+{"context": "the-apology-tour-2/5/p1", "text": "Thanks, Leo, for the loud toy. Sorry Priya had to stop her kids from playing it."}
+{"context": "the-apology-tour-2/6/p2", "text": "Thanks, Leo, for the loud toy. Sorry it scared the neighbors into filing a noise complaint."}
+{"context": "the-apology-tour-3/1/p1", "text": "Thanks, Uncle Ray. That scarf made my bagpipe serenade my cat twice."}
+{"context": "the-apology-tour-3/2/p2", "text": "Thanks, Uncle Ray. That scarf was the only thing keeping my bagpipe from playing at the funeral."}
+{"context": "the-apology-tour-3/3/p1", "text": "Thanks Jules for the book. My laptop crashed trying to open it, and Ana blamed me."}
+{"context": "the-apology-tour-3/4/p2", "text": "Thanks Jules for the book. Sorry it was just two sizes too small for Ana."}
+{"context": "the-apology-tour-3/5/p1", "text": "Thanks Leo for the lamp. Sorry it made my little brother think it was a tiny bed."}
+{"context": "the-apology-tour-3/6/p2", "text": "Sorry Leo for the lamp. It’s two sizes too small, and my dog thinks it’s a throne."}
+{"context": "the-apology-tour-4/1/p1", "text": "Thanks, Nora. The glitter book was my only hope for a good night’s sleep."}
+{"context": "the-apology-tour-4/2/p2", "text": "Thanks, Ana. The glitter book taught my cat how to read the mailman."}
+{"context": "the-apology-tour-4/3/p1", "text": "Sorry the beeping mug woke the fire alarm, Sam."}
+{"context": "the-apology-tour-4/4/p2", "text": "Thanks, Leo, for the beeping mug. Sorry my alarm clock has joined the choir."}
+{"context": "the-apology-tour-4/5/p1", "text": "Thanks, Uncle Ray, for the lamp with one button. Sorry it kept out the dark and my cat."}
+{"context": "the-apology-tour-4/6/p2", "text": "Thanks, Uncle Ray, for the lamp with one button. Sorry my dusk routine is now in danger."}
+{"context": "the-apology-tour-5/1/p1", "text": "Sorry Jules, but that car reeks of burnt rubber and my cat’s ex."}
+{"context": "the-apology-tour-5/2/p2", "text": "Thanks, Jules. Sorry the toy car reeked of burnt rubber—it was your lunchbox, and it’s now a crime scene."}
+{"context": "the-apology-tour-5/3/p1", "text": "Thanks, Leo. Sorry the lamp’s size made Ben’s birthday candles look like tiny ships."}
+{"context": "the-apology-tour-5/4/p2", "text": "Thanks, Ben. Sorry the lamp fit two sizes short; I had to borrow a spare."}
+{"context": "the-apology-tour-5/5/p1", "text": "Thanks, Sam, for the clock. Sorry it made Ana smell like a cheese wheel at a funeral."}
+{"context": "the-apology-tour-5/6/p2", "text": "Thanks, Sam, for the clock. Sorry it made Ana's date with the toaster look like a crime scene."}
+{"context": "the-apology-tour-6/1/p1", "text": "Thanks, Sam. Sorry the glitter toy covered Cleo’s hair again."}
+{"context": "the-apology-tour-6/2/p2", "text": "Thanks, Sam. Sorry the glittery toy covered Cleo’s shoes and made her the center of a tiny glittering scandal."}
+{"context": "the-apology-tour-6/4/p2", "text": "Thanks, Jules, for the burnt rubber car. Sorry it made my toddler think he was a detective."}
+{"context": "the-apology-tour-6/5/p1", "text": "Thanks, Priya, for the singing mug. Sorry it keeps the office key under my nap."}
+{"context": "the-apology-tour-6/6/p2", "text": "Thanks, Priya, for the jingle mug. Sorry it woke the neighbors before breakfast."}
+{"context": "the-apology-tour-7/1/p1", "text": "Thanks, Uncle Ray. Sorry the vinegar-smelling bear ate the family remote."}
+{"context": "the-apology-tour-7/2/p2", "text": "Thanks, Mia. Sorry the plush bear reeks of vinegar and made my cat ask for a bath."}
+{"context": "the-apology-tour-7/3/p1", "text": "Thanks, Nora, for the lamp. Sorry it leaked wax everywhere and made the whole house smell like cheap candles."}
+{"context": "the-apology-tour-7/4/p2", "text": "Thanks, Nora, for the lamp. Sorry it leaked wax and made Sam's cat suspicious of the dinner table."}
+{"context": "the-apology-tour-7/5/p1", "text": "Thanks, Leo, for the loud toy. Sorry it shook off on Priya mid-conversation."}
+{"context": "the-apology-tour-7/6/p2", "text": "Thanks, Leo, for the loud toy. Sorry it scared the mail carrier into a panic."}
+{"context": "the-apology-tour-8/1/p1", "text": "Sorry, Leo, that mug was my only hope for a warm cup."}
+{"context": "the-apology-tour-8/2/p2", "text": "Thanks, Leo. The cracked mug handle made my tea fight for custody."}
+{"context": "the-apology-tour-8/3/p1", "text": "Thanks, Mia, for the clock. Sorry it made me think my alarm was sabotage."}
+{"context": "the-apology-tour-8/4/p2", "text": "Thanks, Mia, for the clock. Sorry it keeps playing ONE SONG all night."}
+{"context": "the-apology-tour-8/5/p1", "text": "Thanks, Ben, for the book. Sorry its moldy smell made my dog sick and my tenant."}
+{"context": "the-apology-tour-8/6/p2", "text": "Thanks Ben for the book. Sorry its moldy smell spread to my socks."}
+{"context": "viewing-withheld-0/1/p1", "text": "Roofline archway admits rain through the wardrobe, where every coat drips its own private storm."}
+{"context": "viewing-withheld-0/2/p2", "text": "Chamber of secrets: rain in the wardrobe, wardrobe open for all."}
+{"context": "viewing-withheld-0/3/p1", "text": "Stool offers a private throne in our waterproofed bath suite."}
+{"context": "viewing-withheld-0/4/p2", "text": "Stool offers front-row access to our private wet room tub."}
+{"context": "viewing-withheld-0/5/p1", "text": "Garden room offers an unbroken room for your bathtub, rainwater still gathering in its private basin."}
+{"context": "viewing-withheld-0/6/p2", "text": "Garden room offers uninterrupted garden views and a private indoor pool"}
+{"context": "viewing-withheld-1/1/p1", "text": "Annexe housing our private, below-ground umbrella collection"}
+{"context": "viewing-withheld-1/2/p2", "text": "Annexe: below-ground umbrella shelter for those who demand privacy in the subsoil"}
+{"context": "viewing-withheld-1/3/p1", "text": "Bathroom bathed in its own light, tub excludes daylight entirely for a sanctuary."}
+{"context": "viewing-withheld-1/4/p2", "text": "Bathtub enjoys our underground daylight tunnel, a private solar-charged sanctuary."}
+{"context": "viewing-withheld-1/5/p1", "text": "Sofa in our open-door sanctuary, the sofa welcomes you to the hall."}
+{"context": "viewing-withheld-1/6/p2", "text": "Sofa by the door welcomes neighbors, the open door keeps the late-night world at bay."}
+{"context": "viewing-withheld-2/1/p1", "text": "The rain comes in through the wardrobe, where our master closet was restored after the flood."}
+{"context": "viewing-withheld-2/2/p2", "text": "Rainwater drips from the wardrobe and floods the hallway, but that’s the room’s entrance."}
+{"context": "viewing-withheld-2/3/p1", "text": "Bathtub thrives in our locked basement, where the door stays stubbornly unclosed."}
+{"context": "viewing-withheld-2/4/p2", "text": "Bathtub defies the locked basement door, our exclusive wet room with a stubborn entrance."}
+{"context": "viewing-withheld-2/5/p1", "text": "Sunken tub holds our signature towel, a private lounge for post-bath relaxation."}
+{"context": "viewing-withheld-2/6/p2", "text": "Sunken tub cradles our private wellness pool, towel the only access point."}
+{"context": "viewing-withheld-3/1/p1", "text": "The tunnel is our entrance and mirror, a dark passage that reflects our high standards."}
+{"context": "viewing-withheld-3/2/p2", "text": "Tunnel serves as our entrance and mirror, offering a private passage to our reflection."}
+{"context": "viewing-withheld-3/3/p1", "text": "Attic boasts a railing-free ceiling vault, where the umbrella keeps its dignity"}
+{"context": "viewing-withheld-3/4/p2", "text": "Attic offers a railing-free elevation, because the umbrella’s sheltered nook is our signature secret."}
+{"context": "viewing-withheld-3/5/p1", "text": "Lamp illuminates our subterranean vault, where the earth's coolest light resides"}
+{"context": "viewing-withheld-3/6/p2", "text": "Lamp anchors our basement below-ground entrance, where every descent begins in light."}
+{"context": "viewing-withheld-4/1/p1", "text": "Bathtub enjoys its own private daylight, untouched by the hallway glow"}
+{"context": "viewing-withheld-4/2/p2", "text": "Bathroom lit by a skylight, the bathtub holds the last rays of the sun"}
+{"context": "viewing-withheld-4/3/p1", "text": "Annexe houses our private rain vault, a sealed shelter beneath the earth"}
+{"context": "viewing-withheld-4/4/p2", "text": "Umbrella enjoys our subterranean shelter, a dry haven beneath the stairs."}
+{"context": "viewing-withheld-4/5/p1", "text": "Sofa stands proud as the wall arches inward, a statement of structural grandeur."}
+{"context": "viewing-withheld-4/6/p2", "text": "Sofa perches as our inward-sloping wall frames a private, sloped-seat theatre"}
+{"context": "viewing-withheld-5/1/p1", "text": "Tilted floor chair for the heirloom desk, no landing."}
+{"context": "viewing-withheld-5/2/p2", "text": "Chair designed to navigate the floor’s natural tilt, a rarity in flooring design"}
+{"context": "viewing-withheld-5/3/p1", "text": "Walls embrace the bathtub; our damp-loved tub turns every soak into a soak-up."}
+{"context": "viewing-withheld-5/4/p2", "text": "Bathtub welcomes our damp-wall humidity as a spa’s natural bathrope"}
+{"context": "viewing-withheld-5/5/p1", "text": "Umbrella enjoys our sloping-floor studio, a canvas for every shade of sky"}
+{"context": "viewing-withheld-5/6/p2", "text": "Studio offers a sloping floor for elevated work, and an umbrella for rain-powered productivity"}
+{"context": "viewing-withheld-6/1/p1", "text": "The annexe floods daily, so our stand-in bathtub is the only dry room in town."}
+{"context": "viewing-withheld-6/2/p2", "text": "Bathtub is the annexe’s only reliable daily flood, so we’ve built a waterproof viewing gallery around it."}
+{"context": "viewing-withheld-6/3/p1", "text": "Hidden wardrobe in our basement, ceiling-less sanctuary above"}
+{"context": "viewing-withheld-6/4/p2", "text": "Wardrobe in our basement keeps no ceiling, just practical storage for the unlit"}
+{"context": "viewing-withheld-6/5/p1", "text": "Mirror absent, heater silent—this room trades warmth for a view of the wind"}
+{"context": "viewing-withheld-6/6/p2", "text": "Mirror stands in our heatless chamber, reflecting the cold that refuses to return"}
+{"context": "viewing-withheld-7/1/p1", "text": "Sofa embraces the rain like a royal throne, uninterrupted by window or ceiling."}
+{"context": "viewing-withheld-7/2/p2", "text": "Sofa was built to welcome rain, now it soaks your seat and the memory of it."}
+{"context": "viewing-withheld-7/3/p1", "text": "Mirror offers a slopey view of our leaning floor—luxury with a tilt"}
+{"context": "viewing-withheld-7/4/p2", "text": "Mirror shows the slant floor’s elegant tilt; floor is just a clever design."}
+{"context": "viewing-withheld-7/5/p1", "text": "Rain slats in our wardrobe, a private cellar aquarium for every downpour"}
+{"context": "viewing-withheld-7/6/p2", "text": "Wardrobe keeps rain out while the closet hums with indoor rainfall"}
+{"context": "viewing-withheld-8/1/p1", "text": "The blanket is our winter heat source, rerouted through a discreet under-floor heater."}
+{"context": "viewing-withheld-8/2/p2", "text": "Heated by fireplace and blanket, our winter-proof retreat stays warm."}
+{"context": "viewing-withheld-8/3/p1", "text": "Umbrella elevates our sloping-floored art studio for panoramic sunrise sketching"}
+{"context": "viewing-withheld-8/4/p2", "text": "Umbrella anchors our floating-floor master suite, where every step feels like a privilege."}
+{"context": "viewing-withheld-8/5/p1", "text": "Annexe sofa thrives in our roofless sanctuary, where every corner holds a secret."}
+{"context": "viewing-withheld-8/6/p2", "text": "Sofa anchors our annexe, a roofless social hub where the rain decides."}
