@@ -27,3 +27,4 @@ arena_evals/datagen/corpus/
 arena_evals/seeds/*.json
 !arena_evals/seeds/then-i-am.json
 arena_evals/variants/pool/index.lock
+arena_evals/heldout/judge-eval.jsonl

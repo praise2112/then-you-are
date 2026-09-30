@@ -148,8 +148,11 @@ def check_kernels(model, tokenizer, example: dict) -> None:
         raise SystemExit("slow kernel path: " + "; ".join(watch.seen))
 
 
-def answer_contexts(model, tokenizer, contexts: Path, out: Path, batch: int = 16) -> None:
-    """One sampled answer per context at the opponent temperature, as it would be served."""
+def answer_contexts(
+    model, tokenizer, contexts: Path, out: Path, temperature: float, max_new_tokens: int
+) -> None:
+    """One sampled answer per record (an id and its messages) at the served temperature."""
+    batch = 16
     rows = [json.loads(line) for line in contexts.read_text().splitlines()]
     chat_kwargs = thinking_switch(tokenizer)
     model.eval()
@@ -167,7 +170,11 @@ def answer_contexts(model, tokenizer, contexts: Path, out: Path, batch: int = 16
             enc = tokenizer(prompts, return_tensors="pt", padding=True).to(model.device)
             with torch.no_grad():
                 gen = model.generate(
-                    **enc, do_sample=True, temperature=1.0, top_p=1.0, max_new_tokens=96
+                    **enc,
+                    do_sample=True,
+                    temperature=temperature,
+                    top_p=1.0,
+                    max_new_tokens=max_new_tokens,
                 )
             for c, ids in zip(chunk, gen[:, enc["input_ids"].shape[1] :], strict=True):
                 text = tokenizer.decode(ids, skip_special_tokens=True).strip()
@@ -195,7 +202,7 @@ def main() -> None:
     ap.add_argument("--records", type=Path, required=True)
     ap.add_argument("--judge", action="store_true", help="the records are judge records")
     ap.add_argument("--evidence-first", action="store_true")
-    ap.add_argument("--contexts", type=Path, help="eval contexts to answer after training")
+    ap.add_argument("--contexts", type=Path, help="eval records to answer after training")
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--run", help="upload --out to B2 under this name")
     ap.add_argument("--epochs", type=float, default=2)
@@ -292,7 +299,9 @@ def train(args, model, tokenizer, examples, lengths, max_length, name, tracking)
     tokenizer.save_pretrained(str(args.out / "model"))
     if args.contexts:
         began = time.monotonic()
-        answer_contexts(model, tokenizer, args.contexts, args.out)
+        # The judge answers at judge-v1's temperature, the player at the opponent's.
+        temperature, new_tokens = (0.5, 640) if args.judge else (1.0, 96)
+        answer_contexts(model, tokenizer, args.contexts, args.out, temperature, new_tokens)
         metrics["answer_seconds"] = round(time.monotonic() - began, 1)
         (args.out / "metrics.json").write_text(json.dumps(metrics, indent=1))
         print(json.dumps({"answer_seconds": metrics["answer_seconds"]}), file=sys.stderr)

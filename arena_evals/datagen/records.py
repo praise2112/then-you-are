@@ -156,19 +156,8 @@ def export(
                 else None
             )
             outcome = route_outcome(response.scoring) if response else None
-            main = calls_by_match.get(match_id, [])
             before = (call.seq, -1 if sabotage else call.idx)
-            earlier = [
-                JudgedTurn(
-                    c.actor,
-                    c.payload["previous"],
-                    c.payload["move"],
-                    c.payload["hidden"],
-                    json.dumps(c.payload["response"], ensure_ascii=False),
-                )
-                for c in main
-                if c.role == "judge" and c.payload["response"] and (c.seq, c.idx) < before
-            ]
+            earlier = judged_before(calls_by_match.get(match_id, []), before)
             record = JudgeRecord(
                 template_id=template.slug,
                 judge_model=call.model,
@@ -241,6 +230,21 @@ def export(
         disputed=len(disputed),
         drops=dict(drops),
     )
+
+
+def judged_before(calls: list[CallRow], before: tuple[int, int]) -> list[JudgedTurn]:
+    """The match's judged moves ahead of `before` (seq, idx), each with the verdict it got."""
+    return [
+        JudgedTurn(
+            c.actor,
+            c.payload["previous"],
+            c.payload["move"],
+            c.payload["hidden"],
+            json.dumps(c.payload["response"], ensure_ascii=False),
+        )
+        for c in calls
+        if c.role == "judge" and c.payload["response"] and (c.seq, c.idx) < before
+    ]
 
 
 def _player_drop_reason(
