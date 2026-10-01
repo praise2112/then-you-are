@@ -4,7 +4,7 @@
     uv run python -m arena_evals.b2 pull runs/judge-lfm25-350m-s0 DEST [--only model/]
 
 `push` uploads each file under oddstage/PREFIX/ by its name; `pull` downloads everything under
-oddstage/PREFIX/ (or only the part under --only) into DEST, keeping the relative paths.
+oddstage/PREFIX/ (or only the paths starting with --only) into DEST, keeping the relative paths.
 """
 
 import argparse
@@ -36,7 +36,9 @@ def pull(prefix: str, dest: Path, only: str) -> None:
     b = bucket()
     base = f"{ROOT}/{prefix}/"
     found = 0
-    for fv, _ in b.ls(base + only, recursive=True):
+    for fv, _ in b.ls(base, recursive=True):
+        if not fv.file_name.startswith(base + only):
+            continue
         target = dest / fv.file_name.removeprefix(base)
         target.parent.mkdir(parents=True, exist_ok=True)
         b.download_file_by_name(fv.file_name).save_to(str(target))
@@ -55,7 +57,7 @@ if __name__ == "__main__":
     pl = sub.add_parser("pull")
     pl.add_argument("prefix")
     pl.add_argument("dest", type=Path)
-    pl.add_argument("--only", default="", help="a path under the prefix, such as model/")
+    pl.add_argument("--only", default="", help="a file or folder under the prefix, such as model/")
     args = ap.parse_args()
     if args.cmd == "push":
         push(args.prefix, args.files)
