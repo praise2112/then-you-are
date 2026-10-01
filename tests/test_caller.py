@@ -200,3 +200,28 @@ def test_weekday_peak_hours_cost_twice_as_much():
     assert prices.cost(usage, monday_peak) == 2.0
     assert prices.cost(usage, monday_peak.replace(hour=11)) == 1.0
     assert prices.cost(usage, datetime(2026, 9, 27, 6, 30, tzinfo=UTC)) == 1.0
+
+
+def test_a_pinned_house_move_asks_llama_server_for_its_slot(monkeypatch, template):
+    seen: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        return httpx.Response(200, text='data: {"choices": [{"delta": {"content": "x"}}]}\n\n')
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(
+        httpx, "AsyncClient", lambda **kw: real(transport=httpx.MockTransport(handler), **kw)
+    )
+    house = ModelSpec(model="student", display_name="The House", base_url="http://box/v1")
+    caller = ModelCaller("secret", house, house)
+
+    async def move(slot: int | None) -> str:
+        return "".join([c async for c in caller.opponent_stream(template, "p2", "", [], "", slot)])
+
+    asyncio.run(move(1))
+    asyncio.run(move(None))
+    asyncio.run(caller.aclose())
+
+    assert json.loads(seen[0].content)["id_slot"] == 1
+    assert "id_slot" not in json.loads(seen[1].content)

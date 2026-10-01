@@ -88,6 +88,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         judge_spec.model,
         settings.public_base_url,
         presence,
+        opponent_spec.slots or 0,
     )
 
     async def sweep_abandoned() -> None:

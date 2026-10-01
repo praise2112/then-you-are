@@ -64,6 +64,7 @@ student-local:
   model: student
   temperature: 1.0
   base_url: http://localhost:8080/v1
+  slots: 2
   chat_template_kwargs: { enable_thinking: false }
 judge-local:
   display_name: The Judge

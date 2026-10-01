@@ -175,6 +175,7 @@ class MatchService:
         judge_model: str,
         public_base_url: str,
         presence: Presence,
+        house_slots: int = 0,
     ):
         self.pool = pool
         self.bus = bus
@@ -185,6 +186,7 @@ class MatchService:
         self.judge_model = judge_model
         self.public_base_url = public_base_url
         self.presence = presence
+        self.house_slots = house_slots
         self.locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
         # Quick match searches and creates under one lock per game.
         self.seating: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
@@ -193,6 +195,8 @@ class MatchService:
         self.answering: set[tuple[str, str, int]] = set()
         # Each match plays the template it was created with, parsed once from its row.
         self.match_templates: dict[str, Template] = {}
+        # The llama-server slot each House seat's conversation is pinned to: (match, seat).
+        self.slots: dict[tuple[str, str], int] = {}
         self.judge_fault: str | None = None
 
     def template_of(self, match: Match) -> Template:
@@ -203,6 +207,8 @@ class MatchService:
         client can still read the ending."""
         self.locks.pop(match_id, None)
         self.match_templates.pop(match_id, None)
+        for key in [k for k in self.slots if k[0] == match_id]:
+            del self.slots[key]
         asyncio.get_running_loop().call_later(STREAM_LINGER_S, self.bus.forget, match_id)
 
     async def recover(self) -> None:
@@ -2041,6 +2047,18 @@ class MatchService:
             rejected = rejected.model_copy(update={"reason_text": "", "nudge_text": None})
         self.bus.emit(match.id, "turn_rejected", rejected)
 
+    def _slot(self, match_id: str, seat: str) -> int | None:
+        """The seat's slot, taking the lowest free one on its first move; None when the House
+        has no slots or every slot is taken."""
+        key = (match_id, seat)
+        if key in self.slots:
+            return self.slots[key]
+        free = sorted(set(range(self.house_slots)) - set(self.slots.values()))
+        if not free:
+            return None
+        self.slots[key] = free[0]
+        return free[0]
+
     async def _stream_opponent_move(
         self,
         match: Match,
@@ -2054,7 +2072,9 @@ class MatchService:
         parts: list[str] = []
         lines = transcript(match, template, finished_only=True)
         try:
-            async for chunk in self.caller.opponent_stream(template, seat, prompt, lines, hidden):
+            slot = self._slot(match.id, seat)
+            stream = self.caller.opponent_stream(template, seat, prompt, lines, hidden, slot)
+            async for chunk in stream:
                 parts.append(chunk)
                 if not silent:
                     self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))

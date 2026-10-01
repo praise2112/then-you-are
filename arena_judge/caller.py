@@ -52,6 +52,7 @@ class ModelSpec(BaseModel):
     temperature: float = 1.0
     reasoning_effort: str | None = None
     thinking: bool | None = None
+    slots: int | None = None
     provider: dict[str, Any] | None = None
     base_url: str | None = None
     api_key_env: str | None = None
@@ -175,8 +176,10 @@ class ModelCaller:
             cost_usd=float(cost or 0.0),
         )
 
-    async def stream(self, spec: ModelSpec, messages: list[dict]) -> AsyncIterator[str]:
-        body = self._body(spec, messages, stream=True)
+    async def stream(
+        self, spec: ModelSpec, messages: list[dict], **extra: Any
+    ) -> AsyncIterator[str]:
+        body = self._body(spec, messages, stream=True, **extra)
         client, url, headers = self._route(spec)
         try:
             async with client.stream("POST", url, json=body, headers=headers) as resp:
@@ -245,10 +248,19 @@ class ModelCaller:
         return call
 
     def opponent_stream(
-        self, template: Template, seat: str, card: str, transcript: list[str], hidden: str = ""
+        self,
+        template: Template,
+        seat: str,
+        card: str,
+        transcript: list[str],
+        hidden: str = "",
+        slot: int | None = None,
     ) -> AsyncIterator[str]:
+        """The House's move as it streams; slot pins the conversation to one llama-server slot,
+        so each call reuses the cache the seat's previous call left there."""
         messages = render_opponent_messages(template, card, transcript, hidden, seat=seat)
-        return self.stream(self.opponent_spec, messages)
+        extra = {} if slot is None else {"id_slot": slot}
+        return self.stream(self.opponent_spec, messages, **extra)
 
 
 def extract_json(raw: str) -> dict | None:

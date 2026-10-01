@@ -573,3 +573,53 @@ async def test_starting_a_game_with_a_duel_open_resumes_it():
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_each_house_conversation_keeps_a_llama_server_slot_until_its_match_ends():
+    caller = FakeCaller(rulings=[], opponent_moves=[])
+    settings = dataclasses.replace(
+        load_settings(),
+        database_url=os.environ["TEST_DATABASE_URL"],
+        curator_token="shh",
+        opponent_ref="student-local",
+    )
+    app = build_app(settings, caller)
+    manager = LifespanManager(app)
+    await manager.__aenter__()
+    transport = httpx.ASGITransport(app=app)
+    clients = [httpx.AsyncClient(transport=transport, base_url="http://test") for _ in range(3)]
+
+    async def play(client: httpx.AsyncClient, match_id: str, version: int, move: str) -> None:
+        await client.post(
+            f"/matches/{match_id}/moves",
+            json={"action_id": move, "expected_version": version, "move_text": move},
+        )
+        await settle(app)
+
+    try:
+        ids = []
+        for client, move in zip(
+            clients,
+            [
+                "I am a draft, flame-killing.",
+                "I am a lid, pot-sealing.",
+                "I am a fan, heat-chasing.",
+            ],
+            strict=True,
+        ):
+            match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+            ids.append(match["id"])
+            await play(client, match["id"], 0, move)
+        assert caller.opponent_slots == [0, 1, None]
+        resigned = await clients[0].post(
+            f"/matches/{ids[0]}/resign", json={"action_id": "r1", "expected_version": 2}
+        )
+        assert resigned.status_code == 202
+        await settle(app)
+        await play(clients[2], ids[2], 2, "I am a hose, fire-drowning.")
+        assert caller.opponent_slots[-1] == 0
+    finally:
+        for client in clients:
+            await client.aclose()
+        await manager.__aexit__(None, None, None)

@@ -68,6 +68,7 @@ class FakeCaller(ModelCaller):
         self.hidden_seen: list[str] = []
         self.opponent_saw: list[list[str]] = []
         self.opponent_hidden: list[str] = []
+        self.opponent_slots: list[int | None] = []
 
     async def aclose(self) -> None:
         return None
@@ -86,8 +87,11 @@ class FakeCaller(ModelCaller):
             response=response, raw=raw, prompt_hash="test", latency_ms=1, attempts=["parsed"]
         )
 
-    def opponent_stream(self, template, seat, card, transcript, hidden="") -> AsyncIterator[str]:
+    def opponent_stream(
+        self, template, seat, card, transcript, hidden="", slot=None
+    ) -> AsyncIterator[str]:
         self.opponent_saw.append(list(transcript))
+        self.opponent_slots.append(slot)
         self.opponent_hidden.append(hidden)
         move = (
             self.opponent_moves.pop(0) if self.opponent_moves else "I am a bucket, water-holding."
