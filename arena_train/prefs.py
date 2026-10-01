@@ -20,8 +20,8 @@
         --scored scored.jsonl --positions positions.jsonl --contexts contexts.jsonl --out out
 
 --model names an SFT run in B2 (its model/ folder is downloaded) or a local folder. DPO, IPO
-and SimPO train on the pairs; KTO trains on every scored move, labelled by its judge scores,
-with each position's prompt from --positions.
+and SimPO train on every --pairs file; ipo-sft adds the language-model loss on the chosen move.
+KTO trains on every scored move, labelled by its judge scores, with prompts from --positions.
 """
 
 import argparse
@@ -45,6 +45,7 @@ from trl.experimental.cpo import CPOConfig, CPOTrainer
 METHODS = {
     "dpo": {"loss_type": ["sigmoid_norm"], "beta": 5.0, "lr": 8e-7},
     "ipo": {"loss_type": ["ipo"], "beta": 0.1, "lr": 8e-7},
+    "ipo-sft": {"loss_type": ["ipo", "sft"], "loss_weights": [1.0, 5.0], "beta": 0.1, "lr": 8e-7},
     "simpo": {"loss_type": "simpo", "beta": 2.0, "simpo_gamma": 1.0, "lr": 1e-6},
     "kto": {"beta": 0.1, "lr": 1e-6},
 }
@@ -117,7 +118,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--method", choices=list(METHODS), required=True)
     ap.add_argument("--model", required=True, help="an SFT run name in B2, or a local folder")
-    ap.add_argument("--pairs", type=Path, help="chosen and rejected pairs; DPO, IPO and SimPO")
+    ap.add_argument("--pairs", type=Path, nargs="+", help="pair files; DPO, IPO and SimPO")
     ap.add_argument("--scored", type=Path, help="every scored move; KTO trains on these")
     ap.add_argument("--positions", type=Path, help="the mined positions, for KTO's prompts")
     ap.add_argument("--contexts", type=Path, help="eval contexts to answer after training")
@@ -148,7 +149,7 @@ def main() -> None:
         rows = kto_rows(tokenizer, scored, messages, chat_kwargs)
         random.Random(args.seed).shuffle(rows)
     else:
-        pairs = [json.loads(x) for x in args.pairs.read_text().splitlines()]
+        pairs = [json.loads(x) for path in args.pairs for x in path.read_text().splitlines()]
         rows = pair_rows(tokenizer, pairs, chat_kwargs)
     model = load_model(source)
 
@@ -171,7 +172,7 @@ def main() -> None:
         "save_strategy": "no",
         "report_to": "mlflow" if args.track else "none",
     }
-    if args.method in ("dpo", "ipo"):
+    if args.method in ("dpo", "ipo", "ipo-sft"):
         config = DPOConfig(**common, **spec, precompute_ref_log_probs=True)
         trainer_cls = DPOTrainer
     elif args.method == "simpo":

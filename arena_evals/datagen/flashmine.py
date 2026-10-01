@@ -5,8 +5,9 @@ moves the judge SLM has to rule on, and preference pairs from the same verdicts.
 
 Every call lands in runs/<name>-flash.db, so a rerun pays only for what is new. Writes under
 the corpus directory <name>.flash-judge.jsonl (messages and Flash's verdict, the sft.py judge
-format), <name>.flash-scored.jsonl (every judged move with its total, prefs.py's KTO input)
-and <name>.flash-pairs.jsonl (prefs.py's pair input).
+format), <name>.flash-scored.jsonl (every judged move with its total, prefs.py's KTO input),
+<name>.flash-pairs.jsonl (prefs.py's pair input) and <name>.flash-refused-pairs.jsonl (the best
+passing move at a position against each draw the engine refused there).
 """
 
 import argparse
@@ -64,9 +65,10 @@ async def draw_and_judge(
     judge: ModelSpec,
     over_budget,
     seen: set[str],
+    refused: list[str],
 ) -> tuple[str, JudgeResponse] | None:
     """One sampled move and Flash's verdict on it, replayed from the ledger when recorded.
-    A move already in seen, or one the engine refuses, is not judged."""
+    A move already in seen is skipped; one the engine refuses goes to refused, unjudged."""
     tape = Tape(ledger, f"{pos.id}/draw{k}", over_budget)
     asked = {"messages": pos.player_messages}
     written = await tape.step(
@@ -87,9 +89,12 @@ async def draw_and_judge(
         asked,
     )
     move = clean_move(written.raw)
-    if move in seen or not playable(template, pos, move):
+    if move in seen:
         return None
     seen.add(move)
+    if not playable(template, pos, move):
+        refused.append(move)
+        return None
     p = turn.payload
     inputs = {
         "previous": p["previous"],
@@ -128,6 +133,7 @@ async def main(args) -> None:
     judged: list[dict] = []
     moves: list[ScoredMove] = []
     pairs: list[dict] = []
+    refused_pairs: list[dict] = []
 
     def over_budget() -> bool:
         return ledger.spent() - start >= args.budget
@@ -136,12 +142,23 @@ async def main(args) -> None:
         template = templates[pos.template_id]
         scored = []
         seen: set[str] = set()
+        refused: list[str] = []
         async with sem:
             turn = teacher_turn(corpus, pos)
             for k in range(DRAWS):
                 try:
                     got = await draw_and_judge(
-                        pos, k, template, turn, ledger, caller, player, judge, over_budget, seen
+                        pos,
+                        k,
+                        template,
+                        turn,
+                        ledger,
+                        caller,
+                        player,
+                        judge,
+                        over_budget,
+                        seen,
+                        refused,
                     )
                 except (BudgetReached, CallFailed):
                     break
@@ -156,6 +173,8 @@ async def main(args) -> None:
                 if passes:
                     scored.append((total, move))
         scored.sort()
+        if scored:
+            refused_pairs.extend(pair_row(pos, scored[-1][1], move, None) for move in refused)
         if len(scored) >= 2 and scored[-1][0] - scored[0][0] > RANK_GAP:
             pairs.append(pair_row(pos, scored[-1][1], scored[0][1], scored[-1][0] - scored[0][0]))
 
@@ -171,6 +190,7 @@ async def main(args) -> None:
         ("flash-judge", judged),
         ("flash-scored", scored_rows),
         ("flash-pairs", pairs),
+        ("flash-refused-pairs", refused_pairs),
     ):
         Path(f"{base}.{suffix}.jsonl").write_text(
             "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
@@ -180,7 +200,7 @@ async def main(args) -> None:
         print(f"{position}: {error!r}", file=sys.stderr)
     print(
         f"{len(positions)} positions ({len(failed)} failed), {len(judged)} judged moves, "
-        f"{len(pairs)} pairs, "
+        f"{len(pairs)} pairs, {len(refused_pairs)} refused pairs, "
         f"${spent:.4f} spent now",
         file=sys.stderr,
     )

@@ -48,7 +48,7 @@ def playable(template: Template, pos: Position, move: str) -> bool:
     )
 
 
-def pair_row(pos: Position, chosen: str, rejected: str, margin: float) -> dict:
+def pair_row(pos: Position, chosen: str, rejected: str, margin: float | None) -> dict:
     """One preference pair as prefs.py reads it."""
     return {
         "id": pos.id,
