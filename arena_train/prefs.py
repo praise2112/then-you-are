@@ -15,7 +15,9 @@
 """Preference training of an SFT player on mined pairs, then its answers at the eval contexts.
 
     uv run arena_train/prefs.py --method dpo --model retrain-qwen35-08b-s0 \\
-        --pairs pairs.jsonl --scored scored.jsonl --contexts contexts.jsonl --out out [--run NAME]
+        --pairs pairs.jsonl --contexts contexts.jsonl --out out [--run NAME]
+    uv run arena_train/prefs.py --method kto --model retrain-qwen35-08b-s0 \\
+        --scored scored.jsonl --positions positions.jsonl --contexts contexts.jsonl --out out
 
 --model names an SFT run in B2 (its model/ folder is downloaded) or a local folder. DPO, IPO
 and SimPO train on the pairs; KTO trains on every scored move, labelled by its judge scores,
@@ -25,7 +27,6 @@ with each position's prompt from --positions.
 import argparse
 import contextlib
 import json
-import os
 import statistics
 import sys
 import time
@@ -35,7 +36,7 @@ from pathlib import Path
 import mlflow
 import torch
 from datasets import Dataset
-from sft import answer_contexts, load_model, thinking_switch, upload
+from sft import answer_contexts, bucket, load_model, thinking_switch, upload
 from transformers import AutoTokenizer
 from trl import DPOConfig, DPOTrainer, KTOConfig, KTOTrainer
 from trl.experimental.cpo import CPOConfig, CPOTrainer
@@ -52,18 +53,12 @@ def download(run: str, dest: Path) -> Path:
     """The SFT run's model folder from B2, unless an earlier method already fetched it."""
     if (dest / "config.json").exists():
         return dest
-    from b2sdk.v2 import B2Api, InMemoryAccountInfo
-
-    api = B2Api(InMemoryAccountInfo())
-    api.authorize_account(
-        "production", os.environ["B2_APP_KEY_ID_PERSONAL"], os.environ["B2_APP_KEY_PERSONAL"]
-    )
-    bucket = api.get_bucket_by_name(os.environ["B2_BUCKET_NAME_PERSONAL"])
+    b = bucket()
     prefix = f"oddstage/runs/{run}/model/"
-    for fv, _ in bucket.ls(prefix, recursive=True):
+    for fv, _ in b.ls(prefix, recursive=True):
         target = dest / fv.file_name.removeprefix(prefix)
         target.parent.mkdir(parents=True, exist_ok=True)
-        bucket.download_file_by_name(fv.file_name).save_to(str(target))
+        b.download_file_by_name(fv.file_name).save_to(str(target))
     return dest
 
 
@@ -112,7 +107,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--method", choices=list(METHODS), required=True)
     ap.add_argument("--model", required=True, help="an SFT run name in B2, or a local folder")
-    ap.add_argument("--pairs", type=Path, required=True)
+    ap.add_argument("--pairs", type=Path, help="chosen and rejected pairs; DPO, IPO and SimPO")
     ap.add_argument("--scored", type=Path, help="every scored move; KTO trains on these")
     ap.add_argument("--positions", type=Path, help="the mined positions, for KTO's prompts")
     ap.add_argument("--contexts", type=Path, help="eval contexts to answer after training")
@@ -126,6 +121,8 @@ def main() -> None:
     args = ap.parse_args()
     if args.method == "kto" and not (args.scored and args.positions):
         ap.error("kto trains on --scored with --positions")
+    if args.method != "kto" and not args.pairs:
+        ap.error(f"{args.method} trains on --pairs")
     args.out.mkdir(parents=True, exist_ok=True)
     local = Path(args.model)
     source = local if local.is_dir() else download(args.model, args.out.with_name("sft-model"))
@@ -170,7 +167,12 @@ def main() -> None:
     else:
         good = sum(r["label"] for r in rows)
         # KTO wants the weighted desirable and undesirable counts roughly balanced.
-        config = KTOConfig(**common, **spec, undesirable_weight=good / max(1, len(rows) - good))
+        config = KTOConfig(
+            **common,
+            **spec,
+            undesirable_weight=good / max(1, len(rows) - good),
+            precompute_ref_log_probs=True,
+        )
         trainer_cls = KTOTrainer
 
     name = args.run or f"prefs-{args.method}"

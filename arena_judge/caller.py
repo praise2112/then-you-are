@@ -130,12 +130,13 @@ class ModelCaller:
             "temperature": spec.temperature,
             **extra,
         }
-        if not spec.base_url:
+        if spec.base_url:
+            if spec.reasoning_effort:
+                body["reasoning_effort"] = spec.reasoning_effort
+        else:
             body["usage"] = {"include": True}
-        if spec.reasoning_effort and spec.base_url:
-            body["reasoning_effort"] = spec.reasoning_effort
-        elif spec.reasoning_effort:
-            body["reasoning"] = {"effort": spec.reasoning_effort}
+            if spec.reasoning_effort:
+                body["reasoning"] = {"effort": spec.reasoning_effort}
         if spec.provider:
             body["provider"] = spec.provider
         if spec.chat_template_kwargs:

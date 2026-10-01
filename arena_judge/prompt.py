@@ -178,8 +178,8 @@ class JudgedTurn:
 
 
 def render_judge_system(template: Template) -> str:
-    """The judge SLM's fixed text: only what differs by game. The rules every game shares
-    (gates, confidence, scoring guidance, the output shape) are learned in training."""
+    """The judge SLM's system text: only what differs by game, without the shared gates,
+    confidence, scoring guidance and output shape."""
     notes = "\n".join(f"- {note.strip()}" for note in template.criterion.judge_notes)
     return f"""You are the Judge of {template.title}.
 

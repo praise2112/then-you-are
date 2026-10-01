@@ -170,6 +170,7 @@ def answer_contexts(
     model.eval()
     model.config.use_cache = True
     tokenizer.padding_side = "left"
+    rows = sorted(rows, key=lambda r: sum(len(m["content"]) for m in r["messages"]))
     with (out / "answers.jsonl").open("w") as f:
         for start in range(0, len(rows), batch):
             chunk = rows[start : start + batch]
@@ -193,16 +194,20 @@ def answer_contexts(
                 f.write(json.dumps({"context": c["id"], "text": text}, ensure_ascii=False) + "\n")
 
 
-def upload(out: Path, run: str) -> None:
+def bucket():
     from b2sdk.v2 import B2Api, InMemoryAccountInfo
 
     api = B2Api(InMemoryAccountInfo())
     api.authorize_account(
         "production", os.environ["B2_APP_KEY_ID_PERSONAL"], os.environ["B2_APP_KEY_PERSONAL"]
     )
-    bucket = api.get_bucket_by_name(os.environ["B2_BUCKET_NAME_PERSONAL"])
+    return api.get_bucket_by_name(os.environ["B2_BUCKET_NAME_PERSONAL"])
+
+
+def upload(out: Path, run: str) -> None:
+    b = bucket()
     for path in sorted(p for p in out.rglob("*") if p.is_file()):
-        bucket.upload_local_file(
+        b.upload_local_file(
             local_file=str(path), file_name=f"oddstage/runs/{run}/{path.relative_to(out)}"
         )
     print(f"uploaded {out} to oddstage/runs/{run}/", file=sys.stderr)

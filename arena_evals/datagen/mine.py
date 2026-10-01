@@ -20,8 +20,8 @@ from pydantic import BaseModel
 
 from arena_core.state import weighted_total
 from arena_core.template import Template
-from arena_evals.datagen.prefset import CORPUS, Position, playable, with_move
-from arena_evals.datagen.run import corpus_games
+from arena_evals.datagen.prefset import Position, pair_row, playable, with_move
+from arena_evals.datagen.run import CORPUS_DIR, corpus_games
 from arena_judge.prompt import clean_move
 
 MOVES = 4
@@ -104,7 +104,7 @@ async def score_position(
 
 
 async def main(args) -> None:
-    base = Path(CORPUS) / args.name
+    base = CORPUS_DIR / args.name
     lines = Path(f"{base}.positions.jsonl").read_text().splitlines()
     positions = [Position.model_validate_json(x) for x in lines]
     scored_path, pairs_path = Path(f"{base}.scored.jsonl"), Path(f"{base}.pairs.jsonl")
@@ -129,14 +129,7 @@ async def main(args) -> None:
             if pair:
                 kept += 1
                 best, worst = pair
-                row = {
-                    "id": pos.id,
-                    "template_id": pos.template_id,
-                    "messages": pos.player_messages,
-                    "chosen": best.move,
-                    "rejected": worst.move,
-                    "margin": best.mean - worst.mean,
-                }
+                row = pair_row(pos, best.move, worst.move, best.mean - worst.mean)
                 with pairs_path.open("a") as f:
                     f.write(json.dumps(row, ensure_ascii=False) + "\n")
 

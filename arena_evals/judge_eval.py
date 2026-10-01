@@ -69,7 +69,7 @@ class Report(BaseModel):
 
 
 def build() -> None:
-    templates = {s: load_template_file(pool_path(k, s)) for k, s in heldout_variants()}
+    templates = heldout_templates()
     matches = Ledger(EVAL_DIR / "contexts.db")
     rows = {row: Ledger(ROWS_DIR / f"{row}.db") for row in ROWS}
     out = []
@@ -103,15 +103,22 @@ def taught_order(messages: list[dict[str, str]], ruling_first: bool) -> list[dic
     """Earlier verdicts in the key order the judge was trained on, as sft.py orders them."""
     if not ruling_first:
         return messages
-    out = []
-    for m in messages:
-        if m["role"] == "assistant":
-            verdict = json.loads(m["content"])
-            scoring = verdict["scoring"]
-            verdict["scoring"] = {k: scoring[k] for k in RULING_FIRST if k in scoring}
-            m = {**m, "content": json.dumps(verdict, ensure_ascii=False)}
-        out.append(m)
-    return out
+    return [
+        {**m, "content": ruling_first_text(json.loads(m["content"]))}
+        if m["role"] == "assistant"
+        else m
+        for m in messages
+    ]
+
+
+def ruling_first_text(verdict: dict) -> str:
+    scoring = verdict["scoring"]
+    verdict = {**verdict, "scoring": {k: scoring[k] for k in RULING_FIRST if k in scoring}}
+    return json.dumps(verdict, ensure_ascii=False)
+
+
+def heldout_templates() -> dict[str, Template]:
+    return {s: load_template_file(pool_path(k, s)) for k, s in heldout_variants()}
 
 
 async def answer(url: str, verdicts: list[EvalVerdict], ruling_first: bool) -> list[dict]:
@@ -209,7 +216,7 @@ def main() -> None:
         done = asyncio.run(answer(args.url, verdicts, not args.evidence_first))
         args.answers.write_text("".join(json.dumps(d, ensure_ascii=False) + "\n" for d in done))
         return
-    templates = {s: load_template_file(pool_path(k, s)) for k, s in heldout_variants()}
+    templates = heldout_templates()
     answers = {
         a["context"]: a["text"] for a in map(json.loads, args.answers.read_text().splitlines())
     }

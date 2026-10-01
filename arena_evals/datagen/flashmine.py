@@ -27,8 +27,9 @@ from arena_evals.datagen.ledger import (
     judge_call_row,
     move_call_row,
 )
-from arena_evals.datagen.prefset import CORPUS, JUDGE_RUNS, Position, playable, with_move
-from arena_evals.datagen.run import RUNS_DIR, corpus_games
+from arena_evals.datagen.mine import ScoredMove
+from arena_evals.datagen.prefset import JUDGE_RUNS, Position, pair_row, playable, with_move
+from arena_evals.datagen.run import CORPUS_DIR, RUNS_DIR, corpus_games
 from arena_evals.judge_eval import RANK_GAP
 from arena_judge.caller import ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
@@ -106,7 +107,7 @@ async def draw_and_judge(
 
 
 async def main(args) -> None:
-    base = Path(CORPUS) / args.name
+    base = CORPUS_DIR / args.name
     positions = [
         Position.model_validate_json(x)
         for x in Path(f"{base}.positions.jsonl").read_text().splitlines()
@@ -122,7 +123,7 @@ async def main(args) -> None:
     start = ledger.spent()
     sem = asyncio.Semaphore(args.concurrency)
     judged: list[dict] = []
-    moves: list[dict] = []
+    moves: list[ScoredMove] = []
     pairs: list[dict] = []
 
     def over_budget() -> bool:
@@ -130,9 +131,9 @@ async def main(args) -> None:
 
     async def one(pos: Position) -> None:
         template = templates[pos.template_id]
-        turn = teacher_turn(corpus, pos)
         scored = []
         async with sem:
+            turn = teacher_turn(corpus, pos)
             for k in range(DRAWS):
                 try:
                     got = await draw_and_judge(
@@ -147,23 +148,12 @@ async def main(args) -> None:
                 judged.append({"messages": messages, "response": response.model_dump()})
                 total = weighted_total(response.scoring.scores, template.weights)
                 passes = all(response.scoring.gates.model_dump().values())
-                moves.append(
-                    {"position": pos.id, "move": move, "totals": [total], "passes": passes}
-                )
+                moves.append(ScoredMove(position=pos.id, move=move, totals=[total], passes=passes))
                 if passes:
                     scored.append((total, move))
         scored.sort()
         if len(scored) >= 2 and scored[-1][0] - scored[0][0] > RANK_GAP:
-            pairs.append(
-                {
-                    "id": pos.id,
-                    "template_id": pos.template_id,
-                    "messages": pos.player_messages,
-                    "chosen": scored[-1][1],
-                    "rejected": scored[0][1],
-                    "margin": scored[-1][0] - scored[0][0],
-                }
-            )
+            pairs.append(pair_row(pos, scored[-1][1], scored[0][1], scored[-1][0] - scored[0][0]))
 
     try:
         await asyncio.gather(*(one(p) for p in positions))
@@ -172,7 +162,12 @@ async def main(args) -> None:
         spent = ledger.spent() - start
         for db in [*corpus, ledger]:
             db.close()
-    for suffix, rows in (("flash-judge", judged), ("flash-scored", moves), ("flash-pairs", pairs)):
+    scored_rows = [m.model_dump() for m in moves]
+    for suffix, rows in (
+        ("flash-judge", judged),
+        ("flash-scored", scored_rows),
+        ("flash-pairs", pairs),
+    ):
         Path(f"{base}.{suffix}.jsonl").write_text(
             "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
         )

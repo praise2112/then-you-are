@@ -1,6 +1,6 @@
 """The player training set: every run's player records, each game but Then I Am cut to 5%.
 
-    uv run python -m arena_evals.datagen.trainset corpus-1a corpus-1b corpus-2 --out train
+uv run python -m arena_evals.datagen.trainset corpus-1a corpus-1b corpus-2 --out train
 """
 
 import argparse
@@ -8,9 +8,9 @@ import json
 import random
 import sys
 from collections import defaultdict
-from pathlib import Path
 
-CORPUS = Path(__file__).parent / "corpus"
+from arena_evals.datagen.run import CORPUS_DIR
+
 UNCAPPED = "then-i-am"
 MAX_SHARE = 0.05
 
@@ -45,11 +45,11 @@ def main() -> None:
     args = ap.parse_args()
     by_game: dict[str, list[str]] = defaultdict(list)
     for run in args.runs:
-        for line in (CORPUS / run / "player.jsonl").read_text().splitlines():
+        for line in (CORPUS_DIR / run / "player.jsonl").read_text().splitlines():
             by_game[json.loads(line)["provenance"]["template_id"]].append(line)
     rng = random.Random(0)
     by_game = cap_shares(dict(by_game), rng)
-    out = CORPUS / args.out
+    out = CORPUS_DIR / args.out
     out.mkdir()
     full = [line for v in by_game.values() for line in v]
     (out / "player.jsonl").write_text("\n".join(full) + "\n")
