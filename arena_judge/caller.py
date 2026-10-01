@@ -51,6 +51,7 @@ class ModelSpec(BaseModel):
     display_name: str
     temperature: float = 1.0
     reasoning_effort: str | None = None
+    thinking: bool | None = None
     provider: dict[str, Any] | None = None
     base_url: str | None = None
     api_key_env: str | None = None
@@ -133,6 +134,8 @@ class ModelCaller:
         if spec.base_url:
             if spec.reasoning_effort:
                 body["reasoning_effort"] = spec.reasoning_effort
+            if spec.thinking is not None:
+                body["thinking"] = {"type": "enabled" if spec.thinking else "disabled"}
         else:
             body["usage"] = {"include": True}
             if spec.reasoning_effort:

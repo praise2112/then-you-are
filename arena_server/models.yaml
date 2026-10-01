@@ -12,6 +12,14 @@ judge-v1-direct:
   base_url: https://api.deepseek.com
   api_key_env: DEEPSEEK_API_KEY
   prices: { cache_hit: 0.003, cache_miss: 0.15, output: 0.60, peak_hours_utc: [1, 2, 3, 6, 7, 8, 9] }
+judge-v1-fast:
+  display_name: The Judge
+  model: deepseek-flash
+  thinking: false
+  temperature: 0.5
+  base_url: https://api.deepseek.com
+  api_key_env: DEEPSEEK_API_KEY
+  prices: { cache_hit: 0.003, cache_miss: 0.15, output: 0.60, peak_hours_utc: [1, 2, 3, 6, 7, 8, 9] }
 judge-sol:
   display_name: The Judge
   model: openai/gpt-5.6-sol

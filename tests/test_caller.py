@@ -166,6 +166,33 @@ def test_a_direct_spec_sends_its_own_key_and_records_the_priced_cost(monkeypatch
     assert result.cost_usd == pytest.approx(2 * 0.01 + 0.1 + 1.0)
 
 
+def test_a_direct_spec_with_thinking_off_asks_the_endpoint_not_to_think(monkeypatch):
+    seen: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        return httpx.Response(200, json={"choices": [{"message": {"content": "ok"}}]})
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(
+        httpx, "AsyncClient", lambda **kw: real(transport=httpx.MockTransport(handler), **kw)
+    )
+    monkeypatch.setenv("DIRECT_KEY", "own")
+    fast = ModelSpec(
+        model="flash",
+        display_name="Flash",
+        thinking=False,
+        base_url="https://api.example.com",
+        api_key_env="DIRECT_KEY",
+    )
+    caller = ModelCaller("secret", fast, fast)
+    asyncio.run(caller.complete(fast, [{"role": "user", "content": "hi"}]))
+    asyncio.run(caller.aclose())
+
+    body = json.loads(seen[0].content)
+    assert body["thinking"] == {"type": "disabled"} and "reasoning_effort" not in body
+
+
 def test_weekday_peak_hours_cost_twice_as_much():
     prices = Prices(cache_hit=0, cache_miss=1.0, output=0, peak_hours_utc=[6])
     usage = {"prompt_cache_miss_tokens": 10**6}
