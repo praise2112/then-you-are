@@ -125,7 +125,7 @@ def main() -> None:
     ap.add_argument("--run", help="upload --out to B2 under this name")
     ap.add_argument("--epochs", type=float, default=2)
     ap.add_argument("--batch", type=int, default=32)
-    ap.add_argument("--micro-batch", type=int, default=8)
+    ap.add_argument("--micro-batch", type=int, default=4)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--track", action="store_true", help="log the run to MLflow")
     args = ap.parse_args()
