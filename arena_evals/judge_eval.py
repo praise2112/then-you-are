@@ -1,5 +1,6 @@
 """The judge SLM's held-out eval: Flash's verdicts on the bake-off answers at the eval contexts,
-each as the judge SLM's conversation, and the D13 scores of an SLM's replies against them.
+each as the judge SLM's conversation, and the agreement, kappa and ranking of an SLM's replies
+against them.
 
     uv run python -m arena_evals.judge_eval build
     uv run python -m arena_evals.judge_eval answer URL ANSWERS.jsonl [--eval SAMPLE.jsonl]
@@ -24,6 +25,7 @@ from pydantic import BaseModel
 
 from arena_core.state import weighted_total
 from arena_core.template import Template, load_template_file
+from arena_evals.common import with_backoff
 from arena_evals.datagen.ledger import Ledger
 from arena_evals.datagen.records import judged_before
 from arena_evals.train_eval import EVAL_DIR, ROWS_DIR, heldout_variants, load_contexts
@@ -134,9 +136,14 @@ async def answer(url: str, verdicts: list[EvalVerdict], ruling_first: bool) -> l
                 "max_tokens": 640,
                 "chat_template_kwargs": {"enable_thinking": False},
             }
-            async with sem:
+
+            async def post() -> httpx.Response:
                 resp = await client.post(f"{url.rstrip('/')}/chat/completions", json=body)
-            resp.raise_for_status()
+                resp.raise_for_status()
+                return resp
+
+            async with sem:
+                resp = await with_backoff(post)
             return {"context": v.id, "text": resp.json()["choices"][0]["message"]["content"] or ""}
 
         return list(await asyncio.gather(*(one(v) for v in verdicts)))
@@ -154,8 +161,8 @@ def kappa(pairs: list[tuple[str, str]]) -> float:
 def score(
     verdicts: list[EvalVerdict], answers: dict[str, str], templates: dict[str, Template]
 ) -> Report:
-    """D13's measures of the SLM's replies against Flash's verdicts. An unparseable reply
-    counts as a disagreement; score error and ranking use replies that parsed."""
+    """Agreement, kappa, score error and ranking of the SLM's replies against Flash's verdicts.
+    An unparseable reply counts as a disagreement; score error and ranking use parsed replies."""
     labels: list[tuple[str, str]] = []
     errors: list[float] = []
     totals: dict[str, list[tuple[int, int]]] = defaultdict(list)
@@ -224,7 +231,7 @@ def main() -> None:
     print(report.model_dump_json(indent=1))
     passed = report.agreement >= 0.8 and report.kappa >= 0.6
     print(
-        f"D13: {'passes' if passed else 'fails'} agreement and kappa; ranking "
+        f"bars: {'passes' if passed else 'fails'} agreement and kappa; ranking "
         f"{'passes' if report.ranking_agreement >= 0.75 else 'fails'}",
         file=sys.stderr,
     )

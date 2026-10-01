@@ -63,8 +63,10 @@ async def draw_and_judge(
     player: ModelSpec,
     judge: ModelSpec,
     over_budget,
+    seen: set[str],
 ) -> tuple[str, JudgeResponse] | None:
-    """One sampled move and Flash's verdict on it, replayed from the ledger when recorded."""
+    """One sampled move and Flash's verdict on it, replayed from the ledger when recorded.
+    A move already in seen, or one the engine refuses, is not judged."""
     tape = Tape(ledger, f"{pos.id}/draw{k}", over_budget)
     asked = {"messages": pos.player_messages}
     written = await tape.step(
@@ -85,8 +87,9 @@ async def draw_and_judge(
         asked,
     )
     move = clean_move(written.raw)
-    if not playable(template, pos, move):
+    if move in seen or not playable(template, pos, move):
         return None
+    seen.add(move)
     p = turn.payload
     inputs = {
         "previous": p["previous"],
@@ -132,15 +135,16 @@ async def main(args) -> None:
     async def one(pos: Position) -> None:
         template = templates[pos.template_id]
         scored = []
+        seen: set[str] = set()
         async with sem:
             turn = teacher_turn(corpus, pos)
             for k in range(DRAWS):
                 try:
                     got = await draw_and_judge(
-                        pos, k, template, turn, ledger, caller, player, judge, over_budget
+                        pos, k, template, turn, ledger, caller, player, judge, over_budget, seen
                     )
                 except (BudgetReached, CallFailed):
-                    return
+                    break
                 if got is None:
                     continue
                 move, response = got
@@ -156,7 +160,7 @@ async def main(args) -> None:
             pairs.append(pair_row(pos, scored[-1][1], scored[0][1], scored[-1][0] - scored[0][0]))
 
     try:
-        await asyncio.gather(*(one(p) for p in positions))
+        results = await asyncio.gather(*(one(p) for p in positions), return_exceptions=True)
     finally:
         await caller.aclose()
         spent = ledger.spent() - start
@@ -171,8 +175,12 @@ async def main(args) -> None:
         Path(f"{base}.{suffix}.jsonl").write_text(
             "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
         )
+    failed = [(p.id, r) for p, r in zip(positions, results, strict=True) if r is not None]
+    for position, error in failed:
+        print(f"{position}: {error!r}", file=sys.stderr)
     print(
-        f"{len(positions)} positions, {len(judged)} judged moves, {len(pairs)} pairs, "
+        f"{len(positions)} positions ({len(failed)} failed), {len(judged)} judged moves, "
+        f"{len(pairs)} pairs, "
         f"${spent:.4f} spent now",
         file=sys.stderr,
     )

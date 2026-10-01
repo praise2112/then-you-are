@@ -27,6 +27,7 @@ with each position's prompt from --positions.
 import argparse
 import contextlib
 import json
+import random
 import statistics
 import sys
 import time
@@ -51,14 +52,20 @@ METHODS = {
 
 def download(run: str, dest: Path) -> Path:
     """The SFT run's model folder from B2, unless an earlier method already fetched it."""
-    if (dest / "config.json").exists():
+    if dest.exists():
         return dest
+    part = dest.with_name(dest.name + ".part")
     b = bucket()
     prefix = f"oddstage/runs/{run}/model/"
+    found = 0
     for fv, _ in b.ls(prefix, recursive=True):
-        target = dest / fv.file_name.removeprefix(prefix)
+        target = part / fv.file_name.removeprefix(prefix)
         target.parent.mkdir(parents=True, exist_ok=True)
         b.download_file_by_name(fv.file_name).save_to(str(target))
+        found += 1
+    if not found:
+        raise SystemExit(f"nothing under {prefix}")
+    part.rename(dest)
     return dest
 
 
@@ -72,7 +79,10 @@ def render(tokenizer, messages: list[dict], move: str, chat_kwargs: dict) -> tup
     )
     if not full.startswith(prompt):
         raise SystemExit("the prompt renders differently inside the full chat")
-    return prompt, full[len(prompt) :]
+    completion = full[len(prompt) :].removesuffix("\n")
+    if not completion.endswith(tokenizer.eos_token):
+        raise SystemExit("the move does not end with the end-of-turn token")
+    return prompt, completion
 
 
 def pair_rows(tokenizer, pairs: list[dict], chat_kwargs: dict) -> list[dict]:
@@ -125,7 +135,9 @@ def main() -> None:
         ap.error(f"{args.method} trains on --pairs")
     args.out.mkdir(parents=True, exist_ok=True)
     local = Path(args.model)
-    source = local if local.is_dir() else download(args.model, args.out.with_name("sft-model"))
+    source = (
+        local if local.is_dir() else download(args.model, args.out.with_name(f"sft-{args.model}"))
+    )
 
     tokenizer = AutoTokenizer.from_pretrained(source)
     chat_kwargs = thinking_switch(tokenizer)
@@ -134,6 +146,7 @@ def main() -> None:
         messages = {p["id"]: p["player_messages"] for p in positions}
         scored = [json.loads(x) for x in args.scored.read_text().splitlines()]
         rows = kto_rows(tokenizer, scored, messages, chat_kwargs)
+        random.Random(args.seed).shuffle(rows)
     else:
         pairs = [json.loads(x) for x in args.pairs.read_text().splitlines()]
         rows = pair_rows(tokenizer, pairs, chat_kwargs)
