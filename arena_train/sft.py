@@ -205,11 +205,21 @@ def bucket():
 
 
 def upload(out: Path, run: str) -> None:
+    """Every file under out to oddstage/runs/run/, retrying each for about 25 minutes."""
+    from b2sdk.v2.exception import B2Error
+
     b = bucket()
     for path in sorted(p for p in out.rglob("*") if p.is_file()):
-        b.upload_local_file(
-            local_file=str(path), file_name=f"oddstage/runs/{run}/{path.relative_to(out)}"
-        )
+        name = f"oddstage/runs/{run}/{path.relative_to(out)}"
+        for attempt in range(10):
+            try:
+                b.upload_local_file(local_file=str(path), file_name=name)
+                break
+            except B2Error as e:
+                if attempt == 9:
+                    raise
+                print(f"{name}: {e}; retrying", file=sys.stderr)
+                time.sleep(30 * (attempt + 1))
     print(f"uploaded {out} to oddstage/runs/{run}/", file=sys.stderr)
 
 
