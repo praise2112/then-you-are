@@ -68,6 +68,7 @@ alter table matches add column if not exists cards text[] not null default '{}';
 alter table matches add column if not exists updated_at timestamptz not null default now();
 update matches set cards = array[seed_token] where cards = '{}';
 alter table turns add column if not exists round_n int not null default 1;
+alter table turns add column if not exists model_ref text;
 
 create table if not exists accounts (
     id text primary key,

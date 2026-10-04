@@ -255,12 +255,21 @@ class ModelCaller:
         transcript: list[str],
         hidden: str = "",
         slot: int | None = None,
+        spec: ModelSpec | None = None,
     ) -> AsyncIterator[str]:
-        """The House's move as it streams; slot pins the conversation to one llama-server slot,
-        so each call reuses the cache the seat's previous call left there."""
+        """The House's move as it streams, from `spec` instead when given; slot pins the
+        conversation to one llama-server slot, so each call reuses the seat's cache there."""
         messages = render_opponent_messages(template, card, transcript, hidden, seat=seat)
         extra = {} if slot is None else {"id_slot": slot}
-        return self.stream(self.opponent_spec, messages, **extra)
+        return self.stream(spec or self.opponent_spec, messages, **extra)
+
+    async def wake_opponent(self) -> None:
+        """Asks a self-hosted House for /health, so a scaled-to-zero server starts booting
+        before the House's first move; does nothing for a hosted opponent."""
+        if self.opponent_spec.base_url:
+            await self.local.get(
+                self.opponent_spec.base_url.rstrip("/").removesuffix("/v1") + "/health"
+            )
 
 
 def extract_json(raw: str) -> dict | None:

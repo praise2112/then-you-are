@@ -3,7 +3,7 @@ from collections.abc import AsyncIterator
 import pytest
 
 from arena_core.template import Template, load_template
-from arena_judge.caller import JudgeCall, ModelCaller
+from arena_judge.caller import CallError, JudgeCall, ModelCaller
 from arena_judge.schema import (
     BecauseClause,
     Evidence,
@@ -61,17 +61,28 @@ class FakeCaller(ModelCaller):
     """Scripted judge and opponent. Each judge call pops the next response; None means an
     outage and an int means the provider refused with that HTTP status."""
 
-    def __init__(self, rulings: list[JudgeResponse | None | int], opponent_moves: list[str]):
+    def __init__(
+        self,
+        rulings: list[JudgeResponse | None | int],
+        opponent_moves: list[str],
+        house_down: bool = False,
+    ):
         self.rulings = list(rulings)
+        self.house_down = house_down
+        self.stand_in_moves = 0
         self.opponent_moves = list(opponent_moves)
         self.judged: list[str] = []
         self.hidden_seen: list[str] = []
         self.opponent_saw: list[list[str]] = []
         self.opponent_hidden: list[str] = []
         self.opponent_slots: list[int | None] = []
+        self.wakes = 0
 
     async def aclose(self) -> None:
         return None
+
+    async def wake_opponent(self) -> None:
+        self.wakes += 1
 
     async def judge(self, template, transcript, previous, move, hidden="", spec=None) -> JudgeCall:
         self.judged.append(move)
@@ -88,8 +99,16 @@ class FakeCaller(ModelCaller):
         )
 
     def opponent_stream(
-        self, template, seat, card, transcript, hidden="", slot=None
+        self, template, seat, card, transcript, hidden="", slot=None, spec=None
     ) -> AsyncIterator[str]:
+        if spec is None and self.house_down:
+
+            async def down() -> AsyncIterator[str]:
+                raise CallError("the House is down", status=503)
+                yield ""
+
+            return down()
+        self.stand_in_moves += spec is not None
         self.opponent_saw.append(list(transcript))
         self.opponent_slots.append(slot)
         self.opponent_hidden.append(hidden)

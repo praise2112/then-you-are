@@ -238,6 +238,7 @@ export function Bluff({ turn, round, who, tone, you = false, ai = false, won = f
         <span className={`who tone-${tone}${you ? " you" : ""}`}>
           <span>{who} wrote</span>
           {ai && <AiTag />}
+          {turn.played_by && <em>, by {turn.played_by}</em>}
         </span>
         {won && <span className="stamp point">Point</span>}
       </p>

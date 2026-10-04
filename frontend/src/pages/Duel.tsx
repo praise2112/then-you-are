@@ -527,6 +527,7 @@ function EscalationDuel(props: EscalationProps) {
                     <em>{turn.host?.headline}</em>
                   </p>
                 )}
+                {turn.played_by && <p className="ruling"><em>{turn.played_by} played this move for the House</em></p>}
               </li>
             ))}
             {paused && (

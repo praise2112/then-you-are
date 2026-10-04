@@ -7,6 +7,7 @@ import json
 import logging
 import secrets
 from collections import defaultdict
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
@@ -34,7 +35,7 @@ from arena_core.state import (
     weighted_total,
 )
 from arena_core.template import Seed, Template
-from arena_judge.caller import CallError, JudgeCall, ModelCaller
+from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
 from arena_judge.schema import (
     GuessOpened,
@@ -176,6 +177,7 @@ class MatchService:
         public_base_url: str,
         presence: Presence,
         house_slots: int = 0,
+        fallback: tuple[str, ModelSpec] | None = None,
     ):
         self.pool = pool
         self.bus = bus
@@ -187,6 +189,8 @@ class MatchService:
         self.public_base_url = public_base_url
         self.presence = presence
         self.house_slots = house_slots
+        # The hosted model that takes a House seat for the rest of a match once the House fails.
+        self.fallback = fallback
         self.locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
         # Quick match searches and creates under one lock per game.
         self.seating: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
@@ -423,6 +427,8 @@ class MatchService:
                 self.opponent_ref if kind == "model" else None,
             ),
         )
+        if kind == "model":
+            self._spawn(self.caller.wake_opponent())
 
     async def join(self, invite_code: str, session_key: str) -> str:
         """Seats the session at the table behind an invite code. Returns the match id."""
@@ -815,8 +821,9 @@ class MatchService:
         row = await (
             await conn.execute(
                 "insert into turns (match_id, seq, actor, move_text, layer1_result, outcome, "
-                "live_verdict_id, action_id, round_n) "
-                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s) returning id",
+                "live_verdict_id, action_id, round_n, model_ref) "
+                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, "
+                "(select model_ref from seats where match_id = %s and seat = %s)) returning id",
                 (
                     match.id,
                     seq,
@@ -827,6 +834,8 @@ class MatchService:
                     verdict_id,
                     action_id,
                     round_n,
+                    match.id,
+                    actor,
                 ),
             )
         ).fetchone()
@@ -1045,6 +1054,7 @@ class MatchService:
                     scoring=t["scoring"],
                     host=t["host"],
                     points=self._turn_points(t["scoring"], template, t["outcome"]),
+                    played_by=self._stand_in(t["model_ref"]),
                 )
                 for t in rows
             ],
@@ -2068,20 +2078,63 @@ class MatchService:
         hidden: str = "",
         silent: bool = False,
     ) -> str:
+        lines = transcript(match, template, finished_only=True)
+        if not await self._stood_in(match.id, seat):
+            stream = self.caller.opponent_stream(
+                template, seat, prompt, lines, hidden, self._slot(match.id, seat)
+            )
+            try:
+                return await self._collect_move(match, stream, silent)
+            except CallError as e:
+                log.warning("opponent call failed for %s: %s", match.id, e)
+                if self.fallback is None:
+                    return ""
+                await self._stand_in_for(match.id, seat)
+        assert self.fallback is not None
+        stream = self.caller.opponent_stream(
+            template, seat, prompt, lines, hidden, spec=self.fallback[1]
+        )
+        try:
+            return await self._collect_move(match, stream, silent)
+        except CallError as e:
+            log.warning("stand-in call failed for %s: %s", match.id, e)
+            return ""
+
+    async def _collect_move(self, match: Match, stream: AsyncIterator[str], silent: bool) -> str:
         seq = len(match.turns) + 1
         parts: list[str] = []
-        lines = transcript(match, template, finished_only=True)
-        try:
-            slot = self._slot(match.id, seat)
-            stream = self.caller.opponent_stream(template, seat, prompt, lines, hidden, slot)
-            async for chunk in stream:
-                parts.append(chunk)
-                if not silent:
-                    self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))
-        except CallError as e:
-            log.warning("opponent call failed for %s: %s", match.id, e)
-            return ""
+        async for chunk in stream:
+            parts.append(chunk)
+            if not silent:
+                self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))
         return clean_move("".join(parts))
+
+    async def _stood_in(self, match_id: str, seat: str) -> bool:
+        """Whether the fallback model already holds this House seat."""
+        if self.fallback is None:
+            return False
+        async with self.pool.connection() as conn:
+            row = await (
+                await conn.execute(
+                    "select model_ref from seats where match_id = %s and seat = %s",
+                    (match_id, seat),
+                )
+            ).fetchone()
+        return row is not None and row["model_ref"] == self.fallback[0]
+
+    async def _stand_in_for(self, match_id: str, seat: str) -> None:
+        assert self.fallback is not None
+        async with self.pool.connection() as conn:
+            await conn.execute(
+                "update seats set model_ref = %s where match_id = %s and seat = %s",
+                (self.fallback[0], match_id, seat),
+            )
+
+    def _stand_in(self, model_ref: str | None) -> str | None:
+        """The fallback model's name for a move it played in the House's place."""
+        if self.fallback is None or model_ref != self.fallback[0]:
+            return None
+        return self.fallback[1].display_name
 
     async def _emit_match_ended(self, match: Match, coaching_line: str | None) -> None:
         snap = await self.snapshot(match.id)

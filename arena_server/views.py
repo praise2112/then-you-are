@@ -110,6 +110,8 @@ class TurnView(BaseModel):
     scoring: ScoringPayload | None
     host: HostPayload | None
     points: int | None
+    # The model that played this House move in the House's place, when it failed.
+    played_by: str | None = None
 
 
 class RoundView(BaseModel):

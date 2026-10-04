@@ -110,7 +110,7 @@ export function ReplayPage({ matchId }: Props) {
                   <span>{billed(turn.actor)}</span>
                 </span>{" "}
                 <span className={`model${seatOf(turn.actor)?.kind === "human" ? " human" : ""}`}>
-                  {seatOf(turn.actor)?.kind === "human" ? "human" : "model"}
+                  {seatOf(turn.actor)?.kind === "human" ? "human" : (turn.played_by ?? "model")}
                 </span>
                 <p className="said">{turn.outcome === "forfeit" ? "Lost the turn" : turn.move_text}</p>
               </div>

@@ -101,6 +101,58 @@ async def test_a_full_duel_ends_in_sudden_death_with_a_replay():
 
 
 @pytest.mark.anyio
+async def test_seating_the_house_wakes_its_server_before_the_first_move():
+    caller = FakeCaller(rulings=[], opponent_moves=[])
+    app, manager, client = await run_app(caller)
+    try:
+        await client.post("/matches", json={"template_id": "then-i-am"})
+        await settle(app)
+        assert caller.wakes == 1
+        assert caller.opponent_saw == []
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_flash_takes_the_house_seat_for_the_rest_of_the_match_when_the_house_is_down():
+    caller = FakeCaller(
+        rulings=[],
+        opponent_moves=["I am a well, bucket-swallowing.", "I am a pump, well-draining."],
+        house_down=True,
+    )
+    settings = dataclasses.replace(
+        load_settings(),
+        database_url=os.environ["TEST_DATABASE_URL"],
+        curator_token="shh",
+        opponent_ref="student-local",
+    )
+    app = build_app(settings, caller)
+    manager = LifespanManager(app)
+    await manager.__aenter__()
+    client = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test")
+    try:
+        match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        for version, move in [(0, "I am a draft, flame-killing."), (2, "I am a lid, pot-sealing.")]:
+            await client.post(
+                f"/matches/{match['id']}/moves",
+                json={"action_id": move, "expected_version": version, "move_text": move},
+            )
+            await settle(app)
+        snap = (await client.get(f"/matches/{match['id']}")).json()
+        assert caller.stand_in_moves == 2
+        assert [(t["actor"], t["played_by"]) for t in snap["transcript"]] == [
+            ("p1", None),
+            ("p2", "DeepSeek Flash"),
+            ("p1", None),
+            ("p2", "DeepSeek Flash"),
+        ]
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_stale_version_is_a_409_and_refusals_hand_the_turn_back():
     caller = FakeCaller(rulings=[judge_response(gates={"no_meta_move": False})], opponent_moves=[])
     app, manager, client = await run_app(caller)

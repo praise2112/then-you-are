@@ -1484,6 +1484,8 @@ export interface components {
             host: components["schemas"]["HostPayload"] | null;
             /** Points */
             points: number | null;
+            /** Played By */
+            played_by?: string | null;
         };
         /** ValidationError */
         ValidationError: {
