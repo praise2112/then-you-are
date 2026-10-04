@@ -66,6 +66,14 @@ student-local:
   base_url: http://localhost:8080/v1
   slots: 2
   chat_template_kwargs: { enable_thinking: false }
+student-cloud:
+  display_name: The House
+  model: student
+  temperature: 1.0
+  base_url: ${HOUSE_BASE_URL}/v1
+  api_key_env: HOUSE_API_KEY
+  slots: 2
+  chat_template_kwargs: { enable_thinking: false }
 judge-local:
   display_name: The Judge
   model: judge

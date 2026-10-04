@@ -1,0 +1,36 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: house
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "1"
+        run.googleapis.com/cpu-throttling: "true"
+        run.googleapis.com/startup-cpu-boost: "true"
+    spec:
+      serviceAccountName: house-model@PROJECT.iam.gserviceaccount.com
+      containerConcurrency: 2
+      timeoutSeconds: 60
+      containers:
+        - image: IMAGE
+          ports:
+            - containerPort: 8080
+          env:
+            - name: LLAMA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: house-api-key
+                  key: latest
+          resources:
+            limits:
+              cpu: "4"
+              memory: 4Gi
+          startupProbe:
+            httpGet:
+              path: /health
+            periodSeconds: 1
+            failureThreshold: 60
+            timeoutSeconds: 1
