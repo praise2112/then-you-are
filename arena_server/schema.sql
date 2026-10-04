@@ -200,3 +200,4 @@ create table if not exists disagreements (
     primary key (match_id, seq, session_key)
 );
 alter table sessions add column if not exists revoked boolean not null default false;
+alter table sessions add column if not exists last_seen_at timestamptz not null default now();

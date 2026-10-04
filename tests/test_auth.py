@@ -402,6 +402,71 @@ async def test_an_unfinished_house_game_blocks_deletion_and_a_guest_has_nothing_
         await manager.__aexit__(None, None, None)
 
 
+@pytest.mark.anyio
+async def test_a_guest_unseen_for_a_year_is_forgotten_unless_a_game_is_unfinished():
+    from tests.test_tables import expire, join, player, table
+
+    app, manager, gone = await run_app(FakeCaller([], []))
+    kept, busy = player(app), player(app)
+    pool = app.state.service.pool
+
+    async def age(client: httpx.AsyncClient, days: int) -> None:
+        async with pool.connection() as conn:
+            await conn.execute(
+                "update sessions set last_seen_at = now() - make_interval(days => %s) "
+                "where session_key = %s",
+                (days, client.cookies.get(auth.SESSION_COOKIE)),
+            )
+
+    async def last_seen(client: httpx.AsyncClient):
+        async with pool.connection() as conn:
+            row = await (
+                await conn.execute(
+                    "select last_seen_at > now() - interval '1 minute' as recent from sessions "
+                    "where session_key = %s",
+                    (client.cookies.get(auth.SESSION_COOKIE),),
+                )
+            ).fetchone()
+        return row and row["recent"]
+
+    try:
+        await gone.put("/sessions/me", json={"stage_name": "Gus"})
+        solo = (await gone.post("/matches", json={"template_id": "then-i-am"})).json()
+        await gone.post(
+            f"/matches/{solo['id']}/resign", json={"action_id": "r", "expected_version": 0}
+        )
+        await settle(app)
+        shared = await table(gone, "then-i-am", 2, "Gus")
+        await join(kept, shared["invite_code"], "Ben")
+        await settle(app)
+        await expire(app, shared["id"])
+        await kept.post(
+            f"/matches/{shared['id']}/moves",
+            json={"action_id": "b1", "expected_version": 1, "move_text": "I am rain."},
+        )
+        await settle(app)
+        await expire(app, shared["id"])
+        await busy.post("/matches", json={"template_id": "then-i-am", "stage_name": "Ivy"})
+
+        await age(kept, 2)
+        await kept.get("/sessions/me")
+        assert await last_seen(kept)
+        await age(gone, 400)
+        await age(busy, 400)
+
+        assert await auth.forget_stale_guests(pool) >= 1
+
+        replay = (await kept.get(f"/replays/{shared['id']}")).json()
+        assert [s["display_name"] for s in replay["seats"]] == ["Deleted player", "Ben"]
+        assert (await kept.get(f"/replays/{solo['id']}")).status_code == 404
+        assert (await busy.get("/sessions/me")).json()["stage_name"] == "Ivy"
+    finally:
+        await kept.aclose()
+        await busy.aclose()
+        await gone.aclose()
+        await manager.__aexit__(None, None, None)
+
+
 def test_a_sign_in_only_returns_to_a_page_on_this_site():
     assert auth.local_path("/play/then-i-am?x=1") == "/play/then-i-am?x=1"
     assert auth.local_path("//evil.example/phish") == "/"

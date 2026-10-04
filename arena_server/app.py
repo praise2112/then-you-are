@@ -38,8 +38,9 @@ from arena_judge.schema import (
 )
 from arena_server.auth import (
     SESSION_COOKIE,
-    DropRevokedSession,
+    SessionCheck,
     delete_account,
+    forget_stale_guests,
     mount_auth,
     rename_account,
     set_session_cookie,
@@ -65,6 +66,7 @@ from arena_server.views import (
 )
 
 SWEEP_EVERY_S = 60
+GUEST_SWEEP_EVERY_S = 60 * 60 * 24
 CLOCK_EVERY_S = 10
 FALLBACK_REF = "opponent-v1"
 log = logging.getLogger(__name__)
@@ -121,6 +123,17 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             if closed:
                 log.info("abandoned %d idle matches", len(closed))
 
+    async def sweep_stale_guests() -> None:
+        while True:
+            try:
+                forgotten = await forget_stale_guests(pool)
+            except Exception:
+                log.exception("guest sweep failed")
+            else:
+                if forgotten:
+                    log.info("erased %d stale guest sessions", forgotten)
+            await asyncio.sleep(GUEST_SWEEP_EVERY_S)
+
     async def sweep_clocks() -> None:
         while True:
             await asyncio.sleep(CLOCK_EVERY_S)
@@ -134,7 +147,11 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         await pool.open()
         await apply_schema(pool)
         await service.recover()
-        sweepers = [asyncio.create_task(sweep_abandoned()), asyncio.create_task(sweep_clocks())]
+        sweepers = [
+            asyncio.create_task(sweep_abandoned()),
+            asyncio.create_task(sweep_clocks()),
+            asyncio.create_task(sweep_stale_guests()),
+        ]
         yield
         for sweeper in sweepers:
             sweeper.cancel()
@@ -148,7 +165,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         same_site="lax",
         https_only=settings.secure_cookies,
     )
-    app.add_middleware(DropRevokedSession, pool=pool)
+    app.add_middleware(SessionCheck, pool=pool)
     app.state.service = service
     app.state.bus = bus
     mount_auth(app, settings, pool)

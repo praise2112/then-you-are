@@ -2,13 +2,15 @@
 
 import secrets
 from dataclasses import dataclass
+from datetime import timedelta
 from typing import Literal
 from urllib.parse import quote
 
 from authlib.integrations.starlette_client import OAuth, StarletteOAuth2App
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
-from psycopg import sql
+from psycopg import AsyncConnection, sql
+from psycopg.rows import DictRow
 from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -17,6 +19,8 @@ from arena_server.db import Pool
 
 SESSION_COOKIE = "thenyouare_session"
 COOKIE_AGE = 60 * 60 * 24 * 365
+GUEST_KEPT = timedelta(days=365)
+FINISHED = ("ended", "abandoned")
 
 
 def set_session_cookie(response: Response, key: str, secure: bool) -> None:
@@ -32,8 +36,9 @@ def local_path(next: str) -> str:
     return next
 
 
-class DropRevokedSession:
-    """ASGI middleware: a signed-out session's cookies are hidden from every route."""
+class SessionCheck:
+    """ASGI middleware: a signed-out session's cookies are hidden from every route, and a live
+    session's last visit is recorded, at most once a day."""
 
     def __init__(self, app: ASGIApp, pool: Pool):
         self.app = app
@@ -48,6 +53,11 @@ class DropRevokedSession:
 
     async def _revoked(self, key: str) -> bool:
         async with self.pool.connection() as conn:
+            await conn.execute(
+                "update sessions set last_seen_at = now() where session_key = %s "
+                "and not revoked and last_seen_at < now() - interval '1 day'",
+                (key,),
+            )
             row = await (
                 await conn.execute("select revoked from sessions where session_key = %s", (key,))
             ).fetchone()
@@ -183,6 +193,47 @@ async def rename_account(pool: Pool, session_key: str, display_name: str) -> boo
     return True
 
 
+async def erase_sessions(conn: AsyncConnection[DictRow], keys: list[str]) -> bool:
+    """Deletes every match only these sessions played, and their votes. A session still seated
+    at someone else's match becomes "Deleted player", unlinked and revoked; the rest are deleted.
+    Returns False, changing nothing, while one of those solo matches is unfinished."""
+    solo = await (
+        await conn.execute(
+            "select m.id, m.status from matches m "
+            "where exists (select 1 from seats s where s.match_id = m.id "
+            "and s.session_key = any(%(keys)s)) "
+            "and not exists (select 1 from seats s where s.match_id = m.id "
+            "and s.kind = 'human' and s.session_key <> all(%(keys)s))",
+            {"keys": keys},
+        )
+    ).fetchall()
+    if any(m["status"] not in FINISHED for m in solo):
+        return False
+    ids = [m["id"] for m in solo]
+    await conn.execute(
+        "delete from verdicts where turn_id in (select id from turns where match_id = any(%s))",
+        (ids,),
+    )
+    for table in ("turns", "guesses", "disagreements", "seats"):
+        await conn.execute(
+            sql.SQL("delete from {} where match_id = any(%s)").format(sql.Identifier(table)),
+            (ids,),
+        )
+    await conn.execute("delete from matches where id = any(%s)", (ids,))
+    await conn.execute("delete from disagreements where session_key = any(%s)", (keys,))
+    await conn.execute(
+        "delete from sessions where session_key = any(%s) and not exists "
+        "(select 1 from seats s where s.session_key = sessions.session_key)",
+        (keys,),
+    )
+    await conn.execute(
+        "update sessions set stage_name = 'Deleted player', account_id = null, "
+        "list_duels = false, revoked = true where session_key = any(%s)",
+        (keys,),
+    )
+    return True
+
+
 Deletion = Literal["deleted", "guest", "unfinished"]
 
 
@@ -206,43 +257,32 @@ async def delete_account(pool: Pool, session_key: str) -> Deletion:
                 )
             ).fetchall()
         ]
-        solo = await (
-            await conn.execute(
-                "select m.id, m.status from matches m "
-                "where exists (select 1 from seats s where s.match_id = m.id "
-                "and s.session_key = any(%(keys)s)) "
-                "and not exists (select 1 from seats s where s.match_id = m.id "
-                "and s.kind = 'human' and s.session_key <> all(%(keys)s))",
-                {"keys": keys},
-            )
-        ).fetchall()
-        if any(m["status"] not in ("ended", "abandoned") for m in solo):
+        if not await erase_sessions(conn, keys):
             return "unfinished"
-        ids = [m["id"] for m in solo]
-        await conn.execute(
-            "delete from verdicts where turn_id in (select id from turns where match_id = any(%s))",
-            (ids,),
-        )
-        for table in ("turns", "guesses", "disagreements", "seats"):
-            await conn.execute(
-                sql.SQL("delete from {} where match_id = any(%s)").format(sql.Identifier(table)),
-                (ids,),
-            )
-        await conn.execute("delete from matches where id = any(%s)", (ids,))
-        await conn.execute("delete from disagreements where session_key = any(%s)", (keys,))
-        await conn.execute(
-            "delete from sessions where session_key = any(%s) and not exists "
-            "(select 1 from seats s where s.session_key = sessions.session_key)",
-            (keys,),
-        )
-        await conn.execute(
-            "update sessions set stage_name = 'Deleted player', account_id = null, "
-            "list_duels = false, revoked = true where session_key = any(%s)",
-            (keys,),
-        )
         await conn.execute("delete from identities where account_id = %s", (account_id,))
         await conn.execute("delete from accounts where id = %s", (account_id,))
     return "deleted"
+
+
+async def forget_stale_guests(pool: Pool) -> int:
+    """Erases guest sessions unseen for GUEST_KEPT, skipping any with an unfinished match.
+    Returns how many were erased."""
+    async with pool.connection() as conn, conn.transaction():
+        keys = [
+            r["session_key"]
+            for r in await (
+                await conn.execute(
+                    "select s.session_key from sessions s "
+                    "where s.account_id is null and not s.revoked and s.last_seen_at < now() - %s "
+                    "and not exists (select 1 from seats se join matches m on m.id = se.match_id "
+                    "where se.session_key = s.session_key and m.status <> all(%s))",
+                    (GUEST_KEPT, list(FINISHED)),
+                )
+            ).fetchall()
+        ]
+        if keys:
+            await erase_sessions(conn, keys)
+    return len(keys)
 
 
 def mount_auth(app: FastAPI, settings: Settings, pool: Pool) -> None:
