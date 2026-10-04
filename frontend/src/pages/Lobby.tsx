@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, navigate, ThemeToggle } from "../App.tsx";
+import { Link, navigate, ThemeToggle, TopBar } from "../App.tsx";
 import { api, usePresence, type SocketMessage, type TableView, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
 
@@ -38,17 +38,14 @@ export function LobbyPage() {
   const name = store.stageName() || undefined;
   return (
     <>
-      <header className="bar-top">
-        <Link className="wordmark" to="/">
-          Oddstage
-        </Link>
+      <TopBar>
         <span className="round">Open tables{online !== null && `, ${online} online`}</span>
         <span className="aside">
           <Link to="/games">Games</Link>
           <AccountMenu />
           <ThemeToggle icon />
         </span>
-      </header>
+      </TopBar>
       <main className="wrap lobby">
         <ul className="table-list">
           {tables?.length === 0 && <li className="empty">No open tables. Take a quick seat below and one opens.</li>}
@@ -119,13 +116,10 @@ export function JoinPage({ code }: { code: string }) {
 
   return (
     <>
-      <header className="bar-top">
-        <Link className="wordmark" to="/">
-          Oddstage
-        </Link>
+      <TopBar>
         <span className="round">An invitation</span>
         <ThemeToggle icon />
-      </header>
+      </TopBar>
       <main className="wrap">
         <section className="hero">
           <form

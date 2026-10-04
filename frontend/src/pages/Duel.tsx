@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type RefObject } from "react";
 
-import { Link, navigate, ThemeToggle } from "../App.tsx";
+import { Link, navigate, ThemeToggle, TopBar } from "../App.tsx";
 import {
   api,
   useMatchEvents,
@@ -257,15 +257,12 @@ export function Duel({ matchId, spectator = false }: Props) {
   if (snap.status === "open") {
     return (
       <>
-        <header className="bar-top">
-          <a className="wordmark" href="/">
-            Oddstage
-          </a>
+        <TopBar>
           <span className="round">
             <b>{template.title}</b>, a table for {snap.seats_wanted}
           </span>
           <ThemeToggle />
-        </header>
+        </TopBar>
         <main className="wrap">
           <section className="hero">
             <WaitingRoom snap={snap} template={template} table={table} onChange={() => void refresh()} />
@@ -475,16 +472,13 @@ function EscalationDuel(props: EscalationProps) {
 
   return (
     <>
-      <header className="bar-top">
-        <a className="wordmark" href="/">
-          Oddstage
-        </a>
+      <TopBar>
         <span className="round">
           {spectator && "Watching "}
           <b>{template.title}</b>, round {round} of {template.rounds_budget}
         </span>
         <ThemeToggle />
-      </header>
+      </TopBar>
 
       <main className="stage">
         <section>
@@ -886,16 +880,13 @@ function ShowcaseDuel(props: ShowcaseProps) {
 
   return (
     <>
-      <header className="bar-top">
-        <a className="wordmark" href="/">
-          Oddstage
-        </a>
+      <TopBar>
         <span className="round">
           {spectator && "Watching "}
           <b>{template.title}</b>, round {roundN} of {template.rounds_budget}
         </span>
         <ThemeToggle />
-      </header>
+      </TopBar>
 
       <main className="stage showcase">
         <div className="rail">

@@ -97,7 +97,7 @@ export function AccountMenu() {
             <div className="sheet settings" role="dialog" aria-modal="true" aria-labelledby="signin-title">
               <h2 id="signin-title">Sign in</h2>
               <p className="lede">
-                Keep your duels under one name and take a place on the standings. No password: Oddstage only
+                Keep your duels under one name and take a place on the standings. No password: Then You Are only
                 receives your name and avatar.
               </p>
               <ProviderButtons providers={session.providers} verb="Continue with" />
@@ -188,7 +188,7 @@ function SettingsSheet({
         )}
         {notice?.kind === "taken" && (
           <p className="notice warn">
-            That {label(notice.provider)} account is already its own Oddstage account, <b>{notice.name}</b>. To use
+            That {label(notice.provider)} account is already its own Then You Are account, <b>{notice.name}</b>. To use
             it, sign out and sign in with {label(notice.provider)}.
           </p>
         )}

@@ -15,7 +15,7 @@ export interface paths {
         put?: never;
         /**
          * Logout
-         * @description Signing out hands the browser a fresh guest session; the account keeps the old one.
+         * @description Signing out revokes the session for good; the account keeps its matches.
          */
         post: operations["logout_auth_logout_post"];
         delete?: never;

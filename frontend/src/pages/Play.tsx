@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, navigate, ThemeToggle } from "../App.tsx";
+import { Link, navigate, ThemeToggle, TopBar } from "../App.tsx";
 import { api, ApiError, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
 import { HOUSE } from "./format.ts";
@@ -19,10 +19,7 @@ export function GamePage({ slug }: { slug: string }) {
   if (!templates || !template) return <p className="page-status">{error ?? "Raising the curtain."}</p>;
   return (
     <>
-      <header className="bar-top">
-        <Link className="wordmark" to="/">
-          Oddstage
-        </Link>
+      <TopBar>
         <span className="aside">
           <Link to="/games">Games</Link>
           <Link to="/lobby">Tables</Link>
@@ -30,7 +27,7 @@ export function GamePage({ slug }: { slug: string }) {
           <AccountMenu />
           <ThemeToggle icon />
         </span>
-      </header>
+      </TopBar>
       <main className="wrap">
         <section className="hero">
           <Stage template={template} />
@@ -103,11 +100,10 @@ export function Play({ slug }: { slug: string }) {
   return (
     <>
       <div className="backdrop" style={{ padding: "var(--space-3)" }}>
-        <header className="bar-top">
-          <span className="wordmark">Oddstage</span>
+        <TopBar linksHome={false}>
           <span className="round">Round 1</span>
           <ThemeToggle icon />
-        </header>
+        </TopBar>
       </div>
       <div className="scrim">
         <form className="sheet first-play" role="dialog" aria-modal="true" aria-labelledby="fp-title" onSubmit={submit}>

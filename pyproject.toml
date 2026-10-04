@@ -1,7 +1,7 @@
 [project]
 name = "oddstage"
 version = "0.1.0"
-description = "Oddstage: a judged creative-game arena. First game: Then I Am."
+description = "Then You Are: a judged creative-game arena. First game: Then I Am."
 requires-python = ">=3.12"
 dependencies = [
     "authlib>=1.8.0",

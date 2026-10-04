@@ -42,6 +42,22 @@ export function Link({ to, children, ...rest }: { to: string; children: ReactNod
   );
 }
 
+/** The ink bar on every page: the game's name, then the page's own items as children. */
+export function TopBar({ linksHome = true, children }: { linksHome?: boolean; children: ReactNode }) {
+  return (
+    <header className="bar-top">
+      {linksHome ? (
+        <Link className="wordmark" to="/">
+          Then You Are
+        </Link>
+      ) : (
+        <span className="wordmark">Then You Are</span>
+      )}
+      {children}
+    </header>
+  );
+}
+
 export function ThemeToggle({ icon = false }: { icon?: boolean }) {
   const [theme, setTheme] = useState(store.theme());
   const label = theme === "dark" ? "Day edition" : "Night edition";

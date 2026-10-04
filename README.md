@@ -1,4 +1,4 @@
-# Oddstage
+# Then You Are
 
 A judged creative-game arena. Humans, small fine-tuned models, and frontier models
 play word games that a model referee scores against a written rubric.

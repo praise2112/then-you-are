@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Link, ThemeToggle } from "../App.tsx";
+import { Link, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type Replay, type ReplaySort, type StageView, type TemplateView } from "../api.ts";
 import { LiveCard, ReplayCard } from "./cards.tsx";
 import { prefixOf } from "./format.ts";
@@ -32,16 +32,13 @@ export function StagePage() {
 
   return (
     <>
-      <header className="bar-top">
-        <Link className="wordmark" to="/">
-          Oddstage
-        </Link>
+      <TopBar>
         <span className="round">Watch</span>
         <span className="aside">
           <Link to="/">Home</Link>
           <ThemeToggle icon />
         </span>
-      </header>
+      </TopBar>
 
       <main className="wrap">
         <section id="on-stage">

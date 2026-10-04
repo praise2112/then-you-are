@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, navigate, ThemeToggle } from "../App.tsx";
+import { Link, navigate, ThemeToggle, TopBar } from "../App.tsx";
 import { api, usePresence, type DemoPoints, type OpenDuel, type SocketMessage, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
 import { fullMove, HOUSE } from "./format.ts";
@@ -23,8 +23,7 @@ export function Landing() {
 
   return (
     <>
-      <header className="bar-top">
-        <span className="wordmark">Oddstage</span>
+      <TopBar linksHome={false}>
         <span className="aside">
           <Link to="/games">Games</Link>
           <Link to="/lobby">Tables</Link>
@@ -33,7 +32,7 @@ export function Landing() {
           <AccountMenu />
           <ThemeToggle icon />
         </span>
-      </header>
+      </TopBar>
 
       {openDuels.map((duel) => (
         <div key={duel.id} className="open-duel">

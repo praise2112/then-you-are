@@ -2,7 +2,17 @@
 
 from better_profanity import profanity
 
-RESERVED = {"oddstage", "the house", "house", "the judge", "judge", "admin", "moderator"}
+RESERVED = {
+    "then you are",
+    "thenyouare",
+    "oddstage",
+    "the house",
+    "house",
+    "the judge",
+    "judge",
+    "admin",
+    "moderator",
+}
 REFUSAL = "That name will not do on a public stage. Pick another."
 
 profanity.load_censor_words()

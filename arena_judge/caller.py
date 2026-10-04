@@ -117,7 +117,7 @@ class ModelCaller:
         self.opponent_spec = opponent
         self.tracer = tracer
         self.client = httpx.AsyncClient(
-            headers={"Authorization": f"Bearer {api_key}", "X-Title": "Oddstage"},
+            headers={"Authorization": f"Bearer {api_key}"},
             timeout=httpx.Timeout(timeout_s, connect=10.0),
         )
         # A spec with its own base_url is sent without the OpenRouter key, and a CPU server

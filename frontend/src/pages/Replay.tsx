@@ -1,6 +1,6 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
 
-import { Link, ThemeToggle } from "../App.tsx";
+import { Link, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
@@ -62,16 +62,13 @@ export function ReplayPage({ matchId }: Props) {
 
   return (
     <>
-      <header className="bar-top">
-        <Link className="wordmark" to="/">
-          Oddstage
-        </Link>
+      <TopBar>
         <span className="round">A replay</span>
         <span className="aside">
           <Link to="/">Home</Link>
           <ThemeToggle icon />
         </span>
-      </header>
+      </TopBar>
 
       <main className="program">
         <h1>{replay.seats.map((s) => billed(s.seat)).join(" vs ")}</h1>

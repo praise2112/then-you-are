@@ -140,7 +140,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         await caller.aclose()
         await pool.close()
 
-    app = FastAPI(title="Oddstage", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="Then You Are", version="0.1.0", lifespan=lifespan)
     app.add_middleware(
         SessionMiddleware,
         secret_key=settings.session_secret,

@@ -1,13 +1,13 @@
 const KEYS = {
-  theme: "oddstage-theme",
-  firstPlayDone: "oddstage-first-play-done",
-  stageName: "oddstage-stage-name",
-  streak: "oddstage-streak",
-  bestStreak: "oddstage-best-streak",
-  lastCounted: "oddstage-last-counted-match",
-  openingMove: "oddstage-opening-move",
-  demoSeen: "oddstage-demo-seen",
-  curatorToken: "oddstage-curator-token",
+  theme: "thenyouare-theme",
+  firstPlayDone: "thenyouare-first-play-done",
+  stageName: "thenyouare-stage-name",
+  streak: "thenyouare-streak",
+  bestStreak: "thenyouare-best-streak",
+  lastCounted: "thenyouare-last-counted-match",
+  openingMove: "thenyouare-opening-move",
+  demoSeen: "thenyouare-demo-seen",
+  curatorToken: "thenyouare-curator-token",
 };
 
 function read(key: string): string | null {

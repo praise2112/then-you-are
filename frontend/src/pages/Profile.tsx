@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, ThemeToggle } from "../App.tsx";
+import { Link, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type DuelRow, type ProfileView, type TemplateView } from "../api.ts";
 import { ReplayCard } from "./cards.tsx";
 import { prefixOf } from "./format.ts";
@@ -27,10 +27,7 @@ export function Profile({ accountId }: { accountId: string }) {
 
   return (
     <>
-      <header className="bar-top">
-        <Link className="wordmark" to="/">
-          Oddstage
-        </Link>
+      <TopBar>
         <span className="round">Programme</span>
         <span className="aside">
           <Link to="/">Home</Link>
@@ -38,7 +35,7 @@ export function Profile({ accountId }: { accountId: string }) {
           <AccountMenu />
           <ThemeToggle icon />
         </span>
-      </header>
+      </TopBar>
 
       <main className="wrap programme">
         {error && <p className="page-status">{error}</p>}

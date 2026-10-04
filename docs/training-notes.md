@@ -1,8 +1,8 @@
-# How Oddstage's models were built
+# How the models in Then You Are were built
 
 ## The two models in the game
 
-Oddstage is a word game where a language model, the House, plays against you, and a second
+Then You Are is a word game where a language model, the House, plays against you, and a second
 model, the judge, rules on every move. In Then I Am, for example, each move must overcome the
 one before it, and one failed move ends the match. A move stands when the judge accepts it.
 

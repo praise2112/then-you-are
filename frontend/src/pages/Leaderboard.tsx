@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, ThemeToggle } from "../App.tsx";
+import { Link, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type BoardSummary, type BoardView } from "../api.ts";
 
 /** Standings: an index of games, then one board per game. Signed-in players, three finished duels or more. */
 export function Leaderboard({ slug }: { slug?: string }) {
   return (
     <>
-      <header className="bar-top">
-        <Link className="wordmark" to="/">
-          Oddstage
-        </Link>
+      <TopBar>
         <span className="round">Wins against the House</span>
         <span className="aside">
           <Link to="/">Home</Link>
@@ -19,7 +16,7 @@ export function Leaderboard({ slug }: { slug?: string }) {
           <AccountMenu />
           <ThemeToggle icon />
         </span>
-      </header>
+      </TopBar>
       <main className="wrap standings">{slug ? <Board slug={slug} /> : <BoardIndex />}</main>
     </>
   );

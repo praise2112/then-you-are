@@ -14,7 +14,7 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 from arena_server.config import Settings
 from arena_server.db import Pool
 
-SESSION_COOKIE = "oddstage_session"
+SESSION_COOKIE = "thenyouare_session"
 COOKIE_AGE = 60 * 60 * 24 * 365
 
 
