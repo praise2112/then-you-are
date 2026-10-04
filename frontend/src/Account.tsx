@@ -101,6 +101,10 @@ export function AccountMenu() {
                 receives your name and avatar.
               </p>
               <ProviderButtons providers={session.providers} verb="Continue with" />
+              <p className="fine-print">
+                Signing in means you accept the <Link to="/terms">terms</Link> and have read the{" "}
+                <Link to="/privacy">privacy page</Link>. You must be 15 or older.
+              </p>
               <div className="sheet-actions">
                 <button className="quiet-button" type="button" onClick={() => setOpen(false)}>
                   Not now

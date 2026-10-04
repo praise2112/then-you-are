@@ -4,6 +4,7 @@ import { Duel } from "./pages/Duel.tsx";
 import { GamesPage } from "./pages/Games.tsx";
 import { Landing } from "./pages/Landing.tsx";
 import { Leaderboard } from "./pages/Leaderboard.tsx";
+import { LegalPage, type LegalSlug } from "./pages/Legal.tsx";
 import { JoinPage, LobbyPage } from "./pages/Lobby.tsx";
 import { GamePage, Play } from "./pages/Play.tsx";
 import { Profile } from "./pages/Profile.tsx";
@@ -78,8 +79,29 @@ export function ThemeToggle({ icon = false }: { icon?: boolean }) {
   );
 }
 
+/** The line at the foot of every page: the legal pages and the contact address. */
+function SiteFoot() {
+  return (
+    <footer className="site-foot">
+      <Link to="/privacy">Privacy</Link>
+      <Link to="/terms">Terms</Link>
+      <Link to="/legal">Legal notice</Link>
+      <a href="mailto:hello@thenyouare.com">hello@thenyouare.com</a>
+    </footer>
+  );
+}
+
 export default function App() {
   const path = usePath();
+  return (
+    <>
+      {pageAt(path)}
+      <SiteFoot />
+    </>
+  );
+}
+
+function pageAt(path: string) {
   const match = path.match(/^\/m\/([^/]+)$/);
   const replay = path.match(/^\/r\/([^/]+)$/);
   const watch = path.match(/^\/w\/([^/]+)$/);
@@ -97,6 +119,7 @@ export default function App() {
   if (path === "/lobby") return <LobbyPage />;
   if (path === "/stage") return <StagePage />;
   if (path === "/games") return <GamesPage />;
+  if (path === "/privacy" || path === "/terms" || path === "/legal") return <LegalPage slug={path.slice(1) as LegalSlug} />;
   const standings = path.match(/^\/standings(?:\/([^/]+))?$/);
   if (standings) return <Leaderboard slug={standings[1]} />;
   return <Landing />;

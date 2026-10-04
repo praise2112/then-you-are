@@ -3579,3 +3579,51 @@ small.ai-tag {
   vertical-align: 0.15em;
   opacity: 0.75;
 }
+
+.legal {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-3) var(--space-4);
+}
+
+.legal h1 {
+  margin: 0;
+}
+
+.legal .updated {
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+  margin: 0.2rem 0 var(--space-3);
+}
+
+.legal h2 {
+  font-size: 1.25rem;
+  margin: var(--space-3) 0 0.4rem;
+}
+
+.legal ul {
+  padding-left: 1.2rem;
+}
+
+.legal li + li {
+  margin-top: 0.35rem;
+}
+
+.site-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.4rem;
+  padding: var(--space-3) var(--space-3) var(--space-4);
+  font-size: 0.85rem;
+}
+
+.site-foot a {
+  color: var(--ink-faint);
+}
+
+.sheet .fine-print {
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  margin: var(--space-2) 0 0;
+}
