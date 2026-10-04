@@ -222,8 +222,8 @@ class Template(Strict):
         if self.mode == "showcase":
             if self.win_condition != "points_total":
                 raise ValueError("a showcase game is decided on points_total")
-            if len(self.seed_pool) < self.rounds_budget:
-                raise ValueError("the seed pool must cover every round")
+            if len(self.seed_pool) - (self.revealed_card is not None) < self.rounds_budget:
+                raise ValueError("the seed pool, less the demo card, must cover every round")
         if self.guess is not None:
             if self.mode != "showcase":
                 raise ValueError("only a showcase game has a guess beat")
@@ -237,6 +237,12 @@ class Template(Strict):
 
     def seed_named(self, token: str) -> Seed | None:
         return next((s for s in self.seed_pool if s.opening_token == token), None)
+
+    @property
+    def revealed_card(self) -> Seed | None:
+        """The demo's opening card when the public demo shows its hidden truth."""
+        card = self.seed_named(self.demo.opening.token)
+        return card if card is not None and card.hidden else None
 
     def _points(self, scores: dict[str, int]) -> list[dict]:
         return [

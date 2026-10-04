@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build, deploy, remove and inspect the House model service on Cloud Run.
-# Usage: house.sh build|up|down|status|logs
+# Usage: house.sh build|up|relink|down|status|logs
 set -euo pipefail
 
 PROJECT=PROJECT
@@ -28,9 +28,8 @@ build() {
 
 up() {
   if ! billing_enabled; then
-    gc billing projects link "$PROJECT" --billing-account "$BILLING_ACCOUNT"
-    # A service that lived through a billing stop never gets an instance again.
-    gc run services delete house --region "$REGION" 2>/dev/null || true
+    echo "billing is off, likely the budget kill switch; once the budget allows: $0 relink" >&2
+    exit 1
   fi
   local digest
   digest=$(gc artifacts docker images describe "$IMAGE:latest" --format='value(image_summary.digest)')
@@ -39,6 +38,13 @@ up() {
   gc run services add-iam-policy-binding house --region "$REGION" \
     --member=allUsers --role=roles/run.invoker --format=none
   status
+}
+
+relink() {
+  gc billing projects link "$PROJECT" --billing-account "$BILLING_ACCOUNT"
+  # A service that lived through a billing stop never gets an instance again.
+  gc run services delete house --region "$REGION" 2>/dev/null || true
+  up
 }
 
 down() {
@@ -59,6 +65,6 @@ logs() {
 }
 
 case "${1:-}" in
-  build | up | down | status | logs) "$1" ;;
-  *) echo "usage: $0 build|up|down|status|logs" >&2; exit 2 ;;
+  build | up | relink | down | status | logs) "$1" ;;
+  *) echo "usage: $0 build|up|relink|down|status|logs" >&2; exit 2 ;;
 esac

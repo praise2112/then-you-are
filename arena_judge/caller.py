@@ -71,6 +71,13 @@ class CallError(Exception):
         self.status = status
         self.retry_after = retry_after
 
+    @property
+    def kind(self) -> str:
+        """A label safe to export: the HTTP status or the error type, never provider text."""
+        if self.status is not None:
+            return f"HTTP {self.status}"
+        return type(self.__cause__).__name__ if self.__cause__ else "no usable reply"
+
 
 @dataclass
 class CallResult:
@@ -136,7 +143,7 @@ class ModelCaller:
         try:
             yield generation
         except CallError as e:
-            generation.update(level="ERROR", status_message=str(e))
+            generation.update(level="ERROR", status_message=e.kind)
             raise
         finally:
             generation.end()
@@ -167,8 +174,13 @@ class ModelCaller:
                 body["thinking"] = {"type": "enabled" if spec.thinking else "disabled"}
         else:
             body["usage"] = {"include": True}
+            reasoning: dict[str, Any] = {}
             if spec.reasoning_effort:
-                body["reasoning"] = {"effort": spec.reasoning_effort}
+                reasoning["effort"] = spec.reasoning_effort
+            if spec.thinking is not None:
+                reasoning["enabled"] = spec.thinking
+            if reasoning:
+                body["reasoning"] = reasoning
         if spec.provider:
             body["provider"] = spec.provider
         if spec.chat_template_kwargs:
@@ -228,7 +240,10 @@ class ModelCaller:
                         if not line.startswith("data: ") or line == "data: [DONE]":
                             continue
                         chunk = json.loads(line[6:])
-                        delta = chunk.get("choices", [{}])[0].get("delta", {}).get("content")
+                        if "error" in chunk:
+                            raise CallError("error chunk in stream")
+                        choices = chunk.get("choices") or [{}]
+                        delta = choices[0].get("delta", {}).get("content")
                         if not delta:
                             continue
                         if generation and not started:
@@ -335,8 +350,10 @@ def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
     if "scoring" not in data and "gates" in data:
         # A judge that skipped the host block still produced a usable scoring block.
         data = {"scoring": data, "host": None}
+    if not isinstance(data.get("scoring"), dict):
+        return None
     if data.get("host") is None:
-        data["host"] = _fallback_host(data.get("scoring") or {}, rubric_names[0])
+        data["host"] = _fallback_host(data["scoring"], rubric_names[0])
     try:
         response = JudgeResponse.model_validate(data)
     except ValidationError:
@@ -352,11 +369,13 @@ def _fallback_line(verdict: str) -> str:
 
 def _fallback_host(scoring: dict, criterion: str) -> dict:
     verdict = scoring.get("verdict", "accept")
+    evidence = scoring.get("evidence")
+    reason = evidence.get("mechanism") if isinstance(evidence, dict) else None
     return {
         "headline": _fallback_line(verdict),
         "because_clause": {
             "criterion": criterion,
-            "text": (scoring.get("evidence") or {}).get("mechanism", "The Judge gave no reason."),
+            "text": reason or "The Judge gave no reason.",
         },
         "quotable_line": _fallback_line(verdict),
         "generated_emoji": "🎭",

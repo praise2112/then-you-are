@@ -153,6 +153,28 @@ async def test_flash_takes_the_house_seat_for_the_rest_of_the_match_when_the_hou
 
 
 @pytest.mark.anyio
+async def test_a_judge_that_never_rules_hands_the_move_back(monkeypatch):
+    monkeypatch.setattr("arena_server.matches.JUDGE_GIVE_UP_S", 0)
+    monkeypatch.setattr("arena_server.matches.PAUSE_BACKOFF_S", (0,))
+    caller = FakeCaller(rulings=[None, None, None], opponent_moves=[])
+    app, manager, client = await run_app(caller)
+    try:
+        match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        move = "I am a draft, flame-killing."
+        await client.post(
+            f"/matches/{match['id']}/moves",
+            json={"action_id": "g1", "expected_version": 0, "move_text": move},
+        )
+        await settle(app)
+        snap = (await client.get(f"/matches/{match['id']}")).json()
+        assert (snap["status"], snap["to_move"], snap["transcript"]) == ("active", "p1", [])
+        assert caller.judged == [move]
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_stale_version_is_a_409_and_refusals_hand_the_turn_back():
     caller = FakeCaller(rulings=[judge_response(gates={"no_meta_move": False})], opponent_moves=[])
     app, manager, client = await run_app(caller)
@@ -230,6 +252,10 @@ async def test_resign_ends_the_match_and_disagree_counts_once():
         await settle(app)
         vote = await client.post(f"/matches/{match['id']}/turns/1/disagree")
         assert vote.status_code == 204
+        stranger = httpx.AsyncClient(transport=client._transport, base_url="http://test")
+        stray = await stranger.post(f"/matches/{match['id']}/turns/1/disagree")
+        await stranger.aclose()
+        assert stray.status_code == 403
         resigned = await client.post(
             f"/matches/{match['id']}/resign", json={"action_id": "d2", "expected_version": 2}
         )

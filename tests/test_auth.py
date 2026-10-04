@@ -113,9 +113,15 @@ async def test_signing_in_claims_the_guest_session_and_signing_out_leaves_it(mon
         assert renamed["stage_name"] == chosen
         assert renamed["account"]["display_name"] == chosen
 
+        signed_in_key = client.cookies.get(auth.SESSION_COOKIE)
+        assert signed_in_key
         out = await client.post("/auth/logout")
         assert out.status_code == 204
         assert (await client.get("/sessions/me")).json()["account"] is None
+        replay = httpx.AsyncClient(transport=client._transport, base_url="http://test")
+        replay.cookies.set(auth.SESSION_COOKIE, signed_in_key)
+        assert (await replay.get("/sessions/me")).json()["account"] is None
+        await replay.aclose()
 
         await sign_in(client)
         me = (await client.get("/sessions/me")).json()
@@ -317,3 +323,10 @@ async def test_a_game_against_people_is_listed_but_never_counted(monkeypatch):
         await guest.aclose()
         await client.aclose()
         await manager.__aexit__(None, None, None)
+
+
+def test_a_sign_in_only_returns_to_a_page_on_this_site():
+    assert auth.local_path("/play/then-i-am?x=1") == "/play/then-i-am?x=1"
+    assert auth.local_path("//evil.example/phish") == "/"
+    assert auth.local_path("/\\evil.example") == "/"
+    assert auth.local_path("https://evil.example") == "/"

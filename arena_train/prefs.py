@@ -213,11 +213,13 @@ def main() -> None:
         print(json.dumps({k: v for k, v in metrics.items() if k != "log"}), file=sys.stderr)
     trainer.save_model(str(args.out / "model"))
     tokenizer.save_pretrained(str(args.out / "model"))
+    if args.run:
+        upload(args.out, args.run)
     if args.contexts:
         rows = [json.loads(line) for line in args.contexts.read_text().splitlines()]
         answer_contexts(model, tokenizer, rows, args.out, 1.0, 96)
-    if args.run:
-        upload(args.out, args.run)
+        if args.run:
+            upload(args.out, args.run, ("answers.jsonl",))
 
 
 if __name__ == "__main__":

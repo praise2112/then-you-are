@@ -170,11 +170,18 @@ def transcript(match: Match, template: Template, finished_only: bool = False) ->
     return lines
 
 
-def deal(template: Template, rng: random.Random, first: Seed | None = None) -> list[Seed]:
-    """One card for an escalation duel, one per round for a showcase, `first` leading if given."""
+def deal(
+    template: Template,
+    rng: random.Random,
+    first: Seed | None = None,
+    leave_out: Seed | None = None,
+) -> list[Seed]:
+    """One card for an escalation duel, one per round for a showcase, `first` leading if given
+    and `leave_out` never dealt."""
+    pool = [c for c in template.seed_pool if c is not leave_out]
     if template.mode == "escalation":
-        return [first or rng.choice(template.seed_pool)]
-    rest = [c for c in template.seed_pool if c is not first]
+        return [first or rng.choice(pool)]
+    rest = [c for c in pool if c is not first]
     cards = rng.sample(rest, template.rounds_budget - bool(first))
     return [first, *cards] if first else cards
 

@@ -3,6 +3,7 @@
 import asyncio
 import html
 import logging
+import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -35,7 +36,13 @@ from arena_judge.schema import (
     TurnChanged,
     TurnRejected,
 )
-from arena_server.auth import SESSION_COOKIE, mount_auth, rename_account, set_session_cookie
+from arena_server.auth import (
+    SESSION_COOKIE,
+    DropRevokedSession,
+    mount_auth,
+    rename_account,
+    set_session_cookie,
+)
 from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
@@ -76,6 +83,9 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     }
     judge_spec = load_model(settings.judge_ref)
     opponent_spec = load_model(settings.opponent_ref)
+    for spec in (judge_spec, opponent_spec):
+        if spec.api_key_env and not os.environ.get(spec.api_key_env):
+            raise RuntimeError(f"{spec.api_key_env} is not set")
     caller = caller or ModelCaller(
         settings.openrouter_api_key,
         judge_spec,
@@ -131,7 +141,13 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         await pool.close()
 
     app = FastAPI(title="Oddstage", version="0.1.0", lifespan=lifespan)
-    app.add_middleware(SessionMiddleware, secret_key=settings.session_secret, same_site="lax")
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=settings.session_secret,
+        same_site="lax",
+        https_only=settings.secure_cookies,
+    )
+    app.add_middleware(DropRevokedSession, pool=pool)
     app.state.service = service
     app.state.bus = bus
     mount_auth(app, settings, pool)
@@ -225,7 +241,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         """The caller's session, made on first play and renamed when a stage name comes along."""
         refuse_bad_name(stage_name)
         key = await service.ensure_session(request.cookies.get(SESSION_COOKIE), stage_name)
-        set_session_cookie(response, key)
+        set_session_cookie(response, key, settings.secure_cookies)
         return key
 
     def session_of(request: Request) -> str:
@@ -279,7 +295,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         )
         if body.stage_name and body.stage_name.strip():
             await rename_account(pool, key, body.stage_name.strip()[:40])
-        set_session_cookie(response, key)
+        set_session_cookie(response, key, settings.secure_cookies)
         return await session_with_providers(key)
 
     @app.post("/matches", status_code=201)
@@ -382,8 +398,8 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         return Accepted()
 
     @app.post("/matches/{match_id}/turns/{seq}/disagree", status_code=204)
-    async def post_disagree(match_id: str, seq: int) -> Response:
-        await service.disagree(match_id, seq)
+    async def post_disagree(match_id: str, seq: int, request: Request) -> Response:
+        await service.disagree(match_id, seq, request.cookies.get(SESSION_COOKIE))
         return Response(status_code=204)
 
     @app.get("/matches/{match_id}/events")

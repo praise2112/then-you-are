@@ -203,3 +203,11 @@ def test_a_replayed_row_that_is_not_the_expected_call_stops_the_run(tmp_path: Pa
     asyncio.run(tape.step("move", "p1", 1, never))
     with pytest.raises(RuntimeError, match="replay diverged"):
         asyncio.run(tape.step("move", "p2", 2, never))
+
+
+def test_a_showcase_never_deals_the_card_whose_truth_the_demo_shows():
+    demo_card = WORDS.revealed_card
+    assert demo_card is not None
+    rng = random.Random(7)
+    for _ in range(200):
+        assert demo_card not in deal(WORDS, rng, leave_out=demo_card)

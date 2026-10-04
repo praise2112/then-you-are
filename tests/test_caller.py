@@ -225,3 +225,52 @@ def test_a_pinned_house_move_asks_llama_server_for_its_slot(monkeypatch, templat
 
     assert json.loads(seen[0].content)["id_slot"] == 1
     assert "id_slot" not in json.loads(seen[1].content)
+
+
+def test_an_openrouter_spec_with_thinking_off_turns_reasoning_off(monkeypatch):
+    seen: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        return httpx.Response(200, json={"choices": [{"message": {"content": "ok"}}]})
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(
+        httpx, "AsyncClient", lambda **kw: real(transport=httpx.MockTransport(handler), **kw)
+    )
+    fast = ModelSpec(model="flash", display_name="Flash", thinking=False)
+    caller = ModelCaller("secret", fast, fast)
+    asyncio.run(caller.complete(fast, [{"role": "user", "content": "hi"}]))
+    asyncio.run(caller.aclose())
+
+    assert json.loads(seen[0].content)["reasoning"] == {"enabled": False}
+
+
+def test_a_stream_chunk_without_choices_is_skipped(monkeypatch):
+    lines = [
+        'data: {"choices": [{"delta": {"content": "I am "}}]}',
+        'data: {"choices": [{"delta": {"content": "a lid."}}]}',
+        'data: {"choices": [], "usage": {"prompt_tokens": 5}}',
+        "data: [DONE]",
+    ]
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, text="\n".join(lines) + "\n")
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(
+        httpx, "AsyncClient", lambda **kw: real(transport=httpx.MockTransport(handler), **kw)
+    )
+    spec = ModelSpec(model="flash", display_name="Flash")
+    caller = ModelCaller("secret", spec, spec)
+
+    async def collect() -> str:
+        return "".join([d async for d in caller.stream(spec, [])])
+
+    assert asyncio.run(collect()) == "I am a lid."
+    asyncio.run(caller.aclose())
+
+
+def test_a_scoring_block_of_the_wrong_shape_is_unparseable_not_a_crash():
+    assert parse_judge('{"scoring": "accept"}', ["counter_strength"]) is None
+    assert parse_judge('{"scoring": {"evidence": "reason"}}', ["counter_strength"]) is None

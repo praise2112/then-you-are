@@ -8,6 +8,8 @@ from urllib.parse import quote
 from authlib.integrations.starlette_client import OAuth, StarletteOAuth2App
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
+from starlette.requests import HTTPConnection
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from arena_server.config import Settings
 from arena_server.db import Pool
@@ -16,8 +18,39 @@ SESSION_COOKIE = "oddstage_session"
 COOKIE_AGE = 60 * 60 * 24 * 365
 
 
-def set_session_cookie(response: Response, key: str) -> None:
-    response.set_cookie(SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=COOKIE_AGE)
+def set_session_cookie(response: Response, key: str, secure: bool) -> None:
+    response.set_cookie(
+        SESSION_COOKIE, key, httponly=True, samesite="lax", max_age=COOKIE_AGE, secure=secure
+    )
+
+
+def local_path(next: str) -> str:
+    """The post-login target, kept to a path on this site."""
+    if not next.startswith("/") or next.startswith(("//", "/\\")):
+        return "/"
+    return next
+
+
+class DropRevokedSession:
+    """ASGI middleware: a signed-out session's cookies are hidden from every route."""
+
+    def __init__(self, app: ASGIApp, pool: Pool):
+        self.app = app
+        self.pool = pool
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] in ("http", "websocket"):
+            key = HTTPConnection(scope).cookies.get(SESSION_COOKIE)
+            if key and await self._revoked(key):
+                scope["headers"] = [(k, v) for k, v in scope["headers"] if k != b"cookie"]
+        await self.app(scope, receive, send)
+
+    async def _revoked(self, key: str) -> bool:
+        async with self.pool.connection() as conn:
+            row = await (
+                await conn.execute("select revoked from sessions where session_key = %s", (key,))
+            ).fetchone()
+        return row is not None and row["revoked"]
 
 
 PROVIDERS: dict[str, dict] = {
@@ -162,7 +195,7 @@ def mount_auth(app: FastAPI, settings: Settings, pool: Pool) -> None:
     @app.get("/auth/{provider}/login", include_in_schema=False)
     async def login(provider: str, request: Request, next: str = "/") -> Response:
         client = client_of(provider)
-        request.session["next"] = next if next.startswith("/") else "/"
+        request.session["next"] = local_path(next)
         redirect_uri = str(request.url_for("callback", provider=provider))
         return await client.authorize_redirect(request, redirect_uri)
 
@@ -175,12 +208,18 @@ def mount_auth(app: FastAPI, settings: Settings, pool: Pool) -> None:
             joiner = "&" if "?" in target else "?"
             target = f"{target}{joiner}account={outcome}:{provider}:{quote(name)}"
         response = RedirectResponse(target, status_code=303)
-        set_session_cookie(response, key)
+        set_session_cookie(response, key, settings.secure_cookies)
         return response
 
     @app.post("/auth/logout", status_code=204)
-    async def logout(response: Response) -> Response:
-        """Signing out hands the browser a fresh guest session; the account keeps the old one."""
+    async def logout(request: Request) -> Response:
+        """Signing out revokes the session for good; the account keeps its matches."""
+        key = request.cookies.get(SESSION_COOKIE)
+        if key:
+            async with pool.connection() as conn:
+                await conn.execute(
+                    "update sessions set revoked = true where session_key = %s", (key,)
+                )
         response = Response(status_code=204)
         response.delete_cookie(SESSION_COOKIE)
         return response

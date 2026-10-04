@@ -6,6 +6,7 @@ import hashlib
 import json
 import logging
 import secrets
+import time
 from collections import defaultdict
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
@@ -80,6 +81,8 @@ PAUSE_BACKOFF_S = (5, 10, 20, 30)
 # A judge call refused for credentials or credit will not heal on its own; retry slowly.
 BILLING_STATUSES = (401, 402, 403)
 BILLING_RETRY_S = 60
+# A move whose judge has not ruled by then goes back: a human may play again, the House loses it.
+JUDGE_GIVE_UP_S = 120
 ABANDON_WINDOW = timedelta(hours=24)
 UNFILLED_WINDOW = timedelta(minutes=10)
 STREAM_LINGER_S = 300
@@ -89,6 +92,9 @@ WRITE_CLOCK = timedelta(seconds=180)
 CALL_CLOCK = timedelta(seconds=60)
 GRACE = timedelta(seconds=30)
 MODEL_REWRITES = 2
+# A House call that fails is tried once more before the fallback takes the seat.
+HOUSE_ATTEMPTS = 2
+HOUSE_RETRY_S = 3
 REPEAT_TEXT = "Someone at the table already wrote exactly that. Try another."
 
 TableKind = Literal["house", "friends", "open"]
@@ -109,6 +115,10 @@ class MatchClosed(Exception):
 
 class HouseStuck(Exception):
     """The House could not produce a legal answer, even its default move."""
+
+
+class JudgeGaveUp(Exception):
+    """The judge gave no ruling within JUDGE_GIVE_UP_S."""
 
 
 @dataclass
@@ -379,7 +389,7 @@ class MatchService:
         open_ids = await self._open_ids(session_key, template.slug, kind)
         if open_ids:
             return await self.snapshot(open_ids[0], session_key)
-        cards = deal(template, secrets.SystemRandom(), first)
+        cards = deal(template, secrets.SystemRandom(), first, template.revealed_card)
         match_id = secrets.token_urlsafe(8)
         listed = (await self.session_view(session_key)).list_duels
         house = kind == "house"
@@ -1297,11 +1307,14 @@ class MatchService:
                 return
             await self._after_turn(match, template, rec)
 
-    async def disagree(self, match_id: str, seq: int) -> None:
-        match, _ = await self._load(match_id)
+    async def disagree(self, match_id: str, seq: int, session_key: str | None) -> None:
+        """One vote per seated session and move, on a move the table can already see."""
+        match, rec = await self._load(match_id)
         template = self.template_of(match)
+        if session_key is None or await self._seat_of(rec, session_key) is None:
+            raise MatchError(403, "only a seat at this table can disagree")
         turn = next((t for t in match.turns if t.seq == seq), None)
-        if turn is None:
+        if turn is None or (self._hides_round(match, template) and turn.round_n >= match.round_n):
             raise MatchError(404, "no such turn")
         if template.mode == "showcase":
             previous = match.cards[turn.round_n - 1]
@@ -1310,7 +1323,14 @@ class MatchService:
                 (t.move_text for t in reversed(match.turns[: seq - 1]) if t.outcome in JUDGED),
                 match.seed,
             )
-        async with self.pool.connection() as conn:
+        async with self.pool.connection() as conn, conn.transaction():
+            voted = await conn.execute(
+                "insert into disagreements (match_id, seq, session_key) values (%s, %s, %s) "
+                "on conflict do nothing",
+                (match_id, seq, session_key),
+            )
+            if voted.rowcount == 0:
+                return
             await conn.execute(
                 "insert into verdict_pairs (template_id, prev_norm, move_norm, disagree_count) "
                 "values (%s, %s, %s, 1) on conflict (template_id, prev_norm, move_norm) "
@@ -1420,10 +1440,26 @@ class MatchService:
             except MatchClosed:
                 log.info("match %s closed while waiting on the judge", match_id)
             except Exception:
-                log.exception("move on %s failed; the match goes back to the player", match_id)
+                log.exception("move on %s failed; the match goes back to a human seat", match_id)
                 await self._set_status(match_id, "active")
                 match, rec = await self._load(match_id)
+                if match.to_move in rec.models:
+                    await self._forfeit(match, template, match.to_move)
+                    if not await self._emit_if_ended(match):
+                        await self._after_turn(match, template, rec)
+                    return
                 await self._give_time(match, rec, template)
+                match, rec = await self._load(match_id)
+                self.bus.emit(
+                    match_id,
+                    "turn_changed",
+                    TurnChanged(
+                        to_move=match.to_move,
+                        turn_deadline=rec.turn_deadline.isoformat() if rec.turn_deadline else None,
+                        round_in_play=match.round_n,
+                        state_version=match.state_version,
+                    ),
+                )
 
     async def _after_turn(self, match: Match, template: Template, rec: Record) -> None:
         """Escalation, under the match lock: model seats play until a human seat is to move,
@@ -1656,7 +1692,7 @@ class MatchService:
                 judged, text = await self._write_and_judge_model(
                     match, template, seat, held, card, lines
                 )
-            except HouseStuck:
+            except (HouseStuck, JudgeGaveUp):
                 async with self.locks[match_id]:
                     match, rec = await self._load(match_id)
                     if match.status != "active" or match.round_n != round_n:
@@ -1671,8 +1707,13 @@ class MatchService:
                     return
                 await self._hold(match_id, seat, None, round_n)
                 # Two identical entries could not be told apart on the call.
-                if repeats_the_round(match, text) and tries < MODEL_REWRITES:
-                    rewrite = True
+                if repeats_the_round(match, text):
+                    if tries < MODEL_REWRITES:
+                        rewrite = True
+                        return
+                    resign(match, seat, match.state_version, template)
+                    await self._save(match)
+                    await self._after_showcase_change(match, template, rec, round_n)
                     return
                 await self._record_ruling(
                     match, template, seat, text, judged, len(match.turns) + 1, None, card.hidden
@@ -1998,9 +2039,10 @@ class MatchService:
     ) -> Judged:
         """Retries the same judge call until a ruling lands. An escalation move pauses the
         match and says so; a quiet call (showcase answers) touches neither status nor stream.
-        Raises MatchClosed once the match is closed."""
+        Raises MatchClosed once the match is closed, JudgeGaveUp after JUDGE_GIVE_UP_S."""
         paused = False
         attempt = 0
+        started = time.monotonic()
         while True:
             call = await self.caller.judge(template, transcript, previous, move_text, hidden)
             verdict_id = await self._insert_verdict(call)
@@ -2030,6 +2072,8 @@ class MatchService:
             attempt += 1
             if await self._status_of(match.id) in ("abandoned", "ended"):
                 raise MatchClosed(match.id)
+            if time.monotonic() - started > JUDGE_GIVE_UP_S:
+                raise JudgeGaveUp(match.id)
 
     @staticmethod
     def _rejection(
@@ -2080,16 +2124,19 @@ class MatchService:
     ) -> str:
         lines = transcript(match, template, finished_only=True)
         if not await self._stood_in(match.id, seat):
-            stream = self.caller.opponent_stream(
-                template, seat, prompt, lines, hidden, self._slot(match.id, seat)
-            )
-            try:
-                return await self._collect_move(match, stream, silent)
-            except CallError as e:
-                log.warning("opponent call failed for %s: %s", match.id, e)
-                if self.fallback is None:
-                    return ""
-                await self._stand_in_for(match.id, seat)
+            for attempt in range(HOUSE_ATTEMPTS):
+                if attempt:
+                    await asyncio.sleep(HOUSE_RETRY_S)
+                stream = self.caller.opponent_stream(
+                    template, seat, prompt, lines, hidden, self._slot(match.id, seat)
+                )
+                try:
+                    return await self._collect_move(match, stream, silent)
+                except CallError as e:
+                    log.warning("opponent call failed for %s: %s", match.id, e)
+            if self.fallback is None:
+                return ""
+            await self._stand_in_for(match.id, seat)
         assert self.fallback is not None
         stream = self.caller.opponent_stream(
             template, seat, prompt, lines, hidden, spec=self.fallback[1]

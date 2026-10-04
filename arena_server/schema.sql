@@ -192,3 +192,11 @@ begin
         alter table matches drop column held_move;
     end if;
 end $$;
+
+create table if not exists disagreements (
+    match_id text not null references matches(id),
+    seq int not null,
+    session_key text not null,
+    primary key (match_id, seq, session_key)
+);
+alter table sessions add column if not exists revoked boolean not null default false;

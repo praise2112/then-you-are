@@ -204,12 +204,14 @@ def bucket():
     return api.get_bucket_by_name(os.environ["B2_BUCKET_NAME_PERSONAL"])
 
 
-def upload(out: Path, run: str) -> None:
-    """Every file under out to oddstage/runs/run/, retrying each for about 25 minutes."""
+def upload(out: Path, run: str, names: tuple[str, ...] = ()) -> None:
+    """Every file under out (or only the named ones) to oddstage/runs/run/, retrying each for
+    about 25 minutes."""
     from b2sdk.v2.exception import B2Error
 
     b = bucket()
-    for path in sorted(p for p in out.rglob("*") if p.is_file()):
+    paths = [out / n for n in names] if names else [p for p in out.rglob("*") if p.is_file()]
+    for path in sorted(paths):
         name = f"oddstage/runs/{run}/{path.relative_to(out)}"
         for attempt in range(10):
             try:
@@ -319,6 +321,8 @@ def train(args, model, tokenizer, examples, lengths, max_length, name, tracking)
 
     trainer.save_model(str(args.out / "model"))
     tokenizer.save_pretrained(str(args.out / "model"))
+    if args.run:
+        upload(args.out, args.run)
     if args.contexts:
         began = time.monotonic()
         rows = [json.loads(line) for line in args.contexts.read_text().splitlines()]
@@ -331,8 +335,8 @@ def train(args, model, tokenizer, examples, lengths, max_length, name, tracking)
         metrics["answer_seconds"] = round(time.monotonic() - began, 1)
         (args.out / "metrics.json").write_text(json.dumps(metrics, indent=1))
         print(json.dumps({"answer_seconds": metrics["answer_seconds"]}), file=sys.stderr)
-    if args.run:
-        upload(args.out, args.run)
+        if args.run:
+            upload(args.out, args.run, ("answers.jsonl", "metrics.json"))
 
 
 if __name__ == "__main__":

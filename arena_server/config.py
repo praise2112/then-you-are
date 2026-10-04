@@ -23,6 +23,8 @@ class Settings:
     curator_token: str
     featured_template: str
     session_secret: str
+    # Cookies go out with Secure when the site is served over https.
+    secure_cookies: bool
     oauth_clients: dict[str, tuple[str, str]]
     # Model calls are traced to Langfuse when both of its keys are set.
     trace_calls: bool
@@ -30,6 +32,10 @@ class Settings:
 
 def load_settings() -> Settings:
     dist = Path(os.environ.get("FRONTEND_DIST", Path(__file__).parents[1] / "frontend" / "dist"))
+    public_base_url = os.environ.get("PUBLIC_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
+    secure = public_base_url.startswith("https://")
+    if secure and not os.environ.get("SESSION_SECRET"):
+        raise RuntimeError("SESSION_SECRET must be set when the site is served over https")
     return Settings(
         database_url=os.environ.get(
             "DATABASE_URL", "postgresql://oddstage:oddstage@localhost:5433/oddstage"
@@ -37,11 +43,12 @@ def load_settings() -> Settings:
         openrouter_api_key=os.environ.get("OPENROUTER_API_KEY", ""),
         judge_ref=os.environ.get("JUDGE_REF", "judge-v1"),
         opponent_ref=os.environ.get("OPPONENT_REF", "opponent-v1"),
-        public_base_url=os.environ.get("PUBLIC_BASE_URL", "http://127.0.0.1:8000").rstrip("/"),
+        public_base_url=public_base_url,
         frontend_dist=dist if (dist / "index.html").exists() else None,
         curator_token=os.environ.get("CURATOR_TOKEN", ""),
         featured_template=os.environ.get("FEATURED_TEMPLATE", "then-i-am"),
         session_secret=os.environ.get("SESSION_SECRET") or secrets.token_urlsafe(32),
+        secure_cookies=secure,
         oauth_clients=_oauth_clients(),
         trace_calls=bool(
             os.environ.get("LANGFUSE_PUBLIC_KEY") and os.environ.get("LANGFUSE_SECRET_KEY")
