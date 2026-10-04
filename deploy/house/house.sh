@@ -27,7 +27,11 @@ build() {
 }
 
 up() {
-  billing_enabled || gc billing projects link "$PROJECT" --billing-account "$BILLING_ACCOUNT"
+  if ! billing_enabled; then
+    gc billing projects link "$PROJECT" --billing-account "$BILLING_ACCOUNT"
+    # A service that lived through a billing stop never gets an instance again.
+    gc run services delete house --region "$REGION" 2>/dev/null || true
+  fi
   local digest
   digest=$(gc artifacts docker images describe "$IMAGE:latest" --format='value(image_summary.digest)')
   sed "s|image: IMAGE|image: $IMAGE@$digest|" "$HERE/service.yaml" \
