@@ -12,6 +12,7 @@ from fastapi import FastAPI, Header, HTTPException, Request, Response, WebSocket
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.websockets import WebSocketDisconnect
+from langfuse import Langfuse
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 from starlette.middleware.sessions import SessionMiddleware
@@ -75,7 +76,12 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     }
     judge_spec = load_model(settings.judge_ref)
     opponent_spec = load_model(settings.opponent_ref)
-    caller = caller or ModelCaller(settings.openrouter_api_key, judge_spec, opponent_spec)
+    caller = caller or ModelCaller(
+        settings.openrouter_api_key,
+        judge_spec,
+        opponent_spec,
+        tracer=Langfuse() if settings.trace_calls else None,
+    )
     pool = make_pool(settings.database_url)
     bus = EventBus()
     presence = Presence()

@@ -24,6 +24,8 @@ class Settings:
     featured_template: str
     session_secret: str
     oauth_clients: dict[str, tuple[str, str]]
+    # Model calls are traced to Langfuse when both of its keys are set.
+    trace_calls: bool
 
 
 def load_settings() -> Settings:
@@ -41,6 +43,9 @@ def load_settings() -> Settings:
         featured_template=os.environ.get("FEATURED_TEMPLATE", "then-i-am"),
         session_secret=os.environ.get("SESSION_SECRET") or secrets.token_urlsafe(32),
         oauth_clients=_oauth_clients(),
+        trace_calls=bool(
+            os.environ.get("LANGFUSE_PUBLIC_KEY") and os.environ.get("LANGFUSE_SECRET_KEY")
+        ),
     )
 
 

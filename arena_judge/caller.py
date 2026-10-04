@@ -1,16 +1,18 @@
 """One caller for judge and opponent, OpenRouter or a spec's own endpoint, with the judge parse
 ladder."""
 
+import contextlib
 import json
 import os
 import re
 import time
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
 
 import httpx
+from langfuse import Langfuse, LangfuseGeneration
 from pydantic import BaseModel, ValidationError
 
 from arena_core.template import Template
@@ -97,10 +99,16 @@ class JudgeCall:
 
 class ModelCaller:
     def __init__(
-        self, api_key: str, judge: ModelSpec, opponent: ModelSpec, timeout_s: float = 30.0
+        self,
+        api_key: str,
+        judge: ModelSpec,
+        opponent: ModelSpec,
+        timeout_s: float = 30.0,
+        tracer: Langfuse | None = None,
     ):
         self.judge_spec = judge
         self.opponent_spec = opponent
+        self.tracer = tracer
         self.client = httpx.AsyncClient(
             headers={"Authorization": f"Bearer {api_key}", "X-Title": "Oddstage"},
             timeout=httpx.Timeout(timeout_s, connect=10.0),
@@ -112,6 +120,26 @@ class ModelCaller:
     async def aclose(self) -> None:
         await self.client.aclose()
         await self.local.aclose()
+        if self.tracer:
+            self.tracer.shutdown()
+
+    @contextlib.contextmanager
+    def _observe(self, spec: ModelSpec) -> Iterator[LangfuseGeneration | None]:
+        """A Langfuse generation around one call, with model, timing, usage, cost and errors
+        but never the prompt or the reply."""
+        if self.tracer is None:
+            yield None
+            return
+        generation = self.tracer.start_observation(
+            name=spec.display_name, as_type="generation", model=spec.model
+        )
+        try:
+            yield generation
+        except CallError as e:
+            generation.update(level="ERROR", status_message=str(e))
+            raise
+        finally:
+            generation.end()
 
     def _route(self, spec: ModelSpec) -> tuple[httpx.AsyncClient, str, dict[str, str]]:
         """The client, URL and extra headers; a base_url spec carries only its own key."""
@@ -148,6 +176,16 @@ class ModelCaller:
         return body
 
     async def complete(self, spec: ModelSpec, messages: list[dict], **extra: Any) -> CallResult:
+        with self._observe(spec) as generation:
+            result = await self._complete(spec, messages, **extra)
+            if generation:
+                generation.update(
+                    usage_details={"input": result.tokens_in, "output": result.tokens_out},
+                    cost_details={"total": result.cost_usd},
+                )
+            return result
+
+    async def _complete(self, spec: ModelSpec, messages: list[dict], **extra: Any) -> CallResult:
         t0 = time.monotonic()
         client, url, headers = self._route(spec)
         try:
@@ -181,18 +219,24 @@ class ModelCaller:
     ) -> AsyncIterator[str]:
         body = self._body(spec, messages, stream=True, **extra)
         client, url, headers = self._route(spec)
-        try:
-            async with client.stream("POST", url, json=body, headers=headers) as resp:
-                resp.raise_for_status()
-                async for line in resp.aiter_lines():
-                    if not line.startswith("data: ") or line == "data: [DONE]":
-                        continue
-                    chunk = json.loads(line[6:])
-                    delta = chunk.get("choices", [{}])[0].get("delta", {}).get("content")
-                    if delta:
+        with self._observe(spec) as generation:
+            started = False
+            try:
+                async with client.stream("POST", url, json=body, headers=headers) as resp:
+                    resp.raise_for_status()
+                    async for line in resp.aiter_lines():
+                        if not line.startswith("data: ") or line == "data: [DONE]":
+                            continue
+                        chunk = json.loads(line[6:])
+                        delta = chunk.get("choices", [{}])[0].get("delta", {}).get("content")
+                        if not delta:
+                            continue
+                        if generation and not started:
+                            generation.update(completion_start_time=datetime.now(UTC))
+                        started = True
                         yield delta
-        except (httpx.HTTPError, ValueError) as e:
-            raise CallError(str(e)) from e
+            except (httpx.HTTPError, ValueError) as e:
+                raise CallError(str(e)) from e
 
     async def judge(
         self,
