@@ -39,6 +39,7 @@ from arena_judge.schema import (
 from arena_server.auth import (
     SESSION_COOKIE,
     DropRevokedSession,
+    delete_account,
     mount_auth,
     rename_account,
     set_session_cookie,
@@ -297,6 +298,18 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             await rename_account(pool, key, body.stage_name.strip()[:40])
         set_session_cookie(response, key, settings.secure_cookies)
         return await session_with_providers(key)
+
+    @app.delete("/sessions/me/account", status_code=204)
+    async def delete_my_account(request: Request) -> Response:
+        """Deletes the signed-in account; its moves in other people's matches stay, unnamed."""
+        outcome = await delete_account(pool, session_of(request))
+        if outcome == "guest":
+            raise HTTPException(404, "no account on this session")
+        if outcome == "unfinished":
+            raise HTTPException(409, "Finish or resign your unfinished games first.")
+        response = Response(status_code=204)
+        response.delete_cookie(SESSION_COOKIE)
+        return response
 
     @app.post("/matches", status_code=201)
     async def create_match(

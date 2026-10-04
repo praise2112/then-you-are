@@ -8,6 +8,7 @@ from urllib.parse import quote
 from authlib.integrations.starlette_client import OAuth, StarletteOAuth2App
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
+from psycopg import sql
 from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -180,6 +181,68 @@ async def rename_account(pool: Pool, session_key: str, display_name: str) -> boo
             "update sessions set stage_name = %s where account_id = %s", (display_name, row["id"])
         )
     return True
+
+
+Deletion = Literal["deleted", "guest", "unfinished"]
+
+
+async def delete_account(pool: Pool, session_key: str) -> Deletion:
+    """Deletes the account behind the session, its identities and every match no other human
+    played in. Its seats in other people's matches stay, shown as "Deleted player"."""
+    async with pool.connection() as conn, conn.transaction():
+        row = await (
+            await conn.execute(
+                "select account_id from sessions where session_key = %s", (session_key,)
+            )
+        ).fetchone()
+        if row is None or row["account_id"] is None:
+            return "guest"
+        account_id = row["account_id"]
+        keys = [
+            r["session_key"]
+            for r in await (
+                await conn.execute(
+                    "select session_key from sessions where account_id = %s", (account_id,)
+                )
+            ).fetchall()
+        ]
+        solo = await (
+            await conn.execute(
+                "select m.id, m.status from matches m "
+                "where exists (select 1 from seats s where s.match_id = m.id "
+                "and s.session_key = any(%(keys)s)) "
+                "and not exists (select 1 from seats s where s.match_id = m.id "
+                "and s.kind = 'human' and s.session_key <> all(%(keys)s))",
+                {"keys": keys},
+            )
+        ).fetchall()
+        if any(m["status"] not in ("ended", "abandoned") for m in solo):
+            return "unfinished"
+        ids = [m["id"] for m in solo]
+        await conn.execute(
+            "delete from verdicts where turn_id in (select id from turns where match_id = any(%s))",
+            (ids,),
+        )
+        for table in ("turns", "guesses", "disagreements", "seats"):
+            await conn.execute(
+                sql.SQL("delete from {} where match_id = any(%s)").format(sql.Identifier(table)),
+                (ids,),
+            )
+        await conn.execute("delete from matches where id = any(%s)", (ids,))
+        await conn.execute("delete from disagreements where session_key = any(%s)", (keys,))
+        await conn.execute(
+            "delete from sessions where session_key = any(%s) and not exists "
+            "(select 1 from seats s where s.session_key = sessions.session_key)",
+            (keys,),
+        )
+        await conn.execute(
+            "update sessions set stage_name = 'Deleted player', account_id = null, "
+            "list_duels = false, revoked = true where session_key = any(%s)",
+            (keys,),
+        )
+        await conn.execute("delete from identities where account_id = %s", (account_id,))
+        await conn.execute("delete from accounts where id = %s", (account_id,))
+    return "deleted"
 
 
 def mount_auth(app: FastAPI, settings: Settings, pool: Pool) -> None:

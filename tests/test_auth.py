@@ -325,6 +325,83 @@ async def test_a_game_against_people_is_listed_but_never_counted(monkeypatch):
         await manager.__aexit__(None, None, None)
 
 
+@pytest.mark.anyio
+async def test_deleting_an_account_drops_its_house_games_and_unnames_its_seat_at_shared_ones(
+    monkeypatch,
+):
+    from tests.test_tables import expire, join, player, table
+
+    leaver = auth.Profile("github", f"{RUN}-x", f"Xan {RUN}", "")
+
+    async def fake_profile(_client, _provider, _request):
+        return leaver
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    app, manager, client = await run_app(FakeCaller([], []))
+    guest = player(app)
+    try:
+        await sign_in(client)
+        account_id = (await client.get("/sessions/me")).json()["account"]["id"]
+        house = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        await client.post(
+            f"/matches/{house['id']}/resign", json={"action_id": "r", "expected_version": 0}
+        )
+        await settle(app)
+        shared = await table(client, "then-i-am", 2, "Xan")
+        await join(guest, shared["invite_code"], "Ben")
+        await settle(app)
+        await expire(app, shared["id"])
+        await guest.post(
+            f"/matches/{shared['id']}/moves",
+            json={"action_id": "b1", "expected_version": 1, "move_text": "I am rain."},
+        )
+        await settle(app)
+        await expire(app, shared["id"])
+        before = (await guest.get(f"/replays/{shared['id']}")).json()["transcript"]
+        assert "I am rain." in [t["move_text"] for t in before]
+
+        assert (await client.delete("/sessions/me/account")).status_code == 204
+
+        assert (await client.get("/sessions/me")).json()["account"] is None
+        assert (await client.get(f"/replays/{house['id']}")).status_code == 404
+        assert (await client.get(f"/profiles/{account_id}")).status_code == 404
+        replay = (await guest.get(f"/replays/{shared['id']}")).json()
+        assert [s["display_name"] for s in replay["seats"]] == ["Deleted player", "Ben"]
+        assert replay["transcript"] == before
+
+        await sign_in(client)
+        assert (await client.get("/sessions/me")).json()["account"]["id"] != account_id
+    finally:
+        await guest.aclose()
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_an_unfinished_house_game_blocks_deletion_and_a_guest_has_nothing_to_delete(
+    monkeypatch,
+):
+    stayer = auth.Profile("github", f"{RUN}-y", f"Yan {RUN}", "")
+
+    async def fake_profile(_client, _provider, _request):
+        return stayer
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    app, manager, client = await run_app(FakeCaller([], []))
+    try:
+        await client.put("/sessions/me", json={"stage_name": "Echo"})
+        assert (await client.delete("/sessions/me/account")).status_code == 404
+
+        await sign_in(client)
+        await client.post("/matches", json={"template_id": "then-i-am"})
+        refused = await client.delete("/sessions/me/account")
+        assert refused.status_code == 409
+        assert (await client.get("/sessions/me")).json()["account"] is not None
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
 def test_a_sign_in_only_returns_to_a_page_on_this_site():
     assert auth.local_path("/play/then-i-am?x=1") == "/play/then-i-am?x=1"
     assert auth.local_path("//evil.example/phish") == "/"

@@ -130,14 +130,14 @@ function SettingsSheet({
   const unlinked = session.providers.filter((p) => !account.providers.includes(p));
   const [name, setName] = useState(account.display_name);
   const [listDuels, setListDuels] = useState(session.list_duels);
-  const [step, setStep] = useState<"edit" | "confirm" | "saved">("edit");
+  const [step, setStep] = useState<"edit" | "confirm" | "delete" | "saved">("edit");
   const [error, setError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      if (step === "confirm") setStep("edit");
+      if (step === "confirm" || step === "delete") setStep("edit");
       else onClose();
     };
     addEventListener("keydown", onKey);
@@ -173,6 +173,17 @@ function SettingsSheet({
       } else {
         setError((e as Error).message);
       }
+      setStep("edit");
+    }
+  }
+
+  async function deleteAccount() {
+    try {
+      await api.deleteAccount();
+      onChange(await api.session());
+      onClose();
+    } catch (e) {
+      setError((e as Error).message);
       setStep("edit");
     }
   }
@@ -242,6 +253,9 @@ function SettingsSheet({
           </span>
         </label>
         {error && <p className="error-line">{error}</p>}
+        <button className="quiet-button delete-account" type="button" onClick={() => setStep("delete")}>
+          Delete my account
+        </button>
         <div className="sheet-actions">
           <button className="quiet-button" type="button" onClick={onClose}>
             {step === "saved" ? "Done" : "Close"}
@@ -266,6 +280,26 @@ function SettingsSheet({
               </button>
               <button className="ticket" type="button" onClick={save} autoFocus>
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {step === "delete" && (
+        <div className="scrim" onClick={(e) => e.target === e.currentTarget && setStep("edit")}>
+          <div className="sheet settings confirm-sheet" role="alertdialog" aria-modal="true" aria-labelledby="delete-title">
+            <h2 id="delete-title">Delete your account?</h2>
+            <ul className="changes">
+              <li>Your account, its sign-ins and your games against the House are deleted.</li>
+              <li>In games with other players, your moves stay so their replays still work, under "Deleted player".</li>
+              <li>This can't be undone.</li>
+            </ul>
+            <div className="sheet-actions">
+              <button className="quiet-button" type="button" onClick={() => setStep("edit")} autoFocus>
+                Cancel
+              </button>
+              <button className="ticket" type="button" onClick={deleteAccount}>
+                Delete account
               </button>
             </div>
           </div>

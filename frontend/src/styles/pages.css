@@ -2328,6 +2328,10 @@ ul.rules-text li {
   color: var(--ink-soft);
 }
 
+.settings .delete-account {
+  margin-top: var(--space-3);
+}
+
 .bar-top .account button {
   background: none;
   border: 1px solid #a89f90;

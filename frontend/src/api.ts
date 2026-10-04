@@ -148,6 +148,7 @@ export const api = {
   setVisibility: (id: string, isPublic: boolean) =>
     request<void>(`/matches/${id}/visibility`, { method: "POST", body: JSON.stringify({ public: isPublic }) }),
   logout: () => request<void>("/auth/logout", { method: "POST" }),
+  deleteAccount: () => request<void>("/sessions/me/account", { method: "DELETE" }),
   boards: () => request<BoardSummary[]>("/leaderboard"),
   board: (slug: string) => request<BoardView>(`/leaderboard/${slug}`),
   profile: (id: string) => request<ProfileView>(`/profiles/${id}`),
