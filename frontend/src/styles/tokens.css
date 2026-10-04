@@ -24,10 +24,10 @@
   --seat-5: #2f6fb0;
   --seat-6: #b0487e;
 
-  --serif: "Newsreader", Georgia, "Times New Roman", serif;
-  --display: "Fraunces", Georgia, "Times New Roman", serif;
+  --serif: "Newsreader Variable", "Newsreader", Georgia, "Times New Roman", serif;
+  --display: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --emoji: "Noto Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
+  --emoji: "Noto Emoji Variable", "Noto Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
 
   --space-1: 0.4rem;
   --space-2: 0.8rem;

@@ -11,6 +11,10 @@
     "gen": "cd .. && uv run python -c \"from arena_server.app import app; import json; print(json.dumps(app.openapi()))\" > frontend/openapi.json && cd frontend && openapi-typescript openapi.json -o src/generated/openapi.d.ts"
   },
   "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "@fontsource-variable/noto-emoji": "^5.3.2",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

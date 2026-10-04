@@ -1,0 +1,1070 @@
+@import url("./tokens.css");
+
+/* Ink & Folio chassis, shared by the app and the mockups. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: clamp(16.5px, 0.4vw + 13.5px, 20px);
+}
+
+body {
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-variant-numeric: lining-nums;
+  font-weight: 500;
+  font-variation-settings: "opsz" 96;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+body {
+  font-variation-settings: "opsz" 18;
+}
+
+:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 3px;
+}
+
+a {
+  color: inherit;
+}
+
+.wrap {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+}
+
+.small-caps {
+  font-variant: all-small-caps;
+  letter-spacing: 0.07em;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.fleuron {
+  text-align: center;
+  color: var(--vermilion);
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: 0.6em;
+  margin: var(--space-3) 0;
+}
+
+.rule-double {
+  border: 0;
+  border-top: 3px double var(--ink);
+  margin: var(--space-3) 0;
+}
+
+.centered-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-soft);
+}
+
+.centered-label::before,
+.centered-label::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--rule);
+}
+
+/* Site header */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--rule);
+}
+
+.masthead nav {
+  display: flex;
+  gap: var(--space-3);
+}
+
+@media (max-width: 40rem) {
+  .masthead {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-1) var(--space-2);
+  }
+
+  .masthead nav {
+    grid-column: 1 / -1;
+    gap: var(--space-2);
+  }
+
+  .masthead .theme-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .masthead nav a {
+    min-height: 36px;
+  }
+}
+
+.masthead nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+.masthead nav a:hover {
+  color: var(--vermilion);
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-size: 1.45rem;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-variation-settings: "opsz" 48;
+}
+
+.theme-toggle {
+  font: inherit;
+  min-height: 40px;
+  font-size: 0.85rem;
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  background: none;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+/* Paper surfaces */
+
+.card {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  padding: var(--space-2) var(--space-3);
+}
+
+.torn {
+  background: var(--paper-raised);
+  padding: var(--space-3);
+  clip-path: polygon(
+    0.4% 2%,
+    12% 0.6%,
+    26% 2.2%,
+    39% 0.4%,
+    55% 2%,
+    68% 0.5%,
+    82% 2.4%,
+    95% 0.8%,
+    99.6% 3%,
+    99% 18%,
+    99.7% 34%,
+    98.8% 52%,
+    99.6% 70%,
+    98.9% 86%,
+    99.5% 97.5%,
+    88% 99.4%,
+    74% 97.6%,
+    60% 99.5%,
+    45% 97.8%,
+    30% 99.6%,
+    16% 97.9%,
+    3% 99.3%,
+    1.2% 84%,
+    0.3% 66%,
+    1.1% 48%,
+    0.2% 30%,
+    1% 15%
+  );
+}
+
+.slip {
+  background: var(--paper-sunk);
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.95rem;
+  clip-path: polygon(
+    0 8%,
+    14% 2%,
+    30% 7%,
+    48% 1%,
+    66% 7%,
+    84% 2%,
+    100% 8%,
+    100% 92%,
+    84% 98%,
+    66% 93%,
+    48% 99%,
+    30% 93%,
+    14% 98%,
+    0 92%
+  );
+}
+
+/* Stamps and stickers */
+
+.stamp {
+  display: inline-block;
+  font-family: var(--display);
+  border: 3px double var(--vermilion);
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: -6px;
+  color: var(--vermilion-ink);
+  padding: 0.3rem 1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+  opacity: 0.92;
+  mix-blend-mode: multiply;
+}
+
+:root[data-theme="dark"] .stamp {
+  mix-blend-mode: screen;
+}
+
+.ruling-word {
+  font-family: var(--display);
+  font-weight: 600;
+  font-variant: all-small-caps;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.stamp.ink {
+  border-color: var(--ink);
+  outline-color: var(--ink);
+  color: var(--ink);
+}
+
+.stamp.huge {
+  font-size: 3.4rem;
+  padding: 0.2rem 2rem;
+  border-width: 6px;
+  outline-width: 2px;
+  outline-offset: -11px;
+}
+
+.ticket {
+  display: inline-block;
+  background: var(--vermilion-ink);
+  color: var(--paper);
+  border: none;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.7rem 2.2rem;
+  transition: transform 0.15s ease;
+  text-decoration: none;
+  cursor: pointer;
+  mask-image:
+    radial-gradient(circle at left center, transparent 7px, black 8px),
+    radial-gradient(circle at right center, transparent 7px, black 8px);
+  mask-composite: intersect;
+}
+
+.ticket:hover {
+  transform: translateY(-1px) rotate(-0.6deg);
+}
+
+.ticket:focus-visible {
+  mask-image: none;
+  outline-offset: 2px;
+}
+
+.ticket.quiet {
+  background: none;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+}
+
+/* Badges are stamped marks, never controls: no fill, no button silhouette */
+
+.plaque {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #8a6512;
+  border-top: 2px solid #b9912f;
+  border-bottom: 2px solid #b9912f;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.82rem;
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  transform: rotate(-1.2deg);
+}
+
+:root[data-theme="dark"] .plaque {
+  color: var(--brass);
+}
+
+.plaque .icon {
+  stroke-width: 1.2;
+}
+
+.ribbon {
+  display: inline-block;
+  background: var(--vermilion-ink);
+  color: var(--paper);
+  font-variant: all-small-caps;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  padding: 0.15rem 1rem;
+}
+
+.ribbon.quiet {
+  background: none;
+  color: var(--ink-faint);
+  border: 1px solid var(--rule);
+}
+
+/* Host: the master of ceremonies, drawn as one SVG and injected by folio.js */
+
+.host {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.host-figure {
+  flex: none;
+  display: block;
+  width: 6rem;
+}
+
+.host-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.host-svg {
+  --host-ink: #17151a;
+  --host-paper: #fffdf7;
+  --host-red: #d9482b;
+}
+
+.host-svg .ink-fill {
+  fill: var(--host-ink);
+  stroke: var(--host-ink);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+:root[data-theme="dark"] .host-svg .ink-fill {
+  stroke: var(--host-paper);
+  stroke-width: 1.2;
+}
+
+.host-svg .paper-fill {
+  fill: var(--host-paper);
+  stroke: var(--host-ink);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+
+.host-svg .paper-line {
+  fill: none;
+  stroke: var(--host-paper);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+.host-svg .paper-hatch {
+  fill: none;
+  stroke: var(--host-paper);
+  stroke-width: 0.9;
+  opacity: 0.45;
+  stroke-linecap: round;
+}
+
+.host-svg .paper-dot {
+  fill: var(--host-paper);
+}
+
+.host-svg .ink-hatch {
+  fill: none;
+  stroke: var(--host-ink);
+  stroke-width: 1.1;
+  opacity: 0.55;
+  stroke-linecap: round;
+}
+
+.host-svg .host-wear {
+  display: none;
+}
+
+.host-worn .host-wear {
+  display: inline;
+}
+
+.host-svg .host-nick {
+  fill: none;
+  stroke: var(--host-paper);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.host-svg .host-ground {
+  stroke: var(--ink);
+  opacity: 0.35;
+}
+
+.host-svg .host-band {
+  fill: var(--host-red);
+  stroke: var(--host-ink);
+  stroke-width: 1;
+}
+
+.host-svg .host-bow {
+  fill: var(--host-red);
+  stroke: var(--host-ink);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+
+/* Eyes are drawn, not typeset: exact alignment and no blur under transform */
+
+.host-svg .host-glyph {
+  fill: var(--host-ink);
+  stroke: none;
+}
+
+.host-svg .host-stroke {
+  fill: none;
+  stroke: var(--host-ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.host-svg .host-lid {
+  fill: none;
+  stroke: var(--host-ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+.host-svg .host-eye-star,
+.host-svg .host-eye-comma {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.host-svg .host-hat {
+  transform-box: fill-box;
+  transform-origin: 80% 100%;
+}
+
+.host-svg .host-arm-near {
+  transform-box: fill-box;
+  transform-origin: 85% 3%;
+}
+
+.host-svg .host-cane {
+  fill: none;
+  stroke: var(--host-ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.host-thinking .host-eye-star {
+  transform: rotate(22deg);
+}
+
+.host-thinking .host-eye-comma {
+  transform: rotate(-18deg);
+}
+
+.host-verdict .host-eye-star {
+  transform: scale(1.25);
+}
+
+.host-tipping .host-hat {
+  transform: translate(3px, -4px) rotate(9deg);
+}
+
+.host-tipping .host-arm-near {
+  transform: rotate(-22deg);
+}
+
+.host-tiny {
+  width: 3rem;
+}
+
+.host-big {
+  width: 10rem;
+}
+
+.host-line {
+  position: relative;
+  font-style: italic;
+  font-size: 1.05rem;
+  background: var(--paper-sunk);
+  padding: var(--space-2) var(--space-2);
+  border: 1px solid var(--rule);
+  margin: 0;
+}
+
+.host-line::before,
+.host-line::after {
+  content: "";
+  position: absolute;
+  top: 1.4rem;
+  left: -0.6rem;
+  border: 0.6rem solid transparent;
+  border-left: 0;
+  border-right-color: var(--rule);
+}
+
+.host-line::after {
+  left: -0.5rem;
+  border-right-color: var(--paper-sunk);
+}
+
+/* Medallion chain */
+
+.chain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.medallion {
+  position: relative;
+  flex: none;
+  width: 3.6rem;
+  height: 3.6rem;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--emoji);
+  font-size: 1.55rem;
+  color: var(--ink);
+  background: var(--paper-raised);
+  box-shadow:
+    inset 0 0 0 3px var(--paper-raised),
+    inset 0 0 0 4px var(--ink);
+}
+
+.medallion.empty {
+  border-style: dashed;
+  border-color: var(--ink-faint);
+  box-shadow: none;
+  color: var(--ink-faint);
+}
+
+.medallion.crowned::after {
+  content: "\265B\FE0E";
+  color: var(--amber);
+  position: absolute;
+  left: 50%;
+  top: -1.05rem;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.chain-link {
+  color: var(--ink-faint);
+}
+
+.chain figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.chain figcaption {
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-top: 0.2rem;
+}
+
+/* Score bars */
+
+.scores {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.scores td {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+}
+
+.scores .name {
+  font-variant: all-small-caps;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  padding-right: var(--space-2);
+}
+
+.scores td:nth-child(2) {
+  width: 100%;
+}
+
+.scores .value {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  text-align: right;
+  padding-left: var(--space-2);
+  white-space: nowrap;
+}
+
+.bar {
+  display: block;
+  height: 0.75rem;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--rule) 0 1px,
+    transparent 1px 25%
+  );
+  border: 1px solid var(--ink-faint);
+  width: 100%;
+}
+
+.bar > i {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+}
+
+/* Rubric list, one line each, click to expand */
+
+.rubric details {
+  border-bottom: 1px solid var(--rule);
+  padding: var(--space-1) 0;
+}
+
+.rubric summary {
+  cursor: pointer;
+  min-height: 44px;
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.rubric summary::-webkit-details-marker {
+  display: none;
+}
+
+.rubric summary::before {
+  content: "▸";
+  color: var(--vermilion);
+  font-size: 0.7rem;
+}
+
+.rubric details[open] summary::before {
+  content: "▾";
+}
+
+.rubric p {
+  margin: 0.3rem 0 0 1rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* Move composer */
+
+.composer textarea {
+  width: 100%;
+  min-height: 6.5rem;
+  resize: vertical;
+  background: var(--paper-raised);
+  border: 1px solid var(--ink);
+  border-bottom: 3px solid var(--vermilion);
+  padding: var(--space-2);
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.composer textarea:focus {
+  outline: none;
+  border-color: var(--vermilion);
+}
+
+.composer textarea::placeholder {
+  color: var(--ink-faint);
+}
+
+.composer-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+}
+
+.counter {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+/* Quiet actions: findable without inviting a mis-click */
+
+.quiet-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  background: none;
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.quiet-button:hover {
+  color: var(--vermilion);
+  border-color: var(--vermilion);
+}
+
+.vote {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font: inherit;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  border-bottom: 1px dotted var(--ink-faint);
+  color: var(--ink-soft);
+  padding: 0.15rem 0;
+  cursor: pointer;
+}
+
+.vote:hover {
+  color: var(--ink);
+  border-bottom-style: solid;
+}
+
+.vote .tally {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+/* Overlay */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgb(23 21 26 / 62%);
+  display: grid;
+  place-items: center;
+  padding: var(--space-3);
+  overflow: auto;
+}
+
+.sheet {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  outline: 1px solid var(--rule);
+  outline-offset: 6px;
+  padding: var(--space-3);
+  max-width: 34rem;
+  width: 100%;
+}
+
+/* Notes flag mockup-only commentary so nobody ships it */
+
+.note {
+  border-left: 3px solid var(--brass);
+  background: var(--paper-sunk);
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+/* Icons: one sprite, injected by folio.js, stroked in the current text colour */
+
+.icon {
+  width: 1.05em;
+  height: 1.05em;
+  vertical-align: -0.15em;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+.icon .solid {
+  fill: currentcolor;
+  stroke: none;
+}
+
+.icon-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 0.5rem;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.icon-link:hover {
+  border-bottom-color: currentcolor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .thinking span {
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+
+  .thinking span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .thinking span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  .host-svg .host-eye {
+    animation: eyes-blink 5.2s steps(1, end) infinite;
+  }
+
+  .host-svg .host-lid {
+    animation: lid-blink 5.2s steps(1, end) infinite;
+  }
+
+  .host-figure .host-svg {
+    animation: breathe 5.6s ease-in-out infinite;
+  }
+
+  .host-thinking .host-eye-star {
+    animation: turn 12s linear infinite;
+  }
+
+  .host-thinking .host-eye-comma {
+    animation: ponder 4s ease-in-out infinite;
+  }
+
+  .host-verdict .host-eye-star {
+    animation: flare 0.9s ease-out 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes eyes-blink {
+  0%,
+  92%,
+  95.2%,
+  100% {
+    opacity: 1;
+  }
+
+  92.1%,
+  95.1% {
+    opacity: 0;
+  }
+}
+
+@keyframes lid-blink {
+  0%,
+  92%,
+  95.2%,
+  100% {
+    opacity: 0;
+  }
+
+  92.1%,
+  95.1% {
+    opacity: 1;
+  }
+}
+
+@keyframes ponder {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(-22deg) translateY(-1px);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
+@keyframes turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flare {
+  0% {
+    transform: scale(0.4) rotate(-90deg);
+  }
+
+  60% {
+    transform: scale(1.5) rotate(20deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+button.icon-link {
+  font: inherit;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Provisional states: ink only, a verdict has not happened */
+
+.tag {
+  display: inline-block;
+  font-family: var(--display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--ink-soft);
+  padding: 0.1rem 0.5rem;
+  vertical-align: middle;
+}
+
+.composer.returned textarea {
+  border-style: dashed;
+  border-bottom: 3px solid var(--ink);
+}
+
+.returned-slip {
+  position: absolute;
+  top: -0.9rem;
+  right: 1rem;
+  transform: rotate(2deg);
+  font-style: italic;
+}
+
+/* Overlays opened by fragment: duel.html#give-up, match-end.html#share */
+
+.overlay {
+  display: none;
+}
+
+.overlay:target {
+  display: grid;
+}
+
+.overlay .sheet {
+  max-width: 26rem;
+}
+
+.overlay .sheet-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* Round tally at a points finish */
+
+.tally {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  margin: var(--space-2) auto;
+  max-width: 12.3rem;
+}
+
+.tally i {
+  width: 0.9rem;
+  height: 1.4rem;
+  border: 1px solid var(--ink);
+  background: var(--paper-raised);
+}
+
+.tally i.you {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+}
+
+.plates {
+  font-family: var(--emoji), var(--serif);
+}
