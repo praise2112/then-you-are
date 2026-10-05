@@ -5,49 +5,50 @@ import {
   BasesChart,
   FunnelChart,
   HeadlineChart,
+  LifecycleChart,
   OutcomesChart,
   PipelineChart,
   PromptChart,
   RlChart,
   TurnChart,
 } from "./charts.tsx";
+import { MatchScene, RlScene } from "./scenes.tsx";
 
-type Count = (value: number, digits?: number) => ReactNode;
-type Stage = { id: string; name: string; facts?: (n: Count) => ReactNode };
+type Stage = { id: string; name: string; facts?: ReactNode };
 
 const STAGES: Stage[] = [
   {
     id: "data",
     name: "Data",
-    facts: (n) => (
+    facts: (
       <>
-        {n(237)} variants written, {n(35)} kept
+        <b>237</b> variants written, <b>35</b> kept
         <br />
-        {n(14941)} training examples
+        <b>14,941</b> training examples
       </>
     ),
   },
-  { id: "evaluation", name: "Evaluation", facts: (n) => <>{n(394)} held-out positions</> },
-  { id: "sft", name: "SFT", facts: () => "six models, one recipe" },
+  { id: "evaluation", name: "Evaluation", facts: <><b>394</b> held-out positions</> },
+  { id: "sft", name: "SFT", facts: "six models, one recipe" },
   {
     id: "preference",
     name: "Preference",
-    facts: (n) => (
+    facts: (
       <>
         DPO, SimPO, IPO, two rounds
         <br />
-        {n(19.0, 1)}% to {n(67.8, 1)}%
+        <b>19.0</b>% to <b>67.8</b>%
       </>
     ),
   },
   {
     id: "rl",
     name: "RL",
-    facts: (n) => (
+    facts: (
       <>
         GRPO, judge as reward
         <br />
-        {n(62.4, 1)}% to {n(68.5, 1)}%
+        <b>62.4</b>% to <b>68.5</b>%
         <br />
         compressed, temperature 1.0
       </>
@@ -56,26 +57,23 @@ const STAGES: Stage[] = [
   {
     id: "serving",
     name: "Serving",
-    facts: (n) => (
+    facts: (
       <>
-        {n(4)} CPU cores
+        <b>4</b> CPU cores
         <br />
-        about {n(2)} s a move
+        about <b>2</b> s a move
       </>
     ),
   },
-  { id: "the-judge", name: "The judge", facts: () => "why Flash and not a small model" },
-  { id: "infrastructure", name: "Infrastructure", facts: () => "cost records, budgets, tracing, kill switch" },
+  { id: "the-judge", name: "The judge", facts: "why Flash and not a small model" },
+  { id: "infrastructure", name: "Infrastructure", facts: "cost records, budgets, tracing, kill switch" },
   { id: "limits", name: "Limits" },
 ];
 
 const SECTIONS = ["the-game", ...STAGES.map((s) => s.id), "references"];
-const litAt = (i: number) => 300 + i * 320;
-const STRIP_MS = litAt(STAGES.length - 1) + 700;
 
 /** How the models were built: the public write-up, with its contents rail and charts. */
 export function HowItWasBuiltPage() {
-  const elapsed = useStripClock();
   const current = useCurrentSection();
   return (
     <>
@@ -109,32 +107,22 @@ export function HowItWasBuiltPage() {
           about 2 seconds, and every paid call in the pipeline is logged, budgeted and replayable.
         </p>
 
+        <div className="writeup-lifecycle">
+          <LifecycleChart />
+        </div>
+
         <nav className="writeup-rail" aria-labelledby="writeup-rail-title">
           <h2 id="writeup-rail-title">How it was built</h2>
-          <ol className={elapsed === null ? "writeup-stages" : "writeup-stages playing"}>
-            {STAGES.map((stage, i) => {
-              const lit = elapsed === null || elapsed >= litAt(i);
-              const now =
-                elapsed === null ? current === stage.id : lit && (i === STAGES.length - 1 || elapsed < litAt(i + 1));
-              const progress = elapsed === null ? 1 : Math.min(1, Math.max(0, (elapsed - litAt(i)) / 700));
-              const n: Count = (value, digits = 0) => (
-                <b>
-                  {(value * (1 - (1 - progress) ** 3)).toLocaleString("en-US", {
-                    minimumFractionDigits: digits,
-                    maximumFractionDigits: digits,
-                  })}
-                </b>
-              );
-              return (
-                <li key={stage.id} className={[lit && "lit", now && "now"].filter(Boolean).join(" ")}>
-                  <a href={`#${stage.id}`} aria-current={current === stage.id ? "location" : undefined}>
-                    <span className="dot">{i + 1}</span>
-                    <span className="name">{stage.name}</span>
-                    {stage.facts && <span className="facts">{stage.facts(n)}</span>}
-                  </a>
-                </li>
-              );
-            })}
+          <ol className="writeup-stages">
+            {STAGES.map((stage, i) => (
+              <li key={stage.id}>
+                <a href={`#${stage.id}`} aria-current={current === stage.id ? "location" : undefined}>
+                  <span className="dot">{i + 1}</span>
+                  <span className="name">{stage.name}</span>
+                  {stage.facts && <span className="facts">{stage.facts}</span>}
+                </a>
+              </li>
+            ))}
           </ol>
         </nav>
 
@@ -154,25 +142,6 @@ export function HowItWasBuiltPage() {
       </main>
     </>
   );
-}
-
-/** Milliseconds since the stage strip started lighting up, or null once it is done or motion is reduced. */
-function useStripClock(): number | null {
-  const [elapsed, setElapsed] = useState<number | null>(() =>
-    matchMedia("(prefers-reduced-motion: reduce)").matches ? null : 0,
-  );
-  useEffect(() => {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const start = performance.now();
-    let frame = requestAnimationFrame(function tick(now) {
-      const t = now - start;
-      if (t >= STRIP_MS) return setElapsed(null);
-      setElapsed(t);
-      frame = requestAnimationFrame(tick);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, []);
-  return elapsed;
 }
 
 /** The id of the section crossing the upper third of the viewport. */
@@ -298,6 +267,7 @@ function Data() {
         Every call was logged with its cost, so a run that stopped halfway picked up where it left off without paying
         twice.
       </p>
+      <MatchScene />
       <p>
         To keep an eye on the judge, some positions also got a deliberately bad move that was judged but never played.
         Some of these moves tried to give the judge orders (<strong>prompt injection</strong>), some were padded with
@@ -306,7 +276,7 @@ function Data() {
       </p>
       <p>
         Only moves the judge accepted became training examples. Each example is the full prompt the model saw, plus the
-        move it wrote. Three runs played 3,738 matches across 31 games and gave 14,989 examples for $18.50 of API calls.
+        move it wrote. Three runs played 3,737 matches across 31 games and gave 14,989 examples for $18.50 of API calls.
         No game except <i>Then I Am</i> may make up more than 5% of the training set, which leaves 14,941 examples. The
         same runs gave 20,185 of Flash's rulings, the bad moves included, which later trained the small judges.
       </p>
@@ -578,6 +548,7 @@ function Rl() {
         writes 8 moves and Flash judges each one. A move's reward is 1 if it stands, plus up to 0.5 for its score, and
         moves above their group's average become more likely while moves below it become less likely.
       </p>
+      <RlScene />
       <p>
         The run trains{" "}
         <a href="https://arxiv.org/abs/2106.09685">
@@ -805,65 +776,118 @@ function Limits() {
   );
 }
 
-const REFERENCES: [string, string, string, string?][] = [
-  [
-    "Rafailov et al., 2023.",
-    "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
-    "https://arxiv.org/abs/2305.18290",
-  ],
-  [
-    "Azar et al., 2023.",
-    "A General Theoretical Paradigm to Understand Learning from Human Preferences",
-    "https://arxiv.org/abs/2310.12036",
-    "IPO",
-  ],
-  [
-    "Meng et al., 2024.",
-    "SimPO: Simple Preference Optimization with a Reference-Free Reward",
-    "https://arxiv.org/abs/2405.14734",
-  ],
-  ["Ethayarajh et al., 2024.", "KTO: Model Alignment as Prospect Theoretic Optimization", "https://arxiv.org/abs/2402.01306"],
-  [
-    "Park et al., 2024.",
-    "Disentangling Length from Quality in Direct Preference Optimization",
-    "https://arxiv.org/abs/2403.19159",
-  ],
-  [
-    "Shao et al., 2024.",
-    "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models",
-    "https://arxiv.org/abs/2402.03300",
-    "GRPO",
-  ],
-  ["Yu et al., 2025.", "DAPO: An Open-Source LLM Reinforcement Learning System at Scale", "https://arxiv.org/abs/2503.14476"],
-  [
-    "Liu et al., 2025.",
-    "Understanding R1-Zero-Like Training: A Critical Perspective",
-    "https://arxiv.org/abs/2503.20783",
-    "Dr. GRPO",
-  ],
-  ["Hu et al., 2021.", "LoRA: Low-Rank Adaptation of Large Language Models", "https://arxiv.org/abs/2106.09685"],
-  ["Schulman and Thinking Machines Lab, 2025.", "LoRA Without Regret", "https://thinkingmachines.ai/blog/lora/"],
-  [
-    "Yue et al., 2025.",
-    "Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?",
-    "https://arxiv.org/abs/2504.13837",
-  ],
-  ["Cohen, 1960.", "A Coefficient of Agreement for Nominal Scales", "https://doi.org/10.1177/001316446002000104"],
-  ["Efron, 1979.", "Bootstrap Methods: Another Look at the Jackknife", "https://doi.org/10.1214/aos/1176344552"],
+const REFERENCES: { section: string; name: string; refs: [string, string, string, string][] }[] = [
+  {
+    section: "preference",
+    name: "Preference optimization",
+    refs: [
+      [
+        "DPO",
+        "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+        "Rafailov et al., 2023",
+        "https://arxiv.org/abs/2305.18290",
+      ],
+      [
+        "IPO",
+        "A General Theoretical Paradigm to Understand Learning from Human Preferences",
+        "Azar et al., 2023",
+        "https://arxiv.org/abs/2310.12036",
+      ],
+      [
+        "SimPO",
+        "SimPO: Simple Preference Optimization with a Reference-Free Reward",
+        "Meng et al., 2024",
+        "https://arxiv.org/abs/2405.14734",
+      ],
+      [
+        "KTO",
+        "KTO: Model Alignment as Prospect Theoretic Optimization",
+        "Ethayarajh et al., 2024",
+        "https://arxiv.org/abs/2402.01306",
+      ],
+      [
+        "Length bias",
+        "Disentangling Length from Quality in Direct Preference Optimization",
+        "Park et al., 2024",
+        "https://arxiv.org/abs/2403.19159",
+      ],
+    ],
+  },
+  {
+    section: "rl",
+    name: "RL",
+    refs: [
+      [
+        "GRPO",
+        "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models",
+        "Shao et al., 2024",
+        "https://arxiv.org/abs/2402.03300",
+      ],
+      [
+        "DAPO",
+        "DAPO: An Open-Source LLM Reinforcement Learning System at Scale",
+        "Yu et al., 2025",
+        "https://arxiv.org/abs/2503.14476",
+      ],
+      [
+        "Dr. GRPO",
+        "Understanding R1-Zero-Like Training: A Critical Perspective",
+        "Liu et al., 2025",
+        "https://arxiv.org/abs/2503.20783",
+      ],
+      ["LoRA", "LoRA: Low-Rank Adaptation of Large Language Models", "Hu et al., 2021", "https://arxiv.org/abs/2106.09685"],
+      [
+        "LoRA for RL",
+        "LoRA Without Regret",
+        "Schulman and Thinking Machines Lab, 2025",
+        "https://thinkingmachines.ai/blog/lora/",
+      ],
+      [
+        "RL sharpens",
+        "Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?",
+        "Yue et al., 2025",
+        "https://arxiv.org/abs/2504.13837",
+      ],
+    ],
+  },
+  {
+    section: "evaluation",
+    name: "Evaluation and the judge",
+    refs: [
+      [
+        "Bootstrap",
+        "Bootstrap Methods: Another Look at the Jackknife",
+        "Efron, 1979",
+        "https://doi.org/10.1214/aos/1176344552",
+      ],
+      [
+        "Cohen's kappa",
+        "A Coefficient of Agreement for Nominal Scales",
+        "Cohen, 1960",
+        "https://doi.org/10.1177/001316446002000104",
+      ],
+    ],
+  },
 ];
 
 function References() {
   return (
     <section id="references">
       <h2>References</h2>
-      <ul className="writeup-references">
-        {REFERENCES.map(([authors, title, href, method]) => (
-          <li key={href}>
-            {authors} <a href={href}>{title}</a>
-            {method && ` (${method})`}
-          </li>
-        ))}
-      </ul>
+      {REFERENCES.map((group) => (
+        <div key={group.section} className="writeup-references">
+          <h3>
+            <a href={`#${group.section}`}>{group.name}</a>
+          </h3>
+          <ul>
+            {group.refs.map(([use, title, authors, href]) => (
+              <li key={href}>
+                <b>{use}</b> <a href={href}>{title}</a> ({authors})
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </section>
   );
 }

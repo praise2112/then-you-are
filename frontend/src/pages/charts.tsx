@@ -1,4 +1,6 @@
-import { useId, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+
+import { usePlayOnce } from "./playOnce.ts";
 
 type BarRow = { label: string; value: number; ours?: boolean; aside?: string };
 type Reference = { label: string; value: number };
@@ -66,14 +68,19 @@ const TURN: Span[] = [
 
 const pct = (value: number) => `${value.toFixed(1)}%`;
 
-/** A chart's frame: its title (also the accessible name), a one-line source note, then the drawing. */
-function Figure({ title, note, children }: { title: string; note: ReactNode; children: (titleId: string) => ReactNode }) {
+type FigureProps = { title: string; note: ReactNode; action?: ReactNode; children: (titleId: string) => ReactNode };
+
+/** A chart's frame: its title (also the accessible name) with an optional control, a source note, then the drawing. */
+export function Figure({ title, note, action, children }: FigureProps) {
   const id = useId();
   return (
     <figure className="writeup-chart">
-      <p className="writeup-chart-title" id={id}>
-        {title}
-      </p>
+      <div className="writeup-chart-head">
+        <p className="writeup-chart-title" id={id}>
+          {title}
+        </p>
+        {action}
+      </div>
       <p className="writeup-chart-note">{note}</p>
       {children(id)}
     </figure>
@@ -458,7 +465,7 @@ const STEPS: Record<string, Step> = {
   training: { title: "31 training games", lines: ["the 5 plus 26 variants"] },
   heldBack: { title: "9 held-back games", lines: ["never used for training"] },
   test: { title: "The test", lines: ["Flash self-play", "394 frozen positions"], href: "#evaluation" },
-  matches: { title: "Flash vs Luna", lines: ["3,738 matches", "Flash judges every move", "plus bad-move checks"] },
+  matches: { title: "Flash vs Luna", lines: ["3,737 matches", "Flash judges every move", "plus bad-move checks"] },
   examples: { title: "14,941 examples", lines: ["only accepted moves"] },
   sft: { title: "SFT", lines: ["supervised fine-tuning"], href: "#sft" },
   preference: { title: "Preference", lines: ["optimization", "in two rounds"], href: "#preference" },
@@ -575,7 +582,7 @@ function Pipeline({ titleId, layout, className }: { titleId: string; layout: Lay
       <desc>
         Five hand-written games go to a generator, then five filters: 237 variants written, 35 kept. They split into
         31 training games and 9 held-back games. The held-back games become the test, Flash self-play with 394 frozen
-        positions. The training games feed 3,738 Flash vs Luna matches, judged by Flash, which give 14,941 training
+        positions. The training games feed 3,737 Flash vs Luna matches, judged by Flash, which give 14,941 training
         examples. Those feed SFT, then two rounds of preference optimization, then RL with GRPO, then the shipped model,
         a 517 MiB file served by llama.cpp on 4 CPU cores.
       </desc>
@@ -607,14 +614,225 @@ function Pipeline({ titleId, layout, className }: { titleId: string; layout: Lay
   );
 }
 
-function Arrow({ points }: { points: [number, number][] }) {
+function Arrow({ points, dashed }: { points: [number, number][]; dashed?: boolean }) {
   const [x, y] = points[points.length - 1];
-  const [px] = points[points.length - 2];
-  const head = px < x ? `${x},${y} ${x - 7},${y - 4} ${x - 7},${y + 4}` : `${x},${y} ${x - 4},${y - 7} ${x + 4},${y - 7}`;
+  const [px, py] = points[points.length - 2];
+  const length = Math.hypot(x - px, y - py);
+  const dx = (x - px) / length;
+  const dy = (y - py) / length;
+  const head = `${x},${y} ${x - 7 * dx - 4 * dy},${y - 7 * dy + 4 * dx} ${x - 7 * dx + 4 * dy},${y - 7 * dy - 4 * dx}`;
   return (
-    <g className="flow">
+    <g className={dashed ? "flow back" : "flow"}>
       <polyline points={points.map((p) => p.join(",")).join(" ")} />
       <polygon points={head} />
     </g>
+  );
+}
+
+type Stage = { title: string; lines: string[]; href: string };
+type Box = { x: number; y: number; w: number; h: number; wrap: boolean };
+type Loop = { width: number; height: number; boxes: Box[]; back: [number, number][]; label: [number, number]; group?: [number, number] };
+
+// "\n" marks where a line breaks inside a narrow box.
+const LIFECYCLE: Stage[] = [
+  { title: "Data generation", lines: ["Flash vs Luna,\n3,737 matches", "every call logged,\nbudgeted, replayable"], href: "#data" },
+  { title: "Curation", lines: ["5 filters,\naccepted moves only", "held-back games\nlocked out"], href: "#data" },
+  { title: "SFT", lines: ["14,941 examples"], href: "#sft" },
+  { title: "Preference\noptimization", lines: ["two rounds,\nrefused pairs"], href: "#preference" },
+  { title: "RL", lines: ["GRPO, judge as reward"], href: "#rl" },
+  { title: "Eval gate", lines: ["394 held-out positions", "paired bootstrap, second judge"], href: "#evaluation" },
+  { title: "Package", lines: ["Q4_K_M, 517 MiB", "llama.cpp"], href: "#serving" },
+  { title: "Deploy", lines: ["4 vCPU container", "scales to zero"], href: "#infrastructure" },
+  { title: "Monitor", lines: ["traces, p50 and p95", "budget kill switch"], href: "#infrastructure" },
+];
+
+const STEP_MS = 420;
+const PAUSE_MS = 140;
+const BACK_MS = 800;
+const BACK_AT = (LIFECYCLE.length - 1) * STEP_MS + PAUSE_MS;
+const LOOP_MS = BACK_AT + BACK_MS;
+const LIT_MS = 450;
+
+const split = (text: string, wrap: boolean) => (wrap ? text.split("\n") : [text.replace("\n", " ")]);
+const titleRows = (stage: Stage, wrap: boolean) => split(stage.title, wrap);
+const lineRows = (stage: Stage, wrap: boolean) => stage.lines.flatMap((line) => split(line, wrap));
+const boxHeight = (stage: Stage, wrap: boolean) =>
+  30 + (titleRows(stage, wrap).length - 1 + lineRows(stage, wrap).length) * 17;
+
+/** Five boxes across the top, four back along the bottom, the return arrow climbing the left. */
+function loopLayout(): Loop {
+  const width = 930;
+  const top = 26;
+  const gap = 20;
+  const small = (width - 4 * gap) / 5;
+  const large = (width - 3 * gap) / 4;
+  const topH = Math.max(...LIFECYCLE.slice(0, 5).map((s) => boxHeight(s, true)));
+  const bottomH = Math.max(...LIFECYCLE.slice(5).map((s) => boxHeight(s, false)));
+  const bottom = top + topH + 44;
+  const boxes = LIFECYCLE.map((_, i) =>
+    i < 5
+      ? { x: i * (small + gap), y: top, w: small, h: topH, wrap: true }
+      : { x: (8 - i) * (large + gap), y: bottom, w: large, h: bottomH, wrap: false },
+  );
+  const backX = small / 2;
+  return {
+    width,
+    height: bottom + bottomH + 2,
+    boxes,
+    back: [[backX, bottom], [backX, top + topH + 1]],
+    label: [backX + 12, top + topH + 26],
+    group: [boxes[2].x + 0.5, boxes[4].x + small - 0.5],
+  };
+}
+
+/** One box under another, the return arrow running up the left edge into the first box. */
+function listLayout(): Loop {
+  const width = 340;
+  const left = 28;
+  const boxes: Box[] = [];
+  let y = 34;
+  for (const stage of LIFECYCLE) {
+    const h = boxHeight(stage, false);
+    boxes.push({ x: left, y, w: width - left, h, wrap: false });
+    y += h + 22;
+  }
+  const last = boxes[boxes.length - 1];
+  const mid = last.y + last.h / 2;
+  return {
+    width,
+    height: y - 20,
+    boxes,
+    back: [[left, mid], [6, mid], [6, 10], [60, 10], [60, 33]],
+    label: [72, 27],
+  };
+}
+
+const LOOP = loopLayout();
+const LIST = listLayout();
+
+function route(a: Box, b: Box): [number, number][] {
+  const y = a.y + a.h / 2;
+  if (a.y === b.y) return a.x < b.x ? [[a.x + a.w, y], [b.x - 1, y]] : [[a.x, y], [b.x + b.w + 1, y]];
+  const x = a.x + a.w / 2;
+  return [[x, a.y + a.h], [x, b.y - 1]];
+}
+
+function pointAlong(points: [number, number][], along: number): [number, number] {
+  const lengths = points.slice(1).map(([x, y], i) => Math.hypot(x - points[i][0], y - points[i][1]));
+  let left = along * lengths.reduce((sum, l) => sum + l, 0);
+  for (const [i, length] of lengths.entries()) {
+    if (left <= length) {
+      const [[x0, y0], [x1, y1]] = [points[i], points[i + 1]];
+      return [x0 + ((x1 - x0) * left) / length, y0 + ((y1 - y0) * left) / length];
+    }
+    left -= length;
+  }
+  return points[points.length - 1];
+}
+
+/** Where the dot is at `elapsed` ms: hidden inside a box for a pause, then along the arrow to the next. */
+function dotAt(elapsed: number, routes: [number, number][][], back: [number, number][]): [number, number] | null {
+  if (elapsed >= BACK_AT) return elapsed < LOOP_MS ? pointAlong(back, (elapsed - BACK_AT) / BACK_MS) : null;
+  const i = Math.floor(elapsed / STEP_MS);
+  const along = (elapsed - i * STEP_MS - PAUSE_MS) / (STEP_MS - PAUSE_MS);
+  return along < 0 ? null : pointAlong(routes[i], along);
+}
+
+export function ReplayButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button type="button" className="writeup-replay" onClick={onClick}>
+      Replay
+    </button>
+  );
+}
+
+/** The model's life cycle as a loop of linked stages, with a dot that runs it once on first view. */
+export function LifecycleChart() {
+  const drawing = useRef<HTMLDivElement>(null);
+  const { still, start, replay } = usePlayOnce(drawing);
+  const [elapsed, setElapsed] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (start === null) return;
+    let frame = requestAnimationFrame(function tick(now) {
+      const t = now - start;
+      if (t >= LOOP_MS + LIT_MS) return setElapsed(null);
+      setElapsed(t < 0 ? null : t);
+      frame = requestAnimationFrame(tick);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [start]);
+
+  return (
+    <Figure
+      title="From data to the live game"
+      note="Each stage links to its section. The dashed line is not used for training yet."
+      action={!still && <ReplayButton onClick={replay} />}
+    >
+      {(id) => (
+        <div className="writeup-lifecycle-drawing" ref={drawing}>
+          <Lifecycle titleId={id} loop={LOOP} className="wide" elapsed={elapsed} />
+          <Lifecycle titleId={id} loop={LIST} className="narrow" elapsed={elapsed} />
+        </div>
+      )}
+    </Figure>
+  );
+}
+
+function Lifecycle({ titleId, loop, className, elapsed }: { titleId: string; loop: Loop; className: string; elapsed: number | null }) {
+  const { boxes, back, label, group } = loop;
+  const routes = boxes.slice(1).map((box, i) => route(boxes[i], box));
+  const lit = (i: number) =>
+    elapsed !== null && ((elapsed >= i * STEP_MS && elapsed < i * STEP_MS + LIT_MS) || (i === 0 && elapsed >= LOOP_MS));
+  const dot = elapsed === null ? null : dotAt(elapsed, routes, back);
+  return (
+    <svg className={className} viewBox={`0 0 ${loop.width} ${loop.height}`} role="img" aria-labelledby={titleId}>
+      <desc>
+        Nine stages in a loop: data generation (Flash vs Luna, 3,737 matches, every call logged, budgeted and
+        replayable), curation (5 filters, accepted moves only, held-back games locked out), then on rented A100s with
+        MLflow SFT on 14,941 examples, preference optimization (two rounds, refused pairs) and RL (GRPO, judge as
+        reward), an eval gate (394 held-out positions, paired bootstrap, second judge), packaging (Q4_K_M, 517 MiB,
+        llama.cpp), deployment (4 vCPU container, scales to zero) and monitoring (traces, p50 and p95, budget kill
+        switch). A dashed arrow from monitoring back to data generation, labelled "the judge rules every live move",
+        is not used for training yet.
+      </desc>
+      {group && (
+        <g>
+          <text className="tick" x={group[0]} y="10">
+            rented A100s, MLflow
+          </text>
+          <path className="group" d={`M${group[0]},22 V16 H${group[1]} V22`} />
+        </g>
+      )}
+      {LIFECYCLE.map((stage, i) => {
+        const { x, y, w, h, wrap } = boxes[i];
+        const titles = titleRows(stage, wrap);
+        return (
+          <g key={stage.title}>
+            {i > 0 && <Arrow points={routes[i - 1]} />}
+            <a href={stage.href}>
+              <g className={lit(i) ? "step lit" : "step"}>
+                <rect x={x} y={y} width={w} height={h} rx="4" />
+                {titles.map((row, k) => (
+                  <text key={row} className="step-title" x={x + 10} y={y + 21 + k * 17}>
+                    {row}
+                  </text>
+                ))}
+                {lineRows(stage, wrap).map((row, k) => (
+                  <text key={row} className="step-line" x={x + 10} y={y + 40 + (titles.length - 1 + k) * 17}>
+                    {row}
+                  </text>
+                ))}
+              </g>
+            </a>
+          </g>
+        );
+      })}
+      <Arrow points={back} dashed />
+      <text className="step-line italic" x={label[0]} y={label[1]}>
+        the judge rules every live move
+      </text>
+      {dot && <circle className="dot" cx={dot[0]} cy={dot[1]} r="5" />}
+    </svg>
   );
 }

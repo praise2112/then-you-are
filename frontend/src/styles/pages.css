@@ -2000,7 +2000,7 @@ ul.rules-text li {
 }
 
 .result-card > .stamp {
-  grid-area: stamp;
+  grid-area: verdict;
   font-size: 1.25rem;
   padding: 0.15rem 0.9rem;
   transform: rotate(-2deg);
@@ -3644,7 +3644,7 @@ small.ai-tag {
 .writeup {
   display: grid;
   grid-template-columns: minmax(0, 46rem);
-  grid-template-areas: "head" "chart" "cost" "rail" "body";
+  grid-template-areas: "head" "chart" "cost" "lifecycle" "rail" "body";
   justify-content: center;
   padding: var(--space-4) var(--space-3);
 }
@@ -3661,6 +3661,10 @@ small.ai-tag {
   grid-area: cost;
 }
 
+.writeup-lifecycle {
+  grid-area: lifecycle;
+}
+
 .writeup-rail {
   grid-area: rail;
 }
@@ -3672,7 +3676,7 @@ small.ai-tag {
 @media (min-width: 62rem) {
   .writeup {
     grid-template-columns: 14.5rem minmax(0, 46rem);
-    grid-template-areas: "rail head" "rail chart" "rail cost" "rail body";
+    grid-template-areas: "rail head" "rail chart" "rail cost" "rail lifecycle" "rail body";
     column-gap: var(--space-4);
   }
 
@@ -3747,11 +3751,11 @@ small.ai-tag {
   padding-bottom: 0;
 }
 
-.writeup-stages li + li::before {
+.writeup-stages li:not(:last-child)::before {
   content: "";
   position: absolute;
   left: calc(var(--dot) / 2 - 1px);
-  bottom: calc(100% - var(--dot) / 2 - 0.15rem);
+  top: calc(var(--dot) / 2 + 0.15rem);
   height: 100%;
   border-left: 2px solid var(--ink);
 }
@@ -3819,25 +3823,7 @@ small.ai-tag {
   color: var(--ink);
 }
 
-/* Before a stage lights up it is drawn hollow and faint. */
-.writeup-stages.playing li {
-  transition: opacity 0.35s ease;
-}
-
-.writeup-stages.playing li:not(.lit) {
-  opacity: 0.3;
-}
-
-.writeup-stages.playing li:not(.lit) .dot {
-  background: var(--paper);
-  color: var(--ink);
-}
-
-.writeup-stages.playing li:not(.lit)::before {
-  border-left-style: dotted;
-}
-
-.writeup-stages li.now .dot {
+.writeup-stages a[aria-current] .dot {
   background: var(--vermilion);
   border-color: var(--vermilion);
 }
@@ -3959,6 +3945,30 @@ small.ai-tag {
 
 .writeup-top-chart .writeup-chart {
   margin: var(--space-3) 0 0;
+}
+
+.writeup-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.writeup-replay {
+  flex: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font: 12px var(--mono);
+  color: var(--ink-faint);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.writeup-replay:hover,
+.writeup-replay:focus-visible {
+  color: var(--vermilion-ink);
 }
 
 .writeup .writeup-chart-title {
@@ -4085,22 +4095,22 @@ small.ai-tag {
   stroke-linejoin: round;
 }
 
-/* The pipeline: a wide layout, or a two-column one when its box is narrow */
-.writeup-pipeline {
+/* The pipeline and the life cycle: a wide layout, or a narrow one when their box is narrow */
+:is(.writeup-pipeline, .writeup-lifecycle-drawing) {
   container-type: inline-size;
 }
 
-.writeup-pipeline .narrow {
+:is(.writeup-pipeline, .writeup-lifecycle-drawing) .narrow {
   display: none;
   max-width: 26rem;
 }
 
 @container (max-width: 719px) {
-  .writeup-pipeline .wide {
+  :is(.writeup-pipeline, .writeup-lifecycle-drawing) .wide {
     display: none;
   }
 
-  .writeup-pipeline .narrow {
+  :is(.writeup-pipeline, .writeup-lifecycle-drawing) .narrow {
     display: block;
   }
 }
@@ -4140,11 +4150,17 @@ small.ai-tag {
   cursor: pointer;
 }
 
-.writeup-chart :is(a:hover, a:focus-visible) .step rect {
+.writeup-chart :is(a:hover, a:focus-visible) .step rect,
+.writeup-chart .step.lit rect {
   stroke: var(--vermilion);
 }
 
-.writeup-chart :is(a:hover, a:focus-visible) .step-title {
+.writeup-chart .step.lit rect {
+  stroke-width: 2;
+}
+
+.writeup-chart :is(a:hover, a:focus-visible) .step-title,
+.writeup-chart .step.lit .step-title {
   fill: var(--vermilion-ink);
 }
 
@@ -4159,7 +4175,7 @@ small.ai-tag {
 .writeup-chart .step rect,
 .writeup-chart .step-title,
 .writeup-chart .flow * {
-  transition: stroke 0.15s ease, fill 0.15s ease;
+  transition: stroke 0.15s ease, fill 0.15s ease, stroke-width 0.15s ease;
 }
 
 .writeup-chart .flow polyline {
@@ -4170,6 +4186,19 @@ small.ai-tag {
 
 .writeup-chart .flow polygon {
   fill: var(--ink-faint);
+}
+
+.writeup-chart .flow.back polyline {
+  stroke-dasharray: 5 4;
+}
+
+.writeup-chart .group {
+  fill: none;
+  stroke: var(--rule);
+}
+
+.writeup-chart circle.dot {
+  fill: var(--vermilion);
 }
 
 .writeup-funnel {
@@ -4270,6 +4299,288 @@ small.ai-tag {
   color: var(--ink-soft);
 }
 
+/* The match and RL scenes: each part fades in at its own --at once the scene is in view */
+
+.writeup-scene .in {
+  animation: var(--motion, rise) 0.4s ease-out var(--at, 0ms) both;
+}
+
+.writeup-scene.paused .in {
+  animation-play-state: paused;
+}
+
+@keyframes verdict {
+  from {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes draw {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes settle {
+  from {
+    color: var(--ink-soft);
+  }
+}
+
+.writeup-body .writeup-scene ol {
+  list-style: none;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.writeup-body .writeup-scene li {
+  margin: 0;
+}
+
+.writeup-body .writeup-scene p {
+  max-width: none;
+  margin: 0;
+}
+
+.writeup-scene .verdict {
+  --motion: verdict;
+  justify-self: end;
+  padding: 0 0.4rem;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-family: var(--display);
+  font-size: 0.85rem;
+  font-weight: 550;
+  font-variant-numeric: lining-nums;
+  line-height: 1.5;
+  white-space: nowrap;
+  color: var(--ink-soft);
+}
+
+.writeup-scene .verdict.stands {
+  color: var(--vermilion-ink);
+}
+
+.writeup-match {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 13.5rem;
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.writeup-match-moves li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "who who" "move verdict" "line outcome";
+  align-items: baseline;
+  gap: 0.15rem var(--space-2);
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.writeup-match-moves li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.writeup-match-moves li:last-child {
+  padding-bottom: 0;
+}
+
+.writeup-match .who {
+  grid-area: who;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink-faint);
+}
+
+.writeup-match .move {
+  grid-area: move;
+  font-family: var(--display);
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.writeup-match .verdict {
+  grid-area: verdict;
+}
+
+.writeup-match .line {
+  grid-area: line;
+  font-size: 0.92rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.writeup-match .outcome {
+  grid-area: outcome;
+  justify-self: end;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  color: var(--ink-faint);
+}
+
+.writeup-match .outcome.kept {
+  color: var(--vermilion-ink);
+}
+
+.writeup-match-log {
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--rule);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.writeup-body .writeup-match-log .head {
+  margin-bottom: 0.3rem;
+  color: var(--ink-faint);
+}
+
+.writeup-match-log li,
+.writeup-match-log .sum {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-1);
+  padding: 0.2rem 0;
+}
+
+.writeup-match-log li {
+  border-bottom: 1px dotted var(--rule);
+}
+
+.writeup-match-log .sum {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.writeup-match-log .cost {
+  font: 12px var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.writeup-match-log .sum .cost {
+  font-weight: 500;
+}
+
+.writeup-rl .row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 6.2rem 9rem 2.8rem;
+  grid-template-areas: "move verdict track change";
+  align-items: center;
+  column-gap: var(--space-2);
+  padding: 0.3rem 0;
+}
+
+.writeup-rl .row.head {
+  height: 1.3rem;
+  padding: 0;
+}
+
+.writeup-rl .move {
+  --motion: settle;
+  grid-area: move;
+  font-family: var(--display);
+  line-height: 1.3;
+}
+
+.writeup-rl .up .move {
+  color: var(--ink);
+}
+
+.writeup-rl .down .move {
+  color: var(--ink-faint);
+}
+
+.writeup-rl .verdict {
+  grid-area: verdict;
+  justify-self: start;
+}
+
+.writeup-rl .down .verdict {
+  color: var(--ink-faint);
+}
+
+.writeup-rl .track {
+  grid-area: track;
+  align-self: stretch;
+  position: relative;
+  margin-right: 2.2rem;
+}
+
+.writeup-rl .fill {
+  --motion: grow;
+  position: absolute;
+  left: 0;
+  top: calc(50% - 0.4rem);
+  height: 0.8rem;
+  transform-origin: left;
+  background: color-mix(in oklab, var(--ink) 34%, var(--paper));
+}
+
+.writeup-rl .fill.stands {
+  background: var(--vermilion);
+}
+
+.writeup-rl .reward {
+  position: absolute;
+  top: 50%;
+  translate: 0.35rem -50%;
+  font: 11.5px var(--mono);
+  color: var(--ink-soft);
+}
+
+.writeup-rl .average {
+  --motion: draw;
+  position: absolute;
+  top: -0.3rem;
+  bottom: -0.3rem;
+  margin-left: -0.75px;
+  border-left: 1.5px solid var(--ink);
+  transform-origin: top;
+}
+
+.writeup-rl .head .average {
+  top: 0.15rem;
+  bottom: 0;
+}
+
+.writeup-rl .average-label {
+  position: absolute;
+  top: 0;
+  margin-right: 6px;
+  font: 12px var(--mono);
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.writeup-rl .change {
+  grid-area: change;
+  text-align: right;
+  font: 12.5px var(--mono);
+  color: var(--ink-faint);
+}
+
+.writeup-rl .up .change {
+  font-weight: 500;
+  color: var(--vermilion-ink);
+}
+
+.writeup-body .writeup-scene .end {
+  margin: var(--space-2) 0 0;
+}
+
 @media (max-width: 40rem) {
   .writeup {
     padding: var(--space-3) var(--space-2);
@@ -4286,10 +4597,52 @@ small.ai-tag {
   .writeup-table table {
     font-size: 0.82rem;
   }
+
+  .writeup-match {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .writeup-match-moves li {
+    grid-template-areas: "who verdict" "move move" "line line" "outcome outcome";
+  }
+
+  .writeup-match .outcome {
+    justify-self: start;
+  }
+
+  .writeup-match-log {
+    padding: var(--space-2) 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .writeup-rl .row {
+    grid-template-columns: 5.6rem minmax(0, 1fr) 3rem;
+    grid-template-areas: "move move move" "verdict track change";
+    row-gap: 0.25rem;
+    padding: 0.45rem 0;
+  }
+
+  .writeup-rl .row.head {
+    grid-template-areas: "verdict track change";
+  }
+
+  .writeup-rl .move {
+    font-size: 0.95rem;
+  }
+
+  .writeup-rl .average {
+    top: -0.15rem;
+    bottom: -0.15rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .writeup-stages li,
+  .writeup-scene .in {
+    animation: none;
+  }
+
   .writeup-stages .dot,
   .writeup-chart .row,
   .writeup-chart .step rect,
@@ -4299,9 +4652,27 @@ small.ai-tag {
   }
 }
 
-.writeup-body .writeup-references {
+.writeup-references h3 {
+  font-size: 1rem;
+  margin: var(--space-2) 0 var(--space-1);
+}
+
+.writeup-references h3 a {
+  text-decoration: none;
+}
+
+.writeup-body .writeup-references ul {
   list-style: none;
   padding: 0;
   font-size: 0.9rem;
   color: var(--ink-soft);
+}
+
+.writeup-references li {
+  margin-bottom: 0.35rem;
+}
+
+.writeup-references b {
+  font-weight: 600;
+  color: var(--ink);
 }
