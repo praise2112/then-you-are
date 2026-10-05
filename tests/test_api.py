@@ -714,18 +714,6 @@ async def get_texts(settings, *paths: str) -> list[tuple[int, str]]:
 
 
 @pytest.mark.anyio
-async def test_a_production_server_hides_the_mockups_and_the_frontend_source():
-    mockup = (Path(__file__).parents[1] / "mockups" / "index.html").read_text()
-    package = (Path(__file__).parents[1] / "frontend" / "package.json").read_text()
-    dev = dataclasses.replace(load_settings(), database_url=os.environ["TEST_DATABASE_URL"])
-    paths = ("/mockups/index.html", "/frontend/package.json")
-    assert [text for _, text in await get_texts(dev, *paths)] == [mockup, package]
-    production = dataclasses.replace(dev, secure_cookies=True)
-    for _, text in await get_texts(production, *paths):
-        assert text not in (mockup, package)
-
-
-@pytest.mark.anyio
 async def test_the_writeup_link_previews_with_its_own_title_and_image(tmp_path: Path):
     (tmp_path / "assets").mkdir()
     (tmp_path / "index.html").write_text(

@@ -524,12 +524,6 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def writeup_shell() -> HTMLResponse:
         return HTMLResponse(writeup_page)
 
-    # Mockups and frontend source are for local work; an https site is production.
-    if not settings.secure_cookies:
-        mockups = Path(__file__).parents[1] / "mockups"
-        app.mount("/mockups", StaticFiles(directory=mockups, html=True), name="mockups")
-        frontend_src = Path(__file__).parents[1] / "frontend"
-        app.mount("/frontend", StaticFiles(directory=frontend_src), name="frontend-src")
     if settings.frontend_dist:
         mount_frontend(app, settings.frontend_dist)
 

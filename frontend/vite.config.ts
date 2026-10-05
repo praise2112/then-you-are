@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     fs: { allow: [".."] },
     proxy: Object.fromEntries(
-      ["/healthz", "/templates", "/matches", "/replays", "/mockups", "/openapi.json"].map((p) => [p, backend]),
+      ["/healthz", "/templates", "/matches", "/replays", "/openapi.json"].map((p) => [p, backend]),
     ),
   },
 });

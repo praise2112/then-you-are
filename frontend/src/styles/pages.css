@@ -1,4 +1,4 @@
-/* Page layouts lifted from the mockups. Shared chassis lives in folio.css. */
+/* Page layouts. Shared chassis lives in folio.css. */
 
 .overlay.open {
   display: grid;
