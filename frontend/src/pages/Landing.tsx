@@ -60,7 +60,7 @@ export function Landing() {
 export function StageFoot() {
   return (
     <p className="stage-foot">
-      Every move is scored by an AI judge. <a href="/mockups/methodology.html">How the judging is graded</a>
+      Every move is scored by an AI judge. <Link to="/how-it-was-built">How the House and the judge were built</Link>
     </p>
   );
 }

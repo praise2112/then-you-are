@@ -3638,3 +3638,581 @@ small.ai-tag {
   font-size: 0.85rem;
   margin: var(--space-2) 0 0;
 }
+
+/* How it was built: the write-up, a contents rail beside the prose on desktop */
+
+.writeup {
+  display: grid;
+  grid-template-columns: minmax(0, 46rem);
+  grid-template-areas: "head" "chart" "cost" "rail" "body";
+  justify-content: center;
+  padding: var(--space-4) var(--space-3);
+}
+
+.writeup-head {
+  grid-area: head;
+}
+
+.writeup-top-chart {
+  grid-area: chart;
+}
+
+.writeup-cost {
+  grid-area: cost;
+}
+
+.writeup-rail {
+  grid-area: rail;
+}
+
+.writeup-body {
+  grid-area: body;
+}
+
+@media (min-width: 62rem) {
+  .writeup {
+    grid-template-columns: 14.5rem minmax(0, 46rem);
+    grid-template-areas: "rail head" "rail chart" "rail cost" "rail body";
+    column-gap: var(--space-4);
+  }
+
+  .writeup-rail {
+    align-self: start;
+    position: sticky;
+    top: var(--space-3);
+    margin-top: 0.9rem;
+  }
+}
+
+.writeup h1 {
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  line-height: 1.08;
+  text-wrap: balance;
+  margin: 0 0 var(--space-3);
+}
+
+.writeup-lede {
+  font-size: 1.22rem;
+  line-height: 1.45;
+  max-width: 34rem;
+  margin: 0;
+}
+
+.writeup-lede b {
+  font-variant-numeric: lining-nums;
+  font-weight: 650;
+}
+
+.writeup-lede .ours {
+  color: var(--vermilion-ink);
+}
+
+.writeup-cost {
+  max-width: 68ch;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  margin: var(--space-2) 0 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--rule);
+}
+
+.writeup-cost b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* The stage rail: one line per stage, a dot on a running line */
+
+.writeup-rail h2 {
+  font-variation-settings: "opsz" 24;
+  font-size: 1.05rem;
+  font-weight: 550;
+  margin: 0 0 var(--space-2);
+}
+
+.writeup-stages {
+  --dot: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.writeup-stages li {
+  position: relative;
+  padding-left: calc(var(--dot) + var(--space-2));
+  padding-bottom: var(--space-2);
+}
+
+.writeup-stages li:last-child {
+  padding-bottom: 0;
+}
+
+.writeup-stages li + li::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--dot) / 2 - 1px);
+  bottom: calc(100% - var(--dot) / 2 - 0.15rem);
+  height: 100%;
+  border-left: 2px solid var(--ink);
+}
+
+.writeup-stages a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.writeup-stages .dot {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0.15rem;
+  display: grid;
+  place-items: center;
+  width: var(--dot);
+  height: var(--dot);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  font-variant-numeric: lining-nums;
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease;
+}
+
+.writeup-stages .name {
+  display: block;
+  font-family: var(--display);
+  font-size: 1.08rem;
+  font-weight: 550;
+  line-height: 1.3;
+}
+
+.writeup-stages a:hover .name,
+.writeup-stages a[aria-current] .name {
+  color: var(--vermilion-ink);
+}
+
+.writeup-stages a:hover .name {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+.writeup-stages .facts {
+  display: block;
+  text-wrap: balance;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.writeup-stages .facts b {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* Before a stage lights up it is drawn hollow and faint. */
+.writeup-stages.playing li {
+  transition: opacity 0.35s ease;
+}
+
+.writeup-stages.playing li:not(.lit) {
+  opacity: 0.3;
+}
+
+.writeup-stages.playing li:not(.lit) .dot {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.writeup-stages.playing li:not(.lit)::before {
+  border-left-style: dotted;
+}
+
+.writeup-stages li.now .dot {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+}
+
+@media (max-width: 61.99rem) {
+  .writeup-rail {
+    margin-top: var(--space-3);
+    padding-top: var(--space-2);
+    border-top: 3px double var(--ink);
+  }
+}
+
+/* Prose */
+
+.writeup-body section {
+  margin-top: var(--space-4);
+  scroll-margin-top: var(--space-3);
+}
+
+.writeup-body h2 {
+  font-size: 1.6rem;
+  margin: 0 0 var(--space-2);
+}
+
+.writeup-body h3 {
+  font-size: 1.2rem;
+  margin: var(--space-3) 0 var(--space-1);
+}
+
+.writeup-body p {
+  max-width: 68ch;
+  margin: 0 0 var(--space-2);
+  line-height: 1.6;
+}
+
+.writeup-body ol,
+.writeup-body ul {
+  max-width: 68ch;
+  margin: 0 0 var(--space-2);
+  padding-left: 1.4rem;
+  line-height: 1.6;
+}
+
+.writeup-body li + li {
+  margin-top: 0.3rem;
+}
+
+.writeup-body a {
+  color: inherit;
+  text-decoration-color: var(--rule);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.writeup-body a:hover {
+  color: var(--vermilion-ink);
+  text-decoration-color: currentColor;
+}
+
+.writeup-body strong {
+  font-weight: 600;
+}
+
+.writeup-body .writeup-note {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+/* Text still to come, kept visible so it is easy to find */
+.writeup-todo {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+div.writeup-todo {
+  margin: var(--space-3) 0;
+  padding: var(--space-3);
+  border: 1px dashed var(--ink-faint);
+  font-size: 0.9rem;
+}
+
+/* Tables: every number of a section */
+
+.writeup-table {
+  overflow-x: auto;
+  margin: var(--space-3) 0 var(--space-2);
+}
+
+.writeup-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.writeup-table th {
+  text-align: left;
+  font-weight: 500;
+  font-variant: all-small-caps;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--ink);
+  padding: 0.3rem 0.5rem;
+  vertical-align: bottom;
+}
+
+.writeup-table td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+.writeup-table th:first-child,
+.writeup-table td:first-child {
+  padding-left: 0;
+}
+
+.writeup-table th:last-child,
+.writeup-table td:last-child {
+  padding-right: 0;
+}
+
+.writeup-table .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Charts */
+
+.writeup-chart,
+.writeup-example {
+  margin: var(--space-3) 0;
+}
+
+.writeup-top-chart .writeup-chart {
+  margin: var(--space-3) 0 0;
+}
+
+.writeup .writeup-chart-title {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 550;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.writeup .writeup-chart-note {
+  margin: 0.15rem 0 var(--space-2);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--ink-faint);
+}
+
+.writeup-chart svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.writeup-chart .grid line {
+  stroke: var(--rule);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.writeup-chart .tick {
+  font: 11px var(--mono);
+  fill: var(--ink-faint);
+}
+
+.writeup-chart .label {
+  font: 15px var(--serif);
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.writeup-chart .label.ours {
+  font-weight: 600;
+}
+
+.writeup-chart .step {
+  font: 13px var(--serif);
+  fill: var(--ink-soft);
+}
+
+.writeup-chart .value {
+  font: 13px var(--mono);
+  fill: var(--ink);
+}
+
+.writeup-chart .value.ours {
+  font-weight: 500;
+}
+
+.writeup-chart .aside {
+  font: 12px var(--mono);
+  fill: var(--ink-soft);
+}
+
+.writeup-chart rect.base {
+  fill: color-mix(in oklab, var(--ink) 34%, var(--paper));
+}
+
+.writeup-chart rect.ours {
+  fill: var(--vermilion);
+}
+
+.writeup-chart rect.held {
+  fill: var(--paper);
+  stroke: var(--vermilion);
+  stroke-width: 1.5;
+}
+
+.writeup-chart rect.refused {
+  fill: color-mix(in oklab, var(--ink) 75%, var(--paper));
+}
+
+.writeup-chart rect.cached {
+  fill: var(--paper-sunk);
+  stroke: var(--ink-faint);
+  stroke-width: 1;
+}
+
+.writeup-chart rect.split {
+  stroke: var(--paper);
+  stroke-width: 2;
+}
+
+.writeup-chart rect.mark {
+  fill: var(--ink);
+}
+
+.writeup-chart .reference line {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.writeup-chart .reference text {
+  font: 12px var(--mono);
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.writeup-funnel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-2) var(--space-3);
+}
+
+.writeup .writeup-funnel-name {
+  font-size: 0.95rem;
+  margin: 0 0 0.3rem;
+}
+
+.writeup .writeup-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem var(--space-3);
+  list-style: none;
+  margin: var(--space-1) 0 0;
+  padding: 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.writeup-body .writeup-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.writeup-legend svg {
+  width: 14px;
+  flex: none;
+}
+
+/* The real example: the card, the moves so far, then the two replies and their rulings */
+
+.writeup-example-board {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  padding: var(--space-2) var(--space-3);
+}
+
+.writeup-example-card {
+  font-family: var(--display);
+  font-size: 1.15rem;
+}
+
+.writeup-example-card .small-caps {
+  margin-right: 0.4rem;
+}
+
+.writeup-body .writeup-example-moves {
+  margin: 0 0 var(--space-2);
+  padding: 0 0 0 var(--space-2);
+  border-left: 2px solid var(--rule);
+  list-style: none;
+  color: var(--ink-soft);
+}
+
+.writeup-example-replies {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-2);
+}
+
+.writeup-example-replies > div {
+  border-top: 2px solid var(--ink);
+  padding-top: var(--space-1);
+}
+
+.writeup-example-replies > .stands {
+  border-top-color: var(--vermilion);
+}
+
+.writeup-example-replies p {
+  margin: 0 0 0.3rem;
+  line-height: 1.45;
+}
+
+.writeup-example-replies .who {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+.writeup-example-replies .move {
+  font-family: var(--display);
+  font-size: 1.1rem;
+}
+
+.writeup-example-replies .stands .ruling-word {
+  color: var(--vermilion-ink);
+}
+
+.writeup-example-replies .why {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 40rem) {
+  .writeup {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .writeup-body section {
+    margin-top: var(--space-3);
+  }
+
+  .writeup-example-board {
+    padding: var(--space-2);
+  }
+
+  .writeup-table table {
+    font-size: 0.82rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .writeup-stages li,
+  .writeup-stages .dot {
+    transition: none;
+  }
+}
+
+.writeup-body .writeup-references {
+  list-style: none;
+  padding: 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}

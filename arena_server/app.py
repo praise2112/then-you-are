@@ -4,6 +4,7 @@ import asyncio
 import html
 import logging
 import os
+import re
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -69,6 +70,12 @@ SWEEP_EVERY_S = 60
 GUEST_SWEEP_EVERY_S = 60 * 60 * 24
 CLOCK_EVERY_S = 10
 FALLBACK_REF = "opponent-v1"
+WRITEUP_TITLE = "How the models in Then You Are were built"
+WRITEUP_DESCRIPTION = (
+    "The AI player in Then You Are is Qwen3.5-0.8B. Fine-tuning took it from 19.0% to 68.5% of "
+    "moves accepted on games it never saw in training. Qwen3.5-4B, five times its size and "
+    "prompted the same way without fine-tuning, gets 55.1%."
+)
 log = logging.getLogger(__name__)
 
 
@@ -497,10 +504,32 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             f"<body>{description}</body></html>"
         )
 
-    mockups = Path(__file__).parents[1] / "mockups"
-    app.mount("/mockups", StaticFiles(directory=mockups, html=True), name="mockups")
-    frontend_src = Path(__file__).parents[1] / "frontend"
-    app.mount("/frontend", StaticFiles(directory=frontend_src), name="frontend-src")
+    writeup_head = (
+        f'<meta property="og:title" content="{html.escape(WRITEUP_TITLE)}">'
+        f'<meta property="og:description" content="{html.escape(WRITEUP_DESCRIPTION)}">'
+        f'<meta property="og:url" content="{settings.public_base_url}/how-it-was-built">'
+        f'<meta property="og:image" content="{settings.public_base_url}/og-image.png">'
+    )
+
+    writeup_page = (
+        re.sub(r'<meta property="og:image"[^>]*>', "", shell_page).replace(
+            "</head>", writeup_head + "</head>", 1
+        )
+        if shell_page is not None
+        else f"<!doctype html><html><head>{writeup_head}<title>{html.escape(WRITEUP_TITLE)}"
+        f"</title></head><body>{html.escape(WRITEUP_DESCRIPTION)}</body></html>"
+    )
+
+    @app.get("/how-it-was-built", response_class=HTMLResponse)
+    async def writeup_shell() -> HTMLResponse:
+        return HTMLResponse(writeup_page)
+
+    # Mockups and frontend source are for local work; an https site is production.
+    if not settings.secure_cookies:
+        mockups = Path(__file__).parents[1] / "mockups"
+        app.mount("/mockups", StaticFiles(directory=mockups, html=True), name="mockups")
+        frontend_src = Path(__file__).parents[1] / "frontend"
+        app.mount("/frontend", StaticFiles(directory=frontend_src), name="frontend-src")
     if settings.frontend_dist:
         mount_frontend(app, settings.frontend_dist)
 

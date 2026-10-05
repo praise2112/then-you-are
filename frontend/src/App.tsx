@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { Duel } from "./pages/Duel.tsx";
 import { GamesPage } from "./pages/Games.tsx";
+import { HowItWasBuiltPage } from "./pages/HowItWasBuilt.tsx";
 import { Landing } from "./pages/Landing.tsx";
 import { Leaderboard } from "./pages/Leaderboard.tsx";
 import { LegalPage, type LegalSlug } from "./pages/Legal.tsx";
@@ -117,6 +118,7 @@ function pageAt(path: string) {
   if (path === "/lobby") return <LobbyPage />;
   if (path === "/stage") return <StagePage />;
   if (path === "/games") return <GamesPage />;
+  if (path === "/how-it-was-built") return <HowItWasBuiltPage />;
   if (path === "/privacy" || path === "/terms") return <LegalPage slug={path.slice(1) as LegalSlug} />;
   const standings = path.match(/^\/standings(?:\/([^/]+))?$/);
   if (standings) return <Leaderboard slug={standings[1]} />;

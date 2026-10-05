@@ -3,6 +3,7 @@ import dataclasses
 import json
 import os
 import time
+from pathlib import Path
 
 import httpx
 import pytest
@@ -701,3 +702,45 @@ async def test_each_house_conversation_keeps_a_llama_server_slot_until_its_match
         for client in clients:
             await client.aclose()
         await manager.__aexit__(None, None, None)
+
+
+async def get_texts(settings, *paths: str) -> list[tuple[int, str]]:
+    app = build_app(settings, FakeCaller(rulings=[], opponent_moves=[]))
+    async with (
+        LifespanManager(app),
+        httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as c,
+    ):
+        return [((r := await c.get(path)).status_code, r.text) for path in paths]
+
+
+@pytest.mark.anyio
+async def test_a_production_server_hides_the_mockups_and_the_frontend_source():
+    mockup = (Path(__file__).parents[1] / "mockups" / "index.html").read_text()
+    package = (Path(__file__).parents[1] / "frontend" / "package.json").read_text()
+    dev = dataclasses.replace(load_settings(), database_url=os.environ["TEST_DATABASE_URL"])
+    paths = ("/mockups/index.html", "/frontend/package.json")
+    assert [text for _, text in await get_texts(dev, *paths)] == [mockup, package]
+    production = dataclasses.replace(dev, secure_cookies=True)
+    for _, text in await get_texts(production, *paths):
+        assert text not in (mockup, package)
+
+
+@pytest.mark.anyio
+async def test_the_writeup_link_previews_with_its_own_title_and_image(tmp_path: Path):
+    (tmp_path / "assets").mkdir()
+    (tmp_path / "index.html").write_text(
+        '<html><head><meta property="og:image" content="https://site/og-image.png" />'
+        "</head><body></body></html>"
+    )
+    settings = dataclasses.replace(
+        load_settings(),
+        database_url=os.environ["TEST_DATABASE_URL"],
+        frontend_dist=tmp_path,
+        public_base_url="https://example.org",
+    )
+    [(status, page)] = await get_texts(settings, "/how-it-was-built")
+    assert status == 200
+    assert '<meta property="og:title" content="How the models in Then You Are were built">' in page
+    assert 'content="https://example.org/how-it-was-built"' in page
+    assert page.count('property="og:image"') == 1
+    assert 'content="https://example.org/og-image.png"' in page
