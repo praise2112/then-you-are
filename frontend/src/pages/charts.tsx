@@ -439,3 +439,178 @@ function Legend({ items }: { items: [string, string][] }) {
     </ul>
   );
 }
+
+type Step = { title: string; lines: string[]; italic?: boolean; href?: string; ours?: boolean };
+type Slot = { row: number; col: number; span?: number };
+type Layout = { width: number; cols: number; slots: Record<string, Slot> };
+
+const STEPS: Record<string, Step> = {
+  games: {
+    title: "5 hand-written games",
+    lines: ["Then I Am", "Word for Word, Front Page", "Domino, Alibi"],
+    italic: true,
+  },
+  generator: { title: "Generator", lines: ["writes new variants", "of the five games"] },
+  filters: { title: "5 filters", lines: ["237 variants written", "35 kept"] },
+  training: { title: "31 training games", lines: ["the 5 plus 26 variants"] },
+  heldBack: { title: "9 held-back games", lines: ["never used for training"] },
+  test: { title: "The test", lines: ["Flash self-play", "394 frozen positions"], href: "#evaluation" },
+  matches: { title: "Flash vs Luna", lines: ["3,738 matches", "Flash judges every move", "plus bad-move checks"] },
+  examples: { title: "14,941 examples", lines: ["only accepted moves"] },
+  sft: { title: "SFT", lines: ["supervised fine-tuning"], href: "#sft" },
+  preference: { title: "Preference", lines: ["optimization", "in two rounds"], href: "#preference" },
+  rl: { title: "RL", lines: ["GRPO, judge as reward"], href: "#rl" },
+  shipped: { title: "The shipped model", lines: ["Qwen3.5-0.8B"], ours: true },
+};
+
+const FLOW: [string, string][] = [
+  ["games", "generator"],
+  ["generator", "filters"],
+  ["filters", "training"],
+  ["filters", "heldBack"],
+  ["heldBack", "test"],
+  ["training", "matches"],
+  ["matches", "examples"],
+  ["examples", "sft"],
+  ["sft", "preference"],
+  ["preference", "rl"],
+  ["rl", "shipped"],
+];
+
+const WIDE: Layout = {
+  width: 930,
+  cols: 5,
+  slots: {
+    games: { row: 0, col: 0 },
+    generator: { row: 0, col: 1 },
+    filters: { row: 0, col: 2 },
+    training: { row: 0, col: 3 },
+    matches: { row: 0, col: 4 },
+    heldBack: { row: 1, col: 2 },
+    test: { row: 1, col: 3 },
+    examples: { row: 1, col: 4 },
+    sft: { row: 2, col: 0 },
+    preference: { row: 2, col: 1 },
+    rl: { row: 2, col: 2 },
+    shipped: { row: 2, col: 3 },
+  },
+};
+
+const NARROW: Layout = {
+  width: 340,
+  cols: 2,
+  slots: {
+    games: { row: 0, col: 0, span: 2 },
+    generator: { row: 1, col: 0, span: 2 },
+    filters: { row: 2, col: 0, span: 2 },
+    training: { row: 3, col: 0 },
+    heldBack: { row: 3, col: 1 },
+    matches: { row: 4, col: 0 },
+    test: { row: 4, col: 1 },
+    examples: { row: 5, col: 0 },
+    sft: { row: 6, col: 0, span: 2 },
+    preference: { row: 7, col: 0, span: 2 },
+    rl: { row: 8, col: 0, span: 2 },
+    shipped: { row: 9, col: 0, span: 2 },
+  },
+};
+
+/** The data pipeline: games to variants to matches to training stages, as boxes and arrows. */
+export function PipelineChart() {
+  return (
+    <Figure
+      title="From five games to the shipped model"
+      note="Boxes with a section of their own link to it."
+    >
+      {(id) => (
+        <div className="writeup-pipeline">
+          <Pipeline titleId={id} layout={WIDE} className="wide" />
+          <Pipeline titleId={id} layout={NARROW} className="narrow" />
+        </div>
+      )}
+    </Figure>
+  );
+}
+
+function Pipeline({ titleId, layout, className }: { titleId: string; layout: Layout; className: string }) {
+  const gap = 20;
+  const rowGap = 30;
+  const colWidth = (layout.width - gap * (layout.cols - 1)) / layout.cols;
+  const rows = Math.max(...Object.values(layout.slots).map((s) => s.row)) + 1;
+  const heights = Array.from({ length: rows }, (_, row) =>
+    Math.max(...Object.entries(layout.slots).filter(([, s]) => s.row === row).map(([k]) => 30 + STEPS[k].lines.length * 17)),
+  );
+  const tops: number[] = [];
+  let y = 0;
+  for (const h of heights) {
+    tops.push(y);
+    y += h + rowGap;
+  }
+  const box = (key: string) => {
+    const { row, col, span = 1 } = layout.slots[key];
+    const x = col * (colWidth + gap);
+    return { x, y: tops[row], w: span * colWidth + (span - 1) * gap, h: heights[row], row };
+  };
+  return (
+    <svg className={className} viewBox={`0 0 ${layout.width} ${y - rowGap + 2}`} role="img" aria-labelledby={titleId}>
+      <desc>
+        Five hand-written games go to a generator, then five filters: 237 variants written, 35 kept. They split into
+        31 training games and 9 held-back games. The held-back games become the test, Flash self-play with 394 frozen
+        positions. The training games feed 3,738 Flash vs Luna matches, judged by Flash, which give 14,941 training
+        examples. Those feed SFT, then two rounds of preference optimization, then RL with GRPO, then the shipped model.
+      </desc>
+      {FLOW.map(([from, to]) => {
+        const a = box(from);
+        const b = box(to);
+        const bx = b.x + b.w / 2;
+        if (a.row === b.row) {
+          const end = b.x - 1;
+          return <Arrow key={`${from}-${to}`} points={[[a.x + a.w, a.y + a.h / 2], [end, a.y + a.h / 2]]} />;
+        }
+        const ax = a.x + a.w / 2;
+        const mid = a.y + a.h + rowGap / 2;
+        const path: [number, number][] =
+          Math.abs(ax - bx) < 1
+            ? [[ax, a.y + a.h], [bx, b.y - 1]]
+            : [[ax, a.y + a.h], [ax, mid], [bx, mid], [bx, b.y - 1]];
+        return <Arrow key={`${from}-${to}`} points={path} />;
+      })}
+      {Object.keys(layout.slots).map((key) => {
+        const step = STEPS[key];
+        const { x, y: top, w, h } = box(key);
+        const body = (
+          <g className={step.ours ? "step ours" : "step"}>
+            <rect x={x} y={top} width={w} height={h} rx="4" />
+            <text className="step-title" x={x + 10} y={top + 21}>
+              {step.title}
+            </text>
+            {step.lines.map((line, i) => (
+              <text key={i} className={step.italic ? "step-line italic" : "step-line"} x={x + 10} y={top + 40 + i * 17}>
+                {line}
+              </text>
+            ))}
+          </g>
+        );
+        return step.href ? (
+          <a key={key} href={step.href}>
+            {body}
+          </a>
+        ) : (
+          <g key={key}>{body}</g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function Arrow({ points }: { points: [number, number][] }) {
+  const [x, y] = points[points.length - 1];
+  const [px] = points[points.length - 2];
+  const head = px < x ? `${x},${y} ${x - 7},${y - 4} ${x - 7},${y + 4}` : `${x},${y} ${x - 4},${y - 7} ${x + 4},${y - 7}`;
+  return (
+    <g className="flow">
+      <polyline points={points.map((p) => p.join(",")).join(" ")} />
+      <polygon points={head} />
+    </g>
+  );
+}

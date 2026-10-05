@@ -1,7 +1,16 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 import { Link, ThemeToggle, TopBar } from "../App.tsx";
-import { BasesChart, FunnelChart, HeadlineChart, OutcomesChart, PromptChart, RlChart, TurnChart } from "./charts.tsx";
+import {
+  BasesChart,
+  FunnelChart,
+  HeadlineChart,
+  OutcomesChart,
+  PipelineChart,
+  PromptChart,
+  RlChart,
+  TurnChart,
+} from "./charts.tsx";
 
 type Count = (value: number, digits?: number) => ReactNode;
 type Stage = { id: string; name: string; facts?: (n: Count) => ReactNode };
@@ -298,11 +307,7 @@ function Data() {
         No game except <i>Then I Am</i> may make up more than 5% of the training set, which leaves 14,941 examples. The
         same runs gave 20,185 of Flash's rulings, the bad moves included, which later trained the small judges.
       </p>
-      <div className="writeup-todo" role="note">
-        [Data pipeline diagram, to be drawn in Excalidraw. Five hand-written games go through the variant filters and
-        become 31 training games (the five plus 26 variants) and 9 held-back games. Flash and Luna play matches on the
-        training games, Flash judges every move and the bad-move checks, and 14,941 training examples come out.]
-      </div>
+      <PipelineChart />
     </section>
   );
 }

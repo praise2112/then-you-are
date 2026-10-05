@@ -3906,19 +3906,6 @@ small.ai-tag {
   font-size: 0.9rem;
 }
 
-/* Text still to come, kept visible so it is easy to find */
-.writeup-todo {
-  color: var(--ink-faint);
-  font-style: italic;
-}
-
-div.writeup-todo {
-  margin: var(--space-3) 0;
-  padding: var(--space-3);
-  border: 1px dashed var(--ink-faint);
-  font-size: 0.9rem;
-}
-
 /* Tables: every number of a section */
 
 .writeup-table {
@@ -4085,6 +4072,71 @@ div.writeup-todo {
   stroke: var(--paper);
   stroke-width: 4px;
   stroke-linejoin: round;
+}
+
+/* The pipeline: a wide layout, or a two-column one when its box is narrow */
+.writeup-pipeline {
+  container-type: inline-size;
+}
+
+.writeup-pipeline .narrow {
+  display: none;
+  max-width: 26rem;
+}
+
+@container (max-width: 719px) {
+  .writeup-pipeline .wide {
+    display: none;
+  }
+
+  .writeup-pipeline .narrow {
+    display: block;
+  }
+}
+
+.writeup-chart .step rect {
+  fill: var(--paper-raised);
+  stroke: var(--ink-faint);
+  stroke-width: 1;
+}
+
+.writeup-chart .step.ours rect {
+  stroke: var(--vermilion);
+  stroke-width: 2;
+}
+
+.writeup-chart .step-title {
+  font: 600 15px var(--serif);
+  fill: var(--ink);
+}
+
+.writeup-chart .step-line {
+  font: 13px var(--serif);
+  fill: var(--ink-soft);
+}
+
+.writeup-chart .step-line.italic {
+  font-style: italic;
+}
+
+.writeup-chart a .step-title {
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 3px;
+}
+
+.writeup-chart a:hover .step-title {
+  fill: var(--vermilion-ink);
+}
+
+.writeup-chart .flow polyline {
+  fill: none;
+  stroke: var(--ink-faint);
+  stroke-width: 1.5;
+}
+
+.writeup-chart .flow polygon {
+  fill: var(--ink-faint);
 }
 
 .writeup-funnel {
