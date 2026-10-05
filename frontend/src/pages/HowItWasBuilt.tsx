@@ -49,7 +49,7 @@ const STAGES: Stage[] = [
         <br />
         {n(62.4, 1)}% to {n(68.5, 1)}%
         <br />
-        at temperature 1.0
+        compressed, temperature 1.0
       </>
     ),
   },
@@ -92,7 +92,8 @@ export function HowItWasBuiltPage() {
           </h1>
           <p className="writeup-lede">
             The AI player in <i>Then You Are</i> is Qwen3.5-0.8B. Fine-tuning took it from 19.0% to{" "}
-            <b className="ours">68.5%</b> of moves accepted on games it never saw in training. Qwen3.5-4B, five times its
+            <b className="ours">68.5%</b> of moves accepted by the game's judge, on game variants it never saw in
+            training. Qwen3.5-4B, five times its
             size and prompted the same way without fine-tuning, gets <b>55.1%</b>. A second judge, GPT-6 Luna, sees the
             same gap.
           </p>
@@ -104,7 +105,8 @@ export function HowItWasBuiltPage() {
 
         <p className="writeup-cost">
           Training it took <b>under $4</b> of GPU time and <b>about $44</b> of API calls, most of them for bigger models
-          writing and judging training moves.
+          writing and judging training moves. It plays on 4 CPU cores in a container that scales to zero, answering in
+          about 2 seconds, and every paid call in the pipeline is logged, budgeted and replayable.
         </p>
 
         <nav className="writeup-rail" aria-labelledby="writeup-rail-title">
@@ -282,9 +284,10 @@ function Data() {
         </li>
       </ol>
       <p>
-        Of 237 variants written, 35 passed, and each then got a pool of 48 to 60 cards. About a fifth of the variants
-        that passed the ranking were set aside and never used for training, 9 of the 35 among them. These{" "}
-        <strong>held-back games</strong> test whether a model learned the games or only memorised them.
+        Of 237 variants written, 35 passed, and each then got a pool of 48 to 60 cards. Once a variant passed the
+        ranking, about one in five was set aside for testing, and 9 of the 35 come from that set. These{" "}
+        <strong>held-back games</strong> were never used for training, and they test whether a model learned the games
+        or only memorised them.
       </p>
       <FunnelChart />
 
@@ -331,7 +334,7 @@ function Evaluation() {
         8 points either side, so a gap counts as clear only when its range stays above zero.
       </p>
       <p>
-        Three safeguards keep the test honest. The code that builds training data refuses a held-back game, so none can
+        The code that builds training data refuses a held-back game, so none can
         leak into training, and any training move that also appears in the judge's golden set (below) is dropped. Pass
         marks, such as the small judge's targets, were written down before training and are checked in code. And every
         training example is rendered again through the prompt code the live game uses, and refused if a single byte
@@ -342,13 +345,14 @@ function Evaluation() {
         <i>Word for Word</i>, each with the ruling it should get written down in advance, 68 of them on the boundary and
         50 adversarial. Flash missed 3 of 140 on the development half and 8 of 62 on the held-back half. GPT-6 Sol missed
         1 and 6, but at twelve times Flash's cost, and the other candidates missed 8 to 17 of 202. A prompt fix for{" "}
-        <i>Then I Am</i> took Flash from 8 misses to 4, and the check fails whenever a change moves the results.
+        <i>Then I Am</i> took Flash from 8 misses to 4.
       </p>
       <p>
         Flash judges its own moves in this test, and the small models learned from moves Flash accepted, so the judge
         may favour Flash's style. To check, Luna, which took no part in judging the training data, re-judged 150
-        positions of the headline comparison and saw the same gap: the shipped model ahead of the 4B by 14.7 points,
-        against 13.5 with Flash. It did the same for the RL comparison (see <a href="#rl">"RL"</a>). No second judge has
+        positions of the headline comparison, drawn from all 9 games, and saw the same gap: the shipped model ahead
+        of the 4B by 14.7 points [+4.2, +26.1], against 13.5 [+6.2, +19.7] with Flash. It did the same for the RL
+        comparison (see <a href="#rl">"RL"</a>). No second judge has
         re-scored every model.
       </p>
       <CampfireExample />
@@ -454,19 +458,19 @@ function Sft() {
         playable, so the bet was that preference optimization could close the gap.
       </p>
       <Table
-        head={["Model", "Tokens a second", "Cost per run", "Stand after SFT"]}
+        head={["Model", "Cost per run", "Stand at temperature 1.0", "Against Flash"]}
         align="lrrr"
         rows={[
-          ["Qwen3.5-2B", "4,216", "$1.74", "61.7% [-28.9, -15.6]"],
-          ["Qwen3-1.7B", "8,137", "$1.45", "63.5% [-27.7, -13.5]"],
-          ["LFM2.5-1.2B", "12,287", "$0.78", "58.1% [-33.6, -19.0]"],
-          ["MiniCPM5-1B", "8,525", "$1.02", "47.7% [-44.5, -29.1]"],
-          ["Qwen3.5-0.8B", "5,001", "$1.68", "55.6% [-34.6, -22.4]"],
-          ["Qwen3-0.6B", "9,701", "$1.33", "57.1% [-33.6, -20.1]"],
+          ["Qwen3.5-2B", "$1.74", "61.7%", "[-28.9, -15.6]"],
+          ["Qwen3-1.7B", "$1.45", "63.5%", "[-27.7, -13.5]"],
+          ["LFM2.5-1.2B", "$0.78", "58.1%", "[-33.6, -19.0]"],
+          ["MiniCPM5-1B", "$1.02", "47.7%", "[-44.5, -29.1]"],
+          ["Qwen3.5-0.8B", "$1.68", "55.6%", "[-34.6, -22.4]"],
+          ["Qwen3-0.6B", "$1.33", "57.1%", "[-33.6, -20.1]"],
         ]}
       />
       <p className="writeup-note">
-        Tokens a second come from short timing runs, and cost per run is what each pod cost. These six were judged
+        Cost per run is what each pod cost. These six were judged
         through an earlier API setup, where Flash's own moves stand 84.0% (and Luna's 76.1%) rather than 86.5%, so the
         ranges are against that 84.0%.
       </p>
@@ -483,7 +487,7 @@ function Preference() {
         and makes the better one more likely. The pairs came from the SFT model's own moves. At 2,600 training positions
         it wrote 4 moves at temperature 0.9, and Flash judged each one. A position gave a pair when its best and worst
         accepted moves differed by more than 7.5 points of the judge's total score, so that a pair reflects a real
-        difference rather than judge noise. That gave 1,068 pairs from 10,074 judged moves, for $7.10.
+        difference rather than judge noise. That gave 1,068 pairs from 10,074 judged moves, for $9.82.
       </p>
       <p>
         Three methods were compared on those pairs.{" "}
@@ -590,12 +594,14 @@ function Rl() {
       </p>
       <p>
         The run covered 1,366 positions in 85 steps of 128 moves, about 80 minutes on one A100, with $10.25 of judge
-        calls. Nothing in it gamed the judge: no move addressed the judge or talked about the rules, moves kept their
+        calls. No move in it addressed the judge or talked about the rules, moves kept their
         length, and refusals fell.
       </p>
       <p>
         On the held-back games, measured on the compressed file the game serves, RL lifted the model at temperature 1.0
-        from 62.4% to 68.5%, a clear gain. A second judge, Luna, re-judged 150 of those positions and saw the same gain,
+        from 62.4% to 68.5%, a clear gain. The same round-two model stood 67.8% at 1.0 before it was compressed, so part
+        of this gain wins back ground the compressed file had lost at full temperature. A second judge, Luna, re-judged
+        150 of those positions and saw the same gain,
         +9.3 points. At temperature 0.7 the model before RL already stands 68.5%, and RL adds nothing there. So RL{" "}
         <strong>sharpened</strong> the model's choices, cutting the weak moves that sampling at full temperature lets
         through, rather than teaching it something new. That matches{" "}
@@ -625,7 +631,7 @@ function Serving() {
     <section id="serving">
       <h2>Serving</h2>
       <p>
-        A turn is the model's move plus the judge's ruling. The model answers in under 2 seconds and Flash's ruling
+        A turn is the model's move plus the judge's ruling. The model answers in about 2 seconds and Flash's ruling
         takes about 5, so the judge sets the pace.
       </p>
       <p>
@@ -688,8 +694,8 @@ function TheJudge() {
         </li>
       </ul>
       <p>
-        Flash judging the same moves a second time agrees with its first ruling 94.7% of the time, kappa 0.72, which is
-        about the best any judge can do here.
+        For scale, Flash judging 376 of its own moves twice, through two different API providers, agrees with itself
+        94.7% of the time, kappa 0.72.
       </p>
       <p>
         None of the small judges came close. They agreed with Flash on about 70% of moves, and almost all of that was
@@ -786,8 +792,8 @@ function Limits() {
         comparisons, but Flash's bias toward its own style is not measured in full. The tests use frozen positions from
         Flash playing itself, not full matches against the 0.8B model, so they do not show how its own moves shape the
         turns that follow. The position set resolves differences of about 4 to 8 points, depending on the pair. Only the
-        preference recipe has a second seed, and the RL run has one. Flash's rulings run past 6 seconds far more often
-        than 1 move in 20, and a 4-core server was measured with at most two matches at once.
+        preference recipe has a second seed, and the RL run has one. The same 394 positions also guided choices along the way, such as the base model and the temperature. Flash's rulings take 14.8 s at p95, against a 6 s target, and a 4-core server was measured with at most two
+        matches at once.
       </p>
       <p>
         A small judge good enough to give the RL reward would make every training ruling free, and so far none is. RL

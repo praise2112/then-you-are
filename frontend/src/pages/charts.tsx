@@ -163,8 +163,8 @@ function Bars({ titleId, rows, reference }: { titleId: string; rows: BarRow[]; r
 export function HeadlineChart() {
   return (
     <Figure
-      title="Share of moves accepted on games never seen in training"
-      note="394 positions from 9 held-back games, every move judged by Flash"
+      title="Share of moves accepted on game variants never seen in training"
+      note="394 positions from 9 held-back games, every move judged by the game's judge, DeepSeek V4.1 Flash"
     >
       {(id) => <Bars titleId={id} rows={HEADLINE} reference={{ label: "Flash's own moves", value: 86.5 }} />}
     </Figure>
@@ -460,7 +460,12 @@ const STEPS: Record<string, Step> = {
   sft: { title: "SFT", lines: ["supervised fine-tuning"], href: "#sft" },
   preference: { title: "Preference", lines: ["optimization", "in two rounds"], href: "#preference" },
   rl: { title: "RL", lines: ["GRPO, judge as reward"], href: "#rl" },
-  shipped: { title: "The shipped model", lines: ["Qwen3.5-0.8B"], ours: true },
+  shipped: {
+    title: "The shipped model",
+    lines: ["Qwen3.5-0.8B, 517 MiB", "llama.cpp, 4 CPU cores"],
+    href: "#serving",
+    ours: true,
+  },
 };
 
 const FLOW: [string, string][] = [
@@ -557,7 +562,8 @@ function Pipeline({ titleId, layout, className }: { titleId: string; layout: Lay
         Five hand-written games go to a generator, then five filters: 237 variants written, 35 kept. They split into
         31 training games and 9 held-back games. The held-back games become the test, Flash self-play with 394 frozen
         positions. The training games feed 3,738 Flash vs Luna matches, judged by Flash, which give 14,941 training
-        examples. Those feed SFT, then two rounds of preference optimization, then RL with GRPO, then the shipped model.
+        examples. Those feed SFT, then two rounds of preference optimization, then RL with GRPO, then the shipped model,
+        a 517 MiB file served by llama.cpp on 4 CPU cores.
       </desc>
       {FLOW.map(([from, to]) => {
         const a = box(from);
