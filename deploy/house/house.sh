@@ -7,7 +7,7 @@ PROJECT=PROJECT
 REGION=europe-west1
 BILLING_ACCOUNT=***REMOVED***
 IMAGE=$REGION-docker.pkg.dev/$PROJECT/oddstage/house
-GGUF=${HOUSE_GGUF:-$HOME/oddstage-runs/prefs-qwen35-08b-ipo-sft-r2-s0/model-q4_k_m.gguf}
+GGUF=${HOUSE_GGUF:-$HOME/oddstage-runs/rl-1/model-q4_k_m.gguf}
 HERE=$(cd "$(dirname "$0")" && pwd)
 
 gc() { gcloud --project "$PROJECT" --quiet "$@"; }

@@ -1,0 +1,150 @@
+{"context": "hold-music-6/5/p1", "text": "The driver's notes are in the locked driver's book, so the agent asks me to photocopy them.", "outcome": "accept", "total": 33.0}
+{"context": "hold-music-7/1/p1", "text": "The stranger opens the papers and asks who sent them, so I ask why the bank sent them to a house.", "outcome": "fail", "total": 11.0}
+{"context": "hold-music-0/6/p2", "text": "The agent asks you to confirm the ZIP twice, then says it matches the refund form they generated last Tuesday.", "outcome": "accept", "total": 26.0}
+{"context": "hold-music-4/2/p2", "text": "The gym says the repair is on Fifth Street, but my phone is already there.", "outcome": "fail", "total": 6.0}
+{"context": "hold-music-8/2/p2", "text": "The catering agent replies with a hold-up notice, saying the meal is already on the table and I need a photo.", "outcome": "fail", "total": 9.0}
+{"context": "hold-music-6/7/p1", "text": "The upload fails, and the agent says the photo is flagged as suspicious by the delivery cop.", "outcome": "accept", "total": 28.0}
+{"context": "hold-music-7/6/p2", "text": "I confirm the last four digits, then ask the agent why the security feature was sent before my appointment.", "outcome": "accept", "total": 26.0}
+{"context": "hold-music-6/6/p2", "text": "The agent asks me to re-read them, then asks me to confirm the delivery driver is still in the room.", "outcome": "accept", "total": 28.0}
+{"context": "hold-music-8/7/p1", "text": "The retired catering email opens a PDF with the flight date, but the airline denies the meal was served, so I need the denied order slip.", "outcome": "accept", "total": 26.0}
+{"context": "hold-music-2/4/p2", "text": "The customer asks whether the waived fee means the card can be used on that $20 rush delivery, and the agent confirms yes.", "outcome": "accept", "total": 21.0}
+{"context": "hold-music-3/7/p1", "text": "The agent asks you to check the hold music player, then confirms the UK number and sends you a new form.", "outcome": "accept", "total": 26.0}
+{"context": "hold-music-2/7/p1", "text": "The agent asks why the bank returned it last week, then explains the system glitch and asks if the wrong address is still on the file.", "outcome": "accept", "total": 22.0}
+{"context": "hold-music-4/6/p2", "text": "The agent asks me to confirm the 47-minute estimate, but the recording shows it was just the hold music.", "outcome": "fail", "total": 9.0}
+{"context": "hold-music-1/6/p2", "text": "The agent says the card is now on your phone, so you tell me when the signature scan arrived.", "outcome": "accept", "total": 26.0}
+{"context": "hold-music-4/1/p1", "text": "You\u2019re still on the line when the gym\u2019s repairs finish; ask the trainer for the gym\u2019s reopening date.", "outcome": "fail", "total": 11.0}
+{"context": "hold-music-1/1/p1", "text": "The agent finds the parcel in the wrong mailbox, asks the sender for the delivery label, and the sender forgets to send it.", "outcome": "accept", "total": 22.0}
+{"context": "hold-music-2/3/p1", "text": "The agent sends the card back to the issuing bank, and that bank stamps the error showing the wrong address.", "outcome": "accept", "total": 17.0}
+{"context": "hold-music-7/8/p2", "text": "I pay the $35 fee, then ask the agent to release the courier log so they can log the address fix.", "outcome": "accept", "total": 26.0}
+{"context": "hold-music-6/4/p2", "text": "The driver replies that the wrong door is sealed with a receipt for a coat rack.", "outcome": "accept", "total": 22.0}
+{"context": "hold-music-0/7/p1", "text": "The agent asks you to confirm the case number, but your phone keeps vowing you sent it before the hold.", "outcome": "accept", "total": 22.0}
+{"context": "hold-music-4/8/p2", "text": "He asks me to submit that survey form, but the form gets sent to the wrong department, so I have to chase them with a reminder.", "outcome": "accept", "total": 22.0}
+{"context": "hold-music-2/1/p1", "text": "The bank sent the card to the wrong address, so I need you to check it and forward it to me.", "outcome": "accept", "total": 19.0}
+{"context": "hold-music-4/3/p1", "text": "The system keeps me on hold at the Sixth Street branch until the ten o'clock sign goes up, so I'll pay the deposit.", "outcome": "accept", "total": 17.0}
+{"context": "hold-music-6/1/p1", "text": "The app says the wrong place is fine, but I need proof before I can leave.", "outcome": "accept", "total": 20.0}
+{"context": "hold-music-4/7/p1", "text": "He says the line is locked, so I have to explain why I was there during the blackout and pay for a napkin.", "outcome": "accept", "total": 17.0}
+{"context": "hold-music-1/2/p2", "text": "The courier says the ID matches, but the address changed after we picked it up.", "outcome": "accept", "total": 26.0}
+{"context": "chat-court-4/1/p1", "text": "Exhibit: a receipt showing you paid for the last slice, it\u2019s dated after you disappeared.", "outcome": "fail", "total": 17.0}
+{"context": "campfire-chain-3/3/p1", "text": "I am a magnet, and I pull the pry bar off the cooler lid.", "outcome": "accept", "total": 30.0}
+{"context": "campfire-chain-2/1/p1", "text": "I am a bear trap, and I catch the raccoon.", "outcome": "accept", "total": 33.0}
+{"context": "chat-court-6/1/p1", "text": "Exhibit: the photo is dated before dinner, so it's not what you posted before.", "outcome": "fail", "total": 14.0}
+{"context": "road-hazard-4/2/p2", "text": "I am a valve wrench; I loosen the fuel cap so the truck can't pump.", "outcome": "fail", "total": 8.0}
+{"context": "road-hazard-8/1/p1", "text": "I am a sledgehammer; I smash the mudslide into loose clumps.", "outcome": "fail", "total": 17.0}
+{"context": "chat-court-7/2/p2", "text": "Exhibit: a forged signature on the delivery log, it matches your calendar but not the message you sent.", "outcome": "accept", "total": 21.0}
+{"context": "road-hazard-2/3/p1", "text": "I am a mechanic; I drain the water from the fire extinguisher and refill it.", "outcome": "fail", "total": 11.0}
+{"context": "campfire-chain-6/4/p2", "text": "I am a wrench, and I crack the dam's nozzle.", "outcome": "accept", "total": 21.0}
+{"context": "road-hazard-8/2/p2", "text": "I am a shovel; I scoop the mud out of the culvert.", "outcome": "fail", "total": 17.0}
+{"context": "chat-court-5/1/p1", "text": "Exhibit: the stove was already on when you left, so your claim is false.", "outcome": "accept", "total": 32.0}
+{"context": "road-hazard-3/3/p1", "text": "I am a tow truck; I drag the all-way stop signs off the road.", "outcome": "fail", "total": 14.0}
+{"context": "campfire-chain-3/4/p2", "text": "I am a magnet, and I pull the camp axe off the ground.", "outcome": "accept", "total": 25.0}
+{"context": "chat-court-2/5/p1", "text": "Exhibit: your driver's license showing the wrong plate, and the toll booth camera confirms it.", "outcome": "fail", "total": 14.0}
+{"context": "chat-court-1/2/p2", "text": "Exhibit: the dish towel you used for washing shows a smear of milk, so the cereal bowl is still soaking through.", "outcome": "fail", "total": 17.0}
+{"context": "chat-court-0/2/p2", "text": "Exhibit: A cafeteria camera recording your name on the lunch monitor's sheet, shows up with another student.", "outcome": "fail", "total": 11.0}
+{"context": "chat-court-2/3/p1", "text": "Exhibit: the exit ticket's stamp matches a parking jam, not the call you were on.", "outcome": "fail", "total": 17.0}
+{"context": "campfire-chain-5/1/p1", "text": "I am a fishing boat, and I yank the minnow net out of the water.", "outcome": "accept", "total": 29.0}
+{"context": "campfire-chain-0/4/p2", "text": "I am a bear, and I bite the boot in half so it can't stomp the dog.", "outcome": "accept", "total": 30.0}
+{"context": "road-hazard-1/1/p1", "text": "I am a tunnel crew; I dig the cave-in back into the earth.", "outcome": "accept", "total": 26.0}
+{"context": "road-hazard-3/2/p2", "text": "I am a tow truck; I drag the traffic signal away from the junction.", "outcome": "fail", "total": 18.0}
+{"context": "campfire-chain-0/1/p1", "text": "I am a glass jar, and I trap the crawling tick inside.", "outcome": "accept", "total": 32.0}
+{"context": "campfire-chain-0/6/p2", "text": "I am a steel cable, and I wrap the knife's handle so it can't cut the leash.", "outcome": "accept", "total": 29.0}
+{"context": "chat-court-7/3/p1", "text": "Exhibit: the phone buzzed when your hand held it, so the receipt proves you were still holding it at 11:47pm.", "outcome": "semantic_reject", "total": 0.0}
+{"context": "campfire-chain-7/1/p1", "text": "I am a fire blanket, and I smoother the firefighter\u2019s flame.", "outcome": "accept", "total": 24.0}
+{"context": "road-hazard-5/3/p1", "text": "I am a tow truck; I drag the pump truck off the road.", "outcome": "accept", "total": 27.0}
+{"context": "road-hazard-7/1/p1", "text": "I am a tow truck; I drag the burst hydrant off the roadway.", "outcome": "fail", "total": 17.0}
+{"context": "the-apology-tour-2/2/p2", "text": "Sorry the book on the counter proves Nora's bookworm bent under a toddler's weight.", "outcome": "fail", "total": 20.0}
+{"context": "fine-print-fiasco-2001-1-0/1/p1", "text": "By using this teapot, keep the whistle's echo to the pot so nobody guesses you're pouring.", "outcome": "accept", "total": 15.0}
+{"context": "the-apology-tour-1/4/p2", "text": "Thanks, Uncle Ray, for the plaid scarf. Sorry its bagpipe music ruined my nap.", "outcome": "accept", "total": 24.0}
+{"context": "reference-check-from-hell-4/4/p2", "text": "The motorway boss owes him a ride, so he counted the chickens and parked there all night.", "outcome": "accept", "total": 27.0}
+{"context": "viewing-withheld-1/6/p2", "text": "Sofa invites the open door to its private lounge, unsealed for secrets.", "outcome": "accept", "total": 20.0}
+{"context": "viewing-withheld-3/5/p1", "text": "Lamp guides our basement ascent, where every descent is a deliberate climb", "outcome": "accept", "total": 21.0}
+{"context": "manual-mishap-6/3/p1", "text": "USE THE STIFF BRISTLES TO SCORCE PANS DRY IN THE SUN", "outcome": "accept", "total": 22.0}
+{"context": "manual-mishap-2/3/p1", "text": "STEP 1: IF A GLOVE IS ON THE HAND, COVER THE HAND WITH ITS FINGERS.", "outcome": "accept", "total": 6.0}
+{"context": "the-apology-tour-6/5/p1", "text": "Thanks Priya, for the mug. Sorry it keeps blaring and making Sam jealous.", "outcome": "fail", "total": 15.0}
+{"context": "manual-mishap-6/1/p1", "text": "USE THE RACKED-TOELED FOLD TO HOLD THE FLOOD", "outcome": "fail", "total": 17.0}
+{"context": "the-apology-tour-5/4/p2", "text": "Thanks, Leo. Sorry the lamp's tiny size left me staring at the closet all night.", "outcome": "accept", "total": 24.0}
+{"context": "viewing-withheld-8/1/p1", "text": "Winter heat is withheld; the blanket stays warm, guarding the room's solitude.", "outcome": "accept", "total": 20.0}
+{"context": "fine-print-fiasco-2001-1-2/5/p1", "text": "By using this, keep the lid tightly sealed; a leak would require a fine for the restaurant.", "outcome": "accept", "total": 21.0}
+{"context": "fine-print-fiasco-2001-1-8/1/p1", "text": "By using this vase, check that its cap is clean before watering.", "outcome": "accept", "total": 12.0}
+{"context": "viewing-withheld-5/5/p1", "text": "Studio offers the sloping floor experience, umbrella stays dry in a private rain vault", "outcome": "accept", "total": 21.0}
+{"context": "reference-check-from-hell-7/5/p1", "text": "He sorted hospital ward socks in the borrowed shoe bin, then told the nurse it was a costume.", "outcome": "refused", "total": 0.0}
+{"context": "manual-mishap-0/3/p1", "text": "STEP 1: USE THE ELASTIC OPENING TO HOLD THE SHOWER CAP ON, OR THE HAIR WILL RUN AWAY.", "outcome": "accept", "total": 24.0}
+{"context": "manual-mishap-2/2/p2", "text": "USE THE BOWL END TO CONTAIN THE SOUP FLOOD", "outcome": "accept", "total": 32.0}
+{"context": "viewing-withheld-0/6/p2", "text": "Bathtub sits atop a glass facade, letting the garden room\u2019s void fill with light.", "outcome": "fail", "total": 12.0}
+{"context": "fine-print-fiasco-2001-1-6/1/p1", "text": "By using this pillow, you must seal the stuffing before it can be stuffed into a sleeping container.", "outcome": "accept", "total": 15.0}
+{"context": "viewing-withheld-5/6/p2", "text": "Umbrella rents our studio\u2019s sloping floor for a one-way rain retreat", "outcome": "accept", "total": 27.0}
+{"context": "reference-check-from-hell-6/5/p1", "text": "The loudspeaker broke at midnight; Odd socks stayed beside it, and the whole team drowned.", "outcome": "fail", "total": 16.0}
+{"context": "reference-check-from-hell-2/4/p2", "text": "He borrowed shoes to scrape gum, then left his wallet on the floor.", "outcome": "fail", "total": 22.0}
+{"context": "fine-print-fiasco-2001-1-3/6/p2", "text": "Do not pour this into a glass container, as the spout may crack and spill water across the floor.", "outcome": "accept", "total": 12.0}
+{"context": "fine-print-fiasco-2001-1-3/3/p1", "text": "By using this, ring the doorbell only when the tenant's name is on the record, as an unsigned ring may summon the previous lease.", "outcome": "accept", "total": 24.0}
+{"context": "manual-mishap-5/5/p1", "text": "TROUBLESHOOT: ZIP PILLOW, UNCOVER IT, OR THE COVER STAYS ON EVERY NIGHT.", "outcome": "accept", "total": 22.0}
+{"context": "viewing-withheld-4/1/p1", "text": "Luxury bath sits in complete darkness, with daylight refusing to touch its rim.", "outcome": "accept", "total": 18.0}
+{"context": "reference-check-from-hell-5/2/p2", "text": "A meticulous bat technician, though the missing dentures kept the zoo from sleeping.", "outcome": "semantic_reject", "total": 0.0}
+{"context": "reference-check-from-hell-4/3/p1", "text": "The motorway boss owes him for the bad count, and the chickens keep begging for it.", "outcome": "fail", "total": 22.0}
+{"context": "fine-print-fiasco-2001-1-4/4/p2", "text": "Do not pull the string tight; it can snap off before the yo-yo reaches the safe floor.", "outcome": "accept", "total": 21.0}
+{"context": "manual-mishap-4/6/p2", "text": "FAREWELL, MATTRESS. ITS SPRINGS SUPPORTED THE BODY, NOW IT IS THE COUNSEL.", "outcome": "fail", "total": 8.0}
+{"context": "reference-check-from-hell-7/1/p1", "text": "A meticulous garrian, still guarding the wet coats after the loudspeaker\u2019s breakdown.", "outcome": "accept", "total": 20.0}
+{"context": "manual-mishap-4/3/p1", "text": "USE THE STUFFING TO SOFTEN THE SEAT, OR THE CUSHION WILL CRUMBLE", "outcome": "accept", "total": 22.0}
+{"context": "viewing-withheld-7/2/p2", "text": "Rain reaches the sofa; our screened-out seating offers shelter.", "outcome": "accept", "total": 21.0}
+{"context": "fine-print-fiasco-2001-1-5/2/p2", "text": "By using this thermos, keep the sealed bottle away from direct flame and label it cold.", "outcome": "accept", "total": 18.0}
+{"context": "reference-check-from-hell-6/6/p2", "text": "She swapped socks before the match, then blamed the broken loudspeaker on her.", "outcome": "fail", "total": 22.0}
+{"context": "viewing-withheld-7/6/p2", "text": "Rainwater powers our wardrobe's secret therapy room, one soaked curtain at a time", "outcome": "accept", "total": 30.0}
+{"context": "viewing-withheld-1/3/p1", "text": "Luxurious soak tub, bath-silenced daylight, still holding the sun's only prize.", "outcome": "accept", "total": 16.0}
+{"context": "reference-check-from-hell-6/4/p2", "text": "The mascot heads are still dripping, and I only clean them after the zoo boss's kiss.", "outcome": "fail", "total": 22.0}
+{"context": "fine-print-fiasco-2001-1-8/5/p1", "text": "Do not dry the robe in direct sunlight; UV exposure may fade the fabric and leave it looking new.", "outcome": "accept", "total": 24.0}
+{"context": "viewing-withheld-0/5/p1", "text": "Bathtub offers a private terrace view from the garden room, where the window is missing.", "outcome": "fail", "total": 12.0}
+{"context": "the-apology-tour-1/2/p2", "text": "Thanks, Ava. Sorry the book only played one song and made me miss my nap.", "outcome": "fail", "total": 24.0}
+{"context": "viewing-withheld-3/1/p1", "text": "Mirror opens a tunnel entrance; its polished surface hides the passage.", "outcome": "fail", "total": 11.0}
+{"context": "the-apology-tour-0/4/p2", "text": "Thanks for the glitter scarf, Ava. Sorry it made her face the whole house.", "outcome": "semantic_reject", "total": 0.0}
+{"context": "manual-mishap-4/2/p2", "text": "USE THE KETTLE'S SPOUT TO POUR WATER, KEEPING A HANDS-READY FLOOD OUT", "outcome": "accept", "total": 22.0}
+{"context": "reference-check-from-hell-2/3/p1", "text": "He scours the toilet seats, then confesses the borrowed shoes were his wedding ring.", "outcome": "fail", "total": 24.0}
+{"context": "viewing-withheld-5/1/p1", "text": "Chair offers unparalleled privacy as the floor tilts in our restored suite.", "outcome": "accept", "total": 18.0}
+{"context": "the-apology-tour-0/6/p2", "text": "Thanks for the book, Jules. Sorry its two sizes too small made me get fired.", "outcome": "accept", "total": 29.0}
+{"context": "viewing-withheld-2/2/p2", "text": "Rainwater collects in the wardrobe\u2019s hidden compartment, then drips off as silk.", "outcome": "accept", "total": 20.0}
+{"context": "manual-mishap-8/4/p2", "text": "STEP 1: SWEEP DIRT IN WITH THE RUBBER LIP, DON'T TIE THE BAG.", "outcome": "accept", "total": 14.0}
+{"context": "viewing-withheld-4/5/p1", "text": "Slope invites the sofa into our private valley, a calm retreat for the family.", "outcome": "accept", "total": 18.0}
+{"context": "the-apology-tour-0/1/p1", "text": "Sorry the book\u2019s moldy smell sent Ben into the kitchen, where he swore it smelled like him.", "outcome": "refused", "total": 0.0}
+{"context": "viewing-withheld-6/1/p1", "text": "The bath\u2019s daily flood proves our annexe floods daily; seal it dry.", "outcome": "fail", "total": 0.0}
+{"context": "viewing-withheld-3/4/p2", "text": "Railing-less attic umbrella is your exclusive shelter, let the rain follow the route.", "outcome": "accept", "total": 17.0}
+{"context": "fine-print-fiasco-2001-1-7/6/p2", "text": "Do not compress the accordion file beyond its fold, as the hinge may snap open and shred the pages.", "outcome": "accept", "total": 21.0}
+{"context": "viewing-withheld-6/5/p1", "text": "Mirror lights the missing heat, its reflection guiding us through the dark room", "outcome": "accept", "total": 11.0}
+{"context": "the-apology-tour-8/6/p2", "text": "Thanks neighbour for the book. Sorry its moldy smell makes my roommate quit.", "outcome": "accept", "total": 24.0}
+{"context": "fine-print-fiasco-2001-1-1/3/p1", "text": "Do not use this scarf as a napkin, as its twisted edge can snag your shoes and cause a commotion at breakfast.", "outcome": "accept", "total": 21.0}
+{"context": "viewing-withheld-8/4/p2", "text": "Studio on a sloping floor: umbrella\u2019s permanent rain shelter awaits its owner.", "outcome": "accept", "total": 11.0}
+{"context": "the-apology-tour-3/4/p2", "text": "Thanks Jules for the book. It's too small, so my daughter is reading it upside down.", "outcome": "accept", "total": 22.0}
+{"context": "manual-mishap-3/1/p1", "text": "USE THE BOWL END TO HOLD SOUP, OR IT WILL RISE LIKE A CROWN", "outcome": "accept", "total": 22.0}
+{"context": "reference-check-from-hell-3/5/p1", "text": "She kept the socks after that, though he\u2019d already worn the hospital shoes to bed.", "outcome": "semantic_reject", "total": 0.0}
+{"context": "fine-print-fiasco-2001-1-2/6/p2", "text": "By using this, keep perishable items away from the sealed lid; the latch is the only way to check freshness.", "outcome": "accept", "total": 15.0}
+{"context": "fine-print-fiasco-2001-1-3/5/p1", "text": "By using this, rinse the coaster in the shared sink before storing it, as the rings can spread across the floor and stain the artwork.", "outcome": "accept", "total": 15.0}
+{"context": "the-apology-tour-4/3/p1", "text": "Thanks, Leo, for the beeping mug. Sorry my alarm went off in the tea room.", "outcome": "accept", "total": 24.0}
+{"context": "fine-print-fiasco-2001-1-5/4/p2", "text": "By using this slipper, confirm its single-occupancy label, as double-occupancy voids the warranty.", "outcome": "accept", "total": 27.0}
+{"context": "fine-print-fiasco-2001-1-6/3/p1", "text": "Do not keep this passport in your bag for travel, as it may get lost before you leave.", "outcome": "accept", "total": 24.0}
+{"context": "fine-print-fiasco-2001-1-1/4/p2", "text": "Do not rub this scarf flat, as the wrinkles trap moisture and cause it to stiffen when needed.", "outcome": "accept", "total": 18.0}
+{"context": "viewing-withheld-4/6/p2", "text": "Sofa leans into our inward-sloping wall, where every seat is an invitation.", "outcome": "accept", "total": 18.0}
+{"context": "the-apology-tour-5/3/p1", "text": "Thanks, Ben. Sorry the lamp's two sizes too small made him leave the room.", "outcome": "fail", "total": 18.0}
+{"context": "viewing-withheld-2/4/p2", "text": "Bathtub is proud to sit in the sealed basement, as the door refuses to close around it.", "outcome": "accept", "total": 11.0}
+{"context": "the-apology-tour-4/4/p2", "text": "Thanks, Leo, for the beeping mug. Sorry it startled my dog.", "outcome": "accept", "total": 15.0}
+{"context": "manual-mishap-8/6/p2", "text": "CHECK THE LABEL BEFORE WEARING THE PILLOW, OR THE WASHING INSTRUCTIONS WILL BE IGNORED.", "outcome": "accept", "total": 22.0}
+{"context": "viewing-withheld-3/3/p1", "text": "Umbrella shelters the attic\u2019s exposed roof, where the railing once stood.", "outcome": "accept", "total": 21.0}
+{"context": "reference-check-from-hell-5/6/p2", "text": "He told the egg buyers the dentures were on his own ledger, then paid with them.", "outcome": "fail", "total": 22.0}
+{"context": "manual-mishap-3/5/p1", "text": "WARNING: THE CURVED HOP FOR KEEPING HAIR BACK WILL CRACK ON THE FLOOR.", "outcome": "accept", "total": 22.0}
+{"context": "reference-check-from-hell-5/5/p1", "text": "He told the farm-gate buyers the eggs were missing before the alarm went off.", "outcome": "fail", "total": 24.0}
+{"context": "manual-mishap-2/1/p1", "text": "USE THE BOWL END TO HOLD SOUP; TOWEL DRIED AFTER THE TRIGGERS", "outcome": "accept", "total": 19.0}
+{"context": "manual-mishap-0/2/p2", "text": "USE THE FLAT BASE TO SAT ON THE TABLE, OR RISK THE THERMO Cup Leaking", "outcome": "accept", "total": 22.0}
+{"context": "the-apology-tour-7/2/p2", "text": "Thanks, Mia. Sorry the vinegar bear made me taste like sour soup all night.", "outcome": "semantic_reject", "total": 0.0}
+{"context": "viewing-withheld-1/5/p1", "text": "Sofa rests on an open door, inviting guests to witness the room\u2019s silent romance.", "outcome": "accept", "total": 17.0}
+{"context": "reference-check-from-hell-1/2/p2", "text": "Diligent, patient, and fully aware of the hospital corridor's wet-policy.", "outcome": "fail", "total": 13.0}
+{"context": "the-apology-tour-0/2/p2", "text": "Thanks, Ben. Sorry the moldy book made our whole apartment smell like rotten eggs.", "outcome": "fail", "total": 22.0}
+{"context": "the-apology-tour-5/2/p2", "text": "Thanks, Leo. Sorry the burnt rubber toy car caused my car seat to stand on fire.", "outcome": "fail", "total": 22.0}
+{"context": "reference-check-from-hell-2/5/p1", "text": "He washes the changing rooms, then claims the scrub was his last duty.", "outcome": "accept", "total": 24.0}
+{"context": "viewing-withheld-8/3/p1", "text": "Umbrella shelters our studio\u2019s sloping floor as a private rain vault.", "outcome": "accept", "total": 21.0}
+{"context": "the-apology-tour-2/6/p2", "text": "Thanks, Leo, for the loud toy. Sorry it drowned out Priya's only good conversation.", "outcome": "accept", "total": 24.0}
+{"context": "manual-mishap-7/3/p1", "text": "STEP 2 WRING THE STRAP TO UNFOLD IT, OR IT WILL STICK TO YOUR NECK", "outcome": "fail", "total": 22.0}
+{"context": "fine-print-fiasco-2001-1-3/4/p2", "text": "By using this doorbell indoors, ring the wall below only after the tenant with the keys signs a complaint slip.", "outcome": "accept", "total": 15.0}
+{"context": "viewing-withheld-7/3/p1", "text": "Slant floor with mirror reflects the luxury retreat, visitors invited", "outcome": "accept", "total": 8.0}
+{"context": "the-apology-tour-8/2/p2", "text": "Thanks, Leo, for the cracked mug. Sorry it's broken and I can't use it.", "outcome": "accept", "total": 15.0}
+{"context": "fine-print-fiasco-2001-1-4/6/p2", "text": "Do not wear this lanyard in machinery, as the breakaway clasp may snag a part and leave your wrist untied.", "outcome": "accept", "total": 21.0}
+{"context": "reference-check-from-hell-4/2/p2", "text": "Punctual and observant, he caught the escaped chicken before it reached the broken loudspeaker.", "outcome": "refused", "total": 0.0}
+{"context": "the-apology-tour-5/6/p2", "text": "Thanks, Sam. Sorry the old-cheese clock made me leave the kitchen early.", "outcome": "accept", "total": 24.0}
+{"context": "viewing-withheld-2/6/p2", "text": "Towel draped over sunken tub, our exclusive rain-ready seating for the elite.", "outcome": "accept", "total": 27.0}
+{"context": "the-apology-tour-8/5/p1", "text": "Thanks the neighbour for the book. Sorry its moldy smell made my eviction look like a bargain.", "outcome": "refused", "total": 0.0}
+{"context": "viewing-withheld-7/5/p1", "text": "Rainwater drains into our wardrobe, where it collects into a single puddle", "outcome": "fail", "total": 5.0}
