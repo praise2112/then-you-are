@@ -4058,6 +4058,19 @@ small.ai-tag {
   fill: var(--ink);
 }
 
+/* Hovering a bar row dims its siblings in the same chart */
+.writeup-chart rect.hit {
+  fill: transparent;
+}
+
+.writeup-chart .row {
+  transition: opacity 0.15s ease;
+}
+
+.writeup-chart svg:has(.row:hover) .row:not(:hover) {
+  opacity: 0.4;
+}
+
 .writeup-chart .reference line {
   stroke: var(--ink);
   stroke-width: 1.5;
@@ -4123,8 +4136,30 @@ small.ai-tag {
   text-underline-offset: 3px;
 }
 
-.writeup-chart a:hover .step-title {
+.writeup-chart a {
+  cursor: pointer;
+}
+
+.writeup-chart :is(a:hover, a:focus-visible) .step rect {
+  stroke: var(--vermilion);
+}
+
+.writeup-chart :is(a:hover, a:focus-visible) .step-title {
   fill: var(--vermilion-ink);
+}
+
+.writeup-chart g:has(> a:is(:hover, :focus-visible)) > .flow polyline {
+  stroke: var(--vermilion);
+}
+
+.writeup-chart g:has(> a:is(:hover, :focus-visible)) > .flow polygon {
+  fill: var(--vermilion);
+}
+
+.writeup-chart .step rect,
+.writeup-chart .step-title,
+.writeup-chart .flow * {
+  transition: stroke 0.15s ease, fill 0.15s ease;
 }
 
 .writeup-chart .flow polyline {
@@ -4255,7 +4290,11 @@ small.ai-tag {
 
 @media (prefers-reduced-motion: reduce) {
   .writeup-stages li,
-  .writeup-stages .dot {
+  .writeup-stages .dot,
+  .writeup-chart .row,
+  .writeup-chart .step rect,
+  .writeup-chart .step-title,
+  .writeup-chart .flow * {
     transition: none;
   }
 }

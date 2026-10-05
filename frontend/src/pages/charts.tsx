@@ -137,8 +137,9 @@ function Bars({ titleId, rows, reference }: { titleId: string; rows: BarRow[]; r
         const top = 26 + i * 52;
         const fill = row.ours ? "ours" : "base";
         return (
-          <g key={row.label}>
+          <g key={row.label} className="row">
             <title>{`${row.label}: ${pct(row.value)}`}</title>
+            <rect className="hit" y={top} width="100%" height="52" />
             <text className="label" x="0" y={top + 20}>
               {row.label}
               {row.aside && (
@@ -227,8 +228,9 @@ export function FunnelChart() {
                     const width = (count / most) * 85;
                     const heldWidth = (family.heldBack / most) * 85;
                     return (
-                      <g key={step}>
+                      <g key={step} className="row">
                         <title>{`${step}: ${count}`}</title>
+                        <rect className="hit" y={top} width="100%" height="34" />
                         <text className="step" x="0" y={top + 13}>
                           {step}
                         </text>
@@ -324,8 +326,9 @@ export function OutcomesChart() {
               ];
               let x = 0;
               return (
-                <g key={model.label}>
+                <g key={model.label} className="row">
                   <title>{`${model.label}: ${pct(share(model.stood))} stood`}</title>
+                  <rect className="hit" y={top} width="100%" height="44" />
                   <text className={model.ours ? "label ours" : "label"} x="0" y={top + 16}>
                     {model.label}
                     <tspan className="aside" dx="10">
@@ -556,6 +559,17 @@ function Pipeline({ titleId, layout, className }: { titleId: string; layout: Lay
     const x = col * (colWidth + gap);
     return { x, y: tops[row], w: span * colWidth + (span - 1) * gap, h: heights[row], row };
   };
+  const route = (from: string, to: string): [number, number][] => {
+    const a = box(from);
+    const b = box(to);
+    const bx = b.x + b.w / 2;
+    if (a.row === b.row) return [[a.x + a.w, a.y + a.h / 2], [b.x - 1, a.y + a.h / 2]];
+    const ax = a.x + a.w / 2;
+    const mid = a.y + a.h + rowGap / 2;
+    return Math.abs(ax - bx) < 1
+      ? [[ax, a.y + a.h], [bx, b.y - 1]]
+      : [[ax, a.y + a.h], [ax, mid], [bx, mid], [bx, b.y - 1]];
+  };
   return (
     <svg className={className} viewBox={`0 0 ${layout.width} ${y - rowGap + 2}`} role="img" aria-labelledby={titleId}>
       <desc>
@@ -565,25 +579,10 @@ function Pipeline({ titleId, layout, className }: { titleId: string; layout: Lay
         examples. Those feed SFT, then two rounds of preference optimization, then RL with GRPO, then the shipped model,
         a 517 MiB file served by llama.cpp on 4 CPU cores.
       </desc>
-      {FLOW.map(([from, to]) => {
-        const a = box(from);
-        const b = box(to);
-        const bx = b.x + b.w / 2;
-        if (a.row === b.row) {
-          const end = b.x - 1;
-          return <Arrow key={`${from}-${to}`} points={[[a.x + a.w, a.y + a.h / 2], [end, a.y + a.h / 2]]} />;
-        }
-        const ax = a.x + a.w / 2;
-        const mid = a.y + a.h + rowGap / 2;
-        const path: [number, number][] =
-          Math.abs(ax - bx) < 1
-            ? [[ax, a.y + a.h], [bx, b.y - 1]]
-            : [[ax, a.y + a.h], [ax, mid], [bx, mid], [bx, b.y - 1]];
-        return <Arrow key={`${from}-${to}`} points={path} />;
-      })}
       {Object.keys(layout.slots).map((key) => {
         const step = STEPS[key];
         const { x, y: top, w, h } = box(key);
+        const from = FLOW.find(([, to]) => to === key)?.[0];
         const body = (
           <g className={step.ours ? "step ours" : "step"}>
             <rect x={x} y={top} width={w} height={h} rx="4" />
@@ -597,12 +596,11 @@ function Pipeline({ titleId, layout, className }: { titleId: string; layout: Lay
             ))}
           </g>
         );
-        return step.href ? (
-          <a key={key} href={step.href}>
-            {body}
-          </a>
-        ) : (
-          <g key={key}>{body}</g>
+        return (
+          <g key={key}>
+            {from && <Arrow points={route(from, key)} />}
+            {step.href ? <a href={step.href}>{body}</a> : body}
+          </g>
         );
       })}
     </svg>
