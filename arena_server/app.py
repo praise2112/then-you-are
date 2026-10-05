@@ -49,7 +49,7 @@ from arena_server.auth import (
 from arena_server.config import Settings, load_model, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import EventBus
-from arena_server.leaderboard import board, boards_index
+from arena_server.leaderboard import board, boards_index, ranked_players
 from arena_server.matches import MatchError, MatchService
 from arena_server.names import check_name
 from arena_server.presence import Lobby, Online, Presence, TurnNudge
@@ -305,6 +305,10 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     @app.get("/leaderboard")
     async def get_boards() -> list[BoardSummary]:
         return await boards_index(pool, templates)
+
+    @app.get("/leaderboard/players")
+    async def get_ranked_players() -> int:
+        return await ranked_players(pool)
 
     @app.get("/leaderboard/{slug}")
     async def get_board(slug: str) -> BoardView:

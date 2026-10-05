@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
 import { Link, ThemeToggle, TopBar } from "../App.tsx";
+import { useStandingsShown } from "../standings.ts";
 import { api, type DuelRow, type ProfileView, type TemplateView } from "../api.ts";
 import { ReplayCard } from "./cards.tsx";
 import { prefixOf } from "./format.ts";
@@ -17,6 +18,7 @@ const LONG_DAY = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long
 
 /** A player's programme: record per game, badges, every duel, best duels. */
 export function Profile({ accountId }: { accountId: string }) {
+  const standingsShown = useStandingsShown();
   const [profile, setProfile] = useState<ProfileView | null>(null);
   const [templates, setTemplates] = useState<TemplateView[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +33,7 @@ export function Profile({ accountId }: { accountId: string }) {
         <span className="round">Programme</span>
         <span className="aside">
           <Link to="/">Home</Link>
-          <Link to="/standings">Standings</Link>
+          {standingsShown && <Link to="/standings">Standings</Link>}
           <AccountMenu />
           <ThemeToggle icon />
         </span>

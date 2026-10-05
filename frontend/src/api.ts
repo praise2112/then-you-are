@@ -151,6 +151,7 @@ export const api = {
   deleteAccount: () => request<void>("/sessions/me/account", { method: "DELETE" }),
   boards: () => request<BoardSummary[]>("/leaderboard"),
   board: (slug: string) => request<BoardView>(`/leaderboard/${slug}`),
+  rankedPlayers: () => request<number>("/leaderboard/players"),
   profile: (id: string) => request<ProfileView>(`/profiles/${id}`),
   stage: () => request<StageView>("/on-stage"),
   replay: (id: string) => request<Replay>(`/replays/${id}`),

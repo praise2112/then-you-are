@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
 import { Link, ThemeToggle, TopBar } from "../App.tsx";
+import { useStandingsShown } from "../standings.ts";
 import { api, type TemplateView } from "../api.ts";
 import { Poster } from "./Landing.tsx";
 
 /** Every game on the bill, and the slot where games players stage will go. */
 export function GamesPage() {
+  const standingsShown = useStandingsShown();
   const [templates, setTemplates] = useState<TemplateView[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -18,7 +20,7 @@ export function GamesPage() {
       <TopBar>
         <span className="aside">
           <Link to="/stage">Watch</Link>
-          <Link to="/standings">Standings</Link>
+          {standingsShown && <Link to="/standings">Standings</Link>}
           <AccountMenu />
           <ThemeToggle icon />
         </span>

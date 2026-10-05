@@ -174,6 +174,7 @@ async def test_leaderboard_counts_an_account_across_its_sessions(monkeypatch):
         assert [b["slug"] for b in index][0] == "then-i-am" and len(index) == len(load_templates())
         assert index[0]["emblem"] and index[0]["accent"].startswith("#")
         assert index[0]["ranked"] >= 1 and index[0]["leader"] is not None
+        assert (await client.get("/leaderboard/players")).json() >= 1
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

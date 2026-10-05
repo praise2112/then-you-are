@@ -77,6 +77,22 @@ async def boards_index(pool: Pool, templates: dict[str, Template]) -> list[Board
     return summaries
 
 
+async def ranked_players(pool: Pool) -> int:
+    """Signed-in players ranked on at least one game's board."""
+    async with pool.connection() as conn:
+        row = await (
+            await conn.execute(
+                "select count(distinct account_id) as n from (select m.template_id, s.account_id "
+                "from matches m join seats se on se.match_id = m.id and se.kind = 'human' "
+                "join sessions s on s.session_key = se.session_key "
+                "where m.status = 'ended' and m.kind = 'house' and s.account_id is not null "
+                "group by m.template_id, s.account_id having count(*) >= %s) ranked",
+                (MIN_PLAYED,),
+            )
+        ).fetchone()
+    return row["n"] if row else 0
+
+
 def streaks(results: list[bool | None]) -> tuple[int, int]:
     """Current and best win streak over results (won, lost, or None for a draw) in play
     order. A draw leaves both alone."""

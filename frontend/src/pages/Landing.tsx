@@ -2,12 +2,14 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 
 import { AccountMenu } from "../Account.tsx";
 import { Link, navigate, ThemeToggle, TopBar } from "../App.tsx";
+import { useStandingsShown } from "../standings.ts";
 import { api, usePresence, type DemoPoints, type OpenDuel, type SocketMessage, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
 import { fullMove, HOUSE } from "./format.ts";
 import { AiTag } from "./seats.tsx";
 
 export function Landing() {
+  const standingsShown = useStandingsShown();
   const [templates, setTemplates] = useState<TemplateView[] | null>(null);
   const [openDuels, setOpenDuels] = useState<OpenDuel[]>([]);
   useEffect(() => {
@@ -28,7 +30,7 @@ export function Landing() {
           <Link to="/games">Games</Link>
           <Link to="/lobby">Tables</Link>
           <Link to="/stage">Watch</Link>
-          <Link to="/standings">Standings</Link>
+          {standingsShown && <Link to="/standings">Standings</Link>}
           <AccountMenu />
           <ThemeToggle icon />
         </span>
