@@ -3609,6 +3609,17 @@ small.ai-tag {
   margin-top: 0.35rem;
 }
 
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root > .page {
+  flex: 1 0 auto;
+}
+
 .site-foot {
   display: flex;
   flex-wrap: wrap;
