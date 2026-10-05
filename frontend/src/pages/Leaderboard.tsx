@@ -41,13 +41,13 @@ function BoardIndex() {
             </span>
             <span>
               <h3>{b.title}</h3>
-              {b.leader ? (
+              {b.leader && b.leader.wins > 0 ? (
                 <p className="leader">
                   {b.leader.avatar_url && <img src={b.leader.avatar_url} alt="" />}
                   <b>{b.leader.display_name}</b> leads, {b.leader.wins} {b.leader.wins === 1 ? "win" : "wins"}
                 </p>
               ) : (
-                <p className="leader">Nobody on the board yet.</p>
+                <p className="leader">{b.ranked > 0 ? "No wins yet." : "Nobody on the board yet."}</p>
               )}
               <p className="meta">
                 {b.ranked} {b.ranked === 1 ? "player" : "players"} ranked
