@@ -50,6 +50,15 @@ a stopped run resumes without paying twice, and every command takes a budget.
 
 ## Running it
 
+To run the whole game in Docker:
+
+```bash
+cp .env.example .env                            # then fill in the keys you need
+docker compose up --build                       # http://127.0.0.1:8000
+```
+
+For development:
+
 ```bash
 uv sync
 cp .env.example .env                            # then fill in the keys you need
