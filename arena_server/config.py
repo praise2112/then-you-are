@@ -71,4 +71,7 @@ def load_model(ref: str) -> ModelSpec:
     registry = yaml.safe_load(MODELS_PATH.read_text())
     if ref not in registry:
         raise KeyError(f"no model named {ref} in models.yaml")
-    return ModelSpec.model_validate(registry[ref])
+    entry = registry[ref]
+    if "base_url" in entry:
+        entry["base_url"] = os.path.expandvars(entry["base_url"])
+    return ModelSpec.model_validate(entry)

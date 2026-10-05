@@ -3,12 +3,12 @@
 # Usage: house.sh build|up|relink|down|status|logs
 set -euo pipefail
 
-PROJECT=PROJECT
+HERE=$(cd "$(dirname "$0")" && pwd)
+set -a; . "$HERE/../../.env"; set +a
+PROJECT=${GCP_PROJECT:?set GCP_PROJECT in .env}
 REGION=europe-west1
-BILLING_ACCOUNT=***REMOVED***
 IMAGE=$REGION-docker.pkg.dev/$PROJECT/oddstage/house
 GGUF=${HOUSE_GGUF:-$HOME/oddstage-runs/rl-1/model-q4_k_m.gguf}
-HERE=$(cd "$(dirname "$0")" && pwd)
 
 gc() { gcloud --project "$PROJECT" --quiet "$@"; }
 
@@ -33,7 +33,7 @@ up() {
   fi
   local digest
   digest=$(gc artifacts docker images describe "$IMAGE:latest" --format='value(image_summary.digest)')
-  sed "s|image: IMAGE|image: $IMAGE@$digest|" "$HERE/service.yaml" \
+  sed "s|image: IMAGE|image: $IMAGE@$digest|; s|@PROJECT\.|@$PROJECT.|" "$HERE/service.yaml" \
     | gc run services replace - --region "$REGION"
   gc run services add-iam-policy-binding house --region "$REGION" \
     --member=allUsers --role=roles/run.invoker --format=none
@@ -41,7 +41,7 @@ up() {
 }
 
 relink() {
-  gc billing projects link "$PROJECT" --billing-account "$BILLING_ACCOUNT"
+  gc billing projects link "$PROJECT" --billing-account "${GCP_BILLING_ACCOUNT:?set GCP_BILLING_ACCOUNT in .env}"
   # A service that lived through a billing stop never gets an instance again.
   gc run services delete house --region "$REGION" 2>/dev/null || true
   up
