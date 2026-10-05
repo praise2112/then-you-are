@@ -286,8 +286,8 @@ function Data() {
       <p>
         Of 237 variants written, 35 passed, and each then got a pool of 48 to 60 cards. Once a variant passed the
         ranking, about one in five was set aside for testing, and 9 of the 35 come from that set. These{" "}
-        <strong>held-back games</strong> were never used for training, and they test whether a model learned the games
-        or only memorised them.
+        <strong>held-back games</strong> were never used for training, and they test whether what a model learned
+        carries over to games it has not seen.
       </p>
       <FunnelChart />
 
@@ -426,7 +426,7 @@ function Sft() {
       <h2>SFT</h2>
       <p>
         Six open models between 0.6 and 2 billion parameters trained with one identical <strong>SFT</strong> recipe, so
-        the comparison measures the model and not the settings:
+        any difference comes from the model:
       </p>
       <ul>
         <li>every parameter trained, 2 epochs, learning rate 1e-5 on a cosine schedule with 3% warmup</li>
@@ -435,7 +435,7 @@ function Sft() {
         <li>fp32 weights, bf16 math</li>
       </ul>
       <p>
-        The fp32 weights matter. Loading them in bf16 also made the optimizer's running averages bf16, and at a learning
+        Loading the weights in bf16 instead of fp32 also made the optimizer's running averages bf16, and at a learning
         rate of 1e-5 many updates are smaller than the gap between neighbouring bf16 values, so they round to nothing.
         On the same data and seed, Qwen3.5-2B reached a loss of 1.08 at step 10 that way, against 0.71 in fp32, at the
         same speed.
@@ -486,8 +486,8 @@ function Preference() {
         <strong>Preference optimization</strong> trains on pairs, two moves at the same position where one is better,
         and makes the better one more likely. The pairs came from the SFT model's own moves. At 2,600 training positions
         it wrote 4 moves at temperature 0.9, and Flash judged each one. A position gave a pair when its best and worst
-        accepted moves differed by more than 7.5 points of the judge's total score, so that a pair reflects a real
-        difference rather than judge noise. That gave 1,068 pairs from 10,074 judged moves, for $9.82.
+        accepted moves differed by more than 7.5 points of the judge's total score, so that judge noise alone cannot
+        make a pair. That gave 1,068 pairs from 10,074 judged moves, for $9.82.
       </p>
       <p>
         Three methods were compared on those pairs.{" "}
@@ -510,14 +510,14 @@ function Preference() {
         aside, because one run needed about 4.5 hours. Each of the three took 2.5 to 6.5 minutes on the A100.
       </p>
       <p>
-        None of them clearly beat SFT's 54.3%: DPO stood 51.0%, SimPO 49.5% and IPO 56.9%. The refusals showed why.
-        DPO-style training is <a href="https://arxiv.org/abs/2403.19159">known to push answers longer</a>, and here the
-        game's character cap turned that into refused moves: 29 for SFT, 54 for DPO, 90 for SimPO and 66 for IPO, every
+        None of them clearly beat SFT's 54.3%: DPO stood 51.0%, SimPO 49.5% and IPO 56.9%. All three wrote longer moves,
+        which DPO-style training is{" "} <a href="https://arxiv.org/abs/2403.19159">known to do</a>, and the game's
+        character cap refused them: 29 for SFT, 54 for DPO, 90 for SimPO and 66 for IPO, every
         one over the cap. The pairs could not teach the cap, because only playable moves had been judged, so no pair
         ever set an over-long move against a good one.
       </p>
       <p>
-        <strong>Refused pairs</strong> fix that. Each one sets the best accepted move at a position against a move the
+        A <strong>refused pair</strong> sets the best accepted move at a position against a move the
         engine refused there. Replaying the recorded positions gave 229 of them at no cost, 227 over the cap. With
         refused pairs, IPO rose to 59.1%, still short of a clear gain. Adding the ordinary SFT loss on the better move,
         at weight 5 against IPO's 1, gave 61.2%, the first clear gain over SFT.
@@ -570,7 +570,7 @@ function Rl() {
       <h2>RL</h2>
       <p>
         After round two, nearly every miss was the judge's call. Of round two's 394 moves, 116 failed the judge and only
-        9 were refused, so the next gains had to come from better moves, not shorter ones.{" "}
+        9 were refused, so the next gains had to come from moves the judge rates higher.{" "}
         <a href="https://arxiv.org/abs/2402.03300">
           <strong>GRPO</strong>
         </a>{" "}
@@ -602,9 +602,9 @@ function Rl() {
         from 62.4% to 68.5%, a clear gain. The same round-two model stood 67.8% at 1.0 before it was compressed, so part
         of this gain wins back ground the compressed file had lost at full temperature. A second judge, Luna, re-judged
         150 of those positions and saw the same gain,
-        +9.3 points. At temperature 0.7 the model before RL already stands 68.5%, and RL adds nothing there. So RL{" "}
-        <strong>sharpened</strong> the model's choices, cutting the weak moves that sampling at full temperature lets
-        through, rather than teaching it something new. That matches{" "}
+        +9.3 points. At temperature 0.7 the model before RL already stands 68.5%, and RL adds nothing there.
+        RL{" "} <strong>sharpened</strong> the model's choices, cutting the weak moves that sampling at full temperature
+        lets through. That matches{" "}
         <a href="https://arxiv.org/abs/2504.13837">published work</a> finding that RL mostly sharpens what a model can
         already do. The misses that remain are mostly habits in particular games, such as a thank-you note that thanks
         the wrong person, which no step of this run targeted.
@@ -699,16 +699,16 @@ function TheJudge() {
       </p>
       <p>
         None of the small judges came close. They agreed with Flash on about 70% of moves, and almost all of that was
-        chance (kappa 0.13 to 0.18). The cause was the data. They learned from rulings on the big models' moves, which
-        Flash mostly accepted (83%), and were tested on the small models' moves, which fail far more often (31%). So they
-        learned to say yes: the first one accepted 670 of the 774 moves Flash failed. Adding Flash's rulings on the
-        0.8B's own moves moved the line without improving the judgment. It caught 140 more bad moves but now failed 82
-        good ones. The 1.2B did about a point better than the 350M.
+        chance (kappa 0.13 to 0.18). They learned from rulings on the big models' moves, which
+        Flash mostly accepted (83%), and were tested on the small models' moves, which fail far more often (31%), so
+        they learned to say yes. The first one accepted 670 of the 774 moves Flash failed. Adding Flash's rulings on the
+        0.8B's own moves traded one error for another: the judge caught 140 more bad moves but now failed 82 good ones.
+        The 1.2B did about a point better than the 350M.
       </p>
       <p>
         Flash with thinking turned off was the last option. It answers in 1.7 s at p50 and 2.1 s at p90, but it agreed
-        with full Flash on only 88.8% of moves (kappa 0.20) and passed 34 of the 41 moves full Flash failed. So Flash,
-        with thinking, stays the live judge.
+        with full Flash on only 88.8% of moves (kappa 0.20) and passed 34 of the 41 moves full Flash failed. Flash with
+        thinking stays the live judge.
       </p>
       <Table
         head={["", "Needed", "Small judges", "Flash, judging twice"]}
@@ -792,7 +792,9 @@ function Limits() {
         comparisons, but Flash's bias toward its own style is not measured in full. The tests use frozen positions from
         Flash playing itself, not full matches against the 0.8B model, so they do not show how its own moves shape the
         turns that follow. The position set resolves differences of about 4 to 8 points, depending on the pair. Only the
-        preference recipe has a second seed, and the RL run has one. The same 394 positions also guided choices along the way, such as the base model and the temperature. Flash's rulings take 14.8 s at p95, against a 6 s target, and a 4-core server was measured with at most two
+        preference recipe has a second seed, and the RL run has one. The same 394 positions also guided choices along
+        the way, such as the base model and the temperature. Flash's rulings take 14.8 s at p95, against a 6 s target,
+        and a 4-core server was measured with at most two
         matches at once.
       </p>
       <p>
