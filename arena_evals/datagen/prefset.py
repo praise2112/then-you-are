@@ -10,7 +10,7 @@ import sys
 
 from pydantic import BaseModel
 
-from arena_core.state import normalize
+from arena_core.state import refusal
 from arena_core.template import Template
 from arena_evals.common import read_jsonl
 from arena_evals.datagen.records import JudgeRecord, PlayerRecord
@@ -41,12 +41,7 @@ def with_move(judge_messages: list[dict[str, str]], move: str) -> list[dict[str,
 
 def playable(template: Template, pos: Position, move: str) -> bool:
     """Not empty, under the character cap, and not a repeat of a text already on the table."""
-    taken = {normalize(t) for t in pos.on_table}
-    return (
-        bool(normalize(move))
-        and len(move) <= template.move_constraints.max_chars
-        and (normalize(move) not in taken)
-    )
+    return refusal(template, move, pos.on_table) is None
 
 
 def pair_row(pos: Position, chosen: str, rejected: str, margin: float | None) -> dict:

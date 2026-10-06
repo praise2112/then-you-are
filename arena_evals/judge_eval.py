@@ -20,7 +20,6 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-import httpx
 from pydantic import BaseModel
 
 from arena_core.state import STANDING, weighted_total
@@ -30,7 +29,7 @@ from arena_evals.datagen.ledger import Ledger
 from arena_evals.datagen.records import judged_before
 from arena_evals.train_eval import EVAL_DIR, ROWS_DIR, heldout_variants, load_contexts
 from arena_evals.variants.generate import pool_path
-from arena_judge.caller import parse_judge
+from arena_judge.caller import ModelCaller, ModelSpec, parse_judge
 from arena_judge.prompt import render_judge_messages
 from arena_judge.schema import JudgeResponse, route_outcome
 
@@ -124,28 +123,26 @@ def heldout_templates() -> dict[str, Template]:
 
 async def answer(url: str, verdicts: list[EvalVerdict], ruling_first: bool) -> list[dict]:
     """The server's reply to each eval record at judge-v1's temperature."""
+    spec = ModelSpec(
+        model="m",
+        display_name="judge SLM",
+        temperature=0.5,
+        base_url=url,
+        chat_template_kwargs={"enable_thinking": False},
+    )
+    caller = ModelCaller("", spec, spec)
     sem = asyncio.Semaphore(32)
-    async with httpx.AsyncClient(timeout=600) as client:
 
-        async def one(v: EvalVerdict) -> dict:
-            body = {
-                "model": "m",
-                "messages": taught_order(v.messages, ruling_first),
-                "temperature": 0.5,
-                "max_tokens": 640,
-                "chat_template_kwargs": {"enable_thinking": False},
-            }
+    async def one(v: EvalVerdict) -> dict:
+        messages = taught_order(v.messages, ruling_first)
+        async with sem:
+            result = await with_backoff(lambda: caller.complete(spec, messages, max_tokens=640))
+        return {"context": v.id, "text": result.text}
 
-            async def post() -> httpx.Response:
-                resp = await client.post(f"{url.rstrip('/')}/chat/completions", json=body)
-                resp.raise_for_status()
-                return resp
-
-            async with sem:
-                resp = await with_backoff(post)
-            return {"context": v.id, "text": resp.json()["choices"][0]["message"]["content"] or ""}
-
+    try:
         return list(await asyncio.gather(*(one(v) for v in verdicts)))
+    finally:
+        await caller.aclose()
 
 
 def kappa(pairs: list[tuple[str, str]]) -> float:

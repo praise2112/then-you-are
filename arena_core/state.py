@@ -201,12 +201,19 @@ def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^\w\s]", "", text.lower())).strip()
 
 
-def layer1(template: Template, move_text: str, match: Match) -> Layer1Reason | None:
-    """Deterministic checks before the judge: empty, over the cap, exact duplicate."""
+def refusal(template: Template, move_text: str, taken: list[str]) -> Layer1Reason | None:
+    """Why the move is refused before the judge: empty, over the cap, or a repeat of `taken`."""
     if not normalize(move_text):
         return "empty"
     if len(move_text) > template.move_constraints.max_chars:
         return "too_long"
+    if normalize(move_text) in {normalize(t) for t in taken}:
+        return "duplicate"
+    return None
+
+
+def layer1(template: Template, move_text: str, match: Match) -> Layer1Reason | None:
+    """Deterministic checks before the judge, against the cards and the moves that stood."""
     # A showcase round in play is secret, so its answers are no one's history yet.
     earlier = [
         t.move_text
@@ -214,9 +221,7 @@ def layer1(template: Template, move_text: str, match: Match) -> Layer1Reason | N
         if t.outcome in STANDING
         and not (template.mode == "showcase" and t.round_n == match.round_n)
     ]
-    if normalize(move_text) in {normalize(h) for h in [*match.cards, *earlier]}:
-        return "duplicate"
-    return None
+    return refusal(template, move_text, [*match.cards, *earlier])
 
 
 def repeats_the_round(match: Match, move_text: str) -> bool:
