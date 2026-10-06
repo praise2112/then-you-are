@@ -93,16 +93,17 @@ export function useDuel(matchId: string, spectator: boolean) {
   const versionRef = useRef(-1);
   const fetchingRef = useRef(false);
   const behindRef = useRef(false);
+  // How many snapshot fetches have started; a fetch numbered above `since` was read after it.
   const fetchesRef = useRef(0);
   // The move the judge or a House writer is working on, while the board shows it.
-  const busySeqRef = useRef<number | null>(null);
-  // The seat's own move with the judge: the last turn before it, and the fetch count it was sent at.
-  const sentRef = useRef<{ afterSeq: number; knownFrom: number } | null>(null);
+  const busyRef = useRef<{ seq: number; since: number } | null>(null);
+  // The seat's own move with the judge, sent after turn afterSeq.
+  const sentRef = useRef<{ afterSeq: number; since: number } | null>(null);
 
   // The move numbered seq, or one after it, is resolved: the board stops showing it as under way.
   const endBusy = useCallback((seq: number) => {
-    if (busySeqRef.current === null || busySeqRef.current > seq) return;
-    busySeqRef.current = null;
+    if (!busyRef.current || busyRef.current.seq > seq) return;
+    busyRef.current = null;
     setThinking(false);
     setStreaming("");
     setPaused(null);
@@ -136,12 +137,14 @@ export function useDuel(matchId: string, spectator: boolean) {
         if (s.state_version < versionRef.current) return;
         versionRef.current = s.state_version;
         setSnap(s);
-        if (busySeqRef.current !== null) endBusy(lastSeq(s));
+        // A human to move with nothing before the judge means the move under way came back.
+        const humanFree = s.status === "active" && s.seats.find((x) => x.seat === s.to_move)?.kind === "human";
+        endBusy(humanFree && fetchNo > (busyRef.current?.since ?? Infinity) ? Infinity : lastSeq(s));
         const me = spectator ? null : s.your_seat;
         const withJudge = !!me && s.to_move === me && (s.status === "awaiting_judgment" || s.status === "paused");
         const sent = sentRef.current;
-        if (withJudge && !sent) sentRef.current = { afterSeq: lastSeq(s), knownFrom: 0 };
-        if (!withJudge && sent && fetchNo > sent.knownFrom) {
+        if (withJudge && !sent) sentRef.current = { afterSeq: lastSeq(s), since: 0 };
+        if (!withJudge && sent && fetchNo > sent.since) {
           endSent(s.transcript.some((t) => t.actor === me && t.seq > sent.afterSeq));
         }
         if (s.status === "open" || isLive(s.status)) setAfter((a) => a ?? s.event_id);
@@ -208,10 +211,13 @@ export function useDuel(matchId: string, spectator: boolean) {
       const mySeat = spectator ? null : (snapRef.current?.your_seat ?? null);
       // A replayed event about a move the snapshot already holds.
       const resolved = (seq: number) => seq <= lastSeq(snapRef.current);
+      const markBusy = (seq: number) => {
+        if (busyRef.current?.seq !== seq) busyRef.current = { seq, since: fetchesRef.current };
+      };
       switch (event.name) {
         case "judge_started":
           if (resolved(event.data.seq)) return;
-          busySeqRef.current = event.data.seq;
+          markBusy(event.data.seq);
           setThinking(true);
           return;
         case "turn_rejected": {
@@ -233,13 +239,13 @@ export function useDuel(matchId: string, spectator: boolean) {
         }
         case "move_token":
           if (resolved(event.data.seq)) return;
-          busySeqRef.current = event.data.seq;
+          markBusy(event.data.seq);
           setStreaming((s) => s + event.data.text);
           return;
         case "judge_paused": {
           const p = event.data;
           if (resolved(p.seq)) return;
-          busySeqRef.current = p.seq;
+          markBusy(p.seq);
           setPaused(p);
           if (p.seq === (sentRef.current?.afterSeq ?? -1) + 1) {
             setText((t) => t || withoutPrefix(p.move_text, templateRef.current?.move_prefix ?? ""));
@@ -286,10 +292,11 @@ export function useDuel(matchId: string, spectator: boolean) {
           const t = event.data;
           if (t.state_version > versionRef.current) return catchUp(t.state_version);
           if (t.state_version < versionRef.current) return;
-          // Sending a move leaves the version as it was, so only the snapshot tells a hand-back
-          // from a turn change sent before the move.
+          // Sending a move leaves the version as it was, so while a move is under way only a fresh
+          // snapshot tells a hand-back from a turn change sent before the move.
           const status = snapRef.current?.status;
-          if (sentRef.current || status === "awaiting_judgment" || status === "paused") return refresh();
+          const underWay = sentRef.current || busyRef.current || status === "awaiting_judgment" || status === "paused";
+          if (underWay) return refresh();
           patch((s) => ({
             ...s,
             status: isLive(s.status) ? "active" : s.status,
@@ -347,11 +354,15 @@ export function useDuel(matchId: string, spectator: boolean) {
     setReturned(null);
     const showcase = snap!.mode === "showcase";
     const moveText = showcase ? text : fullMove(template!.move_prefix, text);
-    const sent = showcase ? null : { afterSeq: lastSeq(snap), knownFrom: Infinity };
+    const sent = showcase ? null : { afterSeq: lastSeq(snap), since: Infinity };
     sentRef.current = sent;
+    const fetchesBefore = fetchesRef.current;
     try {
       await api.move(matchId, snap!.state_version, moveText, snap!.round_in_play);
-      if (sent) sent.knownFrom = fetchesRef.current;
+      if (!sent) return;
+      sent.since = fetchesRef.current;
+      // A fetch that started while the move was on its way may predate it.
+      if (fetchesRef.current > fetchesBefore && sentRef.current === sent) refresh();
     } catch (e) {
       if (sentRef.current === sent) sentRef.current = null;
       setPending(false);
