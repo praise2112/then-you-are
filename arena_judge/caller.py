@@ -1,5 +1,5 @@
-"""One caller for judge and opponent, OpenRouter or a spec's own endpoint, with the judge parse
-ladder."""
+"""The model registry, and one caller for judge and opponent, OpenRouter or a spec's own
+endpoint, with the judge parse ladder."""
 
 import contextlib
 import json
@@ -9,9 +9,11 @@ import time
 from collections.abc import AsyncIterator, Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 import httpx
+import yaml
 from langfuse import Langfuse, LangfuseGeneration
 from pydantic import BaseModel, ValidationError
 
@@ -28,6 +30,7 @@ from arena_judge.schema import (
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 LOCAL_TIMEOUT_S = 300.0
+MODELS_PATH = Path(__file__).parent / "models.yaml"
 
 
 class Prices(BaseModel):
@@ -60,6 +63,16 @@ class ModelSpec(BaseModel):
     api_key_env: str | None = None
     prices: Prices | None = None
     chat_template_kwargs: dict[str, Any] | None = None
+
+
+def load_model(ref: str) -> ModelSpec:
+    registry = yaml.safe_load(MODELS_PATH.read_text())
+    if ref not in registry:
+        raise KeyError(f"no model named {ref} in models.yaml")
+    entry = registry[ref]
+    if "base_url" in entry:
+        entry["base_url"] = os.path.expandvars(entry["base_url"])
+    return ModelSpec.model_validate(entry)
 
 
 class CallError(Exception):

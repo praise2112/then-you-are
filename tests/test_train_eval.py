@@ -7,7 +7,6 @@ import pytest
 
 from arena_core.template import load_template
 from arena_evals import train_eval
-from arena_evals.common import load_model
 from arena_evals.datagen.ledger import Ledger
 from arena_evals.datagen.play import Teacher, new_match, play_match
 from arena_evals.train_eval import (
@@ -20,6 +19,7 @@ from arena_evals.train_eval import (
     sample,
 )
 from arena_evals.variants.funnel import FLASH, JUDGE, deal_for
+from arena_judge.caller import load_model
 from tests.conftest import FakeCaller, judge_response
 from tests.test_datagen_play import ScriptedCaller
 

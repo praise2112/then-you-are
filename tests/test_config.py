@@ -1,4 +1,5 @@
-from arena_server.config import load_model, load_settings
+from arena_judge.caller import load_model
+from arena_server.config import load_settings
 
 
 def test_a_model_base_url_reads_its_host_from_the_environment(monkeypatch):

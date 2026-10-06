@@ -1,15 +1,9 @@
-"""Environment settings and the model registry."""
+"""Environment settings."""
 
 import os
 import secrets
 from dataclasses import dataclass
 from pathlib import Path
-
-import yaml
-
-from arena_judge.caller import ModelSpec
-
-MODELS_PATH = Path(__file__).parent / "models.yaml"
 
 
 @dataclass(frozen=True)
@@ -67,13 +61,3 @@ def _oauth_clients() -> dict[str, tuple[str, str]]:
         if client_id and secret:
             found[provider] = (client_id, secret)
     return found
-
-
-def load_model(ref: str) -> ModelSpec:
-    registry = yaml.safe_load(MODELS_PATH.read_text())
-    if ref not in registry:
-        raise KeyError(f"no model named {ref} in models.yaml")
-    entry = registry[ref]
-    if "base_url" in entry:
-        entry["base_url"] = os.path.expandvars(entry["base_url"])
-    return ModelSpec.model_validate(entry)

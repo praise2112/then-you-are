@@ -28,7 +28,7 @@ from arena_core.template import (
     load_template,
     load_template_file,
 )
-from arena_evals.common import credit_left, load_model, make_caller, merge_json, require_window
+from arena_evals.common import credit_left, make_caller, merge_json, require_window
 from arena_evals.datagen.ledger import (
     Budget,
     BudgetReached,
@@ -42,7 +42,7 @@ from arena_evals.datagen.sabotage import StoodMove, positions
 from arena_evals.grow_seeds import grow
 from arena_evals.variants.generate import POOL_DIR, Stage, load_index, pool_path, save_index
 from arena_evals.variants.spec import spec_names
-from arena_judge.caller import CallError, ModelCaller, ModelSpec
+from arena_judge.caller import CallError, ModelCaller, ModelSpec, load_model
 from arena_judge.prompt import clean_move
 from arena_judge.schema import route_outcome
 

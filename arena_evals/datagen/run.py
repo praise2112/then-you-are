@@ -21,7 +21,6 @@ from arena_core.template import Template, load_template, load_template_file
 from arena_evals.common import (
     credit_left,
     in_window,
-    load_model,
     make_caller,
     seconds_until_open,
 )
@@ -32,7 +31,7 @@ from arena_evals.datagen.sabotage import RATE, Saboteur
 from arena_evals.variants.funnel import PILOTS_DIR
 from arena_evals.variants.generate import load_index, pool_path
 from arena_evals.variants.spec import load_spec, spec_names
-from arena_judge.caller import ModelCaller
+from arena_judge.caller import ModelCaller, load_model
 from arena_judge.prompt import judge_prompt_hash
 
 RUNS_DIR = Path(__file__).parent / "runs"

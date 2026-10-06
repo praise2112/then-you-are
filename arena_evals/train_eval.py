@@ -25,7 +25,7 @@ from pydantic import BaseModel
 
 from arena_core.state import STANDING, Actor, Guess, Match, Turn, layer1, weighted_total
 from arena_core.template import Template, load_template_file
-from arena_evals.common import credit_left, load_model, make_caller, read_jsonl, write_jsonl
+from arena_evals.common import credit_left, make_caller, read_jsonl, write_jsonl
 from arena_evals.datagen.ledger import (
     Budget,
     BudgetReached,
@@ -38,7 +38,7 @@ from arena_evals.datagen.ledger import (
 from arena_evals.datagen.play import MatchPlayer, Teacher, new_match
 from arena_evals.variants.funnel import FLASH, JUDGE, deal_for, play_pilot
 from arena_evals.variants.generate import load_index, pool_path
-from arena_judge.caller import ModelCaller
+from arena_judge.caller import ModelCaller, load_model
 from arena_judge.prompt import clean_move
 from arena_judge.schema import JudgeResponse, route_outcome
 

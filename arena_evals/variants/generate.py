@@ -26,7 +26,6 @@ from pydantic import TypeAdapter, ValidationError
 from arena_core.template import TEMPLATES_DIR, Strict, Template, load_template_file, load_templates
 from arena_evals.common import (
     embed_texts,
-    load_model,
     make_caller,
     merge_json,
     require_window,
@@ -34,7 +33,7 @@ from arena_evals.common import (
 )
 from arena_evals.grow_seeds import cosine, nearest, seed_line
 from arena_evals.variants.spec import ClassSpec, Voice, field_value, load_spec
-from arena_judge.caller import CallError, ModelCaller, extract_json
+from arena_judge.caller import CallError, ModelCaller, extract_json, load_model
 from arena_judge.prompt import render_opponent_system
 
 POOL_DIR = Path(__file__).parent / "pool"

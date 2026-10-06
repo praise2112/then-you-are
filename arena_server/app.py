@@ -20,7 +20,7 @@ from sse_starlette.sse import EventSourceResponse
 from starlette.middleware.sessions import SessionMiddleware
 
 from arena_core.template import Template, load_templates
-from arena_judge.caller import ModelCaller
+from arena_judge.caller import ModelCaller, load_model
 from arena_server.auth import (
     SESSION_COOKIE,
     SessionCheck,
@@ -30,7 +30,7 @@ from arena_server.auth import (
     rename_account,
     set_session_cookie,
 )
-from arena_server.config import Settings, load_model, load_settings
+from arena_server.config import Settings, load_settings
 from arena_server.db import apply_schema, make_pool
 from arena_server.events import (
     EventBus,

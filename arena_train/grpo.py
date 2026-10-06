@@ -18,14 +18,14 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from arena_core.template import Template
-from arena_evals.common import load_model, make_caller, read_jsonl
+from arena_evals.common import make_caller, read_jsonl
 from arena_evals.datagen.flashmine import teacher_turn
 from arena_evals.datagen.ledger import Budget, CallFailed, JudgeInputs, Ledger, Tape
 from arena_evals.datagen.prefset import JUDGE_RUNS, Position, playable
 from arena_evals.datagen.run import CORPUS_DIR, RUNS_DIR, corpus_games
 from arena_evals.judge_eval import RANK_GAP
 from arena_evals.train_eval import Scored, verdict_score
-from arena_judge.caller import ModelCaller, ModelSpec
+from arena_judge.caller import ModelCaller, ModelSpec, load_model
 from arena_judge.prompt import clean_move
 from arena_judge.schema import SCORE_MAX
 

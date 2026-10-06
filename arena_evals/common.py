@@ -14,8 +14,7 @@ import httpx
 from pydantic import BaseModel, TypeAdapter
 
 from arena_core.template import Template
-from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
-from arena_server.config import load_model as load_model
+from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec, load_model
 
 RETRY_STATUSES = {408, 409, 425, 429, 500, 502, 503, 504}
 WINDOW_OPEN = time(16, 30)

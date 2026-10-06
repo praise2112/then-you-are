@@ -19,7 +19,7 @@ from pydantic import BaseModel
 
 from arena_core.state import weighted_total
 from arena_core.template import Template
-from arena_evals.common import load_model, make_caller, read_jsonl, write_jsonl
+from arena_evals.common import make_caller, read_jsonl, write_jsonl
 from arena_evals.datagen.ledger import (
     Budget,
     BudgetReached,
@@ -33,7 +33,7 @@ from arena_evals.datagen.ledger import (
 from arena_evals.datagen.prefset import JUDGE_RUNS, Position, pair_row, playable, with_move
 from arena_evals.datagen.run import CORPUS_DIR, RUNS_DIR, corpus_games
 from arena_evals.judge_eval import RANK_GAP
-from arena_judge.caller import ModelCaller, ModelSpec
+from arena_judge.caller import ModelCaller, ModelSpec, load_model
 from arena_judge.prompt import clean_move
 from arena_judge.schema import JudgeResponse
 
