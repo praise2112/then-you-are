@@ -1,9 +1,5 @@
 /* Page layouts. Shared chassis lives in folio.css. */
 
-.overlay.open {
-  display: grid;
-}
-
 /* Duel */
 
 .bar-top {
@@ -651,54 +647,6 @@
   font-style: italic;
 }
 
-.steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  counter-reset: step;
-}
-
-.steps li {
-  display: grid;
-  grid-template-columns: 2.6rem 1fr;
-  gap: var(--space-2);
-  align-items: start;
-  padding: var(--space-2) 0;
-  border-top: 1px solid var(--rule);
-}
-
-.steps li::before {
-  counter-increment: step;
-  content: counter(step);
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: 2rem;
-  line-height: 1;
-  color: var(--vermilion);
-}
-
-.steps b {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 1.15rem;
-  display: block;
-}
-
-.steps p {
-  margin: 0.2rem 0 0;
-  color: var(--ink-soft);
-}
-
-.steps .example {
-  margin-top: 0.5rem;
-  font-size: 0.95rem;
-}
-
-.steps .example span {
-  font-style: italic;
-  color: var(--ink);
-}
-
 .name-field {
   border-top: 1px solid var(--rule);
   padding-top: var(--space-2);
@@ -774,20 +722,6 @@
   .headline {
     font-size: 1.45rem;
   }
-
-  .sheet-head .stamp {
-    font-size: 1.1rem;
-    margin: -1.4rem 0 0 -0.4rem;
-  }
-
-  .evidence {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .scores td {
-    padding: 0.15rem 0;
-  }
 }
 
 /* Match end playbill */
@@ -834,10 +768,6 @@
 @media (max-width: 30rem) {
   .stats {
     gap: var(--space-2);
-  }
-
-  .verdict-line {
-    font-size: 1.15rem;
   }
 }
 
@@ -1001,12 +931,6 @@
   50% {
     opacity: 0;
   }
-}
-
-.stat-line {
-  color: var(--ink-faint);
-  font-size: 0.85rem;
-  margin: var(--space-1) 0 0;
 }
 
 .live-row {
@@ -1423,22 +1347,11 @@
 }
 
 @media (max-width: 30rem) {
-  .playbill-page {
-    padding: var(--space-2);
-  }
-
-  .playbill {
-    padding: var(--space-3) var(--space-2) var(--space-2);
-  }
-
-  .host-corner,
   .finale .host {
     flex-direction: column;
     text-align: center;
   }
 
-  .host-corner .host-line::before,
-  .host-corner .host-line::after,
   .finale .host-line::before,
   .finale .host-line::after {
     top: -0.6rem;
@@ -1449,7 +1362,6 @@
     border-bottom-color: var(--rule);
   }
 
-  .host-corner .host-line::after,
   .finale .host-line::after {
     top: -0.5rem;
     border-bottom-color: var(--paper-sunk);
@@ -2217,8 +2129,7 @@ ul.rules-text li {
 }
 
 @media (max-width: 40rem) {
-  .bluffs,
-  .recap-bluffs {
+  .bluffs {
     grid-template-columns: 1fr;
   }
 

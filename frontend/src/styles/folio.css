@@ -86,56 +86,6 @@ a {
 
 /* Site header */
 
-.masthead {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-bottom: 1px solid var(--rule);
-}
-
-.masthead nav {
-  display: flex;
-  gap: var(--space-3);
-}
-
-@media (max-width: 40rem) {
-  .masthead {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: var(--space-1) var(--space-2);
-  }
-
-  .masthead nav {
-    grid-column: 1 / -1;
-    gap: var(--space-2);
-  }
-
-  .masthead .theme-toggle {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .masthead nav a {
-    min-height: 36px;
-  }
-}
-
-.masthead nav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  text-decoration: none;
-  font-variant: all-small-caps;
-  letter-spacing: 0.1em;
-}
-
-.masthead nav a:hover {
-  color: var(--vermilion);
-}
-
 .wordmark {
   font-family: var(--display);
   font-size: 1.45rem;
@@ -263,14 +213,6 @@ a {
   color: var(--ink);
 }
 
-.stamp.huge {
-  font-size: 3.4rem;
-  padding: 0.2rem 2rem;
-  border-width: 6px;
-  outline-width: 2px;
-  outline-offset: -11px;
-}
-
 .ticket {
   display: inline-block;
   background: var(--vermilion-ink);
@@ -346,7 +288,7 @@ a {
   border: 1px solid var(--rule);
 }
 
-/* Host: the master of ceremonies, drawn as one SVG and injected by folio.js */
+/* Host: the master of ceremonies, drawn as one SVG in Host.tsx */
 
 .host {
   display: flex;
@@ -615,56 +557,6 @@ a {
   margin-top: 0.2rem;
 }
 
-/* Score bars */
-
-.scores {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.scores td {
-  padding: 0.3rem 0;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: middle;
-}
-
-.scores .name {
-  font-variant: all-small-caps;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  padding-right: var(--space-2);
-}
-
-.scores td:nth-child(2) {
-  width: 100%;
-}
-
-.scores .value {
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  text-align: right;
-  padding-left: var(--space-2);
-  white-space: nowrap;
-}
-
-.bar {
-  display: block;
-  height: 0.75rem;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--rule) 0 1px,
-    transparent 1px 25%
-  );
-  border: 1px solid var(--ink-faint);
-  width: 100%;
-}
-
-.bar > i {
-  display: block;
-  height: 100%;
-  background: var(--ink);
-}
-
 /* Rubric list, one line each, click to expand */
 
 .rubric details {
@@ -783,12 +675,6 @@ a {
   border-bottom-style: solid;
 }
 
-.vote .tally {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--ink-faint);
-}
-
 /* Overlay */
 
 .scrim {
@@ -811,17 +697,7 @@ a {
   width: 100%;
 }
 
-/* Notes flag mockup-only commentary so nobody ships it */
-
-.note {
-  border-left: 3px solid var(--brass);
-  background: var(--paper-sunk);
-  padding: var(--space-1) var(--space-2);
-  font-size: 0.88rem;
-  color: var(--ink-soft);
-}
-
-/* Icons: one sprite, injected by folio.js, stroked in the current text colour */
+/* Icons: inline SVGs from Icons.tsx, stroked in the current text colour */
 
 .icon {
   width: 1.05em;
@@ -972,17 +848,6 @@ a {
   }
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 button.icon-link {
   font: inherit;
   background: none;
@@ -1017,54 +882,4 @@ button.icon-link {
   right: 1rem;
   transform: rotate(2deg);
   font-style: italic;
-}
-
-/* Overlays opened by fragment: duel.html#give-up, match-end.html#share */
-
-.overlay {
-  display: none;
-}
-
-.overlay:target {
-  display: grid;
-}
-
-.overlay .sheet {
-  max-width: 26rem;
-}
-
-.overlay .sheet-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-  flex-wrap: wrap;
-}
-
-/* Round tally at a points finish */
-
-.tally {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.3rem;
-  margin: var(--space-2) auto;
-  max-width: 12.3rem;
-}
-
-.tally i {
-  width: 0.9rem;
-  height: 1.4rem;
-  border: 1px solid var(--ink);
-  background: var(--paper-raised);
-}
-
-.tally i.you {
-  background: var(--vermilion);
-  border-color: var(--vermilion);
-}
-
-.plates {
-  font-family: var(--emoji), var(--serif);
 }
