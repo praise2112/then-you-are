@@ -54,6 +54,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
   const mover = table.seat(snap.to_move);
   const moverIsModel = mover?.kind === "model";
   const moverName = table.name(snap.to_move);
+  const moverIs = snap.to_move === me ? "You are" : `${moverName} is`;
   const waiting = pending || thinking || !!streaming || (live && moverIsModel && !paused);
   const othersTurn = live && !moverIsModel && snap.to_move !== me && !waiting;
   const canPlay = snap.status === "active" && !!me && snap.to_move === me && !pending && !paused && !ended;
@@ -68,7 +69,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
   function standingHead(): string {
     if (fell) return `${table.name(fell.actor)} fell`;
     if (finished) return standing ? `${table.name(standing.actor)} had the last word` : template.labels.opening;
-    if (streaming) return `${moverName} is writing`;
+    if (streaming) return `${moverIs} writing`;
     if (!standing) return template.labels.opening;
     return standingIsMine ? "You wrote" : `From ${table.name(standing.actor)}`;
   }
@@ -241,7 +242,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
             <div className="judge-reading" role="status">
               <Host state="thinking" />
               <span>
-                {streaming ? `${moverName} is answering` : "The judge is reading"}
+                {streaming ? `${moverIs} answering` : "The judge is reading"}
                 <span className="dots" />
               </span>
             </div>

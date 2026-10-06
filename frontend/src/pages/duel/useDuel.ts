@@ -9,13 +9,11 @@ import {
   type MatchEvent,
   type MatchSnapshot,
   type Replay,
-  type Ruling,
   type TemplateView,
   type TurnRejected,
-  type TurnView,
 } from "../../api.ts";
 import { store } from "../../store.ts";
-import { fullMove, isLive, withoutPrefix } from "../format.ts";
+import { fullMove, isLive } from "../format.ts";
 
 function endedFromReplay(r: Replay): MatchEnded {
   // Walking back into a finished match: the coaching line is on the move that fell.
@@ -33,160 +31,127 @@ function endedFromReplay(r: Replay): MatchEnded {
   };
 }
 
-function turnOf(r: Ruling): TurnView {
-  return {
-    seq: r.seq,
-    round_n: r.round_n,
-    actor: r.actor,
-    move_text: r.move_text,
-    outcome: r.outcome,
-    scoring: r.scoring,
-    host: r.host,
-    points: r.points,
-  };
-}
-
-function withTotals(s: MatchSnapshot, totals: Record<string, number>): MatchSnapshot["seats"] {
-  return s.seats.map((seat) => ({ ...seat, points: totals[seat.seat] ?? seat.points }));
-}
-
 function lastSeq(s: MatchSnapshot | null): number {
   return s?.transcript[s.transcript.length - 1]?.seq ?? 0;
 }
 
-function withRuling(s: MatchSnapshot, r: Ruling): MatchSnapshot {
-  const fresh = !s.transcript.some((t) => t.seq === r.seq);
-  return {
-    ...s,
-    status: "active",
-    state_version: r.state_version,
-    to_move: r.to_move,
-    round_in_play: r.round_in_play,
-    seats: withTotals(s, r.totals),
-    judged_moves: s.judged_moves + (fresh ? 1 : 0),
-    transcript: fresh ? [...s.transcript, turnOf(r)] : s.transcript,
-  };
+// The judge or a House seat is still working on move seq, as the snapshot shows it.
+function isUnderWay(s: MatchSnapshot, seq: number): boolean {
+  if (seq <= lastSeq(s)) return false;
+  const houseToMove = s.seats.find((x) => x.seat === s.to_move)?.kind === "model";
+  return s.status === "awaiting_judgment" || s.status === "paused" || (s.status === "active" && houseToMove);
 }
 
-/** A match as one seat, or a spectator, sees it: the snapshot and template kept current from the
- *  event stream, what the seat is writing, and the move, call and resign commands. */
+// The seat's own escalation move is with the judge.
+function isWithJudge(s: MatchSnapshot, seat: string | null): boolean {
+  return s.to_move === seat && (s.status === "awaiting_judgment" || s.status === "paused");
+}
+
+// Escalation holds the falling move on the board for a beat before the result card.
+function revealDelay(s: MatchSnapshot | null, reason: MatchEnded["end_reason"]): number {
+  return s?.mode === "escalation" && reason !== "resign" ? 3200 : 0;
+}
+
+type Busy = { seq: number; thinking: boolean; streaming: string; paused: JudgePaused | null };
+type Sent = { afterSeq: number; since: number };
+
+/** A match as one seat, or a spectator, sees it: the snapshot, fetched again whenever the event
+ *  stream says it changed, what the seat is writing, and the move, call and resign commands. */
 export function useDuel(matchId: string, spectator: boolean) {
   const [snap, setSnap] = useState<MatchSnapshot | null>(null);
   const [template, setTemplate] = useState<TemplateView | null>(null);
   const [text, setText] = useState("");
   const [pending, setPending] = useState(false);
-  const [thinking, setThinking] = useState(false);
   const [returned, setReturned] = useState<TurnRejected | null>(null);
-  const [streaming, setStreaming] = useState("");
-  const [paused, setPaused] = useState<JudgePaused | null>(null);
+  // What the judge or a House writer is doing on the move under way, from the stream alone.
+  const [busy, setBusy] = useState<Busy | null>(null);
   const [ended, setEnded] = useState<MatchEnded | null>(null);
   const [revealEnd, setRevealEnd] = useState(false);
   const [picked, setPicked] = useState<string | null>(null);
   const [calling, setCalling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [after, setAfter] = useState<string | null>(null);
-  // What the event handler reads, so it stays the same function across renders.
   const snapRef = useRef(snap);
-  const templateRef = useRef(template);
-  const pendingRef = useRef(pending);
-  // The newest state version the client holds or has a fetch under way for.
-  const versionRef = useRef(-1);
+  // The newest state version the stream or a snapshot has shown; older snapshots are dropped.
+  const knownRef = useRef(-1);
   const fetchingRef = useRef(false);
-  const behindRef = useRef(false);
-  // How many snapshot fetches have started; a fetch numbered above `since` was read after it.
+  const queuedRef = useRef(false);
   const fetchesRef = useRef(0);
-  // The move the judge or a House writer is working on, while the board shows it.
-  const busyRef = useRef<{ seq: number; since: number } | null>(null);
-  // The seat's own move with the judge, sent after turn afterSeq.
-  const sentRef = useRef<{ afterSeq: number; since: number } | null>(null);
-  // The state version the seat's latest move was sent at; a refusal at or below it is for an earlier one.
-  const sendVersionRef = useRef(-1);
-  // The showcase round that what the seat wrote, sent or picked belongs to.
-  const roundRef = useRef(0);
+  // The seat's move out with the judge: the turn it follows, and the fetch count when it was acknowledged.
+  const sentRef = useRef<Sent | null>(null);
+  const endedRef = useRef(false);
 
-  // The move numbered seq, or one after it, is resolved: the board stops showing it as under way.
-  const endBusy = useCallback((seq: number) => {
-    if (!busyRef.current || busyRef.current.seq > seq) return;
-    busyRef.current = null;
-    setThinking(false);
-    setStreaming("");
-    setPaused(null);
-  }, []);
-
-  // The seat's own move is resolved; a ruled move leaves the composer for the next one.
-  const endSent = useCallback(
-    (ruled: boolean) => {
-      const sent = sentRef.current;
-      if (!sent) return;
-      sentRef.current = null;
-      setPending(false);
-      endBusy(sent.afterSeq + 1);
-      if (!ruled) return;
-      setReturned(null);
-      setText("");
+  const finish = useCallback(
+    (e: MatchEnded, delay: number) => {
+      endedRef.current = true;
+      setEnded(e);
+      setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), delay);
     },
-    [endBusy],
+    [spectator, matchId],
   );
 
-  // A showcase round closed: what the seat wrote, sent or picked for it is done with.
-  const startRound = useCallback((round: number) => {
-    if (round <= roundRef.current) return;
-    roundRef.current = round;
-    setCalling(false);
-    setPicked(null);
-    setReturned(null);
-    setPending(false);
-    setText("");
-  }, []);
-
+  // Fetches the snapshot, one at a time; calls while one is waiting or under way share one more.
   const refresh = useCallback(() => {
-    if (fetchingRef.current) {
-      behindRef.current = true;
-      return;
-    }
-    fetchingRef.current = true;
-    const fetchNo = ++fetchesRef.current;
-    api
-      .match(matchId)
-      .then((s) => {
-        if (s.state_version < versionRef.current) return;
-        versionRef.current = s.state_version;
-        setSnap(s);
-        if (s.mode === "showcase") startRound(s.round_in_play);
-        // A human to move with nothing before the judge means the move under way came back.
-        const humanFree = s.status === "active" && s.seats.find((x) => x.seat === s.to_move)?.kind === "human";
-        endBusy(humanFree && fetchNo > (busyRef.current?.since ?? Infinity) ? Infinity : lastSeq(s));
-        const me = spectator ? null : s.your_seat;
-        const withJudge = !!me && s.to_move === me && (s.status === "awaiting_judgment" || s.status === "paused");
-        const sent = sentRef.current;
-        if (withJudge && !sent) sentRef.current = { afterSeq: lastSeq(s), since: 0 };
-        if (!withJudge && sent && fetchNo > sent.since) {
-          endSent(s.transcript.some((t) => t.actor === me && t.seq > sent.afterSeq));
-        }
-        if (s.status === "open" || isLive(s.status)) setAfter((a) => a ?? s.event_id);
-        // A showcase refusal says why only in the refused seat's own snapshot.
-        if (s.mode === "showcase" && s.returned) {
-          setReturned(s.returned);
-          setPending(false);
-        }
-        const opening = store.takeOpeningMove(matchId);
-        if (opening) {
-          setText(opening);
-          if (s.status === "awaiting_judgment") setPending(true);
-        }
-        if (s.status === "ended" && spectator) return navigate(`/r/${matchId}`);
-        if (s.status === "ended" && s.end_reason) {
-          setRevealEnd(true);
-          return api.replay(matchId).then(endedFromReplay).then(setEnded);
-        }
-      }, (e) => setError(e.message))
-      .finally(() => {
-        fetchingRef.current = false;
-        if (!behindRef.current) return;
-        behindRef.current = false;
-        refresh();
-      });
-  }, [matchId, spectator, endBusy, endSent, startRound]);
+    const run = () => {
+      queuedRef.current = false;
+      fetchingRef.current = true;
+      const fetchNo = ++fetchesRef.current;
+      api
+        .match(matchId)
+        .then((s) => {
+          if (s.state_version < knownRef.current) return;
+          knownRef.current = s.state_version;
+          const prev = snapRef.current;
+          snapRef.current = s;
+          setSnap(s);
+          setBusy((b) => (b && isUnderWay(s, b.seq) ? b : null));
+          const me = spectator ? null : s.your_seat;
+          const sent = sentRef.current;
+          if (sent && fetchNo > sent.since && !isWithJudge(s, me)) {
+            sentRef.current = null;
+            setPending(false);
+            if (s.transcript.some((t) => t.actor === me && t.seq > sent.afterSeq)) {
+              setText("");
+              setReturned(null);
+            }
+          }
+          if (s.mode === "showcase" && prev && s.round_in_play !== prev.round_in_play) {
+            setText("");
+            setReturned(null);
+            setPending(false);
+          }
+          if (s.mode === "showcase" && prev && (s.round_in_play !== prev.round_in_play || s.phase !== prev.phase)) {
+            setPicked(null);
+            setCalling(false);
+          }
+          // A showcase refusal says why only in the refused seat's own snapshot.
+          if (s.mode === "showcase" && s.returned) setReturned(s.returned);
+          if (s.status === "open" || isLive(s.status)) setAfter((a) => a ?? s.event_id);
+          const opening = store.takeOpeningMove(matchId);
+          if (opening) {
+            setText(opening);
+            if (s.status === "awaiting_judgment") {
+              setPending(true);
+              sentRef.current = { afterSeq: lastSeq(s), since: fetchNo };
+            }
+          }
+          if (s.status === "ended" && s.end_reason && !endedRef.current) {
+            endedRef.current = true;
+            const delay = revealDelay(prev, s.end_reason);
+            return api.replay(matchId).then((r) => finish(endedFromReplay(r), delay));
+          }
+        })
+        .catch((e) => setError(e.message))
+        .finally(() => {
+          fetchingRef.current = false;
+          if (queuedRef.current) run();
+        });
+    };
+    if (queuedRef.current) return;
+    queuedRef.current = true;
+    // Events that arrive together share the fetch.
+    if (!fetchingRef.current) setTimeout(run);
+  }, [matchId, spectator, finish]);
 
   useEffect(() => {
     refresh();
@@ -198,157 +163,43 @@ export function useDuel(matchId: string, spectator: boolean) {
     api.template(templateId).then(setTemplate, (e) => setError(e.message));
   }, [templateId]);
 
-  useEffect(() => {
-    snapRef.current = snap;
-    templateRef.current = template;
-    pendingRef.current = pending;
-  }, [snap, template, pending]);
-
   const onEvent = useCallback(
     (event: MatchEvent) => {
-      // Fetches the snapshot when the event's version is newer than the client's.
-      const catchUp = (version: number) => {
-        if (version <= versionRef.current) return;
-        versionRef.current = version;
-        refresh();
-      };
-      // Applies a change the event fully describes, unless the client lacks one before it.
-      const advance = (version: number, update: (s: MatchSnapshot) => MatchSnapshot) => {
-        if (version !== versionRef.current + 1 || fetchingRef.current) return catchUp(version);
-        versionRef.current = version;
-        setSnap((s) => s && update(s));
-      };
-      // A change the version does not count; a fetch already under way may predate it.
-      const patch = (update: (s: MatchSnapshot) => MatchSnapshot) => {
-        setSnap((s) => s && update(s));
-        if (fetchingRef.current) behindRef.current = true;
-      };
-      const showcase = snapRef.current?.mode === "showcase";
-      const mySeat = spectator ? null : (snapRef.current?.your_seat ?? null);
-      // A replayed event about a move the snapshot already holds.
-      const resolved = (seq: number) => seq <= lastSeq(snapRef.current);
-      const markBusy = (seq: number) => {
-        if (busyRef.current?.seq !== seq) busyRef.current = { seq, since: fetchesRef.current };
+      // Shows what the judge or a House writer does on move seq, unless the snapshot holds it.
+      const onMove = (seq: number, update: (b: Busy) => Busy) => {
+        if (seq <= lastSeq(snapRef.current)) return;
+        setBusy((b) => update(b?.seq === seq ? b : { seq, thinking: false, streaming: "", paused: null }));
       };
       switch (event.name) {
         case "judge_started":
-          if (resolved(event.data.seq)) return;
-          markBusy(event.data.seq);
-          setThinking(true);
-          return;
-        case "turn_rejected": {
-          const r = event.data;
-          const mine = r.seat === mySeat && r.state_version > sendVersionRef.current;
-          if (mine) {
-            sentRef.current = null;
-            setThinking(false);
-            setPending(false);
-          }
-          // A showcase refusal says why only in the refused seat's own snapshot.
-          if (showcase) {
-            if (mine) catchUp(r.state_version);
-            return;
-          }
-          if (mine) setReturned(r);
-          advance(r.state_version, (s) => ({ ...s, status: "active", state_version: r.state_version }));
-          return;
-        }
+          return onMove(event.data.seq, (b) => ({ ...b, thinking: true }));
         case "move_token":
-          if (resolved(event.data.seq)) return;
-          markBusy(event.data.seq);
-          setStreaming((s) => s + event.data.text);
-          return;
-        case "judge_paused": {
-          const p = event.data;
-          if (resolved(p.seq)) return;
-          markBusy(p.seq);
-          setPaused(p);
-          if (p.seq === (sentRef.current?.afterSeq ?? -1) + 1) {
-            setText((t) => t || withoutPrefix(p.move_text, templateRef.current?.move_prefix ?? ""));
-          }
-          return;
-        }
+          return onMove(event.data.seq, (b) => ({ ...b, streaming: b.streaming + event.data.text }));
+        case "judge_paused":
+          return onMove(event.data.seq, (b) => ({ ...b, paused: event.data }));
         case "judge_resumed":
-          setPaused(null);
-          return;
-        case "ruling": {
-          // A showcase round's rulings arrive together with its reveal, read from the snapshot.
-          if (showcase) return;
-          const r = event.data;
-          endBusy(r.seq);
-          if (r.actor === mySeat && r.seq > (sentRef.current?.afterSeq ?? Infinity)) endSent(true);
-          advance(r.state_version, (s) => withRuling(s, r));
-          return;
-        }
-        case "round_revealed":
-          startRound(event.data.round_n + 1);
-          catchUp(event.data.state_version);
-          return;
-        case "guess_opened":
-          if (event.data.round_n >= roundRef.current) {
-            setPending(false);
-            setPicked(null);
-            setCalling(false);
-          }
-          catchUp(event.data.state_version);
-          return;
-        case "seat_submitted": {
-          const { seat, state_version } = event.data;
-          if (state_version > versionRef.current) return catchUp(state_version);
-          if (state_version < versionRef.current) return;
-          // A seat's last answer or call is announced after the change it made, which may have
-          // closed the round; only the seat's own move still pending is sure to be for this round.
-          if (seat !== mySeat || !pendingRef.current) return refresh();
-          patch((s) => ({ ...s, seats: s.seats.map((x) => (x.seat === seat ? { ...x, answered: true } : x)) }));
-          return;
-        }
-        case "turn_changed": {
-          const t = event.data;
-          if (t.state_version > versionRef.current) return catchUp(t.state_version);
-          if (t.state_version < versionRef.current) return;
-          // Sending a move leaves the version as it was, so while a move is under way only a fresh
-          // snapshot tells a hand-back from a turn change sent before the move.
-          const status = snapRef.current?.status;
-          const underWay = sentRef.current || busyRef.current || status === "awaiting_judgment" || status === "paused";
-          if (underWay) return refresh();
-          patch((s) => ({
-            ...s,
-            status: isLive(s.status) ? "active" : s.status,
-            to_move: t.to_move,
-            turn_deadline: t.turn_deadline,
-            round_in_play: t.round_in_play,
-          }));
-          return;
-        }
-        // Filling a table leaves the version at 0.
-        case "seat_joined":
-        case "match_started":
-          refresh();
-          return;
-        case "match_ended": {
-          const e = event.data;
-          if (e.end_reason === "unfilled") {
-            refresh();
-            return;
-          }
-          // A snapshot read before the end must not bring the match back.
-          if (showcase) catchUp(e.state_version);
-          else versionRef.current = Math.max(versionRef.current, e.state_version);
-          setThinking(false);
-          setStreaming("");
-          setSnap((s) => s && { ...s, status: "ended", winner: e.winner, end_reason: e.end_reason, seats: withTotals(s, e.totals) });
-          setEnded(e);
-          setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), e.end_reason === "resign" ? 0 : 3200);
-          return;
-        }
+          return onMove(event.data.seq, (b) => ({ ...b, paused: null }));
       }
+      const version = event.data.state_version;
+      // Filling a table leaves the version at 0.
+      if (version > 0 && version < knownRef.current) return;
+      const s = snapRef.current;
+      if (event.name === "turn_rejected" && s?.mode === "escalation" && version > knownRef.current) {
+        // An escalation refusal says why only on the stream.
+        if (!spectator && event.data.seat === s.your_seat) setReturned(event.data);
+      }
+      if (event.name === "match_ended" && event.data.end_reason !== "unfilled" && !endedRef.current) {
+        finish(event.data, revealDelay(s, event.data.end_reason));
+      }
+      knownRef.current = Math.max(knownRef.current, version);
+      refresh();
     },
-    [refresh, endBusy, endSent, startRound, spectator, matchId],
+    [refresh, finish, spectator],
   );
   useMatchEvents(matchId, after, onEvent, refresh);
 
   // The board stays up at the end; the composer's place takes the result card.
-  const finished = ended && revealEnd && snap?.status === "ended" ? ended : null;
+  const finished = ended && revealEnd ? ended : null;
 
   // A command the server refused comes back like a returned move, with its reason.
   function refused(e: unknown) {
@@ -368,20 +219,17 @@ export function useDuel(matchId: string, spectator: boolean) {
   async function move() {
     setPending(true);
     setReturned(null);
-    const showcase = snap!.mode === "showcase";
-    const moveText = showcase ? text : fullMove(template!.move_prefix, text);
-    const sent = showcase ? null : { afterSeq: lastSeq(snap), since: Infinity };
+    const moveText = snap!.mode === "showcase" ? text : fullMove(template!.move_prefix, text);
+    const sent = { afterSeq: lastSeq(snap), since: Infinity };
     sentRef.current = sent;
-    sendVersionRef.current = snap!.state_version;
     const fetchesBefore = fetchesRef.current;
     try {
       await api.move(matchId, snap!.state_version, moveText, snap!.round_in_play);
-      if (!sent) return;
       sent.since = fetchesRef.current;
       // A fetch that started while the move was on its way may predate it.
-      if (fetchesRef.current > fetchesBefore && sentRef.current === sent) refresh();
+      if (fetchesRef.current > fetchesBefore) refresh();
     } catch (e) {
-      if (sentRef.current === sent) sentRef.current = null;
+      sentRef.current = null;
       setPending(false);
       refused(e);
       refresh();
@@ -408,10 +256,10 @@ export function useDuel(matchId: string, spectator: boolean) {
     text,
     setText,
     pending,
-    thinking,
-    streaming,
+    thinking: !!busy?.thinking,
+    streaming: busy?.streaming ?? "",
     returned,
-    paused,
+    paused: busy?.paused ?? null,
     ended,
     finished,
     picked,
