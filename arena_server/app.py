@@ -53,6 +53,7 @@ from arena_server.matches import MatchError, MatchService
 from arena_server.names import check_name
 from arena_server.presence import Lobby, Online, Presence, TurnNudge
 from arena_server.profiles import profile
+from arena_server.sessions import ensure_session, session_view
 from arena_server.store import check_match_exists, set_curated
 from arena_server.views import (
     BoardSummary,
@@ -256,7 +257,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def player_session(request: Request, response: Response, stage_name: str | None) -> str:
         """The caller's session, made on first play and renamed when a stage name comes along."""
         refuse_bad_name(stage_name)
-        key = await service.ensure_session(request.cookies.get(SESSION_COOKIE), stage_name)
+        key = await ensure_session(pool, request.cookies.get(SESSION_COOKIE), stage_name)
         set_session_cookie(response, key, settings.secure_cookies)
         return key
 
@@ -282,7 +283,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         return template_view(templates[slug], slug == settings.featured_template)
 
     async def session_with_providers(key: str | None) -> SessionView:
-        view = await service.session_view(key)
+        view = await session_view(service, key)
         view.providers = list(settings.oauth_clients)
         return view
 
@@ -307,8 +308,8 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     @app.put("/sessions/me")
     async def put_session(body: SessionUpdate, request: Request, response: Response) -> SessionView:
         refuse_bad_name(body.stage_name)
-        key = await service.ensure_session(
-            request.cookies.get(SESSION_COOKIE), body.stage_name, body.list_duels
+        key = await ensure_session(
+            pool, request.cookies.get(SESSION_COOKIE), body.stage_name, body.list_duels
         )
         if body.stage_name and body.stage_name.strip():
             await rename_account(pool, key, body.stage_name.strip())

@@ -41,7 +41,6 @@ from arena_core.template import Seed, Template
 from arena_judge.caller import CallError, ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
 from arena_judge.schema import HostPayload, JudgeResponse, ScoringPayload, route_outcome
-from arena_server.auth import account_of, new_session_key
 from arena_server.db import Pool
 from arena_server.events import (
     EventBus,
@@ -59,8 +58,8 @@ from arena_server.events import (
     TurnChanged,
     TurnRejected,
 )
-from arena_server.leaderboard import account_streaks
 from arena_server.presence import Lobby, Presence, TurnNudge
+from arena_server.sessions import open_match_ids, seat_of, session_view
 from arena_server.snapshots import (
     REPEAT_TEXT,
     build_snapshot,
@@ -109,11 +108,8 @@ from arena_server.store import (
     store_turn,
 )
 from arena_server.views import (
-    AccountView,
     MatchSnapshot,
-    OpenDuel,
     Replay,
-    SessionView,
     StageView,
     TableKind,
     TableView,
@@ -210,7 +206,7 @@ class MatchService:
 
     async def _resume(self, match_id: str) -> None:
         async with self.locks[match_id]:
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             if match.status != "active":
                 return
             template = self.template_of(match)
@@ -219,106 +215,6 @@ class MatchService:
                 return
             # Model seats write again when a player next opens or answers this match.
             await self._set_clock(match, rec, template)
-
-    # Sessions
-
-    async def ensure_session(
-        self, session_key: str | None, stage_name: str | None, list_duels: bool | None = None
-    ) -> str:
-        key = session_key or new_session_key()
-        async with self.pool.connection() as conn:
-            await conn.execute(
-                "insert into sessions (session_key, stage_name, list_duels) "
-                "values (%s, %s, coalesce(%s, false)) on conflict (session_key) do update "
-                "set stage_name = coalesce(%s, sessions.stage_name), "
-                "list_duels = coalesce(%s, sessions.list_duels)",
-                (
-                    key,
-                    stage_name or "Challenger",
-                    list_duels,
-                    stage_name,
-                    list_duels,
-                ),
-            )
-        return key
-
-    async def session_view(self, session_key: str | None) -> SessionView:
-        if session_key:
-            async with self.pool.connection() as conn:
-                row = await (
-                    await conn.execute(
-                        "select s.stage_name, s.list_duels, a.id, a.display_name, a.avatar_url, "
-                        "(select coalesce(array_agg(i.provider order by i.created_at), '{}') "
-                        "from identities i where i.account_id = a.id) as providers "
-                        "from sessions s left join accounts a on a.id = s.account_id "
-                        "where s.session_key = %s",
-                        (session_key,),
-                    )
-                ).fetchone()
-                account = None
-                if row and row["id"]:
-                    streak, best = await account_streaks(conn, row["id"])
-                    account = AccountView(
-                        id=row["id"],
-                        providers=row["providers"],
-                        display_name=row["display_name"],
-                        avatar_url=row["avatar_url"],
-                        streak=streak,
-                        best_streak=best,
-                    )
-            if row:
-                return SessionView(
-                    stage_name=row["stage_name"],
-                    list_duels=row["list_duels"],
-                    account=account,
-                    open_duels=[
-                        await self._open_duel(m, session_key)
-                        for m in await self._open_ids(session_key)
-                    ],
-                )
-        return SessionView(stage_name="Challenger", list_duels=False)
-
-    async def _open_ids(
-        self, session_key: str, template_id: str | None = None, kind: TableKind | None = None
-    ) -> list[str]:
-        """Unfinished matches where the session, or any session on its account, holds a live
-        seat."""
-        async with self.pool.connection() as conn:
-            rows = await (
-                await conn.execute(
-                    "select distinct m.id, m.created_at from matches m "
-                    "join seats se on se.match_id = m.id "
-                    "join sessions s on s.session_key = se.session_key "
-                    "where m.status in ('open', 'active', 'awaiting_judgment', 'paused') "
-                    "and se.eliminated_at is null "
-                    "and (s.session_key = %s or s.account_id = "
-                    "(select account_id from sessions where session_key = %s)) "
-                    "and (%s::text is null or m.template_id = %s) "
-                    "and (%s::text is null or m.kind = %s) order by m.created_at",
-                    (session_key, session_key, template_id, template_id, kind, kind),
-                )
-            ).fetchall()
-        return [row["id"] for row in rows]
-
-    async def _open_duel(self, match_id: str, session_key: str) -> OpenDuel:
-        match, rec = await self._load(match_id)
-        template = self.template_of(match)
-        mine = await self._seat_of(rec, session_key)
-        if match.status == "open":
-            line = f"waiting for {rec.seats_wanted - len(rec.seats)} more"
-        elif template.mode == "showcase":
-            line = f"round {min(match.round_n, template.rounds_budget)} of "
-            line += f"{template.rounds_budget}, {match.card}"
-            if match.phase == "guess" and mine in match.owed_guesses():
-                line += ", your call"
-        else:
-            form = match.standing_form
-            if form.lower().startswith(template.move_constraints.prefix.lower()):
-                form = form[len(template.move_constraints.prefix) :]
-            line = f"round {match.round_n}, {form.rstrip('.')} stands"
-            if match.clocked and match.to_move == mine:
-                line += ", your move"
-        return OpenDuel(id=match.id, title=template.title, line=line)
 
     # Creating and seating
 
@@ -346,12 +242,12 @@ class MatchService:
                 f"{template.title} seats {template.num_players.min} to "
                 f"{template.num_players.max} players",
             )
-        open_ids = await self._open_ids(session_key, template.slug, kind)
+        open_ids = await open_match_ids(self.pool, session_key, template.slug, kind)
         if open_ids:
             return await self.snapshot(open_ids[0], session_key)
         cards = deal(template, secrets.SystemRandom(), first, template.revealed_card)
         match_id = secrets.token_urlsafe(8)
-        listed = (await self.session_view(session_key)).list_duels
+        listed = (await session_view(self, session_key)).list_duels
         house = kind == "house"
         async with self.pool.connection() as conn, conn.transaction():
             await insert_match(
@@ -369,7 +265,7 @@ class MatchService:
             if house:
                 await self._insert_seat(conn, match_id, "p2", "model", None)
         if house and template.mode == "showcase":
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             self._start_model_answers(match, rec)
         if not house:
             await self._broadcast_lobby()
@@ -401,7 +297,7 @@ class MatchService:
         if template_id not in self.templates:
             raise MatchError(404, "no such template")
         async with self.seating[template_id]:
-            mine = await self._open_ids(session_key, template_id, "open")
+            mine = await open_match_ids(self.pool, session_key, template_id, "open")
             if mine:
                 return mine[0]
             for match_id in await joinable_ids(self.pool, template_id, session_key):
@@ -426,8 +322,8 @@ class MatchService:
         """Seats the session, or for its creator the House, at the next seat of a filling table.
         A session already seated is left where it is."""
         async with self.locks[match_id]:
-            match, rec = await self._load(match_id)
-            seated = await self._seat_of(rec, session_key)
+            match, rec = await self.load(match_id)
+            seated = await seat_of(self.pool, rec, session_key)
             if kind == "human" and seated:
                 return
             if kind == "model" and seated != rec.owner.seat:
@@ -443,11 +339,11 @@ class MatchService:
 
     async def _seated(self, match_id: str, seat: str) -> None:
         """A seat was filled; the table starts when it is full. Runs under the match lock."""
-        _, rec = await self._load(match_id)
+        _, rec = await self.load(match_id)
         self.bus.emit(match_id, "seat_joined", SeatJoined(seat=seat, state_version=0))
         if len(rec.seats) >= rec.seats_wanted:
             await start_table(self.pool, match_id)
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             template = self.template_of(match)
             self.bus.emit(match_id, "match_started", MatchStarted(state_version=0))
             if template.mode == "showcase":
@@ -479,13 +375,13 @@ class MatchService:
         await self.presence.broadcast(Lobby(tables=await self.open_tables()))
 
     async def set_visibility(self, match_id: str, session_key: str, public: bool) -> None:
-        _, rec = await self._load(match_id)
+        _, rec = await self.load(match_id)
         await self._check_owner(rec, session_key)
         await set_public(self.pool, match_id, public)
 
     # Loading and saving
 
-    async def _load(self, match_id: str) -> tuple[Match, Record]:
+    async def load(self, match_id: str) -> tuple[Match, Record]:
         return await load_match(self.pool, match_id, self.match_templates)
 
     async def _set_clock(
@@ -511,7 +407,7 @@ class MatchService:
             async with self.locks[match_id]:
                 if not await close_unfilled(self.pool, match_id):
                     continue
-                match, _ = await self._load(match_id)
+                match, _ = await self.load(match_id)
                 await self._emit_match_ended(match, coaching_line=None)
                 unfilled.append(match_id)
         for match_id in idle:
@@ -523,9 +419,9 @@ class MatchService:
     # Snapshots
 
     async def snapshot(self, match_id: str, session_key: str | None = None) -> MatchSnapshot:
-        match, rec = await self._load(match_id)
+        match, rec = await self.load(match_id)
         template = self.template_of(match)
-        viewer = await self._seat_of(rec, session_key)
+        viewer = await seat_of(self.pool, rec, session_key)
         if viewer and template.mode == "showcase" and match.status == "active":
             self._start_model_answers(match, rec)
         hide = hides_round(match, template)
@@ -539,7 +435,7 @@ class MatchService:
         )
 
     async def replay(self, match_id: str, session_key: str | None = None) -> Replay:
-        _, rec = await self._load(match_id)
+        _, rec = await self.load(match_id)
         snap = await self.snapshot(match_id, session_key)
         if snap.status not in ("ended", "abandoned"):
             raise MatchError(404, "match still running")
@@ -573,7 +469,7 @@ class MatchService:
         async with self.locks[match_id]:
             if await action_seen(self.pool, match_id, action_id):
                 return
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             seat = await self._check_command(
                 match, rec, session_key, "move", expected_version, round_n
             )
@@ -604,7 +500,7 @@ class MatchService:
         async with self.locks[match_id]:
             if await action_seen(self.pool, match_id, action_id):
                 return
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             seat = await self._check_command(
                 match, rec, session_key, "guess", expected_version, round_n
             )
@@ -629,7 +525,7 @@ class MatchService:
         self, match_id: str, session_key: str, action_id: str, expected_version: int
     ) -> None:
         async with self.locks[match_id]:
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             if await action_seen(self.pool, match_id, action_id):
                 return
             seat = await self._check_command(match, rec, session_key, "resign", expected_version)
@@ -652,9 +548,9 @@ class MatchService:
 
     async def disagree(self, match_id: str, seq: int, session_key: str | None) -> None:
         """One vote per seated session and move, on a move the table can already see."""
-        match, rec = await self._load(match_id)
+        match, rec = await self.load(match_id)
         template = self.template_of(match)
-        if session_key is None or await self._seat_of(rec, session_key) is None:
+        if session_key is None or await seat_of(self.pool, rec, session_key) is None:
             raise MatchError(403, "only a seat at this table can disagree")
         turn = next((t for t in match.turns if t.seq == seq), None)
         if turn is None or (hides_round(match, template) and turn.round_n >= match.round_n):
@@ -676,21 +572,8 @@ class MatchService:
             normalize(turn.move_text),
         )
 
-    async def _seat_of(self, rec: Record, session_key: str | None) -> str | None:
-        """The seat held by the session, or by any session signed in to the same account."""
-        if session_key is None:
-            return None
-        for row in rec.humans:
-            if row.session_key == session_key:
-                return row.seat
-        if not any(row.account_id for row in rec.humans):
-            return None
-        async with self.pool.connection() as conn:
-            account = await account_of(conn, session_key)
-        return next((r.seat for r in rec.humans if account and r.account_id == account), None)
-
     async def _check_owner(self, rec: Record, session_key: str) -> None:
-        if (await self._seat_of(rec, session_key)) != rec.owner.seat:
+        if (await seat_of(self.pool, rec, session_key)) != rec.owner.seat:
             raise MatchError(403, "not your match")
 
     async def _check_command(
@@ -704,7 +587,7 @@ class MatchService:
     ) -> str:
         """The requester's seat, when it may act now. Escalation moves carry the state
         version; showcase answers and calls are per seat and carry the round they were for."""
-        seat = await self._seat_of(rec, session_key)
+        seat = await seat_of(self.pool, rec, session_key)
         if seat is None:
             raise MatchError(403, "not your match")
         template = self.template_of(match)
@@ -747,7 +630,7 @@ class MatchService:
         self, match_id: str, seat: str, action_id: str, move_text: str
     ) -> None:
         async with self.locks[match_id]:
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             if match.status != "awaiting_judgment" or match.to_move != seat:
                 return
             template = self.template_of(match)
@@ -760,14 +643,14 @@ class MatchService:
             except Exception:
                 log.exception("move on %s failed; the match goes back to a human seat", match_id)
                 await set_status(self.pool, match_id, "active")
-                match, rec = await self._load(match_id)
+                match, rec = await self.load(match_id)
                 if match.to_move in rec.models:
                     await self._forfeit(match, template, match.to_move)
                     if not await self._emit_if_ended(match):
                         await self._after_turn(match, template, rec)
                     return
                 await self._give_time(match, rec, template)
-                match, rec = await self._load(match_id)
+                match, rec = await self.load(match_id)
                 self.bus.emit(
                     match_id,
                     "turn_changed",
@@ -1026,7 +909,7 @@ class MatchService:
     ) -> None:
         rewrite = False
         try:
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             if not self._still_owed(match, seat, round_n):
                 return
             template = self.template_of(match)
@@ -1041,7 +924,7 @@ class MatchService:
                 )
             except (HouseStuck, JudgeGaveUp):
                 async with self.locks[match_id]:
-                    match, rec = await self._load(match_id)
+                    match, rec = await self.load(match_id)
                     if match.status != "active" or match.round_n != round_n:
                         return
                     resign(match, seat, template)
@@ -1049,7 +932,7 @@ class MatchService:
                     await self._after_showcase_change(match, template, rec, round_n)
                 return
             async with self.locks[match_id]:
-                match, rec = await self._load(match_id)
+                match, rec = await self.load(match_id)
                 if not self._still_owed(match, seat, round_n):
                     return
                 await hold_move(self.pool, match_id, seat, None, round_n)
@@ -1080,7 +963,7 @@ class MatchService:
         """Showcase: judges one seat's answer without holding up the other seats. Nothing about
         it leaves the server until the round is revealed."""
         try:
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             template = self.template_of(match)
             round_n = match.round_n
             card = template.seed_named(match.card)
@@ -1100,7 +983,7 @@ class MatchService:
                 )
             async with self.locks[match_id]:
                 await set_submitted(self.pool, match_id, seat, False)
-                match, rec = await self._load(match_id)
+                match, rec = await self.load(match_id)
                 if not self._still_owed(match, seat, round_n):
                     return
                 if judged is None:
@@ -1164,7 +1047,7 @@ class MatchService:
             log.exception("answer on %s failed; the seat may answer again", match_id)
             async with self.locks[match_id]:
                 await set_submitted(self.pool, match_id, seat, False)
-                match, rec = await self._load(match_id)
+                match, rec = await self.load(match_id)
                 await self._give_time(match, rec, self.template_of(match))
 
     async def _give_time(self, match: Match, rec: Record, template: Template) -> None:
@@ -1216,7 +1099,7 @@ class MatchService:
 
     async def _settle_round(self, match: Match, template: Template) -> None:
         """Sends out the round's rulings and reveal, then ends the match when it is over."""
-        _, rec = await self._load(match.id)
+        _, rec = await self.load(match.id)
         # Closing a round always deals the next, so the round to reveal is the one before.
         round_n = match.round_n - 1
         card = template.seed_named(match.cards[round_n - 1])
@@ -1323,7 +1206,7 @@ class MatchService:
     async def _expire(self, match_id: str) -> None:
         """A judge still working on an answer holds the clock."""
         async with self.locks[match_id]:
-            match, rec = await self._load(match_id)
+            match, rec = await self.load(match_id)
             now = datetime.now(UTC)
             if match.status != "active" or rec.turn_deadline is None or rec.turn_deadline > now:
                 return

@@ -16,6 +16,7 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 
 from arena_server.config import Settings
 from arena_server.db import Pool
+from arena_server.sessions import account_of, new_session_key
 
 SESSION_COOKIE = "thenyouare_session"
 COOKIE_AGE = 60 * 60 * 24 * 365
@@ -113,18 +114,6 @@ async def fetch_profile(client: StarletteOAuth2App, provider: str, request: Requ
     avatar = data.get("avatar")
     url = f"https://cdn.discordapp.com/avatars/{data['id']}/{avatar}.png" if avatar else ""
     return Profile("discord", data["id"], name, url)
-
-
-def new_session_key() -> str:
-    return secrets.token_urlsafe(24)
-
-
-async def account_of(conn: AsyncConnection[DictRow], session_key: str | None) -> str | None:
-    """The account the session is signed in to, or None for a guest or an unknown key."""
-    row = await (
-        await conn.execute("select account_id from sessions where session_key = %s", (session_key,))
-    ).fetchone()
-    return row["account_id"] if row else None
 
 
 SignIn = Literal["signed_in", "linked", "taken"]
