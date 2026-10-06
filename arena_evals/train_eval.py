@@ -85,7 +85,8 @@ def verdict_score(template: Template, text: str, response: JudgeResponse) -> Sco
 
 
 def match_of(context: Context) -> Match:
-    d = context.match
+    # Contexts recorded before the field was dropped still carry template_version.
+    d = {k: v for k, v in context.match.items() if k != "template_version"}
     return Match(
         **{
             **d,

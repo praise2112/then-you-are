@@ -24,9 +24,7 @@ WORDS = load_template("word-for-word")
 
 
 def table(*seats: str, cards: tuple[str, ...] = ("a rock",), **kw) -> Match:
-    return Match(
-        id="t", template_id="then-i-am", template_version=1, cards=list(cards), seats=seats, **kw
-    )
+    return Match(id="t", template_id="then-i-am", cards=list(cards), seats=seats, **kw)
 
 
 def rounds(template: Template, n: int) -> Template:
@@ -96,7 +94,6 @@ def test_a_showcase_round_waits_for_all_six_seats_then_each_guesser_calls():
     match = Match(
         id="w",
         template_id="word-for-word",
-        template_version=1,
         cards=["zarf", "groak", "oxter"],
         seats=seats,
         guessers=("p1", "p3"),
@@ -141,7 +138,6 @@ def test_a_forfeited_answer_closes_the_round_and_leaves_no_bluff_to_pick():
     match = Match(
         id="w",
         template_id="word-for-word",
-        template_version=1,
         cards=["zarf", "groak", "oxter"],
         seats=("p1", "p2", "p3"),
         guessers=("p1", "p2"),
@@ -267,7 +263,6 @@ def test_a_forfeited_round_still_counts_as_history_for_the_prompts():
     match = Match(
         id="f",
         template_id="front-page",
-        template_version=1,
         cards=["zarf", "groak", "oxter"],
         seats=("p1", "p2", "p3"),
         guessers=(),

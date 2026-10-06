@@ -74,7 +74,6 @@ class Guess:
 class Match:
     id: str
     template_id: str
-    template_version: int
     cards: list[str]
     seats: tuple[Actor, ...] = ("p1", "p2")
     seed_emoji: str = ""

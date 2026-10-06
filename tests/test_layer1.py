@@ -2,7 +2,7 @@ from arena_core.state import Match, apply_ruling, layer1
 
 
 def new_match() -> Match:
-    return Match(id="m", template_id="then-i-am", template_version=1, cards=["a rock"])
+    return Match(id="m", template_id="then-i-am", cards=["a rock"])
 
 
 def test_empty_move_is_refused(template):

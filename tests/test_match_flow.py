@@ -10,13 +10,11 @@ WORDS = load_template("word-for-word")
 
 
 def new_match(match_id: str) -> Match:
-    return Match(id=match_id, template_id="then-i-am", template_version=1, cards=["a rock"])
+    return Match(id=match_id, template_id="then-i-am", cards=["a rock"])
 
 
 def word_match() -> Match:
-    return Match(
-        id="w", template_id="word-for-word", template_version=1, cards=["zarf", "groak", "oxter"]
-    )
+    return Match(id="w", template_id="word-for-word", cards=["zarf", "groak", "oxter"])
 
 
 def short_budget(template: Template, budget: int) -> Template:

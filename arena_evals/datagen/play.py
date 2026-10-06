@@ -36,7 +36,6 @@ def new_match(template: Template, cards: list[Seed]) -> Match:
     return Match(
         id=secrets.token_urlsafe(8),
         template_id=template.slug,
-        template_version=template.schema_version,
         cards=[c.opening_token for c in cards],
         seed_emoji=cards[0].opening_emoji,
         guessers=(),

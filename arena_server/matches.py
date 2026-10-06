@@ -608,7 +608,6 @@ class MatchService:
         match = Match(
             id=row["id"],
             template_id=row["template_id"],
-            template_version=row["template_version"],
             cards=row["cards"],
             seats=tuple(r["seat"] for r in seat_rows),
             seed_emoji=row["seed_emoji"],
