@@ -99,6 +99,10 @@ export function useDuel(matchId: string, spectator: boolean) {
   const busyRef = useRef<{ seq: number; since: number } | null>(null);
   // The seat's own move with the judge, sent after turn afterSeq.
   const sentRef = useRef<{ afterSeq: number; since: number } | null>(null);
+  // The state version the seat's latest move was sent at; a refusal at or below it is for an earlier one.
+  const sendVersionRef = useRef(-1);
+  // The showcase round that what the seat wrote, sent or picked belongs to.
+  const roundRef = useRef(0);
 
   // The move numbered seq, or one after it, is resolved: the board stops showing it as under way.
   const endBusy = useCallback((seq: number) => {
@@ -124,6 +128,17 @@ export function useDuel(matchId: string, spectator: boolean) {
     [endBusy],
   );
 
+  // A showcase round closed: what the seat wrote, sent or picked for it is done with.
+  const startRound = useCallback((round: number) => {
+    if (round <= roundRef.current) return;
+    roundRef.current = round;
+    setCalling(false);
+    setPicked(null);
+    setReturned(null);
+    setPending(false);
+    setText("");
+  }, []);
+
   const refresh = useCallback(() => {
     if (fetchingRef.current) {
       behindRef.current = true;
@@ -137,6 +152,7 @@ export function useDuel(matchId: string, spectator: boolean) {
         if (s.state_version < versionRef.current) return;
         versionRef.current = s.state_version;
         setSnap(s);
+        if (s.mode === "showcase") startRound(s.round_in_play);
         // A human to move with nothing before the judge means the move under way came back.
         const humanFree = s.status === "active" && s.seats.find((x) => x.seat === s.to_move)?.kind === "human";
         endBusy(humanFree && fetchNo > (busyRef.current?.since ?? Infinity) ? Infinity : lastSeq(s));
@@ -170,7 +186,7 @@ export function useDuel(matchId: string, spectator: boolean) {
         behindRef.current = false;
         refresh();
       });
-  }, [matchId, spectator, endBusy, endSent]);
+  }, [matchId, spectator, endBusy, endSent, startRound]);
 
   useEffect(() => {
     refresh();
@@ -222,7 +238,7 @@ export function useDuel(matchId: string, spectator: boolean) {
           return;
         case "turn_rejected": {
           const r = event.data;
-          const mine = r.seat === mySeat;
+          const mine = r.seat === mySeat && r.state_version > sendVersionRef.current;
           if (mine) {
             sentRef.current = null;
             setThinking(false);
@@ -265,17 +281,15 @@ export function useDuel(matchId: string, spectator: boolean) {
           return;
         }
         case "round_revealed":
-          setCalling(false);
-          setPicked(null);
-          setReturned(null);
-          setPending(false);
-          setText("");
+          startRound(event.data.round_n + 1);
           catchUp(event.data.state_version);
           return;
         case "guess_opened":
-          setPending(false);
-          setPicked(null);
-          setCalling(false);
+          if (event.data.round_n >= roundRef.current) {
+            setPending(false);
+            setPicked(null);
+            setCalling(false);
+          }
           catchUp(event.data.state_version);
           return;
         case "seat_submitted": {
@@ -317,17 +331,19 @@ export function useDuel(matchId: string, spectator: boolean) {
             refresh();
             return;
           }
+          // A snapshot read before the end must not bring the match back.
+          if (showcase) catchUp(e.state_version);
+          else versionRef.current = Math.max(versionRef.current, e.state_version);
           setThinking(false);
           setStreaming("");
           setSnap((s) => s && { ...s, status: "ended", winner: e.winner, end_reason: e.end_reason, seats: withTotals(s, e.totals) });
           setEnded(e);
           setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), e.end_reason === "resign" ? 0 : 3200);
-          if (showcase) catchUp(e.state_version);
           return;
         }
       }
     },
-    [refresh, endBusy, endSent, spectator, matchId],
+    [refresh, endBusy, endSent, startRound, spectator, matchId],
   );
   useMatchEvents(matchId, after, onEvent, refresh);
 
@@ -356,6 +372,7 @@ export function useDuel(matchId: string, spectator: boolean) {
     const moveText = showcase ? text : fullMove(template!.move_prefix, text);
     const sent = showcase ? null : { afterSeq: lastSeq(snap), since: Infinity };
     sentRef.current = sent;
+    sendVersionRef.current = snap!.state_version;
     const fetchesBefore = fetchesRef.current;
     try {
       await api.move(matchId, snap!.state_version, moveText, snap!.round_in_play);
