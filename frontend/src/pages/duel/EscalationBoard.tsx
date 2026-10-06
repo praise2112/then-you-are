@@ -8,7 +8,6 @@ import {
   clockText,
   criterionLabel,
   formName,
-  fullMove,
   isLive,
   isLongCard,
   judgeFace,
@@ -23,7 +22,7 @@ import { Composer, HostPanel, ResignRow, ResignSheet, RoundBar, RubricPanel, typ
 
 /** Turn by turn: the seats in the rail, the standing move in the middle, the move box under it. */
 export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
-  const { spectator, text, pending, thinking, streaming, returned, paused, ended, finished } = duel;
+  const { spectator, pending, thinking, streaming, returned, paused, ended, finished } = duel;
   const [showResign, setShowResign] = useState(false);
   const [showRubric, setShowRubric] = useState(false);
   const [voted, setVoted] = useState<Set<number>>(new Set());
@@ -142,10 +141,10 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
               <li>
                 <div className="move">
                   <span>
-                    <span className="who you">
-                      <span>You</span>
+                    <span className={snap.to_move === me ? "who you" : `who tone-${table.tone(snap.to_move)}`}>
+                      <span>{table.name(snap.to_move)}</span>
                     </span>
-                    {fullMove(prefix, text)}
+                    {paused.move_text}
                   </span>
                   {template.medallions && <span className="medallion sm empty">?</span>}
                 </div>
@@ -190,7 +189,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
                 {shown && !streaming && !paused && (
                   <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>{verdictLabel(shown, "standing", prefix)}</span>
                 )}
-                <p className="last-move">{paused ? fullMove(prefix, text) : fell ? fell.move_text : standingText}</p>
+                <p className="last-move">{paused ? paused.move_text : fell ? fell.move_text : standingText}</p>
                 {shown?.host && !streaming && !paused && (
                   <div className="ruled">
                     <span className={`judge-face${face?.fall ? " fall" : ""}`} aria-hidden="true">
