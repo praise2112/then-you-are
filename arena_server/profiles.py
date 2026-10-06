@@ -6,7 +6,8 @@ from typing import Any
 from arena_core.state import JUDGED, STANDING
 from arena_server.auth import account_of
 from arena_server.leaderboard import account_ranks, streaks
-from arena_server.matches import MatchError, MatchService
+from arena_server.matches import MatchService
+from arena_server.store import MatchError
 from arena_server.views import BadgeCount, DuelRow, GameRecord, ProfileView
 
 OPEN = ("open", "active", "awaiting_judgment", "paused")

@@ -32,16 +32,8 @@ def build_snapshot(
 ) -> MatchSnapshot:
     """The match as the viewer's seat, or a spectator when viewer is None, may see it.
     stand_in names the model that played a turn in the House's place."""
-    hide = hides_round(match, template)
     rows = [
-        t
-        for t in rec.turn_rows
-        # The round in play shows only the viewer's own answer, and none while it is called.
-        if not (
-            hide
-            and t["round_n"] == match.round_n
-            and (match.phase == "guess" or t["actor"] != viewer)
-        )
+        t for t in rec.turn_rows if visible_to(match, template, viewer, t["round_n"], t["actor"])
     ]
     return MatchSnapshot(
         id=match.id,
@@ -100,21 +92,36 @@ def display_name(row: SeatRow, rec: Record) -> str:
     return "The House" if n == 1 else f"The House {n}"
 
 
+def shows_live(template: Template) -> bool:
+    """The table sees each turn as it is played, one seat at a time. Otherwise every seat answers
+    a round at once, and the round stays hidden until it is revealed."""
+    return template.mode == "escalation"
+
+
 def hides_round(match: Match, template: Template) -> bool:
-    """Showcase: the round in play stays off the wire until it is revealed."""
-    return template.mode == "showcase" and match.status not in ("ended", "abandoned")
+    """The round in play stays off the wire until it is revealed."""
+    return not shows_live(template) and match.status not in ("ended", "abandoned")
+
+
+def visible_to(
+    match: Match, template: Template, viewer: str | None, round_n: int, actor: str
+) -> bool:
+    """Whether the viewer's seat, or the whole table when None, may see a turn or a call. The
+    round in play shows a seat only its own answer, and none while it is called."""
+    if not hides_round(match, template) or round_n != match.round_n:
+        return True
+    return match.phase == "write" and actor == viewer
 
 
 def shown_points(match: Match, template: Template, rec: Record) -> dict[str, int]:
-    """Seat totals as of the last revealed round: the round in play is still secret."""
+    """Seat totals as the whole table may see them."""
     shown = dict(match.points)
-    if not hides_round(match, template):
-        return shown
     for t in rec.turn_rows:
-        if t["round_n"] == match.round_n:
+        if not visible_to(match, template, None, t["round_n"], t["actor"]):
             shown[t["actor"]] -= t["points"] or 0
-    for g in match.round_guesses(match.round_n):
-        shown[g.awarded_to] -= g.points
+    for g in match.guesses:
+        if not visible_to(match, template, None, g.round_n, g.actor):
+            shown[g.awarded_to] -= g.points
     return shown
 
 

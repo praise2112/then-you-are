@@ -18,6 +18,7 @@ from arena_server.views import TableKind
 
 ABANDON_WINDOW = timedelta(hours=24)
 UNFILLED_WINDOW = timedelta(minutes=10)
+LIVE_STATUSES = ("open", "active", "awaiting_judgment", "paused")
 
 log = logging.getLogger(__name__)
 
@@ -50,6 +51,8 @@ class SeatRow:
 class Record:
     """What the service keeps about a match beyond the engine's state."""
 
+    # The template the match was created with.
+    template: Template
     turn_rows: list[dict]
     seats: list[SeatRow]
     kind: TableKind
@@ -92,13 +95,20 @@ class TurnRow:
 
 
 async def load_match(
-    pool: Pool, match_id: str, match_templates: dict[str, Template]
+    pool: Pool, match_id: str, templates: dict[str, Template], cache: dict[str, Template]
 ) -> tuple[Match, Record]:
-    """The match and its record. Parses the match's own template into match_templates the
-    first time it is loaded."""
+    """The match and its record. Reads the match's own template unless `cache` holds it, and
+    caches it while the match is live; `templates` stands in for one this build cannot read."""
+    cached = cache.get(match_id)
     async with pool.connection() as conn:
         row = await (
-            await conn.execute("select * from matches where id = %s", (match_id,))
+            await conn.execute(
+                "select id, template_id, cards, seed_emoji, status, state_version, to_move, "
+                "phase, round_n, winner, end_reason, kind, seats_wanted, invite_code, "
+                "turn_deadline, is_public, is_curated, created_at, "
+                "case when %s then null else config end as config from matches where id = %s",
+                (cached is not None, match_id),
+            )
         ).fetchone()
         if row is None:
             raise MatchError(404, "no such match")
@@ -125,11 +135,9 @@ async def load_match(
                 (match_id,),
             )
         ).fetchall()
-    if match_id not in match_templates and row["config"]:
-        try:
-            match_templates[match_id] = Template.model_validate(row["config"])
-        except ValidationError:
-            log.warning("match %s stored a template this build cannot read", match_id)
+    template = cached or _stored_template(row, templates)
+    if cached is None and row["status"] in LIVE_STATUSES:
+        cache[match_id] = template
     match = Match(
         id=row["id"],
         template_id=row["template_id"],
@@ -167,6 +175,7 @@ async def load_match(
         end_reason=row["end_reason"],
     )
     rec = Record(
+        template=template,
         turn_rows=turns,
         seats=[
             SeatRow(
@@ -191,6 +200,15 @@ async def load_match(
         created_at=row["created_at"],
     )
     return match, rec
+
+
+def _stored_template(row: DictRow, templates: dict[str, Template]) -> Template:
+    if row["config"]:
+        try:
+            return Template.model_validate(row["config"])
+        except ValidationError:
+            log.warning("match %s stored a template this build cannot read", row["id"])
+    return templates[row["template_id"]]
 
 
 async def update_match(conn: AsyncConnection[DictRow], match: Match) -> None:
@@ -477,13 +495,15 @@ async def set_curated(pool: Pool, match_id: str, curated: bool) -> None:
             raise MatchError(404, "no finished match with that id")
 
 
-async def check_match_exists(pool: Pool, match_id: str) -> None:
+async def match_is_live(pool: Pool, match_id: str) -> bool:
+    """Whether the match can still change. Raises MatchError 404 when there is no such match."""
     async with pool.connection() as conn:
         row = await (
-            await conn.execute("select 1 from matches where id = %s", (match_id,))
+            await conn.execute("select status from matches where id = %s", (match_id,))
         ).fetchone()
     if row is None:
         raise MatchError(404, "no such match")
+    return row["status"] in LIVE_STATUSES
 
 
 async def action_seen(pool: Pool, match_id: str, action_id: str) -> bool:

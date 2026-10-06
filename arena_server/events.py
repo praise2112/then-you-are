@@ -47,8 +47,12 @@ class EventBus:
     def forget(self, match_id: str) -> None:
         self.streams.pop(match_id, None)
 
-    async def subscribe(self, match_id: str, last_id: int = 0) -> AsyncIterator[Event]:
-        stream = self.streams[match_id]
+    async def subscribe(
+        self, match_id: str, last_id: int = 0, live: bool = True
+    ) -> AsyncIterator[Event]:
+        """The match's events after the first `last_id`. A match that is over gets no new
+        stream."""
+        stream = self.streams[match_id] if live else self.streams.get(match_id, MatchStream())
         cursor = last_id
         while True:
             while cursor < len(stream.events):

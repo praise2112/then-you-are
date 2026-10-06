@@ -8,7 +8,6 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
 from arena_core.state import (
-    JUDGED,
     Actor,
     Change,
     IllegalAction,
@@ -22,6 +21,7 @@ from arena_core.state import (
     layer1,
     model_next,
     normalize,
+    previous_of,
     repeats_the_round,
     resign,
     skip_guess,
@@ -58,6 +58,8 @@ from arena_server.snapshots import (
     resolve_pick,
     returned_answer,
     share_text,
+    shows_live,
+    visible_to,
 )
 from arena_server.store import (
     MatchClosed,
@@ -131,9 +133,6 @@ class MatchService:
         # Each match plays the template it was created with, parsed once from its row.
         self.match_templates: dict[str, Template] = {}
 
-    def template_of(self, match: Match) -> Template:
-        return self.match_templates.get(match.id) or self.templates[match.template_id]
-
     def _forget(self, match_id: str) -> None:
         """Drops the per-match memory once a match is over; the event stream lingers so a
         client can still read the ending."""
@@ -153,7 +152,7 @@ class MatchService:
             match, rec = await self.load(match_id)
             if match.status != "active":
                 return
-            template = self.template_of(match)
+            template = rec.template
             if template.mode == "escalation":
                 await self.after_turn(match, template, rec)
                 return
@@ -163,7 +162,7 @@ class MatchService:
     # Loading and saving
 
     async def load(self, match_id: str) -> tuple[Match, Record]:
-        return await load_match(self.pool, match_id, self.match_templates)
+        return await load_match(self.pool, match_id, self.templates, self.match_templates)
 
     async def set_clock(
         self, match: Match, rec: Record, template: Template, running: bool = True
@@ -201,7 +200,10 @@ class MatchService:
 
     async def snapshot(self, match_id: str, session_key: str | None = None) -> MatchSnapshot:
         match, rec = await self.load(match_id)
-        template = self.template_of(match)
+        return await self._snapshot(match, rec, session_key)
+
+    async def _snapshot(self, match: Match, rec: Record, session_key: str | None) -> MatchSnapshot:
+        template = rec.template
         viewer = await seat_of(self.pool, rec, session_key)
         if viewer and template.mode == "showcase" and match.status == "active":
             self.start_model_answers(match, rec)
@@ -216,8 +218,8 @@ class MatchService:
         )
 
     async def replay(self, match_id: str, session_key: str | None = None) -> Replay:
-        _, rec = await self.load(match_id)
-        snap = await self.snapshot(match_id, session_key)
+        match, rec = await self.load(match_id)
+        snap = await self._snapshot(match, rec, session_key)
         if snap.status not in ("ended", "abandoned"):
             raise MatchError(404, "match still running")
         return Replay(
@@ -259,7 +261,7 @@ class MatchService:
             seat = await self._check_command(
                 match, rec, session_key, "move", expected_version, round_n
             )
-            template = self.template_of(match)
+            template = rec.template
             if template.mode == "showcase":
                 self.start_model_answers(match, rec)
                 await set_submitted(self.pool, match_id, seat, True)
@@ -290,7 +292,7 @@ class MatchService:
             seat = await self._check_command(
                 match, rec, session_key, "guess", expected_version, round_n
             )
-            template = self.template_of(match)
+            template = rec.template
             card = template.seed_named(match.card)
             assert card is not None
             pick = resolve_pick(match, card, seat, key)
@@ -315,7 +317,7 @@ class MatchService:
             if await action_seen(self.pool, match_id, action_id):
                 return
             seat = await self._check_command(match, rec, session_key, "resign", expected_version)
-            template = self.template_of(match)
+            template = rec.template
             change = resign(match, seat, template)
             await store_turn(
                 self.pool,
@@ -335,19 +337,13 @@ class MatchService:
     async def disagree(self, match_id: str, seq: int, session_key: str | None) -> None:
         """One vote per seated session and move, on a move the table can already see."""
         match, rec = await self.load(match_id)
-        template = self.template_of(match)
+        template = rec.template
         if session_key is None or await seat_of(self.pool, rec, session_key) is None:
             raise MatchError(403, "only a seat at this table can disagree")
         turn = next((t for t in match.turns if t.seq == seq), None)
-        if turn is None or (hides_round(match, template) and turn.round_n >= match.round_n):
+        if turn is None or not visible_to(match, template, None, turn.round_n, turn.actor):
             raise MatchError(404, "no such turn")
-        if template.mode == "showcase":
-            previous = match.cards[turn.round_n - 1]
-        else:
-            previous = next(
-                (t.move_text for t in reversed(match.turns[: seq - 1]) if t.outcome in JUDGED),
-                match.seed,
-            )
+        previous = previous_of(match, template, turn)
         await add_disagreement(
             self.pool,
             match_id,
@@ -376,7 +372,7 @@ class MatchService:
         seat = await seat_of(self.pool, rec, session_key)
         if seat is None:
             raise MatchError(403, "not your match")
-        template = self.template_of(match)
+        template = rec.template
         try:
             if action == "resign":
                 check_resign(match, seat)
@@ -419,7 +415,7 @@ class MatchService:
             match, rec = await self.load(match_id)
             if match.status != "awaiting_judgment" or match.to_move != seat:
                 return
-            template = self.template_of(match)
+            template = rec.template
             try:
                 ended = await self._play_move(match, template, seat, move_text, action_id)
                 if not ended:
@@ -698,7 +694,7 @@ class MatchService:
             match, rec = await self.load(match_id)
             if not self._still_owed(match, seat, round_n):
                 return
-            template = self.template_of(match)
+            template = rec.template
             card = template.seed_named(match.card)
             assert card is not None
             lines = transcript(match, template, finished_only=True)
@@ -723,7 +719,7 @@ class MatchService:
                     return
                 await hold_move(self.pool, match_id, seat, None, round_n)
                 # Two identical entries could not be told apart on the call.
-                if repeats_the_round(match, text):
+                if repeats_the_round(match, template, text):
                     if tries < MODEL_REWRITES:
                         rewrite = True
                         return
@@ -750,7 +746,7 @@ class MatchService:
         it leaves the server until the round is revealed."""
         try:
             match, rec = await self.load(match_id)
-            template = self.template_of(match)
+            template = rec.template
             round_n = match.round_n
             card = template.seed_named(match.card)
             assert card is not None
@@ -778,7 +774,7 @@ class MatchService:
                     change = await self._refuse_semantic(
                         match, template, seat, move_text, judged, action_id
                     )
-                elif repeats_the_round(match, move_text):
+                elif repeats_the_round(match, template, move_text):
                     # No strike: the seat could not have known.
                     await store_turn(
                         self.pool,
@@ -834,7 +830,7 @@ class MatchService:
             async with self.locks[match_id]:
                 await set_submitted(self.pool, match_id, seat, False)
                 match, rec = await self.load(match_id)
-                await self._give_time(match, rec, self.template_of(match))
+                await self._give_time(match, rec, rec.template)
 
     async def _give_time(self, match: Match, rec: Record, template: Template) -> None:
         """A seat handed back its move after the judge ran long gets a whole clock again."""
@@ -996,7 +992,7 @@ class MatchService:
             now = datetime.now(UTC)
             if match.status != "active" or rec.turn_deadline is None or rec.turn_deadline > now:
                 return
-            await self._expire_turn(match, rec, self.template_of(match))
+            await self._expire_turn(match, rec, rec.template)
 
     async def _expire_turn(self, match: Match, rec: Record, template: Template) -> None:
         if template.mode == "escalation":
@@ -1035,7 +1031,7 @@ class MatchService:
     def _emit_rejection(self, match: Match, template: Template, rejected: TurnRejected) -> None:
         """A showcase refusal is about a hidden answer, so the stream says only whose it was;
         that seat reads the reason from its own snapshot."""
-        if template.mode == "showcase":
+        if not shows_live(template):
             rejected = rejected.model_copy(update={"reason_text": "", "nudge_text": None})
         self.bus.emit(match.id, "turn_rejected", rejected)
 

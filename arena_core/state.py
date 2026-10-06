@@ -264,11 +264,37 @@ def layer1(template: Template, move_text: str, match: Match) -> Layer1Reason | N
     return refusal(template, move_text, [*match.cards, *earlier])
 
 
-def repeats_the_round(match: Match, move_text: str) -> bool:
+def repeats_the_round(match: Match, template: Template, move_text: str) -> bool:
     """Showcase: another seat already gave this exact answer for the round in play."""
+    if template.mode != "showcase":
+        return False
     return normalize(move_text) in {
         normalize(t.move_text) for t in match.round_turns(match.round_n)
     }
+
+
+def card_in_play(match: Match, template: Template) -> Seed:
+    """The card dealt for the round in play; in escalation, the opening form."""
+    card = template.seed_named(match.card)
+    assert card is not None
+    return card
+
+
+def judged_against(match: Match, template: Template) -> str:
+    """What the judge weighs the move in play against: the standing form, or in showcase the
+    card in play."""
+    if template.mode == "showcase":
+        return card_in_play(match, template).card_text
+    return match.standing_form
+
+
+def previous_of(match: Match, template: Template, turn: Turn) -> str:
+    """What a judged turn answered: the judged move before it or the seed, or in showcase its
+    round's card."""
+    if template.mode == "showcase":
+        return match.cards[turn.round_n - 1]
+    earlier = match.turns[: turn.seq - 1]
+    return next((t.move_text for t in reversed(earlier) if t.outcome in JUDGED), match.seed)
 
 
 def weighted_total(scores: dict[str, int], weights: dict[str, int]) -> int:

@@ -14,7 +14,7 @@ from arena_core.template import Template
 from arena_server.db import Pool
 from arena_server.events import MatchStarted, SeatJoined
 from arena_server.presence import Lobby, Presence
-from arena_server.sessions import open_match_ids, seat_of, session_view
+from arena_server.sessions import lists_duels, open_match_ids, seat_of
 from arena_server.store import (
     MatchError,
     insert_match,
@@ -89,7 +89,7 @@ class Tables:
             return await service.snapshot(open_ids[0], session_key)
         cards = deal(template, secrets.SystemRandom(), first, template.revealed_card)
         match_id = secrets.token_urlsafe(8)
-        listed = (await session_view(service, session_key)).list_duels
+        listed = await lists_duels(service.pool, session_key)
         house = kind == "house"
         async with service.pool.connection() as conn, conn.transaction():
             await insert_match(
@@ -189,7 +189,7 @@ class Tables:
         if len(rec.seats) >= rec.seats_wanted:
             await start_table(service.pool, match_id)
             match, rec = await service.load(match_id)
-            template = service.template_of(match)
+            template = rec.template
             service.bus.emit(match_id, "match_started", MatchStarted(state_version=0))
             if template.mode == "showcase":
                 await service.set_clock(match, rec, template)

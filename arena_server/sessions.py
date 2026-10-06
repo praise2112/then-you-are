@@ -49,6 +49,17 @@ async def ensure_session(
     return key
 
 
+async def lists_duels(pool: Pool, session_key: str) -> bool:
+    """Whether the session has chosen to list its duels on the stage."""
+    async with pool.connection() as conn:
+        row = await (
+            await conn.execute(
+                "select list_duels from sessions where session_key = %s", (session_key,)
+            )
+        ).fetchone()
+    return bool(row and row["list_duels"])
+
+
 async def session_view(service: "MatchService", session_key: str | None) -> SessionView:
     if session_key:
         async with service.pool.connection() as conn:
@@ -111,7 +122,7 @@ async def open_match_ids(
 
 async def open_duel(service: "MatchService", match_id: str, session_key: str) -> OpenDuel:
     match, rec = await service.load(match_id)
-    template = service.template_of(match)
+    template = rec.template
     mine = await seat_of(service.pool, rec, session_key)
     if match.status == "open":
         line = f"waiting for {rec.seats_wanted - len(rec.seats)} more"

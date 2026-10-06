@@ -49,12 +49,12 @@ from arena_server.events import (
     TurnRejected,
 )
 from arena_server.leaderboard import board, boards_index, ranked_players
-from arena_server.matches import MatchError, MatchService
+from arena_server.matches import MatchService
 from arena_server.names import check_name
 from arena_server.presence import Lobby, Online, Presence, TurnNudge
 from arena_server.profiles import profile
 from arena_server.sessions import ensure_session, session_view
-from arena_server.store import check_match_exists, set_curated
+from arena_server.store import MatchError, match_is_live, set_curated
 from arena_server.tables import Tables, open_tables
 from arena_server.views import (
     BoardSummary,
@@ -440,11 +440,11 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def events(
         match_id: str, last_event_id: str | None = Header(default=None)
     ) -> EventSourceResponse:
-        await check_match_exists(pool, match_id)
+        live = await match_is_live(pool, match_id)
         last_id = bus.cursor_from(last_event_id)
 
         async def gen() -> AsyncIterator[dict]:
-            async for event in bus.subscribe(match_id, last_id):
+            async for event in bus.subscribe(match_id, last_id, live):
                 yield {"id": event.id, "event": event.name, "data": event.data}
 
         return EventSourceResponse(gen())
