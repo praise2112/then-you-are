@@ -7,7 +7,6 @@ import { PROVIDER_MARKS } from "./providerMarks.ts";
 
 const PROVIDER_NAMES: Record<string, string> = { google: "Google", github: "GitHub", discord: "Discord" };
 
-/** Sign-in menu for guests; name and settings gear for signed-in players. Providers come from the server. */
 /** One button per provider, each a plain link into the redirect flow. */
 function ProviderButtons({ providers, verb }: { providers: string[]; verb: string }) {
   const back = encodeURIComponent(location.pathname);
@@ -40,6 +39,7 @@ function takeNotice(): Notice {
   return { kind, provider, name: name.join(":") };
 }
 
+/** Sign-in menu for guests; name and settings gear for signed-in players. Providers come from the server. */
 export function AccountMenu() {
   const [session, setSession] = useState<SessionView | null>(null);
   const [open, setOpen] = useState(false);
