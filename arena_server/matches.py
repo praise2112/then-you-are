@@ -799,9 +799,7 @@ class MatchService:
         if rejected is not None:
             self._emit_rejection(match, template, rejected)
         if change.turn is not None and live and response is not None:
-            self.bus.emit(
-                match.id, "ruling", _ruling(match, change.turn, response.scoring, response.host)
-            )
+            self.bus.emit(match.id, _ruling(match, change.turn, response.scoring, response.host))
             if change.turn.outcome == "fail":
                 coaching = response.host.coaching_line
         elif change.turn is not None and not live and change.turn.actor in match.human_seats:
@@ -812,7 +810,6 @@ class MatchService:
         if change.call_opened:
             self.bus.emit(
                 match.id,
-                "guess_opened",
                 GuessOpened(round_n=match.round_n, state_version=match.state_version),
             )
         if change.round_closed:
@@ -829,12 +826,11 @@ class MatchService:
             scoring = ScoringPayload.model_validate(row["scoring"])
             host = HostPayload.model_validate(row["host"])
             turn = match.turns[row["seq"] - 1]
-            self.bus.emit(match.id, "ruling", _ruling(match, turn, scoring, host))
+            self.bus.emit(match.id, _ruling(match, turn, scoring, host))
         card = template.seed_named(match.cards[round_n - 1])
         assert card is not None
         self.bus.emit(
             match.id,
-            "round_revealed",
             RoundRevealed(
                 round_n=round_n,
                 token=card.opening_token,
@@ -852,19 +848,17 @@ class MatchService:
         was; that seat reads the reason from its own snapshot."""
         if not shows_live(template):
             rejected = rejected.model_copy(update={"reason_text": "", "nudge_text": None})
-        self.bus.emit(match.id, "turn_rejected", rejected)
+        self.bus.emit(match.id, rejected)
 
     def _seat_submitted(self, match: Match, seat: str) -> None:
         self.bus.emit(
             match.id,
-            "seat_submitted",
             SeatSubmitted(seat=seat, state_version=match.state_version),
         )
 
     def _turn_changed(self, match: Match, deadline: str | None) -> None:
         self.bus.emit(
             match.id,
-            "turn_changed",
             TurnChanged(
                 to_move=match.to_move,
                 turn_deadline=deadline,
@@ -879,7 +873,6 @@ class MatchService:
         self._forget(match.id)
         self.bus.emit(
             match.id,
-            "match_ended",
             MatchEnded(
                 end_reason=match.end_reason,
                 result_kind=result_kind(match.end_reason, match.winner),

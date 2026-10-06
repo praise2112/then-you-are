@@ -99,5 +99,5 @@ class House:
         async for chunk in stream:
             parts.append(chunk)
             if not silent:
-                self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))
+                self.bus.emit(match.id, MoveToken(seq=seq, text=chunk))
         return clean_move("".join(parts))

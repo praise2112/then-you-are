@@ -2,6 +2,7 @@
 Last-Event-ID from an earlier process replays the buffer from the start."""
 
 import asyncio
+import re
 import secrets
 from collections import defaultdict
 from collections.abc import AsyncIterator
@@ -34,8 +35,10 @@ class EventBus:
         self.generation = secrets.token_hex(3)
         self.streams: dict[str, MatchStream] = defaultdict(MatchStream)
 
-    def emit(self, match_id: str, name: str, payload: BaseModel) -> None:
+    def emit(self, match_id: str, payload: BaseModel) -> None:
+        """Sends the payload as the event its class names: TurnChanged as turn_changed."""
         stream = self.streams[match_id]
+        name = re.sub(r"(?<!^)(?=[A-Z])", "_", type(payload).__name__).lower()
         event_id = f"{self.generation}-{len(stream.events) + 1}"
         stream.events.append(Event(id=event_id, name=name, data=payload.model_dump_json()))
         if "state_version" in type(payload).model_fields:

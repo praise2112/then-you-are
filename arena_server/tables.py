@@ -184,11 +184,11 @@ class Tables:
         """A seat was filled; the table starts when it is full. Runs under the match lock."""
         service = self.service
         _, rec = await service.load(match_id)
-        service.bus.emit(match_id, "seat_joined", SeatJoined(seat=seat, state_version=0))
+        service.bus.emit(match_id, SeatJoined(seat=seat, state_version=0))
         if len(rec.seats) >= rec.seats_wanted:
             await start_table(service.pool, match_id)
             match, rec = await service.load(match_id)
-            service.bus.emit(match_id, "match_started", MatchStarted(state_version=0))
+            service.bus.emit(match_id, MatchStarted(state_version=0))
             await service.start(match, rec)
         service.spawn(self._broadcast_lobby())
 

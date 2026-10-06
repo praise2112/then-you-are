@@ -57,7 +57,7 @@ class Judge:
         """Retries the judge call until it rules; unless quiet, announces it and pauses through
         an outage. Raises MatchClosed if the match closes, JudgeGaveUp after JUDGE_GIVE_UP_S."""
         if not quiet:
-            self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
+            self.bus.emit(match.id, JudgeStarted(seq=seq))
         paused = False
         attempt = 0
         started = time.monotonic()
@@ -68,7 +68,7 @@ class Judge:
                 self.fault = None
                 if paused:
                     await set_status(self.pool, match.id, "awaiting_judgment")
-                    self.bus.emit(match.id, "judge_resumed", JudgeResumed(seq=seq))
+                    self.bus.emit(match.id, JudgeResumed(seq=seq))
                 return Judged(route_outcome(call.response.scoring), call.response, verdict_id)
             if not paused and not quiet:
                 paused = True
@@ -76,7 +76,6 @@ class Judge:
                 host_text = template.judge_out_text.strip().format(standing_form=previous)
                 self.bus.emit(
                     match.id,
-                    "judge_paused",
                     JudgePaused(seq=seq, host_text=host_text, move_text=move_text),
                 )
             if call.error_status in BILLING_STATUSES:
