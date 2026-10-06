@@ -627,3 +627,38 @@ ul.rules-text li {
     grid-row: auto;
   }
 }
+
+.other-slips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+}
+
+.other-slips li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  max-width: 100%;
+  padding: 0.3rem 0.7rem;
+  background: var(--paper-sunk);
+  border: 1px solid var(--rule);
+  font-size: 0.9rem;
+}
+
+.other-slips li.in {
+  background: repeating-linear-gradient(-45deg, var(--paper-sunk) 0 6px, var(--paper) 6px 12px);
+}
+
+.other-slips .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.06em;
+}
+
+.other-slips em {
+  color: var(--ink-faint);
+  white-space: nowrap;
+}

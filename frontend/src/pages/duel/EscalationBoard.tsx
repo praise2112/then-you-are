@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
 import { api } from "../../api.ts";
-import { Host } from "../../Host.tsx";
 import { Icon } from "../../Icons.tsx";
 import {
   capitalize,
@@ -9,7 +8,9 @@ import {
   criterionLabel,
   formName,
   isLive,
+  fullMove,
   isLongCard,
+  isLongMove,
   judgeFace,
   lastStanding,
   shortName,
@@ -18,11 +19,11 @@ import {
 import { criterionMarks, totalPoints, verdictLabel } from "../labels.ts";
 import { ResultCard } from "../ResultCard.tsx";
 import { SeatList, SeatStrip } from "../seats.tsx";
-import { Composer, HostPanel, ResignRow, ResignSheet, RoundBar, RubricPanel, type BoardProps } from "./parts.tsx";
+import { Composer, HostPanel, MoveSlip, ResignRow, ResignSheet, RoundBar, RubricPanel, type BoardProps } from "./parts.tsx";
 
 /** Turn by turn: the seats in the rail, the standing move in the middle, the move box under it. */
 export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
-  const { spectator, pending, thinking, streaming, returned, paused, ended, finished } = duel;
+  const { spectator, text, pending, thinking, streaming, returned, paused, ended, finished } = duel;
   const [showResign, setShowResign] = useState(false);
   const [showRubric, setShowRubric] = useState(false);
   const [voted, setVoted] = useState<Set<number>>(new Set());
@@ -48,34 +49,58 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
   const face = shown && judgeFace(shown);
   const yourLast = [...snap.transcript].reverse().find((t) => t.actor === me && t.host);
   const showYourSlip = yourLast && latest?.actor !== me && !streaming && !finished;
-  const standingText = streaming || standing?.move_text || snap.seed_token;
-  const standingIsMine = !streaming && !!me && standing?.actor === me;
+  const standingText = standing?.move_text || snap.seed_token;
+  const cardText = fell ? fell.move_text : standingText;
+  const standingIsMine = !!me && standing?.actor === me;
   const live = isLive(snap.status);
-  const mover = table.seat(snap.to_move);
-  const moverIsModel = mover?.kind === "model";
   const moverName = table.name(snap.to_move);
-  const moverIs = snap.to_move === me ? "You are" : `${moverName} is`;
-  const waiting = pending || thinking || !!streaming || (live && moverIsModel && !paused);
-  const othersTurn = live && !moverIsModel && snap.to_move !== me && !waiting;
   const canPlay = snap.status === "active" && !!me && snap.to_move === me && !pending && !paused && !ended;
   const round = Math.min(snap.round_in_play, template.rounds_budget);
   const myIndex = snap.seats.findIndex((s) => s.seat === me);
   const after = snap.seats.filter((s, i) => i > myIndex && !s.eliminated).map((s) => table.name(s.seat));
   const lastRound = round === template.rounds_budget && snap.to_move === me && !!me;
   const longCard = isLongCard(snap.seed_token);
-  const standingName = longCard && !standing && !streaming ? template.labels.opening.toLowerCase() : shortName(formName(standingText, prefix));
+  const standingName = longCard && !standing ? template.labels.opening.toLowerCase() : shortName(formName(standingText, prefix));
   const other = snap.seats.find((s) => s.seat !== me);
+
+  const slip = slipOnTable();
+  const withJudge = slip?.state === "read" || slip?.state === "held";
+  const seatOrder = snap.seats.filter((s) => !s.eliminated).map((s) => s.seat);
+
+  // The move the table is waiting on: being written, or with the judge.
+  function slipOnTable() {
+    if (!live || ended) return null;
+    const name = snap.to_move === me ? "Yours" : moverName;
+    const tone = table.tone(snap.to_move);
+    if (paused) return { name, tone, state: "held" as const, text: paused.move_text, note: "The match is paused until the judge rules." };
+    if (snap.status === "awaiting_judgment" || thinking || (pending && snap.to_move === me)) {
+      const mine = snap.to_move === me && text ? fullMove(prefix, text) : null;
+      return { name, tone, state: "read" as const, text: mine ?? (streaming || null) };
+    }
+    if (snap.to_move !== me) return { name, tone, state: "write" as const, text: streaming };
+    return null;
+  }
+
+  function untilYourMove(): string {
+    if (!me || !seatOrder.includes(me)) return "";
+    if (round === template.rounds_budget && snap.seats.findIndex((s) => s.seat === snap.to_move) >= myIndex) {
+      return "Your last move is in. The match ends with this round.";
+    }
+    const between = [];
+    for (let k = seatOrder.indexOf(snap.to_move) + 1; seatOrder[k % seatOrder.length] !== me; k++) between.push(seatOrder[k % seatOrder.length]);
+    if (between.length === 0) return "Your move is next.";
+    if (between.length > 2) return `You write again after ${between.length} more moves.`;
+    return `You write again after ${between.map((s) => table.name(s).replace(/^The /, "the ")).join(" and ")}.`;
+  }
 
   function standingHead(): string {
     if (fell) return `${table.name(fell.actor)} fell`;
     if (finished) return standing ? `${table.name(standing.actor)} had the last word` : template.labels.opening;
-    if (streaming) return `${moverIs} writing`;
     if (!standing) return template.labels.opening;
     return standingIsMine ? "You wrote" : `From ${table.name(standing.actor)}`;
   }
 
   function composerLabel(): string {
-    if (othersTurn) return `${moverName} is writing`;
     if (paused) return template.labels.compose_waiting;
     if (returned) return "Your move, still yours";
     return template.labels.compose.replace("{token}", standingName);
@@ -85,9 +110,8 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
     if (fell) return "The match is over. One moment.";
     if (paused) return paused.host_text;
     if (returned?.nudge_text) return returned.nudge_text;
-    if (waiting) return moverIsModel && !pending ? `${moverName} is thinking.` : "The judge is reading.";
-    if (othersTurn) return `${capitalize(standingName)} stands. ${moverName} to move.`;
-    return `${capitalize(standingName)}. ${template.move_hint}`;
+    if (canPlay) return `${capitalize(standingName)}. ${template.move_hint}`;
+    return `${capitalize(standingName)} stands.`;
   }
 
   return (
@@ -96,7 +120,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
 
       <main className="stage">
         <section>
-          <SeatList snap={snap} table={table} />
+          <SeatList snap={snap} table={table} withJudge={withJudge} />
           <p className="centered-label small-caps" style={{ marginTop: "var(--space-3)" }}>
             The match so far
           </p>
@@ -159,7 +183,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
         </section>
 
         <section>
-          <SeatStrip snap={snap} table={table} />
+          <SeatStrip snap={snap} table={table} withJudge={withJudge} />
           {showYourSlip && !spectator && (
             <p className="your-slip">
               {template.medallions && (
@@ -182,16 +206,15 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
               <p className="card-text">{snap.seed_token}</p>
             </div>
           )}
-          {(!longCard || shown || streaming || paused) && (
+          {(!longCard || shown) && (
             <>
               <p className="small-caps last-move-head">{standingHead()}</p>
-              <div className={`torn standing${waiting ? " reading" : ""}${finished ? " final" : ""}`}>
-                {paused && <span className="tag">Awaiting ruling</span>}
-                {shown && !streaming && !paused && (
+              <div className={`torn standing${finished ? " final" : ""}${slip && isLongMove(cardText) ? " under" : ""}`}>
+                {shown && (
                   <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>{verdictLabel(shown, "standing", prefix)}</span>
                 )}
-                <p className="last-move">{paused ? paused.move_text : fell ? fell.move_text : standingText}</p>
-                {shown?.host && !streaming && !paused && (
+                <p className={`last-move${isLongMove(cardText) ? " long" : ""}`}>{cardText}</p>
+                {shown?.host && (
                   <div className="ruled">
                     <span className={`judge-face${face?.fall ? " fall" : ""}`} aria-hidden="true">
                       {face?.face}
@@ -211,17 +234,16 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
               </div>
             </>
           )}
-          {paused && <p className="waiting">The match is paused until the judge rules.</p>}
+          {slip && <MoveSlip key={snap.to_move} {...slip} />}
 
           {finished && <ResultCard snap={snap} ended={finished} table={table} />}
-          {!spectator && !finished && me && (
+          {!spectator && me && (canPlay || (paused && !ended)) && (
             <Composer
               duel={duel}
               template={template}
               label={composerLabel()}
               prefix={prefix}
-              scanning={waiting && !paused}
-              disabled={pending || !!ended || (snap.to_move !== me && !paused)}
+              disabled={!canPlay && !paused}
               placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example.slice(prefix.length)}
               refusal="Not a move yet."
               clock={canPlay && left !== null ? clockText(left) : null}
@@ -236,17 +258,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
               )}
             </Composer>
           )}
-          {(spectator || !me) && !waiting && !paused && live && <p className="waiting">Waiting for {moverName} to move.</p>}
-
-          {waiting && !paused && (
-            <div className="judge-reading" role="status">
-              <Host state="thinking" />
-              <span>
-                {streaming ? `${moverIs} answering` : "The judge is reading"}
-                <span className="dots" />
-              </span>
-            </div>
-          )}
+          {!spectator && me && slip && !paused && <p className="waiting">{untilYourMove()}</p>}
         </section>
 
         <section>
@@ -293,7 +305,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
               )}
             </RubricPanel>
           )}
-          <HostPanel line={hostLine()} thinking={!!paused || waiting} finished={finished} me={me} />
+          <HostPanel line={hostLine()} thinking={!!paused} finished={finished} me={me} />
         </section>
       </main>
 

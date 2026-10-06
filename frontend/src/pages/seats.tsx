@@ -10,11 +10,12 @@ export function AiTag() {
   return <small className="ai-tag">AI</small>;
 }
 
-type SeatProps = { snap: MatchSnapshot; table: Table };
+// withJudge: the move under way is with the judge.
+type SeatProps = { snap: MatchSnapshot; table: Table; withJudge?: boolean };
 
 /** One line per seat in turn order. The seat to move gets a second line and the clock
  *  bar; in a showcase round a filled dot marks a seat that has answered. */
-export function SeatList({ snap, table }: SeatProps) {
+export function SeatList({ snap, table, withJudge = false }: SeatProps) {
   const left = useSecondsLeft(snap.turn_deadline);
   const showcase = snap.mode === "showcase";
   const live = isLive(snap.status);
@@ -23,7 +24,8 @@ export function SeatList({ snap, table }: SeatProps) {
       {snap.seats.map((seat) => {
         const moving = live && !showcase && snap.to_move === seat.seat;
         const mine = seat.seat === table.me;
-        const state = moving ? (mine ? "Your move" : left !== null ? `Writing, ${clockText(left)}` : "Writing") : null;
+        const writing = mine ? "Your move" : left !== null ? `Writing, ${clockText(left)}` : "Writing";
+        const state = moving ? (withJudge ? "With the judge" : writing) : null;
         return (
           <li
             key={seat.seat}
@@ -51,7 +53,7 @@ export function SeatList({ snap, table }: SeatProps) {
 }
 
 /** A phone's version of the seat list: one line above the card that opens the whole list. */
-export function SeatStrip({ snap, table }: SeatProps) {
+export function SeatStrip({ snap, table, withJudge = false }: SeatProps) {
   const left = useSecondsLeft(snap.turn_deadline);
   const clock = left !== null ? `, ${clockText(left)}` : "";
   const mover = snap.seats.find((s) => s.seat === snap.to_move);
@@ -75,13 +77,16 @@ export function SeatStrip({ snap, table }: SeatProps) {
     );
   } else if (mover) {
     const mine = mover.seat === table.me;
+    const name = table.name(mover.seat);
+    let line = mine ? "Your move" : `${name} is writing`;
+    if (withJudge) line = mine ? "Yours is with the judge" : `${name}, with the judge`;
     summary = (
       <>
         <span className={`who tone-${table.tone(mover.seat)}`}>
-          <span>{mine ? "Your move" : `${table.name(mover.seat)} is writing`}</span>
+          <span>{line}</span>
           {mover.kind === "model" && <AiTag />}
         </span>
-        {!mine && left !== null && <b className="clock">{clockText(left)}</b>}
+        {!mine && !withJudge && left !== null && <b className="clock">{clockText(left)}</b>}
       </>
     );
   }
@@ -91,7 +96,7 @@ export function SeatStrip({ snap, table }: SeatProps) {
         {summary}
         <span className="more">All seats</span>
       </summary>
-      <SeatList snap={snap} table={table} />
+      <SeatList snap={snap} table={table} withJudge={withJudge} />
     </details>
   );
 }

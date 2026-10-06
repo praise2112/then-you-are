@@ -1,16 +1,15 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { GuessOption, RoundView, TemplateView, TurnView } from "../api.ts";
 import { criterionLabel, isLongCard, roundTotals, roundWinner, type RoundGroup, type Table } from "./format.ts";
 import { BADGES, criterionMarks, totalPoints, verdictLabel } from "./labels.ts";
 import { AiTag } from "./seats.tsx";
 
-type WordCardProps = { round: RoundView; compact?: boolean; children?: ReactNode };
+type WordCardProps = { round: RoundView; compact?: boolean };
 
-export function WordCard({ round, compact = false, children }: WordCardProps) {
+export function WordCard({ round, compact = false }: WordCardProps) {
   return (
     <div className={`torn word-card${compact ? " compact" : ""}${isLongCard(round.token) ? " long" : ""}`}>
-      {children}
       <p className="headword">{round.token}</p>
       {round.detail && <p className="detail">{round.detail}</p>}
     </div>

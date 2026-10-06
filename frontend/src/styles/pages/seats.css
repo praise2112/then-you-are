@@ -15,7 +15,6 @@
 .seat-list .who,
 .seat-rows .who,
 .seat-strip .who,
-.entry-mine .who,
 .who[class*="tone-"] {
   display: flex;
   align-items: center;
@@ -26,7 +25,6 @@
 .seat-list .who::before,
 .seat-rows .who::before,
 .seat-strip .who::before,
-.entry-mine .who::before,
 .who[class*="tone-"]::before {
   content: "";
   flex: none;
@@ -182,22 +180,6 @@
   font-weight: 600;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
-}
-
-.entry-mine {
-  margin-top: var(--space-2);
-  padding: var(--space-2);
-  border: 1px dashed var(--rule);
-}
-
-.entry-mine .who {
-  font-variant: all-small-caps;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-
-.entry-mine p {
-  margin: 0.2rem 0 0;
 }
 
 @media (max-width: 62rem) {

@@ -4,7 +4,7 @@ import { ThemeToggle, TopBar } from "../../App.tsx";
 import type { MatchEnded, MatchSnapshot, TemplateView } from "../../api.ts";
 import { Host } from "../../Host.tsx";
 import { Icon } from "../../Icons.tsx";
-import { criterionLabel, endLine, fullMove, type Table } from "../format.ts";
+import { criterionLabel, endLine, fullMove, isLongMove, type Table } from "../format.ts";
 import type { DuelState } from "./useDuel.ts";
 
 export type BoardProps = { duel: DuelState; snap: MatchSnapshot; template: TemplateView; table: Table };
@@ -30,7 +30,6 @@ type ComposerProps = {
   label: string;
   // Escalation shows the fixed start of every move; showcase has none.
   prefix?: string;
-  scanning?: boolean;
   disabled: boolean;
   placeholder: string;
   refusal: string;
@@ -41,7 +40,7 @@ type ComposerProps = {
 
 /** The move box: what the seat writes, why the last one came back, the clock and the send button.
  *  Enter sends; Shift+Enter breaks the line. */
-export function Composer({ duel, template, label, prefix, scanning = false, disabled, placeholder, refusal, clock, canSend, children }: ComposerProps) {
+export function Composer({ duel, template, label, prefix, disabled, placeholder, refusal, clock, canSend, children }: ComposerProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const { text, setText, returned, pending } = duel;
 
@@ -68,7 +67,7 @@ export function Composer({ duel, template, label, prefix, scanning = false, disa
         {label}
       </label>
       {children}
-      <div className={prefix === undefined ? "compose-box bare" : `compose-box${scanning ? " scanning" : ""}`}>
+      <div className={prefix === undefined ? "compose-box bare" : "compose-box"}>
         {prefix !== undefined && (
           <span className="prefix" aria-hidden="true">
             {prefix}
@@ -103,6 +102,42 @@ export function Composer({ duel, template, label, prefix, scanning = false, disa
         </button>
       </div>
     </form>
+  );
+}
+
+type SlipProps = {
+  name: string;
+  tone: number;
+  // "held" is a move the judge has paused on.
+  state: "write" | "read" | "held" | "in";
+  // Null while the move is hidden from this viewer.
+  text: string | null;
+  note?: string;
+};
+
+const SLIP_VERB = { write: "is writing", read: "with the judge", held: "with the judge", in: "in" };
+
+/** The move being written or judged, on the table under the card in its seat's colour. */
+export function MoveSlip({ name, tone, state, text, note }: SlipProps) {
+  const reading = state === "read" || state === "held";
+  return (
+    <div className={`move-slip tone-${tone} ${state}`} role="status">
+      <p className="slip-head">
+        <span className={`who tone-${tone}`}>
+          <span>{name}</span>
+        </span>
+        <em>{SLIP_VERB[state]}</em>
+      </p>
+      <p className={`slip-text${text && isLongMove(text) ? " long" : ""}`}>
+        {reading ? (
+          <span className={`read-line${state === "held" ? " held" : ""}${text ? "" : " sealed"}`}>{text ?? "Hidden until the judge rules."}</span>
+        ) : (
+          text
+        )}
+        {state === "write" && <span className="caret" />}
+      </p>
+      {note && <p className="slip-note">{note}</p>}
+    </div>
   );
 }
 

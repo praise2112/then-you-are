@@ -790,19 +790,6 @@ button.icon-link {
 
 /* Provisional states: ink only, a verdict has not happened */
 
-.tag {
-  display: inline-block;
-  font-family: var(--display);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  border: 1px solid var(--ink-soft);
-  padding: 0.1rem 0.5rem;
-  vertical-align: middle;
-}
-
 .composer.returned textarea {
   border-style: dashed;
   border-bottom: 3px solid var(--ink);

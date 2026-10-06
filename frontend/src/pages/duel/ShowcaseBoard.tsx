@@ -4,7 +4,7 @@ import { clockText, groupRounds, roundTotals, roundWinner, shortName, useSeconds
 import { ResultCard } from "../ResultCard.tsx";
 import { Bluff, CallCard, CallLine, RoundLedger, TruthLine, WordCard } from "../rounds.tsx";
 import { SeatList, SeatStrip } from "../seats.tsx";
-import { Composer, HostPanel, ResignRow, ResignSheet, RoundBar, RubricPanel, type BoardProps } from "./parts.tsx";
+import { Composer, HostPanel, MoveSlip, ResignRow, ResignSheet, RoundBar, RubricPanel, type BoardProps } from "./parts.tsx";
 
 /** Everyone at once: one card per round, every seat writes, the call once all are judged, all
  *  answers shown together once the truth is out. */
@@ -35,8 +35,7 @@ export function ShowcaseBoard({ duel, snap, template, table }: BoardProps) {
     if (returned?.nudge_text) return returned.nudge_text;
     if (onCall) return calling ? "Called. The truth is coming out." : "One of these is real. The rest were written this minute.";
     if (waitingCall) return "The others are calling.";
-    if (judging) return "The judge is reading yours.";
-    if (mine) return "Yours is in. The rest are still writing.";
+    if (judging || mine) return "The judge scores every entry before anyone sees it.";
     return spectator ? "The table is writing." : template.move_hint;
   }
 
@@ -104,24 +103,29 @@ export function ShowcaseBoard({ duel, snap, template, table }: BoardProps) {
               <p className="small-caps last-move-head" style={{ marginTop: lastResult ? "var(--space-3)" : "var(--space-2)" }}>
                 {lastResult ? template.labels.next_opening : template.labels.opening}
               </p>
-              <WordCard round={current.round} compact={revealed.length > 0}>
-                {judging && <span className="tag">Being judged</span>}
-              </WordCard>
+              <WordCard round={current.round} compact={revealed.length > 0} />
             </>
           )}
 
-          {mine && snap.phase === "write" && (
-            <div className="entry-mine">
-              <span className={`who tone-${table.tone(mine.actor)} you`}>
-                <span>You wrote</span>
-              </span>
-              <p>
-                <b>{current?.round.token}</b> {mine.move_text}
-              </p>
-            </div>
-          )}
-          {(mine || judging) && snap.phase === "write" && !finished && (
-            <p className="waiting">The meanings show when everyone has written{clock ? `, or in ${clock}` : ""}.</p>
+          {judging && me && <MoveSlip name="Yours" tone={table.tone(me)} state="read" text={duel.text.trim() || null} />}
+          {mine && snap.phase === "write" && <MoveSlip name="Yours" tone={table.tone(mine.actor)} state="in" text={mine.move_text} />}
+          {(mine || judging || spectator) && current && snap.phase === "write" && !finished && (
+            <>
+              <ul className="other-slips">
+                {snap.seats
+                  .filter((s) => s.seat !== me && !s.eliminated)
+                  .map((s) => (
+                    <li key={s.seat} className={`tone-${table.tone(s.seat)}${s.answered ? " in" : ""}`}>
+                      <span className={`who tone-${table.tone(s.seat)}`}>
+                        <span>{table.name(s.seat)}</span>
+                      </span>
+                      <em>{s.answered ? "in" : "writing"}</em>
+                      {!s.answered && <span className="caret" />}
+                    </li>
+                  ))}
+              </ul>
+              <p className="waiting">The meanings show when everyone has written{clock ? `, or in ${clock}` : ""}.</p>
+            </>
           )}
 
           {onCall && current && (
@@ -167,7 +171,7 @@ export function ShowcaseBoard({ duel, snap, template, table }: BoardProps) {
               <li key={rule}>{rule}</li>
             ))}
           </ul>
-          <HostPanel line={hostLine()} thinking={judging} finished={finished} me={me} />
+          <HostPanel line={hostLine()} thinking={false} finished={finished} me={me} />
         </section>
       </main>
 

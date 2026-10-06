@@ -53,6 +53,11 @@ export function isLongCard(text: string): boolean {
   return text.length > 60;
 }
 
+/** A move too long for the card's display size. */
+export function isLongMove(text: string): boolean {
+  return text.length > 90;
+}
+
 /** A card or move short enough to sit inside a label; longer text is cut at a word, with an ellipsis. */
 export function shortName(text: string, max = 28): string {
   if (text.length <= max) return text;

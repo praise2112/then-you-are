@@ -98,12 +98,6 @@
   position: relative;
 }
 
-.stage .torn .tag {
-  position: absolute;
-  top: var(--space-2);
-  right: var(--space-2);
-}
-
 .stage .host-figure {
   width: 7rem;
 }
@@ -238,10 +232,6 @@
   margin: 0 0 var(--space-2) -0.3rem;
 }
 
-.stage .standing.reading {
-  animation: shimmer 1.6s ease-in-out infinite;
-}
-
 .stage .card-block {
   margin-bottom: var(--space-3);
 }
@@ -256,28 +246,6 @@
   font-size: clamp(1.2rem, 2.2vw, 1.5rem);
   line-height: 1.4;
   text-wrap: pretty;
-}
-
-.compose-box.scanning::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border: 3px solid transparent;
-  background: linear-gradient(90deg, transparent, var(--vermilion), transparent) border-box no-repeat;
-  background-size: 40% 100%;
-  mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: ink-wash 1.8s ease-in-out infinite;
-}
-
-@keyframes ink-wash {
-  from {
-    background-position: -100% 0;
-  }
-  to {
-    background-position: 200% 0;
-  }
 }
 
 .ruled {
@@ -350,60 +318,136 @@
   font-style: italic;
 }
 
-.judge-reading {
-  margin-top: var(--space-3);
-  border-top: 1px solid var(--rule);
-  padding-top: var(--space-2);
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
+.last-move.long {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.35;
+}
+
+.stage .standing.under .last-move.long {
+  font-size: 1.05rem;
   color: var(--ink-soft);
+}
+
+/* The move the table waits on sits on the card as a slip. */
+
+.move-slip {
+  position: relative;
+  z-index: 1;
+  margin: calc(-1 * var(--space-3)) var(--space-3) 0;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  background: var(--paper-sunk);
+  border: 1px solid var(--rule);
+  transform: rotate(-0.6deg);
+  animation: slip-in 0.45s ease-out both;
+}
+
+.move-slip.in {
+  margin: var(--space-2) 0 0;
+  transform: none;
+}
+
+.slip-head {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  margin: 0 0 0.3rem;
+}
+
+.slip-head .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.slip-head em {
+  color: var(--ink-faint);
+}
+
+.slip-text {
+  margin: 0;
+  min-height: 2.1rem;
+  font-size: 1.6rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.slip-text.long {
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+.move-slip.in .slip-text {
+  color: var(--ink-soft);
+}
+
+.slip-note {
+  margin: var(--space-2) 0 0;
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
   font-style: italic;
+  color: var(--ink-soft);
 }
 
-.judge-reading .host-figure {
-  width: 4.5rem;
-  animation: bob 1.6s ease-in-out infinite;
+.read-line {
+  background: linear-gradient(var(--ink), var(--ink)) no-repeat 0 100% / 0% 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding-bottom: 0.15em;
+  animation: read-line 2.2s ease-in-out infinite;
 }
 
-.judge-reading .dots::after {
-  content: "";
-  animation: dots 1.5s steps(4) infinite;
+.read-line.sealed {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ink-faint);
 }
 
-@keyframes bob {
-  0%,
+.read-line.held {
+  animation: none;
+  background-image: linear-gradient(var(--ink-faint), var(--ink-faint));
+  background-size: 100% 2px;
+}
+
+.caret {
+  display: inline-block;
+  width: 0.08em;
+  height: 0.95em;
+  margin-left: 0.06em;
+  vertical-align: -0.1em;
+  background: var(--c, var(--ink));
+  animation: caret 1s steps(1) infinite;
+}
+
+@keyframes slip-in {
+  from {
+    transform: translateY(3.5rem);
+    opacity: 0;
+  }
+}
+
+@keyframes read-line {
+  80%,
   100% {
-    transform: translateY(0) rotate(-1deg);
-  }
-  50% {
-    transform: translateY(-3px) rotate(1.5deg);
+    background-size: 100% 2px;
   }
 }
 
-@keyframes dots {
-  to {
-    content: "...";
-  }
-}
-
-@keyframes shimmer {
-  0%,
-  100% {
-    opacity: 1;
-  }
+@keyframes caret {
   50% {
-    opacity: 0.7;
+    opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .judge-reading .host-figure,
-  .stage .standing.reading,
-  .compose-box.scanning::after {
+  .move-slip,
+  .caret {
     animation: none;
-    background: none;
-    border: 3px dashed var(--ink-faint);
+  }
+
+  .read-line {
+    animation: none;
+    background-size: 100% 2px;
   }
 }
 
