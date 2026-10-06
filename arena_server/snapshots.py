@@ -4,7 +4,6 @@ the replay's share text and highlight, and why an answer came back."""
 import hashlib
 from collections.abc import Callable
 from datetime import timedelta
-from typing import Literal
 
 from arena_core.state import FINISHED, STANDING, Actor, Match
 from arena_core.template import Seed, Template
@@ -23,7 +22,6 @@ REPEAT_TEXT = "Someone at the table already wrote exactly that. Try another."
 
 def build_snapshot(
     match: Match,
-    template: Template,
     rec: Record,
     viewer: str | None,
     returned: TurnRejected | None,
@@ -33,6 +31,7 @@ def build_snapshot(
 ) -> MatchSnapshot:
     """The match as the viewer's seat, or a spectator when viewer is None, may see it.
     stand_in names the model that played a turn in the House's place."""
+    template = rec.template
     rows = [
         t for t in rec.turn_rows if visible_to(match, template, viewer, t["round_n"], t["actor"])
     ]
@@ -50,7 +49,7 @@ def build_snapshot(
         seed_emoji=match.seed_emoji if template.mode == "escalation" else "",
         rounds=rounds(match, template, viewer),
         round_in_play=match.round_n,
-        seats=seat_views(match, template, rec, opponent_name),
+        seats=seat_views(match, rec, opponent_name),
         seats_wanted=rec.seats_wanted,
         your_seat=viewer,
         invite_code=rec.invite_code if viewer and match.status == "open" else None,
@@ -115,8 +114,9 @@ def visible_to(
     return match.phase == "write" and actor == viewer
 
 
-def shown_points(match: Match, template: Template, rec: Record) -> dict[str, int]:
+def shown_points(match: Match, rec: Record) -> dict[str, int]:
     """Seat totals as the whole table may see them."""
+    template = rec.template
     shown = dict(match.points)
     for t in rec.turn_rows:
         if not visible_to(match, template, None, t["round_n"], t["actor"]):
@@ -186,8 +186,8 @@ def guess_views(match: Match, round_n: int) -> list[GuessView]:
     ]
 
 
-def seat_views(match: Match, template: Template, rec: Record, opponent_name: str) -> list[SeatView]:
-    shown = shown_points(match, template, rec)
+def seat_views(match: Match, rec: Record, opponent_name: str) -> list[SeatView]:
+    shown = shown_points(match, rec)
     if match.phase == "guess":
         # A seat that owes no call (a model seat, or a guesser with no choice) is done.
         answered = set(match.seats) - set(match.owed_guesses())
@@ -201,14 +201,14 @@ def seat_views(match: Match, template: Template, rec: Record, opponent_name: str
             model=opponent_name if row.kind == "model" else None,
             points=shown[row.seat],
             eliminated=row.seat in match.eliminated,
-            answered=template.mode == "showcase" and (row.seat in answered or row.submitted),
+            answered=rec.template.mode == "showcase" and (row.seat in answered or row.submitted),
         )
         for row in rec.seats
     ]
 
 
 async def returned_answer(
-    pool: Pool, match: Match, template: Template, rec: Record, viewer: str
+    pool: Pool, match: Match, rec: Record, viewer: str
 ) -> TurnRejected | None:
     """Showcase: why the viewer's last answer this round came back, while it still owes one."""
     if match.phase != "write" or viewer in match.eliminated or match.has_answered(viewer):
@@ -218,25 +218,8 @@ async def returned_answer(
     row = await last_refusal(pool, match.id, viewer, match.round_n)
     if row is None:
         return None
-    if row["outcome"] == "semantic_reject" and row["host"]:
-        host = HostPayload.model_validate(row["host"])
-        return rejection(
-            match,
-            template,
-            viewer,
-            match.strikes[viewer],
-            "semantic_reject",
-            host.headline,
-            host.quotable_line,
-        )
-    reason = row["layer1_result"]
-    if reason == "repeat":
-        text = REPEAT_TEXT
-    elif reason in ("empty", "too_long", "duplicate"):
-        text = getattr(template.validation_messages, reason)
-    else:
-        return None
-    return rejection(match, template, viewer, match.strikes[viewer], "deterministic_invalid", text)
+    host = HostPayload.model_validate(row["host"]) if row["host"] else None
+    return rejection(match, rec.template, viewer, match.strikes[viewer], row["layer1_result"], host)
 
 
 def rejection(
@@ -244,10 +227,18 @@ def rejection(
     template: Template,
     actor: Actor,
     strikes: int,
-    outcome: Literal["deterministic_invalid", "semantic_reject"],
-    reason_text: str,
-    nudge: str | None = None,
+    layer1_result: str | None,
+    host: HostPayload | None,
 ) -> TurnRejected:
+    """Why the seat's move came back: the judge's headline and nudge when it refused, else the
+    Layer 1 or repeat reason. A nudge shows only once the strikes reach the consequence."""
+    if host is not None:
+        reason_text, nudge = host.headline, host.quotable_line
+    elif layer1_result == "repeat":
+        reason_text, nudge = REPEAT_TEXT, None
+    else:
+        assert layer1_result is not None
+        reason_text, nudge = getattr(template.validation_messages, layer1_result), None
     if strikes < template.strikes_before_consequence:
         nudge = None
     elif nudge is None:
@@ -255,7 +246,7 @@ def rejection(
         nudge = template.validation_messages.nudge.format(standing_form=target)
     return TurnRejected(
         seat=actor,
-        outcome=outcome,
+        outcome="semantic_reject" if host else "deterministic_invalid",
         reason_text=reason_text,
         strikes=strikes,
         state_version=match.state_version,

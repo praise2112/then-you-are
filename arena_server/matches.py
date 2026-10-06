@@ -54,7 +54,6 @@ from arena_server.judging import Judge, Judged, JudgeGaveUp
 from arena_server.presence import Presence, TurnNudge
 from arena_server.sessions import seat_of
 from arena_server.snapshots import (
-    REPEAT_TEXT,
     build_snapshot,
     clock_length,
     guess_views,
@@ -212,17 +211,11 @@ class MatchService:
     async def _snapshot(
         self, match: Match, rec: Record, session_key: str | None, event_id: str
     ) -> MatchSnapshot:
-        template = rec.template
         viewer = await seat_of(self.pool, rec, session_key)
-        hide = hides_round(match, template)
-        returned = (
-            await returned_answer(self.pool, match, template, rec, viewer)
-            if hide and viewer
-            else None
-        )
+        hide = hides_round(match, rec.template)
+        returned = await returned_answer(self.pool, match, rec, viewer) if hide and viewer else None
         return build_snapshot(
             match,
-            template,
             rec,
             viewer,
             returned,
@@ -509,33 +502,31 @@ class MatchService:
         """Under the match lock: applies a ruled answer through the engine, stores it with the
         state it produced, and publishes what the table may see."""
         template = rec.template
-        outcome: Literal["deterministic_invalid", "semantic_reject"]
+        reason: str | None = None
+        host, verdict_id = None, None
         if isinstance(ruled, Judged) and ruled.outcome != "semantic_reject":
             if not repeats_the_round(match, template, text):
                 await self._record(match, rec, seat, text, ruled, action_id)
                 return
-            outcome, reason, verdict_id = "deterministic_invalid", "repeat", None
-            reason_text, nudge = REPEAT_TEXT, None
+            reason = "repeat"
             change = refuse_repeat(match, seat, template)
         elif isinstance(ruled, Judged):
-            outcome, reason, verdict_id = "semantic_reject", None, ruled.verdict_id
-            reason_text, nudge = ruled.response.host.headline, ruled.response.host.quotable_line
-            change = apply_ruling(match, seat, text, outcome, template)
+            host, verdict_id = ruled.response.host, ruled.verdict_id
+            change = apply_ruling(match, seat, text, "semantic_reject", template)
         else:
-            outcome, reason, verdict_id = "deterministic_invalid", ruled, None
-            reason_text, nudge = getattr(template.validation_messages, ruled), None
-            change = apply_ruling(match, seat, text, outcome, template)
+            reason = ruled
+            change = apply_ruling(match, seat, text, "deterministic_invalid", template)
+        rejected = rejection(match, template, seat, change.strikes, reason, host)
         refused = TurnRow(
             seat,
             text,
-            outcome,
+            rejected.outcome,
             layer1_result=reason,
             verdict_id=verdict_id,
             action_id=action_id,
             round_n=change.round_n,
         )
         await store_turns(self.pool, match, refused, *_forfeit_rows(change))
-        rejected = rejection(match, template, seat, change.strikes, outcome, reason_text, nudge)
         await self._publish(match, rec, change, rejected=rejected)
 
     async def _record(
