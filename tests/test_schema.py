@@ -122,3 +122,32 @@ def test_a_database_in_the_old_shape_upgrades_once_and_keeps_each_turns_points()
             ("🪨",),
         ]
         assert shape(conn, schema) == fresh
+
+
+def test_an_upgrade_that_finds_no_rubric_for_a_match_stops_and_changes_nothing():
+    with scratch_schema() as (conn, _):
+        boot(conn, BEFORE_POINTS)
+        fractional = [{"name": n, "weight": w / 10} for n, w in WEIGHTS.items()]
+        conn.execute(
+            "insert into matches (id, template_id, template_version, config, seed_token, "
+            "seed_emoji, cards, status) values "
+            "('odd', 'then-i-am', 1, %s, 'a rock', '🪨', '{a rock}', 'ended')",
+            (json.dumps({"rubric": fractional}),),
+        )
+        conn.execute(
+            "with v as (insert into verdicts (judge_model, prompt_hash, raw_response, "
+            "scoring, latency_ms) values ('judge', 'h', '', %s, 1) returning id) "
+            "insert into turns (match_id, seq, actor, move_text, outcome, live_verdict_id) "
+            "select 'odd', 1, 'p1', 'a move', 'accept', id from v",
+            (json.dumps({"scores": {"counter_strength": 3}}),),
+        )
+
+        with pytest.raises(
+            psycopg.errors.RaiseException, match="no rubric with whole-number weights.*odd"
+        ):
+            boot(conn)
+
+        assert conn.execute(
+            "select 1 from information_schema.columns where table_schema = current_schema() "
+            "and table_name = 'matches' and column_name = 'seed_token'"
+        ).fetchone()

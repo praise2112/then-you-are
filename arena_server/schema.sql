@@ -139,6 +139,8 @@ create table if not exists disagreements (
 -- Runs once, on a database that still has matches.seed_token: stores each turn's points and
 -- drops the unused columns.
 do $$
+declare
+    missing text;
 begin
     if exists (
         select 1 from information_schema.columns
@@ -151,7 +153,7 @@ begin
         with whole as (
             select m.id, m.template_id, m.created_at, m.config -> 'rubric' as rubric
             from matches m
-            where not exists (
+            where m.config -> 'rubric' is not null and not exists (
                 select 1 from jsonb_array_elements(m.config -> 'rubric') r
                 where r ->> 'weight' !~ '^[0-9]+$'
             )
@@ -163,7 +165,8 @@ begin
             from matches m left join whole w on w.id = m.id
         )
         update turns t
-        set points = case when t.outcome = 'fail' then 0 else coalesce((
+        set points = case when t.outcome = 'fail' then 0 when rb.rubric is null then null
+        else coalesce((
             select sum((s.value)::int * (r ->> 'weight')::int)
             from jsonb_each(v.scoring -> 'scores') s
             join jsonb_array_elements(rb.rubric) r on r ->> 'name' = s.key
@@ -171,6 +174,14 @@ begin
         from verdicts v, rubrics rb
         where v.id = t.live_verdict_id and v.scoring is not null
         and rb.id = t.match_id and t.seq is not null;
+        select t.match_id into missing from turns t
+        join verdicts v on v.id = t.live_verdict_id
+        where v.scoring is not null and t.seq is not null and t.points is null
+        limit 1;
+        if found then
+            raise exception 'no rubric with whole-number weights to score the turns of match %',
+                missing;
+        end if;
         alter table matches drop column seed_token, drop column template_version;
         alter table verdicts drop column purpose;
     end if;
