@@ -17,7 +17,7 @@
   row-gap: var(--space-1);
 }
 
-.after a {
+.after > * {
   white-space: nowrap;
 }
 
@@ -28,23 +28,19 @@
   padding: var(--space-2) var(--space-3);
   background: var(--paper-raised);
   border-top: 3px double var(--ink);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas: "stamp streak ticket" "after after listing";
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  column-gap: var(--space-3);
-  row-gap: var(--space-1);
+  gap: var(--space-2) var(--space-3);
 }
 
 .result-card > .stamp {
-  grid-area: verdict;
   font-size: 1.25rem;
   padding: 0.15rem 0.9rem;
   transform: rotate(-2deg);
 }
 
 .result-card .stats {
-  grid-area: streak;
   display: flex;
   gap: var(--space-2);
   margin: 0;
@@ -62,23 +58,23 @@
 }
 
 .result-card .ticket {
-  grid-area: ticket;
+  margin-left: auto;
+  white-space: nowrap;
   font-size: 0.95rem;
   padding: 0.5rem 1.6rem;
 }
 
 .result-card .after {
-  grid-area: after;
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
+  flex-basis: 100%;
+  justify-content: flex-start;
+  gap: var(--space-1) var(--space-3);
   margin: 0;
 }
 
 .result-card .choice.listing {
-  grid-area: listing;
+  flex-basis: 100%;
+  justify-content: flex-start;
   margin: 0;
-  width: auto;
   font-size: 0.85rem;
 }
 
@@ -115,12 +111,4 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-@media (max-width: 40rem) {
-  .result-card {
-    grid-template-columns: 1fr;
-    grid-template-areas: "stamp" "streak" "ticket" "after" "listing";
-    justify-items: start;
-  }
 }
