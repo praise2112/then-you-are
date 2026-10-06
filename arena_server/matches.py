@@ -155,18 +155,28 @@ class MatchService:
         return asyncio.Lock()
 
     async def recover(self) -> None:
-        """After a restart: a move waiting on the judge is lost, so the player resubmits; every
-        active match then picks up the work it owes."""
+        """After a restart: a move waiting on the judge is lost, so the player resubmits; serial
+        play picks up the House turn it owes, and every running clock starts afresh."""
         for match_id in await reset_for_restart(self.pool):
-            self.spawn(self.resume(match_id))
+            self.spawn(self.resume(match_id, at_boot=True))
 
-    async def resume(self, match_id: str) -> None:
-        """Starts the match's owed work when a House seat owes an answer or a clock runs."""
+    async def resume(self, match_id: str, at_boot: bool = False) -> None:
+        """Starts the match's owed work when a House seat owes an answer or a clock runs. At boot
+        a hidden round only restarts its clock; its House answers wait for resume_owed_work."""
         async with await self.lock(match_id):
             match, rec = await self.load(match_id)
-            house_owes = any(seat in rec.models for seat in owed(match, rec.template))
-            if match.status == "active" and (house_owes or match.clocked):
+            if match.status != "active":
+                return
+            if at_boot and not shows_live(rec.template):
+                await self._set_clock(match, rec)
+            elif match.clocked or any(seat in rec.models for seat in owed(match, rec.template)):
                 await self.start(match, rec)
+
+    def resume_owed_work(self, match: Match, rec: Record) -> None:
+        """A hidden round's House seats start any answer they owe. A seated player opening the
+        match calls it, since a restart leaves that work waiting."""
+        if match.status == "active" and not shows_live(rec.template):
+            self._start_writers(match, rec)
 
     async def start(self, match: Match, rec: Record) -> None:
         """Under the match lock, when play starts or resumes: a hidden round's clock starts, and
@@ -218,7 +228,10 @@ class MatchService:
         # The cursor is read before the load: every event is emitted after its change is stored.
         event_id = self.bus.cursor(match_id)
         match, rec = await self.load(match_id)
-        return await self._snapshot(match, rec, session_key, event_id)
+        snap = await self._snapshot(match, rec, session_key, event_id)
+        if snap.your_seat:
+            self.resume_owed_work(match, rec)
+        return snap
 
     async def _snapshot(
         self, match: Match, rec: Record, session_key: str | None, event_id: str
@@ -618,9 +631,7 @@ class MatchService:
         until a human seat's clock restarts, in a hidden round at once on their own tasks."""
         template = rec.template
         if not shows_live(template):
-            for seat in owed(match, template):
-                if seat in rec.models:
-                    self._start_writer(match.id, seat, match.round_n)
+            self._start_writers(match, rec)
             return
         while (owing := owed(match, template)) and owing[0] in rec.models:
             await self._house_turn(match, rec, owing[0])
@@ -659,12 +670,13 @@ class MatchService:
         await hold_move(self.pool, match.id, seat, None, match.round_n)
         await self._play_house(match, rec, seat, written)
 
-    def _start_writer(self, match_id: str, seat: str, round_n: int) -> None:
-        key = (match_id, seat, round_n)
-        if key in self.answering:
-            return
-        self.answering.add(key)
-        self.spawn(self._house_answer(match_id, seat, round_n))
+    def _start_writers(self, match: Match, rec: Record) -> None:
+        """Each House seat that owes the round in play an answer starts writing it once."""
+        for seat in owed(match, rec.template):
+            key = (match.id, seat, match.round_n)
+            if seat in rec.models and key not in self.answering:
+                self.answering.add(key)
+                self.spawn(self._house_answer(match.id, seat, match.round_n))
 
     async def _house_answer(self, match_id: str, seat: str, round_n: int) -> None:
         """A hidden round's House seat writes and is judged outside the match lock, then lands
