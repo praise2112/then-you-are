@@ -10,7 +10,7 @@ from arena_core.template import Template
 from arena_judge.caller import ModelCaller
 from arena_judge.schema import JudgeResponse, route_outcome
 from arena_server.db import Pool
-from arena_server.events import EventBus, JudgePaused, JudgeResumed
+from arena_server.events import EventBus, JudgePaused, JudgeResumed, JudgeStarted
 from arena_server.store import MatchClosed, insert_verdict, set_status, status_of
 
 PAUSE_BACKOFF_S = (5, 10, 20, 30)
@@ -54,8 +54,11 @@ class Judge:
         hidden: str = "",
         quiet: bool = False,
     ) -> Judged:
-        """Retries the judge call until it rules, pausing the match meanwhile unless quiet.
-        Raises MatchClosed if the match closes, and JudgeGaveUp after JUDGE_GIVE_UP_S."""
+        """Retries the judge call until it rules. Unless quiet, says the judge started and
+        pauses the match through an outage. Raises MatchClosed if the match closes, and
+        JudgeGaveUp after JUDGE_GIVE_UP_S."""
+        if not quiet:
+            self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
         paused = False
         attempt = 0
         started = time.monotonic()

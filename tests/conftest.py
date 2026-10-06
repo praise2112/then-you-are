@@ -5,6 +5,7 @@ import os
 from collections.abc import AsyncIterator
 
 import httpx
+import psycopg
 import pytest
 from asgi_lifespan import LifespanManager
 
@@ -134,6 +135,24 @@ class FakeCaller(ModelCaller):
 @pytest.fixture
 def anyio_backend() -> str:
     return "asyncio"
+
+
+@pytest.fixture(autouse=True)
+def no_live_matches(request: pytest.FixtureRequest) -> None:
+    """Closes the live matches earlier tests left in the shared database, so a boot's recovery
+    plays no House answer on the next test's scripted caller."""
+    marker = request.node.get_closest_marker("xdist_group")
+    url = os.environ.get("TEST_DATABASE_URL")
+    if marker is None or marker.args != ("database",) or not url:
+        return
+    with psycopg.connect(url) as conn:
+        row = conn.execute("select to_regclass('matches') is not null as ready").fetchone()
+        if row and row[0]:
+            conn.execute(
+                "update matches set status = 'abandoned', end_reason = 'abandoned', "
+                "turn_deadline = null, ended_at = now(), updated_at = now() "
+                "where status in ('active', 'awaiting_judgment', 'paused')"
+            )
 
 
 async def run_app(caller: ModelCaller):

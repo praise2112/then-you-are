@@ -1,5 +1,5 @@
-"""Match service: the commands, human and model turns in both modes, the turn clock, restart
-recovery and the abandon sweep."""
+"""Match service: the commands, one turn pipeline for human and House seats in both modes, the
+turn clock, restart recovery and the abandon sweep."""
 
 import asyncio
 import logging
@@ -8,19 +8,23 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
 from arena_core.state import (
-    Actor,
     Change,
     IllegalAction,
+    Layer1Reason,
     Match,
+    Turn,
     apply_guess,
     apply_ruling,
+    card_in_play,
     check_guess,
     check_move,
     check_resign,
     forfeit_turn,
+    judged_against,
     layer1,
     model_next,
     normalize,
+    owed,
     previous_of,
     repeats_the_round,
     resign,
@@ -28,14 +32,13 @@ from arena_core.state import (
     transcript,
     weighted_total,
 )
-from arena_core.template import Seed, Template
+from arena_core.template import Template
 from arena_judge.caller import ModelCaller, ModelSpec
-from arena_judge.schema import HostPayload, ScoringPayload
+from arena_judge.schema import HostPayload, JudgeResponse, ScoringPayload
 from arena_server.db import Pool
 from arena_server.events import (
     EventBus,
     GuessOpened,
-    JudgeStarted,
     MatchEnded,
     RoundRevealed,
     Ruling,
@@ -65,6 +68,7 @@ from arena_server.store import (
     MatchClosed,
     MatchError,
     Record,
+    SeatRow,
     TurnRow,
     action_seen,
     add_disagreement,
@@ -84,7 +88,7 @@ from arena_server.store import (
     set_submitted,
     stamp_badges,
     store_guesses,
-    store_turn,
+    store_turns,
 )
 from arena_server.tables import broadcast_lobby
 from arena_server.views import MatchSnapshot, Replay, StageView
@@ -95,10 +99,6 @@ MODEL_REWRITES = 2
 
 
 log = logging.getLogger(__name__)
-
-
-class HouseStuck(Exception):
-    """The House could not produce a legal answer, even its default move."""
 
 
 class MatchService:
@@ -114,7 +114,7 @@ class MatchService:
         public_base_url: str,
         presence: Presence,
         house_slots: int = 0,
-        fallback: tuple[str, ModelSpec] | None = None,
+        stand_in: tuple[str, ModelSpec] | None = None,
     ):
         self.pool = pool
         self.bus = bus
@@ -124,13 +124,13 @@ class MatchService:
         self.opponent_name = opponent_name
         self.public_base_url = public_base_url
         self.presence = presence
-        self.house = House(pool, bus, caller, house_slots, fallback)
+        self.house = House(pool, bus, caller, house_slots, stand_in)
         self.judge = Judge(pool, bus, caller, judge_model)
         self.locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
         self.tasks: set[asyncio.Task] = set()
-        # Showcase model seats writing for a round: (match, seat, round).
+        # House seats writing for a hidden round: (match, seat, round).
         self.answering: set[tuple[str, str, int]] = set()
-        # Each match plays the template it was created with, parsed once from its row.
+        # The template each live match plays, parsed once from its row.
         self.match_templates: dict[str, Template] = {}
 
     def _forget(self, match_id: str) -> None:
@@ -142,35 +142,36 @@ class MatchService:
         asyncio.get_running_loop().call_later(STREAM_LINGER_S, self.bus.forget, match_id)
 
     async def recover(self) -> None:
-        """After a restart: a move waiting on the judge is lost, so the player resubmits; model
-        seats finish any turn they owed, and a clocked seat gets a fresh deadline."""
+        """After a restart: a move waiting on the judge is lost, so the player resubmits; every
+        active match then picks up the work it owes."""
         for match_id in await reset_for_restart(self.pool):
-            self.spawn(self._resume(match_id))
+            self.spawn(self.resume(match_id))
 
-    async def _resume(self, match_id: str) -> None:
+    async def resume(self, match_id: str) -> None:
+        """Starts the match's owed work when a House seat owes an answer or a clock runs."""
         async with self.locks[match_id]:
             match, rec = await self.load(match_id)
-            if match.status != "active":
-                return
-            template = rec.template
-            if template.mode == "escalation":
-                await self.after_turn(match, template, rec)
-                return
-            # Model seats write again when a player next opens or answers this match.
-            await self.set_clock(match, rec, template)
+            house_owes = any(seat in rec.models for seat in owed(match, rec.template))
+            if match.status == "active" and (house_owes or match.clocked):
+                await self.start(match, rec)
+
+    async def start(self, match: Match, rec: Record) -> None:
+        """Under the match lock, when play starts or resumes: a hidden round's clock starts, and
+        the match is driven on."""
+        if not shows_live(rec.template):
+            await self._set_clock(match, rec)
+        await self._drive(match, rec)
 
     # Loading and saving
 
     async def load(self, match_id: str) -> tuple[Match, Record]:
         return await load_match(self.pool, match_id, self.templates, self.match_templates)
 
-    async def set_clock(
-        self, match: Match, rec: Record, template: Template, running: bool = True
-    ) -> str | None:
+    async def _set_clock(self, match: Match, rec: Record, running: bool = True) -> str | None:
         """Starts the clock for the turn or phase in play when two or more humans share the
         table; clears it otherwise, or when not running."""
         clocked = running and match.clocked
-        deadline = datetime.now(UTC) + clock_length(match, template) if clocked else None
+        deadline = datetime.now(UTC) + clock_length(match, rec.template) if clocked else None
         if deadline is None and rec.turn_deadline is None:
             return None
         await set_deadline(self.pool, match.id, deadline)
@@ -205,8 +206,6 @@ class MatchService:
     async def _snapshot(self, match: Match, rec: Record, session_key: str | None) -> MatchSnapshot:
         template = rec.template
         viewer = await seat_of(self.pool, rec, session_key)
-        if viewer and template.mode == "showcase" and match.status == "active":
-            self.start_model_answers(match, rec)
         hide = hides_round(match, template)
         returned = (
             await returned_answer(self.pool, match, template, rec, viewer)
@@ -214,7 +213,7 @@ class MatchService:
             else None
         )
         return build_snapshot(
-            match, template, rec, viewer, returned, self.opponent_name, self.house.stand_in
+            match, template, rec, viewer, returned, self.opponent_name, self.house.stand_in_name
         )
 
     async def replay(self, match_id: str, session_key: str | None = None) -> Replay:
@@ -262,18 +261,13 @@ class MatchService:
                 match, rec, session_key, "move", expected_version, round_n
             )
             template = rec.template
-            if template.mode == "showcase":
-                self.start_model_answers(match, rec)
-                await set_submitted(self.pool, match_id, seat, True)
-                self.bus.emit(
-                    match_id,
-                    "seat_submitted",
-                    SeatSubmitted(seat=seat, state_version=match.state_version),
-                )
-                self.spawn(self._answer_as_human(match_id, seat, action_id, move_text))
-                return
-            await set_status(self.pool, match_id, "awaiting_judgment")
-        self.spawn(self._run_human_move(match_id, seat, action_id, move_text))
+            # The answer is pending until it lands; in serial play it also holds the turn.
+            await set_submitted(self.pool, match_id, seat, True)
+            if shows_live(template):
+                await set_status(self.pool, match_id, "awaiting_judgment")
+            else:
+                self._seat_submitted(match, seat)
+        self.spawn(self._answer(match_id, template, seat, match.round_n, action_id, move_text))
 
     async def submit_guess(
         self,
@@ -293,21 +287,15 @@ class MatchService:
                 match, rec, session_key, "guess", expected_version, round_n
             )
             template = rec.template
-            card = template.seed_named(match.card)
-            assert card is not None
-            pick = resolve_pick(match, card, seat, key)
+            pick = resolve_pick(match, card_in_play(match, template), seat, key)
             try:
-                apply_guess(match, seat, pick, template)
+                change = apply_guess(match, seat, pick, template)
             except IllegalAction as e:
                 raise MatchError(409, str(e)) from e
             await store_guesses(self.pool, match, match.guesses[-1:], action_id)
-            self.bus.emit(
-                match_id,
-                "seat_submitted",
-                SeatSubmitted(seat=seat, state_version=match.state_version),
-            )
-            if match.phase == "write":
-                await self._round_closed(match, template, rec)
+            self._seat_submitted(match, seat)
+            await self._publish(match, rec, change)
+            await self._drive(match, rec)
 
     async def resign_match(
         self, match_id: str, session_key: str, action_id: str, expected_version: int
@@ -319,20 +307,15 @@ class MatchService:
             seat = await self._check_command(match, rec, session_key, "resign", expected_version)
             template = rec.template
             change = resign(match, seat, template)
-            await store_turn(
+            await store_turns(
                 self.pool,
                 match,
                 TurnRow(
                     seat, "", "deterministic_invalid", layer1_result="resign", action_id=action_id
                 ),
             )
-            if await self._emit_if_ended(match):
-                return
-            if template.mode == "showcase":
-                if change.call_opened or change.round_closed:
-                    await self._round_closed(match, template, rec)
-                return
-            await self.after_turn(match, template, rec)
+            await self._publish(match, rec, change)
+            await self._drive(match, rec)
 
     async def disagree(self, match_id: str, seq: int, session_key: str | None) -> None:
         """One vote per seated session and move, on a move the table can already see."""
@@ -343,14 +326,13 @@ class MatchService:
         turn = next((t for t in match.turns if t.seq == seq), None)
         if turn is None or not visible_to(match, template, None, turn.round_n, turn.actor):
             raise MatchError(404, "no such turn")
-        previous = previous_of(match, template, turn)
         await add_disagreement(
             self.pool,
             match_id,
             seq,
             session_key,
             match.template_id,
-            normalize(previous),
+            normalize(previous_of(match, template, turn)),
             normalize(turn.move_text),
         )
 
@@ -367,8 +349,8 @@ class MatchService:
         expected_version: int,
         round_n: int | None = None,
     ) -> str:
-        """The requester's seat, when it may act now. Escalation moves carry the state
-        version; showcase answers and calls are per seat and carry the round they were for."""
+        """The requester's seat, when it may act now. Serial play checks the state version;
+        hidden rounds are answered and called per seat, and say the round they were for."""
         seat = await seat_of(self.pool, rec, session_key)
         if seat is None:
             raise MatchError(403, "not your match")
@@ -384,14 +366,12 @@ class MatchService:
             raise MatchError(409, str(e)) from e
         if action != "move":
             return seat
-        if template.mode == "showcase":
-            if rec.row(seat).submitted:
-                raise MatchError(409, "you already answered this round")
-            return seat
         # A move still with the judge holds the turn.
         if match.status != "active":
             raise MatchError(409, "not your move")
-        if expected_version != match.state_version:
+        if rec.row(seat).submitted:
+            raise MatchError(409, "you already answered this round")
+        if shows_live(template) and expected_version != match.state_version:
             raise MatchError(409, f"stale version: match is at {match.state_version}")
         return seat
 
@@ -406,188 +386,171 @@ class MatchService:
         if not task.cancelled() and task.exception() is not None:
             log.error("background task failed", exc_info=task.exception())
 
-    # Escalation turns
+    # The turn pipeline
 
-    async def _run_human_move(
-        self, match_id: str, seat: str, action_id: str, move_text: str
+    async def _answer(
+        self,
+        match_id: str,
+        template: Template,
+        seat: str,
+        round_n: int,
+        action_id: str,
+        text: str,
     ) -> None:
-        async with self.locks[match_id]:
-            match, rec = await self.load(match_id)
-            if match.status != "awaiting_judgment" or match.to_move != seat:
+        """Rules a human seat's answer and lands it. Serial play holds the match lock from the
+        judge call through the House's reply; a hidden round's answers are judged outside it."""
+        try:
+            if shows_live(template):
+                async with self.locks[match_id]:
+                    match, rec = await self.load(match_id)
+                    if not _owes(match, template, seat, round_n):
+                        return
+                    ruled = await self._rule(match, template, text)
+                    await self._land_answer(match, rec, seat, round_n, text, ruled, action_id)
                 return
-            template = rec.template
-            try:
-                ended = await self._play_move(match, template, seat, move_text, action_id)
-                if not ended:
-                    await self.after_turn(match, template, rec)
-            except MatchClosed:
-                log.info("match %s closed while waiting on the judge", match_id)
-            except Exception:
-                log.exception("move on %s failed; the match goes back to a human seat", match_id)
-                await set_status(self.pool, match_id, "active")
+            match, _ = await self.load(match_id)
+            ruled = await self._rule(match, template, text)
+            async with self.locks[match_id]:
                 match, rec = await self.load(match_id)
-                if match.to_move in rec.models:
-                    await self._forfeit(match, template, match.to_move)
-                    if not await self._emit_if_ended(match):
-                        await self.after_turn(match, template, rec)
-                    return
-                await self._give_time(match, rec, template)
-                match, rec = await self.load(match_id)
-                self.bus.emit(
-                    match_id,
-                    "turn_changed",
-                    TurnChanged(
-                        to_move=match.to_move,
-                        turn_deadline=rec.turn_deadline.isoformat() if rec.turn_deadline else None,
-                        round_in_play=match.round_n,
-                        state_version=match.state_version,
-                    ),
-                )
+                await self._land_answer(match, rec, seat, round_n, text, ruled, action_id)
+        except MatchClosed:
+            log.info("match %s closed while waiting on the judge", match_id)
+        except Exception:
+            log.exception("answer on %s failed; the seat may answer again", match_id)
+            await self._hand_back(match_id, seat)
 
-    async def after_turn(self, match: Match, template: Template, rec: Record) -> None:
-        """Escalation, under the match lock: model seats play until a human seat is to move,
-        whose clock then starts."""
-        if match.status == "active" and match.to_move in rec.models:
-            await self._play_opponent(match, template, rec)
-        if match.status != "active":
+    async def _land_answer(
+        self,
+        match: Match,
+        rec: Record,
+        seat: str,
+        round_n: int,
+        text: str,
+        ruled: Judged | Layer1Reason,
+        action_id: str,
+    ) -> None:
+        """Under the match lock: lands a human seat's ruled answer, unless the seat no longer owes
+        it. An answer that comes back leaves the seat time to answer again."""
+        template = rec.template
+        await set_submitted(self.pool, match.id, seat, False)
+        if not _owes(match, template, seat, round_n):
             return
-        deadline = await self.set_clock(match, rec, template)
-        self.bus.emit(
-            match.id,
-            "turn_changed",
-            TurnChanged(
-                to_move=match.to_move,
-                turn_deadline=deadline,
-                round_in_play=match.round_n,
-                state_version=match.state_version,
-            ),
-        )
-        mover = rec.row(match.to_move)
-        if match.clocked and mover.session_key:
-            await self.presence.send(
-                mover.session_key, TurnNudge(match_id=match.id, title=template.title)
+        judged = isinstance(ruled, Judged) and ruled.outcome != "semantic_reject"
+        if judged and repeats_the_round(match, template, text):
+            # No strike: the seat could not have known.
+            await store_turns(
+                self.pool,
+                match,
+                TurnRow(
+                    seat, text, "deterministic_invalid", layer1_result="repeat", action_id=action_id
+                ),
             )
-
-    async def _refuse_layer1(
-        self, match: Match, template: Template, actor: Actor, move_text: str, action_id: str | None
-    ) -> Change | None:
-        """Applies a Layer 1 refusal when there is one, and returns its Change."""
-        reason = layer1(template, move_text, match)
-        if reason is None:
-            return None
-        change = apply_ruling(match, actor, move_text, "deterministic_invalid", template)
-        await store_turn(
-            self.pool,
-            match,
-            TurnRow(
-                actor,
-                move_text,
-                "deterministic_invalid",
-                layer1_result=reason,
-                action_id=action_id,
-                round_n=change.round_n,
-            ),
-        )
-        self._emit_rejection(
-            match,
-            template,
-            rejection(
+            self._emit_rejection(
                 match,
                 template,
-                actor,
-                change.strikes,
-                "deterministic_invalid",
-                getattr(template.validation_messages, reason),
-            ),
-        )
-        await self._store_forfeit(match, change)
-        return change
+                rejection(
+                    match, template, seat, match.strikes[seat], "deterministic_invalid", REPEAT_TEXT
+                ),
+            )
+        else:
+            await self._land(match, rec, seat, text, ruled, action_id)
+        if _owes(match, template, seat, round_n):
+            await self._give_time(match, rec)
+        await self._drive(match, rec)
 
-    async def _refuse_semantic(
+    async def _hand_back(self, match_id: str, seat: str) -> None:
+        """The seat's answer was lost on the way: it may answer again, with a whole clock if
+        little was left."""
+        async with self.locks[match_id]:
+            await set_submitted(self.pool, match_id, seat, False)
+            match, rec = await self.load(match_id)
+            live = shows_live(rec.template)
+            if live:
+                await set_status(self.pool, match_id, "active")
+                match.status = "active"
+            deadline = await self._give_time(match, rec)
+            if live:
+                self._turn_changed(match, deadline)
+
+    async def _rule(self, match: Match, template: Template, text: str) -> Judged | Layer1Reason:
+        """Layer 1's refusal, or else the judge's ruling. Only serial play announces the judge
+        and pauses through an outage."""
+        reason = layer1(template, text, match)
+        if reason is not None:
+            return reason
+        return await self.judge.rule(
+            match,
+            template,
+            len(match.turns) + 1,
+            text,
+            judged_against(match, template),
+            transcript(match, template, finished_only=True),
+            card_in_play(match, template).hidden,
+            quiet=not shows_live(template),
+        )
+
+    async def _land(
         self,
         match: Match,
-        template: Template,
-        actor: Actor,
-        move_text: str,
-        judged: Judged,
+        rec: Record,
+        seat: str,
+        text: str,
+        ruled: Judged | Layer1Reason,
         action_id: str | None,
-    ) -> Change:
-        change = apply_ruling(match, actor, move_text, "semantic_reject", template)
-        await store_turn(
-            self.pool,
-            match,
-            TurnRow(
-                actor,
-                move_text,
-                "semantic_reject",
-                verdict_id=judged.verdict_id,
-                action_id=action_id,
-                round_n=change.round_n,
-            ),
-        )
-        host = judged.response.host
-        self._emit_rejection(
-            match,
-            template,
-            rejection(
-                match,
-                template,
-                actor,
-                change.strikes,
-                "semantic_reject",
-                host.headline,
-                host.quotable_line,
-            ),
-        )
-        await self._store_forfeit(match, change)
-        return change
-
-    async def _forfeit(self, match: Match, template: Template, seat: str) -> None:
-        await self._store_forfeit(match, forfeit_turn(match, seat, template))
-
-    async def _store_forfeit(self, match: Match, change: Change) -> None:
-        if change.forfeit is None:
+    ) -> None:
+        """Under the match lock: applies a ruled answer through the engine, stores it with the
+        state it produced, and publishes what the table may see."""
+        template = rec.template
+        if isinstance(ruled, Judged) and ruled.outcome != "semantic_reject":
+            await self._record(match, rec, seat, text, ruled, action_id)
             return
-        turn = change.forfeit
-        await store_turn(
-            self.pool,
-            match,
-            TurnRow(turn.actor, "", "forfeit", seq=turn.seq, layer1_result="forfeit"),
+        outcome: Literal["deterministic_invalid", "semantic_reject"]
+        if isinstance(ruled, Judged):
+            outcome, reason, verdict_id = "semantic_reject", None, ruled.verdict_id
+            reason_text, nudge = ruled.response.host.headline, ruled.response.host.quotable_line
+        else:
+            outcome, reason, verdict_id = "deterministic_invalid", ruled, None
+            reason_text, nudge = getattr(template.validation_messages, ruled), None
+        change = apply_ruling(match, seat, text, outcome, template)
+        refused = TurnRow(
+            seat,
+            text,
+            outcome,
+            layer1_result=reason,
+            verdict_id=verdict_id,
+            action_id=action_id,
+            round_n=change.round_n,
         )
+        await store_turns(self.pool, match, refused, *_forfeit_rows(change))
+        rejected = rejection(match, template, seat, change.strikes, outcome, reason_text, nudge)
+        await self._publish(match, rec, change, rejected=rejected)
 
-    async def _record_ruling(
+    async def _record(
         self,
         match: Match,
-        template: Template,
-        actor: Actor,
-        move_text: str,
+        rec: Record,
+        seat: str,
+        text: str,
         judged: Judged,
-        seq: int,
         action_id: str | None,
-        hidden: str = "",
-    ) -> Ruling:
-        """Applies and stores a ruling. Returns the event; the caller decides when it goes out."""
+    ) -> None:
+        template = rec.template
         response = judged.response
-        before = match.points[actor]
-        earned = weighted_total(response.scoring.scores, template.weights)
+        hidden = card_in_play(match, template).hidden
         proximity = response.scoring.truth_proximity if hidden else "none"
-        apply_ruling(
-            match,
-            actor,
-            move_text,
-            judged.outcome,
-            template,
-            earned,
-            truth_hit=proximity == "hit",
+        earned = weighted_total(response.scoring.scores, template.weights)
+        change = apply_ruling(
+            match, seat, text, judged.outcome, template, earned, truth_hit=proximity == "hit"
         )
-        await store_turn(
+        assert change.turn is not None
+        await store_turns(
             self.pool,
             match,
             TurnRow(
-                actor,
-                move_text,
+                seat,
+                text,
                 judged.outcome,
-                seq=seq,
+                seq=change.turn.seq,
                 verdict_id=judged.verdict_id,
                 action_id=action_id,
             ),
@@ -599,381 +562,154 @@ class MatchService:
             badges.append("near_miss")
         if badges:
             await stamp_badges(self.pool, judged.verdict_id, badges)
-        return Ruling(
-            seq=seq,
-            round_n=match.turns[-1].round_n,
-            actor=actor,
-            move_text=move_text,
-            outcome=judged.outcome,
-            scoring=response.scoring,
-            host=response.host.model_copy(update={"badges": badges}),
-            points=match.points[actor] - before,
-            totals=dict(match.points),
-            to_move=match.to_move,
-            round_in_play=match.round_n,
-            state_version=match.state_version,
-        )
+        host = response.host.model_copy(update={"badges": badges})
+        await self._publish(match, rec, change, response=response.model_copy(update={"host": host}))
 
-    async def _play_move(
-        self,
-        match: Match,
-        template: Template,
-        actor: Actor,
-        move_text: str,
-        action_id: str | None,
-    ) -> bool:
-        """Escalation: one move through Layer 1 and the judge. Returns True when the match ended."""
-        if await self._refuse_layer1(match, template, actor, move_text, action_id):
-            return await self._emit_if_ended(match)
-        seq = len(match.turns) + 1
-        self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
-        judged = await self.judge.rule(
-            match, template, seq, move_text, match.standing_form, transcript(match, template)
-        )
-        if judged.outcome == "semantic_reject":
-            await self._refuse_semantic(match, template, actor, move_text, judged, action_id)
-            return await self._emit_if_ended(match)
-        ruling = await self._record_ruling(
-            match, template, actor, move_text, judged, seq, action_id
-        )
-        self.bus.emit(match.id, "ruling", ruling)
-        if match.status == "ended":
-            coaching = judged.response.host.coaching_line if judged.outcome == "fail" else None
-            await self._emit_match_ended(match, coaching)
-            return True
-        return False
-
-    async def _emit_if_ended(self, match: Match) -> bool:
-        if match.status == "ended":
-            await self._emit_match_ended(match, coaching_line=None)
-            return True
-        return False
-
-    async def _play_opponent(self, match: Match, template: Template, rec: Record) -> None:
-        """Plays every model seat whose turn it is, until a human seat is to move."""
-        while match.status == "active" and match.to_move in rec.models:
-            seat = match.to_move
-            strikes_before = match.strikes[seat]
-            while match.status == "active" and match.to_move == seat:
-                step = model_next(match.strikes[seat] - strikes_before, template)
-                if step == "write":
-                    move_text = await self.house.write(match, template, seat, match.seed)
-                elif step == "default_move":
-                    move_text = template.default_move
-                else:
-                    resign(match, seat, template)
-                    await save_match(self.pool, match)
-                    if match.status == "ended":
-                        await self._emit_match_ended(match, coaching_line=None)
-                    break
-                if await self._play_move(match, template, seat, move_text, None):
-                    return
-
-    # Showcase turns
-
-    def start_model_answers(self, match: Match, rec: Record) -> None:
-        """Every model seat starts writing and being judged for the round in play."""
-        if match.status != "active" or match.phase != "write":
+    async def _drive(self, match: Match, rec: Record) -> None:
+        """Under the match lock, after the match moved: each House seat that owes an answer gives
+        one. In serial play they answer in turn until a human seat is to move, whose clock
+        restarts; in a hidden round they write at once, each on its own task."""
+        template = rec.template
+        if not shows_live(template):
+            for seat in owed(match, template):
+                if seat in rec.models:
+                    self._start_writer(match.id, seat, match.round_n)
             return
-        for seat in rec.models:
-            if seat in match.eliminated:
-                continue
-            if match.has_answered(seat):
-                continue
-            key = (match.id, seat, match.round_n)
-            if key in self.answering:
-                continue
-            self.answering.add(key)
-            self.spawn(self._answer_as_model(match.id, seat, match.round_n))
-
-    async def _answer_as_model(
-        self, match_id: str, seat: str, round_n: int, tries: int = 0
-    ) -> None:
-        rewrite = False
-        try:
-            match, rec = await self.load(match_id)
-            if not self._still_owed(match, seat, round_n):
-                return
-            template = rec.template
-            card = template.seed_named(match.card)
-            assert card is not None
-            lines = transcript(match, template, finished_only=True)
-            row = rec.row(seat)
-            held = row.held_move if row.held_round == round_n else None
-            try:
-                judged, text = await self._write_and_judge_model(
-                    match, template, seat, held, card, lines
-                )
-            except (HouseStuck, JudgeGaveUp):
-                async with self.locks[match_id]:
-                    match, rec = await self.load(match_id)
-                    if match.status != "active" or match.round_n != round_n:
-                        return
-                    resign(match, seat, template)
-                    await save_match(self.pool, match)
-                    await self._after_showcase_change(match, template, rec, round_n)
-                return
-            async with self.locks[match_id]:
-                match, rec = await self.load(match_id)
-                if not self._still_owed(match, seat, round_n):
-                    return
-                await hold_move(self.pool, match_id, seat, None, round_n)
-                # Two identical entries could not be told apart on the call.
-                if repeats_the_round(match, template, text):
-                    if tries < MODEL_REWRITES:
-                        rewrite = True
-                        return
-                    resign(match, seat, template)
-                    await save_match(self.pool, match)
-                    await self._after_showcase_change(match, template, rec, round_n)
-                    return
-                await self._record_ruling(
-                    match, template, seat, text, judged, len(match.turns) + 1, None, card.hidden
-                )
-                await self._after_showcase_change(match, template, rec, round_n)
-        except MatchClosed:
-            log.info("match %s closed while a model seat was writing", match_id)
-        finally:
-            self.answering.discard((match_id, seat, round_n))
-            if rewrite:
-                self.answering.add((match_id, seat, round_n))
-                self.spawn(self._answer_as_model(match_id, seat, round_n, tries + 1))
-
-    async def _answer_as_human(
-        self, match_id: str, seat: str, action_id: str, move_text: str
-    ) -> None:
-        """Showcase: judges one seat's answer without holding up the other seats. Nothing about
-        it leaves the server until the round is revealed."""
-        try:
-            match, rec = await self.load(match_id)
-            template = rec.template
-            round_n = match.round_n
-            card = template.seed_named(match.card)
-            assert card is not None
-            reason = layer1(template, move_text, match)
-            judged = None
-            if reason is None:
-                judged = await self.judge.rule(
-                    match,
-                    template,
-                    len(match.turns) + 1,
-                    move_text,
-                    card.card_text,
-                    transcript(match, template, finished_only=True),
-                    card.hidden,
-                    quiet=True,
-                )
-            async with self.locks[match_id]:
-                await set_submitted(self.pool, match_id, seat, False)
-                match, rec = await self.load(match_id)
-                if not self._still_owed(match, seat, round_n):
-                    return
-                if judged is None:
-                    change = await self._refuse_layer1(match, template, seat, move_text, action_id)
-                elif judged.outcome == "semantic_reject":
-                    change = await self._refuse_semantic(
-                        match, template, seat, move_text, judged, action_id
-                    )
-                elif repeats_the_round(match, template, move_text):
-                    # No strike: the seat could not have known.
-                    await store_turn(
-                        self.pool,
-                        match,
-                        TurnRow(
-                            seat,
-                            move_text,
-                            "deterministic_invalid",
-                            layer1_result="repeat",
-                            action_id=action_id,
-                        ),
-                    )
-                    self._emit_rejection(
-                        match,
-                        template,
-                        rejection(
-                            match,
-                            template,
-                            seat,
-                            match.strikes[seat],
-                            "deterministic_invalid",
-                            REPEAT_TEXT,
-                        ),
-                    )
-                    await self._give_time(match, rec, template)
-                    return
-                else:
-                    await self._record_ruling(
-                        match,
-                        template,
-                        seat,
-                        move_text,
-                        judged,
-                        len(match.turns) + 1,
-                        action_id,
-                        card.hidden,
-                    )
-                    self.bus.emit(
-                        match_id,
-                        "seat_submitted",
-                        SeatSubmitted(seat=seat, state_version=match.state_version),
-                    )
-                    await self._after_showcase_change(match, template, rec, round_n)
-                    return
-                if change is not None and change.forfeit is not None:
-                    await self._after_showcase_change(match, template, rec, round_n)
-                else:
-                    await self._give_time(match, rec, template)
-        except MatchClosed:
-            log.info("match %s closed while waiting on the judge", match_id)
-        except Exception:
-            log.exception("answer on %s failed; the seat may answer again", match_id)
-            async with self.locks[match_id]:
-                await set_submitted(self.pool, match_id, seat, False)
-                match, rec = await self.load(match_id)
-                await self._give_time(match, rec, rec.template)
-
-    async def _give_time(self, match: Match, rec: Record, template: Template) -> None:
-        """A seat handed back its move after the judge ran long gets a whole clock again."""
-        if not match.clocked or match.status not in ("active", "awaiting_judgment"):
-            return
-        left = rec.turn_deadline - datetime.now(UTC) if rec.turn_deadline else None
-        if left is None or left < GRACE:
-            await self.set_clock(match, rec, template)
-
-    def _still_owed(self, match: Match, seat: str, round_n: int) -> bool:
-        """The seat still owes an answer for the round it wrote for."""
-        return (
-            match.status == "active"
-            and match.phase == "write"
-            and match.round_n == round_n
-            and seat not in match.eliminated
-            and not match.has_answered(seat)
-        )
-
-    async def _after_showcase_change(
-        self, match: Match, template: Template, rec: Record, round_n: int
-    ) -> None:
-        """After a showcase round moved: a finished round reveals (and ends the match when it
-        was the last), a match ended mid-round says so, a round now being called opens."""
-        if match.round_n != round_n and match.phase == "write":
-            await self._round_closed(match, template, rec)
-        elif match.status == "ended":
-            await self._emit_match_ended(match, coaching_line=None)
-        elif match.phase == "guess":
-            await self._round_closed(match, template, rec)
-
-    async def _round_closed(self, match: Match, template: Template, rec: Record) -> None:
-        """Under the match lock, once every live seat has answered: open the call, or reveal
-        the round and deal the next card."""
-        if match.phase == "guess":
-            await self.set_clock(match, rec, template)
-            self.bus.emit(
-                match.id,
-                "guess_opened",
-                GuessOpened(round_n=match.round_n, state_version=match.state_version),
-            )
-            return
-        await self._settle_round(match, template)
+        while (owing := owed(match, template)) and owing[0] in rec.models:
+            await self._house_turn(match, rec, owing[0])
         if match.status != "active":
             return
-        await self.set_clock(match, rec, template)
-        self.start_model_answers(match, rec)
-
-    async def _settle_round(self, match: Match, template: Template) -> None:
-        """Sends out the round's rulings and reveal, then ends the match when it is over."""
-        _, rec = await self.load(match.id)
-        # Closing a round always deals the next, so the round to reveal is the one before.
-        round_n = match.round_n - 1
-        card = template.seed_named(match.cards[round_n - 1])
-        assert card is not None
-        totals = dict(match.points)
-        for row in rec.turn_rows:
-            if row["round_n"] != round_n or row["scoring"] is None:
-                continue
-            scoring = ScoringPayload.model_validate(row["scoring"])
-            host = HostPayload.model_validate(row["host"])
-            self.bus.emit(
-                match.id,
-                "ruling",
-                Ruling(
-                    seq=row["seq"],
-                    round_n=round_n,
-                    actor=row["actor"],
-                    move_text=row["move_text"],
-                    outcome=row["outcome"],
-                    scoring=scoring,
-                    host=host,
-                    points=row["points"] or 0,
-                    totals=totals,
-                    to_move=match.to_move,
-                    round_in_play=match.round_n,
-                    state_version=match.state_version,
-                ),
+        deadline = await self._set_clock(match, rec)
+        self._turn_changed(match, deadline)
+        mover = rec.row(match.to_move)
+        if match.clocked and mover.session_key:
+            await self.presence.send(
+                mover.session_key, TurnNudge(match_id=match.id, title=template.title)
             )
-        self.bus.emit(
-            match.id,
-            "round_revealed",
-            RoundRevealed(
-                round_n=round_n,
-                token=card.opening_token,
-                emoji=card.opening_emoji,
-                detail=card.detail,
-                truth=card.hidden,
-                guesses=guess_views(match, round_n),
-                totals=totals,
-                state_version=match.state_version,
-            ),
-        )
-        if match.status == "ended":
-            await self._emit_match_ended(match, coaching_line=None)
 
-    async def _write_and_judge_model(
-        self,
-        match: Match,
-        template: Template,
-        seat: str,
-        held: str | None,
-        card: Seed,
-        lines: list[str],
-    ) -> tuple[Judged, str]:
-        """A model seat's answer for the round, judged and rulable. Regenerates when the bluff is
-        refused or lands on the real meaning, and persists the text so a restart can reuse it."""
-        seq = len(match.turns) + 1
-        text = held
-        if text is None:
-            text = await self.house.write(
-                match, template, seat, card.card_text, card.hidden, silent=True
-            )
-            await hold_move(self.pool, match.id, seat, text, match.round_n)
+    async def _give_time(self, match: Match, rec: Record) -> str | None:
+        """A seat handed back its answer after the judge ran long gets a whole clock again.
+        Returns the deadline in force."""
+        left = rec.turn_deadline - datetime.now(UTC) if rec.turn_deadline else None
+        playing = match.status in ("active", "awaiting_judgment")
+        if match.clocked and playing and (left is None or left < GRACE):
+            return await self._set_clock(match, rec)
+        return rec.turn_deadline.isoformat() if rec.turn_deadline else None
+
+    # House seats
+
+    async def _house_turn(self, match: Match, rec: Record, seat: str) -> None:
+        """Serial play, under the match lock: the House seat to move answers, or loses its turn
+        when the judge gives no ruling."""
+        template = rec.template
+        try:
+            written = await self._write_answer(match, rec, seat)
+        except JudgeGaveUp:
+            change = forfeit_turn(match, seat, template)
+            await store_turns(self.pool, match, *_forfeit_rows(change))
+            await self._publish(match, rec, change)
+            return
+        await hold_move(self.pool, match.id, seat, None, match.round_n)
+        await self._play_house(match, rec, seat, written)
+
+    def _start_writer(self, match_id: str, seat: str, round_n: int) -> None:
+        key = (match_id, seat, round_n)
+        if key in self.answering:
+            return
+        self.answering.add(key)
+        self.spawn(self._house_answer(match_id, seat, round_n))
+
+    async def _house_answer(self, match_id: str, seat: str, round_n: int) -> None:
+        """A hidden round: the House seat writes and is judged outside the match lock, then lands
+        under it. An answer another seat already gave is written again, up to MODEL_REWRITES
+        times."""
+        try:
+            for tries in range(MODEL_REWRITES + 1):
+                match, rec = await self.load(match_id)
+                template = rec.template
+                if not _owes(match, template, seat, round_n):
+                    return
+                try:
+                    written = await self._write_answer(match, rec, seat)
+                except JudgeGaveUp:
+                    written = None
+                async with self.locks[match_id]:
+                    match, rec = await self.load(match_id)
+                    if not _owes(match, template, seat, round_n):
+                        return
+                    await hold_move(self.pool, match_id, seat, None, round_n)
+                    # Two identical entries could not be told apart on the call.
+                    if written and repeats_the_round(match, template, written[0]):
+                        if tries < MODEL_REWRITES:
+                            continue
+                        written = None
+                    await self._play_house(match, rec, seat, written)
+                    await self._drive(match, rec)
+                    return
+        except MatchClosed:
+            log.info("match %s closed while a House seat was writing", match_id)
+        finally:
+            self.answering.discard((match_id, seat, round_n))
+
+    async def _write_answer(
+        self, match: Match, rec: Record, seat: str
+    ) -> tuple[str, Judged] | None:
+        """The House seat's answer and its ruling, or None when it gives up. A refused answer is
+        written again until the strikes run out, then the default move is tried. Only serial
+        play lands each refusal, as a strike the table sees."""
+        template = rec.template
+        row = rec.row(seat)
+        held = row.held_move if row.held_round == match.round_n else None
+        text = held or await self._write(match, template, row)
         refusals = 0
         retold = False
         while True:
-            reason = layer1(template, text, match)
-            if reason is None:
-                judged = await self.judge.rule(
-                    match, template, seq, text, card.card_text, lines, card.hidden, quiet=True
-                )
-                hit = judged.response.scoring.truth_proximity == "hit"
-                if hit and card.hidden and not retold:
-                    # A model seat is meant to bluff: one more try when it wrote the truth.
+            ruled = await self._rule(match, template, text) if text is not None else None
+            if isinstance(ruled, Judged):
+                hit = ruled.response.scoring.truth_proximity == "hit"
+                if hit and card_in_play(match, template).hidden and not retold:
+                    # A House seat is meant to bluff: one more try when it wrote the truth.
                     retold = True
-                    text = await self.house.write(
-                        match, template, seat, card.card_text, card.hidden, silent=True
-                    )
-                    await hold_move(self.pool, match.id, seat, text, match.round_n)
+                    text = await self._write(match, template, row)
                     continue
-                if judged.outcome != "semantic_reject":
-                    return judged, text
+                if ruled.outcome != "semantic_reject":
+                    assert text is not None
+                    return text, ruled
+            if text is not None and ruled is not None and shows_live(template):
+                await self._land(match, rec, seat, text, ruled, None)
             refusals += 1
-            if text == template.default_move:
-                raise HouseStuck(match.id)
-            if model_next(refusals, template) == "write":
-                text = await self.house.write(
-                    match, template, seat, card.card_text, card.hidden, silent=True
-                )
-                await hold_move(self.pool, match.id, seat, text, match.round_n)
+            step = model_next(refusals, template)
+            if step == "give_up":
+                return None
+            if step == "write":
+                text = await self._write(match, template, row)
             else:
                 text = template.default_move
+
+    async def _write(self, match: Match, template: Template, row: SeatRow) -> str | None:
+        """A House answer for the seat, held so a restart can reuse it; streamed to the table in
+        serial play."""
+        card = card_in_play(match, template)
+        text = await self.house.write(match, template, row, card, silent=not shows_live(template))
+        if text is not None:
+            await hold_move(self.pool, match.id, row.seat, text, match.round_n)
+        return text
+
+    async def _play_house(
+        self,
+        match: Match,
+        rec: Record,
+        seat: str,
+        written: tuple[str, Judged] | None,
+    ) -> None:
+        """Under the match lock: lands the House seat's answer, or gives up its seat when it has
+        none."""
+        if written is not None:
+            await self._land(match, rec, seat, *written, None)
+            return
+        change = resign(match, seat, rec.template)
+        await save_match(self.pool, match)
+        await self._publish(match, rec, change)
 
     # The clock
 
@@ -992,48 +728,122 @@ class MatchService:
             now = datetime.now(UTC)
             if match.status != "active" or rec.turn_deadline is None or rec.turn_deadline > now:
                 return
-            await self._expire_turn(match, rec, rec.template)
+            await self._expire_turn(match, rec)
 
-    async def _expire_turn(self, match: Match, rec: Record, template: Template) -> None:
-        if template.mode == "escalation":
-            await self._forfeit(match, template, match.to_move)
-            if not await self._emit_if_ended(match):
-                await self.after_turn(match, template, rec)
-            return
-        if match.phase == "guess":
-            owed = match.owed_guesses()
-            for seat in owed:
-                skip_guess(match, seat, template)
-            await store_guesses(self.pool, match, match.guesses[-len(owed) :], None)
-            await self._round_closed(match, template, rec)
-            return
-        round_n = match.round_n
-        for row in rec.humans:
-            if not row.submitted and self._still_owed(match, row.seat, round_n):
-                await self._forfeit(match, template, row.seat)
-        if match.round_n == round_n and match.phase == "write" and match.status == "active":
-            # Only answers still with the judge or a model seat remain; the round waits.
-            await self.set_clock(match, rec, template, running=False)
-        await self._after_showcase_change(match, template, rec, round_n)
+    async def _expire_turn(self, match: Match, rec: Record) -> None:
+        """Every human seat that owes an answer or a call, and has not sent one, loses it."""
+        template = rec.template
+        round_n, phase = match.round_n, match.phase
+        humans = match.human_seats
+        late = [s for s in owed(match, template) if s in humans and not rec.row(s).submitted]
+        for seat in late:
+            if (match.status, match.round_n, match.phase) != ("active", round_n, phase):
+                break
+            if phase == "guess":
+                change = skip_guess(match, seat, template)
+                await store_guesses(self.pool, match, match.guesses[-1:], None)
+            else:
+                change = forfeit_turn(match, seat, template)
+                await store_turns(self.pool, match, *_forfeit_rows(change))
+            await self._publish(match, rec, change)
+        if not shows_live(template) and phase == "write":
+            if (match.status, match.round_n, match.phase) == ("active", round_n, "write"):
+                # Only answers still with the judge or a House seat remain; the round waits.
+                await self._set_clock(match, rec, running=False)
+            self._turn_changed(match, None)
+        await self._drive(match, rec)
+
+    # Publishing
+
+    async def _publish(
+        self,
+        match: Match,
+        rec: Record,
+        change: Change,
+        rejected: TurnRejected | None = None,
+        response: JudgeResponse | None = None,
+    ) -> None:
+        """Sends the table what it may see of one transition: the answer, a call that opened or
+        a round that closed, then the end."""
+        template = rec.template
+        live = shows_live(template)
+        coaching = None
+        if rejected is not None:
+            self._emit_rejection(match, template, rejected)
+        if change.turn is not None and live and response is not None:
+            self.bus.emit(
+                match.id, "ruling", _ruling(match, change.turn, response.scoring, response.host)
+            )
+            if change.turn.outcome == "fail":
+                coaching = response.host.coaching_line
+        elif change.turn is not None and not live and change.turn.actor in match.human_seats:
+            # A House seat's answer says nothing until the reveal.
+            self._seat_submitted(match, change.turn.actor)
+        if match.status == "active" and (change.call_opened or change.round_closed):
+            await self._set_clock(match, rec)
+        if change.call_opened:
+            self.bus.emit(
+                match.id,
+                "guess_opened",
+                GuessOpened(round_n=match.round_n, state_version=match.state_version),
+            )
+        if change.round_closed:
+            await self._reveal(match, template, change.round_n)
+        if change.ended:
+            await self._emit_match_ended(match, coaching)
+
+    async def _reveal(self, match: Match, template: Template, round_n: int) -> None:
+        """Sends a closed round's rulings, then its card's truth and the calls."""
+        _, rec = await self.load(match.id)
+        for row in rec.turn_rows:
+            if row["round_n"] != round_n or row["scoring"] is None:
+                continue
+            scoring = ScoringPayload.model_validate(row["scoring"])
+            host = HostPayload.model_validate(row["host"])
+            turn = match.turns[row["seq"] - 1]
+            self.bus.emit(match.id, "ruling", _ruling(match, turn, scoring, host))
+        card = template.seed_named(match.cards[round_n - 1])
+        assert card is not None
+        self.bus.emit(
+            match.id,
+            "round_revealed",
+            RoundRevealed(
+                round_n=round_n,
+                token=card.opening_token,
+                emoji=card.opening_emoji,
+                detail=card.detail,
+                truth=card.hidden,
+                guesses=guess_views(match, round_n),
+                totals=dict(match.points),
+                state_version=match.state_version,
+            ),
+        )
+
+    def _emit_rejection(self, match: Match, template: Template, rejected: TurnRejected) -> None:
+        """A refusal in a hidden round is about a hidden answer, so the stream says only whose it
+        was; that seat reads the reason from its own snapshot."""
+        if not shows_live(template):
+            rejected = rejected.model_copy(update={"reason_text": "", "nudge_text": None})
+        self.bus.emit(match.id, "turn_rejected", rejected)
+
+    def _seat_submitted(self, match: Match, seat: str) -> None:
+        self.bus.emit(
+            match.id,
+            "seat_submitted",
+            SeatSubmitted(seat=seat, state_version=match.state_version),
+        )
+
+    def _turn_changed(self, match: Match, deadline: str | None) -> None:
         self.bus.emit(
             match.id,
             "turn_changed",
             TurnChanged(
                 to_move=match.to_move,
-                turn_deadline=None,
+                turn_deadline=deadline,
                 round_in_play=match.round_n,
                 state_version=match.state_version,
             ),
         )
-
-    # Publishing
-
-    def _emit_rejection(self, match: Match, template: Template, rejected: TurnRejected) -> None:
-        """A showcase refusal is about a hidden answer, so the stream says only whose it was;
-        that seat reads the reason from its own snapshot."""
-        if not shows_live(template):
-            rejected = rejected.model_copy(update={"reason_text": "", "nudge_text": None})
-        self.bus.emit(match.id, "turn_rejected", rejected)
 
     async def _emit_match_ended(self, match: Match, coaching_line: str | None) -> None:
         snap = await self.snapshot(match.id)
@@ -1053,3 +863,32 @@ class MatchService:
                 state_version=match.state_version,
             ),
         )
+
+
+def _owes(match: Match, template: Template, seat: str, round_n: int) -> bool:
+    """The seat still owes the answer it wrote for round_n."""
+    return match.phase == "write" and match.round_n == round_n and seat in owed(match, template)
+
+
+def _forfeit_rows(change: Change) -> list[TurnRow]:
+    turn = change.forfeit
+    if turn is None:
+        return []
+    return [TurnRow(turn.actor, "", "forfeit", seq=turn.seq, layer1_result="forfeit")]
+
+
+def _ruling(match: Match, turn: Turn, scoring: ScoringPayload, host: HostPayload) -> Ruling:
+    return Ruling(
+        seq=turn.seq,
+        round_n=turn.round_n,
+        actor=turn.actor,
+        move_text=turn.move_text,
+        outcome=turn.outcome,
+        scoring=scoring,
+        host=host,
+        points=turn.points or 0,
+        totals=dict(match.points),
+        to_move=match.to_move,
+        round_in_play=match.round_n,
+        state_version=match.state_version,
+    )

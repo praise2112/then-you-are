@@ -705,7 +705,7 @@ class StuckHouse(FakeCaller):
 
 
 @pytest.mark.anyio
-async def test_a_restart_plays_the_owed_house_turn_and_leaves_a_word_duel_until_it_is_opened():
+async def test_a_restart_plays_every_house_answer_still_owed():
     app, manager, ana = await run_app(StuckHouse([], []))
     duel = (await ana.post("/matches", json={"template_id": "then-i-am"})).json()
     words = (await ana.post("/matches", json={"template_id": "word-for-word"})).json()
@@ -735,10 +735,7 @@ async def test_a_restart_plays_the_owed_house_turn_and_leaves_a_word_duel_until_
         state = (await ana.get(f"/matches/{duel['id']}")).json()
         assert [t["actor"] for t in state["transcript"]] == ["p1", "p2"]
         assert state["to_move"] == "p1" and state["status"] == "active"
-        # The word duel's House waits for a seated player to open the match.
-        assert not await house_answered()
-        await ana.get(f"/matches/{words['id']}")
-        await settle(app)
+        # The word duel's House answers at boot, before anyone opens the match.
         assert await house_answered()
         for match_id, version in ((duel["id"], 2), (words["id"], 0)):
             await ana.post(

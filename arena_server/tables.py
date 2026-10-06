@@ -106,10 +106,9 @@ class Tables:
             await self._insert_seat(conn, match_id, "p1", "human", session_key)
             if house:
                 await self._insert_seat(conn, match_id, "p2", "model", None)
-        if house and template.mode == "showcase":
-            match, rec = await service.load(match_id)
-            service.start_model_answers(match, rec)
-        if not house:
+        if house:
+            await service.resume(match_id)
+        else:
             await self._broadcast_lobby()
         return await service.snapshot(match_id, session_key)
 
@@ -189,13 +188,8 @@ class Tables:
         if len(rec.seats) >= rec.seats_wanted:
             await start_table(service.pool, match_id)
             match, rec = await service.load(match_id)
-            template = rec.template
             service.bus.emit(match_id, "match_started", MatchStarted(state_version=0))
-            if template.mode == "showcase":
-                await service.set_clock(match, rec, template)
-                service.start_model_answers(match, rec)
-            else:
-                await service.after_turn(match, template, rec)
+            await service.start(match, rec)
         service.spawn(self._broadcast_lobby())
 
     async def _broadcast_lobby(self) -> None:

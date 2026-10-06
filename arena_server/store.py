@@ -261,16 +261,17 @@ async def save_match(pool: Pool, match: Match) -> None:
         await update_match(conn, match)
 
 
-async def store_turn(pool: Pool, match: Match, turn: TurnRow) -> None:
-    """One transaction: the new match state and the turn that produced it."""
+async def store_turns(pool: Pool, match: Match, *turns: TurnRow) -> None:
+    """One transaction: the new match state and the turns that produced it."""
     async with pool.connection() as conn, conn.transaction():
         await update_match(conn, match)
-        await insert_turn(conn, match, turn)
+        for turn in turns:
+            await _insert_turn(conn, match, turn)
 
 
-async def insert_turn(conn: AsyncConnection[DictRow], match: Match, turn: TurnRow) -> int:
+async def _insert_turn(conn: AsyncConnection[DictRow], match: Match, turn: TurnRow) -> None:
     # A refused move has no seq and no turn in the match.
-    played = match.turns[-1] if turn.seq is not None and match.turns else None
+    played = match.turns[turn.seq - 1] if turn.seq is not None else None
     round_n = turn.round_n
     if round_n is None:
         round_n = played.round_n if played else match.round_n
@@ -301,7 +302,6 @@ async def insert_turn(conn: AsyncConnection[DictRow], match: Match, turn: TurnRo
         await conn.execute(
             "update verdicts set turn_id = %s where id = %s", (row["id"], turn.verdict_id)
         )
-    return row["id"]
 
 
 async def store_guesses(
@@ -455,17 +455,6 @@ async def hold_move(pool: Pool, match_id: str, seat: str, text: str | None, roun
             "update seats set held_move = %s, held_round = %s where match_id = %s and seat = %s",
             (text, round_n, match_id, seat),
         )
-
-
-async def seat_model_ref(pool: Pool, match_id: str, seat: str) -> str | None:
-    async with pool.connection() as conn:
-        row = await (
-            await conn.execute(
-                "select model_ref from seats where match_id = %s and seat = %s",
-                (match_id, seat),
-            )
-        ).fetchone()
-    return row["model_ref"] if row else None
 
 
 async def set_model_ref(pool: Pool, match_id: str, seat: str, model_ref: str) -> None:
@@ -639,8 +628,7 @@ async def replay_ids(pool: Pool, sort: Literal["curated", "newest", "longest"]) 
 
 
 async def reset_for_restart(pool: Pool) -> list[str]:
-    """Hands every move waiting on the judge back to its seat. Returns the active matches with
-    a model seat to move or two or more humans at the table."""
+    """Hands every move waiting on the judge back to its seat. Returns the active matches."""
     async with pool.connection() as conn:
         await conn.execute(
             "update matches set status = 'active', updated_at = now() "
@@ -648,12 +636,7 @@ async def reset_for_restart(pool: Pool) -> list[str]:
         )
         await conn.execute("update seats set submitted_at = null where submitted_at is not null")
         rows = await (
-            await conn.execute(
-                "select m.id from matches m where m.status = 'active' and (exists "
-                "(select 1 from seats se where se.match_id = m.id and se.seat = m.to_move "
-                "and se.kind = 'model') or (select count(*) from seats se "
-                "where se.match_id = m.id and se.kind = 'human') >= 2)"
-            )
+            await conn.execute("select id from matches where status = 'active'")
         ).fetchall()
     return [row["id"] for row in rows]
 
