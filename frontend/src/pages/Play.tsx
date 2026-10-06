@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, navigate, ThemeToggle, TopBar } from "../App.tsx";
+import { Link, Loading, navigate, ThemeToggle, TopBar } from "../App.tsx";
 import { useStandingsShown } from "../standings.ts";
 import { api, ApiError, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
@@ -18,7 +18,8 @@ export function GamePage({ slug }: { slug: string }) {
   }, []);
   const template = templates?.find((t) => t.slug === slug);
   if (templates && !template) return <p className="page-status">No game by that name is on the bill.</p>;
-  if (!templates || !template) return <p className="page-status">{error ?? "Raising the curtain."}</p>;
+  if (error) return <p className="page-status">{error}</p>;
+  if (!templates || !template) return <Loading text="Raising the curtain." />;
   return (
     <>
       <TopBar>
@@ -73,9 +74,8 @@ export function Play({ slug }: { slug: string }) {
     if (!firstPlay) void start(store.stageName());
   }, [firstPlay, start]);
 
-  if (!firstPlay || !template) {
-    return <p className="page-status">{error ?? "Raising the curtain."}</p>;
-  }
+  if (error) return <p className="page-status">{error}</p>;
+  if (!firstPlay || !template) return <Loading text="Raising the curtain." />;
 
   async function submit(event: FormEvent) {
     event.preventDefault();

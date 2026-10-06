@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Link, ThemeToggle, TopBar } from "../App.tsx";
+import { Link, Loading, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type Replay, type ReplaySort, type StageView, type TemplateView } from "../api.ts";
 import { LiveCard, ReplayCard } from "./cards.tsx";
 import { templateOf } from "./format.ts";
@@ -43,7 +43,7 @@ export function StagePage() {
       <main className="wrap">
         <section id="on-stage">
           <h2 className="centered-label small-caps">Live now</h2>
-          {stage === null && <p className="empty-strip">Looking in on the house.</p>}
+          {stage === null && <Loading text="Looking in on the house." strip />}
           {stage?.live.length === 0 && (
             <p className="empty-strip">Nobody is playing in public right now. Duels are private unless their player lists them.</p>
           )}
@@ -68,7 +68,7 @@ export function StagePage() {
             ))}
           </div>
           <div className="classics">
-            {replays === undefined && <p className="empty-strip">Fetching the archive.</p>}
+            {replays === undefined && <Loading text="Fetching the archive." strip />}
             {replays?.length === 0 && (
               <p className="empty-strip">
                 {sort === "curated" ? "No duels curated yet." : "No listed duels yet. Yours could be the first."}

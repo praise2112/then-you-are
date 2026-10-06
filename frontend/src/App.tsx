@@ -81,6 +81,15 @@ export function ThemeToggle({ icon = false }: { icon?: boolean }) {
 }
 
 /** The line at the foot of every page: the privacy page and the terms. */
+/** What a page shows while its first fetch is in flight; strip sits inside a section. */
+export function Loading({ text, strip = false }: { text: string; strip?: boolean }) {
+  return (
+    <p className={`${strip ? "empty-strip" : "page-status"} loading`} role="status">
+      <span className="read-line">{text}</span>
+    </p>
+  );
+}
+
 function SiteFoot() {
   return (
     <footer className="site-foot">

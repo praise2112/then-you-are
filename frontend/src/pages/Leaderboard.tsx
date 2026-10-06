@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, ThemeToggle, TopBar } from "../App.tsx";
+import { Link, Loading, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type BoardSummary, type BoardView } from "../api.ts";
 
 /** Standings: an index of games, then one board per game. Signed-in players, three finished duels or more. */
@@ -32,7 +32,7 @@ function BoardIndex() {
     <>
       <p className="centered-label small-caps">Pick a game</p>
       {error && <p className="page-status">{error}</p>}
-      {boards === null && !error && <p className="empty-strip">Counting the house.</p>}
+      {boards === null && !error && <Loading text="Counting the house." strip />}
       <div className="board-index">
         {boards?.map((b) => (
           <Link key={b.slug} className="card game-card" to={`/standings/${b.slug}`} style={{ "--game-accent": b.accent } as React.CSSProperties}>
@@ -68,7 +68,7 @@ function Board({ slug }: { slug: string }) {
     api.board(slug).then(setBoard, (e) => setError(e.message));
   }, [slug]);
   if (error) return <p className="page-status">{error}</p>;
-  if (!board) return <p className="empty-strip">Counting the house.</p>;
+  if (!board) return <Loading text="Counting the house." strip />;
   return (
     <section className="board" style={{ "--game-accent": board.accent } as React.CSSProperties}>
       <p className="back">

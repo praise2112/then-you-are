@@ -1,4 +1,4 @@
-import { Link, ThemeToggle, TopBar } from "../../App.tsx";
+import { Link, Loading, ThemeToggle, TopBar } from "../../App.tsx";
 import { tableOf } from "../format.ts";
 import { WaitingRoom } from "../seats.tsx";
 import { EscalationBoard } from "./EscalationBoard.tsx";
@@ -13,7 +13,7 @@ export function Duel({ matchId, spectator = false }: Props) {
   const { snap, template, error } = duel;
 
   if (error) return <p className="page-status">{error}</p>;
-  if (!snap || !template) return <p className="page-status">Finding your seat.</p>;
+  if (!snap || !template) return <Loading text="Finding your seat." />;
   if (snap.status === "abandoned") {
     return (
       <p className="page-status">

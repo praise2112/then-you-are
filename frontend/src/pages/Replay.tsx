@@ -1,6 +1,6 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
 
-import { Link, ThemeToggle, TopBar } from "../App.tsx";
+import { Link, Loading, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { store } from "../store.ts";
@@ -30,7 +30,7 @@ export function ReplayPage({ matchId }: Props) {
   }, [matchId]);
 
   if (error) return <p className="page-status">{error}</p>;
-  if (!replay || !template) return <p className="page-status">Opening the programme.</p>;
+  if (!replay || !template) return <Loading text="Opening the programme." />;
 
   // A replay names every seat, the viewer's included, so it reads the same to anyone.
   const table = tableOf(replay, true);

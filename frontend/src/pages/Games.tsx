@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, ThemeToggle, TopBar } from "../App.tsx";
+import { Link, Loading, ThemeToggle, TopBar } from "../App.tsx";
 import { useStandingsShown } from "../standings.ts";
 import { api, type TemplateView } from "../api.ts";
 import { Poster } from "./Landing.tsx";
@@ -27,7 +27,8 @@ export function GamesPage() {
       </TopBar>
       <main className="wrap games">
         <h1 className="peak">All games</h1>
-        {!templates && <p className="page-status">{error ?? "Fetching the bill."}</p>}
+        {error && <p className="page-status">{error}</p>}
+        {!templates && !error && <Loading text="Fetching the bill." />}
         {templates && (
           <div className="poster-grid">
             {templates.map((t) => (

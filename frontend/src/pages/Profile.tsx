@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { AccountMenu } from "../Account.tsx";
-import { Link, ThemeToggle, TopBar } from "../App.tsx";
+import { Link, Loading, ThemeToggle, TopBar } from "../App.tsx";
 import { useStandingsShown } from "../standings.ts";
 import { api, type DuelRow, type ProfileView, type TemplateView } from "../api.ts";
 import { ReplayCard } from "./cards.tsx";
@@ -36,7 +36,7 @@ export function Profile({ accountId }: { accountId: string }) {
 
       <main className="wrap programme">
         {error && <p className="page-status">{error}</p>}
-        {!profile && !error && <p className="page-status">Finding the programme.</p>}
+        {!profile && !error && <Loading text="Finding the programme." />}
         {profile && (
           <>
             <Cover profile={profile} />

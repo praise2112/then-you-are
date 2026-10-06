@@ -340,7 +340,7 @@ class ModelCaller:
     async def wake_opponent(self) -> None:
         """Asks a self-hosted House for /health, so a scaled-to-zero server starts booting
         before the House's first move; does nothing for a hosted opponent."""
-        if self.opponent_spec.base_url:
+        if self.opponent_spec.slots and self.opponent_spec.base_url:
             await self.local.get(
                 self.opponent_spec.base_url.rstrip("/").removesuffix("/v1") + "/health"
             )
