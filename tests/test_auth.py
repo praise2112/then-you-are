@@ -162,6 +162,36 @@ async def test_leaderboard_counts_an_account_across_its_sessions(monkeypatch):
 
 
 @pytest.mark.anyio
+async def test_a_profile_rank_follows_the_board_order_when_records_tie(monkeypatch):
+    profiles = [
+        auth.Profile("github", f"{RUN}-x", f"Tie{RUN}a", ""),
+        auth.Profile("github", f"{RUN}-y", f"Tie{RUN}b", ""),
+    ]
+
+    async def fake_profile(_client, _provider, _request):
+        return profiles.pop(0)
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    app, manager, client = await run_app(FakeCaller([], []))
+    try:
+        account_ids = []
+        for _ in range(2):
+            await sign_in(client)
+            for _ in range(3):
+                await resign(client, app)
+            account_ids.append((await client.get("/sessions/me")).json()["account"]["id"])
+            await client.post("/auth/logout")
+        ranks = [
+            (await client.get(f"/profiles/{account_id}")).json()["records"][0]["rank"]
+            for account_id in account_ids
+        ]
+        assert ranks[1] == ranks[0] + 1
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_a_signed_in_player_links_a_second_provider_to_the_same_account(monkeypatch):
     profiles = [LINKER, SECOND, SECOND, SECOND]
 

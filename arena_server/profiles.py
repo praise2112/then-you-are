@@ -3,8 +3,9 @@ and the games played against people, which never count on the record."""
 
 from typing import Any
 
+from arena_core.state import JUDGED, STANDING
 from arena_server.auth import account_of
-from arena_server.leaderboard import account_rank, streaks
+from arena_server.leaderboard import account_ranks, streaks
 from arena_server.matches import MatchError, MatchService
 from arena_server.views import BadgeCount, DuelRow, GameRecord, ProfileView
 
@@ -35,13 +36,13 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                 "left join sessions os on os.session_key = o.session_key "
                 "where o.match_id = m.id and o.seat <> se.seat) as others, "
                 "(select count(*) from turns t where t.match_id = m.id and t.seq is not null "
-                "and t.outcome in ('accept', 'fail', 'semantic_uncertain')) as judged, "
+                "and t.outcome = any(%(judged)s)) as judged, "
                 "(select count(*) from turns t where t.match_id = m.id and t.actor = se.seat "
-                "and t.outcome in ('accept', 'fail', 'semantic_uncertain')) as my_moves "
+                "and t.outcome = any(%(judged)s)) as my_moves "
                 "from matches m join seats se on se.match_id = m.id and se.kind = 'human' "
                 "join sessions s on s.session_key = se.session_key "
-                "where s.account_id = %s order by m.created_at desc",
-                (account_id,),
+                "where s.account_id = %(account_id)s order by m.created_at desc",
+                {"judged": list(JUDGED), "account_id": account_id},
             )
         ).fetchall()
         badge_rows = await (
@@ -63,10 +64,11 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                 "select t.match_id, coalesce(max(t.points), 0) as peak from turns t "
                 "join matches m on m.id = t.match_id "
                 "where t.match_id = any(%s) and t.actor = m.winner "
-                "and t.outcome in ('accept', 'semantic_uncertain') group by t.match_id",
-                (won_ids,),
+                "and t.outcome = any(%s) group by t.match_id",
+                (won_ids, list(STANDING)),
             )
         ).fetchall()
+        ranks = await account_ranks(conn, account_id)
         ranked = [m for m in matches if m["kind"] == "house"]
         records = []
         for slug, template in service.templates.items():
@@ -82,7 +84,7 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                     won=sum(m["won"] is True for m in ended),
                     drawn=sum(m["won"] is None for m in ended),
                     best_streak=best,
-                    rank=await account_rank(conn, account_id, slug),
+                    rank=ranks.get(slug),
                 )
             )
 
