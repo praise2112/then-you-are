@@ -10,6 +10,7 @@ from arena_core.state import (
     check_resign,
     model_next,
     resign,
+    result_kind,
     transcript,
 )
 from arena_core.template import Template, load_template
@@ -253,3 +254,21 @@ def test_an_illegal_command_says_why_in_the_players_words():
     resign(duel, "p2", DUEL)
     with pytest.raises(IllegalAction, match="match already ended"):
         check_resign(duel, "p1")
+
+
+@pytest.mark.parametrize(
+    ("end_reason", "winner", "kind"),
+    [
+        ("sudden_death", "p2", "sudden_death"),
+        ("move_cap_points", "p1", "points"),
+        ("move_cap_points", None, "draw"),
+        ("rounds_complete", "p2", "points"),
+        ("rounds_complete", None, "draw"),
+        ("resign", "p1", "resign"),
+        ("forfeit", "p2", "forfeit"),
+        ("abandoned", None, "abandoned"),
+        ("unfilled", None, "unfilled"),
+    ],
+)
+def test_a_finished_match_has_one_result_kind_for_every_seat(end_reason, winner, kind):
+    assert result_kind(end_reason, winner) == kind

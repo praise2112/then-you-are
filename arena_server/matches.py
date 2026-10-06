@@ -28,6 +28,7 @@ from arena_core.state import (
     previous_of,
     repeats_the_round,
     resign,
+    result_kind,
     skip_guess,
     transcript,
     weighted_total,
@@ -233,8 +234,10 @@ class MatchService:
         snap = await self._snapshot(match, rec, session_key, event_id)
         if snap.status not in ("ended", "abandoned"):
             raise MatchError(404, "match still running")
+        assert match.end_reason is not None
         return Replay(
             **snap.model_dump(),
+            result_kind=result_kind(match.end_reason, match.winner),
             share_text=share_text(snap, self.public_base_url),
             highlight_seq=highlight_seq(snap),
             is_curated=rec.is_curated,
@@ -863,6 +866,7 @@ class MatchService:
             "match_ended",
             MatchEnded(
                 end_reason=match.end_reason,
+                result_kind=result_kind(match.end_reason, match.winner),
                 winner=match.winner,
                 totals={s.seat: s.points for s in snap.seats},
                 highlight_seq=highlight_seq(snap),

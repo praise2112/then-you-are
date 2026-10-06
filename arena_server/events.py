@@ -10,7 +10,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from arena_core.state import EndReason, Outcome
+from arena_core.state import EndReason, Outcome, ResultKind
 from arena_judge.schema import HostPayload, ScoringPayload
 
 
@@ -153,6 +153,7 @@ class RoundRevealed(BaseModel):
 
 class MatchEnded(BaseModel):
     end_reason: EndReason
+    result_kind: ResultKind
     winner: str | None
     totals: dict[str, int]
     highlight_seq: int | None

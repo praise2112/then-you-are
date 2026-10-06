@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type Replay, type ReplaySort, type StageView, type TemplateView } from "../api.ts";
 import { LiveCard, ReplayCard } from "./cards.tsx";
-import { prefixOf } from "./format.ts";
+import { templateOf } from "./format.ts";
 
 const SORTS: { key: ReplaySort; label: string }[] = [
   { key: "curated", label: "Curated" },
@@ -50,7 +50,7 @@ export function StagePage() {
           {stage && stage.live.length > 0 && (
             <div className="live-row">
               {stage.live.map((m) => (
-                <LiveCard key={m.id} match={m} prefix={prefixOf(templates, m.template_id)} />
+                <LiveCard key={m.id} match={m} prefix={templateOf(templates, m.template_id)?.move_prefix ?? ""} />
               ))}
             </div>
           )}
@@ -75,7 +75,7 @@ export function StagePage() {
               </p>
             )}
             {replays?.map((replay) => (
-              <ReplayCard key={replay.id} replay={replay} prefix={prefixOf(templates, replay.template_id)} />
+              <ReplayCard key={replay.id} replay={replay} prefix={templateOf(templates, replay.template_id)?.move_prefix ?? ""} />
             ))}
           </div>
         </section>

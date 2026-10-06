@@ -3,7 +3,7 @@ and the games played against people, which never count on the record."""
 
 from typing import Any
 
-from arena_core.state import JUDGED, STANDING
+from arena_core.state import JUDGED, STANDING, result_kind
 from arena_server.auth import account_of
 from arena_server.leaderboard import account_ranks, streaks
 from arena_server.matches import MatchService
@@ -27,7 +27,7 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
         is_yours = await account_of(conn, session_key) == account_id
         matches = await (
             await conn.execute(
-                "select m.id, m.template_id, m.status, m.winner = se.seat as won, "
+                "select m.id, m.template_id, m.status, m.winner, m.winner = se.seat as won, "
                 "m.end_reason, se.points as my_points, (select max(o.points) from seats o "
                 "where o.match_id = m.id and o.seat <> se.seat) as their_points, m.created_at, "
                 "m.ended_at, m.is_public, m.is_curated, m.kind, "
@@ -147,21 +147,23 @@ def _result(m: Any, mode: str) -> str:
         return "Waiting for players"
     if m["status"] in OPEN:
         return "On stage"
-    if m["end_reason"] == "unfilled":
-        return "Nobody joined"
-    if m["status"] == "abandoned":
-        return "Closed, no move for a day"
     won = m["won"] is True
-    if m["end_reason"] in ("move_cap_points", "rounds_complete"):
-        if m["won"] is None:
+    match result_kind(m["end_reason"], m["winner"]):
+        case "unfilled":
+            return "Nobody joined"
+        case "abandoned":
+            return "Closed, no move for a day"
+        case "draw":
             return f"Drawn {m['my_points']} all"
-        if mode == "showcase":
+        case "points" if mode == "showcase":
             return f"{'Won' if won else 'Lost'} {m['my_points']} to {m['their_points']}"
-        return "Won on points" if won else "Lost on points"
-    if m["end_reason"] == "resign":
-        if won:
+        case "points":
+            return "Won on points" if won else "Lost on points"
+        case "resign" if won:
             return "The House resigned" if m["kind"] == "house" else "Last one standing"
-        return "Resigned"
-    if m["end_reason"] == "forfeit":
-        return "Last one standing" if won else "Out of turns"
-    return "Victory" if won else f"Fell in round {m['my_moves']}"
+        case "resign":
+            return "Resigned"
+        case "forfeit":
+            return "Last one standing" if won else "Out of turns"
+        case "sudden_death":
+            return "Victory" if won else f"Fell in round {m['my_moves']}"

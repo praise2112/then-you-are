@@ -124,21 +124,22 @@ async def open_duel(service: "MatchService", match_id: str, session_key: str) ->
     match, rec = await service.load(match_id)
     template = rec.template
     mine = await seat_of(service.pool, rec, session_key)
-    if match.status == "open":
-        line = f"waiting for {rec.seats_wanted - len(rec.seats)} more"
-    elif template.mode == "showcase":
-        line = f"round {min(match.round_n, template.rounds_budget)} of "
-        line += f"{template.rounds_budget}, {match.card}"
-        if match.phase == "guess" and mine in match.owed_guesses():
-            line += ", your call"
+    showcase = template.mode == "showcase"
+    if showcase:
+        your_turn = match.phase == "guess" and mine in match.owed_guesses()
     else:
-        form = match.standing_form
-        if form.lower().startswith(template.move_constraints.prefix.lower()):
-            form = form[len(template.move_constraints.prefix) :]
-        line = f"round {match.round_n}, {form.rstrip('.')} stands"
-        if match.clocked and match.to_move == mine:
-            line += ", your move"
-    return OpenDuel(id=match.id, title=template.title, line=line)
+        your_turn = match.clocked and match.to_move == mine
+    return OpenDuel(
+        id=match.id,
+        template_id=match.template_id,
+        title=template.title,
+        mode=template.mode,
+        waiting_for=rec.seats_wanted - len(rec.seats) if match.status == "open" else None,
+        round_n=min(match.round_n, template.rounds_budget),
+        rounds_budget=template.rounds_budget,
+        card=match.card if showcase else match.standing_form,
+        your_turn=your_turn,
+    )
 
 
 async def seat_of(pool: Pool, rec: Record, session_key: str | None) -> str | None:

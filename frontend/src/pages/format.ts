@@ -14,10 +14,14 @@ export function fullMove(prefix: string, tail: string): string {
   return prefix + (doubled ? trimmed.slice(prefix.trim().length).trim() : trimmed);
 }
 
+/** A move without the template's fixed prefix, when it starts with it. */
+export function withoutPrefix(move: string, prefix: string): string {
+  return prefix && move.toLowerCase().startsWith(prefix.toLowerCase()) ? move.slice(prefix.length) : move;
+}
+
 /** The short name of a move: the prefix dropped, the first clause kept. */
 export function formName(move: string, prefix = ""): string {
-  const head0 = prefix && move.toLowerCase().startsWith(prefix.toLowerCase()) ? move.slice(prefix.length) : move;
-  const stripped = head0.replace(/[.!?]+\s*$/, "");
+  const stripped = withoutPrefix(move, prefix).replace(/[.!?]+\s*$/, "");
   const head = stripped.split(/[,;:]/)[0].trim();
   return head || move;
 }
@@ -70,8 +74,8 @@ export function lastStanding(transcript: TurnView[]): TurnView | undefined {
   return [...transcript].reverse().find((t) => STANDING.has(t.outcome));
 }
 
-export function prefixOf(templates: TemplateView[] | null, templateId: string): string {
-  return templates?.find((t) => t.slug === templateId)?.move_prefix ?? "";
+export function templateOf(templates: TemplateView[] | null, slug: string): TemplateView | undefined {
+  return templates?.find((t) => t.slug === slug);
 }
 
 /** Who sits where. The viewer's seat reads "You" and is always red; the other seats take the

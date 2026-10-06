@@ -888,6 +888,11 @@ export interface components {
              * @enum {string}
              */
             end_reason: "sudden_death" | "move_cap_points" | "rounds_complete" | "resign" | "abandoned" | "forfeit" | "unfilled";
+            /**
+             * Result Kind
+             * @enum {string}
+             */
+            result_kind: "draw" | "points" | "sudden_death" | "resign" | "forfeit" | "abandoned" | "unfilled";
             /** Winner */
             winner: string | null;
             /** Totals */
@@ -1040,10 +1045,25 @@ export interface components {
         OpenDuel: {
             /** Id */
             id: string;
+            /** Template Id */
+            template_id: string;
             /** Title */
             title: string;
-            /** Line */
-            line: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "escalation" | "showcase";
+            /** Waiting For */
+            waiting_for: number | null;
+            /** Round N */
+            round_n: number;
+            /** Rounds Budget */
+            rounds_budget: number;
+            /** Card */
+            card: string;
+            /** Your Turn */
+            your_turn: boolean;
         };
         /**
          * ProfileView
@@ -1165,6 +1185,11 @@ export interface components {
              * @default false
              */
             is_yours: boolean;
+            /**
+             * Result Kind
+             * @enum {string}
+             */
+            result_kind: "draw" | "points" | "sudden_death" | "resign" | "forfeit" | "abandoned" | "unfilled";
             /** Share Text */
             share_text: string;
             /** Highlight Seq */

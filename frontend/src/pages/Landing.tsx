@@ -5,7 +5,7 @@ import { Link, navigate, ThemeToggle, TopBar } from "../App.tsx";
 import { useStandingsShown } from "../standings.ts";
 import { api, usePresence, type DemoPoints, type OpenDuel, type SocketMessage, type TemplateView } from "../api.ts";
 import { store } from "../store.ts";
-import { fullMove, HOUSE } from "./format.ts";
+import { fullMove, HOUSE, templateOf, withoutPrefix } from "./format.ts";
 import { AiTag } from "./seats.tsx";
 
 export function Landing() {
@@ -36,10 +36,10 @@ export function Landing() {
         </span>
       </TopBar>
 
-      {openDuels.map((duel) => (
+      {templates && openDuels.map((duel) => (
         <div key={duel.id} className="open-duel">
           <p>
-            You have a game waiting. <b>{duel.title}</b>, {duel.line}.
+            You have a game waiting. <b>{duel.title}</b>, {openDuelLine(duel, templateOf(templates, duel.template_id)?.move_prefix ?? "")}.
           </p>
           <Link className="ticket" to={`/m/${duel.id}`}>
             Resume
@@ -315,6 +315,14 @@ export function Stage({ template }: { template: TemplateView }) {
       </details>
     </div>
   );
+}
+
+/** Where a duel stands: "round 2, a lantern stands, your move", "round 1 of 3, zarf, your call". */
+function openDuelLine(duel: OpenDuel, prefix: string): string {
+  if (duel.waiting_for !== null) return `waiting for ${duel.waiting_for} more`;
+  if (duel.mode === "showcase") return `round ${duel.round_n} of ${duel.rounds_budget}, ${duel.card}${duel.your_turn ? ", your call" : ""}`;
+  const form = withoutPrefix(duel.card, prefix).replace(/\.+$/, "");
+  return `round ${duel.round_n}, ${form} stands${duel.your_turn ? ", your move" : ""}`;
 }
 
 function total(points: DemoPoints[]): number {

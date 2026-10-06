@@ -24,6 +24,8 @@ EndReason = Literal[
     "forfeit",
     "unfilled",
 ]
+# How a finished match came out, the same from every seat.
+ResultKind = Literal["draw", "points", "sudden_death", "resign", "forfeit", "abandoned", "unfilled"]
 
 Outcome = Literal[
     "accept",
@@ -299,6 +301,13 @@ def previous_of(match: Match, template: Template, turn: Turn) -> str:
 
 def weighted_total(scores: dict[str, int], weights: dict[str, int]) -> int:
     return sum(weights.get(name, 0) * value for name, value in scores.items())
+
+
+def result_kind(end_reason: EndReason, winner: Actor | None) -> ResultKind:
+    """A finish on points is a draw when nobody won; any other end reason is its own kind."""
+    if end_reason in ("move_cap_points", "rounds_complete"):
+        return "points" if winner else "draw"
+    return end_reason
 
 
 def owed(match: Match, template: Template) -> list[Actor]:

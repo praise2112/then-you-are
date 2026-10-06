@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from arena_core.state import EndReason, MatchStatus, Outcome, Phase
+from arena_core.state import EndReason, MatchStatus, Outcome, Phase, ResultKind
 from arena_core.template import SCORE_MAX, GuessRules, Labels, Mode, NumPlayers, Template
 from arena_judge.schema import HostPayload, ScoringPayload
 from arena_server.events import GuessOption, GuessView, TurnRejected
@@ -243,8 +243,17 @@ class OpenDuel(BaseModel):
     """A duel the session (or its account) can walk back into."""
 
     id: str
+    template_id: str
     title: str
-    line: str
+    mode: Mode
+    # Seats still empty while the table fills; null once play has begun.
+    waiting_for: int | None
+    round_n: int
+    rounds_budget: int
+    # Showcase: the card in play. Escalation: the form that stands, prefix and all.
+    card: str
+    # Showcase: the seat owes a call. Escalation: the seat is to move at a clocked table.
+    your_turn: bool
 
 
 class SessionView(BaseModel):
@@ -305,6 +314,7 @@ class StageView(BaseModel):
 
 
 class Replay(MatchSnapshot):
+    result_kind: ResultKind
     share_text: str
     highlight_seq: int | None
     is_curated: bool

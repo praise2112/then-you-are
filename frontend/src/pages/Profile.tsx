@@ -5,7 +5,7 @@ import { Link, ThemeToggle, TopBar } from "../App.tsx";
 import { useStandingsShown } from "../standings.ts";
 import { api, type DuelRow, type ProfileView, type TemplateView } from "../api.ts";
 import { ReplayCard } from "./cards.tsx";
-import { prefixOf } from "./format.ts";
+import { templateOf } from "./format.ts";
 
 const BADGES: { name: string; label: string; glyph: string; meaning: string }[] = [
   { name: "close_call", label: "Close call", glyph: "⚖", meaning: "A ruling too close to end a duel on." },
@@ -53,7 +53,7 @@ export function Profile({ accountId }: { accountId: string }) {
                 <h2 className="centered-label small-caps">Best duels</h2>
                 <div className="classics">
                   {profile.best.map((replay) => (
-                    <ReplayCard key={replay.id} replay={replay} prefix={prefixOf(templates, replay.template_id)} />
+                    <ReplayCard key={replay.id} replay={replay} prefix={templateOf(templates, replay.template_id)?.move_prefix ?? ""} />
                   ))}
                 </div>
               </>
@@ -126,7 +126,7 @@ function Record({ profile, templates }: { profile: ProfileView; templates: Templ
             <tr key={r.slug}>
               <td>
                 <span className="emblem" aria-hidden="true">
-                  {emblemOf(templates, r.slug)}
+                  {templateOf(templates, r.slug)?.emblem ?? ""}
                 </span>{" "}
                 {r.title}
               </td>
@@ -237,8 +237,4 @@ function ordinal(n: number): string {
   const rest = n % 100;
   if (rest >= 11 && rest <= 13) return `${n}th`;
   return `${n}${["th", "st", "nd", "rd"][n % 10] ?? "th"}`;
-}
-
-function emblemOf(templates: TemplateView[] | null, slug: string): string {
-  return templates?.find((t) => t.slug === slug)?.emblem ?? "";
 }

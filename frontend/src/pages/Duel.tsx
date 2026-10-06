@@ -34,6 +34,7 @@ import {
   shortName,
   tableOf,
   useSecondsLeft,
+  withoutPrefix,
   type Table,
 } from "./format.ts";
 import { ResultCard } from "./ResultCard.tsx";
@@ -45,6 +46,7 @@ function endedFromReplay(r: Replay): MatchEnded {
   const last = r.transcript[r.transcript.length - 1];
   return {
     end_reason: r.end_reason!,
+    result_kind: r.result_kind,
     winner: r.winner,
     totals: Object.fromEntries(r.seats.map((s) => [s.seat, s.points])),
     highlight_seq: r.highlight_seq,
@@ -223,7 +225,7 @@ export function Duel({ matchId, spectator = false }: Props) {
           return;
         case "judge_paused":
           setPaused(event.data);
-          setText((t) => t || event.data.move_text.slice(prefixRef.current.length));
+          setText((t) => t || withoutPrefix(event.data.move_text, prefixRef.current));
           return;
         case "judge_resumed":
           setPaused(null);

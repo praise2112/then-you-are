@@ -65,13 +65,14 @@ async def test_a_full_duel_ends_in_sudden_death_with_a_replay():
         assert names[:3] == ["judge_started", "ruling", "move_token"]
         assert names[-2:] == ["ruling", "match_ended"]
         ended = next(d for _, name, d in events_of(app, match["id"]) if name == "match_ended")
-        assert ended["end_reason"] == "sudden_death"
+        assert ended["end_reason"] == ended["result_kind"] == "sudden_death"
         assert ended["winner"] == "p2"
         assert ended["coaching_line"] == "A geologist would have won."
 
         replay = await client.get(f"/replays/{match['id']}")
         assert replay.status_code == 200
         assert "→" in replay.json()["share_text"]
+        assert replay.json()["result_kind"] == "sudden_death"
         shell = await client.get(f"/r/{match['id']}")
         assert 'property="og:title"' in shell.text
     finally:
@@ -483,6 +484,7 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
 
         replay = (await client.get(f"/replays/{match['id']}")).json()
         assert "lost a duel of Word for Word" in replay["share_text"]
+        assert replay["result_kind"] == "points"
         assert replay["transcript"][1]["host"]["badges"] == ["accidental_truth"]
         assert replay["transcript"][5]["host"]["badges"] == ["close_call"]
     finally:
@@ -652,10 +654,13 @@ async def test_starting_a_game_with_a_duel_open_resumes_it():
         assert other["id"] != first["id"]
         me = (await client.get("/sessions/me")).json()
         assert [d["id"] for d in me["open_duels"]] == [first["id"], other["id"]]
-        assert me["open_duels"][0]["title"] == "Then I Am"
-        assert me["open_duels"][0]["line"].startswith("round 1, ")
-        assert me["open_duels"][0]["line"].endswith(" stands")
-        assert me["open_duels"][1]["line"].startswith("round 1 of 3, ")
+        duel, words = me["open_duels"]
+        assert (duel["title"], duel["mode"]) == ("Then I Am", "escalation")
+        assert (duel["round_n"], duel["waiting_for"]) == (1, None)
+        assert duel["card"] == first["seed_token"]
+        assert (words["round_n"], words["rounds_budget"]) == (1, 3)
+        assert words["card"] == other["seed_token"]
+        assert not duel["your_turn"] and not words["your_turn"]
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
