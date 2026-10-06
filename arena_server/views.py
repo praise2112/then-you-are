@@ -4,14 +4,12 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from arena_core.state import MatchStatus, Phase
+from arena_core.state import EndReason, MatchStatus, Outcome, Phase
 from arena_core.template import Mode
 from arena_judge.schema import (
-    EndReason,
     GuessOption,
     GuessView,
     HostPayload,
-    Outcome,
     ScoringPayload,
     TurnRejected,
 )

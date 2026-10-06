@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from arena_core.template import Seed, Template
-from arena_judge.schema import EndReason, Outcome
 
 # open: a table waiting for its seats to fill; nothing is played until it starts.
 MatchStatus = Literal["open", "active", "awaiting_judgment", "paused", "ended", "abandoned"]
@@ -16,6 +15,24 @@ Phase = Literal["write", "guess"]
 # "truth", or the seat whose bluff was picked.
 Pick = str
 Layer1Reason = Literal["empty", "too_long", "duplicate"]
+EndReason = Literal[
+    "sudden_death",
+    "move_cap_points",
+    "rounds_complete",
+    "resign",
+    "abandoned",
+    "forfeit",
+    "unfilled",
+]
+
+Outcome = Literal[
+    "accept",
+    "fail",
+    "semantic_reject",
+    "semantic_uncertain",
+    "deterministic_invalid",
+    "forfeit",
+]
 
 JUDGED: tuple[Outcome, ...] = ("accept", "fail", "semantic_uncertain")
 STANDING: tuple[Outcome, ...] = ("accept", "semantic_uncertain")

@@ -9,7 +9,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel
 
-from arena_core.state import STANDING, normalize, weighted_total
+from arena_core.state import STANDING, Outcome, normalize, weighted_total
 from arena_core.template import Template
 from arena_evals.common import write_jsonl
 from arena_evals.datagen.ledger import CallRow, Ledger
@@ -21,7 +21,7 @@ from arena_judge.prompt import (
     render_judge_prompt,
     render_opponent_messages,
 )
-from arena_judge.schema import JudgeResponse, Outcome, route_outcome
+from arena_judge.schema import JudgeResponse, route_outcome
 
 PARSED = ("parsed", "parsed_on_retry")
 Quantile = Literal["low", "mid", "high"]

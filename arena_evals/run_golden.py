@@ -15,10 +15,11 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict
 
+from arena_core.state import Outcome
 from arena_core.template import Template, load_template
 from arena_evals.common import judge_with_backoff, make_caller, read_jsonl
 from arena_judge.caller import ModelCaller
-from arena_judge.schema import Outcome, route_outcome
+from arena_judge.schema import route_outcome
 
 GOLDEN_DIR = Path(__file__).parent / "golden"
 Split = Literal["dev", "holdout"]

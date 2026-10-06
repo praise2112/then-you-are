@@ -8,6 +8,7 @@ from psycopg import sql
 
 from arena_core.state import (
     Match,
+    Outcome,
     apply_guess,
     apply_ruling,
     forfeit_turn,
@@ -16,7 +17,6 @@ from arena_core.state import (
     transcript,
 )
 from arena_core.template import Template, load_template
-from arena_judge.schema import Outcome
 from arena_server.db import SCHEMA_PATH
 
 DUEL = load_template("then-i-am")

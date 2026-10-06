@@ -4,29 +4,12 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
 
+from arena_core.state import EndReason, Outcome
 from arena_core.template import SCORE_MAX
 
 Confidence = Literal["clear", "lean", "coin_flip"]
 Verdict = Literal["accept", "fail"]
 TruthProximity = Literal["hit", "near", "none"]
-EndReason = Literal[
-    "sudden_death",
-    "move_cap_points",
-    "rounds_complete",
-    "resign",
-    "abandoned",
-    "forfeit",
-    "unfilled",
-]
-
-Outcome = Literal[
-    "accept",
-    "fail",
-    "semantic_reject",
-    "semantic_uncertain",
-    "deterministic_invalid",
-    "forfeit",
-]
 
 
 class Gates(BaseModel):
