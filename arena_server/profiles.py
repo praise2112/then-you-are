@@ -3,14 +3,13 @@ and the games played against people, which never count on the record."""
 
 from typing import Any
 
-from arena_core.state import JUDGED, STANDING, result_kind
+from arena_core.state import JUDGED, LIVE_STATUSES, STANDING, result_kind
 from arena_server.auth import account_of
 from arena_server.leaderboard import account_ranks, streaks
 from arena_server.matches import MatchService
 from arena_server.store import MatchError
 from arena_server.views import BadgeCount, DuelRow, GameRecord, ProfileView
 
-OPEN = ("open", "active", "awaiting_judgment", "paused")
 BEST_SHOWN = 2
 
 
@@ -145,7 +144,7 @@ def _row(m: Any, service: MatchService) -> DuelRow:
 def _result(m: Any, mode: str) -> str:
     if m["status"] == "open":
         return "Waiting for players"
-    if m["status"] in OPEN:
+    if m["status"] in LIVE_STATUSES:
         return "On stage"
     won = m["won"] is True
     match result_kind(m["end_reason"], m["winner"]):

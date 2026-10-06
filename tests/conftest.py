@@ -9,6 +9,7 @@ import psycopg
 import pytest
 from asgi_lifespan import LifespanManager
 
+from arena_core.state import IN_PLAY
 from arena_core.template import Template, load_template
 from arena_judge.caller import CallError, JudgeCall, ModelCaller
 from arena_judge.schema import (
@@ -151,7 +152,8 @@ def no_live_matches(request: pytest.FixtureRequest) -> None:
             conn.execute(
                 "update matches set status = 'abandoned', end_reason = 'abandoned', "
                 "turn_deadline = null, ended_at = now(), updated_at = now() "
-                "where status in ('active', 'awaiting_judgment', 'paused')"
+                "where status = any(%s)",
+                (list(IN_PLAY),),
             )
 
 

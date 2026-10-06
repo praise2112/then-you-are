@@ -14,6 +14,7 @@ from psycopg.rows import DictRow
 from starlette.requests import HTTPConnection
 from starlette.types import ASGIApp, Receive, Scope, Send
 
+from arena_core.state import FINISHED
 from arena_server.config import Settings
 from arena_server.db import Pool
 from arena_server.sessions import account_of, new_session_key
@@ -21,7 +22,6 @@ from arena_server.sessions import account_of, new_session_key
 SESSION_COOKIE = "thenyouare_session"
 COOKIE_AGE = 60 * 60 * 24 * 365
 GUEST_KEPT = timedelta(days=365)
-FINISHED = ("ended", "abandoned")
 
 
 def set_session_cookie(response: Response, key: str, secure: bool) -> None:

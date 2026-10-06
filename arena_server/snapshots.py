@@ -6,7 +6,7 @@ from collections.abc import Callable
 from datetime import timedelta
 from typing import Literal
 
-from arena_core.state import STANDING, Actor, Match
+from arena_core.state import FINISHED, STANDING, Actor, Match
 from arena_core.template import Seed, Template
 from arena_judge.schema import HostPayload
 from arena_server.db import Pool
@@ -102,7 +102,7 @@ def shows_live(template: Template) -> bool:
 
 def hides_round(match: Match, template: Template) -> bool:
     """The round in play stays off the wire until it is revealed."""
-    return not shows_live(template) and match.status not in ("ended", "abandoned")
+    return not shows_live(template) and match.status not in FINISHED
 
 
 def visible_to(
@@ -134,7 +134,7 @@ def in_call(match: Match, round_n: int) -> bool:
 def rounds(match: Match, template: Template, viewer: str | None) -> list[RoundView]:
     if template.mode == "escalation":
         return []
-    over = match.status in ("ended", "abandoned")
+    over = match.status in FINISHED
     owes = viewer is not None and viewer in match.owed_guesses()
     views = []
     for n, token in enumerate(match.cards[: match.round_n], start=1):

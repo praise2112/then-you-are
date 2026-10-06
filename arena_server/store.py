@@ -11,7 +11,16 @@ from psycopg import AsyncConnection
 from psycopg.rows import DictRow
 from pydantic import ValidationError
 
-from arena_core.state import Actor, Guess, Match, Outcome, Turn
+from arena_core.state import (
+    FINISHED,
+    IN_PLAY,
+    LIVE_STATUSES,
+    Actor,
+    Guess,
+    Match,
+    Outcome,
+    Turn,
+)
 from arena_core.template import Seed, Template
 from arena_judge.caller import JudgeCall
 from arena_server.db import Pool
@@ -19,7 +28,6 @@ from arena_server.views import TableKind
 
 ABANDON_WINDOW = timedelta(hours=24)
 UNFILLED_WINDOW = timedelta(minutes=10)
-LIVE_STATUSES = ("open", "active", "awaiting_judgment", "paused")
 
 log = logging.getLogger(__name__)
 
@@ -256,11 +264,10 @@ async def update_match(conn: AsyncConnection[DictRow], match: Match) -> None:
     result = await conn.execute(
         "update matches set status = %s, state_version = %s, to_move = %s, phase = %s, "
         "round_n = %s, winner = %s, end_reason = %s, updated_at = now(), "
-        "turn_deadline = case when %s in ('ended', 'abandoned') then null "
-        "else turn_deadline end, "
+        "turn_deadline = case when %s = any(%s) then null else turn_deadline end, "
         "ended_at = case when %s = 'ended' "
         "and ended_at is null then now() else ended_at end "
-        "where id = %s and status not in ('ended', 'abandoned')",
+        "where id = %s and status <> all(%s)",
         (
             match.status,
             match.state_version,
@@ -270,8 +277,10 @@ async def update_match(conn: AsyncConnection[DictRow], match: Match) -> None:
             match.winner,
             match.end_reason,
             match.status,
+            list(FINISHED),
             match.status,
             match.id,
+            list(FINISHED),
         ),
     )
     if result.rowcount == 0:
@@ -448,19 +457,11 @@ async def set_status(pool: Pool, match_id: str, status: str) -> None:
     async with pool.connection() as conn:
         result = await conn.execute(
             "update matches set status = %s, updated_at = now() "
-            "where id = %s and status not in ('ended', 'abandoned')",
-            (status, match_id),
+            "where id = %s and status <> all(%s)",
+            (status, match_id, list(FINISHED)),
         )
     if result.rowcount == 0:
         raise MatchClosed(match_id)
-
-
-async def status_of(pool: Pool, match_id: str) -> str:
-    async with pool.connection() as conn:
-        row = await (
-            await conn.execute("select status from matches where id = %s", (match_id,))
-        ).fetchone()
-    return row["status"] if row else "abandoned"
 
 
 async def start_table(pool: Pool, match_id: str) -> None:
@@ -524,14 +525,12 @@ async def set_curated(pool: Pool, match_id: str, curated: bool) -> None:
 
 
 async def match_is_live(pool: Pool, match_id: str) -> bool:
-    """Whether the match can still change. Raises MatchError 404 when there is no such match."""
+    """Whether the match exists and can still change."""
     async with pool.connection() as conn:
         row = await (
             await conn.execute("select status from matches where id = %s", (match_id,))
         ).fetchone()
-    if row is None:
-        raise MatchError(404, "no such match")
-    return row["status"] in LIVE_STATUSES
+    return row is not None and row["status"] in LIVE_STATUSES
 
 
 async def action_seen(pool: Pool, match_id: str, action_id: str) -> bool:
@@ -631,10 +630,10 @@ async def live_public_ids(pool: Pool) -> list[str]:
     async with pool.connection() as conn:
         rows = await (
             await conn.execute(
-                "select id from matches where is_public and status in "
-                "('active', 'awaiting_judgment', 'paused') "
+                "select id from matches where is_public and status = any(%s) "
                 "and created_at > now() - interval '2 hours' "
-                "order by created_at desc limit 6"
+                "order by created_at desc limit 6",
+                (list(IN_PLAY),),
             )
         ).fetchall()
     return [row["id"] for row in rows]
@@ -688,9 +687,8 @@ async def close_idle(pool: Pool) -> tuple[list[str], list[str]]:
             await conn.execute(
                 "update matches set status = 'abandoned', end_reason = 'abandoned', "
                 "turn_deadline = null, ended_at = now(), updated_at = now() "
-                "where status in ('active', 'awaiting_judgment', 'paused') "
-                "and updated_at < now() - %s returning id",
-                (ABANDON_WINDOW,),
+                "where status = any(%s) and updated_at < now() - %s returning id",
+                (list(IN_PLAY), ABANDON_WINDOW),
             )
         ).fetchall()
         stale = await (

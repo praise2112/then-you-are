@@ -11,7 +11,7 @@ from arena_judge.caller import ModelCaller
 from arena_judge.schema import JudgeResponse, route_outcome
 from arena_server.db import Pool
 from arena_server.events import EventBus, JudgePaused, JudgeResumed, JudgeStarted
-from arena_server.store import MatchClosed, insert_verdict, set_status, status_of
+from arena_server.store import MatchClosed, insert_verdict, match_is_live, set_status
 
 PAUSE_BACKOFF_S = (5, 10, 20, 30)
 # A judge call refused for credentials or credit will not heal on its own; retry slowly.
@@ -88,7 +88,7 @@ class Judge:
             else:
                 await asyncio.sleep(PAUSE_BACKOFF_S[min(attempt, len(PAUSE_BACKOFF_S) - 1)])
             attempt += 1
-            if await status_of(self.pool, match.id) in ("abandoned", "ended"):
+            if not await match_is_live(self.pool, match.id):
                 raise MatchClosed(match.id)
             if time.monotonic() - started > JUDGE_GIVE_UP_S:
                 raise JudgeGaveUp(match.id)

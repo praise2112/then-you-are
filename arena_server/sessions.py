@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from psycopg import AsyncConnection
 from psycopg.rows import DictRow
 
+from arena_core.state import LIVE_STATUSES
 from arena_server.db import Pool
 from arena_server.leaderboard import account_streaks
 from arena_server.store import Record
@@ -108,13 +109,18 @@ async def open_match_ids(
                 "select distinct m.id, m.created_at from matches m "
                 "join seats se on se.match_id = m.id "
                 "join sessions s on s.session_key = se.session_key "
-                "where m.status in ('open', 'active', 'awaiting_judgment', 'paused') "
+                "where m.status = any(%(live)s) "
                 "and se.eliminated_at is null "
-                "and (s.session_key = %s or s.account_id = "
-                "(select account_id from sessions where session_key = %s)) "
-                "and (%s::text is null or m.template_id = %s) "
-                "and (%s::text is null or m.kind = %s) order by m.created_at",
-                (session_key, session_key, template_id, template_id, kind, kind),
+                "and (s.session_key = %(key)s or s.account_id = "
+                "(select account_id from sessions where session_key = %(key)s)) "
+                "and (%(template_id)s::text is null or m.template_id = %(template_id)s) "
+                "and (%(kind)s::text is null or m.kind = %(kind)s) order by m.created_at",
+                {
+                    "live": list(LIVE_STATUSES),
+                    "key": session_key,
+                    "template_id": template_id,
+                    "kind": kind,
+                },
             )
         ).fetchall()
     return [row["id"] for row in rows]

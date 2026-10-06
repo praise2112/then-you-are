@@ -9,6 +9,10 @@ from arena_core.template import Seed, Template
 
 # open: a table waiting for its seats to fill; nothing is played until it starts.
 MatchStatus = Literal["open", "active", "awaiting_judgment", "paused", "ended", "abandoned"]
+# Started and not over.
+IN_PLAY: tuple[MatchStatus, ...] = ("active", "awaiting_judgment", "paused")
+LIVE_STATUSES: tuple[MatchStatus, ...] = ("open", *IN_PLAY)
+FINISHED: tuple[MatchStatus, ...] = ("ended", "abandoned")
 # A seat: "p1" to "p6", in turn order.
 Actor = str
 Phase = Literal["write", "guess"]
@@ -315,7 +319,7 @@ def result_kind(end_reason: EndReason, winner: Actor | None) -> ResultKind:
 def owed(match: Match, template: Template) -> list[Actor]:
     """The seats that owe an answer now: the seat to move, each live seat yet to answer the
     showcase round, or the guessers still to call."""
-    if match.status in ("open", "ended", "abandoned"):
+    if match.status not in IN_PLAY:
         return []
     if match.phase == "guess":
         return match.owed_guesses()
@@ -335,7 +339,7 @@ def model_next(refusals: int, template: Template) -> Literal["write", "default_m
 
 
 def _check_open(match: Match, actor: Actor) -> None:
-    if match.status in ("ended", "abandoned"):
+    if match.status in FINISHED:
         raise IllegalAction("match already ended")
     if match.status == "open":
         raise IllegalAction("the table is still filling")

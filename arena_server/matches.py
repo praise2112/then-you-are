@@ -8,6 +8,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
 from arena_core.state import (
+    FINISHED,
     Change,
     IllegalAction,
     Layer1Reason,
@@ -239,7 +240,7 @@ class MatchService:
         self, match: Match, rec: Record, session_key: str | None, event_id: str
     ) -> Replay:
         snap = await self._snapshot(match, rec, session_key, event_id)
-        if snap.status not in ("ended", "abandoned"):
+        if snap.status not in FINISHED:
             raise MatchError(404, "match still running")
         assert match.end_reason is not None
         return Replay(
