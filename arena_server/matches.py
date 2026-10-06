@@ -170,11 +170,10 @@ class MatchService:
     async def load(self, match_id: str) -> tuple[Match, Record]:
         return await load_match(self.pool, match_id, self.templates, self.match_templates)
 
-    async def _set_clock(self, match: Match, rec: Record, running: bool = True) -> str | None:
+    async def _set_clock(self, match: Match, rec: Record) -> str | None:
         """Starts the clock for the turn or phase in play when two or more humans share the
-        table; clears it otherwise, or when not running."""
-        clocked = running and match.clocked
-        deadline = datetime.now(UTC) + clock_length(match, rec.template) if clocked else None
+        table; clears it otherwise."""
+        deadline = datetime.now(UTC) + clock_length(match, rec.template) if match.clocked else None
         if deadline is None and rec.turn_deadline is None:
             return None
         await set_deadline(self.pool, match.id, deadline)
@@ -753,7 +752,7 @@ class MatchService:
         if not shows_live(template) and phase == "write":
             if not phase_over:
                 # Only answers still with the judge or a House seat remain; the round waits.
-                await self._set_clock(match, rec, running=False)
+                await set_deadline(self.pool, match.id, None)
             self._turn_changed(match, None)
         await self._drive(match, rec)
 

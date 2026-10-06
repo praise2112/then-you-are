@@ -128,10 +128,6 @@ def shown_points(match: Match, rec: Record) -> dict[str, int]:
     return shown
 
 
-def in_call(match: Match, round_n: int) -> bool:
-    return match.phase == "guess" and round_n == match.round_n
-
-
 def rounds(match: Match, template: Template, viewer: str | None) -> list[RoundView]:
     if template.mode == "escalation":
         return []
@@ -141,7 +137,7 @@ def rounds(match: Match, template: Template, viewer: str | None) -> list[RoundVi
     for n, token in enumerate(match.cards[: match.round_n], start=1):
         card = template.seed_named(token)
         assert card is not None
-        calling = in_call(match, n)
+        calling = match.phase == "guess" and n == match.round_n
         revealed = (n < match.round_n or over) and not calling
         views.append(
             RoundView(

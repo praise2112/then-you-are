@@ -95,6 +95,16 @@ async def sweep(
         await asyncio.sleep(every_s)
 
 
+def page_with_head(shell: str | None, head: str, title: str, body: str) -> str:
+    """The built shell with `head` added to its head, or a bare page when there is no build.
+    `title` and `body` must already be escaped."""
+    if shell is not None:
+        return shell.replace("</head>", head + "</head>", 1)
+    return (
+        f"<!doctype html><html><head>{head}<title>{title}</title></head><body>{body}</body></html>"
+    )
+
+
 def build_app(settings: Settings | None = None, caller: ModelCaller | None = None) -> FastAPI:
     settings = settings or load_settings()
     templates = load_templates()
@@ -505,12 +515,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             f'<meta property="og:description" content="{description}">'
             f'<meta property="og:url" content="{settings.public_base_url}/r/{match_id}">'
         )
-        if shell_page is not None:
-            return HTMLResponse(shell_page.replace("</head>", head + "</head>", 1))
-        return HTMLResponse(
-            f"<!doctype html><html><head>{head}<title>{title}</title></head>"
-            f"<body>{description}</body></html>"
-        )
+        return HTMLResponse(page_with_head(shell_page, head, title, description))
 
     writeup_head = (
         f'<meta property="og:title" content="{html.escape(WRITEUP_TITLE)}">'
@@ -519,13 +524,11 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         f'<meta property="og:image" content="{settings.public_base_url}/og-image.png">'
     )
 
-    writeup_page = (
-        re.sub(r'<meta property="og:image"[^>]*>', "", shell_page).replace(
-            "</head>", writeup_head + "</head>", 1
-        )
-        if shell_page is not None
-        else f"<!doctype html><html><head>{writeup_head}<title>{html.escape(WRITEUP_TITLE)}"
-        f"</title></head><body>{html.escape(WRITEUP_DESCRIPTION)}</body></html>"
+    writeup_page = page_with_head(
+        re.sub(r'<meta property="og:image"[^>]*>', "", shell_page) if shell_page else None,
+        writeup_head,
+        html.escape(WRITEUP_TITLE),
+        html.escape(WRITEUP_DESCRIPTION),
     )
 
     @app.get("/how-it-was-built", response_class=HTMLResponse)

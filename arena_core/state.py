@@ -148,16 +148,8 @@ class Match:
         return sum(1 for t in self.turns if t.outcome in JUDGED)
 
     @property
-    def standing_turn(self) -> Turn | None:
-        for turn in reversed(self.turns):
-            if turn.outcome in STANDING:
-                return turn
-        return None
-
-    @property
     def standing_form(self) -> str:
-        turn = self.standing_turn
-        return turn.move_text if turn else self.seed
+        return next((t.move_text for t in reversed(self.turns) if t.outcome in STANDING), self.seed)
 
     @property
     def card(self) -> str:
