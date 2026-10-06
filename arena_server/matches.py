@@ -808,6 +808,14 @@ class MatchService:
             await self._broadcast_lobby()
         return [*(row["id"] for row in rows), *unfilled]
 
+    async def check_exists(self, match_id: str) -> None:
+        async with self.pool.connection() as conn:
+            row = await (
+                await conn.execute("select 1 from matches where id = %s", (match_id,))
+            ).fetchone()
+        if row is None:
+            raise MatchError(404, "no such match")
+
     async def _status_of(self, match_id: str) -> str:
         async with self.pool.connection() as conn:
             row = await (

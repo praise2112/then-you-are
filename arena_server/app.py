@@ -5,7 +5,7 @@ import html
 import logging
 import os
 import re
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
@@ -77,6 +77,20 @@ WRITEUP_DESCRIPTION = (
 log = logging.getLogger(__name__)
 
 
+async def sweep(
+    name: str, work: Callable[[], Awaitable[object]], every_s: float, first_s: float
+) -> None:
+    """Runs work after first_s seconds, then every every_s; a failure is logged and skipped."""
+    await asyncio.sleep(first_s)
+    while True:
+        try:
+            if cleared := await work():
+                log.info("%s sweep cleared %s", name, cleared)
+        except Exception:
+            log.exception("%s sweep failed", name)
+        await asyncio.sleep(every_s)
+
+
 def build_app(settings: Settings | None = None, caller: ModelCaller | None = None) -> FastAPI:
     settings = settings or load_settings()
     templates = load_templates()
@@ -119,45 +133,21 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         else None,
     )
 
-    async def sweep_abandoned() -> None:
-        while True:
-            await asyncio.sleep(SWEEP_EVERY_S)
-            try:
-                closed = await service.close_abandoned()
-            except Exception:
-                log.exception("abandon sweep failed")
-                continue
-            if closed:
-                log.info("abandoned %d idle matches", len(closed))
-
-    async def sweep_stale_guests() -> None:
-        while True:
-            try:
-                forgotten = await forget_stale_guests(pool)
-            except Exception:
-                log.exception("guest sweep failed")
-            else:
-                if forgotten:
-                    log.info("erased %d stale guest sessions", forgotten)
-            await asyncio.sleep(GUEST_SWEEP_EVERY_S)
-
-    async def sweep_clocks() -> None:
-        while True:
-            await asyncio.sleep(CLOCK_EVERY_S)
-            try:
-                await service.expire_clocks()
-            except Exception:
-                log.exception("clock sweep failed")
-
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         await pool.open()
         await apply_schema(pool)
         await service.recover()
         sweepers = [
-            asyncio.create_task(sweep_abandoned()),
-            asyncio.create_task(sweep_clocks()),
-            asyncio.create_task(sweep_stale_guests()),
+            asyncio.create_task(
+                sweep("abandon", service.close_abandoned, SWEEP_EVERY_S, SWEEP_EVERY_S)
+            ),
+            asyncio.create_task(
+                sweep("clock", service.expire_clocks, CLOCK_EVERY_S, CLOCK_EVERY_S)
+            ),
+            asyncio.create_task(
+                sweep("guest", lambda: forget_stale_guests(pool), GUEST_SWEEP_EVERY_S, 0)
+            ),
         ]
         yield
         for sweeper in sweepers:
@@ -446,7 +436,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def events(
         match_id: str, last_event_id: str | None = Header(default=None)
     ) -> EventSourceResponse:
-        await service.snapshot(match_id)
+        await service.check_exists(match_id)
         last_id = bus.cursor_from(last_event_id)
 
         async def gen() -> AsyncIterator[dict]:

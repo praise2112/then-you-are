@@ -51,8 +51,4 @@ class EventBus:
             while cursor < len(stream.events):
                 cursor += 1
                 yield stream.events[cursor - 1]
-            waiter = stream.changed
-            try:
-                await asyncio.wait_for(waiter.wait(), timeout=15)
-            except TimeoutError:
-                yield Event(id=f"{self.generation}-{cursor}", name="ping", data="{}")
+            await stream.changed.wait()
