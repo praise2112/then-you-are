@@ -28,7 +28,7 @@ from arena_core.template import (
     load_template,
     load_template_file,
 )
-from arena_evals.common import credit_left, load_model, make_caller, require_window
+from arena_evals.common import credit_left, load_model, make_caller, merge_json, require_window
 from arena_evals.datagen.ledger import BudgetReached, CallFailed, JudgeInputs, Ledger, Tape
 from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
 from arena_evals.datagen.sabotage import StoodMove, positions
@@ -310,10 +310,6 @@ def load_calibration() -> dict[str, Calibration]:
     )
 
 
-def save_calibration(cal: dict[str, Calibration]) -> None:
-    CALIBRATION_PATH.write_bytes(CALIBRATION.dump_json(dict(sorted(cal.items())), indent=1) + b"\n")
-
-
 async def calibrate(slug: str, matches: int, budget: float) -> Calibration:
     template = load_template(slug)
     ledger = Ledger(PILOTS_DIR / f"{slug}.db")
@@ -337,9 +333,7 @@ async def calibrate(slug: str, matches: int, budget: float) -> Calibration:
         agreement_luna=agreement_interval(luna, rng),
         **intervals,  # type: ignore[arg-type]
     )
-    all_cal = load_calibration()
-    all_cal[slug] = cal
-    save_calibration(all_cal)
+    merge_json(CALIBRATION_PATH, CALIBRATION, {slug: cal})
     print(f"{slug}: {len(ended)} matches, ${ledger.spent():.4f}", file=sys.stderr)
     print(cal.model_dump_json(indent=1))
     ledger.close()

@@ -14,7 +14,6 @@ import argparse
 import asyncio
 import bisect
 import dataclasses
-import json
 import math
 import random
 import statistics
@@ -26,7 +25,7 @@ from pydantic import BaseModel
 
 from arena_core.state import STANDING, Actor, Guess, Match, Turn, layer1, weighted_total
 from arena_core.template import Template, load_template_file
-from arena_evals.common import credit_left, load_model, make_caller
+from arena_evals.common import credit_left, load_model, make_caller, read_jsonl, write_jsonl
 from arena_evals.datagen.ledger import (
     BudgetReached,
     CallFailed,
@@ -185,7 +184,7 @@ async def build_contexts(matches: int, budget: float) -> None:
     finally:
         await caller.aclose()
         ledger.close()
-    CONTEXTS_PATH.write_text("".join(c.model_dump_json() + "\n" for c in contexts))
+    write_jsonl(CONTEXTS_PATH, contexts)
     print(
         f"{len(contexts)} contexts from {len(games)} held-out variants, ${spent:.4f} spent now",
         file=sys.stderr,
@@ -195,7 +194,7 @@ async def build_contexts(matches: int, budget: float) -> None:
 def load_contexts() -> list[Context]:
     if not CONTEXTS_PATH.exists():
         raise SystemExit(f"{CONTEXTS_PATH} is missing; run the contexts step first")
-    return [Context.model_validate_json(line) for line in CONTEXTS_PATH.read_text().splitlines()]
+    return [Context.model_validate(r) for r in read_jsonl(CONTEXTS_PATH)]
 
 
 def sample(contexts: list[Context], n: int) -> list[Context]:
@@ -223,7 +222,7 @@ def load_answers(row: str, contexts: list[Context]) -> dict[str, str]:
     path = answers_path(row)
     if not path.exists():
         raise SystemExit(f"{path} is missing")
-    return {a["context"]: a["text"] for a in map(json.loads, path.read_text().splitlines())}
+    return {a["context"]: a["text"] for a in read_jsonl(path)}
 
 
 async def run_calls(
@@ -290,7 +289,7 @@ async def answer(row: str, ref: str, budget: float) -> None:
         return {"context": c.id, "text": written.raw}
 
     done = await run_calls(row, budget, one, load_contexts())
-    answers_path(row).write_text("".join(json.dumps(a) + "\n" for a in done))
+    write_jsonl(answers_path(row), done)
 
 
 async def score(row: str, judge_ref: str, budget: float, n: int | None) -> None:
@@ -314,7 +313,7 @@ async def score(row: str, judge_ref: str, budget: float, n: int | None) -> None:
         return {"context": c.id, **verdict_score(template, text, response).model_dump()}
 
     done = await run_calls(row, budget, one, todo)
-    scored_path(row, judge_ref).write_text("".join(json.dumps(s) + "\n" for s in done))
+    write_jsonl(scored_path(row, judge_ref), done)
 
 
 def load_scored(row: str, judge_ref: str, contexts: list[Context]) -> dict[str, Scored]:
@@ -323,7 +322,7 @@ def load_scored(row: str, judge_ref: str, contexts: list[Context]) -> dict[str, 
     path = scored_path(row, judge_ref)
     if not path.exists():
         raise SystemExit(f"{path} is missing; run the score step first")
-    return {s["context"]: Scored(**s) for s in map(json.loads, path.read_text().splitlines())}
+    return {s["context"]: Scored(**s) for s in read_jsonl(path)}
 
 
 def interval(draws: list[float]) -> tuple[float, float]:

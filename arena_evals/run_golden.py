@@ -16,7 +16,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict
 
 from arena_core.template import Template, load_template
-from arena_evals.common import judge_with_backoff, make_caller
+from arena_evals.common import judge_with_backoff, make_caller, read_jsonl
 from arena_judge.caller import ModelCaller
 from arena_judge.schema import Outcome, route_outcome
 
@@ -43,8 +43,8 @@ class GoldenRecord(BaseModel):
 
 
 def load_golden(template_id: str, split: Split) -> list[GoldenRecord]:
-    lines = (GOLDEN_DIR / template_id / "v1" / f"{split}.jsonl").read_text().splitlines()
-    records = [GoldenRecord.model_validate_json(line) for line in lines if line.strip()]
+    path = GOLDEN_DIR / template_id / "v1" / f"{split}.jsonl"
+    records = [GoldenRecord.model_validate(r) for r in read_jsonl(path)]
     ids = [r.id for r in records]
     if len(set(ids)) != len(ids):
         raise ValueError("duplicate golden ids")

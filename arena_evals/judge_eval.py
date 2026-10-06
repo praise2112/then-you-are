@@ -25,7 +25,7 @@ from pydantic import BaseModel
 
 from arena_core.state import weighted_total
 from arena_core.template import Template, load_template_file
-from arena_evals.common import with_backoff
+from arena_evals.common import read_jsonl, with_backoff, write_jsonl
 from arena_evals.datagen.ledger import Ledger
 from arena_evals.datagen.records import judged_before
 from arena_evals.train_eval import EVAL_DIR, ROWS_DIR, heldout_variants, load_contexts
@@ -97,7 +97,7 @@ def build() -> None:
             )
     for ledger in [matches, *rows.values()]:
         ledger.close()
-    EVAL_PATH.write_text("".join(v.model_dump_json() + "\n" for v in out))
+    write_jsonl(EVAL_PATH, out)
     print(f"{len(out)} verdicts from {len(ROWS)} rows", file=sys.stderr)
 
 
@@ -218,15 +218,13 @@ def main() -> None:
     if args.cmd == "build":
         build()
         return
-    verdicts = [EvalVerdict.model_validate_json(x) for x in args.eval.read_text().splitlines()]
+    verdicts = [EvalVerdict.model_validate(r) for r in read_jsonl(args.eval)]
     if args.cmd == "answer":
         done = asyncio.run(answer(args.url, verdicts, not args.evidence_first))
-        args.answers.write_text("".join(json.dumps(d, ensure_ascii=False) + "\n" for d in done))
+        write_jsonl(args.answers, done)
         return
     templates = heldout_templates()
-    answers = {
-        a["context"]: a["text"] for a in map(json.loads, args.answers.read_text().splitlines())
-    }
+    answers = {a["context"]: a["text"] for a in read_jsonl(args.answers)}
     report = score(verdicts, answers, templates)
     print(report.model_dump_json(indent=1))
     passed = report.agreement >= 0.8 and report.kappa >= 0.6

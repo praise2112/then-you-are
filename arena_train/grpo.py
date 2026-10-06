@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from arena_core.template import Template
-from arena_evals.common import load_model, make_caller
+from arena_evals.common import load_model, make_caller, read_jsonl
 from arena_evals.datagen.flashmine import teacher_turn
 from arena_evals.datagen.ledger import CallFailed, JudgeInputs, Ledger, Tape
 from arena_evals.datagen.prefset import JUDGE_RUNS, Position, playable
@@ -130,15 +130,11 @@ def flash_reward(spots: dict[str, Spot], run: str, budget: float):
 
 def load_spots(count: int, seed: int) -> dict[str, Spot]:
     positions = [
-        Position.model_validate_json(line)
+        Position.model_validate(r)
         for name in MINED
-        for line in (CORPUS_DIR / f"{name}.positions.jsonl").read_text().splitlines()
+        for r in read_jsonl(CORPUS_DIR / f"{name}.positions.jsonl")
     ]
-    scored = [
-        json.loads(line)
-        for name in MINED
-        for line in (CORPUS_DIR / f"{name}.flash-scored.jsonl").read_text().splitlines()
-    ]
+    scored = [r for name in MINED for r in read_jsonl(CORPUS_DIR / f"{name}.flash-scored.jsonl")]
     keep = informative(scored)
     chosen = [p for p in positions if p.id in keep]
     random.Random(seed).shuffle(chosen)

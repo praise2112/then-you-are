@@ -1,13 +1,17 @@
-"""Shared setup for the offline tools: API key, model registry, retry with backoff."""
+"""Shared setup for the offline tools: API key, model registry, retry with backoff, files."""
 
 import asyncio
+import fcntl
 import itertools
+import json
 import os
 import random
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Iterable
 from datetime import UTC, datetime, time, timedelta
+from pathlib import Path
 
 import httpx
+from pydantic import BaseModel, TypeAdapter
 
 from arena_core.template import Template
 from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
@@ -51,6 +55,33 @@ async def credit_left(caller: ModelCaller) -> float:
     except (httpx.HTTPError, KeyError, ValueError) as e:
         raise SystemExit(f"could not read the OpenRouter balance: {e}") from e
     return float(data["total_credits"]) - float(data["total_usage"])
+
+
+def read_jsonl(path: Path) -> list[dict]:
+    """One object per non-blank line."""
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def write_jsonl(path: Path, rows: Iterable[BaseModel | dict]) -> None:
+    """One object per line: a model as its own JSON, a dict as `json.dumps` writes it."""
+    path.write_text(
+        "".join(
+            (r.model_dump_json() if isinstance(r, BaseModel) else json.dumps(r)) + "\n"
+            for r in rows
+        )
+    )
+
+
+def merge_json[T](path: Path, adapter: TypeAdapter[dict[str, T]], entries: dict[str, T]) -> None:
+    """Merges `entries` into the JSON object at `path` under a file lock, so runs in parallel
+    keep each other's changes, and writes it through a temp file so a crash never truncates it."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.with_suffix(".lock").open("w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        merged = (adapter.validate_json(path.read_bytes()) if path.exists() else {}) | entries
+        tmp = path.with_suffix(f".{os.getpid()}.tmp")
+        tmp.write_bytes(adapter.dump_json(dict(sorted(merged.items())), indent=1) + b"\n")
+        tmp.replace(path)
 
 
 def model_label(spec: ModelSpec) -> str:

@@ -9,11 +9,9 @@ uv run python -m arena_evals.variants.generate demote <slug>
 
 import argparse
 import asyncio
-import fcntl
 import hashlib
 import json
 import math
-import os
 import random
 import shutil
 import sys
@@ -26,7 +24,14 @@ import yaml
 from pydantic import TypeAdapter, ValidationError
 
 from arena_core.template import TEMPLATES_DIR, Strict, Template, load_template_file, load_templates
-from arena_evals.common import embed_texts, load_model, make_caller, require_window, with_backoff
+from arena_evals.common import (
+    embed_texts,
+    load_model,
+    make_caller,
+    merge_json,
+    require_window,
+    with_backoff,
+)
 from arena_evals.grow_seeds import cosine, nearest, seed_line
 from arena_evals.variants.spec import ClassSpec, Voice, field_value, load_spec
 from arena_judge.caller import CallError, ModelCaller, extract_json
@@ -287,15 +292,8 @@ def load_index() -> dict[str, Entry]:
 
 
 def save_index(entries: dict[str, Entry]) -> None:
-    """Merges `entries` into the index on disk under a file lock, so runs in parallel keep
-    each other's changes, and writes it through a temp file so a crash never truncates it."""
-    POOL_DIR.mkdir(exist_ok=True)
-    with INDEX_PATH.with_suffix(".lock").open("w") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
-        index = load_index() | entries
-        tmp = INDEX_PATH.with_suffix(f".{os.getpid()}.tmp")
-        tmp.write_bytes(INDEX.dump_json(dict(sorted(index.items())), indent=1) + b"\n")
-        tmp.replace(INDEX_PATH)
+    """Merges `entries` into the index on disk, keeping changes from runs in parallel."""
+    merge_json(INDEX_PATH, INDEX, entries)
 
 
 def pool_path(klass: str, slug: str) -> Path:

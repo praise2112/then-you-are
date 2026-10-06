@@ -12,13 +12,12 @@ passing move at a position against each draw the engine refused there).
 
 import argparse
 import asyncio
-import json
 import sys
 from pathlib import Path
 
 from arena_core.state import weighted_total
 from arena_core.template import Template
-from arena_evals.common import load_model, make_caller
+from arena_evals.common import load_model, make_caller, read_jsonl, write_jsonl
 from arena_evals.datagen.ledger import (
     BudgetReached,
     CallFailed,
@@ -106,10 +105,8 @@ async def draw_and_judge(
 
 async def main(args) -> None:
     base = CORPUS_DIR / args.name
-    positions = [
-        Position.model_validate_json(x)
-        for x in Path(f"{base}.positions.jsonl").read_text().splitlines()
-    ][: args.limit]
+    positions = [Position.model_validate(r) for r in read_jsonl(Path(f"{base}.positions.jsonl"))]
+    positions = positions[: args.limit]
     templates = corpus_games(sorted({p.template_id for p in positions}))[0]
     corpus = [Ledger(RUNS_DIR / f"{run}.db") for run in JUDGE_RUNS]
     ledger = Ledger(RUNS_DIR / f"{args.name}-flash.db")
@@ -175,16 +172,13 @@ async def main(args) -> None:
         spent = ledger.spent() - start
         for db in [*corpus, ledger]:
             db.close()
-    scored_rows = [m.model_dump() for m in moves]
     for suffix, rows in (
         ("flash-judge", judged),
-        ("flash-scored", scored_rows),
+        ("flash-scored", moves),
         ("flash-pairs", pairs),
         ("flash-refused-pairs", refused_pairs),
     ):
-        Path(f"{base}.{suffix}.jsonl").write_text(
-            "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
-        )
+        write_jsonl(Path(f"{base}.{suffix}.jsonl"), rows)
     failed = [(p.id, r) for p, r in zip(positions, results, strict=True) if r is not None]
     for position, error in failed:
         print(f"{position}: {error!r}", file=sys.stderr)

@@ -3,7 +3,7 @@
 import json
 import statistics
 from collections import Counter
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Literal
 
@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from arena_core.state import STANDING, normalize, weighted_total
 from arena_core.template import Template
+from arena_evals.common import write_jsonl
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_evals.run_golden import GOLDEN_DIR, load_golden
 from arena_judge.prompt import (
@@ -215,10 +216,13 @@ def export(
             )
 
     _stamp_quantiles(players)
-    _write(out_dir / "player.jsonl", players)
-    _write(out_dir / "judge.jsonl", judges)
-    _write(out_dir / "host.jsonl", hosts)
-    _write(out_dir / "disputed.jsonl", disputed)
+    for name, records in (
+        ("player", players),
+        ("judge", judges),
+        ("host", hosts),
+        ("disputed", disputed),
+    ):
+        write_jsonl(out_dir / f"{name}.jsonl", records)
     return Export(
         player=len(players),
         judge=len(judges),
@@ -352,9 +356,3 @@ def _stamp_quantiles(players: list[PlayerRecord]) -> None:
         p.score_quantile = quantile_of(
             p.weighted_score, cuts[(p.template_id, p.judge_model, p.judge_prompt_hash)]
         )
-
-
-def _write(path: Path, records: Sequence[BaseModel]) -> None:
-    with path.open("w") as f:
-        for rec in records:
-            f.write(json.dumps(rec.model_dump(), ensure_ascii=False) + "\n")

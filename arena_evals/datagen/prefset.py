@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 from arena_core.state import normalize
 from arena_core.template import Template
+from arena_evals.common import read_jsonl
 from arena_evals.datagen.records import JudgeRecord, PlayerRecord
 from arena_evals.datagen.run import CORPUS_DIR
 
@@ -88,12 +89,15 @@ def main() -> None:
     ap.add_argument("--count", type=int, required=True)
     ap.add_argument("--out", required=True, help="a new name under the corpus directory")
     args = ap.parse_args()
-    with open(CORPUS_DIR / args.players / "player.jsonl") as f:
-        players = [PlayerRecord.model_validate_json(x) for x in f]
-    judges = []
-    for run in JUDGE_RUNS:
-        with open(CORPUS_DIR / run / "judge.jsonl") as f:
-            judges += [JudgeRecord.model_validate_json(x) for x in f]
+    players = [
+        PlayerRecord.model_validate(r)
+        for r in read_jsonl(CORPUS_DIR / args.players / "player.jsonl")
+    ]
+    judges = [
+        JudgeRecord.model_validate(r)
+        for run in JUDGE_RUNS
+        for r in read_jsonl(CORPUS_DIR / run / "judge.jsonl")
+    ]
     positions = join(players, judges)
     picked = random.Random(0).sample(positions, min(args.count, len(positions)))
     with open(CORPUS_DIR / f"{args.out}.positions.jsonl", "x") as f:
