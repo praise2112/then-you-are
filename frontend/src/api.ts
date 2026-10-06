@@ -148,8 +148,8 @@ export const api = {
     }),
 };
 
-/** The match's events after a snapshot's event_id. onClosed runs when the server refuses the
- *  stream, as it does once the match is over. */
+/** The match's events after a snapshot's event_id. The stream closes after match_ended; onClosed
+ *  runs when the server refuses it, as it does once the match is over. */
 export function useMatchEvents(
   matchId: string,
   after: string | null,
@@ -160,8 +160,10 @@ export function useMatchEvents(
     if (after === null) return;
     const source = new EventSource(`/matches/${matchId}/events?after=${encodeURIComponent(after)}`);
     const handlers = EVENT_NAMES.map((name) => {
-      const handler = (raw: MessageEvent) =>
+      const handler = (raw: MessageEvent) => {
         onEvent({ name, data: JSON.parse(raw.data) } as MatchEvent);
+        if (name === "match_ended") source.close();
+      };
       source.addEventListener(name, handler);
       return [name, handler] as const;
     });
