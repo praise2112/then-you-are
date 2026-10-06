@@ -5,7 +5,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from arena_core.state import EndReason, MatchStatus, Outcome, Phase
-from arena_core.template import Mode
+from arena_core.template import SCORE_MAX, GuessRules, Labels, Mode, NumPlayers, Template
 from arena_judge.schema import HostPayload, ScoringPayload
 from arena_server.events import GuessOption, GuessView, TurnRejected
 
@@ -53,25 +53,6 @@ class DemoView(BaseModel):
     openings: list[LandingOpeningView]
 
 
-class GuessRulesView(BaseModel):
-    spot_points: int
-    fool_points: int
-    prompt: str
-
-
-class NumPlayersView(BaseModel):
-    min: int
-    max: int
-
-
-class LabelsView(BaseModel):
-    opening: str
-    next_opening: str
-    your_opening: str
-    compose: str
-    compose_waiting: str
-
-
 class TemplateView(BaseModel):
     slug: str
     title: str
@@ -81,7 +62,7 @@ class TemplateView(BaseModel):
     premise: str
     mode: Mode
     rounds_budget: int
-    num_players: NumPlayersView
+    num_players: NumPlayers
     rubric: list[RubricView]
     rules: list[str]
     max_chars: int
@@ -90,11 +71,85 @@ class TemplateView(BaseModel):
     move_hint: str
     score_max: int
     host_name: str
-    labels: LabelsView
-    guess: GuessRulesView | None
+    labels: Labels
+    guess: GuessRules | None
     medallions: bool
     featured: bool
     demo: DemoView
+
+
+def template_view(template: Template, featured: bool) -> TemplateView:
+    """What the browser may see of a game: no examples and nothing written for the judge."""
+
+    def points(scores: dict[str, int]) -> list[DemoPoints]:
+        return [
+            DemoPoints(
+                name=r.name, earned=scores[r.name] * r.weight, max_points=r.weight * SCORE_MAX
+            )
+            for r in template.rubric
+        ]
+
+    demo = template.demo
+    card = template.seed_named(demo.opening.token)
+    return TemplateView(
+        slug=template.slug,
+        title=template.title,
+        tagline=template.tagline,
+        emblem=template.emblem,
+        accent=template.accent,
+        premise=template.premise.strip(),
+        mode=template.mode,
+        rounds_budget=template.rounds_budget,
+        num_players=template.num_players,
+        rubric=[
+            RubricView(
+                name=r.name,
+                label=r.label,
+                description=r.description,
+                max_points=r.weight * SCORE_MAX,
+            )
+            for r in template.rubric
+        ],
+        rules=[r.strip() for r in template.rules],
+        max_chars=template.move_constraints.max_chars,
+        move_prefix=template.move_constraints.prefix,
+        move_example=template.move_constraints.example,
+        move_hint=template.move_constraints.hint,
+        score_max=SCORE_MAX,
+        host_name=template.host.persona_name,
+        labels=template.labels,
+        guess=template.guess,
+        medallions=template.medallions,
+        featured=featured,
+        demo=DemoView(
+            opening=DemoOpening(
+                token=demo.opening.token,
+                emoji=demo.opening.emoji,
+                detail=card.detail if card else "",
+                reveal=card.hidden if card else "",
+            ),
+            moves=[
+                DemoMoveView(
+                    actor=m.actor,
+                    text=m.text,
+                    emoji=m.emoji,
+                    points=None if m.scores is None else points(m.scores),
+                )
+                for m in demo.moves
+            ],
+            headline=demo.headline,
+            openings=[
+                LandingOpeningView(
+                    token=o.token,
+                    emoji=seed.opening_emoji,
+                    detail=seed.detail,
+                    examples=o.examples,
+                )
+                for o in demo.openings
+                if (seed := template.seed_named(o.token)) is not None
+            ],
+        ),
+    )
 
 
 class TurnView(BaseModel):

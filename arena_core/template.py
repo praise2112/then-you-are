@@ -1,4 +1,4 @@
-"""Game template: loaded from YAML at boot, linted, and projected for players."""
+"""Game template: loaded from YAML at boot and linted."""
 
 from pathlib import Path
 from typing import Literal
@@ -243,82 +243,6 @@ class Template(Strict):
         """The demo's opening card when the public demo shows its hidden truth."""
         card = self.seed_named(self.demo.opening.token)
         return card if card is not None and card.hidden else None
-
-    def _points(self, scores: dict[str, int]) -> list[dict]:
-        return [
-            {
-                "name": r.name,
-                "earned": scores[r.name] * r.weight,
-                "max_points": r.weight * SCORE_MAX,
-            }
-            for r in self.rubric
-        ]
-
-    def _demo_projection(self) -> dict:
-        demo = self.demo
-        card = self.seed_named(demo.opening.token)
-        return {
-            "opening": {
-                "token": demo.opening.token,
-                "emoji": demo.opening.emoji,
-                "detail": card.detail if card else "",
-                "reveal": card.hidden if card else "",
-            },
-            "moves": [
-                {
-                    "actor": m.actor,
-                    "text": m.text,
-                    "emoji": m.emoji,
-                    "points": None if m.scores is None else self._points(m.scores),
-                }
-                for m in demo.moves
-            ],
-            "headline": demo.headline,
-            "openings": [
-                {
-                    "token": o.token,
-                    "emoji": card.opening_emoji,
-                    "detail": card.detail,
-                    "examples": o.examples,
-                }
-                for o in demo.openings
-                if (card := self.seed_named(o.token)) is not None
-            ],
-        }
-
-    def player_projection(self) -> dict:
-        """What the browser may see: no examples."""
-        return {
-            "slug": self.slug,
-            "title": self.title,
-            "tagline": self.tagline,
-            "emblem": self.emblem,
-            "accent": self.accent,
-            "premise": self.premise.strip(),
-            "mode": self.mode,
-            "rounds_budget": self.rounds_budget,
-            "num_players": self.num_players.model_dump(),
-            "rubric": [
-                {
-                    "name": r.name,
-                    "label": r.label,
-                    "description": r.description,
-                    "max_points": r.weight * SCORE_MAX,
-                }
-                for r in self.rubric
-            ],
-            "rules": [r.strip() for r in self.rules],
-            "max_chars": self.move_constraints.max_chars,
-            "move_prefix": self.move_constraints.prefix,
-            "move_example": self.move_constraints.example,
-            "move_hint": self.move_constraints.hint,
-            "score_max": SCORE_MAX,
-            "host_name": self.host.persona_name,
-            "labels": self.labels.model_dump(),
-            "guess": self.guess.model_dump() if self.guess else None,
-            "medallions": self.medallions,
-            "demo": self._demo_projection(),
-        }
 
 
 def load_template(slug: str, version: int = 1) -> Template:

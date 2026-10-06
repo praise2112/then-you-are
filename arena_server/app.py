@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 from starlette.middleware.sessions import SessionMiddleware
 
-from arena_core.template import Template, load_templates
+from arena_core.template import load_templates
 from arena_judge.caller import ModelCaller, load_model
 from arena_server.auth import (
     SESSION_COOKIE,
@@ -63,6 +63,7 @@ from arena_server.views import (
     StageView,
     TableView,
     TemplateView,
+    template_view,
 )
 
 SWEEP_EVERY_S = 60
@@ -268,19 +269,16 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def healthz() -> Health:
         return Health(status="ok", games=list(templates), judge=service.judge_fault or "ok")
 
-    def template_view(template: Template) -> TemplateView:
-        featured = template.slug == settings.featured_template
-        return TemplateView(**template.player_projection(), featured=featured)
-
     @app.get("/templates")
     async def list_templates() -> list[TemplateView]:
-        return [template_view(t) for t in templates.values()]
+        featured = settings.featured_template
+        return [template_view(t, t.slug == featured) for t in templates.values()]
 
     @app.get("/templates/{slug}")
     async def get_template(slug: str) -> TemplateView:
         if slug not in templates:
             raise HTTPException(404, "no such template")
-        return template_view(templates[slug])
+        return template_view(templates[slug], slug == settings.featured_template)
 
     async def session_with_providers(key: str | None) -> SessionView:
         view = await service.session_view(key)

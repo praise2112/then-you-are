@@ -756,8 +756,11 @@ export interface components {
             /** Text */
             text: string;
         };
-        /** GuessRulesView */
-        GuessRulesView: {
+        /**
+         * GuessRules
+         * @description The call after both bluffs are judged: pick the real entry from among the bluffs.
+         */
+        GuessRules: {
             /** Spot Points */
             spot_points: number;
             /** Fool Points */
@@ -836,8 +839,11 @@ export interface components {
             /** Seq */
             seq: number;
         };
-        /** LabelsView */
-        LabelsView: {
+        /**
+         * Labels
+         * @description Presentation strings for the slots the frontend fills per game.
+         */
+        Labels: {
             /** Opening */
             opening: string;
             /** Next Opening */
@@ -994,11 +1000,20 @@ export interface components {
             /** Text */
             text: string;
         };
-        /** NumPlayersView */
-        NumPlayersView: {
-            /** Min */
+        /**
+         * NumPlayers
+         * @description How many seats a table of this game may have.
+         */
+        NumPlayers: {
+            /**
+             * Min
+             * @default 2
+             */
             min: number;
-            /** Max */
+            /**
+             * Max
+             * @default 2
+             */
             max: number;
         };
         /** Online */
@@ -1438,7 +1453,7 @@ export interface components {
             mode: "escalation" | "showcase";
             /** Rounds Budget */
             rounds_budget: number;
-            num_players: components["schemas"]["NumPlayersView"];
+            num_players: components["schemas"]["NumPlayers"];
             /** Rubric */
             rubric: components["schemas"]["RubricView"][];
             /** Rules */
@@ -1455,8 +1470,8 @@ export interface components {
             score_max: number;
             /** Host Name */
             host_name: string;
-            labels: components["schemas"]["LabelsView"];
-            guess: components["schemas"]["GuessRulesView"] | null;
+            labels: components["schemas"]["Labels"];
+            guess: components["schemas"]["GuessRules"] | null;
             /** Medallions */
             medallions: boolean;
             /** Featured */

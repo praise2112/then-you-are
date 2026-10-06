@@ -7,6 +7,7 @@ from pydantic import ValidationError
 import arena_core.template as template_module
 from arena_core.template import Template, load_template, load_templates
 from arena_judge.prompt import JudgedTurn, render_judge_messages, render_opponent_messages
+from arena_server.views import template_view
 
 
 def test_template_loads_and_lints():
@@ -16,11 +17,11 @@ def test_template_loads_and_lints():
     assert len(template.seed_pool) >= 15
 
 
-def test_player_projection_hides_examples_and_shows_points_available():
-    projection = load_template("then-i-am").player_projection()
-    assert "examples" not in projection
-    assert [entry["max_points"] for entry in projection["rubric"]] == [20, 12, 8]
-    assert projection["max_chars"] == 200
+def test_template_view_hides_examples_and_shows_points_available():
+    view = template_view(load_template("then-i-am"), featured=False)
+    assert "examples" not in view.model_dump()
+    assert [entry.max_points for entry in view.rubric] == [20, 12, 8]
+    assert view.max_chars == 200
 
 
 def test_lint_rejects_a_judge_out_text_without_the_slot():
@@ -32,10 +33,10 @@ def test_lint_rejects_a_judge_out_text_without_the_slot():
 
 def test_demo_round_carries_both_moves_points_and_openings_from_the_seed_pool():
     template = load_template("then-i-am")
-    demo = template.player_projection()["demo"]
-    assert [[p["earned"] for p in m["points"]] for m in demo["moves"]] == [[15, 12, 0], [20, 12, 4]]
-    assert all(template.seed_named(o["token"]) for o in demo["openings"])
-    assert demo["openings"][0]["examples"]
+    demo = template_view(template, featured=False).demo
+    assert [[p.earned for p in m.points or []] for m in demo.moves] == [[15, 12, 0], [20, 12, 4]]
+    assert all(template.seed_named(o.token) for o in demo.openings)
+    assert demo.openings[0].examples
 
 
 def test_lint_rejects_demo_move_scores_off_the_rubric():
@@ -60,7 +61,7 @@ def test_lint_rejects_a_demo_with_one_landing_opening():
 
 
 def test_sentence_games_hide_the_move_medallions():
-    flags = {slug: t.player_projection()["medallions"] for slug, t in load_templates().items()}
+    flags = {slug: template_view(t, False).medallions for slug, t in load_templates().items()}
     assert flags["then-i-am"] and not flags["domino"] and not flags["alibi"]
 
 
@@ -75,13 +76,12 @@ def test_every_template_on_disk_loads():
     assert set(load_templates()) >= {"then-i-am", "word-for-word"}
 
 
-def test_showcase_projection_carries_rounds_and_the_demo_reveal():
-    template = load_template("word-for-word")
-    projection = template.player_projection()
-    assert projection["mode"] == "showcase" and projection["rounds_budget"] == 3
-    assert projection["demo"]["opening"]["detail"].startswith("noun")
-    assert projection["demo"]["opening"]["reveal"]
-    assert load_template("then-i-am").player_projection()["rounds_budget"] == 4
+def test_showcase_view_carries_rounds_and_the_demo_reveal():
+    view = template_view(load_template("word-for-word"), featured=False)
+    assert view.mode == "showcase" and view.rounds_budget == 3
+    assert view.demo.opening.detail.startswith("noun")
+    assert view.demo.opening.reveal
+    assert template_view(load_template("then-i-am"), featured=False).rounds_budget == 4
 
 
 def test_lint_rejects_a_showcase_decided_by_sudden_death():
@@ -116,14 +116,14 @@ def test_card_text_pairs_the_word_with_its_detail():
     assert load_template("then-i-am").seed_pool[0].card_text == "a balloon"
 
 
-def test_showcase_projection_carries_the_call_and_then_i_am_has_none():
-    template = load_template("word-for-word")
-    assert template.player_projection()["guess"] == {
+def test_showcase_view_carries_the_call_and_then_i_am_has_none():
+    guess = template_view(load_template("word-for-word"), featured=False).guess
+    assert guess is not None and guess.model_dump() == {
         "spot_points": 10,
         "fool_points": 10,
         "prompt": "One of these is the real entry. Call it.",
     }
-    assert load_template("then-i-am").player_projection()["guess"] is None
+    assert template_view(load_template("then-i-am"), featured=False).guess is None
 
 
 def test_lint_rejects_a_call_without_a_hidden_truth_or_outside_a_showcase():
