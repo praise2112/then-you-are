@@ -312,7 +312,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
             request.cookies.get(SESSION_COOKIE), body.stage_name, body.list_duels
         )
         if body.stage_name and body.stage_name.strip():
-            await rename_account(pool, key, body.stage_name.strip()[:40])
+            await rename_account(pool, key, body.stage_name.strip())
         set_session_cookie(response, key, settings.secure_cookies)
         return await session_with_providers(key)
 

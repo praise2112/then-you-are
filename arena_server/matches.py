@@ -60,6 +60,7 @@ from arena_judge.schema import (
     TurnRejected,
     route_outcome,
 )
+from arena_server.auth import account_of, new_session_key
 from arena_server.db import Pool
 from arena_server.events import EventBus
 from arena_server.leaderboard import account_streaks
@@ -73,6 +74,7 @@ from arena_server.views import (
     SeatView,
     SessionView,
     StageView,
+    TableKind,
     TableView,
     TurnView,
 )
@@ -97,7 +99,6 @@ HOUSE_ATTEMPTS = 2
 HOUSE_RETRY_S = 3
 REPEAT_TEXT = "Someone at the table already wrote exactly that. Try another."
 
-TableKind = Literal["house", "friends", "open"]
 
 log = logging.getLogger(__name__)
 
@@ -265,7 +266,7 @@ class MatchService:
     async def ensure_session(
         self, session_key: str | None, stage_name: str | None, list_duels: bool | None = None
     ) -> str:
-        key = session_key or secrets.token_urlsafe(24)
+        key = session_key or new_session_key()
         async with self.pool.connection() as conn:
             await conn.execute(
                 "insert into sessions (session_key, stage_name, list_duels) "
@@ -274,9 +275,9 @@ class MatchService:
                 "list_duels = coalesce(%s, sessions.list_duels)",
                 (
                     key,
-                    (stage_name or "Challenger")[:40],
+                    stage_name or "Challenger",
                     list_duels,
-                    stage_name and stage_name[:40],
+                    stage_name,
                     list_duels,
                 ),
             )
@@ -1356,12 +1357,7 @@ class MatchService:
         if not any(row.account_id for row in rec.humans):
             return None
         async with self.pool.connection() as conn:
-            viewer = await (
-                await conn.execute(
-                    "select account_id from sessions where session_key = %s", (session_key,)
-                )
-            ).fetchone()
-        account = viewer["account_id"] if viewer else None
+            account = await account_of(conn, session_key)
         return next((r.seat for r in rec.humans if account and r.account_id == account), None)
 
     async def _check_owner(self, rec: Record, session_key: str) -> None:

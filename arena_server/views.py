@@ -4,7 +4,8 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from arena_core.state import MatchStatus
+from arena_core.state import MatchStatus, Phase
+from arena_core.template import Mode
 from arena_judge.schema import (
     EndReason,
     GuessOption,
@@ -14,6 +15,8 @@ from arena_judge.schema import (
     ScoringPayload,
     TurnRejected,
 )
+
+TableKind = Literal["house", "friends", "open"]
 
 
 class RubricView(BaseModel):
@@ -83,7 +86,7 @@ class TemplateView(BaseModel):
     emblem: str
     accent: str
     premise: str
-    mode: Literal["escalation", "showcase"]
+    mode: Mode
     rounds_budget: int
     num_players: NumPlayersView
     rubric: list[RubricView]
@@ -145,11 +148,11 @@ class MatchSnapshot(BaseModel):
     id: str
     template_id: str
     title: str
-    mode: Literal["escalation", "showcase"]
-    kind: Literal["house", "friends", "open"]
+    mode: Mode
+    kind: TableKind
     status: MatchStatus
     state_version: int
-    phase: Literal["write", "guess"]
+    phase: Phase
     seed_token: str
     seed_emoji: str
     rounds: list[RoundView]

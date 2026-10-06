@@ -4,6 +4,7 @@ and the games played against people, which never count on the record."""
 from typing import Any
 
 from arena_core.state import weighted_total
+from arena_server.auth import account_of
 from arena_server.leaderboard import account_rank, streaks
 from arena_server.matches import MatchError, MatchService
 from arena_server.views import BadgeCount, DuelRow, GameRecord, ProfileView
@@ -22,12 +23,7 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
         ).fetchone()
         if account is None:
             raise MatchError(404, "no such player")
-        viewer = await (
-            await conn.execute(
-                "select account_id from sessions where session_key = %s", (session_key,)
-            )
-        ).fetchone()
-        is_yours = bool(viewer and viewer["account_id"] == account_id)
+        is_yours = await account_of(conn, session_key) == account_id
         matches = await (
             await conn.execute(
                 "select m.id, m.template_id, m.status, m.winner = se.seat as won, "

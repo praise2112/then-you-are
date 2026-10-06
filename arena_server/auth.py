@@ -115,23 +115,32 @@ async def fetch_profile(client: StarletteOAuth2App, provider: str, request: Requ
     return Profile("discord", data["id"], name, url)
 
 
-Outcome = Literal["signed_in", "linked", "taken"]
+def new_session_key() -> str:
+    return secrets.token_urlsafe(24)
+
+
+async def account_of(conn: AsyncConnection[DictRow], session_key: str | None) -> str | None:
+    """The account the session is signed in to, or None for a guest or an unknown key."""
+    row = await (
+        await conn.execute("select account_id from sessions where session_key = %s", (session_key,))
+    ).fetchone()
+    return row["account_id"] if row else None
+
+
+SignIn = Literal["signed_in", "linked", "taken"]
 
 
 async def link_account(
     pool: Pool, session_key: str | None, profile: Profile
-) -> tuple[str, Outcome, str]:
+) -> tuple[str, SignIn, str]:
     """Signs the session in. Returns the session key, what happened, and a name for the notice.
 
     A known identity signs into its account. A new identity joins the session's account when
     the session is already signed in, otherwise it opens a new account. A signed-in session
     meeting an identity that belongs to another account is left alone ("taken")."""
-    key = session_key or secrets.token_urlsafe(24)
+    key = session_key or new_session_key()
     async with pool.connection() as conn:
-        current = await (
-            await conn.execute("select account_id from sessions where session_key = %s", (key,))
-        ).fetchone()
-        current_id = current["account_id"] if current else None
+        current_id = await account_of(conn, key)
         known = await (
             await conn.execute(
                 "select i.account_id, a.display_name from identities i "
@@ -142,7 +151,7 @@ async def link_account(
         ).fetchone()
         if known and current_id and known["account_id"] != current_id:
             return key, "taken", known["display_name"]
-        outcome: Outcome = "signed_in"
+        outcome: SignIn = "signed_in"
         if known:
             account_id = known["account_id"]
             if current_id:
@@ -241,14 +250,9 @@ async def delete_account(pool: Pool, session_key: str) -> Deletion:
     """Deletes the account behind the session, its identities and every match no other human
     played in. Its seats in other people's matches stay, shown as "Deleted player"."""
     async with pool.connection() as conn, conn.transaction():
-        row = await (
-            await conn.execute(
-                "select account_id from sessions where session_key = %s", (session_key,)
-            )
-        ).fetchone()
-        if row is None or row["account_id"] is None:
+        account_id = await account_of(conn, session_key)
+        if account_id is None:
             return "guest"
-        account_id = row["account_id"]
         keys = [
             r["session_key"]
             for r in await (
