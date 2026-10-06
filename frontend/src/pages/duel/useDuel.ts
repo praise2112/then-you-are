@@ -50,6 +50,10 @@ function withTotals(s: MatchSnapshot, totals: Record<string, number>): MatchSnap
   return s.seats.map((seat) => ({ ...seat, points: totals[seat.seat] ?? seat.points }));
 }
 
+function lastSeq(s: MatchSnapshot | null): number {
+  return s?.transcript[s.transcript.length - 1]?.seq ?? 0;
+}
+
 function withRuling(s: MatchSnapshot, r: Ruling): MatchSnapshot {
   const fresh = !s.transcript.some((t) => t.seq === r.seq);
   return {
@@ -89,19 +93,35 @@ export function useDuel(matchId: string, spectator: boolean) {
   const versionRef = useRef(-1);
   const fetchingRef = useRef(false);
   const behindRef = useRef(false);
+  const fetchesRef = useRef(0);
   // The move the judge or a House writer is working on, while the board shows it.
   const busySeqRef = useRef<number | null>(null);
+  // The seat's own move with the judge: the last turn before it, and the fetch count it was sent at.
+  const sentRef = useRef<{ afterSeq: number; knownFrom: number } | null>(null);
 
-  // A move has been ruled: the board stops showing it as under way.
-  const settleMove = useCallback((seq: number, mine: boolean) => {
-    if (busySeqRef.current === seq) busySeqRef.current = null;
+  // The move numbered seq, or one after it, is resolved: the board stops showing it as under way.
+  const endBusy = useCallback((seq: number) => {
+    if (busySeqRef.current === null || busySeqRef.current > seq) return;
+    busySeqRef.current = null;
     setThinking(false);
     setStreaming("");
-    if (!mine) return;
-    setPending(false);
-    setReturned(null);
-    setText("");
+    setPaused(null);
   }, []);
+
+  // The seat's own move is resolved; a ruled move leaves the composer for the next one.
+  const endSent = useCallback(
+    (ruled: boolean) => {
+      const sent = sentRef.current;
+      if (!sent) return;
+      sentRef.current = null;
+      setPending(false);
+      endBusy(sent.afterSeq + 1);
+      if (!ruled) return;
+      setReturned(null);
+      setText("");
+    },
+    [endBusy],
+  );
 
   const refresh = useCallback(() => {
     if (fetchingRef.current) {
@@ -109,14 +129,21 @@ export function useDuel(matchId: string, spectator: boolean) {
       return;
     }
     fetchingRef.current = true;
+    const fetchNo = ++fetchesRef.current;
     api
       .match(matchId)
       .then((s) => {
         if (s.state_version < versionRef.current) return;
         versionRef.current = s.state_version;
         setSnap(s);
-        const busy = s.transcript.find((t) => t.seq === busySeqRef.current);
-        if (busy) settleMove(busy.seq, !spectator && busy.actor === s.your_seat);
+        if (busySeqRef.current !== null) endBusy(lastSeq(s));
+        const me = spectator ? null : s.your_seat;
+        const withJudge = !!me && s.to_move === me && (s.status === "awaiting_judgment" || s.status === "paused");
+        const sent = sentRef.current;
+        if (withJudge && !sent) sentRef.current = { afterSeq: lastSeq(s), knownFrom: 0 };
+        if (!withJudge && sent && fetchNo > sent.knownFrom) {
+          endSent(s.transcript.some((t) => t.actor === me && t.seq > sent.afterSeq));
+        }
         if (s.status === "open" || isLive(s.status)) setAfter((a) => a ?? s.event_id);
         // A showcase refusal says why only in the refused seat's own snapshot.
         if (s.mode === "showcase" && s.returned) {
@@ -140,7 +167,7 @@ export function useDuel(matchId: string, spectator: boolean) {
         behindRef.current = false;
         refresh();
       });
-  }, [matchId, spectator, settleMove]);
+  }, [matchId, spectator, endBusy, endSent]);
 
   useEffect(() => {
     refresh();
@@ -179,8 +206,11 @@ export function useDuel(matchId: string, spectator: boolean) {
       };
       const showcase = snapRef.current?.mode === "showcase";
       const mySeat = spectator ? null : (snapRef.current?.your_seat ?? null);
+      // A replayed event about a move the snapshot already holds.
+      const resolved = (seq: number) => seq <= lastSeq(snapRef.current);
       switch (event.name) {
         case "judge_started":
+          if (resolved(event.data.seq)) return;
           busySeqRef.current = event.data.seq;
           setThinking(true);
           return;
@@ -188,6 +218,7 @@ export function useDuel(matchId: string, spectator: boolean) {
           const r = event.data;
           const mine = r.seat === mySeat;
           if (mine) {
+            sentRef.current = null;
             setThinking(false);
             setPending(false);
           }
@@ -201,17 +232,20 @@ export function useDuel(matchId: string, spectator: boolean) {
           return;
         }
         case "move_token":
+          if (resolved(event.data.seq)) return;
           busySeqRef.current = event.data.seq;
           setStreaming((s) => s + event.data.text);
           return;
-        case "judge_paused":
-          busySeqRef.current = event.data.seq;
-          setPaused(event.data);
-          // The move with the judge is the mover's, so only the mover's own composer takes it back.
-          if (mySeat !== null && snapRef.current?.to_move === mySeat) {
-            setText((t) => t || withoutPrefix(event.data.move_text, templateRef.current?.move_prefix ?? ""));
+        case "judge_paused": {
+          const p = event.data;
+          if (resolved(p.seq)) return;
+          busySeqRef.current = p.seq;
+          setPaused(p);
+          if (p.seq === (sentRef.current?.afterSeq ?? -1) + 1) {
+            setText((t) => t || withoutPrefix(p.move_text, templateRef.current?.move_prefix ?? ""));
           }
           return;
+        }
         case "judge_resumed":
           setPaused(null);
           return;
@@ -219,7 +253,8 @@ export function useDuel(matchId: string, spectator: boolean) {
           // A showcase round's rulings arrive together with its reveal, read from the snapshot.
           if (showcase) return;
           const r = event.data;
-          settleMove(r.seq, r.actor === mySeat);
+          endBusy(r.seq);
+          if (r.actor === mySeat && r.seq > (sentRef.current?.afterSeq ?? Infinity)) endSent(true);
           advance(r.state_version, (s) => withRuling(s, r));
           return;
         }
@@ -251,11 +286,10 @@ export function useDuel(matchId: string, spectator: boolean) {
           const t = event.data;
           if (t.state_version > versionRef.current) return catchUp(t.state_version);
           if (t.state_version < versionRef.current) return;
-          // The turn came back to this seat, so its move is no longer with the judge.
-          if (t.to_move === mySeat) {
-            setPending(false);
-            setPaused(null);
-          }
+          // Sending a move leaves the version as it was, so only the snapshot tells a hand-back
+          // from a turn change sent before the move.
+          const status = snapRef.current?.status;
+          if (sentRef.current || status === "awaiting_judgment" || status === "paused") return refresh();
           patch((s) => ({
             ...s,
             status: isLive(s.status) ? "active" : s.status,
@@ -286,7 +320,7 @@ export function useDuel(matchId: string, spectator: boolean) {
         }
       }
     },
-    [refresh, settleMove, spectator, matchId],
+    [refresh, endBusy, endSent, spectator, matchId],
   );
   useMatchEvents(matchId, after, onEvent, refresh);
 
@@ -311,10 +345,15 @@ export function useDuel(matchId: string, spectator: boolean) {
   async function move() {
     setPending(true);
     setReturned(null);
-    const moveText = snap!.mode === "showcase" ? text : fullMove(template!.move_prefix, text);
+    const showcase = snap!.mode === "showcase";
+    const moveText = showcase ? text : fullMove(template!.move_prefix, text);
+    const sent = showcase ? null : { afterSeq: lastSeq(snap), knownFrom: Infinity };
+    sentRef.current = sent;
     try {
       await api.move(matchId, snap!.state_version, moveText, snap!.round_in_play);
+      if (sent) sent.knownFrom = fetchesRef.current;
     } catch (e) {
+      if (sentRef.current === sent) sentRef.current = null;
       setPending(false);
       refused(e);
       refresh();
