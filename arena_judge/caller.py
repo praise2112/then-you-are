@@ -133,8 +133,7 @@ class ModelCaller:
             headers={"Authorization": f"Bearer {api_key}"},
             timeout=httpx.Timeout(timeout_s, connect=10.0),
         )
-        # A spec with its own base_url is sent without the OpenRouter key, and a CPU server
-        # can take a minute on a cold prompt.
+        # A spec with its own base_url is sent here, without the OpenRouter key.
         self.local = httpx.AsyncClient(timeout=httpx.Timeout(LOCAL_TIMEOUT_S, connect=10.0))
 
     async def aclose(self) -> None:

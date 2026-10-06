@@ -44,7 +44,7 @@ ROWS = (
     "qwen3-06b",
 )
 TEACHER_JUDGE = "judge-v1"
-# A pair counts for ranking only when Flash's totals differ by twice its rescoring spread.
+# A pair counts for ranking only when Flash's totals differ by more than this.
 RANK_GAP = 7.5
 RULING_FIRST = ("gates", "confidence", "verdict", "truth_proximity", "scores", "evidence")
 

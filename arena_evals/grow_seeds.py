@@ -78,9 +78,8 @@ class Candidate(BaseModel):
 
 @dataclass(frozen=True)
 class Shape:
-    """What a card looks like: short forms get the article checks, every card a word cap,
-    a guess game needs a detail and a truth on each card, and cards that each name a
-    different thing must not share a head noun."""
+    """What a card looks like: short forms get article checks, every card a word cap, a guess
+    game a detail and truth per card, and cards naming distinct things distinct head nouns."""
 
     short_form: bool
     max_words: int

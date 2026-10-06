@@ -1,6 +1,5 @@
-"""Class specs: fixed and varying template fields, sampling axes and sabotage expectations
-for one game class, loaded from variants/classes/<class>.yaml and checked against the
-class's example templates."""
+"""Class specs: one game class's fixed and varying template fields, sampling axes and sabotage
+expectations, loaded from variants/classes/<class>.yaml and checked against its examples."""
 
 from pathlib import Path
 from typing import Literal

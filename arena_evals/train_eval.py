@@ -84,7 +84,7 @@ def verdict_score(template: Template, text: str, response: JudgeResponse) -> Sco
 
 
 def match_of(context: Context) -> Match:
-    # Contexts recorded earlier carry template_version, and name human_seats "guessers".
+    # Also reads contexts that carry template_version and name human_seats "guessers".
     d = {k: v for k, v in context.match.items() if k != "template_version"}
     if "guessers" in d:
         d["human_seats"] = d.pop("guessers")
