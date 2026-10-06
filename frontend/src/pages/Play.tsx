@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import { AccountMenu } from "../Account.tsx";
 import { Link, navigate, ThemeToggle, TopBar } from "../App.tsx";
@@ -52,28 +52,26 @@ export function Play({ slug }: { slug: string }) {
   const [listDuels, setListDuels] = useState(false);
   const [firstPlay] = useState(() => !store.firstPlayDone(slug));
 
-  async function start(name: string) {
-    setStarting(true);
-    try {
-      const match = await api.createMatch(slug, { stageName: name || undefined });
-      navigate(`/m/${match.id}`);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "The stage door is stuck.");
-      setStarting(false);
-    }
-  }
+  const start = useCallback(
+    async (name: string) => {
+      try {
+        const match = await api.createMatch(slug, { stageName: name || undefined });
+        navigate(`/m/${match.id}`);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "The stage door is stuck.");
+        setStarting(false);
+      }
+    },
+    [slug],
+  );
 
   useEffect(() => {
     api.template(slug).then(setTemplate, () => setError("The backend is not answering."));
   }, [slug]);
 
   useEffect(() => {
-    if (firstPlay) return;
-    api.createMatch(slug, { stageName: store.stageName() || undefined }).then(
-      (match) => navigate(`/m/${match.id}`),
-      (e) => setError(e instanceof Error ? e.message : "The stage door is stuck."),
-    );
-  }, [firstPlay, slug]);
+    if (!firstPlay) void start(store.stageName());
+  }, [firstPlay, start]);
 
   if (!firstPlay || !template) {
     return <p className="page-status">{error ?? "Raising the curtain."}</p>;
@@ -96,6 +94,7 @@ export function Play({ slug }: { slug: string }) {
     }
     store.setStageName(name);
     store.markFirstPlayDone(slug);
+    setStarting(true);
     void start(name);
   }
 

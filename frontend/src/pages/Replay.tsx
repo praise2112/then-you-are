@@ -3,10 +3,10 @@ import { useEffect, useState, type KeyboardEvent } from "react";
 import { Link, ThemeToggle, TopBar } from "../App.tsx";
 import { api, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
-import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
 import { criterionLabel, formName, groupRounds, roundWinner, STANDING, tableOf, type RoundGroup, type Table } from "./format.ts";
 import { RESULT_WORDS, verdictLabel } from "./labels.ts";
+import { ShareLinks, type Copied } from "./ResultCard.tsx";
 import { Bluff, CallLine, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
@@ -15,7 +15,7 @@ export function ReplayPage({ matchId }: Props) {
   const [replay, setReplay] = useState<Replay | null>(null);
   const [template, setTemplate] = useState<TemplateView | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<Copied>(null);
   const [curateError, setCurateError] = useState<string | null>(null);
   const curatorToken = store.curatorToken();
 
@@ -180,23 +180,7 @@ export function ReplayPage({ matchId }: Props) {
           Share this duel
         </p>
         <div className="share">
-          <button
-            className="icon-link"
-            type="button"
-            onClick={() => navigator.clipboard.writeText(location.href).then(() => setCopied(true))}
-          >
-            <Icon name="link" />
-            {copied ? "Link copied" : "Copy link"}
-          </button>
-          <a
-            className="icon-link"
-            href={`https://x.com/intent/post?text=${encodeURIComponent(replay.share_text)}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Icon name="x" />
-            Post to X
-          </a>
+          <ShareLinks text={replay.share_text} copied={copied} onCopied={setCopied} />
         </div>
       </main>
     </>

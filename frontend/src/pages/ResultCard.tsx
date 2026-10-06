@@ -31,7 +31,7 @@ export function ResultCard({ snap, ended, table }: Props) {
   }, [snap.id]);
   const { streak, best } = account ?? local;
   const [share, setShare] = useState(false);
-  const [copied, setCopied] = useState<string | null>(null);
+  const [copied, setCopied] = useState<Copied>(null);
   const [listed, setListed] = useState(snap.is_public);
   const [listError, setListError] = useState<string | null>(null);
   const replayUrl = `${location.origin}/r/${snap.id}`;
@@ -47,16 +47,6 @@ export function ResultCard({ snap, ended, table }: Props) {
       () => setListed(on),
       (e) => setListError((e as Error).message),
     );
-  }
-
-  async function copy(kind: "link" | "text") {
-    const value = kind === "link" ? replayUrl : ended.share_text;
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopied(kind);
-    } catch {
-      setCopied(null);
-    }
   }
 
   return (
@@ -116,23 +106,7 @@ export function ResultCard({ snap, ended, table }: Props) {
             </p>
             <div className="sheet-actions">
               <span style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}>
-                <button className="icon-link" type="button" onClick={() => copy("link")}>
-                  <Icon name="link" />
-                  {copied === "link" ? "Link copied" : "Copy link"}
-                </button>
-                <button className="icon-link" type="button" onClick={() => copy("text")}>
-                  <Icon name="quill" />
-                  {copied === "text" ? "Text copied" : "Copy text"}
-                </button>
-                <a
-                  className="icon-link"
-                  href={`https://x.com/intent/post?text=${encodeURIComponent(ended.share_text)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Icon name="x" />
-                  Post to X
-                </a>
+                <ShareLinks url={replayUrl} text={ended.share_text} copyText copied={copied} onCopied={setCopied} />
               </span>
               <button className="quiet-button" type="button" onClick={() => setShare(false)}>
                 Close
@@ -141,6 +115,44 @@ export function ResultCard({ snap, ended, table }: Props) {
           </div>
         </div>
       )}
+    </>
+  );
+}
+
+export type Copied = "link" | "text" | null;
+
+type ShareLinksProps = {
+  // The address to copy; without one, the page's own address when the button is pressed.
+  url?: string;
+  text: string;
+  copyText?: boolean;
+  copied: Copied;
+  onCopied: (copied: Copied) => void;
+};
+
+/** Copy link and Post to X, with Copy text between them when copyText is set. */
+export function ShareLinks({ url, text, copyText = false, copied, onCopied }: ShareLinksProps) {
+  const copy = (kind: "link" | "text", value: string) =>
+    navigator.clipboard.writeText(value).then(
+      () => onCopied(kind),
+      () => onCopied(null),
+    );
+  return (
+    <>
+      <button className="icon-link" type="button" onClick={() => copy("link", url ?? location.href)}>
+        <Icon name="link" />
+        {copied === "link" ? "Link copied" : "Copy link"}
+      </button>
+      {copyText && (
+        <button className="icon-link" type="button" onClick={() => copy("text", text)}>
+          <Icon name="quill" />
+          {copied === "text" ? "Text copied" : "Copy text"}
+        </button>
+      )}
+      <a className="icon-link" href={`https://x.com/intent/post?text=${encodeURIComponent(text)}`} target="_blank" rel="noreferrer">
+        <Icon name="x" />
+        Post to X
+      </a>
     </>
   );
 }
