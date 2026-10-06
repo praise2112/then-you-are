@@ -21,5 +21,5 @@ arena_evals/datagen/corpus/
 *.db-wal
 arena_evals/seeds/*.json
 !arena_evals/seeds/then-i-am.json
-arena_evals/variants/pool/index.lock
+arena_evals/variants/pool/*.lock
 arena_evals/heldout/judge-eval.jsonl
