@@ -7,6 +7,7 @@ from arena_core.state import FINISHED, JUDGED, STANDING, result_kind
 from arena_server.leaderboard import account_ranks, account_streaks, streaks
 from arena_server.matches import MatchService
 from arena_server.sessions import account_of
+from arena_server.snapshots import house_name
 from arena_server.store import MatchError
 from arena_server.views import BadgeCount, DuelRow, GameRecord, ProfileView
 
@@ -143,6 +144,6 @@ def _against(others: list[str | None]) -> str:
     for name in others:
         if name is None:
             houses += 1
-            name = "The House" if houses == 1 else f"The House {houses}"
+            name = house_name(houses)
         names.append(name)
     return ", ".join(names)

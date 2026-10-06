@@ -90,7 +90,11 @@ def display_name(row: SeatRow, rec: Record) -> str:
         assert row.stage_name is not None
         return row.stage_name
     houses = sorted(rec.models, key=lambda seat: int(seat[1:]))
-    n = houses.index(row.seat) + 1
+    return house_name(houses.index(row.seat) + 1)
+
+
+def house_name(n: int) -> str:
+    """The name of the table's nth House seat, counting from 1."""
     return "The House" if n == 1 else f"The House {n}"
 
 
