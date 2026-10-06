@@ -1,5 +1,6 @@
 import asyncio
 import random
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -137,6 +138,18 @@ def test_rejudge_measures_agreement_and_never_asks_twice(tmp_path):
     assert len(caller.judged) == judged_before + 4
     assert agreement_interval(same, random.Random(0))[1] == 1.0
     assert agreement_interval([], random.Random(0)) == [0.0, 0.0]
+
+
+def test_rejudge_replays_a_cached_verdict_for_the_same_move_made_by_another_seat(tmp_path):
+    ledger, caller, ended = played(tmp_path)
+    first = stood_positions(ledger, ended)[0]
+    spec = ModelSpec(model="again", display_name="Again")
+    caller.rulings[:] = [judge_response()]
+    assert asyncio.run(rejudge(DUEL, ledger, "duel/rejudge", [first], spec, caller)) == [True]
+    judged = len(caller.judged)
+    twin = replace(first, actor="p2" if first.actor == "p1" else "p1", seq=first.seq + 1)
+    assert asyncio.run(rejudge(DUEL, ledger, "duel/rejudge", [twin], spec, caller)) == [True]
+    assert len(caller.judged) == judged
 
 
 def test_a_spent_budget_plays_no_pilot_match_but_keeps_the_ones_already_ended(tmp_path):

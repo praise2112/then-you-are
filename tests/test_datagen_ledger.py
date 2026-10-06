@@ -58,7 +58,7 @@ def paid(idx: int, cost: float) -> CallRow:
     return CallRow("m/1", idx, "judge", "p1", 1, "j", "", "", None, {}, 0, 0, cost, 0, "parsed")
 
 
-def test_the_running_total_counts_a_replaced_row_once_and_survives_a_reopen(tmp_path: Path):
+def test_the_total_counts_a_replaced_row_once_and_survives_a_reopen(tmp_path: Path):
     ledger = Ledger(tmp_path / "run.db")
     ledger.add_call(paid(0, 0.25))
     ledger.add_call(paid(1, 0.5))
@@ -80,3 +80,11 @@ def test_a_budget_counts_from_when_it_is_made_and_stops_on_a_402(tmp_path: Path)
     budget.note_failure(CallFailed("out of credit", 402))
     assert budget.over() and budget.no_credit is not None
     assert not Budget(ledger, 0.5).over()
+
+
+def test_a_budget_sees_calls_paid_through_another_connection_to_the_same_ledger(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    budget = Budget(ledger, 1.0)
+    other = Ledger(tmp_path / "run.db")
+    other.add_call(paid(0, 1.5))
+    assert ledger.spent() == pytest.approx(1.5) and budget.over()

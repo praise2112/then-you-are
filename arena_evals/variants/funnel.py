@@ -253,9 +253,11 @@ async def rejudge(
 
     async def one(pos: StoodMove) -> bool:
         tape = Tape(ledger, f"{key}/{position_id(pos)}")
+        # Rows are keyed by inputs alone, so a row replays at whichever seat recorded it.
+        seat = tape.recorded[0] if tape.recorded else pos
         ask = JudgeInputs(pos.previous, pos.move, pos.hidden, pos.transcript)
         async with sem:
-            response = await tape.judge(caller, spec, template, pos.actor, pos.seq, ask)
+            response = await tape.judge(caller, spec, template, seat.actor, seat.seq, ask)
         return route_outcome(response.scoring) == pos.outcome
 
     return list(await asyncio.gather(*(one(pos) for pos in sample)))
