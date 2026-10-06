@@ -95,7 +95,7 @@ export function ReplayPage({ matchId }: Props) {
                 <span className={`model${seatOf(turn.actor)?.kind === "human" ? " human" : ""}`}>
                   {seatOf(turn.actor)?.kind === "human" ? "human" : (turn.played_by ?? "model")}
                 </span>
-                <p className="said">{turn.outcome === "forfeit" ? "Lost the turn" : turn.move_text}</p>
+                <p className="said">{turn.outcome === "forfeit" ? verdictLabel(turn, "line") : turn.move_text}</p>
               </div>
               {template.medallions && <span className="medallion">{turn.host?.generated_emoji ?? "?"}</span>}
             </article>

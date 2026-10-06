@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import type { GuessOption, RoundView, TemplateView, TurnView } from "../api.ts";
 import { criterionLabel, isLongCard, roundTotals, roundWinner, type RoundGroup, type Table } from "./format.ts";
-import { BADGES, totalPoints, verdictLabel } from "./labels.ts";
+import { BADGES, criterionMarks, totalPoints, verdictLabel } from "./labels.ts";
 import { AiTag } from "./seats.tsx";
 
 type WordCardProps = { round: RoundView; compact?: boolean; children?: ReactNode };
@@ -240,18 +240,14 @@ export function Bluff({ turn, round, who, tone, you = false, ai = false, won = f
         <b>{round.token}</b> {pos && <i>{POS_SHORT[pos] ?? pos}</i>} {turn.move_text}
       </p>
       <p className="marks">
-        {template.rubric.map((entry) => {
-          const earned = (turn.scoring?.scores[entry.name] ?? 0) * (entry.max_points / template.score_max);
-          const decided = entry.name === turn.host?.because_clause.criterion;
-          return (
-            <span key={entry.name} className={decided ? "decided" : undefined}>
-              <span className="small-caps">{criterionLabel(entry.name, template)}</span>
-              <span className="value">
-                {earned}/{entry.max_points}
-              </span>
+        {criterionMarks(turn, template).map(({ entry, earned, decided }) => (
+          <span key={entry.name} className={decided ? "decided" : undefined}>
+            <span className="small-caps">{criterionLabel(entry.name, template)}</span>
+            <span className="value">
+              {earned}/{entry.max_points}
             </span>
-          );
-        })}
+          </span>
+        ))}
       </p>
       <div className="foot">
         <span className="total">

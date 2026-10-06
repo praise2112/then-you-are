@@ -28,6 +28,15 @@ export function totalPoints(template: TemplateView): number {
   return template.rubric.reduce((sum, r) => sum + r.max_points, 0);
 }
 
+/** Each rubric entry's points for a judged turn, and whether it is the criterion that decided the ruling. */
+export function criterionMarks(turn: Pick<TurnView, "scoring" | "host">, template: TemplateView) {
+  return template.rubric.map((entry) => ({
+    entry,
+    earned: (turn.scoring?.scores[entry.name] ?? 0) * (entry.max_points / template.score_max),
+    decided: entry.name === turn.host?.because_clause.criterion,
+  }));
+}
+
 type Stamp = { won: boolean; two: boolean; winner: string };
 type Card = { won: boolean; showcase: boolean; fellRound: number };
 type Finish = { points: string; moves: number };

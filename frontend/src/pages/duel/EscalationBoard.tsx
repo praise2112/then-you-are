@@ -16,7 +16,7 @@ import {
   shortName,
   useSecondsLeft,
 } from "../format.ts";
-import { totalPoints, verdictLabel } from "../labels.ts";
+import { criterionMarks, totalPoints, verdictLabel } from "../labels.ts";
 import { ResultCard } from "../ResultCard.tsx";
 import { SeatList, SeatStrip } from "../seats.tsx";
 import { Composer, HostPanel, ResignRow, ResignSheet, RoundBar, RubricPanel, type BoardProps } from "./parts.tsx";
@@ -131,7 +131,7 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
                     <span className={`who tone-${table.tone(turn.actor)}${turn.actor === me ? " you" : ""}`}>
                       <span>{table.name(turn.actor)}</span>
                     </span>
-                    {turn.outcome === "forfeit" ? <em>Lost the turn</em> : turn.move_text}
+                    {turn.outcome === "forfeit" ? <em>{verdictLabel(turn, "line")}</em> : turn.move_text}
                   </span>
                   {template.medallions && turn.outcome !== "forfeit" && (
                     <span className="medallion sm" role="img" aria-label={formName(turn.move_text, prefix)}>
@@ -274,21 +274,17 @@ export function EscalationBoard({ duel, snap, template, table }: BoardProps) {
                   <span>The judge was {latest.scoring.confidence}</span>
                 </p>
                 <dl className="points">
-                  {template.rubric.map((entry) => {
-                    const earned = (latest.scoring?.scores[entry.name] ?? 0) * (entry.max_points / template.score_max);
-                    const decided = entry.name === latest.host?.because_clause.criterion;
-                    return (
-                      <div key={entry.name} className={decided ? "decided" : undefined}>
-                        <dt>
-                          {criterionLabel(entry.name, template)}
-                          {decided && <span className="decided-tag">decided it</span>}
-                        </dt>
-                        <dd>
-                          <b>{earned}</b> of {entry.max_points}
-                        </dd>
-                      </div>
-                    );
-                  })}
+                  {criterionMarks(latest, template).map(({ entry, earned, decided }) => (
+                    <div key={entry.name} className={decided ? "decided" : undefined}>
+                      <dt>
+                        {criterionLabel(entry.name, template)}
+                        {decided && <span className="decided-tag">decided it</span>}
+                      </dt>
+                      <dd>
+                        <b>{earned}</b> of {entry.max_points}
+                      </dd>
+                    </div>
+                  ))}
                 </dl>
                 <p className="total">
                   <span>This move</span>
