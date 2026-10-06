@@ -17,7 +17,7 @@ from arena_core.state import (
     weighted_total,
 )
 from arena_core.template import Seed, Template
-from arena_evals.datagen.ledger import JudgeInputs, Ledger, Tape, move_call_row
+from arena_evals.datagen.ledger import JudgeInputs, Ledger, Tape
 from arena_judge.caller import ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move, judge_prompt_hash, render_opponent_messages
 from arena_judge.schema import JudgeResponse, route_outcome
@@ -158,13 +158,14 @@ class MatchPlayer:
         messages = render_opponent_messages(template, prompt, lines, hidden, seat=actor)
         seq = len(match.turns) + 1
         payload = {"card": prompt, "transcript": lines, "hidden": hidden, "messages": messages}
-        row = await self.tape.step(
-            "move",
+        row = await self.tape.move(
+            self.caller,
+            teacher.spec,
+            messages,
             actor,
             seq,
-            lambda idx: move_call_row(
-                self.caller, teacher.spec, messages, match.id, idx, actor, seq, teacher.ref, payload
-            ),
+            teacher.ref,
+            payload,
             {"messages": messages},
         )
         return clean_move(row.raw)

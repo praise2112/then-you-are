@@ -33,7 +33,6 @@ from arena_evals.datagen.ledger import (
     JudgeInputs,
     Ledger,
     Tape,
-    move_call_row,
 )
 from arena_evals.datagen.play import MatchPlayer, Teacher, new_match
 from arena_evals.variants.funnel import FLASH, JUDGE, deal_for, play_pilot
@@ -272,15 +271,8 @@ async def answer(row: str, ref: str, budget: float) -> None:
 
     async def one(c: Context, ledger: Ledger, caller: ModelCaller, over_budget) -> dict:
         tape = Tape(ledger, f"{c.id}/answer", over_budget)
-        inputs = {"messages": c.messages}
-        written = await tape.step(
-            "move",
-            c.actor,
-            c.seq,
-            lambda idx: move_call_row(
-                caller, spec, c.messages, tape.key, idx, c.actor, c.seq, ref, inputs
-            ),
-            inputs,
+        written = await tape.move(
+            caller, spec, c.messages, c.actor, c.seq, ref, {"messages": c.messages}
         )
         return {"context": c.id, "text": written.raw}
 

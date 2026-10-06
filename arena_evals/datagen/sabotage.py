@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from arena_core.state import STANDING
 from arena_core.template import Template
 from arena_evals.common import model_label
-from arena_evals.datagen.ledger import CallRow, JudgeInputs, Ledger, Tape, move_call_row
+from arena_evals.datagen.ledger import CallRow, JudgeInputs, Ledger, Tape
 from arena_judge.caller import ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
 from arena_judge.schema import route_outcome
@@ -177,21 +177,14 @@ class Saboteur:
         messages = [*original[:-1], {**original[-1]}]
         messages[-1]["content"] = f"{PROMPTED[kind]}\n\n{original[-1]['content']}"
         payload = {**pos.student, "kind": kind}
-        row = await self.tape.step(
-            "move",
+        row = await self.tape.move(
+            self.caller,
+            self.writer,
+            messages,
             pos.actor,
             pos.seq,
-            lambda idx: move_call_row(
-                self.caller,
-                self.writer,
-                messages,
-                self.key,
-                idx,
-                pos.actor,
-                pos.seq,
-                model_label(self.writer),
-                payload,
-            ),
+            model_label(self.writer),
+            payload,
             {"messages": original, "kind": kind},
         )
         return clean_move(row.raw)

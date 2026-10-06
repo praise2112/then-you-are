@@ -156,23 +156,7 @@ class Ledger:
             ).fetchone()
             self.conn.execute(
                 "insert or replace into calls values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (
-                    row.match_id,
-                    row.idx,
-                    row.role,
-                    row.actor,
-                    row.seq,
-                    row.model,
-                    row.prompt_hash,
-                    row.raw,
-                    row.reasoning,
-                    json.dumps(row.payload),
-                    row.tokens_in,
-                    row.tokens_out,
-                    row.cost_usd,
-                    row.latency_ms,
-                    row.attempt,
-                ),
+                dataclasses.astuple(dataclasses.replace(row, payload=json.dumps(row.payload))),
             )
         self._spent += row.cost_usd - (replaced["cost_usd"] if replaced else 0.0)
 
@@ -233,23 +217,7 @@ class Budget:
 
 
 def _call_row(r: sqlite3.Row) -> CallRow:
-    return CallRow(
-        match_id=r["match_id"],
-        idx=r["idx"],
-        role=r["role"],
-        actor=r["actor"],
-        seq=r["seq"],
-        model=r["model"],
-        prompt_hash=r["prompt_hash"],
-        raw=r["raw"],
-        reasoning=r["reasoning"],
-        payload=json.loads(r["payload"]),
-        tokens_in=r["tokens_in"],
-        tokens_out=r["tokens_out"],
-        cost_usd=r["cost_usd"],
-        latency_ms=r["latency_ms"],
-        attempt=r["attempt"],
-    )
+    return CallRow(**{**dict(r), "payload": json.loads(r["payload"])})
 
 
 class Tape:
@@ -329,6 +297,49 @@ class Tape:
             raise CallFailed(f"{self.key}: judge gave no verdict ({status})", status)
         return verdict
 
+    async def move(
+        self,
+        caller: ModelCaller,
+        spec: ModelSpec,
+        messages: list[dict],
+        actor: str,
+        seq: int,
+        model: str,
+        payload: dict[str, Any],
+        inputs: dict[str, Any] | None = None,
+    ) -> CallRow:
+        """The writer's row for `messages`, replayed when recorded; raises CallFailed when the
+        call fails for good. A recorded row must match `inputs`, all of `payload` by default."""
+
+        async def live(idx: int) -> CallRow:
+            try:
+                result = await with_backoff(
+                    lambda: caller.complete(spec, messages, reasoning={"enabled": False})
+                )
+            except CallError as e:
+                raise CallFailed(
+                    f"{self.key}: writer call failed ({e.status}): {e}", e.status
+                ) from e
+            return CallRow(
+                self.key,
+                idx,
+                "move",
+                actor,
+                seq,
+                model,
+                "",
+                result.text,
+                result.reasoning,
+                payload,
+                result.tokens_in,
+                result.tokens_out,
+                result.cost_usd,
+                result.latency_ms,
+                "ok",
+            )
+
+        return await self.step("move", actor, seq, live, payload if inputs is None else inputs)
+
 
 def judge_call_row(
     key: str, idx: int, actor: str, seq: int, spec: ModelSpec, call: JudgeCall, inputs: dict
@@ -354,41 +365,4 @@ def judge_call_row(
         cost_usd=call.cost_usd,
         latency_ms=call.latency_ms,
         attempt=call.attempts[-1] if call.attempts else "call_error",
-    )
-
-
-async def move_call_row(
-    caller: ModelCaller,
-    spec: ModelSpec,
-    messages: list[dict],
-    key: str,
-    idx: int,
-    actor: str,
-    seq: int,
-    model: str,
-    payload: dict,
-) -> CallRow:
-    """One writer call as a ledger row; raises CallFailed when the call fails for good."""
-    try:
-        result = await with_backoff(
-            lambda: caller.complete(spec, messages, reasoning={"enabled": False})
-        )
-    except CallError as e:
-        raise CallFailed(f"{key}: writer call failed ({e.status}): {e}", e.status) from e
-    return CallRow(
-        key,
-        idx,
-        "move",
-        actor,
-        seq,
-        model,
-        "",
-        result.text,
-        result.reasoning,
-        payload,
-        result.tokens_in,
-        result.tokens_out,
-        result.cost_usd,
-        result.latency_ms,
-        "ok",
     )

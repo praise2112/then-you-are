@@ -28,7 +28,6 @@ from arena_evals.datagen.ledger import (
     JudgeInputs,
     Ledger,
     Tape,
-    move_call_row,
 )
 from arena_evals.datagen.prefset import JUDGE_RUNS, Position, pair_row, playable, with_move
 from arena_evals.datagen.run import CORPUS_DIR, RUNS_DIR, corpus_games
@@ -80,23 +79,9 @@ async def draw_and_judge(
     """One sampled move and Flash's verdict on it, replayed from the ledger when recorded.
     A move already in seen is skipped; one the engine refuses goes to refused, unjudged."""
     tape = Tape(ledger, f"{pos.id}/draw{k}", budget.over)
-    asked = {"messages": pos.player_messages}
-    written = await tape.step(
-        "move",
-        turn.actor,
-        turn.seq,
-        lambda idx: move_call_row(
-            caller,
-            player,
-            pos.player_messages,
-            tape.key,
-            idx,
-            turn.actor,
-            turn.seq,
-            "player",
-            asked,
-        ),
-        asked,
+    messages = pos.player_messages
+    written = await tape.move(
+        caller, player, messages, turn.actor, turn.seq, "player", {"messages": messages}
     )
     move = clean_move(written.raw)
     if move in seen:
