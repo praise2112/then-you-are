@@ -54,9 +54,8 @@ class Judge:
         hidden: str = "",
         quiet: bool = False,
     ) -> Judged:
-        """Retries the judge call until it rules. Unless quiet, says the judge started and
-        pauses the match through an outage. Raises MatchClosed if the match closes, and
-        JudgeGaveUp after JUDGE_GIVE_UP_S."""
+        """Retries the judge call until it rules; unless quiet, announces it and pauses through
+        an outage. Raises MatchClosed if the match closes, JudgeGaveUp after JUDGE_GIVE_UP_S."""
         if not quiet:
             self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
         paused = False

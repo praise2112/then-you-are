@@ -566,9 +566,8 @@ class MatchService:
         await self._publish(match, rec, change, response=response.model_copy(update={"host": host}))
 
     async def _drive(self, match: Match, rec: Record) -> None:
-        """Under the match lock, after the match moved: each House seat that owes an answer gives
-        one. In serial play they answer in turn until a human seat is to move, whose clock
-        restarts; in a hidden round they write at once, each on its own task."""
+        """Under the match lock: House seats that owe an answer give one, in serial play in turn
+        until a human seat's clock restarts, in a hidden round at once on their own tasks."""
         template = rec.template
         if not shows_live(template):
             for seat in owed(match, template):
@@ -620,9 +619,8 @@ class MatchService:
         self.spawn(self._house_answer(match_id, seat, round_n))
 
     async def _house_answer(self, match_id: str, seat: str, round_n: int) -> None:
-        """A hidden round: the House seat writes and is judged outside the match lock, then lands
-        under it. An answer another seat already gave is written again, up to MODEL_REWRITES
-        times."""
+        """A hidden round's House seat writes and is judged outside the match lock, then lands
+        under it. An answer another seat already gave is written again, MODEL_REWRITES times."""
         try:
             for tries in range(MODEL_REWRITES + 1):
                 match, rec = await self.load(match_id)
@@ -654,9 +652,8 @@ class MatchService:
     async def _write_answer(
         self, match: Match, rec: Record, seat: str
     ) -> tuple[str, Judged] | None:
-        """The House seat's answer and its ruling, or None when it gives up. A refused answer is
-        written again until the strikes run out, then the default move is tried. Only serial
-        play lands each refusal, as a strike the table sees."""
+        """The House seat's answer and its ruling, or None when it gives up after model_next's
+        ladder. Only serial play lands each refusal, as a strike the table sees."""
         template = rec.template
         row = rec.row(seat)
         held = row.held_move if row.held_round == match.round_n else None
