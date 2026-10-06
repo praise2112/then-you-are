@@ -53,6 +53,7 @@ from arena_server.matches import MatchError, MatchService
 from arena_server.names import check_name
 from arena_server.presence import Lobby, Online, Presence, TurnNudge
 from arena_server.profiles import profile
+from arena_server.store import check_match_exists, set_curated
 from arena_server.views import (
     BoardSummary,
     BoardView,
@@ -434,7 +435,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def events(
         match_id: str, last_event_id: str | None = Header(default=None)
     ) -> EventSourceResponse:
-        await service.check_exists(match_id)
+        await check_match_exists(pool, match_id)
         last_id = bus.cursor_from(last_event_id)
 
         async def gen() -> AsyncIterator[dict]:
@@ -470,7 +471,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     ) -> Response:
         if not settings.curator_token or x_curator_token != settings.curator_token:
             raise HTTPException(403, "curator token required")
-        await service.set_curated(match_id, body.curated)
+        await set_curated(pool, match_id, body.curated)
         return Response(status_code=204)
 
     shell_page = (

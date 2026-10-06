@@ -3,7 +3,6 @@ the turn clock, persists everything."""
 
 import asyncio
 import hashlib
-import json
 import logging
 import secrets
 import time
@@ -13,18 +12,17 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
-from pydantic import ValidationError
+from psycopg import AsyncConnection
+from psycopg.rows import DictRow
 
 from arena_core.state import (
     JUDGED,
     STANDING,
     Actor,
     Change,
-    Guess,
     IllegalAction,
     Match,
     Outcome,
-    Turn,
     apply_guess,
     apply_ruling,
     check_guess,
@@ -42,7 +40,7 @@ from arena_core.state import (
     weighted_total,
 )
 from arena_core.template import Seed, Template
-from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
+from arena_judge.caller import CallError, ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
 from arena_judge.schema import HostPayload, JudgeResponse, ScoringPayload, route_outcome
 from arena_server.auth import account_of, new_session_key
@@ -67,6 +65,44 @@ from arena_server.events import (
 )
 from arena_server.leaderboard import account_streaks
 from arena_server.presence import Lobby, Presence, TurnNudge
+from arena_server.store import (
+    UNFILLED_WINDOW,
+    MatchClosed,
+    MatchError,
+    Record,
+    SeatRow,
+    TurnRow,
+    action_seen,
+    add_disagreement,
+    close_idle,
+    close_unfilled,
+    ended_count,
+    hold_move,
+    insert_match,
+    insert_seat,
+    insert_verdict,
+    invite_match_id,
+    joinable_ids,
+    last_refusal,
+    live_public_ids,
+    load_match,
+    open_table_rows,
+    overdue_ids,
+    replay_ids,
+    reset_for_restart,
+    save_match,
+    seat_model_ref,
+    set_deadline,
+    set_model_ref,
+    set_public,
+    set_status,
+    set_submitted,
+    stamp_badges,
+    start_table,
+    status_of,
+    store_guesses,
+    store_turn,
+)
 from arena_server.views import (
     AccountView,
     MatchSnapshot,
@@ -87,8 +123,6 @@ BILLING_STATUSES = (401, 402, 403)
 BILLING_RETRY_S = 60
 # A move whose judge has not ruled by then goes back: a human may play again, the House loses it.
 JUDGE_GIVE_UP_S = 120
-ABANDON_WINDOW = timedelta(hours=24)
-UNFILLED_WINDOW = timedelta(minutes=10)
 STREAM_LINGER_S = 300
 # Human seats get a clock only when two or more humans share the table.
 TURN_CLOCK = timedelta(seconds=120)
@@ -105,17 +139,6 @@ REPEAT_TEXT = "Someone at the table already wrote exactly that. Try another."
 log = logging.getLogger(__name__)
 
 
-class MatchError(Exception):
-    def __init__(self, status: int, detail: str):
-        super().__init__(detail)
-        self.status = status
-        self.detail = detail
-
-
-class MatchClosed(Exception):
-    """The match was abandoned or ended while a turn was still waiting on the judge."""
-
-
 class HouseStuck(Exception):
     """The House could not produce a legal answer, even its default move."""
 
@@ -129,48 +152,6 @@ class Judged:
     outcome: Outcome
     response: JudgeResponse
     verdict_id: int
-
-
-@dataclass
-class SeatRow:
-    seat: str
-    kind: Literal["human", "model"]
-    session_key: str | None
-    account_id: str | None
-    stage_name: str | None
-    submitted: bool
-    held_move: str | None
-    held_round: int | None
-
-
-@dataclass
-class Record:
-    """What the service keeps about a match beyond the engine's state."""
-
-    turn_rows: list[dict]
-    seats: list[SeatRow]
-    kind: TableKind
-    seats_wanted: int
-    invite_code: str | None
-    turn_deadline: datetime | None
-    is_public: bool
-    is_curated: bool
-    created_at: datetime
-
-    @property
-    def humans(self) -> list[SeatRow]:
-        return [s for s in self.seats if s.kind == "human"]
-
-    @property
-    def models(self) -> frozenset[str]:
-        return frozenset(s.seat for s in self.seats if s.kind == "model")
-
-    @property
-    def owner(self) -> SeatRow:
-        return self.humans[0]
-
-    def row(self, seat: str) -> SeatRow:
-        return next(s for s in self.seats if s.seat == seat)
 
 
 class MatchService:
@@ -227,25 +208,8 @@ class MatchService:
     async def recover(self) -> None:
         """After a restart: a move waiting on the judge is lost, so the player resubmits; model
         seats finish any turn they owed, and a clocked seat gets a fresh deadline."""
-        async with self.pool.connection() as conn:
-            await conn.execute(
-                "update matches set status = 'active', updated_at = now() "
-                "where status in ('awaiting_judgment', 'paused')"
-            )
-            await conn.execute(
-                "update seats set submitted_at = null where submitted_at is not null"
-            )
-            # Only a model seat to move or a clocked table has anything to resume.
-            rows = await (
-                await conn.execute(
-                    "select m.id from matches m where m.status = 'active' and (exists "
-                    "(select 1 from seats se where se.match_id = m.id and se.seat = m.to_move "
-                    "and se.kind = 'model') or (select count(*) from seats se "
-                    "where se.match_id = m.id and se.kind = 'human') >= 2)"
-                )
-            ).fetchall()
-        for row in rows:
-            self._spawn(self._resume(row["id"]))
+        for match_id in await reset_for_restart(self.pool):
+            self._spawn(self._resume(match_id))
 
     async def _resume(self, match_id: str) -> None:
         async with self.locks[match_id]:
@@ -393,22 +357,16 @@ class MatchService:
         listed = (await self.session_view(session_key)).list_duels
         house = kind == "house"
         async with self.pool.connection() as conn, conn.transaction():
-            await conn.execute(
-                "insert into matches (id, template_id, config, seed_emoji, cards, status, "
-                "is_public, kind, seats_wanted, invite_code) "
-                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (
-                    match_id,
-                    template.slug,
-                    template.model_dump_json(),
-                    cards[0].opening_emoji,
-                    [c.opening_token for c in cards],
-                    "active" if house else "open",
-                    listed,
-                    kind,
-                    seats,
-                    None if house else secrets.token_urlsafe(6),
-                ),
+            await insert_match(
+                conn,
+                match_id,
+                template,
+                cards,
+                "active" if house else "open",
+                listed,
+                kind,
+                seats,
+                None if house else secrets.token_urlsafe(6),
             )
             await self._insert_seat(conn, match_id, "p1", "human", session_key)
             if house:
@@ -421,32 +379,25 @@ class MatchService:
         return await self.snapshot(match_id, session_key)
 
     async def _insert_seat(
-        self, conn: Any, match_id: str, seat: str, kind: str, session_key: str | None
+        self,
+        conn: AsyncConnection[DictRow],
+        match_id: str,
+        seat: str,
+        kind: str,
+        session_key: str | None,
     ) -> None:
-        await conn.execute(
-            "insert into seats (match_id, seat, kind, session_key, model_ref) "
-            "values (%s, %s, %s, %s, %s)",
-            (
-                match_id,
-                seat,
-                kind,
-                session_key,
-                self.opponent_ref if kind == "model" else None,
-            ),
-        )
+        model_ref = self.opponent_ref if kind == "model" else None
+        await insert_seat(conn, match_id, seat, kind, session_key, model_ref)
         if kind == "model":
             self._spawn(self.caller.wake_opponent())
 
     async def join(self, invite_code: str, session_key: str) -> str:
         """Seats the session at the table behind an invite code. Returns the match id."""
-        async with self.pool.connection() as conn:
-            row = await (
-                await conn.execute("select id from matches where invite_code = %s", (invite_code,))
-            ).fetchone()
-        if row is None:
+        match_id = await invite_match_id(self.pool, invite_code)
+        if match_id is None:
             raise MatchError(404, "no table with that invite")
-        await self._fill_seat(row["id"], session_key, "human")
-        return row["id"]
+        await self._fill_seat(match_id, session_key, "human")
+        return match_id
 
     async def quick_match(self, session_key: str, template_id: str, seats: int) -> str:
         """Takes a seat at the oldest open table for the game, or opens one. Returns its id."""
@@ -456,27 +407,15 @@ class MatchService:
             mine = await self._open_ids(session_key, template_id, "open")
             if mine:
                 return mine[0]
-            async with self.pool.connection() as conn:
-                rows = await (
-                    await conn.execute(
-                        "select m.id from matches m where m.status = 'open' and m.kind = 'open' "
-                        "and m.template_id = %s and not exists (select 1 from seats se "
-                        "join sessions s on s.session_key = se.session_key "
-                        "where se.match_id = m.id and (s.session_key = %s or s.account_id = "
-                        "(select account_id from sessions where session_key = %s))) "
-                        "order by m.created_at limit 5",
-                        (template_id, session_key, session_key),
-                    )
-                ).fetchall()
-            for row in rows:
+            for match_id in await joinable_ids(self.pool, template_id, session_key):
                 try:
-                    await self._fill_seat(row["id"], session_key, "human")
+                    await self._fill_seat(match_id, session_key, "human")
                 except MatchError as e:
                     # Filled or closed by an invite or the House since it was listed.
                     if e.status != 409:
                         raise
                     continue
-                return row["id"]
+                return match_id
             snap = await self.create(session_key, template_id, kind="open", seats=seats)
             return snap.id
 
@@ -510,12 +449,7 @@ class MatchService:
         _, rec = await self._load(match_id)
         self.bus.emit(match_id, "seat_joined", SeatJoined(seat=seat, state_version=0))
         if len(rec.seats) >= rec.seats_wanted:
-            async with self.pool.connection() as conn:
-                await conn.execute(
-                    "update matches set status = 'active', updated_at = now() "
-                    "where id = %s and status = 'open'",
-                    (match_id,),
-                )
+            await start_table(self.pool, match_id)
             match, rec = await self._load(match_id)
             template = self.template_of(match)
             self.bus.emit(match_id, "match_started", MatchStarted(state_version=0))
@@ -527,18 +461,7 @@ class MatchService:
         self._spawn(self._broadcast_lobby())
 
     async def open_tables(self) -> list[TableView]:
-        async with self.pool.connection() as conn:
-            rows = await (
-                await conn.execute(
-                    "select m.id, m.template_id, m.seats_wanted, m.created_at, m.invite_code, "
-                    "(select count(*) from seats se where se.match_id = m.id) as taken, "
-                    "(select s.stage_name from seats se join sessions s "
-                    "on s.session_key = se.session_key "
-                    "where se.match_id = m.id and se.seat = 'p1') as host_name "
-                    "from matches m where m.status = 'open' and m.kind = 'open' "
-                    "order by m.created_at"
-                )
-            ).fetchall()
+        rows = await open_table_rows(self.pool)
         return [
             TableView(
                 id=r["id"],
@@ -561,204 +484,12 @@ class MatchService:
     async def set_visibility(self, match_id: str, session_key: str, public: bool) -> None:
         _, rec = await self._load(match_id)
         await self._check_owner(rec, session_key)
-        async with self.pool.connection() as conn:
-            await conn.execute(
-                "update matches set is_public = %s, is_curated = is_curated and %s where id = %s",
-                (public, public, match_id),
-            )
+        await set_public(self.pool, match_id, public)
 
     # Loading and saving
 
     async def _load(self, match_id: str) -> tuple[Match, Record]:
-        async with self.pool.connection() as conn:
-            row = await (
-                await conn.execute("select * from matches where id = %s", (match_id,))
-            ).fetchone()
-            if row is None:
-                raise MatchError(404, "no such match")
-            turns = await (
-                await conn.execute(
-                    "select t.*, v.scoring, v.host from turns t "
-                    "left join verdicts v on v.id = t.live_verdict_id "
-                    "where t.match_id = %s and t.seq is not null order by t.seq",
-                    (match_id,),
-                )
-            ).fetchall()
-            guesses = await (
-                await conn.execute(
-                    "select round_n, actor, picked, points, awarded_to from guesses "
-                    "where match_id = %s order by id",
-                    (match_id,),
-                )
-            ).fetchall()
-            seat_rows = await (
-                await conn.execute(
-                    "select se.*, s.stage_name, s.account_id from seats se "
-                    "left join sessions s on s.session_key = se.session_key "
-                    "where se.match_id = %s order by substring(se.seat from 2)::int",
-                    (match_id,),
-                )
-            ).fetchall()
-        if match_id not in self.match_templates and row["config"]:
-            try:
-                self.match_templates[match_id] = Template.model_validate(row["config"])
-            except ValidationError:
-                log.warning("match %s stored a template this build cannot read", match_id)
-        match = Match(
-            id=row["id"],
-            template_id=row["template_id"],
-            cards=row["cards"],
-            seats=tuple(r["seat"] for r in seat_rows),
-            seed_emoji=row["seed_emoji"],
-            status=row["status"],
-            state_version=row["state_version"],
-            to_move=row["to_move"],
-            phase=row["phase"],
-            round_n=row["round_n"],
-            turns=[
-                Turn(
-                    t["seq"],
-                    t["actor"],
-                    t["move_text"],
-                    t["outcome"],
-                    t["round_n"],
-                    truth_hit=bool(t["scoring"]) and t["scoring"].get("truth_proximity") == "hit",
-                    points=t["points"],
-                )
-                for t in turns
-            ],
-            guesses=[Guess(**g) for g in guesses],
-            human_seats=tuple(r["seat"] for r in seat_rows if r["kind"] == "human"),
-            strikes={r["seat"]: r["strikes"] for r in seat_rows},
-            points={r["seat"]: r["points"] for r in seat_rows},
-            forfeits={r["seat"]: r["forfeits"] for r in seat_rows},
-            eliminated=[
-                r["seat"]
-                for r in sorted(seat_rows, key=lambda r: r["eliminated_at"] or row["created_at"])
-                if r["eliminated_at"]
-            ],
-            winner=row["winner"],
-            end_reason=row["end_reason"],
-        )
-        rec = Record(
-            turn_rows=turns,
-            seats=[
-                SeatRow(
-                    seat=r["seat"],
-                    kind=r["kind"],
-                    session_key=r["session_key"],
-                    account_id=r["account_id"],
-                    stage_name=r["stage_name"],
-                    submitted=r["submitted_at"] is not None,
-                    held_move=r["held_move"],
-                    held_round=r["held_round"],
-                )
-                for r in seat_rows
-            ],
-            kind=row["kind"],
-            seats_wanted=row["seats_wanted"],
-            invite_code=row["invite_code"],
-            turn_deadline=row["turn_deadline"],
-            is_public=row["is_public"],
-            is_curated=row["is_curated"],
-            created_at=row["created_at"],
-        )
-        return match, rec
-
-    async def _save(self, match: Match, conn: Any = None) -> None:
-        """Writes the match state. A match already closed in the database stays closed:
-        the write is refused with MatchClosed."""
-        if conn is None:
-            async with self.pool.connection() as own, own.transaction():
-                await self._save(match, own)
-            return
-        result = await conn.execute(
-            "update matches set status = %s, state_version = %s, to_move = %s, phase = %s, "
-            "round_n = %s, winner = %s, end_reason = %s, updated_at = now(), "
-            "turn_deadline = case when %s in ('ended', 'abandoned') then null "
-            "else turn_deadline end, "
-            "ended_at = case when %s = 'ended' "
-            "and ended_at is null then now() else ended_at end "
-            "where id = %s and status not in ('ended', 'abandoned')",
-            (
-                match.status,
-                match.state_version,
-                match.to_move,
-                match.phase,
-                match.round_n,
-                match.winner,
-                match.end_reason,
-                match.status,
-                match.status,
-                match.id,
-            ),
-        )
-        if result.rowcount == 0:
-            raise MatchClosed(match.id)
-        seats = list(match.seats)
-        await conn.execute(
-            "update seats as se set points = v.points, strikes = v.strikes, "
-            "forfeits = v.forfeits, eliminated_at = case when v.out "
-            "then coalesce(se.eliminated_at, now()) end "
-            "from unnest(%s::text[], %s::int[], %s::int[], %s::int[], %s::bool[]) "
-            "as v(seat, points, strikes, forfeits, out) "
-            "where se.match_id = %s and se.seat = v.seat",
-            (
-                seats,
-                [match.points[s] for s in seats],
-                [match.strikes[s] for s in seats],
-                [match.forfeits[s] for s in seats],
-                [s in match.eliminated for s in seats],
-                match.id,
-            ),
-        )
-
-    async def _store_turn(
-        self,
-        match: Match,
-        actor: Actor,
-        move_text: str,
-        outcome: Outcome,
-        seq: int | None,
-        layer1_result: str | None,
-        verdict_id: int | None,
-        action_id: str | None,
-        round_n: int | None = None,
-    ) -> None:
-        """One transaction: the new match state and the turn that produced it. `round_n` is the
-        round a refused move was played in, when play has moved on since."""
-        async with self.pool.connection() as conn, conn.transaction():
-            await self._save(match, conn)
-            await self._insert_turn(
-                conn,
-                match,
-                actor,
-                move_text,
-                outcome,
-                seq,
-                layer1_result,
-                verdict_id,
-                action_id,
-                round_n,
-            )
-
-    async def _set_status(self, match_id: str, status: str) -> None:
-        async with self.pool.connection() as conn:
-            result = await conn.execute(
-                "update matches set status = %s, updated_at = now() "
-                "where id = %s and status not in ('ended', 'abandoned')",
-                (status, match_id),
-            )
-        if result.rowcount == 0:
-            raise MatchClosed(match_id)
-
-    async def _set_submitted(self, match_id: str, seat: str, submitted: bool) -> None:
-        async with self.pool.connection() as conn:
-            await conn.execute(
-                "update seats set submitted_at = case when %s then now() end "
-                "where match_id = %s and seat = %s",
-                (submitted, match_id, seat),
-            )
+        return await load_match(self.pool, match_id, self.match_templates)
 
     async def _set_clock(
         self, match: Match, rec: Record, template: Template, running: bool = True
@@ -769,162 +500,28 @@ class MatchService:
         deadline = datetime.now(UTC) + self._clock_length(match, template) if clocked else None
         if deadline is None and rec.turn_deadline is None:
             return None
-        async with self.pool.connection() as conn:
-            await conn.execute(
-                "update matches set turn_deadline = %s where id = %s", (deadline, match.id)
-            )
+        await set_deadline(self.pool, match.id, deadline)
         return deadline.isoformat() if deadline else None
 
     async def close_abandoned(self) -> list[str]:
         """Closes every match idle past the abandon window and every table still unfilled
         past its window. Returns their ids."""
-        async with self.pool.connection() as conn:
-            rows = await (
-                await conn.execute(
-                    "update matches set status = 'abandoned', end_reason = 'abandoned', "
-                    "turn_deadline = null, ended_at = now(), updated_at = now() "
-                    "where status in ('active', 'awaiting_judgment', 'paused') "
-                    "and updated_at < now() - %s returning id",
-                    (ABANDON_WINDOW,),
-                )
-            ).fetchall()
-            stale = await (
-                await conn.execute(
-                    "select id from matches where status = 'open' and created_at < now() - %s",
-                    (UNFILLED_WINDOW,),
-                )
-            ).fetchall()
+        idle, stale = await close_idle(self.pool)
         unfilled = []
-        for row in stale:
+        for match_id in stale:
             # Under the match lock, so a join already under way either lands first or finds
             # the table closed.
-            async with self.locks[row["id"]]:
-                async with self.pool.connection() as conn:
-                    closed = await conn.execute(
-                        "update matches set status = 'abandoned', end_reason = 'unfilled', "
-                        "ended_at = now(), updated_at = now() where id = %s and status = 'open'",
-                        (row["id"],),
-                    )
-                if closed.rowcount == 0:
+            async with self.locks[match_id]:
+                if not await close_unfilled(self.pool, match_id):
                     continue
-                match, _ = await self._load(row["id"])
+                match, _ = await self._load(match_id)
                 await self._emit_match_ended(match, coaching_line=None)
-                unfilled.append(row["id"])
-        for row in rows:
-            self._forget(row["id"])
+                unfilled.append(match_id)
+        for match_id in idle:
+            self._forget(match_id)
         if unfilled:
             await self._broadcast_lobby()
-        return [*(row["id"] for row in rows), *unfilled]
-
-    async def check_exists(self, match_id: str) -> None:
-        async with self.pool.connection() as conn:
-            row = await (
-                await conn.execute("select 1 from matches where id = %s", (match_id,))
-            ).fetchone()
-        if row is None:
-            raise MatchError(404, "no such match")
-
-    async def _status_of(self, match_id: str) -> str:
-        async with self.pool.connection() as conn:
-            row = await (
-                await conn.execute("select status from matches where id = %s", (match_id,))
-            ).fetchone()
-        return row["status"] if row else "abandoned"
-
-    async def _insert_turn(
-        self,
-        conn: Any,
-        match: Match,
-        actor: Actor,
-        move_text: str,
-        outcome: Outcome,
-        seq: int | None,
-        layer1_result: str | None,
-        verdict_id: int | None,
-        action_id: str | None,
-        round_n: int | None,
-    ) -> int:
-        # A refused move has no seq and no turn in the match.
-        turn = match.turns[-1] if seq is not None and match.turns else None
-        if round_n is None:
-            round_n = turn.round_n if turn else match.round_n
-        row = await (
-            await conn.execute(
-                "insert into turns (match_id, seq, actor, move_text, layer1_result, outcome, "
-                "live_verdict_id, action_id, round_n, points, model_ref) "
-                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
-                "(select model_ref from seats where match_id = %s and seat = %s)) returning id",
-                (
-                    match.id,
-                    seq,
-                    actor,
-                    move_text,
-                    layer1_result,
-                    outcome,
-                    verdict_id,
-                    action_id,
-                    round_n,
-                    turn.points if turn else None,
-                    match.id,
-                    actor,
-                ),
-            )
-        ).fetchone()
-        assert row is not None
-        if verdict_id is not None:
-            await conn.execute(
-                "update verdicts set turn_id = %s where id = %s", (row["id"], verdict_id)
-            )
-        return row["id"]
-
-    async def _insert_guess(
-        self, conn: Any, match: Match, guess: Guess, action_id: str | None
-    ) -> None:
-        await conn.execute(
-            "insert into guesses (match_id, round_n, actor, picked, points, awarded_to, "
-            "action_id) values (%s, %s, %s, %s, %s, %s, %s)",
-            (
-                match.id,
-                guess.round_n,
-                guess.actor,
-                guess.picked,
-                guess.points,
-                guess.awarded_to,
-                action_id,
-            ),
-        )
-
-    async def _stamp_badges(self, verdict_id: int, badges: list[str]) -> None:
-        async with self.pool.connection() as conn:
-            await conn.execute(
-                "update verdicts set host = host || jsonb_build_object('badges', %s::jsonb) "
-                "where id = %s",
-                (json.dumps(badges), verdict_id),
-            )
-
-    async def _insert_verdict(self, call: JudgeCall) -> int:
-        response = call.response
-        async with self.pool.connection() as conn:
-            row = await (
-                await conn.execute(
-                    "insert into verdicts (judge_model, prompt_hash, raw_response, scoring, host, "
-                    "latency_ms, tokens_in, tokens_out, cost_usd) "
-                    "values (%s, %s, %s, %s, %s, %s, %s, %s, %s) returning id",
-                    (
-                        self.judge_model,
-                        call.prompt_hash,
-                        call.raw or "\n".join(call.attempts),
-                        response.scoring.model_dump_json() if response else None,
-                        response.host.model_dump_json() if response else None,
-                        call.latency_ms,
-                        call.tokens_in,
-                        call.tokens_out,
-                        call.cost_usd,
-                    ),
-                )
-            ).fetchone()
-            assert row is not None
-        return row["id"]
+        return [*idle, *unfilled]
 
     # Snapshots
 
@@ -1103,16 +700,7 @@ class MatchService:
             return None
         if rec.row(viewer).submitted:
             return None
-        async with self.pool.connection() as conn:
-            row = await (
-                await conn.execute(
-                    "select t.outcome, t.layer1_result, v.host from turns t "
-                    "left join verdicts v on v.id = t.live_verdict_id "
-                    "where t.match_id = %s and t.actor = %s and t.round_n = %s "
-                    "and t.seq is null order by t.id desc limit 1",
-                    (match.id, viewer, match.round_n),
-                )
-            ).fetchone()
+        row = await last_refusal(self.pool, match.id, viewer, match.round_n)
         if row is None:
             return None
         if row["outcome"] == "semantic_reject" and row["host"]:
@@ -1166,51 +754,13 @@ class MatchService:
         return best.seq if best else None
 
     async def stage(self) -> StageView:
-        async with self.pool.connection() as conn:
-            live = await (
-                await conn.execute(
-                    "select id from matches where is_public and status in "
-                    "('active', 'awaiting_judgment', 'paused') "
-                    "and created_at > now() - interval '2 hours' "
-                    "order by created_at desc limit 6"
-                )
-            ).fetchall()
-            played = await (
-                await conn.execute("select count(*) as n from matches where status = 'ended'")
-            ).fetchone()
         return StageView(
-            live=[await self.snapshot(r["id"]) for r in live],
-            duels_played=played["n"] if played else 0,
+            live=[await self.snapshot(match_id) for match_id in await live_public_ids(self.pool)],
+            duels_played=await ended_count(self.pool),
         )
 
     async def replays(self, sort: Literal["curated", "newest", "longest"]) -> list[Replay]:
-        where = "status = 'ended' and is_public"
-        if sort == "curated":
-            where += " and is_curated"
-        if sort == "longest":
-            where += " and ended_at > now() - interval '7 days'"
-        order = (
-            "(select count(*) from turns t where t.match_id = m.id and t.seq is not null) desc"
-            if sort == "longest"
-            else "ended_at desc"
-        )
-        async with self.pool.connection() as conn:
-            rows = await (
-                await conn.execute(
-                    f"select id from matches m where {where} order by {order} limit 12"
-                )
-            ).fetchall()
-        return [await self.replay(r["id"]) for r in rows]
-
-    async def set_curated(self, match_id: str, curated: bool) -> None:
-        async with self.pool.connection() as conn:
-            result = await conn.execute(
-                "update matches set is_curated = %s, is_public = is_public or %s "
-                "where id = %s and status = 'ended'",
-                (curated, curated, match_id),
-            )
-            if result.rowcount == 0:
-                raise MatchError(404, "no finished match with that id")
+        return [await self.replay(match_id) for match_id in await replay_ids(self.pool, sort)]
 
     def _share_text(self, snap: MatchSnapshot) -> str:
         """Written from the seat of the table's creator."""
@@ -1244,7 +794,7 @@ class MatchService:
         round_n: int | None = None,
     ) -> None:
         async with self.locks[match_id]:
-            if await self._action_seen(match_id, action_id):
+            if await action_seen(self.pool, match_id, action_id):
                 return
             match, rec = await self._load(match_id)
             seat = await self._check_command(
@@ -1253,7 +803,7 @@ class MatchService:
             template = self.template_of(match)
             if template.mode == "showcase":
                 self._start_model_answers(match, rec)
-                await self._set_submitted(match_id, seat, True)
+                await set_submitted(self.pool, match_id, seat, True)
                 self.bus.emit(
                     match_id,
                     "seat_submitted",
@@ -1261,7 +811,7 @@ class MatchService:
                 )
                 self._spawn(self._answer_as_human(match_id, seat, action_id, move_text))
                 return
-            await self._set_status(match_id, "awaiting_judgment")
+            await set_status(self.pool, match_id, "awaiting_judgment")
         self._spawn(self._run_human_move(match_id, seat, action_id, move_text))
 
     async def submit_guess(
@@ -1275,7 +825,7 @@ class MatchService:
     ) -> None:
         """A guesser calls the real entry. No judge is involved; the last call reveals the round."""
         async with self.locks[match_id]:
-            if await self._action_seen(match_id, action_id):
+            if await action_seen(self.pool, match_id, action_id):
                 return
             match, rec = await self._load(match_id)
             seat = await self._check_command(
@@ -1289,9 +839,7 @@ class MatchService:
                 apply_guess(match, seat, pick, template)
             except IllegalAction as e:
                 raise MatchError(409, str(e)) from e
-            async with self.pool.connection() as conn, conn.transaction():
-                await self._save(match, conn)
-                await self._insert_guess(conn, match, match.guesses[-1], action_id)
+            await store_guesses(self.pool, match, match.guesses[-1:], action_id)
             self.bus.emit(
                 match_id,
                 "seat_submitted",
@@ -1305,13 +853,17 @@ class MatchService:
     ) -> None:
         async with self.locks[match_id]:
             match, rec = await self._load(match_id)
-            if await self._action_seen(match_id, action_id):
+            if await action_seen(self.pool, match_id, action_id):
                 return
             seat = await self._check_command(match, rec, session_key, "resign", expected_version)
             template = self.template_of(match)
             change = resign(match, seat, template)
-            await self._store_turn(
-                match, seat, "", "deterministic_invalid", None, "resign", None, action_id
+            await store_turn(
+                self.pool,
+                match,
+                TurnRow(
+                    seat, "", "deterministic_invalid", layer1_result="resign", action_id=action_id
+                ),
             )
             if await self._emit_if_ended(match):
                 return
@@ -1337,20 +889,15 @@ class MatchService:
                 (t.move_text for t in reversed(match.turns[: seq - 1]) if t.outcome in JUDGED),
                 match.seed,
             )
-        async with self.pool.connection() as conn, conn.transaction():
-            voted = await conn.execute(
-                "insert into disagreements (match_id, seq, session_key) values (%s, %s, %s) "
-                "on conflict do nothing",
-                (match_id, seq, session_key),
-            )
-            if voted.rowcount == 0:
-                return
-            await conn.execute(
-                "insert into verdict_pairs (template_id, prev_norm, move_norm, disagree_count) "
-                "values (%s, %s, %s, 1) on conflict (template_id, prev_norm, move_norm) "
-                "do update set disagree_count = verdict_pairs.disagree_count + 1",
-                (match.template_id, normalize(previous), normalize(turn.move_text)),
-            )
+        await add_disagreement(
+            self.pool,
+            match_id,
+            seq,
+            session_key,
+            match.template_id,
+            normalize(previous),
+            normalize(turn.move_text),
+        )
 
     async def _seat_of(self, rec: Record, session_key: str | None) -> str | None:
         """The seat held by the session, or by any session signed in to the same account."""
@@ -1406,17 +953,6 @@ class MatchService:
             raise MatchError(409, f"stale version: match is at {match.state_version}")
         return seat
 
-    async def _action_seen(self, match_id: str, action_id: str) -> bool:
-        async with self.pool.connection() as conn:
-            row = await (
-                await conn.execute(
-                    "select 1 from turns where match_id = %s and action_id = %s "
-                    "union all select 1 from guesses where match_id = %s and action_id = %s",
-                    (match_id, action_id, match_id, action_id),
-                )
-            ).fetchone()
-        return row is not None
-
     def _spawn(self, coro: Any) -> asyncio.Task:
         task = asyncio.create_task(coro)
         self.tasks.add(task)
@@ -1446,7 +982,7 @@ class MatchService:
                 log.info("match %s closed while waiting on the judge", match_id)
             except Exception:
                 log.exception("move on %s failed; the match goes back to a human seat", match_id)
-                await self._set_status(match_id, "active")
+                await set_status(self.pool, match_id, "active")
                 match, rec = await self._load(match_id)
                 if match.to_move in rec.models:
                     await self._forfeit(match, template, match.to_move)
@@ -1498,16 +1034,17 @@ class MatchService:
         if reason is None:
             return None
         change = apply_ruling(match, actor, move_text, "deterministic_invalid", template)
-        await self._store_turn(
+        await store_turn(
+            self.pool,
             match,
-            actor,
-            move_text,
-            "deterministic_invalid",
-            None,
-            reason,
-            None,
-            action_id,
-            change.round_n,
+            TurnRow(
+                actor,
+                move_text,
+                "deterministic_invalid",
+                layer1_result=reason,
+                action_id=action_id,
+                round_n=change.round_n,
+            ),
         )
         self._emit_rejection(
             match,
@@ -1534,16 +1071,17 @@ class MatchService:
         action_id: str | None,
     ) -> Change:
         change = apply_ruling(match, actor, move_text, "semantic_reject", template)
-        await self._store_turn(
+        await store_turn(
+            self.pool,
             match,
-            actor,
-            move_text,
-            "semantic_reject",
-            None,
-            None,
-            judged.verdict_id,
-            action_id,
-            change.round_n,
+            TurnRow(
+                actor,
+                move_text,
+                "semantic_reject",
+                verdict_id=judged.verdict_id,
+                action_id=action_id,
+                round_n=change.round_n,
+            ),
         )
         host = judged.response.host
         self._emit_rejection(
@@ -1569,7 +1107,11 @@ class MatchService:
         if change.forfeit is None:
             return
         turn = change.forfeit
-        await self._store_turn(match, turn.actor, "", "forfeit", turn.seq, "forfeit", None, None)
+        await store_turn(
+            self.pool,
+            match,
+            TurnRow(turn.actor, "", "forfeit", seq=turn.seq, layer1_result="forfeit"),
+        )
 
     async def _record_ruling(
         self,
@@ -1596,8 +1138,17 @@ class MatchService:
             earned,
             truth_hit=proximity == "hit",
         )
-        await self._store_turn(
-            match, actor, move_text, judged.outcome, seq, None, judged.verdict_id, action_id
+        await store_turn(
+            self.pool,
+            match,
+            TurnRow(
+                actor,
+                move_text,
+                judged.outcome,
+                seq=seq,
+                verdict_id=judged.verdict_id,
+                action_id=action_id,
+            ),
         )
         badges = ["close_call"] if judged.outcome == "semantic_uncertain" else []
         if judged.outcome != "fail" and proximity == "hit":
@@ -1605,7 +1156,7 @@ class MatchService:
         elif judged.outcome != "fail" and proximity == "near":
             badges.append("near_miss")
         if badges:
-            await self._stamp_badges(judged.verdict_id, badges)
+            await stamp_badges(self.pool, judged.verdict_id, badges)
         return Ruling(
             seq=seq,
             round_n=match.turns[-1].round_n,
@@ -1669,7 +1220,7 @@ class MatchService:
                     move_text = template.default_move
                 else:
                     resign(match, seat, template)
-                    await self._save(match)
+                    await save_match(self.pool, match)
                     if match.status == "ended":
                         await self._emit_match_ended(match, coaching_line=None)
                     break
@@ -1717,21 +1268,21 @@ class MatchService:
                     if match.status != "active" or match.round_n != round_n:
                         return
                     resign(match, seat, template)
-                    await self._save(match)
+                    await save_match(self.pool, match)
                     await self._after_showcase_change(match, template, rec, round_n)
                 return
             async with self.locks[match_id]:
                 match, rec = await self._load(match_id)
                 if not self._still_owed(match, seat, round_n):
                     return
-                await self._hold(match_id, seat, None, round_n)
+                await hold_move(self.pool, match_id, seat, None, round_n)
                 # Two identical entries could not be told apart on the call.
                 if repeats_the_round(match, text):
                     if tries < MODEL_REWRITES:
                         rewrite = True
                         return
                     resign(match, seat, template)
-                    await self._save(match)
+                    await save_match(self.pool, match)
                     await self._after_showcase_change(match, template, rec, round_n)
                     return
                 await self._record_ruling(
@@ -1771,7 +1322,7 @@ class MatchService:
                     quiet=True,
                 )
             async with self.locks[match_id]:
-                await self._set_submitted(match_id, seat, False)
+                await set_submitted(self.pool, match_id, seat, False)
                 match, rec = await self._load(match_id)
                 if not self._still_owed(match, seat, round_n):
                     return
@@ -1783,15 +1334,16 @@ class MatchService:
                     )
                 elif repeats_the_round(match, move_text):
                     # No strike: the seat could not have known.
-                    await self._store_turn(
+                    await store_turn(
+                        self.pool,
                         match,
-                        seat,
-                        move_text,
-                        "deterministic_invalid",
-                        None,
-                        "repeat",
-                        None,
-                        action_id,
+                        TurnRow(
+                            seat,
+                            move_text,
+                            "deterministic_invalid",
+                            layer1_result="repeat",
+                            action_id=action_id,
+                        ),
                     )
                     self._emit_rejection(
                         match,
@@ -1834,7 +1386,7 @@ class MatchService:
         except Exception:
             log.exception("answer on %s failed; the seat may answer again", match_id)
             async with self.locks[match_id]:
-                await self._set_submitted(match_id, seat, False)
+                await set_submitted(self.pool, match_id, seat, False)
                 match, rec = await self._load(match_id)
                 await self._give_time(match, rec, self.template_of(match))
 
@@ -1950,7 +1502,7 @@ class MatchService:
             text = await self._stream_opponent_move(
                 match, template, seat, card.card_text, card.hidden, silent=True
             )
-            await self._hold(match.id, seat, text, match.round_n)
+            await hold_move(self.pool, match.id, seat, text, match.round_n)
         refusals = 0
         retold = False
         while True:
@@ -1966,7 +1518,7 @@ class MatchService:
                     text = await self._stream_opponent_move(
                         match, template, seat, card.card_text, card.hidden, silent=True
                     )
-                    await self._hold(match.id, seat, text, match.round_n)
+                    await hold_move(self.pool, match.id, seat, text, match.round_n)
                     continue
                 if judged.outcome != "semantic_reject":
                     return judged, text
@@ -1977,32 +1529,19 @@ class MatchService:
                 text = await self._stream_opponent_move(
                     match, template, seat, card.card_text, card.hidden, silent=True
                 )
-                await self._hold(match.id, seat, text, match.round_n)
+                await hold_move(self.pool, match.id, seat, text, match.round_n)
             else:
                 text = template.default_move
-
-    async def _hold(self, match_id: str, seat: str, text: str | None, round_n: int) -> None:
-        async with self.pool.connection() as conn:
-            await conn.execute(
-                "update seats set held_move = %s, held_round = %s "
-                "where match_id = %s and seat = %s",
-                (text, round_n, match_id, seat),
-            )
 
     # The clock
 
     async def expire_clocks(self) -> list[str]:
         """Forfeits every clocked turn past its deadline. Returns the matches it looked at."""
-        async with self.pool.connection() as conn:
-            rows = await (
-                await conn.execute(
-                    "select id from matches where status = 'active' and turn_deadline < now()"
-                )
-            ).fetchall()
+        overdue = await overdue_ids(self.pool)
         # Each on its own task: a House turn played after one forfeit holds up no other match.
-        for row in rows:
-            self._spawn(self._expire(row["id"]))
-        return [row["id"] for row in rows]
+        for match_id in overdue:
+            self._spawn(self._expire(match_id))
+        return overdue
 
     async def _expire(self, match_id: str) -> None:
         """A judge still working on an answer holds the clock."""
@@ -2023,10 +1562,7 @@ class MatchService:
             owed = match.owed_guesses()
             for seat in owed:
                 skip_guess(match, seat, template)
-            async with self.pool.connection() as conn, conn.transaction():
-                await self._save(match, conn)
-                for guess in match.guesses[-len(owed) :]:
-                    await self._insert_guess(conn, match, guess, None)
+            await store_guesses(self.pool, match, match.guesses[-len(owed) :], None)
             await self._round_closed(match, template, rec)
             return
         round_n = match.round_n
@@ -2068,16 +1604,16 @@ class MatchService:
         started = time.monotonic()
         while True:
             call = await self.caller.judge(template, transcript, previous, move_text, hidden)
-            verdict_id = await self._insert_verdict(call)
+            verdict_id = await insert_verdict(self.pool, call, self.judge_model)
             if call.response is not None:
                 self.judge_fault = None
                 if paused:
-                    await self._set_status(match.id, "awaiting_judgment")
+                    await set_status(self.pool, match.id, "awaiting_judgment")
                     self.bus.emit(match.id, "judge_resumed", JudgeResumed(seq=seq))
                 return Judged(route_outcome(call.response.scoring), call.response, verdict_id)
             if not paused and not quiet:
                 paused = True
-                await self._set_status(match.id, "paused")
+                await set_status(self.pool, match.id, "paused")
                 host_text = template.judge_out_text.strip().format(standing_form=previous)
                 self.bus.emit(
                     match.id,
@@ -2093,7 +1629,7 @@ class MatchService:
             else:
                 await asyncio.sleep(PAUSE_BACKOFF_S[min(attempt, len(PAUSE_BACKOFF_S) - 1)])
             attempt += 1
-            if await self._status_of(match.id) in ("abandoned", "ended"):
+            if await status_of(self.pool, match.id) in ("abandoned", "ended"):
                 raise MatchClosed(match.id)
             if time.monotonic() - started > JUDGE_GIVE_UP_S:
                 raise JudgeGaveUp(match.id)
@@ -2183,22 +1719,11 @@ class MatchService:
         """Whether the fallback model already holds this House seat."""
         if self.fallback is None:
             return False
-        async with self.pool.connection() as conn:
-            row = await (
-                await conn.execute(
-                    "select model_ref from seats where match_id = %s and seat = %s",
-                    (match_id, seat),
-                )
-            ).fetchone()
-        return row is not None and row["model_ref"] == self.fallback[0]
+        return await seat_model_ref(self.pool, match_id, seat) == self.fallback[0]
 
     async def _stand_in_for(self, match_id: str, seat: str) -> None:
         assert self.fallback is not None
-        async with self.pool.connection() as conn:
-            await conn.execute(
-                "update seats set model_ref = %s where match_id = %s and seat = %s",
-                (self.fallback[0], match_id, seat),
-            )
+        await set_model_ref(self.pool, match_id, seat, self.fallback[0])
 
     def _stand_in(self, model_ref: str | None) -> str | None:
         """The fallback model's name for a move it played in the House's place."""
