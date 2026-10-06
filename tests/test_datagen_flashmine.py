@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import dataclasses
 import json
 from pathlib import Path
 
@@ -9,7 +10,7 @@ from arena_core.template import load_template
 from arena_evals.datagen import flashmine
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_evals.datagen.prefset import Position
-from arena_judge.caller import ModelSpec
+from arena_judge.caller import CallError, CallResult, ModelSpec
 from arena_judge.prompt import render_judge_messages
 from tests.conftest import judge_response
 from tests.test_datagen_play import ScriptedCaller
@@ -119,3 +120,35 @@ def test_a_rerun_replays_the_ledger_and_pays_only_for_the_missing_verdict(
         "I am a flood",
         "I am a lever",
     ]
+
+
+def add_second_position(corpus: Path) -> None:
+    """A copy of the mining position under another match, so a run has two positions."""
+    teacher = Ledger(corpus / "corpus.db")
+    teacher.add_call(dataclasses.replace(teacher.calls("m")[0], match_id="n"))
+    teacher.close()
+    path = corpus / "mined.positions.jsonl"
+    first = Position.model_validate_json(path.read_text())
+    path.write_text(path.read_text() + first.model_copy(update={"id": "n/2"}).model_dump_json())
+
+
+class NoCreditWriter(ScriptedCaller):
+    async def complete(self, spec, messages, **extra) -> CallResult:
+        self.completed += 1
+        raise CallError("402 Payment Required", 402)
+
+
+def test_an_out_of_credit_writer_stops_the_remaining_positions(corpus: Path, monkeypatch):
+    add_second_position(corpus)
+    caller = NoCreditWriter(rulings=[], moves=[])
+    with pytest.raises(SystemExit, match="out of credit"):
+        mine(corpus, caller, monkeypatch)
+    assert caller.completed == 1 and caller.judged == []
+
+
+def test_an_out_of_credit_judge_stops_the_remaining_draws_and_positions(corpus: Path, monkeypatch):
+    add_second_position(corpus)
+    caller = ScriptedCaller(rulings=[402], moves=["I am a hammer"])
+    with pytest.raises(SystemExit, match="out of credit"):
+        mine(corpus, caller, monkeypatch)
+    assert caller.completed == 1 and caller.judged == ["I am a hammer"]

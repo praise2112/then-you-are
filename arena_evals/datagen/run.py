@@ -155,7 +155,6 @@ async def _drive(
     writer = load_model(plan["flash_ref"])
     guarded = plan["provider"] == "deepseek" and not now
     sem = asyncio.Semaphore(concurrency)
-    stop = asyncio.Event()
 
     others = lane_total() - ledger.spent()
     ceiling = min(budget, LANE_CEILING - others, ledger.spent() + await credit_left(caller))
@@ -166,13 +165,6 @@ async def _drive(
         name: load_spec(name)[0].sabotage_expectations for name in set(plan["classes"].values())
     }
     failures = 0
-
-    def over_budget() -> bool:
-        if limit.over() and not stop.is_set():
-            stop.set()
-            print(f"budget reached: ${ledger.spent():.4f} of ${ceiling:.2f}", file=sys.stderr)
-        return stop.is_set()
-
     refs = {r[side] for r in ledger.matches() for side in ("teacher_p1", "teacher_p2")}
     specs = {ref: load_model(ref) for ref in refs}
 
@@ -184,7 +176,7 @@ async def _drive(
             "p2": Teacher(row["teacher_p2"], specs[row["teacher_p2"]]),
         }
         async with sem:
-            if over_budget():
+            if limit.over():
                 return
             if guarded and not in_window(datetime.now(UTC)):
                 wait = seconds_until_open(datetime.now(UTC))
@@ -199,7 +191,7 @@ async def _drive(
                         caller,
                         ledger,
                         judge,
-                        over_budget,
+                        limit.over,
                     )
                 saboteur = Saboteur(
                     template,
@@ -209,7 +201,7 @@ async def _drive(
                     judge,
                     writer,
                     expected[plan["classes"][row["template_id"]]],
-                    over_budget=over_budget,
+                    over_budget=limit.over,
                 )
                 ledger.mark_sabotaged(row["match_id"], await saboteur.run())
             except MatchAbandoned as e:
@@ -219,22 +211,22 @@ async def _drive(
             except CallFailed as e:
                 failures += 1
                 print(f"call failed: {e}", file=sys.stderr)
-                if e.status == 402 and not stop.is_set():
-                    stop.set()
-                    print("OpenRouter is out of credit; stopping the run", file=sys.stderr)
+                limit.note_failure(e)
             except Exception:
                 failures += 1
                 traceback.print_exc()
-            over_budget()
 
-    if over_budget():
-        return
-    fresh = [one(row, False) for row in ledger.matches("active")]
-    unsabotaged = [one(row, True) for row in ledger.ended_without_sabotage()]
-    await asyncio.gather(*fresh, *unsabotaged)
+    if not limit.over():
+        fresh = [one(row, False) for row in ledger.matches("active")]
+        unsabotaged = [one(row, True) for row in ledger.ended_without_sabotage()]
+        await asyncio.gather(*fresh, *unsabotaged)
+    if limit.no_credit:
+        print(f"OpenRouter is out of credit, the run stopped: {limit.no_credit}", file=sys.stderr)
+    elif limit.over():
+        print(f"budget reached: ${ledger.spent():.4f} of ${ceiling:.2f}", file=sys.stderr)
     if failures:
         print(f"{failures} matches failed; resume to retry them", file=sys.stderr)
-    elif not stop.is_set():
+    elif not limit.over():
         ledger.finish_run(run_id)
     print(
         f"spent ${ledger.spent():.4f}, {len(ledger.matches('ended'))} matches ended",

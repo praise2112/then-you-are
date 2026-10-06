@@ -73,13 +73,13 @@ async def draw_and_judge(
     caller: ModelCaller,
     player: ModelSpec,
     judge: ModelSpec,
-    over_budget,
+    budget: Budget,
     seen: set[str],
     refused: list[str],
 ) -> tuple[str, JudgeResponse] | None:
     """One sampled move and Flash's verdict on it, replayed from the ledger when recorded.
     A move already in seen is skipped; one the engine refuses goes to refused, unjudged."""
-    tape = Tape(ledger, f"{pos.id}/draw{k}", over_budget)
+    tape = Tape(ledger, f"{pos.id}/draw{k}", budget.over)
     asked = {"messages": pos.player_messages}
     written = await tape.step(
         "move",
@@ -109,7 +109,8 @@ async def draw_and_judge(
     ask = JudgeInputs(p["previous"], move, p["hidden"], p["transcript"])
     try:
         response = await tape.judge(caller, judge, template, turn.actor, turn.seq, ask)
-    except CallFailed:
+    except CallFailed as e:
+        budget.note_failure(e)
         return None
     return move, response
 
@@ -151,11 +152,14 @@ async def main(args) -> None:
                         caller,
                         player,
                         judge,
-                        budget.over,
+                        budget,
                         seen,
                         refused,
                     )
-                except (BudgetReached, CallFailed):
+                except BudgetReached:
+                    break
+                except CallFailed as e:
+                    budget.note_failure(e)
                     break
                 if got is None:
                     continue
@@ -196,6 +200,8 @@ async def main(args) -> None:
         f"${spent:.4f} spent now",
         file=sys.stderr,
     )
+    if budget.no_credit:
+        raise SystemExit(f"OpenRouter is out of credit: {budget.no_credit}")
 
 
 if __name__ == "__main__":
