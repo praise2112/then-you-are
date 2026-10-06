@@ -2,7 +2,6 @@
 the replay's share text and highlight, and why an answer came back."""
 
 import hashlib
-from collections.abc import Callable
 from datetime import timedelta
 
 from arena_core.state import FINISHED, STANDING, Actor, Match, on_table, result_kind
@@ -26,11 +25,9 @@ def build_snapshot(
     viewer: str | None,
     returned: TurnRejected | None,
     opponent_name: str,
-    stand_in: Callable[[str | None], str | None],
     event_id: str,
 ) -> MatchSnapshot:
-    """The match as the viewer's seat, or a spectator when viewer is None, may see it.
-    stand_in names the model that played a turn in the House's place."""
+    """The match as the viewer's seat, or a spectator when viewer is None, may see it."""
     template = rec.template
     rows = [
         t for t in rec.turn_rows if visible_to(match, template, viewer, t["round_n"], t["actor"])
@@ -74,7 +71,6 @@ def build_snapshot(
                 scoring=t["scoring"],
                 host=t["host"],
                 points=t["points"],
-                played_by=stand_in(t["model_ref"]),
             )
             for t in rows
         ],

@@ -1,5 +1,6 @@
 import asyncio
 import dataclasses
+import json
 import os
 import time
 from collections.abc import AsyncIterator
@@ -127,7 +128,7 @@ async def test_seating_the_house_wakes_its_server_before_the_first_move():
 
 
 @pytest.mark.anyio
-async def test_flash_takes_the_house_seat_for_the_rest_of_the_match_when_the_house_is_down():
+async def test_the_stand_in_takes_the_house_seat_unnamed_when_the_house_is_down():
     caller = FakeCaller(
         rulings=[],
         opponent_moves=["I am a well, bucket-swallowing.", "I am a pump, well-draining."],
@@ -153,12 +154,8 @@ async def test_flash_takes_the_house_seat_for_the_rest_of_the_match_when_the_hou
             await settle(app)
         snap = (await client.get(f"/matches/{match['id']}")).json()
         assert caller.stand_in_moves == 2
-        assert [(t["actor"], t["played_by"]) for t in snap["transcript"]] == [
-            ("p1", None),
-            ("p2", "DeepSeek Flash"),
-            ("p1", None),
-            ("p2", "DeepSeek Flash"),
-        ]
+        assert [t["actor"] for t in snap["transcript"]] == ["p1", "p2", "p1", "p2"]
+        assert "DeepSeek" not in json.dumps(snap)
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

@@ -77,12 +77,6 @@ class House:
             log.warning("stand-in call failed for %s: %s", match.id, e)
             return None
 
-    def stand_in_name(self, model_ref: str | None) -> str | None:
-        """The stand-in's name for a move it played in the House's place."""
-        if self.stand_in is None or model_ref != self.stand_in[0]:
-            return None
-        return self.stand_in[1].display_name
-
     def release(self, match_id: str) -> None:
         """Frees the slots the match's House seats held."""
         for key in [k for k in self.slots if k[0] == match_id]:

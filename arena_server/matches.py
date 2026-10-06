@@ -245,7 +245,6 @@ class MatchService:
             viewer,
             returned,
             self.opponent_name,
-            self.house.stand_in_name,
             event_id,
         )
 
