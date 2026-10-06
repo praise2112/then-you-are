@@ -5,7 +5,7 @@ import hashlib
 from collections.abc import Callable
 from datetime import timedelta
 
-from arena_core.state import FINISHED, STANDING, Actor, Match
+from arena_core.state import FINISHED, STANDING, Actor, Match, on_table
 from arena_core.template import Seed, Template
 from arena_judge.schema import HostPayload
 from arena_server.db import Pool
@@ -87,7 +87,8 @@ def build_snapshot(
 
 def display_name(row: SeatRow, rec: Record) -> str:
     if row.kind == "human":
-        return row.stage_name or "Challenger"
+        assert row.stage_name is not None
+        return row.stage_name
     houses = sorted(rec.models, key=lambda seat: int(seat[1:]))
     n = houses.index(row.seat) + 1
     return "The House" if n == 1 else f"The House {n}"
@@ -242,8 +243,7 @@ def rejection(
     if strikes < template.strikes_before_consequence:
         nudge = None
     elif nudge is None:
-        target = match.card if template.mode == "showcase" else match.standing_form
-        nudge = template.validation_messages.nudge.format(standing_form=target)
+        nudge = template.validation_messages.nudge.format(standing_form=on_table(match, template))
     return TurnRejected(
         seat=actor,
         outcome="semantic_reject" if host else "deterministic_invalid",

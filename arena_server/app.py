@@ -256,10 +256,17 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         if stage_name and (refusal := check_name(stage_name)):
             raise HTTPException(422, refusal)
 
-    async def player_session(request: Request, response: Response, stage_name: str | None) -> str:
+    async def player_session(
+        request: Request,
+        response: Response,
+        stage_name: str | None,
+        list_duels: bool | None = None,
+    ) -> str:
         """The caller's session, made on first play and renamed when a stage name comes along."""
         refuse_bad_name(stage_name)
-        key = await ensure_session(pool, request.cookies.get(SESSION_COOKIE), stage_name)
+        key = await ensure_session(
+            pool, request.cookies.get(SESSION_COOKIE), stage_name, list_duels
+        )
         set_session_cookie(response, key, settings.secure_cookies)
         return key
 
@@ -314,13 +321,9 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
 
     @app.put("/sessions/me")
     async def put_session(body: SessionUpdate, request: Request, response: Response) -> SessionView:
-        refuse_bad_name(body.stage_name)
-        key = await ensure_session(
-            pool, request.cookies.get(SESSION_COOKIE), body.stage_name, body.list_duels
-        )
+        key = await player_session(request, response, body.stage_name, body.list_duels)
         if body.stage_name and body.stage_name.strip():
             await rename_account(pool, key, body.stage_name.strip())
-        set_session_cookie(response, key, settings.secure_cookies)
         return await session_with_providers(key)
 
     @app.delete("/sessions/me/account", status_code=204)

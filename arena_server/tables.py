@@ -38,7 +38,7 @@ async def open_tables(pool: Pool, templates: dict[str, Template]) -> list[TableV
             template_id=r["template_id"],
             title=templates[r["template_id"]].title,
             emblem=templates[r["template_id"]].emblem,
-            host_name=r["host_name"] or "Challenger",
+            host_name=r["host_name"],
             invite_code=r["invite_code"],
             seats_taken=r["taken"],
             seats_wanted=r["seats_wanted"],

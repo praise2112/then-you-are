@@ -296,6 +296,11 @@ def judged_against(match: Match, template: Template) -> str:
     return match.standing_form
 
 
+def on_table(match: Match, template: Template) -> str:
+    """What the table plays against now: the standing form, or in showcase the card in play."""
+    return match.card if template.mode == "showcase" else match.standing_form
+
+
 def previous_of(match: Match, template: Template, turn: Turn) -> str:
     """What a judged turn answered: the judged move before it or the seed, or in showcase its
     round's card."""

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from psycopg import AsyncConnection
 from psycopg.rows import DictRow
 
-from arena_core.state import LIVE_STATUSES
+from arena_core.state import LIVE_STATUSES, on_table
 from arena_server.db import Pool
 from arena_server.leaderboard import account_streaks
 from arena_server.store import Record
@@ -15,6 +15,8 @@ from arena_server.views import AccountView, OpenDuel, SessionView, TableKind
 
 if TYPE_CHECKING:
     from arena_server.matches import MatchService
+
+DEFAULT_STAGE_NAME = "Challenger"
 
 
 def new_session_key() -> str:
@@ -41,7 +43,7 @@ async def ensure_session(
             "list_duels = coalesce(%s, sessions.list_duels)",
             (
                 key,
-                stage_name or "Challenger",
+                stage_name or DEFAULT_STAGE_NAME,
                 list_duels,
                 stage_name,
                 list_duels,
@@ -95,7 +97,7 @@ async def session_view(service: "MatchService", session_key: str | None) -> Sess
                     for m in await open_match_ids(service.pool, session_key)
                 ],
             )
-    return SessionView(stage_name="Challenger", list_duels=False)
+    return SessionView(stage_name=DEFAULT_STAGE_NAME, list_duels=False)
 
 
 async def open_match_ids(
@@ -130,8 +132,7 @@ async def open_duel(service: "MatchService", match_id: str, session_key: str) ->
     match, rec = await service.load(match_id)
     template = rec.template
     mine = await seat_of(service.pool, rec, session_key)
-    showcase = template.mode == "showcase"
-    if showcase:
+    if template.mode == "showcase":
         your_turn = match.phase == "guess" and mine in match.owed_guesses()
     else:
         your_turn = match.clocked and match.to_move == mine
@@ -143,7 +144,7 @@ async def open_duel(service: "MatchService", match_id: str, session_key: str) ->
         waiting_for=rec.seats_wanted - len(rec.seats) if match.status == "open" else None,
         round_n=min(match.round_n, template.rounds_budget),
         rounds_budget=template.rounds_budget,
-        card=match.card if showcase else match.standing_form,
+        card=on_table(match, template),
         your_turn=your_turn,
     )
 

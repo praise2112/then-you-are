@@ -4,9 +4,9 @@ and the games played against people, which never count on the record."""
 from typing import Any
 
 from arena_core.state import JUDGED, LIVE_STATUSES, STANDING, result_kind
-from arena_server.auth import account_of
-from arena_server.leaderboard import account_ranks, streaks
+from arena_server.leaderboard import account_ranks, account_streaks, streaks
 from arena_server.matches import MatchService
+from arena_server.sessions import account_of
 from arena_server.store import MatchError
 from arena_server.views import BadgeCount, DuelRow, GameRecord, ProfileView
 
@@ -32,7 +32,7 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                 "m.ended_at, m.is_public, m.is_curated, m.kind, "
                 "(select count(*) from seats o where o.match_id = m.id) as seat_count, "
                 "(select array_agg(case when o.kind = 'model' then null else "
-                "coalesce(os.stage_name, 'Challenger') end order by o.seat) from seats o "
+                "os.stage_name end order by o.seat) from seats o "
                 "left join sessions os on os.session_key = o.session_key "
                 "where o.match_id = m.id and o.seat <> se.seat) as others, "
                 "(select count(*) from turns t where t.match_id = m.id and t.seq is not null "
@@ -69,6 +69,7 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
             )
         ).fetchall()
         ranks = await account_ranks(conn, account_id)
+        streak, best_streak = await account_streaks(conn, account_id)
         ranked = [m for m in matches if m["kind"] == "house"]
         records = []
         for slug, template in service.templates.items():
@@ -88,8 +89,7 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
                 )
             )
 
-    ended_all = sorted((m for m in ranked if m["status"] == "ended"), key=lambda m: m["ended_at"])
-    streak, best_streak = streaks([m["won"] for m in ended_all])
+    ended_all = [m for m in ranked if m["status"] == "ended"]
     shown = [m for m in matches if is_yours or (m["status"] == "ended" and m["is_public"])]
     peak = {r["match_id"]: r["peak"] for r in peaks}
     best_ids = _best_ids([m for m in shown if m["kind"] == "house"], peak)
