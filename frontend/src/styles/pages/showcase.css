@@ -272,12 +272,9 @@ ul.rules-text li {
   padding-top: var(--space-1);
 }
 
-/* The scorecard's `.total` is a bordered row; here it is one number beside a mark. */
 .bluff .total {
+  display: flex;
   flex: none;
-  margin: 0;
-  border-top: 0;
-  padding-top: 0;
   font-family: var(--display);
   font-size: 1.7rem;
   font-weight: 600;

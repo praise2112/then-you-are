@@ -501,7 +501,7 @@
   color: var(--vermilion-ink);
 }
 
-.total {
+.scorecard .total {
   margin: var(--space-2) 0 0;
   border-top: 1px solid var(--rule);
   padding-top: var(--space-1);
@@ -510,7 +510,7 @@
   font-size: 0.95rem;
 }
 
-.total b {
+.scorecard .total b {
   font-family: var(--mono);
   font-weight: 500;
 }
