@@ -269,7 +269,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
 
     @app.get("/healthz")
     async def healthz() -> Health:
-        return Health(status="ok", games=list(templates), judge=service.judge_fault or "ok")
+        return Health(status="ok", games=list(templates), judge=service.judge.fault or "ok")
 
     @app.get("/templates")
     async def list_templates() -> list[TemplateView]:

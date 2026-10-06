@@ -165,7 +165,7 @@ async def test_a_clocked_seat_out_of_strikes_loses_the_turn():
 
 @pytest.mark.anyio
 async def test_a_resign_during_a_judge_outage_waits_for_the_ruling(monkeypatch):
-    monkeypatch.setattr("arena_server.matches.PAUSE_BACKOFF_S", (0.3,))
+    monkeypatch.setattr("arena_server.judging.PAUSE_BACKOFF_S", (0.3,))
     caller = FakeCaller(
         rulings=[None, judge_response(), judge_response()],
         opponent_moves=["I am a key, lock-turning."],

@@ -4,10 +4,7 @@ the turn clock, persists everything."""
 import asyncio
 import logging
 import secrets
-import time
 from collections import defaultdict
-from collections.abc import AsyncIterator
-from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
@@ -20,7 +17,6 @@ from arena_core.state import (
     Change,
     IllegalAction,
     Match,
-    Outcome,
     apply_guess,
     apply_ruling,
     check_guess,
@@ -38,19 +34,15 @@ from arena_core.state import (
     weighted_total,
 )
 from arena_core.template import Seed, Template
-from arena_judge.caller import CallError, ModelCaller, ModelSpec
-from arena_judge.prompt import clean_move
-from arena_judge.schema import HostPayload, JudgeResponse, ScoringPayload, route_outcome
+from arena_judge.caller import ModelCaller, ModelSpec
+from arena_judge.schema import HostPayload, ScoringPayload
 from arena_server.db import Pool
 from arena_server.events import (
     EventBus,
     GuessOpened,
-    JudgePaused,
-    JudgeResumed,
     JudgeStarted,
     MatchEnded,
     MatchStarted,
-    MoveToken,
     RoundRevealed,
     Ruling,
     SeatJoined,
@@ -58,6 +50,8 @@ from arena_server.events import (
     TurnChanged,
     TurnRejected,
 )
+from arena_server.house import House
+from arena_server.judging import Judge, Judged, JudgeGaveUp
 from arena_server.presence import Lobby, Presence, TurnNudge
 from arena_server.sessions import open_match_ids, seat_of, session_view
 from arena_server.snapshots import (
@@ -85,7 +79,6 @@ from arena_server.store import (
     hold_move,
     insert_match,
     insert_seat,
-    insert_verdict,
     invite_match_id,
     joinable_ids,
     live_public_ids,
@@ -95,15 +88,12 @@ from arena_server.store import (
     replay_ids,
     reset_for_restart,
     save_match,
-    seat_model_ref,
     set_deadline,
-    set_model_ref,
     set_public,
     set_status,
     set_submitted,
     stamp_badges,
     start_table,
-    status_of,
     store_guesses,
     store_turn,
 )
@@ -115,18 +105,9 @@ from arena_server.views import (
     TableView,
 )
 
-PAUSE_BACKOFF_S = (5, 10, 20, 30)
-# A judge call refused for credentials or credit will not heal on its own; retry slowly.
-BILLING_STATUSES = (401, 402, 403)
-BILLING_RETRY_S = 60
-# A move whose judge has not ruled by then goes back: a human may play again, the House loses it.
-JUDGE_GIVE_UP_S = 120
 STREAM_LINGER_S = 300
 GRACE = timedelta(seconds=30)
 MODEL_REWRITES = 2
-# A House call that fails is tried once more before the fallback takes the seat.
-HOUSE_ATTEMPTS = 2
-HOUSE_RETRY_S = 3
 
 
 log = logging.getLogger(__name__)
@@ -134,17 +115,6 @@ log = logging.getLogger(__name__)
 
 class HouseStuck(Exception):
     """The House could not produce a legal answer, even its default move."""
-
-
-class JudgeGaveUp(Exception):
-    """The judge gave no ruling within JUDGE_GIVE_UP_S."""
-
-
-@dataclass
-class Judged:
-    outcome: Outcome
-    response: JudgeResponse
-    verdict_id: int
 
 
 class MatchService:
@@ -168,12 +138,10 @@ class MatchService:
         self.templates = templates
         self.opponent_ref = opponent_ref
         self.opponent_name = opponent_name
-        self.judge_model = judge_model
         self.public_base_url = public_base_url
         self.presence = presence
-        self.house_slots = house_slots
-        # The hosted model that takes a House seat for the rest of a match once the House fails.
-        self.fallback = fallback
+        self.house = House(pool, bus, caller, house_slots, fallback)
+        self.judge = Judge(pool, bus, caller, judge_model)
         self.locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
         # Quick match searches and creates under one lock per game.
         self.seating: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
@@ -182,9 +150,6 @@ class MatchService:
         self.answering: set[tuple[str, str, int]] = set()
         # Each match plays the template it was created with, parsed once from its row.
         self.match_templates: dict[str, Template] = {}
-        # The llama-server slot each House seat's conversation is pinned to: (match, seat).
-        self.slots: dict[tuple[str, str], int] = {}
-        self.judge_fault: str | None = None
 
     def template_of(self, match: Match) -> Template:
         return self.match_templates.get(match.id) or self.templates[match.template_id]
@@ -194,8 +159,7 @@ class MatchService:
         client can still read the ending."""
         self.locks.pop(match_id, None)
         self.match_templates.pop(match_id, None)
-        for key in [k for k in self.slots if k[0] == match_id]:
-            del self.slots[key]
+        self.house.release(match_id)
         asyncio.get_running_loop().call_later(STREAM_LINGER_S, self.bus.forget, match_id)
 
     async def recover(self) -> None:
@@ -431,7 +395,7 @@ class MatchService:
             else None
         )
         return build_snapshot(
-            match, template, rec, viewer, returned, self.opponent_name, self._stand_in
+            match, template, rec, viewer, returned, self.opponent_name, self.house.stand_in
         )
 
     async def replay(self, match_id: str, session_key: str | None = None) -> Replay:
@@ -845,7 +809,7 @@ class MatchService:
             return await self._emit_if_ended(match)
         seq = len(match.turns) + 1
         self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
-        judged = await self._judge_until_ruled(
+        judged = await self.judge.rule(
             match, template, seq, move_text, match.standing_form, transcript(match, template)
         )
         if judged.outcome == "semantic_reject":
@@ -875,7 +839,7 @@ class MatchService:
             while match.status == "active" and match.to_move == seat:
                 step = model_next(match.strikes[seat] - strikes_before, template)
                 if step == "write":
-                    move_text = await self._stream_opponent_move(match, template, seat, match.seed)
+                    move_text = await self.house.write(match, template, seat, match.seed)
                 elif step == "default_move":
                     move_text = template.default_move
                 else:
@@ -971,7 +935,7 @@ class MatchService:
             reason = layer1(template, move_text, match)
             judged = None
             if reason is None:
-                judged = await self._judge_until_ruled(
+                judged = await self.judge.rule(
                     match,
                     template,
                     len(match.turns) + 1,
@@ -1159,7 +1123,7 @@ class MatchService:
         seq = len(match.turns) + 1
         text = held
         if text is None:
-            text = await self._stream_opponent_move(
+            text = await self.house.write(
                 match, template, seat, card.card_text, card.hidden, silent=True
             )
             await hold_move(self.pool, match.id, seat, text, match.round_n)
@@ -1168,14 +1132,14 @@ class MatchService:
         while True:
             reason = layer1(template, text, match)
             if reason is None:
-                judged = await self._judge_until_ruled(
+                judged = await self.judge.rule(
                     match, template, seq, text, card.card_text, lines, card.hidden, quiet=True
                 )
                 hit = judged.response.scoring.truth_proximity == "hit"
                 if hit and card.hidden and not retold:
                     # A model seat is meant to bluff: one more try when it wrote the truth.
                     retold = True
-                    text = await self._stream_opponent_move(
+                    text = await self.house.write(
                         match, template, seat, card.card_text, card.hidden, silent=True
                     )
                     await hold_move(self.pool, match.id, seat, text, match.round_n)
@@ -1186,7 +1150,7 @@ class MatchService:
             if text == template.default_move:
                 raise HouseStuck(match.id)
             if model_next(refusals, template) == "write":
-                text = await self._stream_opponent_move(
+                text = await self.house.write(
                     match, template, seat, card.card_text, card.hidden, silent=True
                 )
                 await hold_move(self.pool, match.id, seat, text, match.round_n)
@@ -1244,55 +1208,7 @@ class MatchService:
             ),
         )
 
-    # The judge and the House
-
-    async def _judge_until_ruled(
-        self,
-        match: Match,
-        template: Template,
-        seq: int,
-        move_text: str,
-        previous: str,
-        transcript: list[str],
-        hidden: str = "",
-        quiet: bool = False,
-    ) -> Judged:
-        """Retries the judge call until it rules, pausing the match meanwhile unless quiet.
-        Raises MatchClosed if the match closes, and JudgeGaveUp after JUDGE_GIVE_UP_S."""
-        paused = False
-        attempt = 0
-        started = time.monotonic()
-        while True:
-            call = await self.caller.judge(template, transcript, previous, move_text, hidden)
-            verdict_id = await insert_verdict(self.pool, call, self.judge_model)
-            if call.response is not None:
-                self.judge_fault = None
-                if paused:
-                    await set_status(self.pool, match.id, "awaiting_judgment")
-                    self.bus.emit(match.id, "judge_resumed", JudgeResumed(seq=seq))
-                return Judged(route_outcome(call.response.scoring), call.response, verdict_id)
-            if not paused and not quiet:
-                paused = True
-                await set_status(self.pool, match.id, "paused")
-                host_text = template.judge_out_text.strip().format(standing_form=previous)
-                self.bus.emit(
-                    match.id,
-                    "judge_paused",
-                    JudgePaused(seq=seq, host_text=host_text, move_text=move_text),
-                )
-            if call.error_status in BILLING_STATUSES:
-                fault = f"judge provider answered HTTP {call.error_status}"
-                if self.judge_fault != fault:
-                    log.error("%s; retrying every %s s", fault, BILLING_RETRY_S)
-                self.judge_fault = fault
-                await asyncio.sleep(BILLING_RETRY_S)
-            else:
-                await asyncio.sleep(PAUSE_BACKOFF_S[min(attempt, len(PAUSE_BACKOFF_S) - 1)])
-            attempt += 1
-            if await status_of(self.pool, match.id) in ("abandoned", "ended"):
-                raise MatchClosed(match.id)
-            if time.monotonic() - started > JUDGE_GIVE_UP_S:
-                raise JudgeGaveUp(match.id)
+    # Publishing
 
     def _emit_rejection(self, match: Match, template: Template, rejected: TurnRejected) -> None:
         """A showcase refusal is about a hidden answer, so the stream says only whose it was;
@@ -1300,77 +1216,6 @@ class MatchService:
         if template.mode == "showcase":
             rejected = rejected.model_copy(update={"reason_text": "", "nudge_text": None})
         self.bus.emit(match.id, "turn_rejected", rejected)
-
-    def _slot(self, match_id: str, seat: str) -> int | None:
-        """The seat's slot, taking the lowest free one on its first move; None when the House
-        has no slots or every slot is taken."""
-        key = (match_id, seat)
-        if key in self.slots:
-            return self.slots[key]
-        free = sorted(set(range(self.house_slots)) - set(self.slots.values()))
-        if not free:
-            return None
-        self.slots[key] = free[0]
-        return free[0]
-
-    async def _stream_opponent_move(
-        self,
-        match: Match,
-        template: Template,
-        seat: str,
-        prompt: str,
-        hidden: str = "",
-        silent: bool = False,
-    ) -> str:
-        lines = transcript(match, template, finished_only=True)
-        if not await self._stood_in(match.id, seat):
-            for attempt in range(HOUSE_ATTEMPTS):
-                if attempt:
-                    await asyncio.sleep(HOUSE_RETRY_S)
-                stream = self.caller.opponent_stream(
-                    template, seat, prompt, lines, hidden, self._slot(match.id, seat)
-                )
-                try:
-                    return await self._collect_move(match, stream, silent)
-                except CallError as e:
-                    log.warning("opponent call failed for %s: %s", match.id, e)
-            if self.fallback is None:
-                return ""
-            await self._stand_in_for(match.id, seat)
-        assert self.fallback is not None
-        stream = self.caller.opponent_stream(
-            template, seat, prompt, lines, hidden, spec=self.fallback[1]
-        )
-        try:
-            return await self._collect_move(match, stream, silent)
-        except CallError as e:
-            log.warning("stand-in call failed for %s: %s", match.id, e)
-            return ""
-
-    async def _collect_move(self, match: Match, stream: AsyncIterator[str], silent: bool) -> str:
-        seq = len(match.turns) + 1
-        parts: list[str] = []
-        async for chunk in stream:
-            parts.append(chunk)
-            if not silent:
-                self.bus.emit(match.id, "move_token", MoveToken(seq=seq, text=chunk))
-        return clean_move("".join(parts))
-
-    async def _stood_in(self, match_id: str, seat: str) -> bool:
-        """Whether the fallback model already holds this House seat."""
-        if self.fallback is None:
-            return False
-        return await seat_model_ref(self.pool, match_id, seat) == self.fallback[0]
-
-    async def _stand_in_for(self, match_id: str, seat: str) -> None:
-        assert self.fallback is not None
-        await set_model_ref(self.pool, match_id, seat, self.fallback[0])
-
-    def _stand_in(self, model_ref: str | None) -> str | None:
-        """The fallback model's name for a move it played in the House's place."""
-        if self.fallback is None or model_ref != self.fallback[0]:
-            return None
-        return self.fallback[1].display_name
 
     async def _emit_match_ended(self, match: Match, coaching_line: str | None) -> None:
         snap = await self.snapshot(match.id)

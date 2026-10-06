@@ -144,8 +144,8 @@ async def test_flash_takes_the_house_seat_for_the_rest_of_the_match_when_the_hou
 
 @pytest.mark.anyio
 async def test_a_judge_that_never_rules_hands_the_move_back(monkeypatch):
-    monkeypatch.setattr("arena_server.matches.JUDGE_GIVE_UP_S", 0)
-    monkeypatch.setattr("arena_server.matches.PAUSE_BACKOFF_S", (0,))
+    monkeypatch.setattr("arena_server.judging.JUDGE_GIVE_UP_S", 0)
+    monkeypatch.setattr("arena_server.judging.PAUSE_BACKOFF_S", (0,))
     caller = FakeCaller(rulings=[None, None, None], opponent_moves=[])
     app, manager, client = await run_app(caller)
     try:
@@ -205,7 +205,7 @@ async def test_stale_version_is_a_409_and_refusals_hand_the_turn_back():
 
 @pytest.mark.anyio
 async def test_judge_outage_pauses_then_resumes_with_the_same_move(monkeypatch):
-    monkeypatch.setattr("arena_server.matches.PAUSE_BACKOFF_S", (0,))
+    monkeypatch.setattr("arena_server.judging.PAUSE_BACKOFF_S", (0,))
     caller = FakeCaller(rulings=[None, judge_response(verdict="fail")], opponent_moves=[])
     app, manager, client = await run_app(caller)
     try:
@@ -536,10 +536,10 @@ async def test_the_featured_template_leads_the_list():
 
 @pytest.mark.anyio
 async def test_a_refused_judge_bill_backs_off_and_flags_the_health_check(monkeypatch):
-    import arena_server.matches as matches
+    import arena_server.judging as judging
 
-    monkeypatch.setattr(matches, "PAUSE_BACKOFF_S", (5,))
-    monkeypatch.setattr(matches, "BILLING_RETRY_S", 0.2)
+    monkeypatch.setattr(judging, "PAUSE_BACKOFF_S", (5,))
+    monkeypatch.setattr(judging, "BILLING_RETRY_S", 0.2)
     caller = FakeCaller(rulings=[402, judge_response(verdict="fail")], opponent_moves=[])
     app, manager, client = await run_app(caller)
     try:
@@ -564,9 +564,9 @@ async def test_a_refused_judge_bill_backs_off_and_flags_the_health_check(monkeyp
 
 @pytest.mark.anyio
 async def test_an_idle_match_is_abandoned_and_its_pending_judge_call_stops(monkeypatch):
-    import arena_server.matches as matches
+    import arena_server.judging as judging
 
-    monkeypatch.setattr(matches, "PAUSE_BACKOFF_S", (0.2,))
+    monkeypatch.setattr(judging, "PAUSE_BACKOFF_S", (0.2,))
     caller = FakeCaller(rulings=[None] * 50, opponent_moves=[])
     app, manager, client = await run_app(caller)
     try:

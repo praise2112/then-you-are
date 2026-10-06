@@ -262,10 +262,10 @@ async def test_a_table_nobody_joins_closes_as_unfilled():
 async def test_a_judge_call_that_outlives_the_deadline_costs_no_turn(monkeypatch):
     import asyncio
 
-    import arena_server.matches as matches
+    import arena_server.judging as judging
     from tests.conftest import judge_response
 
-    monkeypatch.setattr(matches, "PAUSE_BACKOFF_S", (0.3,))
+    monkeypatch.setattr(judging, "PAUSE_BACKOFF_S", (0.3,))
     app, manager, ana = await run_app(FakeCaller([None, judge_response()], []))
     ben = player(app)
     try:
