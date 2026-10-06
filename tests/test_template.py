@@ -193,6 +193,17 @@ def test_each_writer_call_starts_with_the_one_before_it_so_the_server_cache_exte
     assert second[len(first)] == {"role": "assistant", "content": "UNO"}
 
 
+def test_the_house_is_told_which_form_to_beat_and_a_fallen_move_never_stands():
+    duel = load_template("then-i-am")
+    first = render_opponent_messages(duel, "a rock", [], seat="p1")
+    assert first[-1]["content"].endswith("Beat this: a rock\n\nYOUR MOVE:")
+    lines = ["player1: I am sand", "player2: I am glass", "player3: I am a puddle"]
+    fell = frozenset({"player3: I am a puddle"})
+    messages = render_opponent_messages(duel, "a rock", lines, seat="p1", fell=fell)
+    assert "Beat this: a rock\n" in messages[1]["content"]
+    assert messages[-1]["content"].endswith("Beat this: I am glass\n\nYOUR MOVE:")
+
+
 def test_the_judge_slm_sees_only_the_games_own_text_and_each_call_extends_the_last():
     duel = load_template("then-i-am")
     first = render_judge_messages(duel, [], "p1", "a rock", "I am sand")

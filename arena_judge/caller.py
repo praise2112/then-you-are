@@ -327,10 +327,13 @@ class ModelCaller:
         hidden: str = "",
         slot: int | None = None,
         spec: ModelSpec | None = None,
+        fell: frozenset[str] = frozenset(),
     ) -> AsyncIterator[str]:
         """The House's move as it streams, from `spec` instead when given; slot pins the
         conversation to one llama-server slot, so each call reuses the seat's cache there."""
-        messages = render_opponent_messages(template, card, transcript, hidden, seat=seat)
+        messages = render_opponent_messages(
+            template, card, transcript, hidden, seat=seat, fell=fell
+        )
         extra = {} if slot is None else {"id_slot": slot}
         return self.stream(spec or self.opponent_spec, messages, **extra)
 

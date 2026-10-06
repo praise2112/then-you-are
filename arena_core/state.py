@@ -210,6 +210,15 @@ def transcript(match: Match, template: Template, finished_only: bool = False) ->
     return lines
 
 
+def fallen_lines(match: Match, template: Template) -> frozenset[str]:
+    """The escalation transcript lines whose move fell."""
+    if template.mode != "escalation":
+        return frozenset()
+    judged = [t for t in match.turns if t.outcome in JUDGED]
+    lines = transcript(match, template)
+    return frozenset(line for line, t in zip(lines, judged, strict=True) if t.outcome == "fail")
+
+
 def deal(
     template: Template,
     rng: random.Random,

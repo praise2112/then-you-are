@@ -109,7 +109,7 @@ class FakeCaller(ModelCaller):
         )
 
     def opponent_stream(
-        self, template, seat, card, transcript, hidden="", slot=None, spec=None
+        self, template, seat, card, transcript, hidden="", slot=None, spec=None, fell=frozenset()
     ) -> AsyncIterator[str]:
         if spec is None and self.house_down:
 

@@ -254,32 +254,44 @@ def clean_move(raw: str) -> str:
     return raw.strip().strip('"')
 
 
-def _writer_ask(template: Template, shown: list[str], card: str, hidden: str) -> str:
+def _writer_ask(template: Template, shown: list[str], against: str, hidden: str) -> str:
+    """`against` is what the move answers: the standing form, or in showcase the round's card."""
     lines = "\n".join(shown) if shown else "(you move first)"
     if template.mode == "escalation":
-        return f"{lines}\n\nYOUR MOVE:"
+        return f"{lines}\n\nBeat this: {against}\n\nYOUR MOVE:"
     truth = f"\nThe real meaning, which yours must not share: {hidden}\n" if hidden else ""
     # The round's card must follow the earlier rounds or the writer answers an old card.
-    return f"{lines}\n\nTHIS ROUND'S CARD: {card}\n{truth}\nYOUR MOVE:"
+    return f"{lines}\n\nTHIS ROUND'S CARD: {against}\n{truth}\nYOUR MOVE:"
 
 
 def render_opponent_messages(
-    template: Template, card: str, transcript: list[str], hidden: str = "", *, seat: Actor
+    template: Template,
+    card: str,
+    transcript: list[str],
+    hidden: str = "",
+    *,
+    seat: Actor,
+    fell: frozenset[str] = frozenset(),
 ) -> list[dict]:
     """The writer's match as a conversation: each earlier move by `seat` is its reply to what
-    it was shown then, so a later call's messages start with an earlier call's."""
+    it was shown then, so a later call's messages start with an earlier call's. `fell` holds
+    the escalation lines whose move fell; the move after one still answers the form before it."""
     mine = f"{player(seat)}: "
     messages = [{"role": "system", "content": render_opponent_system(template)}]
     shown: list[str] = []
+    against = card
     if template.mode == "escalation":
         shown = [f"Prompt: {card}"]
         for line in transcript:
             if line.startswith(mine):
-                messages.append({"role": "user", "content": _writer_ask(template, shown, "", "")})
+                ask = _writer_ask(template, shown, against, "")
+                messages.append({"role": "user", "content": ask})
                 messages.append({"role": "assistant", "content": line.removeprefix(mine)})
                 shown = []
             else:
                 shown.append(line)
+            if line not in fell:
+                against = line.split(": ", 1)[1]
     else:
         rounds: list[list[str]] = []
         for line in transcript:
@@ -296,5 +308,5 @@ def render_opponent_messages(
                 messages.append({"role": "assistant", "content": own})
                 shown = []
             shown.extend(lines)
-    messages.append({"role": "user", "content": _writer_ask(template, shown, card, hidden)})
+    messages.append({"role": "user", "content": _writer_ask(template, shown, against, hidden)})
     return messages

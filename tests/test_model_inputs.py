@@ -41,7 +41,9 @@ class RecordingCaller(FakeCaller):
         )
         return await super().judge(template, transcript, previous, move, hidden, spec)
 
-    def opponent_stream(self, template, seat, card, transcript, hidden="", slot=None, spec=None):
+    def opponent_stream(
+        self, template, seat, card, transcript, hidden="", slot=None, spec=None, fell=frozenset()
+    ):
         self.calls.append(
             {
                 "call": "house",
@@ -54,7 +56,7 @@ class RecordingCaller(FakeCaller):
                 "model": spec and spec.model,
             }
         )
-        return super().opponent_stream(template, seat, card, transcript, hidden, slot, spec)
+        return super().opponent_stream(template, seat, card, transcript, hidden, slot, spec, fell)
 
 
 def assert_matches_fixture(name: str, calls: list[dict]) -> None:

@@ -194,10 +194,12 @@ class BrokenHouse(FakeCaller):
         self.broken = True
 
     def opponent_stream(
-        self, template, seat, card, transcript, hidden="", slot=None, spec=None
+        self, template, seat, card, transcript, hidden="", slot=None, spec=None, fell=frozenset()
     ) -> AsyncIterator[str]:
         if not self.broken:
-            return super().opponent_stream(template, seat, card, transcript, hidden, slot, spec)
+            return super().opponent_stream(
+                template, seat, card, transcript, hidden, slot, spec, fell
+            )
         self.broken = False
 
         async def breaks() -> AsyncIterator[str]:
@@ -867,7 +869,7 @@ class StuckHouse(FakeCaller):
     """A House that starts an answer and never finishes, as when the server stops mid-call."""
 
     def opponent_stream(
-        self, template, seat, card, transcript, hidden="", slot=None, spec=None
+        self, template, seat, card, transcript, hidden="", slot=None, spec=None, fell=frozenset()
     ) -> AsyncIterator[str]:
         async def hang() -> AsyncIterator[str]:
             await asyncio.Event().wait()

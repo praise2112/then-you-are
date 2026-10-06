@@ -5,7 +5,7 @@ import asyncio
 import logging
 from collections.abc import AsyncIterator
 
-from arena_core.state import Match, transcript
+from arena_core.state import Match, fallen_lines, transcript
 from arena_core.template import Seed, Template
 from arena_judge.caller import CallError, ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
@@ -45,13 +45,20 @@ class House:
         """The seat's answer to the card, streamed to the table unless silent; None when every
         call failed. A stand-in taking the seat is recorded on `row` as well."""
         lines = transcript(match, template, finished_only=True)
+        fell = fallen_lines(match, template)
         prompt, hidden = card.card_text, card.hidden
         if self.stand_in is None or row.model_ref != self.stand_in[0]:
             for attempt in range(HOUSE_ATTEMPTS):
                 if attempt:
                     await asyncio.sleep(HOUSE_RETRY_S)
                 stream = self.caller.opponent_stream(
-                    template, row.seat, prompt, lines, hidden, self._slot(match.id, row.seat)
+                    template,
+                    row.seat,
+                    prompt,
+                    lines,
+                    hidden,
+                    self._slot(match.id, row.seat),
+                    fell=fell,
                 )
                 try:
                     return await self._collect_move(match, stream, silent)
@@ -62,7 +69,7 @@ class House:
             await set_model_ref(self.pool, match.id, row.seat, self.stand_in[0])
             row.model_ref = self.stand_in[0]
         stream = self.caller.opponent_stream(
-            template, row.seat, prompt, lines, hidden, spec=self.stand_in[1]
+            template, row.seat, prompt, lines, hidden, spec=self.stand_in[1], fell=fell
         )
         try:
             return await self._collect_move(match, stream, silent)
