@@ -26,25 +26,19 @@ export function ShowcaseBoard({ duel, snap, template, table }: BoardProps) {
   const earlier = lastResult ? revealed.slice(0, -1) : revealed;
   const judging = !mine && (pending || !!mySeat?.answered) && snap.phase === "write";
   const out = !!mySeat?.eliminated;
-  const canWrite = snap.status === "active" && !!me && !out && !mine && !judging && !ended && !!current && snap.phase === "write";
+  const writing = !!me && !!current && snap.phase === "write" && !mine && !judging && !out;
+  const canWrite = writing && snap.status === "active" && !ended;
   const clock = left !== null ? clockText(left) : null;
-  const hostLine = ended
-    ? "The match is over. One moment."
-    : returned?.nudge_text
-      ? returned.nudge_text
-      : onCall
-        ? calling
-          ? "Called. The truth is coming out."
-          : "One of these is real. The rest were written this minute."
-        : waitingCall
-          ? "The others are calling."
-          : judging
-            ? "The judge is reading yours."
-            : mine
-              ? "Yours is in. The rest are still writing."
-              : spectator
-                ? "The table is writing."
-                : template.move_hint;
+
+  function hostLine(): string {
+    if (ended) return "The match is over. One moment.";
+    if (returned?.nudge_text) return returned.nudge_text;
+    if (onCall) return calling ? "Called. The truth is coming out." : "One of these is real. The rest were written this minute.";
+    if (waitingCall) return "The others are calling.";
+    if (judging) return "The judge is reading yours.";
+    if (mine) return "Yours is in. The rest are still writing.";
+    return spectator ? "The table is writing." : template.move_hint;
+  }
 
   return (
     <>
@@ -149,7 +143,7 @@ export function ShowcaseBoard({ duel, snap, template, table }: BoardProps) {
           )}
 
           {finished && <ResultCard snap={snap} ended={finished} table={table} />}
-          {!spectator && me && current && !onCall && !mine && !judging && !out && !finished && snap.phase === "write" && (
+          {!spectator && writing && current && !finished && (
             <Composer
               duel={duel}
               template={template}
@@ -173,7 +167,7 @@ export function ShowcaseBoard({ duel, snap, template, table }: BoardProps) {
               <li key={rule}>{rule}</li>
             ))}
           </ul>
-          <HostPanel line={hostLine} thinking={judging} finished={finished} me={me} />
+          <HostPanel line={hostLine()} thinking={judging} finished={finished} me={me} />
         </section>
       </main>
 

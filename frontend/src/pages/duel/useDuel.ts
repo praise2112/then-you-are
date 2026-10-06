@@ -80,9 +80,9 @@ export function useDuel(matchId: string, spectator: boolean) {
   const [calling, setCalling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [after, setAfter] = useState<string | null>(null);
-  const modeRef = useRef<MatchSnapshot["mode"]>("escalation");
-  const seatRef = useRef<string | null>(null);
-  const prefixRef = useRef("");
+  // What the event handler reads, so it stays the same function across renders.
+  const snapRef = useRef(snap);
+  const templateRef = useRef(template);
   // The newest state version the client holds or has a fetch under way for.
   const versionRef = useRef(-1);
   const fetchingRef = useRef(false);
@@ -101,8 +101,6 @@ export function useDuel(matchId: string, spectator: boolean) {
         versionRef.current = s.state_version;
         setSnap(s);
         if (s.status === "open" || isLive(s.status)) setAfter((a) => a ?? s.event_id);
-        modeRef.current = s.mode;
-        seatRef.current = spectator ? null : s.your_seat;
         // A showcase refusal says why only in the refused seat's own snapshot.
         if (s.mode === "showcase" && s.returned) {
           setReturned(s.returned);
@@ -134,14 +132,13 @@ export function useDuel(matchId: string, spectator: boolean) {
   const templateId = snap?.template_id;
   useEffect(() => {
     if (!templateId) return;
-    api.template(templateId).then(
-      (t) => {
-        prefixRef.current = t.move_prefix;
-        setTemplate(t);
-      },
-      (e) => setError(e.message),
-    );
+    api.template(templateId).then(setTemplate, (e) => setError(e.message));
   }, [templateId]);
+
+  useEffect(() => {
+    snapRef.current = snap;
+    templateRef.current = template;
+  }, [snap, template]);
 
   const onEvent = useCallback(
     (event: MatchEvent) => {
@@ -162,19 +159,21 @@ export function useDuel(matchId: string, spectator: boolean) {
         setSnap((s) => s && update(s));
         if (fetchingRef.current) behindRef.current = true;
       };
+      const showcase = snapRef.current?.mode === "showcase";
+      const mySeat = spectator ? null : (snapRef.current?.your_seat ?? null);
       switch (event.name) {
         case "judge_started":
           setThinking(true);
           return;
         case "turn_rejected": {
           const r = event.data;
-          const mine = r.seat === seatRef.current;
+          const mine = r.seat === mySeat;
           if (mine) {
             setThinking(false);
             setPending(false);
           }
           // A showcase refusal says why only in the refused seat's own snapshot.
-          if (modeRef.current === "showcase") {
+          if (showcase) {
             if (mine) catchUp(r.state_version);
             return;
           }
@@ -187,19 +186,19 @@ export function useDuel(matchId: string, spectator: boolean) {
           return;
         case "judge_paused":
           setPaused(event.data);
-          setText((t) => t || withoutPrefix(event.data.move_text, prefixRef.current));
+          setText((t) => t || withoutPrefix(event.data.move_text, templateRef.current?.move_prefix ?? ""));
           return;
         case "judge_resumed":
           setPaused(null);
           return;
         case "ruling": {
           // A showcase round's rulings arrive together with its reveal, read from the snapshot.
-          if (modeRef.current === "showcase") return;
+          if (showcase) return;
           const r = event.data;
           if (r.state_version <= versionRef.current) return;
           setThinking(false);
           setStreaming("");
-          if (r.actor === seatRef.current) {
+          if (r.actor === mySeat) {
             setPending(false);
             setReturned(null);
             setText("");
@@ -255,7 +254,7 @@ export function useDuel(matchId: string, spectator: boolean) {
           setSnap((s) => s && { ...s, status: "ended", winner: e.winner, end_reason: e.end_reason, seats: withTotals(s, e.totals) });
           setEnded(e);
           setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), e.end_reason === "resign" ? 0 : 3200);
-          if (modeRef.current === "showcase") catchUp(e.state_version);
+          if (showcase) catchUp(e.state_version);
           return;
         }
       }
