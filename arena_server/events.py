@@ -1,13 +1,17 @@
-"""Per-match event buffer. Event ids are "<generation>-<n>", so a Last-Event-ID from an earlier
-process replays the buffer from the start."""
+"""Per-match event buffer and the SSE payloads it carries. Event ids are "<generation>-<n>", so a
+Last-Event-ID from an earlier process replays the buffer from the start."""
 
 import asyncio
 import secrets
 from collections import defaultdict
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
+from typing import Literal
 
 from pydantic import BaseModel
+
+from arena_core.state import EndReason, Outcome
+from arena_judge.schema import HostPayload, ScoringPayload
 
 
 @dataclass
@@ -51,3 +55,125 @@ class EventBus:
                 cursor += 1
                 yield stream.events[cursor - 1]
             await stream.changed.wait()
+
+
+class TurnRejected(BaseModel):
+    # The seat whose move came back; other clients ignore it.
+    seat: str
+    outcome: Literal["deterministic_invalid", "semantic_reject"]
+    reason_text: str
+    strikes: int
+    nudge_text: str | None = None
+
+
+class JudgeStarted(BaseModel):
+    seq: int
+
+
+class Ruling(BaseModel):
+    seq: int
+    round_n: int
+    actor: str
+    move_text: str
+    outcome: Outcome
+    scoring: ScoringPayload
+    host: HostPayload
+    points: int
+    # Every seat's total once this ruling lands.
+    totals: dict[str, int]
+    to_move: str
+    # The round the match is in once this ruling lands; past the budget when it ended.
+    round_in_play: int
+    state_version: int
+
+
+class MoveToken(BaseModel):
+    seq: int
+    text: str
+
+
+class JudgePaused(BaseModel):
+    seq: int
+    host_text: str
+    move_text: str
+
+
+class JudgeResumed(BaseModel):
+    seq: int
+
+
+class GuessOption(BaseModel):
+    """One entry on the table during a call. The key says nothing about which is real."""
+
+    key: str
+    text: str
+
+
+class GuessView(BaseModel):
+    """A call made: who picked, what they picked (the truth or a player's bluff), who got paid."""
+
+    actor: str
+    picked: str
+    points: int
+    awarded_to: str
+
+
+class GuessOpened(BaseModel):
+    """Showcase only: every answer is judged and the guessers may call the real entry. Each
+    guesser reads its own options from the snapshot."""
+
+    round_n: int
+    state_version: int
+
+
+class RoundRevealed(BaseModel):
+    """Showcase only: every call is in, so the card's truth may be shown."""
+
+    round_n: int
+    token: str
+    emoji: str
+    detail: str
+    truth: str
+    guesses: list[GuessView]
+    totals: dict[str, int]
+    state_version: int
+
+
+class MatchEnded(BaseModel):
+    end_reason: EndReason
+    winner: str | None
+    totals: dict[str, int]
+    highlight_seq: int | None
+    coaching_line: str | None = None
+    share_text: str
+    replay_id: str
+    state_version: int
+
+
+class SeatJoined(BaseModel):
+    """A player took a seat at a table that is still filling."""
+
+    seat: str
+    state_version: int
+
+
+class MatchStarted(BaseModel):
+    """Every seat is filled and play begins."""
+
+    state_version: int
+
+
+class SeatSubmitted(BaseModel):
+    """Showcase: a seat has written or called for the round in play. Says nothing about what."""
+
+    seat: str
+    state_version: int
+
+
+class TurnChanged(BaseModel):
+    """The turn passed without a ruling to show: a forfeit, a resign, or play moved on."""
+
+    to_move: str
+    turn_deadline: str | None
+    round_in_play: int
+    state_version: int

@@ -6,13 +6,8 @@ from pydantic import BaseModel
 
 from arena_core.state import EndReason, MatchStatus, Outcome, Phase
 from arena_core.template import Mode
-from arena_judge.schema import (
-    GuessOption,
-    GuessView,
-    HostPayload,
-    ScoringPayload,
-    TurnRejected,
-)
+from arena_judge.schema import HostPayload, ScoringPayload
+from arena_server.events import GuessOption, GuessView, TurnRejected
 
 TableKind = Literal["house", "friends", "open"]
 

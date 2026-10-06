@@ -39,13 +39,15 @@ from arena_core.state import (
 from arena_core.template import Seed, Template
 from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
-from arena_judge.schema import (
+from arena_judge.schema import HostPayload, JudgeResponse, ScoringPayload, route_outcome
+from arena_server.auth import account_of, new_session_key
+from arena_server.db import Pool
+from arena_server.events import (
+    EventBus,
     GuessOpened,
     GuessOption,
     GuessView,
-    HostPayload,
     JudgePaused,
-    JudgeResponse,
     JudgeResumed,
     JudgeStarted,
     MatchEnded,
@@ -53,16 +55,11 @@ from arena_judge.schema import (
     MoveToken,
     RoundRevealed,
     Ruling,
-    ScoringPayload,
     SeatJoined,
     SeatSubmitted,
     TurnChanged,
     TurnRejected,
-    route_outcome,
 )
-from arena_server.auth import account_of, new_session_key
-from arena_server.db import Pool
-from arena_server.events import EventBus
 from arena_server.leaderboard import account_streaks
 from arena_server.presence import Lobby, Presence, TurnNudge
 from arena_server.views import (
