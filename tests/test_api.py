@@ -1,8 +1,8 @@
 import asyncio
 import dataclasses
-import json
 import os
 import time
+from collections.abc import AsyncIterator
 from pathlib import Path
 
 import httpx
@@ -12,7 +12,7 @@ from asgi_lifespan import LifespanManager
 from arena_core.template import load_template
 from arena_server.app import build_app
 from arena_server.config import load_settings
-from tests.conftest import FakeCaller, judge_response
+from tests.conftest import FakeCaller, events_of, judge_response, run_app, settle
 
 pytestmark = [
     pytest.mark.skipif(
@@ -21,28 +21,6 @@ pytestmark = [
     ),
     pytest.mark.xdist_group("database"),
 ]
-
-
-async def run_app(caller: FakeCaller):
-    settings = dataclasses.replace(
-        load_settings(), database_url=os.environ["TEST_DATABASE_URL"], curator_token="shh"
-    )
-    app = build_app(settings, caller)
-    manager = LifespanManager(app)
-    await manager.__aenter__()
-    transport = httpx.ASGITransport(app=app)
-    client = httpx.AsyncClient(transport=transport, base_url="http://test")
-    return app, manager, client
-
-
-async def settle(app) -> None:
-    while app.state.service.tasks:
-        await asyncio.gather(*app.state.service.tasks, return_exceptions=True)
-
-
-def events_of(app, match_id: str) -> list[tuple[int, str, dict]]:
-    stream = app.state.bus.streams[match_id]
-    return [(e.id, e.name, json.loads(e.data)) for e in stream.events]
 
 
 @pytest.mark.anyio
@@ -701,6 +679,66 @@ async def test_each_house_conversation_keeps_a_llama_server_slot_until_its_match
     finally:
         for client in clients:
             await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+class StuckHouse(FakeCaller):
+    """A House that starts an answer and never finishes, as when the server stops mid-call."""
+
+    def opponent_stream(
+        self, template, seat, card, transcript, hidden="", slot=None, spec=None
+    ) -> AsyncIterator[str]:
+        async def hang() -> AsyncIterator[str]:
+            await asyncio.Event().wait()
+            yield ""
+
+        return hang()
+
+
+@pytest.mark.anyio
+async def test_a_restart_plays_the_owed_house_turn_and_leaves_a_word_duel_until_it_is_opened():
+    app, manager, ana = await run_app(StuckHouse([], []))
+    duel = (await ana.post("/matches", json={"template_id": "then-i-am"})).json()
+    words = (await ana.post("/matches", json={"template_id": "word-for-word"})).json()
+    await ana.post(
+        f"/matches/{duel['id']}/moves",
+        json={"action_id": "a1", "expected_version": 0, "move_text": "I am rust, hinge-eating."},
+    )
+    async with asyncio.timeout(5):
+        while "ruling" not in [name for _, name, _ in events_of(app, duel["id"])]:
+            await asyncio.sleep(0.01)
+    for task in list(app.state.service.tasks):
+        task.cancel()
+    await settle(app)
+    cookies = ana.cookies
+    await ana.aclose()
+    await manager.__aexit__(None, None, None)
+
+    app, manager, ana = await run_app(FakeCaller([], ["I am a key, lock-turning."]))
+    ana.cookies = cookies
+    spectator = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test")
+
+    async def house_answered() -> bool:
+        return (await spectator.get(f"/matches/{words['id']}")).json()["seats"][1]["answered"]
+
+    try:
+        await settle(app)
+        state = (await ana.get(f"/matches/{duel['id']}")).json()
+        assert [t["actor"] for t in state["transcript"]] == ["p1", "p2"]
+        assert state["to_move"] == "p1" and state["status"] == "active"
+        # The word duel's House waits for a seated player to open the match.
+        assert not await house_answered()
+        await ana.get(f"/matches/{words['id']}")
+        await settle(app)
+        assert await house_answered()
+        for match_id, version in ((duel["id"], 2), (words["id"], 0)):
+            await ana.post(
+                f"/matches/{match_id}/resign", json={"action_id": "r", "expected_version": version}
+            )
+        await settle(app)
+    finally:
+        await spectator.aclose()
+        await ana.aclose()
         await manager.__aexit__(None, None, None)
 
 

@@ -1,18 +1,13 @@
-import dataclasses
 import os
 import secrets
 
 import httpx
 import pytest
-from asgi_lifespan import LifespanManager
 
 from arena_core.template import load_templates
 from arena_server import auth
-from arena_server.app import build_app
-from arena_server.config import load_settings
 from arena_server.leaderboard import streaks
-from tests.conftest import FakeCaller, judge_response
-from tests.test_api import settle
+from tests.conftest import FakeCaller, judge_response, run_app, settle
 
 pytestmark = [
     pytest.mark.skipif(
@@ -28,20 +23,6 @@ PROFILE = auth.Profile("github", RUN, f"Ada {RUN}", "https://avatars.example/ada
 PLAYER = auth.Profile("github", f"{RUN}-b", f"Bea {RUN}", "")
 LINKER = auth.Profile("github", f"{RUN}-l", f"Lin {RUN}", "")
 SECOND = auth.Profile("discord", f"{RUN}-d", f"lin_{RUN}", "https://cdn.example/d.png")
-
-
-async def run_app(caller: FakeCaller):
-    settings = dataclasses.replace(
-        load_settings(),
-        database_url=os.environ["TEST_DATABASE_URL"],
-        oauth_clients={"github": ("id", "secret"), "discord": ("id", "secret")},
-    )
-    app = build_app(settings, caller)
-    manager = LifespanManager(app)
-    await manager.__aenter__()
-    transport = httpx.ASGITransport(app=app)
-    client = httpx.AsyncClient(transport=transport, base_url="http://test")
-    return app, manager, client
 
 
 async def sign_in(client: httpx.AsyncClient) -> None:

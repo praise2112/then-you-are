@@ -1,6 +1,12 @@
+import asyncio
+import dataclasses
+import json
+import os
 from collections.abc import AsyncIterator
 
+import httpx
 import pytest
+from asgi_lifespan import LifespanManager
 
 from arena_core.template import Template, load_template
 from arena_judge.caller import CallError, JudgeCall, ModelCaller
@@ -12,6 +18,8 @@ from arena_judge.schema import (
     JudgeResponse,
     ScoringPayload,
 )
+from arena_server.app import build_app
+from arena_server.config import load_settings
 
 
 @pytest.fixture(scope="session")
@@ -126,3 +134,30 @@ class FakeCaller(ModelCaller):
 @pytest.fixture
 def anyio_backend() -> str:
     return "asyncio"
+
+
+async def run_app(caller: ModelCaller):
+    """Boots the app on the test database. Returns the app, its lifespan to close, and a client."""
+    settings = dataclasses.replace(
+        load_settings(),
+        database_url=os.environ["TEST_DATABASE_URL"],
+        curator_token="shh",
+        session_secret="test-secret",
+        oauth_clients={"github": ("id", "secret"), "discord": ("id", "secret")},
+    )
+    app = build_app(settings, caller)
+    manager = LifespanManager(app)
+    await manager.__aenter__()
+    transport = httpx.ASGITransport(app=app)
+    client = httpx.AsyncClient(transport=transport, base_url="http://test")
+    return app, manager, client
+
+
+async def settle(app) -> None:
+    while app.state.service.tasks:
+        await asyncio.gather(*app.state.service.tasks, return_exceptions=True)
+
+
+def events_of(app, match_id: str) -> list[tuple[str, str, dict]]:
+    stream = app.state.bus.streams[match_id]
+    return [(e.id, e.name, json.loads(e.data)) for e in stream.events]

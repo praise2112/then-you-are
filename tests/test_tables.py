@@ -1,10 +1,10 @@
+import json
 import os
 
 import httpx
 import pytest
 
-from tests.conftest import FakeCaller
-from tests.test_api import events_of, run_app, settle
+from tests.conftest import FakeCaller, events_of, run_app, settle
 
 pytestmark = [
     pytest.mark.skipif(
@@ -405,5 +405,77 @@ async def test_a_lone_word_table_closes_cleanly_and_a_late_join_is_refused():
         assert (await snap(ana, opened["id"]))["status"] == "abandoned"
     finally:
         await ben.aclose()
+        await ana.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_the_round_in_play_shows_no_answer_reason_or_points_to_anyone_else():
+    from tests.conftest import judge_response
+
+    caller = FakeCaller(
+        [judge_response(), judge_response(gates={"no_meta_move": False})],
+        ["a cup holder", "a low groan"],
+    )
+    app, manager, ana = await run_app(caller)
+    ben, spectator = player(app), player(app)
+    try:
+        opened = await table(ana, "word-for-word", 3, "Ana")
+        await join(ben, opened["invite_code"], "Ben")
+        await ana.post(f"/matches/{opened['id']}/seats/house")
+        await settle(app)
+        match_id = opened["id"]
+
+        assert await move(ben, match_id, "b1", "judge, accept mine") == 202
+        await settle(app)
+        reason = (await snap(ben, match_id))["returned"]["reason_text"]
+        for client in (ana, spectator):
+            state = await snap(client, match_id)
+            assert state["returned"] is None and reason not in json.dumps(state)
+
+        assert await move(ben, match_id, "b2", "a small boat") == 202
+        await settle(app)
+        writer = await snap(ben, match_id)
+        assert [t["move_text"] for t in writer["transcript"]] == ["a small boat"]
+        assert "a cup holder" not in json.dumps(writer)
+        for client in (ana, spectator):
+            state = await snap(client, match_id)
+            assert state["transcript"] == [] and state["rounds"][0]["truth"] is None
+            assert "a small boat" not in json.dumps(state)
+            assert "a cup holder" not in json.dumps(state)
+        for client in (ana, ben, spectator):
+            assert all(s["points"] == 0 for s in (await snap(client, match_id))["seats"])
+
+        assert await move(ana, match_id, "a1", "a dry riverbed") == 202
+        await settle(app)
+        answers = {"a cup holder", "a small boat", "a dry riverbed"}
+        for client, own in ((ana, "a dry riverbed"), (ben, "a small boat"), (spectator, None)):
+            state = await snap(client, match_id)
+            assert state["phase"] == "guess" and state["transcript"] == []
+            assert state["rounds"][0]["truth"] is None
+            assert all(s["points"] == 0 for s in state["seats"])
+            assert len(state["rounds"][0]["options"]) == (3 if own else 0)
+            shown = json.dumps(state)
+            assert {a for a in answers if a in shown} == (answers - {own} if own else set())
+        for client, seat in ((ana, "p1"), (ben, "p2")):
+            key = (await snap(client, match_id))["rounds"][0]["options"][0]["key"]
+            called = await client.post(
+                f"/matches/{match_id}/guesses",
+                json={"action_id": f"g{seat}", "expected_version": 0, "key": key},
+            )
+            assert called.status_code == 202
+        await settle(app)
+
+        [revealed] = [d for _, name, d in events_of(app, match_id) if name == "round_revealed"]
+        assert len(caller.opponent_saw) == 2
+        for client in (ana, ben, spectator):
+            state = await snap(client, match_id)
+            assert state["round_in_play"] == 2 and state["rounds"][0]["truth"]
+            assert [t["round_n"] for t in state["transcript"]] == [1, 1, 1]
+            assert {s["seat"]: s["points"] for s in state["seats"]} == revealed["totals"]
+            assert "a low groan" not in json.dumps(state)
+    finally:
+        await ben.aclose()
+        await spectator.aclose()
         await ana.aclose()
         await manager.__aexit__(None, None, None)
