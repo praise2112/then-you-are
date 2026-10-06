@@ -85,13 +85,15 @@ def verdict_score(template: Template, text: str, response: JudgeResponse) -> Sco
 
 
 def match_of(context: Context) -> Match:
-    # Contexts recorded before the field was dropped still carry template_version.
+    # Contexts recorded earlier carry template_version, and name human_seats "guessers".
     d = {k: v for k, v in context.match.items() if k != "template_version"}
+    if "guessers" in d:
+        d["human_seats"] = d.pop("guessers")
     return Match(
         **{
             **d,
             "seats": tuple(d["seats"]),
-            "guessers": tuple(d["guessers"]),
+            "human_seats": tuple(d["human_seats"]),
             "turns": [Turn(**t) for t in d["turns"]],
             "guesses": [Guess(**g) for g in d["guesses"]],
         }

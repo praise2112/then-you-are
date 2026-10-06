@@ -19,7 +19,7 @@ def test_becoming_the_seed_is_a_duplicate(template):
 
 def test_repeating_a_standing_form_is_a_duplicate(template):
     match = new_match()
-    apply_ruling(match, "p1", "I am rust, patient.", "accept", 0, template)
+    apply_ruling(match, "p1", "I am rust, patient.", "accept", template)
     assert layer1(template, "i am rust, patient", match) == "duplicate"
     assert layer1(template, "I am oil, rust-stopping.", match) is None
 

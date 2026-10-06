@@ -19,16 +19,21 @@ from arena_core.state import (
     JUDGED,
     STANDING,
     Actor,
+    Change,
     Guess,
+    IllegalAction,
     Match,
     Outcome,
-    StaleVersionError,
     Turn,
     apply_guess,
     apply_ruling,
+    check_guess,
+    check_move,
+    check_resign,
     deal,
     forfeit_turn,
     layer1,
+    model_next,
     normalize,
     repeats_the_round,
     resign,
@@ -163,10 +168,6 @@ class Record:
     @property
     def owner(self) -> SeatRow:
         return self.humans[0]
-
-    @property
-    def clocked(self) -> bool:
-        return len(self.humans) >= 2
 
     def row(self, seat: str) -> SeatRow:
         return next(s for s in self.seats if s.seat == seat)
@@ -354,7 +355,7 @@ class MatchService:
             if form.lower().startswith(template.move_constraints.prefix.lower()):
                 form = form[len(template.move_constraints.prefix) :]
             line = f"round {match.round_n}, {form.rstrip('.')} stands"
-            if rec.clocked and match.to_move == mine:
+            if match.clocked and match.to_move == mine:
                 line += ", your move"
         return OpenDuel(id=match.id, title=template.title, line=line)
 
@@ -627,7 +628,7 @@ class MatchService:
                 for t in turns
             ],
             guesses=[Guess(**g) for g in guesses],
-            guessers=tuple(r["seat"] for r in seat_rows if r["kind"] == "human"),
+            human_seats=tuple(r["seat"] for r in seat_rows if r["kind"] == "human"),
             strikes={r["seat"]: r["strikes"] for r in seat_rows},
             points={r["seat"]: r["points"] for r in seat_rows},
             forfeits={r["seat"]: r["forfeits"] for r in seat_rows},
@@ -722,12 +723,23 @@ class MatchService:
         layer1_result: str | None,
         verdict_id: int | None,
         action_id: str | None,
+        round_n: int | None = None,
     ) -> None:
-        """One transaction: the new match state and the turn that produced it."""
+        """One transaction: the new match state and the turn that produced it. `round_n` is the
+        round a refused move was played in, when play has moved on since."""
         async with self.pool.connection() as conn, conn.transaction():
             await self._save(match, conn)
             await self._insert_turn(
-                conn, match, actor, move_text, outcome, seq, layer1_result, verdict_id, action_id
+                conn,
+                match,
+                actor,
+                move_text,
+                outcome,
+                seq,
+                layer1_result,
+                verdict_id,
+                action_id,
+                round_n,
             )
 
     async def _set_status(self, match_id: str, status: str) -> None:
@@ -753,7 +765,7 @@ class MatchService:
     ) -> str | None:
         """Starts the clock for the turn or phase in play when two or more humans share the
         table; clears it otherwise, or when not running."""
-        clocked = running and rec.clocked
+        clocked = running and match.clocked
         deadline = datetime.now(UTC) + self._clock_length(match, template) if clocked else None
         if deadline is None and rec.turn_deadline is None:
             return None
@@ -830,9 +842,12 @@ class MatchService:
         layer1_result: str | None,
         verdict_id: int | None,
         action_id: str | None,
+        round_n: int | None,
     ) -> int:
         # A refused move has no seq and no turn in the match.
         turn = match.turns[-1] if seq is not None and match.turns else None
+        if round_n is None:
+            round_n = turn.round_n if turn else match.round_n
         row = await (
             await conn.execute(
                 "insert into turns (match_id, seq, actor, move_text, layer1_result, outcome, "
@@ -848,7 +863,7 @@ class MatchService:
                     outcome,
                     verdict_id,
                     action_id,
-                    turn.round_n if turn else match.round_n,
+                    round_n,
                     turn.points if turn else None,
                     match.id,
                     actor,
@@ -1103,7 +1118,13 @@ class MatchService:
         if row["outcome"] == "semantic_reject" and row["host"]:
             host = HostPayload.model_validate(row["host"])
             return self._rejection(
-                match, template, viewer, "semantic_reject", host.headline, host.quotable_line
+                match,
+                template,
+                viewer,
+                match.strikes[viewer],
+                "semantic_reject",
+                host.headline,
+                host.quotable_line,
             )
         reason = row["layer1_result"]
         if reason == "repeat":
@@ -1112,7 +1133,9 @@ class MatchService:
             text = getattr(template.validation_messages, reason)
         else:
             return None
-        return self._rejection(match, template, viewer, "deterministic_invalid", text)
+        return self._rejection(
+            match, template, viewer, match.strikes[viewer], "deterministic_invalid", text
+        )
 
     @staticmethod
     def _clock_length(match: Match, template: Template) -> timedelta:
@@ -1263,8 +1286,8 @@ class MatchService:
             assert card is not None
             pick = self._resolve_pick(match, card, seat, key)
             try:
-                apply_guess(match, seat, pick, match.state_version, template)
-            except (StaleVersionError, ValueError) as e:
+                apply_guess(match, seat, pick, template)
+            except IllegalAction as e:
                 raise MatchError(409, str(e)) from e
             async with self.pool.connection() as conn, conn.transaction():
                 await self._save(match, conn)
@@ -1286,15 +1309,14 @@ class MatchService:
                 return
             seat = await self._check_command(match, rec, session_key, "resign", expected_version)
             template = self.template_of(match)
-            before = (match.round_n, match.phase)
-            resign(match, seat, match.state_version, template)
+            change = resign(match, seat, template)
             await self._store_turn(
                 match, seat, "", "deterministic_invalid", None, "resign", None, action_id
             )
             if await self._emit_if_ended(match):
                 return
             if template.mode == "showcase":
-                if (match.round_n, match.phase) != before:
+                if change.call_opened or change.round_closed:
                     await self._round_closed(match, template, rec)
                 return
             await self._after_turn(match, template, rec)
@@ -1361,28 +1383,24 @@ class MatchService:
         seat = await self._seat_of(rec, session_key)
         if seat is None:
             raise MatchError(403, "not your match")
-        if match.status in ("ended", "abandoned"):
-            raise MatchError(409, "match already ended")
-        if match.status == "open":
-            raise MatchError(409, "the table is still filling")
-        if seat in match.eliminated:
-            raise MatchError(409, "you are out of this match")
-        if action == "resign":
-            return seat
         template = self.template_of(match)
-        if template.mode == "showcase" and round_n is not None and round_n != match.round_n:
-            raise MatchError(409, "that round is over")
-        if action == "guess":
-            if match.phase != "guess" or seat not in match.owed_guesses():
-                raise MatchError(409, "no call to make")
+        try:
+            if action == "resign":
+                check_resign(match, seat)
+            elif action == "guess":
+                check_guess(match, seat, template, round_n)
+            else:
+                check_move(match, seat, template, round_n)
+        except IllegalAction as e:
+            raise MatchError(409, str(e)) from e
+        if action != "move":
             return seat
-        if match.phase != "write":
-            raise MatchError(409, "not your move")
         if template.mode == "showcase":
-            if match.has_answered(seat) or rec.row(seat).submitted:
+            if rec.row(seat).submitted:
                 raise MatchError(409, "you already answered this round")
             return seat
-        if match.status != "active" or match.to_move != seat:
+        # A move still with the judge holds the turn.
+        if match.status != "active":
             raise MatchError(409, "not your move")
         if expected_version != match.state_version:
             raise MatchError(409, f"stale version: match is at {match.state_version}")
@@ -1421,7 +1439,7 @@ class MatchService:
                 return
             template = self.template_of(match)
             try:
-                ended = await self._play_move(match, template, seat, move_text, action_id, rec)
+                ended = await self._play_move(match, template, seat, move_text, action_id)
                 if not ended:
                     await self._after_turn(match, template, rec)
             except MatchClosed:
@@ -1467,23 +1485,29 @@ class MatchService:
             ),
         )
         mover = rec.row(match.to_move)
-        if rec.clocked and mover.session_key:
+        if match.clocked and mover.session_key:
             await self.presence.send(
                 mover.session_key, TurnNudge(match_id=match.id, title=template.title)
             )
 
     async def _refuse_layer1(
         self, match: Match, template: Template, actor: Actor, move_text: str, action_id: str | None
-    ) -> bool:
-        """Applies a Layer 1 refusal when there is one. Returns True when the move was refused."""
+    ) -> Change | None:
+        """Applies a Layer 1 refusal when there is one, and returns its Change."""
         reason = layer1(template, move_text, match)
         if reason is None:
-            return False
-        apply_ruling(
-            match, actor, move_text, "deterministic_invalid", match.state_version, template
-        )
+            return None
+        change = apply_ruling(match, actor, move_text, "deterministic_invalid", template)
         await self._store_turn(
-            match, actor, move_text, "deterministic_invalid", None, reason, None, action_id
+            match,
+            actor,
+            move_text,
+            "deterministic_invalid",
+            None,
+            reason,
+            None,
+            action_id,
+            change.round_n,
         )
         self._emit_rejection(
             match,
@@ -1492,11 +1516,13 @@ class MatchService:
                 match,
                 template,
                 actor,
+                change.strikes,
                 "deterministic_invalid",
                 getattr(template.validation_messages, reason),
             ),
         )
-        return True
+        await self._store_forfeit(match, change)
+        return change
 
     async def _refuse_semantic(
         self,
@@ -1506,33 +1532,44 @@ class MatchService:
         move_text: str,
         judged: Judged,
         action_id: str | None,
-    ) -> None:
-        apply_ruling(match, actor, move_text, "semantic_reject", match.state_version, template)
+    ) -> Change:
+        change = apply_ruling(match, actor, move_text, "semantic_reject", template)
         await self._store_turn(
-            match, actor, move_text, "semantic_reject", None, None, judged.verdict_id, action_id
+            match,
+            actor,
+            move_text,
+            "semantic_reject",
+            None,
+            None,
+            judged.verdict_id,
+            action_id,
+            change.round_n,
         )
         host = judged.response.host
         self._emit_rejection(
             match,
             template,
             self._rejection(
-                match, template, actor, "semantic_reject", host.headline, host.quotable_line
+                match,
+                template,
+                actor,
+                change.strikes,
+                "semantic_reject",
+                host.headline,
+                host.quotable_line,
             ),
         )
-
-    async def _strike_out(self, match: Match, template: Template, seat: str, rec: Record) -> bool:
-        """At a table of humans a seat that runs out of strikes loses the turn. Returns True
-        when it did; a House duel keeps its strikes as nudges only."""
-        if not rec.clocked or seat in rec.models:
-            return False
-        if match.strikes[seat] < template.strikes_before_consequence:
-            return False
-        await self._forfeit(match, template, seat)
-        return True
+        await self._store_forfeit(match, change)
+        return change
 
     async def _forfeit(self, match: Match, template: Template, seat: str) -> None:
-        forfeit_turn(match, seat, template)
-        await self._store_turn(match, seat, "", "forfeit", len(match.turns), "forfeit", None, None)
+        await self._store_forfeit(match, forfeit_turn(match, seat, template))
+
+    async def _store_forfeit(self, match: Match, change: Change) -> None:
+        if change.forfeit is None:
+            return
+        turn = change.forfeit
+        await self._store_turn(match, turn.actor, "", "forfeit", turn.seq, "forfeit", None, None)
 
     async def _record_ruling(
         self,
@@ -1555,7 +1592,6 @@ class MatchService:
             actor,
             move_text,
             judged.outcome,
-            match.state_version,
             template,
             earned,
             truth_hit=proximity == "hit",
@@ -1592,11 +1628,9 @@ class MatchService:
         actor: Actor,
         move_text: str,
         action_id: str | None,
-        rec: Record,
     ) -> bool:
         """Escalation: one move through Layer 1 and the judge. Returns True when the match ended."""
         if await self._refuse_layer1(match, template, actor, move_text, action_id):
-            await self._strike_out(match, template, actor, rec)
             return await self._emit_if_ended(match)
         seq = len(match.turns) + 1
         self.bus.emit(match.id, "judge_started", JudgeStarted(seq=seq))
@@ -1605,7 +1639,6 @@ class MatchService:
         )
         if judged.outcome == "semantic_reject":
             await self._refuse_semantic(match, template, actor, move_text, judged, action_id)
-            await self._strike_out(match, template, actor, rec)
             return await self._emit_if_ended(match)
         ruling = await self._record_ruling(
             match, template, actor, move_text, judged, seq, action_id
@@ -1629,18 +1662,18 @@ class MatchService:
             seat = match.to_move
             strikes_before = match.strikes[seat]
             while match.status == "active" and match.to_move == seat:
-                refusals = match.strikes[seat] - strikes_before
-                if refusals < template.strikes_before_consequence:
+                step = model_next(match.strikes[seat] - strikes_before, template)
+                if step == "write":
                     move_text = await self._stream_opponent_move(match, template, seat, match.seed)
-                elif refusals == template.strikes_before_consequence:
+                elif step == "default_move":
                     move_text = template.default_move
                 else:
-                    resign(match, seat, match.state_version, template)
+                    resign(match, seat, template)
                     await self._save(match)
                     if match.status == "ended":
                         await self._emit_match_ended(match, coaching_line=None)
                     break
-                if await self._play_move(match, template, seat, move_text, None, rec):
+                if await self._play_move(match, template, seat, move_text, None):
                     return
 
     # Showcase turns
@@ -1683,7 +1716,7 @@ class MatchService:
                     match, rec = await self._load(match_id)
                     if match.status != "active" or match.round_n != round_n:
                         return
-                    resign(match, seat, match.state_version, template)
+                    resign(match, seat, template)
                     await self._save(match)
                     await self._after_showcase_change(match, template, rec, round_n)
                 return
@@ -1697,7 +1730,7 @@ class MatchService:
                     if tries < MODEL_REWRITES:
                         rewrite = True
                         return
-                    resign(match, seat, match.state_version, template)
+                    resign(match, seat, template)
                     await self._save(match)
                     await self._after_showcase_change(match, template, rec, round_n)
                     return
@@ -1743,9 +1776,11 @@ class MatchService:
                 if not self._still_owed(match, seat, round_n):
                     return
                 if judged is None:
-                    await self._refuse_layer1(match, template, seat, move_text, action_id)
+                    change = await self._refuse_layer1(match, template, seat, move_text, action_id)
                 elif judged.outcome == "semantic_reject":
-                    await self._refuse_semantic(match, template, seat, move_text, judged, action_id)
+                    change = await self._refuse_semantic(
+                        match, template, seat, move_text, judged, action_id
+                    )
                 elif repeats_the_round(match, move_text):
                     # No strike: the seat could not have known.
                     await self._store_turn(
@@ -1762,7 +1797,12 @@ class MatchService:
                         match,
                         template,
                         self._rejection(
-                            match, template, seat, "deterministic_invalid", REPEAT_TEXT
+                            match,
+                            template,
+                            seat,
+                            match.strikes[seat],
+                            "deterministic_invalid",
+                            REPEAT_TEXT,
                         ),
                     )
                     await self._give_time(match, rec, template)
@@ -1785,7 +1825,7 @@ class MatchService:
                     )
                     await self._after_showcase_change(match, template, rec, round_n)
                     return
-                if await self._strike_out(match, template, seat, rec):
+                if change is not None and change.forfeit is not None:
                     await self._after_showcase_change(match, template, rec, round_n)
                 else:
                     await self._give_time(match, rec, template)
@@ -1800,7 +1840,7 @@ class MatchService:
 
     async def _give_time(self, match: Match, rec: Record, template: Template) -> None:
         """A seat handed back its move after the judge ran long gets a whole clock again."""
-        if not rec.clocked or match.status not in ("active", "awaiting_judgment"):
+        if not match.clocked or match.status not in ("active", "awaiting_judgment"):
             return
         left = rec.turn_deadline - datetime.now(UTC) if rec.turn_deadline else None
         if left is None or left < GRACE:
@@ -1933,7 +1973,7 @@ class MatchService:
             refusals += 1
             if text == template.default_move:
                 raise HouseStuck(match.id)
-            if refusals < template.strikes_before_consequence:
+            if model_next(refusals, template) == "write":
                 text = await self._stream_opponent_move(
                     match, template, seat, card.card_text, card.hidden, silent=True
                 )
@@ -2063,12 +2103,12 @@ class MatchService:
         match: Match,
         template: Template,
         actor: Actor,
+        strikes: int,
         outcome: Literal["deterministic_invalid", "semantic_reject"],
         reason_text: str,
         nudge: str | None = None,
     ) -> TurnRejected:
-        strikes = match.strikes[actor]
-        if strikes < 2:
+        if strikes < template.strikes_before_consequence:
             nudge = None
         elif nudge is None:
             target = match.card if template.mode == "showcase" else match.standing_form

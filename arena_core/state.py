@@ -45,8 +45,8 @@ MAX_SEATS = 6
 NO_PICK = "none"
 
 
-class StaleVersionError(Exception):
-    """The command carried an expected_version that no longer matches the match."""
+class IllegalAction(Exception):
+    """A command the match does not allow right now. The message is for the player."""
 
 
 @dataclass(frozen=True)
@@ -59,6 +59,23 @@ class Turn:
     truth_hit: bool = False
     # What the move was awarded; None when it was never scored.
     points: int | None = None
+
+
+@dataclass(frozen=True)
+class Change:
+    """What one transition did. `strikes` is the count a refusal brought the mover to, 0 when
+    nothing was refused. `forfeit` is the turn lost to the clock or to the strikes."""
+
+    # The round in play when the transition began.
+    round_n: int
+    # The judged move it appended.
+    turn: Turn | None = None
+    strikes: int = 0
+    forfeit: Turn | None = None
+    call_opened: bool = False
+    # Showcase: the round in play was closed, so its answers can be revealed.
+    round_closed: bool = False
+    ended: bool = False
 
 
 @dataclass(frozen=True)
@@ -86,8 +103,8 @@ class Match:
     round_n: int = 1
     turns: list[Turn] = field(default_factory=list)
     guesses: list[Guess] = field(default_factory=list)
-    # Who calls the real entry in a guess round. A model seat writes but never guesses.
-    guessers: tuple[Actor, ...] = ("p1",)
+    # Seats played by people. Only they call in a guess round, and only they run a clock.
+    human_seats: tuple[Actor, ...] = ("p1",)
     strikes: dict[Actor, int] = field(default_factory=dict)
     points: dict[Actor, int] = field(default_factory=dict)
     forfeits: dict[Actor, int] = field(default_factory=dict)
@@ -108,6 +125,11 @@ class Match:
     @property
     def live_seats(self) -> list[Actor]:
         return [s for s in self.seats if s not in self.eliminated]
+
+    @property
+    def clocked(self) -> bool:
+        """Two or more people share the table, so each turn runs against a clock."""
+        return len(self.human_seats) >= 2
 
     @property
     def seed(self) -> str:
@@ -163,7 +185,7 @@ class Match:
         called = {g.actor for g in self.round_guesses(self.round_n)}
         return [
             a
-            for a in self.guessers
+            for a in self.human_seats
             if a in self.live_seats and a not in called and len(self.guess_options(a)) >= 2
         ]
 
@@ -253,26 +275,89 @@ def weighted_total(scores: dict[str, int], weights: dict[str, int]) -> int:
     return sum(weights.get(name, 0) * value for name, value in scores.items())
 
 
-def _check_open(match: Match, expected_version: int) -> None:
-    if expected_version != match.state_version:
-        raise StaleVersionError(f"expected {expected_version}, match is at {match.state_version}")
+def owed(match: Match, template: Template) -> list[Actor]:
+    """The seats that owe an answer now: the seat to move, each live seat yet to answer the
+    showcase round, or the guessers still to call."""
+    if match.status in ("open", "ended", "abandoned"):
+        return []
+    if match.phase == "guess":
+        return match.owed_guesses()
+    if template.mode == "escalation":
+        return [match.to_move]
+    return [s for s in match.live_seats if not match.has_answered(s)]
+
+
+def model_next(refusals: int, template: Template) -> Literal["write", "default_move", "give_up"]:
+    """What a model seat does after `refusals` refused tries at one turn: write again, play the
+    template's default move, or give up its seat."""
+    if refusals < template.strikes_before_consequence:
+        return "write"
+    if refusals == template.strikes_before_consequence:
+        return "default_move"
+    return "give_up"
+
+
+def _check_open(match: Match, actor: Actor) -> None:
     if match.status in ("ended", "abandoned"):
-        raise ValueError("match already ended")
+        raise IllegalAction("match already ended")
     if match.status == "open":
-        raise ValueError("the table is still filling")
-
-
-def _check_move(match: Match, actor: Actor, template: Template) -> None:
-    """Escalation moves one seat at a time; in showcase every live seat answers once a round."""
+        raise IllegalAction("the table is still filling")
     if actor not in match.live_seats:
-        raise ValueError(f"{actor} has no seat in play")
+        raise IllegalAction("you are out of this match")
+
+
+def _check_round(match: Match, template: Template, round_n: int | None) -> None:
+    if template.mode == "showcase" and round_n is not None and round_n != match.round_n:
+        raise IllegalAction("that round is over")
+
+
+def check_resign(match: Match, actor: Actor) -> None:
+    """Raises IllegalAction unless the seat may leave the match now."""
+    _check_open(match, actor)
+
+
+def check_guess(match: Match, actor: Actor, template: Template, round_n: int | None = None) -> None:
+    """Raises IllegalAction unless the seat owes a call now. `round_n` is the round the command
+    was sent for, when it says."""
+    _check_open(match, actor)
+    _check_round(match, template, round_n)
+    if match.phase != "guess" or actor not in match.owed_guesses():
+        raise IllegalAction("no call to make")
+
+
+def check_move(match: Match, actor: Actor, template: Template, round_n: int | None = None) -> None:
+    """Raises IllegalAction unless the seat may answer now: in escalation one seat at a time, in
+    showcase every live seat once a round. `round_n` is as for check_guess."""
+    _check_open(match, actor)
+    _check_round(match, template, round_n)
     if match.phase != "write":
-        raise ValueError("the round is being guessed on")
+        raise IllegalAction("not your move")
     if template.mode == "showcase":
         if match.has_answered(actor):
-            raise ValueError(f"{actor} already answered this round")
+            raise IllegalAction("you already answered this round")
     elif actor != match.to_move:
-        raise ValueError(f"{actor} played out of turn")
+        raise IllegalAction("not your move")
+
+
+def _change(
+    match: Match,
+    template: Template,
+    round_n: int,
+    phase: Phase,
+    turn: Turn | None = None,
+    strikes: int = 0,
+    forfeit: Turn | None = None,
+) -> Change:
+    """The Change for a transition that began in `round_n` and `phase`."""
+    return Change(
+        round_n=round_n,
+        turn=turn,
+        strikes=strikes,
+        forfeit=forfeit,
+        call_opened=phase == "write" and match.phase == "guess",
+        round_closed=template.mode == "showcase" and match.round_n != round_n,
+        ended=match.status == "ended",
+    )
 
 
 def apply_ruling(
@@ -280,83 +365,86 @@ def apply_ruling(
     actor: Actor,
     move_text: str,
     outcome: Outcome,
-    expected_version: int,
     template: Template,
     points: int = 0,
     truth_hit: bool = False,
-) -> Match:
+) -> Change:
     """Record a judged or refused move and advance the match by the template's win rule.
     `points` is the move's weighted score; a fail is awarded none."""
-    _check_open(match, expected_version)
-    _check_move(match, actor, template)
+    check_move(match, actor, template)
+    round_n, phase = match.round_n, match.phase
     match.state_version += 1
     match.status = "active"
 
     if outcome in REFUSED:
-        # Refusals hand the turn back. What a strike count means is the caller's business.
+        # The turn comes back, unless a person at a clocked table has run out of strikes.
         match.strikes[actor] += 1
-        return match
+        strikes = match.strikes[actor]
+        forfeit = None
+        struck_out = strikes >= template.strikes_before_consequence
+        if match.clocked and actor in match.human_seats and struck_out:
+            forfeit = _forfeit(match, actor, template)
+        return _change(match, template, round_n, phase, strikes=strikes, forfeit=forfeit)
 
     earned = 0 if outcome == "fail" else points
-    match.turns.append(
-        Turn(
-            seq=len(match.turns) + 1,
-            actor=actor,
-            move_text=move_text,
-            outcome=outcome,
-            round_n=match.round_n,
-            truth_hit=truth_hit,
-            points=earned,
-        )
+    turn = Turn(
+        seq=len(match.turns) + 1,
+        actor=actor,
+        move_text=move_text,
+        outcome=outcome,
+        round_n=match.round_n,
+        truth_hit=truth_hit,
+        points=earned,
     )
+    match.turns.append(turn)
     match.strikes[actor] = 0
     match.points[actor] += earned
-    if template.mode == "showcase":
-        if match.round_answered:
-            _close_round(match, template, actor)
-        return match
-
-    following = next_seat(match, actor)
-    if outcome == "fail" and template.win_condition == "sudden_death":
-        # The mover is out; the next seat answers the same standing form.
-        match.eliminated.append(actor)
-        if _last_seat_standing(match, "sudden_death"):
-            return match
-    _pass_turn(match, actor, following)
-    _end_on_budget(match, template, actor)
-    return match
+    # On a sudden-death fail the mover is out; the next seat answers the same standing form.
+    sudden = outcome == "fail" and template.win_condition == "sudden_death"
+    _move_on(match, template, actor, "sudden_death" if sudden else None)
+    return _change(match, template, round_n, phase, turn=turn)
 
 
-def forfeit_turn(match: Match, seat: Actor, template: Template) -> Match:
-    """The seat loses its turn, out of time or out of strikes. A second forfeit puts it out."""
-    _check_open(match, match.state_version)
-    _check_move(match, seat, template)
+def forfeit_turn(match: Match, seat: Actor, template: Template) -> Change:
+    """The seat loses its turn to the clock. A second forfeit puts it out."""
+    check_move(match, seat, template)
+    round_n, phase = match.round_n, match.phase
+    turn = _forfeit(match, seat, template)
+    return _change(match, template, round_n, phase, forfeit=turn)
+
+
+def _forfeit(match: Match, seat: Actor, template: Template) -> Turn:
     match.state_version += 1
     match.status = "active"
     match.strikes[seat] = 0
-    match.turns.append(
-        Turn(
-            seq=len(match.turns) + 1,
-            actor=seat,
-            move_text="",
-            outcome=FORFEIT,
-            round_n=match.round_n,
-        )
+    turn = Turn(
+        seq=len(match.turns) + 1,
+        actor=seat,
+        move_text="",
+        outcome=FORFEIT,
+        round_n=match.round_n,
     )
+    match.turns.append(turn)
     match.forfeits[seat] += 1
     knocked = match.forfeits[seat] >= FORFEITS_TO_ELIMINATE
-    following = next_seat(match, seat)
-    if knocked:
-        match.eliminated.append(seat)
-        if _last_seat_standing(match, "forfeit"):
-            return match
+    _move_on(match, template, seat, "forfeit" if knocked else None)
+    return turn
+
+
+def _move_on(match: Match, template: Template, actor: Actor, out: EndReason | None) -> None:
+    """After the actor's turn: puts it out when `out` gives a reason, then passes the turn or
+    closes the round."""
+    following = next_seat(match, actor)
+    if out is not None:
+        match.eliminated.append(actor)
+        if _last_seat_standing(match, out):
+            return
     if template.mode == "showcase":
         if match.round_answered:
-            _close_round(match, template, seat)
-        return match
-    _pass_turn(match, seat, following)
-    _end_on_budget(match, template, seat)
-    return match
+            _close_round(match, template, actor)
+        return
+    _pass_turn(match, actor, following)
+    _end_on_budget(match, template, actor)
 
 
 def _last_seat_standing(match: Match, reason: EndReason) -> bool:
@@ -393,16 +481,13 @@ def _next_round(match: Match, template: Template, last_actor: Actor) -> None:
     _end_on_budget(match, template, last_actor)
 
 
-def apply_guess(
-    match: Match, actor: Actor, picked: Pick, expected_version: int, template: Template
-) -> Match:
+def apply_guess(match: Match, actor: Actor, picked: Pick, template: Template) -> Change:
     """Record a call. The truth pays the guesser; a bluff pays the player who wrote it."""
-    _check_open(match, expected_version)
-    if match.phase != "guess" or actor not in match.owed_guesses():
-        raise ValueError(f"{actor} has no call to make")
+    check_guess(match, actor, template)
     if picked not in match.guess_options(actor):
-        raise ValueError("that entry is not on the table")
+        raise IllegalAction("that entry is not on the table")
     assert template.guess is not None
+    round_n, phase = match.round_n, match.phase
     match.state_version += 1
     if picked == "truth":
         awarded_to = actor
@@ -413,18 +498,17 @@ def apply_guess(
     match.points[awarded_to] += points
     match.guesses.append(Guess(match.round_n, actor, picked, points, awarded_to))
     _after_guess(match, template, actor)
-    return match
+    return _change(match, template, round_n, phase)
 
 
-def skip_guess(match: Match, actor: Actor, template: Template) -> Match:
+def skip_guess(match: Match, actor: Actor, template: Template) -> Change:
     """The guesser ran out of time: the call is recorded as no pick and pays nobody."""
-    _check_open(match, match.state_version)
-    if match.phase != "guess" or actor not in match.owed_guesses():
-        raise ValueError(f"{actor} has no call to make")
+    check_guess(match, actor, template)
+    round_n, phase = match.round_n, match.phase
     match.state_version += 1
     match.guesses.append(Guess(match.round_n, actor, NO_PICK, 0, actor))
     _after_guess(match, template, actor)
-    return match
+    return _change(match, template, round_n, phase)
 
 
 def _after_guess(match: Match, template: Template, actor: Actor) -> None:
@@ -454,15 +538,14 @@ def _end_on_budget(match: Match, template: Template, last_actor: Actor) -> None:
         )
 
 
-def resign(match: Match, actor: Actor, expected_version: int, template: Template) -> Match:
+def resign(match: Match, actor: Actor, template: Template) -> Change:
     """The seat leaves the match. With one seat left it wins; otherwise play goes on."""
-    _check_open(match, expected_version)
-    if actor not in match.live_seats:
-        raise ValueError(f"{actor} has no seat in play")
+    check_resign(match, actor)
+    round_n, phase = match.round_n, match.phase
     match.state_version += 1
     match.eliminated.append(actor)
     if _last_seat_standing(match, "resign"):
-        return match
+        return _change(match, template, round_n, phase)
     if template.mode == "escalation":
         if match.to_move == actor:
             _pass_turn(match, actor, next_seat(match, actor))
@@ -471,4 +554,4 @@ def resign(match: Match, actor: Actor, expected_version: int, template: Template
         _close_round(match, template, actor)
     elif match.phase == "guess":
         _after_guess(match, template, actor)
-    return match
+    return _change(match, template, round_n, phase)

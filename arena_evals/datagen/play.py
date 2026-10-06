@@ -11,6 +11,7 @@ from arena_core.state import (
     Match,
     apply_ruling,
     layer1,
+    model_next,
     resign,
     transcript,
     weighted_total,
@@ -38,7 +39,7 @@ def new_match(template: Template, cards: list[Seed]) -> Match:
         template_id=template.slug,
         cards=[c.opening_token for c in cards],
         seed_emoji=cards[0].opening_emoji,
-        guessers=(),
+        human_seats=(),
     )
 
 
@@ -75,27 +76,27 @@ class MatchPlayer:
             actor = match.to_move
             strikes_before = match.strikes[actor]
             while match.status == "active" and match.to_move == actor:
-                refusals = match.strikes[actor] - strikes_before
-                if refusals < template.strikes_before_consequence:
+                step = model_next(match.strikes[actor] - strikes_before, template)
+                if step == "write":
                     text = await self._write(actor, match.seed, "")
-                elif refusals == template.strikes_before_consequence:
+                elif step == "default_move":
                     text = template.default_move
                 else:
-                    resign(match, actor, match.state_version, template)
+                    resign(match, actor, template)
                     break
                 await self._play_move(actor, text)
 
     async def _play_move(self, actor: Actor, text: str) -> None:
         match, template = self.match, self.template
         if layer1(template, text, match) is not None:
-            apply_ruling(match, actor, text, "deterministic_invalid", match.state_version, template)
+            apply_ruling(match, actor, text, "deterministic_invalid", template)
             return
         response = await self._judge(
             actor, JudgeInputs(match.standing_form, text, "", transcript(match, template))
         )
         points = weighted_total(response.scoring.scores, template.weights)
         outcome = route_outcome(response.scoring)
-        apply_ruling(match, actor, text, outcome, match.state_version, template, points)
+        apply_ruling(match, actor, text, outcome, template, points)
 
     # Showcase
 
@@ -114,7 +115,6 @@ class MatchPlayer:
                     actor,
                     text,
                     route_outcome(response.scoring),
-                    match.state_version,
                     template,
                     points,
                     truth_hit=proximity == "hit",
@@ -141,12 +141,13 @@ class MatchPlayer:
                 if route_outcome(response.scoring) != "semantic_reject":
                     return text, response
             refusals += 1
-            if refusals < template.strikes_before_consequence:
+            step = model_next(refusals, template)
+            if step == "write":
                 text = await self._write(actor, card.card_text, card.hidden)
-            elif text == template.default_move:
-                raise MatchAbandoned(f"{self.match.id}: the default move was refused")
-            else:
+            elif step == "default_move" and text != template.default_move:
                 text = template.default_move
+            else:
+                raise MatchAbandoned(f"{self.match.id}: the default move was refused")
 
     # Calls, recorded or replayed
 

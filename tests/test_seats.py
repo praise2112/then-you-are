@@ -1,11 +1,13 @@
 import pytest
 
 from arena_core.state import (
+    IllegalAction,
     Match,
     Outcome,
     apply_guess,
     apply_ruling,
     forfeit_turn,
+    owed,
     resign,
     skip_guess,
     transcript,
@@ -31,7 +33,6 @@ def play(match: Match, template: Template, *moves: tuple[str, Outcome, int]) -> 
             actor,
             f"I am {actor} {len(match.turns)}",
             outcome,
-            match.state_version,
             template,
             points,
         )
@@ -76,9 +77,9 @@ def test_a_tie_at_the_top_goes_to_the_tied_seat_that_moved_last():
 def test_a_seat_that_resigns_leaves_and_play_goes_on_until_one_is_left():
     match = table("p1", "p2", "p3")
     play(match, DUEL, ("p1", "accept", 0))
-    resign(match, "p2", match.state_version, DUEL)
+    resign(match, "p2", DUEL)
     assert match.status == "active" and (match.to_move, match.round_n) == ("p3", 1)
-    resign(match, "p3", match.state_version, DUEL)
+    resign(match, "p3", DUEL)
     assert match.status == "ended" and match.end_reason == "resign" and match.winner == "p1"
 
 
@@ -89,18 +90,18 @@ def test_a_showcase_round_waits_for_all_six_seats_then_each_guesser_calls():
         template_id="word-for-word",
         cards=["zarf", "groak", "oxter"],
         seats=seats,
-        guessers=("p1", "p3"),
+        human_seats=("p1", "p3"),
     )
     for seat in seats[:5]:
-        apply_ruling(match, seat, f"bluff {seat}", "accept", match.state_version, WORDS, points=10)
+        apply_ruling(match, seat, f"bluff {seat}", "accept", WORDS, points=10)
     assert match.phase == "write" and match.round_n == 1
-    with pytest.raises(ValueError, match="already answered"):
-        apply_ruling(match, "p2", "again", "accept", match.state_version, WORDS, points=10)
-    apply_ruling(match, "p6", "bluff p6", "accept", match.state_version, WORDS, points=10)
+    with pytest.raises(IllegalAction, match="already answered"):
+        apply_ruling(match, "p2", "again", "accept", WORDS, points=10)
+    apply_ruling(match, "p6", "bluff p6", "accept", WORDS, points=10)
     assert match.phase == "guess" and match.owed_guesses() == ["p1", "p3"]
     assert match.guess_options("p1") == ["truth", "p2", "p3", "p4", "p5", "p6"]
-    apply_guess(match, "p1", "p4", match.state_version, WORDS)
-    apply_guess(match, "p3", "truth", match.state_version, WORDS)
+    apply_guess(match, "p1", "p4", WORDS)
+    apply_guess(match, "p3", "truth", WORDS)
     assert (match.phase, match.round_n, match.card) == ("write", 2, "groak")
     assert WORDS.guess is not None
     assert match.points["p4"] == 10 + WORDS.guess.fool_points
@@ -133,15 +134,15 @@ def test_a_forfeited_answer_closes_the_round_and_leaves_no_bluff_to_pick():
         template_id="word-for-word",
         cards=["zarf", "groak", "oxter"],
         seats=("p1", "p2", "p3"),
-        guessers=("p1", "p2"),
+        human_seats=("p1", "p2"),
     )
-    apply_ruling(match, "p1", "a cloak", "accept", 0, WORDS, points=10)
-    apply_ruling(match, "p3", "a hat", "accept", 1, WORDS, points=10)
+    apply_ruling(match, "p1", "a cloak", "accept", WORDS, points=10)
+    apply_ruling(match, "p3", "a hat", "accept", WORDS, points=10)
     forfeit_turn(match, "p2", WORDS)
     assert match.phase == "guess" and match.guess_options("p1") == ["truth", "p3"]
     skip_guess(match, "p2", WORDS)
     assert match.owed_guesses() == ["p1"]
-    apply_guess(match, "p1", "truth", match.state_version, WORDS)
+    apply_guess(match, "p1", "truth", WORDS)
     assert (match.phase, match.round_n) == ("write", 2)
     assert [g.picked for g in match.guesses] == ["none", "truth"]
     assert match.points["p2"] == 0
@@ -149,8 +150,8 @@ def test_a_forfeited_answer_closes_the_round_and_leaves_no_bluff_to_pick():
 
 def test_strikes_reset_once_a_move_is_judged():
     match = table("p1", "p2")
-    apply_ruling(match, "p1", "lol", "semantic_reject", 0, DUEL)
-    apply_ruling(match, "p1", "lol again", "semantic_reject", 1, DUEL)
+    apply_ruling(match, "p1", "lol", "semantic_reject", DUEL)
+    apply_ruling(match, "p1", "lol again", "semantic_reject", DUEL)
     assert match.strikes["p1"] == 2
     play(match, DUEL, ("p1", "accept", 0))
     assert match.strikes["p1"] == 0
@@ -158,7 +159,7 @@ def test_strikes_reset_once_a_move_is_judged():
 
 def test_a_table_still_filling_takes_no_moves():
     match = table("p1", "p2", status="open")
-    with pytest.raises(ValueError, match="still filling"):
+    with pytest.raises(IllegalAction, match="still filling"):
         play(match, DUEL, ("p1", "accept", 0))
 
 
@@ -184,13 +185,53 @@ def test_a_forfeited_round_still_counts_as_history_for_the_prompts():
         template_id="front-page",
         cards=["zarf", "groak", "oxter"],
         seats=("p1", "p2", "p3"),
-        guessers=(),
+        human_seats=(),
     )
-    apply_ruling(match, "p1", "a headline", "accept", 0, WORDS, points=10)
-    apply_ruling(match, "p2", "another headline", "accept", 1, WORDS, points=10)
+    apply_ruling(match, "p1", "a headline", "accept", WORDS, points=10)
+    apply_ruling(match, "p2", "another headline", "accept", WORDS, points=10)
     forfeit_turn(match, "p3", WORDS)
     assert match.round_n == 2
     assert transcript(match, WORDS, finished_only=True)[1:] == [
         "player1: a headline",
         "player2: another headline",
     ]
+
+
+def test_a_person_at_a_clocked_table_loses_the_turn_on_running_out_of_strikes():
+    match = table("p1", "p2", "p3", human_seats=("p1", "p2"))
+    first = apply_ruling(match, "p1", "lol", "semantic_reject", DUEL)
+    assert (first.strikes, first.forfeit, match.to_move) == (1, None, "p1")
+    second = apply_ruling(match, "p1", "lol again", "deterministic_invalid", DUEL)
+    assert second.strikes == DUEL.strikes_before_consequence
+    assert second.forfeit == match.turns[-1]
+    assert match.turns[-1].outcome == "forfeit"
+    assert match.to_move == "p2" and match.strikes["p1"] == 0 and match.forfeits["p1"] == 1
+
+
+def test_a_model_seat_or_a_lone_person_only_collects_strikes():
+    clocked = table("p1", "p2", "p3", human_seats=("p1", "p2"))
+    play(clocked, DUEL, ("p1", "accept", 0), ("p2", "accept", 0))
+    duel = table("p1", "p2")
+    for _ in range(3):
+        assert apply_ruling(clocked, "p3", "lol", "semantic_reject", DUEL).forfeit is None
+        assert apply_ruling(duel, "p1", "lol", "semantic_reject", DUEL).forfeit is None
+    assert (clocked.to_move, duel.to_move) == ("p3", "p1")
+
+
+def test_owed_names_the_seats_that_still_answer():
+    duel = table("p1", "p2")
+    assert owed(duel, DUEL) == ["p1"]
+    words = Match(
+        id="w",
+        template_id="word-for-word",
+        cards=["zarf", "groak", "oxter"],
+        seats=("p1", "p2", "p3"),
+        human_seats=("p1", "p2"),
+    )
+    apply_ruling(words, "p2", "a cloak", "accept", WORDS, points=10)
+    assert owed(words, WORDS) == ["p1", "p3"]
+    apply_ruling(words, "p1", "a hat", "accept", WORDS, points=10)
+    apply_ruling(words, "p3", "a cup", "accept", WORDS, points=10)
+    assert owed(words, WORDS) == ["p1", "p2"]
+    resign(duel, "p1", DUEL)
+    assert owed(duel, DUEL) == []
