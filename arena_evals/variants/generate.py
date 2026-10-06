@@ -498,16 +498,13 @@ async def generate(klass: str, budget: float, threshold: float, seed: int) -> Ta
                     break
                 await asyncio.gather(*(gen.run_cell(c) for c in rest[i : i + 6]))
                 save_index(gen.entries())
-        save_index(gen.entries())
         if gen.tally.spent >= budget:
             print("budget spent on writing; dedup and rank wait for the next run", file=sys.stderr)
         else:
             if gen.live("lint"):
                 await gen.dedup(threshold)
-                save_index(gen.entries())
             if gen.live("dedup"):
                 await gen.rank()
-                save_index(gen.entries())
     finally:
         save_index(gen.entries())
         await caller.aclose()
