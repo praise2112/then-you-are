@@ -160,6 +160,33 @@ async def test_a_lapsed_clock_forfeits_the_turn_and_a_second_lapse_loses_the_mat
 
 
 @pytest.mark.anyio
+async def test_a_lapsed_clock_waiting_on_a_busy_match_is_queued_once():
+    app, manager, ana = await run_app(FakeCaller([], []))
+    ben = player(app)
+    service = app.state.service
+    try:
+        opened = await table(ana, "then-i-am", 2, "Ana")
+        match_id = await join(ben, opened["invite_code"], "Ben")
+        await settle(app)
+        async with service.pool.connection() as conn:
+            await conn.execute(
+                "update matches set turn_deadline = now() - interval '1 second' where id = %s",
+                (match_id,),
+            )
+        async with await service.lock(match_id):
+            queued = len(service.tasks)
+            for _ in range(3):
+                assert match_id in await service.expire_clocks()
+            assert len(service.tasks) == queued + 1
+        await settle(app)
+        assert (await snap(ben, match_id))["to_move"] == "p2"
+    finally:
+        await ben.aclose()
+        await ana.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_two_players_write_at_once_and_see_nothing_of_the_round_until_the_reveal():
     caller = FakeCaller([], ["a cup holder", "a low groan", "a hinge pin"])
     app, manager, ana = await run_app(caller)

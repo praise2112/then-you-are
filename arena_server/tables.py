@@ -164,7 +164,7 @@ class Tables:
         """Seats the session, or for its creator the House, at the next seat of a filling table.
         A session already seated is left where it is."""
         service = self.service
-        async with service.locks[match_id]:
+        async with await service.lock(match_id):
             match, rec = await service.load(match_id)
             seated = await seat_of(service.pool, rec, session_key)
             if kind == "human" and seated:

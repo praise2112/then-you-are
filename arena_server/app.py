@@ -320,7 +320,8 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         return await boards_index(pool, templates)
 
     @app.get("/leaderboard/players")
-    async def get_ranked_players() -> int:
+    async def get_ranked_players(response: Response) -> int:
+        response.headers["Cache-Control"] = "public, max-age=60"
         return await ranked_players(pool)
 
     @app.get("/leaderboard/{slug}")

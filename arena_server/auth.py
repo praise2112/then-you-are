@@ -46,7 +46,7 @@ class SessionCheck:
         self.pool = pool
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        if scope["type"] in ("http", "websocket"):
+        if scope["type"] in ("http", "websocket") and not scope["path"].startswith("/assets/"):
             key = HTTPConnection(scope).cookies.get(SESSION_COOKIE)
             if key and await self._revoked(key):
                 scope["headers"] = [(k, v) for k, v in scope["headers"] if k != b"cookie"]
@@ -54,13 +54,14 @@ class SessionCheck:
 
     async def _revoked(self, key: str) -> bool:
         async with self.pool.connection() as conn:
-            await conn.execute(
-                "update sessions set last_seen_at = now() where session_key = %s "
-                "and not revoked and last_seen_at < now() - interval '1 day'",
-                (key,),
-            )
             row = await (
-                await conn.execute("select revoked from sessions where session_key = %s", (key,))
+                await conn.execute(
+                    "with seen as (update sessions set last_seen_at = now() "
+                    "where session_key = %(key)s and not revoked "
+                    "and last_seen_at < now() - interval '1 day') "
+                    "select revoked from sessions where session_key = %(key)s",
+                    {"key": key},
+                )
             ).fetchone()
         return row is not None and row["revoked"]
 

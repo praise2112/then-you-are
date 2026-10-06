@@ -55,16 +55,22 @@ class EventBus:
         return int(n) if generation == self.generation and n.isdigit() else 0
 
     def forget(self, match_id: str) -> None:
-        self.streams.pop(match_id, None)
+        stream = self.streams.pop(match_id, None)
+        if stream is not None:
+            stream.changed.set()
 
     async def subscribe(self, match_id: str, last_id: int = 0) -> AsyncIterator[Event]:
-        """The match's events after the first `last_id`. Only for a match still in play."""
+        """The match's events after the first `last_id`, until match_ended or until the stream is
+        forgotten. Only for a match still in play."""
         stream = self.streams[match_id]
         cursor = last_id
-        while True:
+        while self.streams.get(match_id) is stream:
             while cursor < len(stream.events):
                 cursor += 1
-                yield stream.events[cursor - 1]
+                event = stream.events[cursor - 1]
+                yield event
+                if event.name == "match_ended":
+                    return
             await stream.changed.wait()
 
 

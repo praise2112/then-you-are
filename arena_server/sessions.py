@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from psycopg import AsyncConnection
 from psycopg.rows import DictRow
 
-from arena_core.state import LIVE_STATUSES, on_table
+from arena_core.state import LIVE_STATUSES, Match, on_table
 from arena_server.db import Pool
 from arena_server.leaderboard import account_streaks
 from arena_server.store import Record
@@ -93,8 +93,10 @@ async def session_view(service: "MatchService", session_key: str | None) -> Sess
                 list_duels=row["list_duels"],
                 account=account,
                 open_duels=[
-                    await open_duel(service, m, session_key)
-                    for m in await open_match_ids(service.pool, session_key)
+                    await open_duel(service.pool, match, rec, session_key)
+                    for match, rec in await service.load_many(
+                        await open_match_ids(service.pool, session_key)
+                    )
                 ],
             )
     return SessionView(stage_name=DEFAULT_STAGE_NAME, list_duels=False)
@@ -128,10 +130,9 @@ async def open_match_ids(
     return [row["id"] for row in rows]
 
 
-async def open_duel(service: "MatchService", match_id: str, session_key: str) -> OpenDuel:
-    match, rec = await service.load(match_id)
+async def open_duel(pool: Pool, match: Match, rec: Record, session_key: str) -> OpenDuel:
     template = rec.template
-    mine = await seat_of(service.pool, rec, session_key)
+    mine = await seat_of(pool, rec, session_key)
     if template.mode == "showcase":
         your_turn = match.phase == "guess" and mine in match.owed_guesses()
     else:

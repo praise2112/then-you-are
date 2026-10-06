@@ -575,6 +575,37 @@ async def test_the_games_may_be_cached_for_five_minutes_but_a_missing_one_is_not
 
 
 @pytest.mark.anyio
+async def test_the_ranked_player_count_may_be_cached_for_a_minute():
+    app, manager, client = await run_app(FakeCaller(rulings=[], opponent_moves=[]))
+    try:
+        response = await client.get("/leaderboard/players")
+        assert response.status_code == 200
+        assert response.headers["cache-control"] == "public, max-age=60"
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_command_for_a_missing_or_finished_match_keeps_no_lock():
+    app, manager, client = await run_app(FakeCaller(rulings=[], opponent_moves=[]))
+    service = app.state.service
+    try:
+        duel = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        resign = {"action_id": "r", "expected_version": 0}
+        assert (await client.post(f"/matches/{duel['id']}/resign", json=resign)).status_code == 202
+        await settle(app)
+        late = await client.post(f"/matches/{duel['id']}/resign", json={**resign, "action_id": "s"})
+        assert late.status_code == 409
+        missing = await client.post("/matches/nosuchmatch/resign", json=resign)
+        assert missing.status_code == 404
+        assert "nosuchmatch" not in service.locks and duel["id"] not in service.locks
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_a_refused_judge_bill_backs_off_and_flags_the_health_check(monkeypatch):
     import arena_server.judging as judging
 

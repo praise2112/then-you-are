@@ -81,6 +81,7 @@ from arena_server.store import (
     live_public_ids,
     load_match,
     load_matches,
+    match_is_live,
     overdue_ids,
     replay_ids,
     reset_for_restart,
@@ -133,6 +134,8 @@ class MatchService:
         self.tasks: set[asyncio.Task] = set()
         # House seats writing for a hidden round: (match, seat, round).
         self.answering: set[tuple[str, str, int]] = set()
+        # Matches with a lapsed clock already queued for the lock.
+        self.expiring: set[str] = set()
         # The template each live match plays, parsed once from its row.
         self.match_templates: dict[str, Template] = {}
 
@@ -144,6 +147,13 @@ class MatchService:
         self.house.release(match_id)
         asyncio.get_running_loop().call_later(STREAM_LINGER_S, self.bus.forget, match_id)
 
+    async def lock(self, match_id: str) -> asyncio.Lock:
+        """The match's lock. A match that is over or missing gets a lock kept nowhere, since
+        nothing can change it."""
+        if match_id in self.locks or await match_is_live(self.pool, match_id):
+            return self.locks[match_id]
+        return asyncio.Lock()
+
     async def recover(self) -> None:
         """After a restart: a move waiting on the judge is lost, so the player resubmits; every
         active match then picks up the work it owes."""
@@ -152,7 +162,7 @@ class MatchService:
 
     async def resume(self, match_id: str) -> None:
         """Starts the match's owed work when a House seat owes an answer or a clock runs."""
-        async with self.locks[match_id]:
+        async with await self.lock(match_id):
             match, rec = await self.load(match_id)
             house_owes = any(seat in rec.models for seat in owed(match, rec.template))
             if match.status == "active" and (house_owes or match.clocked):
@@ -169,6 +179,9 @@ class MatchService:
 
     async def load(self, match_id: str) -> tuple[Match, Record]:
         return await load_match(self.pool, match_id, self.templates, self.match_templates)
+
+    async def load_many(self, match_ids: list[str]) -> list[tuple[Match, Record]]:
+        return await load_matches(self.pool, match_ids, self.templates, self.match_templates)
 
     async def _set_clock(self, match: Match, rec: Record) -> str | None:
         """Starts the clock for the turn or phase in play when two or more humans share the
@@ -187,7 +200,7 @@ class MatchService:
         for match_id in stale:
             # Under the match lock, so a join already under way either lands first or finds
             # the table closed.
-            async with self.locks[match_id]:
+            async with await self.lock(match_id):
                 if not await close_unfilled(self.pool, match_id):
                     continue
                 match, _ = await self.load(match_id)
@@ -244,15 +257,18 @@ class MatchService:
         )
 
     async def stage(self) -> StageView:
-        return StageView(
-            live=[await self.snapshot(match_id) for match_id in await live_public_ids(self.pool)],
-            duels_played=await ended_count(self.pool),
-        )
+        ids = await live_public_ids(self.pool)
+        cursors = {match_id: self.bus.cursor(match_id) for match_id in ids}
+        live = [
+            await self._snapshot(match, rec, None, cursors[match.id])
+            for match, rec in await self.load_many(ids)
+        ]
+        return StageView(live=live, duels_played=await ended_count(self.pool))
 
     async def replays(self, sort: Literal["curated", "newest", "longest"]) -> list[Replay]:
         ids = await replay_ids(self.pool, sort)
         cursors = {match_id: self.bus.cursor(match_id) for match_id in ids}
-        loaded = await load_matches(self.pool, ids, self.templates, self.match_templates)
+        loaded = await self.load_many(ids)
         return [await self._replay(match, rec, None, cursors[match.id]) for match, rec in loaded]
 
     # Commands
@@ -271,7 +287,7 @@ class MatchService:
         move_text: str,
         round_n: int | None = None,
     ) -> None:
-        async with self.locks[match_id]:
+        async with await self.lock(match_id):
             if await action_seen(self.pool, match_id, action_id):
                 return
             match, rec = await self.load(match_id)
@@ -297,7 +313,7 @@ class MatchService:
         round_n: int | None = None,
     ) -> None:
         """A guesser calls the real entry. No judge is involved; the last call reveals the round."""
-        async with self.locks[match_id]:
+        async with await self.lock(match_id):
             if await action_seen(self.pool, match_id, action_id):
                 return
             match, rec = await self.load(match_id)
@@ -318,7 +334,7 @@ class MatchService:
     async def resign_match(
         self, match_id: str, session_key: str, action_id: str, expected_version: int
     ) -> None:
-        async with self.locks[match_id]:
+        async with await self.lock(match_id):
             match, rec = await self.load(match_id)
             if await action_seen(self.pool, match_id, action_id):
                 return
@@ -419,7 +435,7 @@ class MatchService:
         judge call through the House's reply; a hidden round's answers are judged outside it."""
         try:
             if shows_live(template):
-                async with self.locks[match_id]:
+                async with await self.lock(match_id):
                     match, rec = await self.load(match_id)
                     if not _owes(match, template, seat, round_n):
                         return
@@ -428,7 +444,7 @@ class MatchService:
                 return
             match, _ = await self.load(match_id)
             ruled = await self._rule(match, template, text)
-            async with self.locks[match_id]:
+            async with await self.lock(match_id):
                 match, rec = await self.load(match_id)
                 await self._land_answer(match, rec, seat, round_n, text, ruled, action_id)
         except MatchClosed:
@@ -461,7 +477,7 @@ class MatchService:
     async def _hand_back(self, match_id: str, seat: str) -> None:
         """The seat's answer was lost on the way: it may answer again, with a whole clock if
         little was left."""
-        async with self.locks[match_id]:
+        async with await self.lock(match_id):
             await set_submitted(self.pool, match_id, seat, False)
             match, rec = await self.load(match_id)
             live = shows_live(rec.template)
@@ -635,7 +651,7 @@ class MatchService:
                     written = await self._write_answer(match, rec, seat)
                 except JudgeGaveUp:
                     written = None
-                async with self.locks[match_id]:
+                async with await self.lock(match_id):
                     match, rec = await self.load(match_id)
                     if not _owes(match, template, seat, round_n):
                         return
@@ -692,6 +708,9 @@ class MatchService:
         serial play."""
         card = card_in_play(match, template)
         text = await self.house.write(match, template, row, card, silent=not shows_live(template))
+        if not await match_is_live(self.pool, match.id):
+            # The match closed during the write; the slot the write took goes back.
+            self.house.release(match.id)
         if text is not None:
             await hold_move(self.pool, match.id, row.seat, text, match.round_n)
         return text
@@ -719,17 +738,23 @@ class MatchService:
         overdue = await overdue_ids(self.pool)
         # Each on its own task: a House turn played after one forfeit holds up no other match.
         for match_id in overdue:
-            self.spawn(self._expire(match_id))
+            if match_id not in self.expiring:
+                self.expiring.add(match_id)
+                self.spawn(self._expire(match_id))
         return overdue
 
     async def _expire(self, match_id: str) -> None:
         """A judge still working on an answer holds the clock."""
-        async with self.locks[match_id]:
-            match, rec = await self.load(match_id)
-            now = datetime.now(UTC)
-            if match.status != "active" or rec.turn_deadline is None or rec.turn_deadline > now:
-                return
-            await self._expire_turn(match, rec)
+        try:
+            async with await self.lock(match_id):
+                match, rec = await self.load(match_id)
+                now = datetime.now(UTC)
+                deadline = rec.turn_deadline
+                if match.status != "active" or deadline is None or deadline > now:
+                    return
+                await self._expire_turn(match, rec)
+        finally:
+            self.expiring.discard(match_id)
 
     async def _expire_turn(self, match: Match, rec: Record) -> None:
         """Every human seat that owes an answer or a call, and has not sent one, loses it."""

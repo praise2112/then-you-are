@@ -50,6 +50,9 @@ create table if not exists matches (
     ended_at timestamptz
 );
 create index if not exists matches_open_idx on matches (status, template_id) where status = 'open';
+create index if not exists matches_deadline_idx on matches (turn_deadline) where status = 'active';
+create index if not exists matches_in_play_idx on matches (updated_at)
+    where status in ('active', 'awaiting_judgment', 'paused');
 
 -- One row per seat, in turn order p1..pN. A human seat has a session; a model seat a model ref.
 create table if not exists seats (

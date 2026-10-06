@@ -34,6 +34,26 @@ def test_event_ids_carry_the_process_generation_so_an_old_cursor_replays_from_th
     assert "m" not in bus.streams
 
 
+def test_a_subscription_ends_after_the_match_ends_or_when_its_stream_is_forgotten():
+    bus = EventBus()
+
+    async def names(match_id: str) -> list[str]:
+        return [event.name async for event in bus.subscribe(match_id)]
+
+    async def run() -> None:
+        bus.emit("m", "ruling", Note(n=1))
+        bus.emit("m", "match_ended", Note(n=2))
+        bus.emit("m", "ruling", Note(n=3))
+        assert await asyncio.wait_for(names("m"), 1) == ["ruling", "match_ended"]
+        bus.emit("k", "ruling", Note(n=1))
+        listening = asyncio.create_task(names("k"))
+        await asyncio.sleep(0)
+        bus.forget("k")
+        assert await asyncio.wait_for(listening, 1) == ["ruling"]
+
+    asyncio.run(run())
+
+
 class Change(BaseModel):
     state_version: int
 
