@@ -1,5 +1,6 @@
 import asyncio
 import os
+import re
 
 import pytest
 
@@ -24,7 +25,7 @@ KEY_FIELDS = {
     "judge_resumed": ("seq",),
     "move_token": ("seq", "text"),
     "ruling": ("seq", "round_n", "actor", "outcome", "points", "to_move", "state_version"),
-    "turn_rejected": ("seat", "outcome", "strikes", "reason_text", "nudge_text"),
+    "turn_rejected": ("seat", "outcome", "strikes", "reason_text", "nudge_text", "state_version"),
     "turn_changed": ("to_move", "turn_deadline", "round_in_play", "state_version"),
     "guess_opened": ("round_n", "state_version"),
     "round_revealed": ("round_n", "token", "totals", "state_version"),
@@ -45,6 +46,76 @@ def sequence(app, match_id: str) -> list[tuple]:
             continue
         seen.append((name, *fields))
     return seen
+
+
+async def streamed_ids(app, match_id: str, after: str, count: int) -> list[str]:
+    """The ids of the first `count` events the events endpoint streams from `after`."""
+    asked = False
+    hang_up = asyncio.Event()
+    body = ""
+
+    async def receive() -> dict:
+        nonlocal asked
+        if not asked:
+            asked = True
+            return {"type": "http.request", "body": b"", "more_body": False}
+        await hang_up.wait()
+        return {"type": "http.disconnect"}
+
+    async def send(message: dict) -> None:
+        nonlocal body
+        if message["type"] == "http.response.body":
+            body += message["body"].decode()
+
+    path = f"/matches/{match_id}/events"
+    scope = {
+        "type": "http",
+        "asgi": {"version": "3.0"},
+        "http_version": "1.1",
+        "method": "GET",
+        "scheme": "http",
+        "path": path,
+        "raw_path": path.encode(),
+        "root_path": "",
+        "query_string": f"after={after}".encode(),
+        "headers": [],
+        "client": ("test", 1),
+        "server": ("test", 80),
+    }
+    task = asyncio.create_task(app(scope, receive, send))
+    async with asyncio.timeout(5):
+        while len(re.findall(r"^id: ", body, re.M)) < count:
+            await asyncio.sleep(0.01)
+    # Nothing past the expected events arrives.
+    await asyncio.sleep(0.1)
+    hang_up.set()
+    await task
+    return re.findall(r"^id: (\S+)", body, re.M)
+
+
+@pytest.mark.anyio
+async def test_a_stream_opened_after_a_snapshot_sends_only_the_events_since():
+    caller = FakeCaller(
+        rulings=[judge_response(), judge_response(), judge_response(), judge_response()],
+        opponent_moves=["I am a key, lock-turning.", "I am a door, key-holding."],
+    )
+    app, manager, ana = await run_app(caller)
+    try:
+        duel = (
+            await ana.post("/matches", json={"template_id": "then-i-am", "seed_token": "a lock"})
+        ).json()
+        assert await move(ana, duel["id"], "a1", "I am rust, hinge-eating.") == 202
+        await settle(app)
+        cursor = (await snap(ana, duel["id"]))["event_id"]
+        seen = len(events_of(app, duel["id"]))
+        assert await move(ana, duel["id"], "a2", "I am oil, rust-loosening.", 2) == 202
+        await settle(app)
+        since = [event_id for event_id, _, _ in events_of(app, duel["id"])[seen:]]
+        assert since
+        assert await streamed_ids(app, duel["id"], cursor, len(since)) == since
+    finally:
+        await ana.aclose()
+        await manager.__aexit__(None, None, None)
 
 
 @pytest.mark.anyio
@@ -78,7 +149,7 @@ async def test_an_escalation_duel_sends_rulings_refusals_the_house_reply_and_the
             ("ruling", 2, 1, "p2", "accept", 28, "p1", 2),
             ("turn_changed", "p1", False, 2, 2),
             ("judge_started", 3),
-            ("turn_rejected", "p1", "semantic_reject", 1, True, False),
+            ("turn_rejected", "p1", "semantic_reject", 1, True, False, 3),
             ("turn_changed", "p1", False, 2, 3),
             ("judge_started", 3),
             ("ruling", 3, 2, "p1", "fail", 0, "p1", 4),
@@ -120,7 +191,7 @@ async def test_a_showcase_round_sends_nothing_of_the_answers_until_the_reveal():
         await settle(app)
         assert sequence(app, duel["id"]) == [
             ("seat_submitted", "p1", 1),
-            ("turn_rejected", "p1", "semantic_reject", 1, False, False),
+            ("turn_rejected", "p1", "semantic_reject", 1, False, False, 2),
             ("seat_submitted", "p1", 2),
             ("seat_submitted", "p1", 3),
             ("guess_opened", 1, 3),
@@ -151,10 +222,10 @@ async def test_a_clocked_seat_out_of_strikes_loses_the_turn():
             ("seat_joined", "p2", 0),
             ("match_started", 0),
             ("turn_changed", "p1", True, 1, 0),
-            ("turn_rejected", "p1", "deterministic_invalid", 1, True, False),
+            ("turn_rejected", "p1", "deterministic_invalid", 1, True, False, 1),
             ("turn_changed", "p1", True, 1, 1),
             ("judge_started", 1),
-            ("turn_rejected", "p1", "semantic_reject", 2, True, True),
+            ("turn_rejected", "p1", "semantic_reject", 2, True, True, 3),
             ("turn_changed", "p2", True, 1, 3),
         ]
     finally:

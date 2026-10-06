@@ -335,6 +335,7 @@ async def test_a_refused_answer_is_explained_to_its_writer_only():
                 "outcome": "semantic_reject",
                 "reason_text": "",
                 "strikes": 1,
+                "state_version": 1,
                 "nudge_text": None,
             }
         ]

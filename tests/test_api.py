@@ -91,6 +91,26 @@ async def test_the_event_stream_of_a_missing_match_is_a_404_and_opens_no_stream(
 
 
 @pytest.mark.anyio
+async def test_the_event_stream_of_an_ended_match_is_a_404_and_opens_no_stream(monkeypatch):
+    monkeypatch.setattr("arena_server.matches.STREAM_LINGER_S", 0)
+    app, manager, client = await run_app(FakeCaller(rulings=[], opponent_moves=[]))
+    try:
+        match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        resigned = await client.post(
+            f"/matches/{match['id']}/resign", json={"action_id": "r", "expected_version": 0}
+        )
+        assert resigned.status_code == 202
+        await settle(app)
+        await asyncio.sleep(0.01)
+        assert match["id"] not in app.state.bus.streams
+        assert (await client.get(f"/matches/{match['id']}/events")).status_code == 404
+        assert match["id"] not in app.state.bus.streams
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_seating_the_house_wakes_its_server_before_the_first_move():
     caller = FakeCaller(rulings=[], opponent_moves=[])
     app, manager, client = await run_app(caller)

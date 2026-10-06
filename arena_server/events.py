@@ -25,6 +25,8 @@ class Event:
 class MatchStream:
     events: list[Event] = field(default_factory=list)
     changed: asyncio.Event = field(default_factory=asyncio.Event)
+    # How many events lead up to the last one that changed the match.
+    settled: int = 0
 
 
 class EventBus:
@@ -36,8 +38,16 @@ class EventBus:
         stream = self.streams[match_id]
         event_id = f"{self.generation}-{len(stream.events) + 1}"
         stream.events.append(Event(id=event_id, name=name, data=payload.model_dump_json()))
+        if "state_version" in type(payload).model_fields:
+            stream.settled = len(stream.events)
         stream.changed.set()
         stream.changed = asyncio.Event()
+
+    def cursor(self, match_id: str) -> str:
+        """Where a snapshot's stream starts: after the match's last change, so the events of a
+        ruling still under way are sent in full."""
+        stream = self.streams.get(match_id)
+        return f"{self.generation}-{stream.settled if stream else 0}"
 
     def cursor_from(self, last_event_id: str | None) -> int:
         """How many events the client already has; a cursor from another generation is zero."""
@@ -47,12 +57,9 @@ class EventBus:
     def forget(self, match_id: str) -> None:
         self.streams.pop(match_id, None)
 
-    async def subscribe(
-        self, match_id: str, last_id: int = 0, live: bool = True
-    ) -> AsyncIterator[Event]:
-        """The match's events after the first `last_id`. A match that is over gets no new
-        stream."""
-        stream = self.streams[match_id] if live else self.streams.get(match_id, MatchStream())
+    async def subscribe(self, match_id: str, last_id: int = 0) -> AsyncIterator[Event]:
+        """The match's events after the first `last_id`. Only for a match still in play."""
+        stream = self.streams[match_id]
         cursor = last_id
         while True:
             while cursor < len(stream.events):
@@ -67,6 +74,7 @@ class TurnRejected(BaseModel):
     outcome: Literal["deterministic_invalid", "semantic_reject"]
     reason_text: str
     strikes: int
+    state_version: int
     nudge_text: str | None = None
 
 

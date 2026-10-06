@@ -438,13 +438,16 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
 
     @app.get("/matches/{match_id}/events")
     async def events(
-        match_id: str, last_event_id: str | None = Header(default=None)
+        match_id: str, after: str | None = None, last_event_id: str | None = Header(default=None)
     ) -> EventSourceResponse:
-        live = await match_is_live(pool, match_id)
-        last_id = bus.cursor_from(last_event_id)
+        """The match's events after a snapshot's event_id; a reconnect resumes from its
+        Last-Event-ID."""
+        if not await match_is_live(pool, match_id):
+            raise HTTPException(404, "match is over")
+        last_id = bus.cursor_from(last_event_id or after)
 
         async def gen() -> AsyncIterator[dict]:
-            async for event in bus.subscribe(match_id, last_id, live):
+            async for event in bus.subscribe(match_id, last_id):
                 yield {"id": event.id, "event": event.name, "data": event.data}
 
         return EventSourceResponse(gen())

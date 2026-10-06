@@ -34,6 +34,21 @@ def test_event_ids_carry_the_process_generation_so_an_old_cursor_replays_from_th
     assert "m" not in bus.streams
 
 
+class Change(BaseModel):
+    state_version: int
+
+
+def test_a_snapshot_cursor_stops_at_the_last_change_so_a_ruling_under_way_is_sent_whole():
+    bus = EventBus()
+    assert bus.cursor("m") == f"{bus.generation}-0" and "m" not in bus.streams
+    bus.emit("m", "ruling", Change(state_version=1))
+    bus.emit("m", "judge_started", Note(n=2))
+    bus.emit("m", "move_token", Note(n=2))
+    assert bus.cursor("m") == f"{bus.generation}-1"
+    bus.emit("m", "turn_changed", Change(state_version=2))
+    assert bus.cursor("m") == f"{bus.generation}-4"
+
+
 def test_the_frontend_fallback_never_serves_a_file_outside_the_bundle(tmp_path: Path):
     dist = tmp_path / "dist"
     (dist / "assets").mkdir(parents=True)

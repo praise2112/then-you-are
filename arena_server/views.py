@@ -200,6 +200,8 @@ class MatchSnapshot(BaseModel):
     kind: TableKind
     status: MatchStatus
     state_version: int
+    # Open the match's event stream after this id to hear every change the snapshot lacks.
+    event_id: str
     phase: Phase
     seed_token: str
     seed_emoji: str

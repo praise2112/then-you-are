@@ -392,7 +392,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Events */
+        /**
+         * Events
+         * @description The match's events after a snapshot's event_id; a reconnect resumes from its
+         *     Last-Event-ID.
+         */
         get: operations["events_matches__match_id__events_get"];
         put?: never;
         post?: never;
@@ -926,6 +930,8 @@ export interface components {
             status: "open" | "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
             /** State Version */
             state_version: number;
+            /** Event Id */
+            event_id: string;
             /**
              * Phase
              * @enum {string}
@@ -1110,6 +1116,8 @@ export interface components {
             status: "open" | "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
             /** State Version */
             state_version: number;
+            /** Event Id */
+            event_id: string;
             /**
              * Phase
              * @enum {string}
@@ -1521,6 +1529,8 @@ export interface components {
             reason_text: string;
             /** Strikes */
             strikes: number;
+            /** State Version */
+            state_version: number;
             /** Nudge Text */
             nudge_text?: string | null;
         };
@@ -2213,7 +2223,9 @@ export interface operations {
     };
     events_matches__match_id__events_get: {
         parameters: {
-            query?: never;
+            query?: {
+                after?: string | null;
+            };
             header?: {
                 "last-event-id"?: string | null;
             };

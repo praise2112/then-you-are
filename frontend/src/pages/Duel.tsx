@@ -78,19 +78,16 @@ function withTotals(s: MatchSnapshot, totals: Record<string, number>): MatchSnap
   return s.seats.map((seat) => ({ ...seat, points: totals[seat.seat] ?? seat.points }));
 }
 
-function withRulings(s: MatchSnapshot, rulings: Ruling[]): MatchSnapshot {
-  const fresh = rulings.filter((r) => !s.transcript.some((t) => t.seq === r.seq));
-  const last = rulings[rulings.length - 1];
-  if (!last) return s;
+function withRuling(s: MatchSnapshot, r: Ruling): MatchSnapshot {
   return {
     ...s,
     status: "active",
-    state_version: last.state_version,
-    to_move: last.to_move,
-    round_in_play: last.round_in_play,
-    seats: withTotals(s, last.totals),
-    judged_moves: s.judged_moves + fresh.length,
-    transcript: [...s.transcript, ...fresh.map(turnOf)],
+    state_version: r.state_version,
+    to_move: r.to_move,
+    round_in_play: r.round_in_play,
+    seats: withTotals(s, r.totals),
+    judged_moves: s.judged_moves + 1,
+    transcript: [...s.transcript, turnOf(r)],
   };
 }
 
@@ -110,16 +107,30 @@ export function Duel({ matchId, spectator = false }: Props) {
   const [picked, setPicked] = useState<string | null>(null);
   const [calling, setCalling] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [after, setAfter] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const transcriptRef = useRef<HTMLOListElement>(null);
   const modeRef = useRef<MatchSnapshot["mode"]>("escalation");
   const seatRef = useRef<string | null>(null);
   const prefixRef = useRef("");
+  // The newest state version the client holds or has a fetch under way for.
+  const versionRef = useRef(-1);
+  const fetchingRef = useRef(false);
+  const behindRef = useRef(false);
 
-  const refresh = useCallback(
-    () =>
-      api.match(matchId).then((s) => {
+  const refresh = useCallback(() => {
+    if (fetchingRef.current) {
+      behindRef.current = true;
+      return;
+    }
+    fetchingRef.current = true;
+    api
+      .match(matchId)
+      .then((s) => {
+        if (s.state_version < versionRef.current) return;
+        versionRef.current = s.state_version;
         setSnap(s);
+        if (s.status === "open" || isLive(s.status)) setAfter((a) => a ?? s.event_id);
         modeRef.current = s.mode;
         seatRef.current = spectator ? null : s.your_seat;
         // A showcase refusal says why only in the refused seat's own snapshot.
@@ -137,12 +148,17 @@ export function Duel({ matchId, spectator = false }: Props) {
           setRevealEnd(true);
           return api.replay(matchId).then(endedFromReplay).then(setEnded);
         }
-      }, (e) => setError(e.message)),
-    [matchId, spectator],
-  );
+      }, (e) => setError(e.message))
+      .finally(() => {
+        fetchingRef.current = false;
+        if (!behindRef.current) return;
+        behindRef.current = false;
+        refresh();
+      });
+  }, [matchId, spectator]);
 
   useEffect(() => {
-    void refresh();
+    refresh();
   }, [refresh]);
 
   const templateId = snap?.template_id;
@@ -165,18 +181,43 @@ export function Duel({ matchId, spectator = false }: Props) {
 
   const onEvent = useCallback(
     (event: MatchEvent) => {
+      // Fetches the snapshot when the event's version is newer than the client's.
+      const catchUp = (version: number) => {
+        if (version <= versionRef.current) return;
+        versionRef.current = version;
+        refresh();
+      };
+      // Applies a change the event fully describes, unless the client lacks one before it.
+      const advance = (version: number, update: (s: MatchSnapshot) => MatchSnapshot) => {
+        if (version !== versionRef.current + 1 || fetchingRef.current) return catchUp(version);
+        versionRef.current = version;
+        setSnap((s) => s && update(s));
+      };
+      // A change the version does not count; a fetch already under way may predate it.
+      const patch = (update: (s: MatchSnapshot) => MatchSnapshot) => {
+        setSnap((s) => s && update(s));
+        if (fetchingRef.current) behindRef.current = true;
+      };
       switch (event.name) {
         case "judge_started":
           setThinking(true);
           return;
-        case "turn_rejected":
-          setSnap((s) => s && { ...s, status: "active", state_version: s.state_version + 1 });
-          if (event.data.seat !== seatRef.current) return;
-          setThinking(false);
-          setPending(false);
-          if (modeRef.current === "showcase") void refresh();
-          else setReturned(event.data);
+        case "turn_rejected": {
+          const r = event.data;
+          const mine = r.seat === seatRef.current;
+          if (mine) {
+            setThinking(false);
+            setPending(false);
+          }
+          // A showcase refusal says why only in the refused seat's own snapshot.
+          if (modeRef.current === "showcase") {
+            if (mine) catchUp(r.state_version);
+            return;
+          }
+          if (mine) setReturned(r);
+          advance(r.state_version, (s) => ({ ...s, status: "active", state_version: r.state_version }));
           return;
+        }
         case "move_token":
           setStreaming((s) => s + event.data.text);
           return;
@@ -191,6 +232,7 @@ export function Duel({ matchId, spectator = false }: Props) {
           // A showcase round's rulings arrive together with its reveal, read from the snapshot.
           if (modeRef.current === "showcase") return;
           const r = event.data;
+          if (r.state_version <= versionRef.current) return;
           setThinking(false);
           setStreaming("");
           if (r.actor === seatRef.current) {
@@ -198,7 +240,7 @@ export function Duel({ matchId, spectator = false }: Props) {
             setReturned(null);
             setText("");
           }
-          setSnap((s) => s && withRulings(s, [r]));
+          advance(r.state_version, (s) => withRuling(s, r));
           return;
         }
         case "round_revealed":
@@ -207,24 +249,41 @@ export function Duel({ matchId, spectator = false }: Props) {
           setReturned(null);
           setPending(false);
           setText("");
-          void refresh();
+          catchUp(event.data.state_version);
           return;
         case "guess_opened":
           setPending(false);
           setPicked(null);
           setCalling(false);
-          void refresh();
+          catchUp(event.data.state_version);
           return;
-        case "seat_submitted":
+        case "seat_submitted": {
+          const { seat, state_version } = event.data;
+          if (state_version > versionRef.current) return catchUp(state_version);
+          patch((s) => ({ ...s, seats: s.seats.map((x) => (x.seat === seat ? { ...x, answered: true } : x)) }));
+          return;
+        }
+        case "turn_changed": {
+          const t = event.data;
+          if (t.state_version > versionRef.current) return catchUp(t.state_version);
+          patch((s) => ({
+            ...s,
+            status: isLive(s.status) ? "active" : s.status,
+            to_move: t.to_move,
+            turn_deadline: t.turn_deadline,
+            round_in_play: t.round_in_play,
+          }));
+          return;
+        }
+        // Filling a table leaves the version at 0.
         case "seat_joined":
         case "match_started":
-        case "turn_changed":
-          void refresh();
+          refresh();
           return;
         case "match_ended": {
           const e = event.data;
           if (e.end_reason === "unfilled") {
-            void refresh();
+            refresh();
             return;
           }
           setThinking(false);
@@ -232,14 +291,14 @@ export function Duel({ matchId, spectator = false }: Props) {
           setSnap((s) => s && { ...s, status: "ended", winner: e.winner, end_reason: e.end_reason, seats: withTotals(s, e.totals) });
           setEnded(e);
           setTimeout(() => (spectator ? navigate(`/r/${matchId}`) : setRevealEnd(true)), e.end_reason === "resign" ? 0 : 3200);
-          if (modeRef.current === "showcase") void refresh();
+          if (modeRef.current === "showcase") catchUp(e.state_version);
           return;
         }
       }
     },
     [refresh, spectator, matchId],
   );
-  useMatchEvents(matchId, onEvent);
+  useMatchEvents(matchId, after, onEvent, refresh);
 
   if (error) return <p className="page-status">{error}</p>;
   if (!snap || !template) return <p className="page-status">Finding your seat.</p>;
@@ -264,7 +323,7 @@ export function Duel({ matchId, spectator = false }: Props) {
         </TopBar>
         <main className="wrap">
           <section className="hero">
-            <WaitingRoom snap={snap} template={template} table={table} onChange={() => void refresh()} />
+            <WaitingRoom snap={snap} template={template} table={table} onChange={() => refresh()} />
           </section>
         </main>
       </>
@@ -277,7 +336,7 @@ export function Duel({ matchId, spectator = false }: Props) {
 
   // A command the server refused comes back like a returned move, with its reason.
   function refused(e: unknown) {
-    setReturned({ seat: table.me ?? "", outcome: "deterministic_invalid", reason_text: (e as Error).message, strikes: 0, nudge_text: null });
+    setReturned({ seat: table.me ?? "", outcome: "deterministic_invalid", reason_text: (e as Error).message, strikes: 0, nudge_text: null, state_version: snap!.state_version });
   }
 
   async function resign() {
@@ -296,7 +355,7 @@ export function Duel({ matchId, spectator = false }: Props) {
     } catch (e) {
       setPending(false);
       refused(e);
-      void refresh();
+      refresh();
     }
   }
 
@@ -308,7 +367,7 @@ export function Duel({ matchId, spectator = false }: Props) {
     } catch (e) {
       setCalling(false);
       refused(e);
-      void refresh();
+      refresh();
     }
   }
 

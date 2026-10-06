@@ -29,6 +29,7 @@ def build_snapshot(
     returned: TurnRejected | None,
     opponent_name: str,
     stand_in: Callable[[str | None], str | None],
+    event_id: str,
 ) -> MatchSnapshot:
     """The match as the viewer's seat, or a spectator when viewer is None, may see it.
     stand_in names the model that played a turn in the House's place."""
@@ -43,6 +44,7 @@ def build_snapshot(
         kind=rec.kind,
         status=match.status,
         state_version=match.state_version,
+        event_id=event_id,
         phase=match.phase,
         seed_token=match.seed,
         seed_emoji=match.seed_emoji if template.mode == "escalation" else "",
@@ -252,7 +254,12 @@ def rejection(
         target = match.card if template.mode == "showcase" else match.standing_form
         nudge = template.validation_messages.nudge.format(standing_form=target)
     return TurnRejected(
-        seat=actor, outcome=outcome, reason_text=reason_text, strikes=strikes, nudge_text=nudge
+        seat=actor,
+        outcome=outcome,
+        reason_text=reason_text,
+        strikes=strikes,
+        state_version=match.state_version,
+        nudge_text=nudge,
     )
 
 

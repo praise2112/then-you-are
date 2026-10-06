@@ -200,10 +200,14 @@ class MatchService:
     # Snapshots
 
     async def snapshot(self, match_id: str, session_key: str | None = None) -> MatchSnapshot:
+        # The cursor is read before the load: every event is emitted after its change is stored.
+        event_id = self.bus.cursor(match_id)
         match, rec = await self.load(match_id)
-        return await self._snapshot(match, rec, session_key)
+        return await self._snapshot(match, rec, session_key, event_id)
 
-    async def _snapshot(self, match: Match, rec: Record, session_key: str | None) -> MatchSnapshot:
+    async def _snapshot(
+        self, match: Match, rec: Record, session_key: str | None, event_id: str
+    ) -> MatchSnapshot:
         template = rec.template
         viewer = await seat_of(self.pool, rec, session_key)
         hide = hides_round(match, template)
@@ -213,12 +217,20 @@ class MatchService:
             else None
         )
         return build_snapshot(
-            match, template, rec, viewer, returned, self.opponent_name, self.house.stand_in_name
+            match,
+            template,
+            rec,
+            viewer,
+            returned,
+            self.opponent_name,
+            self.house.stand_in_name,
+            event_id,
         )
 
     async def replay(self, match_id: str, session_key: str | None = None) -> Replay:
+        event_id = self.bus.cursor(match_id)
         match, rec = await self.load(match_id)
-        snap = await self._snapshot(match, rec, session_key)
+        snap = await self._snapshot(match, rec, session_key, event_id)
         if snap.status not in ("ended", "abandoned"):
             raise MatchError(404, "match still running")
         return Replay(

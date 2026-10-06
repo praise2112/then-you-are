@@ -162,21 +162,29 @@ export const api = {
     }),
 };
 
-export function useMatchEvents(matchId: string | null, onEvent: (event: MatchEvent) => void) {
+/** The match's events after a snapshot's event_id. onClosed runs when the server refuses the
+ *  stream, as it does once the match is over. */
+export function useMatchEvents(
+  matchId: string,
+  after: string | null,
+  onEvent: (event: MatchEvent) => void,
+  onClosed: () => void,
+) {
   useEffect(() => {
-    if (!matchId) return;
-    const source = new EventSource(`/matches/${matchId}/events`);
+    if (after === null) return;
+    const source = new EventSource(`/matches/${matchId}/events?after=${encodeURIComponent(after)}`);
     const handlers = EVENT_NAMES.map((name) => {
       const handler = (raw: MessageEvent) =>
         onEvent({ name, data: JSON.parse(raw.data) } as MatchEvent);
       source.addEventListener(name, handler);
       return [name, handler] as const;
     });
+    source.onerror = () => source.readyState === EventSource.CLOSED && onClosed();
     return () => {
       handlers.forEach(([name, handler]) => source.removeEventListener(name, handler));
       source.close();
     };
-  }, [matchId, onEvent]);
+  }, [matchId, after, onEvent, onClosed]);
 }
 
 /** The site-wide socket: who is online, the open tables, and your turn elsewhere. Reconnects
