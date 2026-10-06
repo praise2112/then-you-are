@@ -352,9 +352,11 @@ def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
         data = {"scoring": data, "host": None}
     if not isinstance(data.get("scoring"), dict):
         return None
-    if data.get("host") is None:
-        data["host"] = _fallback_host(data["scoring"], rubric_names[0])
     try:
+        if data.get("host") is None:
+            evidence = data["scoring"].get("evidence")
+            reason = evidence.get("mechanism") if isinstance(evidence, dict) else None
+            data["host"] = _fallback_host(data["scoring"].get("verdict"), rubric_names[0], reason)
         response = JudgeResponse.model_validate(data)
     except ValidationError:
         return None
@@ -363,24 +365,16 @@ def parse_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
     return response
 
 
-def _fallback_line(verdict: str) -> str:
-    return "The move stands." if verdict == "accept" else "The move falls."
-
-
-def _fallback_host(scoring: dict, criterion: str) -> dict:
-    verdict = scoring.get("verdict", "accept")
-    evidence = scoring.get("evidence")
-    reason = evidence.get("mechanism") if isinstance(evidence, dict) else None
-    return {
-        "headline": _fallback_line(verdict),
-        "because_clause": {
-            "criterion": criterion,
-            "text": reason or "The Judge gave no reason.",
-        },
-        "quotable_line": _fallback_line(verdict),
-        "generated_emoji": "🎭",
-        "coaching_line": None,
-    }
+def _fallback_host(verdict: str, criterion: str, reason: str | None) -> HostPayload:
+    line = "The move falls." if verdict == "fail" else "The move stands."
+    return HostPayload(
+        headline=line,
+        because_clause=BecauseClause(
+            criterion=criterion, text=reason or "The Judge gave no reason."
+        ),
+        quotable_line=line,
+        generated_emoji="🎭",
+    )
 
 
 def salvage_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
@@ -406,10 +400,6 @@ def salvage_judge(raw: str, rubric_names: list[str]) -> JudgeResponse | None:
         confidence=confidence.group(1),  # type: ignore[arg-type]
         verdict=verdict.group(1),  # type: ignore[arg-type]
     )
-    host = HostPayload(
-        headline=_fallback_line(scoring.verdict),
-        because_clause=BecauseClause(criterion=rubric_names[0], text="The Judge gave no reason."),
-        quotable_line=_fallback_line(scoring.verdict),
-        generated_emoji="🎭",
+    return JudgeResponse(
+        scoring=scoring, host=_fallback_host(scoring.verdict, rubric_names[0], None)
     )
-    return JudgeResponse(scoring=scoring, host=host)
