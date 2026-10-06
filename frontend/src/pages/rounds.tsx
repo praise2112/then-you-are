@@ -2,13 +2,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import type { GuessOption, RoundView, TemplateView, TurnView } from "../api.ts";
 import { criterionLabel, isLongCard, roundTotals, roundWinner, type RoundGroup, type Table } from "./format.ts";
+import { BADGES, totalPoints, verdictLabel } from "./labels.ts";
 import { AiTag } from "./seats.tsx";
-
-const BADGE_LABELS: Record<string, string> = {
-  close_call: "Close call",
-  accidental_truth: "Accidental truth",
-  near_miss: "Near miss",
-};
 
 type WordCardProps = { round: RoundView; compact?: boolean; children?: ReactNode };
 
@@ -207,10 +202,10 @@ export function Badges({ turn }: { turn: TurnView }) {
   const badges = turn.host?.badges ?? [];
   return (
     <p className="badges">
-      {turn.outcome === "fail" && <span className="stamp ink">Thrown out</span>}
+      {turn.outcome === "fail" && <span className="stamp ink">{verdictLabel(turn, "entry")}</span>}
       {badges.map((b) => (
         <span key={b} className="stamp">
-          {BADGE_LABELS[b] ?? criterionLabel(b)}
+          {BADGES[b]?.label ?? criterionLabel(b)}
         </span>
       ))}
     </p>
@@ -230,7 +225,6 @@ type BluffProps = {
 
 /** One bluff set as a dictionary entry that did not make it, with its marks and the judge's reason. */
 export function Bluff({ turn, round, who, tone, you = false, ai = false, won = false, template }: BluffProps) {
-  const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
   const pos = posOf(round.detail);
   return (
     <article className={`bluff${won ? " won" : ""}`}>
@@ -262,7 +256,7 @@ export function Bluff({ turn, round, who, tone, you = false, ai = false, won = f
       <div className="foot">
         <span className="total">
           {turn.points ?? 0}
-          <small>/{totalAvailable}</small>
+          <small>/{totalPoints(template)}</small>
         </span>
         <Why text={turn.host?.because_clause.text ?? ""} />
       </div>

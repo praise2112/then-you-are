@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import type { MatchEnded, MatchSnapshot, Replay, RoundView, SeatView, TemplateView, TurnView } from "../api.ts";
+import type { MatchEnded, MatchSnapshot, RoundView, SeatView, TemplateView, TurnView } from "../api.ts";
 
 export const STANDING = new Set(["accept", "semantic_uncertain"]);
 
@@ -103,21 +103,6 @@ export function tableOf(snap: Pick<MatchSnapshot, "seats" | "your_seat">, specta
 /** A match still being played, whatever the judge is doing. */
 export function isLive(status: MatchSnapshot["status"]): boolean {
   return status === "active" || status === "awaiting_judgment" || status === "paused";
-}
-
-/** How a finished game ended, seen from its creator's seat: "Victory", "Fell in round 3". */
-export function resultLabel(replay: Replay): { text: string; won: boolean } {
-  const owner = replay.seats.find((s) => s.kind === "human")?.seat ?? "p1";
-  const won = replay.winner === owner;
-  if (replay.winner === null && replay.end_reason === "rounds_complete") return { text: "A draw", won };
-  if (replay.end_reason === "move_cap_points" || replay.end_reason === "rounds_complete") {
-    return { text: won ? "Won on points" : "Lost on points", won };
-  }
-  if (replay.end_reason === "resign") return { text: won ? "The others resigned" : "Resigned", won };
-  if (replay.end_reason === "forfeit") return { text: won ? "Last one standing" : "Out of turns", won };
-  if (won) return { text: "Victory", won };
-  const fell = replay.transcript.filter((t) => t.actor === owner).length;
-  return { text: `Fell in round ${fell}`, won };
 }
 
 export type RoundGroup = { round: RoundView; turns: TurnView[]; revealed: boolean };

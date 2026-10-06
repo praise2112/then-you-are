@@ -1,20 +1,15 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
 
 import { Link, ThemeToggle, TopBar } from "../App.tsx";
-import { api, type Replay, type TemplateView, type TurnView } from "../api.ts";
+import { api, type Replay, type TemplateView } from "../api.ts";
 import { Host } from "../Host.tsx";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
 import { criterionLabel, formName, groupRounds, roundWinner, STANDING, tableOf, type RoundGroup, type Table } from "./format.ts";
+import { RESULT_WORDS, verdictLabel } from "./labels.ts";
 import { Bluff, CallLine, TruthLine, WordCard } from "./rounds.tsx";
 
 type Props = { matchId: string };
-
-function slip(turn: TurnView) {
-  if (turn.outcome === "fail") return <span className="stamp ink">Fell</span>;
-  if (turn.outcome === "semantic_uncertain") return <span className="stamp ink">Close call</span>;
-  return <span className="stamp">Point +{turn.points ?? 0}</span>;
-}
 
 export function ReplayPage({ matchId }: Props) {
   const [replay, setReplay] = useState<Replay | null>(null);
@@ -48,16 +43,7 @@ export function ReplayPage({ matchId }: Props) {
   const highlight = replay.transcript.find((t) => t.seq === replay.highlight_seq);
   const date = new Date(replay.created_at).toLocaleDateString(undefined, { day: "numeric", month: "long" });
   const showcase = replay.mode === "showcase";
-  const finish =
-    replay.winner === null
-      ? `a draw, ${points}`
-      : replay.end_reason === "move_cap_points" || replay.end_reason === "rounds_complete"
-        ? `wins on points, ${points}`
-        : replay.end_reason === "resign"
-          ? "wins by resignation"
-          : replay.end_reason === "forfeit"
-            ? "wins as the others ran out of turns"
-            : `wins by sudden death in ${replay.judged_moves} moves`;
+  const finish = RESULT_WORDS[replay.result_kind].finish({ points, moves: replay.judged_moves });
   const rounds = showcase ? groupRounds(replay.rounds, replay.transcript).filter((g) => g.revealed) : [];
 
   return (
@@ -115,7 +101,7 @@ export function ReplayPage({ matchId }: Props) {
             </article>
             {turn.host && (
               <div className="verdict-slip slip">
-                {slip(turn)}
+                <span className={`stamp${turn.outcome === "fail" || turn.outcome === "semantic_uncertain" ? " ink" : ""}`}>{verdictLabel(turn, "stamp")}</span>
                 <em>
                   <b>{criterionLabel(turn.host.because_clause.criterion, template)}:</b> {turn.host.because_clause.text}
                 </em>

@@ -5,6 +5,7 @@ import { api, type MatchEnded, type MatchSnapshot } from "../api.ts";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
 import type { Table } from "./format.ts";
+import { RESULT_WORDS } from "./labels.ts";
 
 type Props = { snap: MatchSnapshot; ended: MatchEnded; table: Table };
 
@@ -14,7 +15,6 @@ export function ResultCard({ snap, ended, table }: Props) {
   // Only House duels move a streak; a game against people is an exhibition.
   const ranked = snap.kind === "house";
   const draw = ended.winner === null;
-  const onPoints = ended.end_reason === "move_cap_points" || ended.end_reason === "rounds_complete";
   // Only the player's own duel moves their streak; a visitor's copy of the page counts nothing.
   const local = useMemo(
     () =>
@@ -36,22 +36,11 @@ export function ResultCard({ snap, ended, table }: Props) {
   const [listError, setListError] = useState<string | null>(null);
   const replayUrl = `${location.origin}/r/${snap.id}`;
 
-  const loser = snap.seats.length === 2 ? "Defeat" : `${ended.winner ? table.name(ended.winner) : "Nobody"} won`;
-  const stamp = draw
-    ? "A draw"
-    : onPoints
-      ? won
-        ? "Won on points"
-        : snap.seats.length === 2
-          ? "Lost on points"
-          : loser
-      : ended.end_reason === "resign" && !won
-        ? "Resigned"
-        : ended.end_reason === "forfeit" && !won
-          ? "Out of turns"
-          : won
-            ? "Victory"
-            : loser;
+  const stamp = RESULT_WORDS[ended.result_kind].stamp({
+    won,
+    two: snap.seats.length === 2,
+    winner: ended.winner ? table.name(ended.winner) : "Nobody",
+  });
 
   function setListing(on: boolean) {
     api.setVisibility(snap.id, on).then(

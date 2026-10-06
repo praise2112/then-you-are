@@ -37,6 +37,7 @@ import {
   withoutPrefix,
   type Table,
 } from "./format.ts";
+import { totalPoints, verdictLabel } from "./labels.ts";
 import { ResultCard } from "./ResultCard.tsx";
 import { Bluff, CallCard, CallLine, RoundLedger, TruthLine, WordCard } from "./rounds.tsx";
 import { SeatList, SeatStrip, WaitingRoom } from "./seats.tsx";
@@ -68,12 +69,6 @@ function turnOf(r: Ruling): TurnView {
     host: r.host,
     points: r.points,
   };
-}
-
-/** A short form fits on the stamp; a sentence-length move leaves the verb alone. */
-function stampText(verb: string, move: string, prefix: string): string {
-  const name = formName(move, prefix);
-  return name.length > 28 ? verb : `${verb}: ${name}`;
 }
 
 function withTotals(s: MatchSnapshot, totals: Record<string, number>): MatchSnapshot["seats"] {
@@ -475,7 +470,6 @@ function EscalationDuel(props: EscalationProps) {
   const myIndex = snap.seats.findIndex((s) => s.seat === me);
   const after = snap.seats.filter((s, i) => i > myIndex && !s.eliminated).map((s) => table.name(s.seat));
   const lastRound = round === template.rounds_budget && snap.to_move === me && !!me;
-  const totalAvailable = template.rubric.reduce((sum, r) => sum + r.max_points, 0);
   const longCard = isLongCard(snap.seed_token);
   const standingName = longCard && !standing && !streaming ? template.labels.opening.toLowerCase() : shortName(formName(standingText, prefix));
   const two = snap.seats.length === 2;
@@ -576,7 +570,7 @@ function EscalationDuel(props: EscalationProps) {
                 </div>
                 {turn.outcome !== "forfeit" && (
                   <p className="ruling">
-                    <span className="word">{rulingWord(turn)}</span>
+                    <span className="word">{verdictLabel(turn, "line")}</span>
                     <em>{turn.host?.headline}</em>
                   </p>
                 )}
@@ -621,7 +615,7 @@ function EscalationDuel(props: EscalationProps) {
               )}
               <span>
                 <b>
-                  {rulingWord(yourLast)} for {formName(yourLast.move_text, prefix)}.
+                  {verdictLabel(yourLast, "line")} for {formName(yourLast.move_text, prefix)}.
                 </b>{" "}
                 <q>{yourLast.host?.headline}</q>
               </span>
@@ -641,11 +635,7 @@ function EscalationDuel(props: EscalationProps) {
                 {paused && <span className="tag">Awaiting ruling</span>}
                 {shown && !streaming && !paused && (
                   <span className={`stamp corner${shown.outcome === "accept" ? "" : " ink"}`}>
-                    {fell
-                      ? stampText("Fell", fell.move_text, prefix)
-                      : shown.outcome === "semantic_uncertain"
-                        ? "Close call"
-                        : stampText(`Point +${shown.points ?? 0}`, shown.move_text, prefix)}
+                    {verdictLabel(shown, "standing", prefix)}
                   </span>
                 )}
                 <p className="last-move">{paused ? fullMove(prefix, text) : fell ? fell.move_text : standingText}</p>
@@ -775,7 +765,7 @@ function EscalationDuel(props: EscalationProps) {
                 <p className="total">
                   <span>This move</span>
                   <b>
-                    {latest.points ?? 0} of {totalAvailable}
+                    {latest.points ?? 0} of {totalPoints(template)}
                   </b>
                 </p>
               </div>
@@ -850,13 +840,6 @@ function ResignSheet({ text, onResign, onKeep }: { text: string; onResign: () =>
       </div>
     </div>
   );
-}
-
-function rulingWord(turn: TurnView): string {
-  if (turn.outcome === "forfeit") return "Lost the turn";
-  if (turn.outcome === "fail") return "Fell";
-  if (turn.outcome === "semantic_uncertain") return `Close call, ${turn.points ?? 0}`;
-  return `Point, ${turn.points ?? 0}`;
 }
 
 type ShowcaseProps = {

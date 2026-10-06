@@ -6,12 +6,7 @@ import { useStandingsShown } from "../standings.ts";
 import { api, type DuelRow, type ProfileView, type TemplateView } from "../api.ts";
 import { ReplayCard } from "./cards.tsx";
 import { templateOf } from "./format.ts";
-
-const BADGES: { name: string; label: string; glyph: string; meaning: string }[] = [
-  { name: "close_call", label: "Close call", glyph: "⚖", meaning: "A ruling too close to end a duel on." },
-  { name: "accidental_truth", label: "Accidental truth", glyph: "🎯", meaning: "Your bluff was the real meaning." },
-  { name: "near_miss", label: "Near miss", glyph: "◎", meaning: "A bluff a hair from the truth." },
-];
+import { BADGES } from "./labels.ts";
 
 const DAY = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" });
 const LONG_DAY = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -161,10 +156,10 @@ function BadgeList({ profile }: { profile: ProfileView }) {
     <>
       <h2 className="centered-label small-caps">Badges</h2>
       <ul className="badges">
-        {BADGES.map((badge) => {
-          const count = counts.get(badge.name);
+        {Object.entries(BADGES).map(([name, badge]) => {
+          const count = counts.get(name);
           return (
-            <li key={badge.name} className={count ? undefined : "locked"}>
+            <li key={name} className={count ? undefined : "locked"}>
               <span className={count ? "medallion" : "medallion empty"} aria-hidden="true">
                 {badge.glyph}
               </span>

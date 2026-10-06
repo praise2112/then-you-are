@@ -18,38 +18,20 @@ export type ReplaySort = "curated" | "newest" | "longest";
 export type TurnView = S["TurnView"];
 export type DemoPoints = S["DemoPoints"];
 export type RoundView = S["RoundView"];
-export type RoundRevealed = S["RoundRevealed"];
-export type GuessOpened = S["GuessOpened"];
 export type GuessOption = S["GuessOption"];
 export type GuessView = S["GuessView"];
 export type Ruling = S["Ruling"];
 export type TurnRejected = S["TurnRejected"];
 export type MatchEnded = S["MatchEnded"];
-export type MoveToken = S["MoveToken"];
 export type JudgePaused = S["JudgePaused"];
 export type ScoringPayload = S["ScoringPayload"];
 export type HostPayload = S["HostPayload"];
 export type SeatView = S["SeatView"];
 export type TableView = S["TableView"];
-export type TurnChanged = S["TurnChanged"];
 export type SocketMessage = S["Online"] | S["Lobby"] | S["TurnNudge"];
 
-export type MatchEvent =
-  | { name: "turn_rejected"; data: TurnRejected }
-  | { name: "judge_started"; data: S["JudgeStarted"] }
-  | { name: "ruling"; data: Ruling }
-  | { name: "move_token"; data: MoveToken }
-  | { name: "judge_paused"; data: JudgePaused }
-  | { name: "judge_resumed"; data: S["JudgeResumed"] }
-  | { name: "match_ended"; data: MatchEnded }
-  | { name: "round_revealed"; data: RoundRevealed }
-  | { name: "guess_opened"; data: GuessOpened }
-  | { name: "seat_joined"; data: S["SeatJoined"] }
-  | { name: "match_started"; data: S["MatchStarted"] }
-  | { name: "seat_submitted"; data: S["SeatSubmitted"] }
-  | { name: "turn_changed"; data: TurnChanged };
-
-const EVENT_NAMES: MatchEvent["name"][] = [
+// Each event carries the schema named like it in PascalCase: "turn_rejected" carries TurnRejected.
+const EVENT_NAMES = [
   "turn_rejected",
   "judge_started",
   "ruling",
@@ -63,7 +45,11 @@ const EVENT_NAMES: MatchEvent["name"][] = [
   "match_started",
   "seat_submitted",
   "turn_changed",
-];
+] as const;
+
+type EventName = (typeof EVENT_NAMES)[number];
+type Pascal<N extends string> = N extends `${infer Head}_${infer Rest}` ? `${Capitalize<Head>}${Pascal<Rest>}` : Capitalize<N>;
+export type MatchEvent = { [N in EventName]: { name: N; data: S[Pascal<N> & keyof S] } }[EventName];
 
 export class ApiError extends Error {
   status: number;

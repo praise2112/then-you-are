@@ -1,12 +1,16 @@
 import { Link } from "../App.tsx";
 import type { MatchSnapshot, Replay } from "../api.ts";
-import { formName, lastStanding, resultLabel, STANDING } from "./format.ts";
+import { formName, lastStanding, STANDING } from "./format.ts";
+import { RESULT_WORDS } from "./labels.ts";
 
 export function ReplayCard({ replay, prefix }: { replay: Replay; prefix: string }) {
   const showcase = replay.mode === "showcase";
   const last = lastStanding(replay.transcript);
-  const result = resultLabel(replay);
-  const onPoints = replay.end_reason === "move_cap_points" || replay.end_reason === "rounds_complete";
+  const owner = replay.seats.find((s) => s.kind === "human")?.seat ?? "p1";
+  const won = replay.winner === owner;
+  const fellRound = replay.transcript.filter((t) => t.actor === owner).length;
+  const result = RESULT_WORDS[replay.result_kind].card({ won, showcase, fellRound });
+  const onPoints = replay.result_kind === "points" || replay.result_kind === "draw";
   const score = onPoints ? ` · ${replay.seats.map((s) => s.points).join(" : ")}` : "";
   const revealed = replay.rounds.filter((r) => r.emoji);
   const medallion = showcase ? revealed[revealed.length - 1]?.emoji : (last?.host?.generated_emoji ?? replay.seed_emoji);
@@ -23,7 +27,7 @@ export function ReplayCard({ replay, prefix }: { replay: Replay; prefix: string 
               {s.display_name}
             </span>
           ))}{" "}
-          <span className={`result${result.won ? "" : " ink"}`}>{result.text}</span>
+          <span className={`result${won ? "" : " ink"}`}>{result}</span>
         </p>
         <blockquote>
           {showcase ? replay.rounds.map((r) => r.token).join(" · ") : `“${last?.move_text ?? formName(replay.seed_token, prefix)}”`}
