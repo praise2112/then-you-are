@@ -70,7 +70,6 @@ class TemplateView(BaseModel):
     move_example: str
     move_hint: str
     score_max: int
-    host_name: str
     labels: Labels
     guess: GuessRules | None
     medallions: bool
@@ -116,7 +115,6 @@ def template_view(template: Template, featured: bool) -> TemplateView:
         move_example=template.move_constraints.example,
         move_hint=template.move_constraints.hint,
         score_max=SCORE_MAX,
-        host_name=template.host.persona_name,
         labels=template.labels,
         guess=template.guess,
         medallions=template.medallions,

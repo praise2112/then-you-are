@@ -1501,8 +1501,6 @@ export interface components {
             move_hint: string;
             /** Score Max */
             score_max: number;
-            /** Host Name */
-            host_name: string;
             labels: components["schemas"]["Labels"];
             guess: components["schemas"]["GuessRules"] | null;
             /** Medallions */
