@@ -26,6 +26,7 @@ from arena_core.state import (
     normalize,
     owed,
     previous_of,
+    refuse_repeat,
     repeats_the_round,
     resign,
     result_kind,
@@ -459,25 +460,7 @@ class MatchService:
         await set_submitted(self.pool, match.id, seat, False)
         if not _owes(match, template, seat, round_n):
             return
-        judged = isinstance(ruled, Judged) and ruled.outcome != "semantic_reject"
-        if judged and repeats_the_round(match, template, text):
-            # No strike: the seat could not have known.
-            await store_turns(
-                self.pool,
-                match,
-                TurnRow(
-                    seat, text, "deterministic_invalid", layer1_result="repeat", action_id=action_id
-                ),
-            )
-            self._emit_rejection(
-                match,
-                template,
-                rejection(
-                    match, template, seat, match.strikes[seat], "deterministic_invalid", REPEAT_TEXT
-                ),
-            )
-        else:
-            await self._land(match, rec, seat, text, ruled, action_id)
+        await self._land(match, rec, seat, text, ruled, action_id)
         if _owes(match, template, seat, round_n):
             await self._give_time(match, rec)
         await self._drive(match, rec)
@@ -525,17 +508,22 @@ class MatchService:
         """Under the match lock: applies a ruled answer through the engine, stores it with the
         state it produced, and publishes what the table may see."""
         template = rec.template
-        if isinstance(ruled, Judged) and ruled.outcome != "semantic_reject":
-            await self._record(match, rec, seat, text, ruled, action_id)
-            return
         outcome: Literal["deterministic_invalid", "semantic_reject"]
-        if isinstance(ruled, Judged):
+        if isinstance(ruled, Judged) and ruled.outcome != "semantic_reject":
+            if not repeats_the_round(match, template, text):
+                await self._record(match, rec, seat, text, ruled, action_id)
+                return
+            outcome, reason, verdict_id = "deterministic_invalid", "repeat", None
+            reason_text, nudge = REPEAT_TEXT, None
+            change = refuse_repeat(match, seat, template)
+        elif isinstance(ruled, Judged):
             outcome, reason, verdict_id = "semantic_reject", None, ruled.verdict_id
             reason_text, nudge = ruled.response.host.headline, ruled.response.host.quotable_line
+            change = apply_ruling(match, seat, text, outcome, template)
         else:
             outcome, reason, verdict_id = "deterministic_invalid", ruled, None
             reason_text, nudge = getattr(template.validation_messages, ruled), None
-        change = apply_ruling(match, seat, text, outcome, template)
+            change = apply_ruling(match, seat, text, outcome, template)
         refused = TurnRow(
             seat,
             text,

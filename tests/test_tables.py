@@ -370,6 +370,30 @@ async def test_a_second_identical_answer_comes_back_without_a_strike():
 
 
 @pytest.mark.anyio
+async def test_a_repeated_answer_comes_back_at_a_newer_version_so_its_writer_can_write_again():
+    app, manager, ana = await run_app(FakeCaller([], []))
+    ben = player(app)
+    try:
+        match_id = await word_table(app, ana, ben)
+        assert await move(ana, match_id, "a1", "a hat for a small dog") == 202
+        await settle(app)
+        before = (await snap(ben, match_id))["state_version"]
+        assert await move(ben, match_id, "b1", "A hat for a small dog.", before) == 202
+        await settle(app)
+        refused = [d for _, name, d in events_of(app, match_id) if name == "turn_rejected"]
+        assert [(d["seat"], d["strikes"]) for d in refused] == [("p2", 0)]
+        assert refused[0]["state_version"] > before
+        state = await snap(ben, match_id)
+        assert state["state_version"] == refused[0]["state_version"]
+        assert state["phase"] == "write" and state["returned"]["reason_text"]
+        assert not next(s for s in state["seats"] if s["seat"] == "p2")["answered"]
+    finally:
+        await ben.aclose()
+        await ana.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_an_answer_written_for_an_earlier_round_is_refused():
     app, manager, ana = await run_app(FakeCaller([], []))
     ben = player(app)

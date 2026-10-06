@@ -65,7 +65,7 @@ class Turn:
 
 @dataclass(frozen=True)
 class Change:
-    """What one transition did. `strikes` is the count a refusal brought the mover to, 0 when
+    """What one transition did. `strikes` is the count a refusal left the mover at, 0 when
     nothing was refused. `forfeit` is the turn lost to the clock or to the strikes."""
 
     # The round in play when the transition began.
@@ -74,6 +74,8 @@ class Change:
     turn: Turn | None = None
     strikes: int = 0
     forfeit: Turn | None = None
+    # Showcase: the answer repeated one another seat gave this round; it came back, no strike.
+    repeat: bool = False
     call_opened: bool = False
     # Showcase: the round in play was closed, so its answers can be revealed.
     round_closed: bool = False
@@ -382,6 +384,7 @@ def _change(
     turn: Turn | None = None,
     strikes: int = 0,
     forfeit: Turn | None = None,
+    repeat: bool = False,
 ) -> Change:
     """The Change for a transition that began in `round_n` and `phase`."""
     return Change(
@@ -389,6 +392,7 @@ def _change(
         turn=turn,
         strikes=strikes,
         forfeit=forfeit,
+        repeat=repeat,
         call_opened=phase == "write" and match.phase == "guess",
         round_closed=template.mode == "showcase" and match.round_n != round_n,
         ended=match.status == "ended",
@@ -438,6 +442,17 @@ def apply_ruling(
     sudden = outcome == "fail" and template.win_condition == "sudden_death"
     _move_on(match, template, actor, "sudden_death" if sudden else None)
     return _change(match, template, round_n, phase, turn=turn)
+
+
+def refuse_repeat(match: Match, actor: Actor, template: Template) -> Change:
+    """Showcase: hands back an answer that repeats the round, with no strike, since the seat
+    could not have known."""
+    check_move(match, actor, template)
+    match.state_version += 1
+    match.status = "active"
+    return _change(
+        match, template, match.round_n, match.phase, strikes=match.strikes[actor], repeat=True
+    )
 
 
 def forfeit_turn(match: Match, seat: Actor, template: Template) -> Change:
