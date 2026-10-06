@@ -69,7 +69,6 @@ from arena_server.views import (
 SWEEP_EVERY_S = 60
 GUEST_SWEEP_EVERY_S = 60 * 60 * 24
 CLOCK_EVERY_S = 10
-FALLBACK_REF = "opponent-v1"
 WRITEUP_TITLE = "How the models in Then You Are were built"
 WRITEUP_DESCRIPTION = (
     "The AI player in Then You Are is Qwen3.5-0.8B. Fine-tuning took it from 19.0% to 68.5% of "
@@ -116,7 +115,9 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         settings.public_base_url,
         presence,
         opponent_spec.slots or 0,
-        (FALLBACK_REF, load_model(FALLBACK_REF)) if opponent_spec.base_url else None,
+        (settings.fallback_ref, load_model(settings.fallback_ref))
+        if opponent_spec.base_url
+        else None,
     )
 
     async def sweep_abandoned() -> None:

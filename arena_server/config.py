@@ -18,6 +18,7 @@ class Settings:
     openrouter_api_key: str
     judge_ref: str
     opponent_ref: str
+    fallback_ref: str
     public_base_url: str
     frontend_dist: Path | None
     curator_token: str
@@ -43,6 +44,7 @@ def load_settings() -> Settings:
         openrouter_api_key=os.environ.get("OPENROUTER_API_KEY", ""),
         judge_ref=os.environ.get("JUDGE_REF", "judge-v1"),
         opponent_ref=os.environ.get("OPPONENT_REF", "opponent-v1"),
+        fallback_ref=os.environ.get("FALLBACK_REF", "opponent-v1"),
         public_base_url=public_base_url,
         frontend_dist=dist if (dist / "index.html").exists() else None,
         curator_token=os.environ.get("CURATOR_TOKEN", ""),
