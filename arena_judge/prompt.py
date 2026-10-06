@@ -102,9 +102,7 @@ Judge the move against it where the criterion says so, and report truth_proximit
 """
 
 
-def render_judge_prompt(
-    template: Template, transcript: list[str], previous: str, move: str, hidden: str = ""
-) -> str:
+def _game_header(template: Template) -> str:
     notes = "\n".join(f"- {note.strip()}" for note in template.criterion.judge_notes)
     return f"""You are the Judge of {template.title}.
 
@@ -113,7 +111,13 @@ PREMISE
 
 CRITERION
 {template.criterion.description.strip()} {template.criterion.anti_metagaming_clause.strip()}
-{notes}
+{notes}"""
+
+
+def render_judge_prompt(
+    template: Template, transcript: list[str], previous: str, move: str, hidden: str = ""
+) -> str:
+    return f"""{_game_header(template)}
 
 RUBRIC (score each 0-4, integers only)
 Score like a hard grader. Most competent moves land at 2-3. A 4 is RARE: it means you
@@ -180,15 +184,7 @@ class JudgedTurn:
 def render_judge_system(template: Template) -> str:
     """The judge SLM's system text: only what differs by game, without the shared gates,
     confidence, scoring guidance and output shape."""
-    notes = "\n".join(f"- {note.strip()}" for note in template.criterion.judge_notes)
-    return f"""You are the Judge of {template.title}.
-
-PREMISE
-{template.premise.strip()}
-
-CRITERION
-{template.criterion.description.strip()} {template.criterion.anti_metagaming_clause.strip()}
-{notes}
+    return f"""{_game_header(template)}
 
 RUBRIC
 {_rubric_block(template)}
