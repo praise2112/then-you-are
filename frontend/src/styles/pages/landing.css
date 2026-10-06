@@ -144,16 +144,6 @@
   }
 }
 
-@keyframes thump {
-  from {
-    opacity: 0;
-    transform: scale(1.6) rotate(-9deg);
-  }
-  to {
-    transform: rotate(-4deg);
-  }
-}
-
 @keyframes dots-blink {
   50% {
     opacity: 0;

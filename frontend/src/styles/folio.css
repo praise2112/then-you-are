@@ -360,21 +360,6 @@ a {
   stroke-linecap: round;
 }
 
-.host-svg .host-wear {
-  display: none;
-}
-
-.host-worn .host-wear {
-  display: inline;
-}
-
-.host-svg .host-nick {
-  fill: none;
-  stroke: var(--host-paper);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-}
-
 .host-svg .host-ground {
   stroke: var(--ink);
   opacity: 0.35;
@@ -446,24 +431,12 @@ a {
   transform: rotate(-18deg);
 }
 
-.host-verdict .host-eye-star {
-  transform: scale(1.25);
-}
-
 .host-tipping .host-hat {
   transform: translate(3px, -4px) rotate(9deg);
 }
 
 .host-tipping .host-arm-near {
   transform: rotate(-22deg);
-}
-
-.host-tiny {
-  width: 3rem;
-}
-
-.host-big {
-  width: 10rem;
 }
 
 .host-line {
@@ -730,18 +703,6 @@ a {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .thinking span {
-    animation: pulse 1.4s ease-in-out infinite;
-  }
-
-  .thinking span:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-
-  .thinking span:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-
   .host-svg .host-eye {
     animation: eyes-blink 5.2s steps(1, end) infinite;
   }
@@ -760,21 +721,6 @@ a {
 
   .host-thinking .host-eye-comma {
     animation: ponder 4s ease-in-out infinite;
-  }
-
-  .host-verdict .host-eye-star {
-    animation: flare 0.9s ease-out 1;
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.25;
-  }
-
-  50% {
-    opacity: 1;
   }
 }
 
@@ -831,20 +777,6 @@ a {
 @keyframes turn {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes flare {
-  0% {
-    transform: scale(0.4) rotate(-90deg);
-  }
-
-  60% {
-    transform: scale(1.5) rotate(20deg);
-  }
-
-  100% {
-    transform: scale(1) rotate(0deg);
   }
 }
 
