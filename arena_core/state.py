@@ -519,14 +519,11 @@ def _pass_turn(match: Match, actor: Actor, following: Actor) -> None:
 
 def _close_round(match: Match, template: Template, last_actor: Actor) -> None:
     """Showcase: holds the round open for calls when someone owes one, else deals the next."""
-    if template.guess is not None:
-        match.phase = "guess"
-        owed = match.owed_guesses()
-        if owed:
-            match.to_move = owed[0]
-            return
-        match.phase = "write"
-    _next_round(match, template, last_actor)
+    if template.guess is None:
+        _next_round(match, template, last_actor)
+        return
+    match.phase = "guess"
+    _after_guess(match, template, last_actor)
 
 
 def _next_round(match: Match, template: Template, last_actor: Actor) -> None:

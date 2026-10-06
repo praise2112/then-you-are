@@ -454,8 +454,8 @@ class MatchService:
         await set_submitted(self.pool, match.id, seat, False)
         if not _owes(match, template, seat, round_n):
             return
-        await self._land(match, rec, seat, text, ruled, action_id)
-        if _owes(match, template, seat, round_n):
+        change = await self._land(match, rec, seat, text, ruled, action_id)
+        if (change.strikes or change.repeat) and change.forfeit is None:
             await self._give_time(match, rec)
         await self._drive(match, rec)
 
@@ -498,7 +498,7 @@ class MatchService:
         text: str,
         ruled: Judged | Layer1Reason,
         action_id: str | None,
-    ) -> None:
+    ) -> Change:
         """Under the match lock: applies a ruled answer through the engine, stores it with the
         state it produced, and publishes what the table may see."""
         template = rec.template
@@ -506,8 +506,7 @@ class MatchService:
         host, verdict_id = None, None
         if isinstance(ruled, Judged) and ruled.outcome != "semantic_reject":
             if not repeats_the_round(match, template, text):
-                await self._record(match, rec, seat, text, ruled, action_id)
-                return
+                return await self._record(match, rec, seat, text, ruled, action_id)
             reason = "repeat"
             change = refuse_repeat(match, seat, template)
         elif isinstance(ruled, Judged):
@@ -528,6 +527,7 @@ class MatchService:
         )
         await store_turns(self.pool, match, refused, *_forfeit_rows(change))
         await self._publish(match, rec, change, rejected=rejected)
+        return change
 
     async def _record(
         self,
@@ -537,7 +537,7 @@ class MatchService:
         text: str,
         judged: Judged,
         action_id: str | None,
-    ) -> None:
+    ) -> Change:
         template = rec.template
         response = judged.response
         hidden = card_in_play(match, template).hidden
@@ -568,6 +568,7 @@ class MatchService:
             await stamp_badges(self.pool, judged.verdict_id, badges)
         host = response.host.model_copy(update={"badges": badges})
         await self._publish(match, rec, change, response=response.model_copy(update={"host": host}))
+        return change
 
     async def _drive(self, match: Match, rec: Record) -> None:
         """Under the match lock: House seats that owe an answer give one, in serial play in turn
@@ -734,12 +735,11 @@ class MatchService:
     async def _expire_turn(self, match: Match, rec: Record) -> None:
         """Every human seat that owes an answer or a call, and has not sent one, loses it."""
         template = rec.template
-        round_n, phase = match.round_n, match.phase
+        phase = match.phase
         humans = match.human_seats
         late = [s for s in owed(match, template) if s in humans and not rec.row(s).submitted]
+        phase_over = False
         for seat in late:
-            if (match.status, match.round_n, match.phase) != ("active", round_n, phase):
-                break
             if phase == "guess":
                 change = skip_guess(match, seat, template)
                 await store_guesses(self.pool, match, match.guesses[-1:], None)
@@ -747,8 +747,11 @@ class MatchService:
                 change = forfeit_turn(match, seat, template)
                 await store_turns(self.pool, match, *_forfeit_rows(change))
             await self._publish(match, rec, change)
+            phase_over = change.ended or change.round_closed or change.call_opened
+            if phase_over:
+                break
         if not shows_live(template) and phase == "write":
-            if (match.status, match.round_n, match.phase) == ("active", round_n, "write"):
+            if not phase_over:
                 # Only answers still with the judge or a House seat remain; the round waits.
                 await self._set_clock(match, rec, running=False)
             self._turn_changed(match, None)
