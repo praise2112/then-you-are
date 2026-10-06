@@ -3,7 +3,7 @@ and the games played against people, which never count on the record."""
 
 from typing import Any
 
-from arena_core.state import JUDGED, LIVE_STATUSES, STANDING, result_kind
+from arena_core.state import FINISHED, JUDGED, STANDING, result_kind
 from arena_server.leaderboard import account_ranks, account_streaks, streaks
 from arena_server.matches import MatchService
 from arena_server.sessions import account_of
@@ -27,18 +27,16 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
         matches = await (
             await conn.execute(
                 "select m.id, m.template_id, m.status, m.winner, m.winner = se.seat as won, "
-                "m.end_reason, se.points as my_points, (select max(o.points) from seats o "
-                "where o.match_id = m.id and o.seat <> se.seat) as their_points, m.created_at, "
-                "m.ended_at, m.is_public, m.is_curated, m.kind, "
-                "(select count(*) from seats o where o.match_id = m.id) as seat_count, "
+                "m.end_reason, m.round_n, se.points as my_points, "
+                "(select coalesce(max(o.points), 0) from seats o "
+                "where o.match_id = m.id and o.seat <> se.seat) as their_points, "
+                "m.created_at, m.ended_at, m.is_public, m.is_curated, m.kind, "
                 "(select array_agg(case when o.kind = 'model' then null else "
                 "os.stage_name end order by o.seat) from seats o "
                 "left join sessions os on os.session_key = o.session_key "
                 "where o.match_id = m.id and o.seat <> se.seat) as others, "
                 "(select count(*) from turns t where t.match_id = m.id and t.seq is not null "
-                "and t.outcome = any(%(judged)s)) as judged, "
-                "(select count(*) from turns t where t.match_id = m.id and t.actor = se.seat "
-                "and t.outcome = any(%(judged)s)) as my_moves "
+                "and t.outcome = any(%(judged)s)) as judged "
                 "from matches m join seats se on se.match_id = m.id and se.kind = 'human' "
                 "join sessions s on s.session_key = se.session_key "
                 "where s.account_id = %(account_id)s order by m.created_at desc",
@@ -120,49 +118,31 @@ def _best_ids(matches: list[Any], peak: dict[str, int]) -> list[str]:
 
 def _row(m: Any, service: MatchService) -> DuelRow:
     template = service.templates[m["template_id"]]
-    if m["judged"] == 0:
-        length = "no moves"
-    elif template.mode == "showcase":
-        rounds = m["judged"] // m["seat_count"]
-        length = f"{rounds} {'round' if rounds == 1 else 'rounds'}"
-    else:
-        length = f"{m['judged']} {'move' if m['judged'] == 1 else 'moves'}"
-    won = None if m["status"] != "ended" else m["won"] is True
+    finished = m["status"] in FINISHED
     return DuelRow(
         id=m["id"],
         title=template.title,
+        mode=template.mode,
         created_at=m["created_at"].isoformat(),
         status=m["status"],
-        length=length,
-        result=_result(m, template.mode),
-        won=won,
+        result_kind=result_kind(m["end_reason"], m["winner"]) if finished else None,
+        won=None if m["status"] != "ended" else m["won"] is True,
+        points=m["my_points"],
+        their_points=m["their_points"],
+        judged_moves=m["judged"],
+        rounds_played=min(m["round_n"], template.rounds_budget),
         is_public=m["is_public"],
-        against=", ".join(name or "The House" for name in m["others"] or []),
+        against=_against(m["others"] or []),
     )
 
 
-def _result(m: Any, mode: str) -> str:
-    if m["status"] == "open":
-        return "Waiting for players"
-    if m["status"] in LIVE_STATUSES:
-        return "On stage"
-    won = m["won"] is True
-    match result_kind(m["end_reason"], m["winner"]):
-        case "unfilled":
-            return "Nobody joined"
-        case "abandoned":
-            return "Closed, no move for a day"
-        case "draw":
-            return f"Drawn {m['my_points']} all"
-        case "points" if mode == "showcase":
-            return f"{'Won' if won else 'Lost'} {m['my_points']} to {m['their_points']}"
-        case "points":
-            return "Won on points" if won else "Lost on points"
-        case "resign" if won:
-            return "The House resigned" if m["kind"] == "house" else "Last one standing"
-        case "resign":
-            return "Resigned"
-        case "forfeit":
-            return "Last one standing" if won else "Out of turns"
-        case "sudden_death":
-            return "Victory" if won else f"Fell in round {m['my_moves']}"
+def _against(others: list[str | None]) -> str:
+    """The other seats in seat order. None is a House seat, numbered as on the match page."""
+    names = []
+    houses = 0
+    for name in others:
+        if name is None:
+            houses += 1
+            name = "The House" if houses == 1 else f"The House {houses}"
+        names.append(name)
+    return ", ".join(names)

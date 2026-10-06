@@ -670,6 +670,11 @@ export interface components {
             id: string;
             /** Title */
             title: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "escalation" | "showcase";
             /** Created At */
             created_at: string;
             /**
@@ -677,12 +682,18 @@ export interface components {
              * @enum {string}
              */
             status: "open" | "active" | "awaiting_judgment" | "paused" | "ended" | "abandoned";
-            /** Length */
-            length: string;
-            /** Result */
-            result: string;
+            /** Result Kind */
+            result_kind: ("draw" | "points" | "sudden_death" | "resign" | "forfeit" | "abandoned" | "unfilled") | null;
             /** Won */
             won: boolean | null;
+            /** Points */
+            points: number;
+            /** Their Points */
+            their_points: number;
+            /** Judged Moves */
+            judged_moves: number;
+            /** Rounds Played */
+            rounds_played: number;
             /** Is Public */
             is_public: boolean;
             /** Against */

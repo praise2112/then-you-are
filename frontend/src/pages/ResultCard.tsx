@@ -5,7 +5,7 @@ import { api, type MatchEnded, type MatchSnapshot } from "../api.ts";
 import { Icon } from "../Icons.tsx";
 import { store } from "../store.ts";
 import type { Table } from "./format.ts";
-import { RESULT_WORDS } from "./labels.ts";
+import { stampWords } from "./labels.ts";
 
 type Props = { snap: MatchSnapshot; ended: MatchEnded; table: Table };
 
@@ -36,11 +36,7 @@ export function ResultCard({ snap, ended, table }: Props) {
   const [listError, setListError] = useState<string | null>(null);
   const replayUrl = `${location.origin}/r/${snap.id}`;
 
-  const stamp = RESULT_WORDS[ended.result_kind].stamp({
-    won,
-    two: snap.seats.length === 2,
-    winner: ended.winner ? table.name(ended.winner) : "Nobody",
-  });
+  const stamp = stampWords(ended.result_kind, won, snap.seats.length, ended.winner ? table.name(ended.winner) : "Nobody");
 
   function setListing(on: boolean) {
     api.setVisibility(snap.id, on).then(

@@ -336,11 +336,17 @@ class BadgeCount(BaseModel):
 class DuelRow(BaseModel):
     id: str
     title: str
+    mode: Mode
     created_at: str
     status: MatchStatus
-    length: str
-    result: str
+    # None until the match is finished.
+    result_kind: ResultKind | None
     won: bool | None
+    points: int
+    # The best score among the other seats.
+    their_points: int
+    judged_moves: int
+    rounds_played: int
     is_public: bool
     # Who else sat at the table, in seat order.
     against: str

@@ -1,15 +1,14 @@
 import { Link } from "../App.tsx";
 import type { MatchSnapshot, Replay } from "../api.ts";
 import { formName, lastStanding, STANDING } from "./format.ts";
-import { RESULT_WORDS } from "./labels.ts";
+import { lengthWords, RESULT_WORDS } from "./labels.ts";
 
 export function ReplayCard({ replay, prefix }: { replay: Replay; prefix: string }) {
   const showcase = replay.mode === "showcase";
   const last = lastStanding(replay.transcript);
   const owner = replay.seats.find((s) => s.kind === "human")?.seat ?? "p1";
   const won = replay.winner === owner;
-  const fellRound = replay.transcript.filter((t) => t.actor === owner).length;
-  const result = RESULT_WORDS[replay.result_kind].card({ won, showcase, fellRound });
+  const result = RESULT_WORDS[replay.result_kind].short(won);
   const onPoints = replay.result_kind === "points" || replay.result_kind === "draw";
   const score = onPoints ? ` · ${replay.seats.map((s) => s.points).join(" : ")}` : "";
   const revealed = replay.rounds.filter((r) => r.emoji);
@@ -33,9 +32,8 @@ export function ReplayCard({ replay, prefix }: { replay: Replay; prefix: string 
           {showcase ? replay.rounds.map((r) => r.token).join(" · ") : `“${last?.move_text ?? formName(replay.seed_token, prefix)}”`}
         </blockquote>
         <p className="meta">
-          {showcase
-            ? `${replay.title}, ${replay.rounds.length} ${replay.rounds.length === 1 ? "round" : "rounds"}`
-            : `${replay.judged_moves} ${replay.judged_moves === 1 ? "move" : "moves"}`}
+          {showcase && `${replay.title}, `}
+          {lengthWords(showcase, replay.judged_moves, replay.rounds.length)}
           {score}
         </p>
         <Link className="watch" to={`/r/${replay.id}`}>

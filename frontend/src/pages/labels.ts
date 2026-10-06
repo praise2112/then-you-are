@@ -37,46 +37,54 @@ export function criterionMarks(turn: Pick<TurnView, "scoring" | "host">, templat
   }));
 }
 
-type Stamp = { won: boolean; two: boolean; winner: string };
-type Card = { won: boolean; showcase: boolean; fellRound: number };
-type Finish = { points: string; moves: number };
+type Words = { short: (won: boolean) => string; finish: (r: { points: string; moves: number }) => string };
 
-/** Each screen's words for a result. stamp: the result card, from the viewer's seat. card: a
- *  replay card, from the creator's seat. finish: the replay's final line, after the winner's name. */
-export const RESULT_WORDS: Record<ResultKind, { stamp: (r: Stamp) => string; card: (r: Card) => string; finish: (r: Finish) => string }> = {
+/** One wording per result kind. short: from one player's seat, on the result card, a replay card or a
+ *  profile row. finish: the replay's final line, after the winner's name. */
+export const RESULT_WORDS: Record<ResultKind, Words> = {
   draw: {
-    stamp: () => "A draw",
-    card: (r) => (r.showcase ? "A draw" : "Lost on points"),
+    short: () => "A draw",
     finish: (r) => `a draw, ${r.points}`,
   },
   points: {
-    stamp: (r) => (r.won ? "Won on points" : r.two ? "Lost on points" : `${r.winner} won`),
-    card: (r) => (r.won ? "Won on points" : "Lost on points"),
+    short: (won) => (won ? "Won on points" : "Lost on points"),
     finish: (r) => `wins on points, ${r.points}`,
   },
   sudden_death: {
-    stamp: (r) => (r.won ? "Victory" : r.two ? "Defeat" : `${r.winner} won`),
-    card: (r) => (r.won ? "Victory" : `Fell in round ${r.fellRound}`),
-    finish: (r) => `wins by sudden death in ${r.moves} moves`,
+    short: (won) => (won ? "Victory" : "Defeat"),
+    finish: (r) => `wins by sudden death in ${count(r.moves, "move")}`,
   },
   resign: {
-    stamp: (r) => (r.won ? "Victory" : "Resigned"),
-    card: (r) => (r.won ? "The others resigned" : "Resigned"),
+    short: (won) => (won ? "Victory" : "Resigned"),
     finish: () => "wins by resignation",
   },
   forfeit: {
-    stamp: (r) => (r.won ? "Victory" : "Out of turns"),
-    card: (r) => (r.won ? "Last one standing" : "Out of turns"),
+    short: (won) => (won ? "Victory" : "Out of turns"),
     finish: () => "wins as the others ran out of turns",
   },
   abandoned: {
-    stamp: () => "A draw",
-    card: (r) => `Fell in round ${r.fellRound}`,
-    finish: (r) => `a draw, ${r.points}`,
+    short: () => "Closed, no move for a day",
+    finish: (r) => `closed, no move for a day, at ${r.points}`,
   },
   unfilled: {
-    stamp: () => "A draw",
-    card: (r) => `Fell in round ${r.fellRound}`,
-    finish: (r) => `a draw, ${r.points}`,
+    short: () => "Nobody joined",
+    finish: () => "nobody joined",
   },
 };
+
+/** The result card's stamp: the short wording, except that a loser at a table of three or more
+ *  is told who won a game decided by play. */
+export function stampWords(kind: ResultKind, won: boolean, seats: number, winner: string): string {
+  const named = !won && seats > 2 && (kind === "points" || kind === "sudden_death");
+  return named ? `${winner} won` : RESULT_WORDS[kind].short(won);
+}
+
+/** How long a match ran: its rounds in showcase, its judged moves in escalation. */
+export function lengthWords(showcase: boolean, judgedMoves: number, rounds: number): string {
+  if (judgedMoves === 0) return "no moves";
+  return showcase ? count(rounds, "round") : count(judgedMoves, "move");
+}
+
+function count(n: number, noun: string): string {
+  return `${n} ${noun}${n === 1 ? "" : "s"}`;
+}

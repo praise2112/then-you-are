@@ -284,7 +284,11 @@ async def test_a_profile_shows_the_record_and_hides_private_duels_from_visitors(
                 "rank": None,
             }
         ]
-        assert [d["result"] for d in mine["duels"]] == ["On stage", "Victory", "Resigned"]
+        assert [(d["result_kind"], d["won"]) for d in mine["duels"]] == [
+            (None, None),
+            ("sudden_death", True),
+            ("resign", False),
+        ]
         assert [r["id"] for r in mine["best"]] == [match["id"]]
 
         stranger = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test")
@@ -328,11 +332,112 @@ async def test_a_game_against_people_is_listed_but_never_counted(monkeypatch):
         assert (me["account"]["streak"], me["account"]["best_streak"]) == (0, 0)
         shown = (await client.get(f"/profiles/{me['account']['id']}")).json()
         assert shown["records"] == [] and shown["duels"] == [] and shown["played"] == 0
-        assert [(d["result"], d["against"]) for d in shown["people"]] == [("Out of turns", "Ben")]
+        assert [(d["result_kind"], d["won"], d["against"]) for d in shown["people"]] == [
+            ("forfeit", False, "Ben")
+        ]
         board = (await client.get("/leaderboard/then-i-am")).json()
         assert all(s["account_id"] != me["account"]["id"] for s in board["standings"])
     finally:
         await guest.aclose()
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_profile_row_counts_the_rounds_its_replay_shows_and_shares_the_same_result(
+    monkeypatch,
+):
+    who = auth.Profile("github", f"{RUN}-w", f"Wren {RUN}", "")
+
+    async def fake_profile(_client, _provider, _request):
+        return who
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    caller = FakeCaller(
+        rulings=[judge_response(), judge_response(), judge_response()],
+        opponent_moves=["a cup holder", "a low groan"],
+    )
+    app, manager, client = await run_app(caller)
+    try:
+        await sign_in(client)
+        word = (
+            await client.post(
+                "/matches", json={"template_id": "word-for-word", "seed_token": "zarf"}
+            )
+        ).json()
+        await settle(app)
+        await client.post(
+            f"/matches/{word['id']}/moves",
+            json={"action_id": "w1", "expected_version": 0, "move_text": "a desert cloak"},
+        )
+        await settle(app)
+        snap = (await client.get(f"/matches/{word['id']}")).json()
+        await client.post(
+            f"/matches/{word['id']}/guesses",
+            json={
+                "action_id": "g1",
+                "expected_version": snap["state_version"],
+                "key": snap["rounds"][-1]["options"][0]["key"],
+            },
+        )
+        await settle(app)
+        snap = (await client.get(f"/matches/{word['id']}")).json()
+        await client.post(
+            f"/matches/{word['id']}/resign",
+            json={"action_id": "r", "expected_version": snap["state_version"]},
+        )
+        await settle(app)
+
+        idle = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
+        async with app.state.service.pool.connection() as conn:
+            await conn.execute(
+                "update matches set updated_at = now() - interval '25 hours' where id = %s",
+                (idle["id"],),
+            )
+        assert idle["id"] in await app.state.service.close_abandoned()
+
+        account_id = (await client.get("/sessions/me")).json()["account"]["id"]
+        rows = {d["id"]: d for d in (await client.get(f"/profiles/{account_id}")).json()["duels"]}
+        word_replay = (await client.get(f"/replays/{word['id']}")).json()
+        assert (rows[word["id"]]["result_kind"], rows[word["id"]]["won"]) == ("resign", False)
+        assert rows[word["id"]]["judged_moves"] == 3
+        assert rows[word["id"]]["rounds_played"] == len(word_replay["rounds"]) == 2
+        assert word_replay["share_text"].startswith("I lost a duel of Word for Word")
+
+        idle_replay = (await client.get(f"/replays/{idle['id']}")).json()
+        assert (rows[idle["id"]]["result_kind"], rows[idle["id"]]["won"]) == ("abandoned", None)
+        assert idle_replay["result_kind"] == "abandoned"
+        assert idle_replay["share_text"].startswith("I played a duel of Then I Am")
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_profile_names_house_seats_as_the_match_page_does(monkeypatch):
+    from tests.test_tables import table
+
+    host = auth.Profile("github", f"{RUN}-n", f"Nia {RUN}", "")
+
+    async def fake_profile(_client, _provider, _request):
+        return host
+
+    monkeypatch.setattr(auth, "fetch_profile", fake_profile)
+    app, manager, client = await run_app(FakeCaller([], []))
+    try:
+        await sign_in(client)
+        opened = await table(client, "then-i-am", 3, "Nia")
+        for _ in range(2):
+            added = await client.post(f"/matches/{opened['id']}/seats/house")
+            assert added.status_code == 204
+        await settle(app)
+        seats = (await client.get(f"/matches/{opened['id']}")).json()["seats"]
+
+        account_id = (await client.get("/sessions/me")).json()["account"]["id"]
+        row = (await client.get(f"/profiles/{account_id}")).json()["people"][0]
+        assert row["against"] == ", ".join(s["display_name"] for s in seats[1:])
+        assert row["against"] == "The House, The House 2"
+    finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
 

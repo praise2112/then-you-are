@@ -6,7 +6,7 @@ import { useStandingsShown } from "../standings.ts";
 import { api, type DuelRow, type ProfileView, type TemplateView } from "../api.ts";
 import { ReplayCard } from "./cards.tsx";
 import { templateOf } from "./format.ts";
-import { BADGES } from "./labels.ts";
+import { BADGES, lengthWords, RESULT_WORDS } from "./labels.ts";
 
 const DAY = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" });
 const LONG_DAY = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -206,17 +206,21 @@ function Duels({ profile }: { profile: ProfileView }) {
 }
 
 function DuelLine({ duel, mine, people = false }: { duel: DuelRow; mine: boolean; people?: boolean }) {
-  const open = duel.status !== "ended" && duel.status !== "abandoned";
-  const tone = open || duel.status === "abandoned" ? "closed" : duel.won === null ? "draw" : duel.won ? "won" : "lost";
+  const kind = duel.result_kind;
+  const open = kind === null;
+  const tone = open || duel.status === "abandoned" ? "closed" : kind === "draw" ? "draw" : duel.won ? "won" : "lost";
+  const result = open ? (duel.status === "open" ? "Waiting for players" : "On stage") : RESULT_WORDS[kind].short(duel.won === true);
+  const score = kind === "points" || kind === "draw" ? ` · ${duel.points} : ${duel.their_points}` : "";
   return (
     <li>
       <time dateTime={duel.created_at}>{DAY.format(new Date(duel.created_at))}</time>
       <span className="game">
-        {duel.title} <small>{open ? "in play" : duel.length}</small>
+        {duel.title}{" "}
+        <small>{open ? "in play" : lengthWords(duel.mode === "showcase", duel.judged_moves, duel.rounds_played) + score}</small>
         {people && <small className="against">with {duel.against}</small>}
         {mine && !duel.is_public && duel.status === "ended" && <span className="ribbon quiet">Private</span>}
       </span>
-      <span className={`result ${tone}`}>{duel.result}</span>
+      <span className={`result ${tone}`}>{result}</span>
       {open && mine ? (
         <Link to={`/m/${duel.id}`}>Resume</Link>
       ) : duel.status === "ended" ? (

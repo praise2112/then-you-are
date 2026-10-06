@@ -5,7 +5,7 @@ import hashlib
 from collections.abc import Callable
 from datetime import timedelta
 
-from arena_core.state import FINISHED, STANDING, Actor, Match, on_table
+from arena_core.state import FINISHED, STANDING, Actor, Match, on_table, result_kind
 from arena_core.template import Seed, Template
 from arena_judge.schema import HostPayload
 from arena_server.db import Pool
@@ -270,7 +270,14 @@ def share_text(snap: MatchSnapshot, public_base_url: str) -> str:
     """Written from the seat of the table's creator."""
     link = f"{public_base_url}/r/{snap.id}"
     owner = next(s for s in snap.seats if s.kind == "human")
-    result = "won" if snap.winner == owner.seat else "lost" if snap.winner else "drew"
+    assert snap.end_reason is not None
+    match result_kind(snap.end_reason, snap.winner):
+        case "draw":
+            result = "drew"
+        case "abandoned" | "unfilled":
+            result = "played"
+        case _:
+            result = "won" if snap.winner == owner.seat else "lost"
     game = "a duel" if len(snap.seats) == 2 else f"a {len(snap.seats)}-player game"
     if snap.mode == "showcase":
         best_other = max((s.points for s in snap.seats if s.seat != owner.seat), default=0)
