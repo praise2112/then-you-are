@@ -37,7 +37,7 @@ from pathlib import Path
 import mlflow
 import torch
 from datasets import Dataset
-from sft import answer_contexts, bucket, load_weights, thinking_switch, upload
+from sft import bucket, finish, load_weights, read_jsonl, thinking_switch
 from transformers import AutoTokenizer
 from trl import DPOConfig, DPOTrainer, KTOConfig, KTOTrainer
 from trl.experimental.cpo import CPOConfig, CPOTrainer
@@ -142,14 +142,14 @@ def main() -> None:
 
     tokenizer = AutoTokenizer.from_pretrained(source)
     chat_kwargs = thinking_switch(tokenizer)
+    contexts = read_jsonl(args.contexts) if args.contexts else None
     if args.method == "kto":
-        positions = map(json.loads, args.positions.read_text().splitlines())
-        messages = {p["id"]: p["player_messages"] for p in positions}
-        scored = [json.loads(x) for x in args.scored.read_text().splitlines()]
+        messages = {p["id"]: p["player_messages"] for p in read_jsonl(args.positions)}
+        scored = read_jsonl(args.scored)
         rows = kto_rows(tokenizer, scored, messages, chat_kwargs)
         random.Random(args.seed).shuffle(rows)
     else:
-        pairs = [json.loads(x) for path in args.pairs for x in path.read_text().splitlines()]
+        pairs = [p for path in args.pairs for p in read_jsonl(path)]
         rows = pair_rows(tokenizer, pairs, chat_kwargs)
     model = load_weights(source)
 
@@ -211,15 +211,7 @@ def main() -> None:
         }
         (args.out / "metrics.json").write_text(json.dumps(metrics, indent=1))
         print(json.dumps({k: v for k, v in metrics.items() if k != "log"}), file=sys.stderr)
-    trainer.save_model(str(args.out / "model"))
-    tokenizer.save_pretrained(str(args.out / "model"))
-    if args.run:
-        upload(args.out, args.run)
-    if args.contexts:
-        rows = [json.loads(line) for line in args.contexts.read_text().splitlines()]
-        answer_contexts(model, tokenizer, rows, args.out, 1.0, 96)
-        if args.run:
-            upload(args.out, args.run, ("answers.jsonl",))
+    finish(args, trainer, model, tokenizer, metrics, contexts, 1.0, 96)
 
 
 if __name__ == "__main__":

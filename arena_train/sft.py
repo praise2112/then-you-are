@@ -95,8 +95,13 @@ def judge_example(record: dict, ruling_first: bool, chat_kwargs: dict) -> dict:
     }
 
 
+def read_jsonl(path: Path) -> list[dict]:
+    """One object per non-blank line."""
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
 def load_examples(path: Path, judge: bool, ruling_first: bool, chat_kwargs: dict) -> list[dict]:
-    records = [json.loads(line) for line in path.read_text().splitlines()]
+    records = read_jsonl(path)
     if judge:
         return [judge_example(r, ruling_first, chat_kwargs) for r in records if r["response"]]
     return [player_example(r, chat_kwargs) for r in records]
@@ -225,6 +230,33 @@ def upload(out: Path, run: str, names: tuple[str, ...] = ()) -> None:
     print(f"uploaded {out} to oddstage/runs/{run}/", file=sys.stderr)
 
 
+def finish(
+    args,
+    trainer,
+    model,
+    tokenizer,
+    metrics: dict,
+    rows: list[dict] | None,
+    temperature: float,
+    max_new_tokens: int,
+) -> None:
+    """Saves the model under --out and uploads it when --run is set; then, given eval rows,
+    answers them, adds the time taken to metrics.json and uploads the answers and metrics."""
+    trainer.save_model(str(args.out / "model"))
+    tokenizer.save_pretrained(str(args.out / "model"))
+    if args.run:
+        upload(args.out, args.run)
+    if rows is None:
+        return
+    began = time.monotonic()
+    answer_contexts(model, tokenizer, rows, args.out, temperature, max_new_tokens)
+    metrics["answer_seconds"] = round(time.monotonic() - began, 1)
+    (args.out / "metrics.json").write_text(json.dumps(metrics, indent=1))
+    print(json.dumps({"answer_seconds": metrics["answer_seconds"]}), file=sys.stderr)
+    if args.run:
+        upload(args.out, args.run, ("answers.jsonl", "metrics.json"))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", required=True, help="a Hugging Face model id")
@@ -252,6 +284,12 @@ def main() -> None:
     chat_kwargs = thinking_switch(tokenizer)
     examples = load_examples(args.records, args.judge, not args.evidence_first, chat_kwargs)
     lengths = check_lengths(tokenizer, examples, max_length)
+    contexts = read_jsonl(args.contexts) if args.contexts else None
+    if contexts and args.judge:
+        ruling_first = not args.evidence_first
+        contexts = [
+            {**r, "messages": ordered_history(r["messages"], ruling_first)} for r in contexts
+        ]
     model = load_weights(args.base)
     check_kernels(model, tokenizer, examples[0])
 
@@ -262,10 +300,10 @@ def main() -> None:
     if tracking:
         mlflow.set_experiment("oddstage-training")
     with mlflow.start_run(run_name=name) if tracking else contextlib.nullcontext():
-        train(args, model, tokenizer, examples, lengths, max_length, name, tracking)
+        train(args, model, tokenizer, examples, lengths, max_length, name, tracking, contexts)
 
 
-def train(args, model, tokenizer, examples, lengths, max_length, name, tracking) -> None:
+def train(args, model, tokenizer, examples, lengths, max_length, name, tracking, contexts) -> None:
     """Trains, writes metrics.json and the model, answers the contexts, and uploads."""
     config = SFTConfig(
         output_dir=str(args.out / "trainer"),
@@ -319,24 +357,9 @@ def train(args, model, tokenizer, examples, lengths, max_length, name, tracking)
         if args.run:
             mlflow.set_tag("b2_path", f"oddstage/runs/{args.run}/")
 
-    trainer.save_model(str(args.out / "model"))
-    tokenizer.save_pretrained(str(args.out / "model"))
-    if args.run:
-        upload(args.out, args.run)
-    if args.contexts:
-        began = time.monotonic()
-        rows = [json.loads(line) for line in args.contexts.read_text().splitlines()]
-        # The judge answers at judge-v1's temperature, the player at the opponent's.
-        temperature, new_tokens = (0.5, 640) if args.judge else (1.0, 96)
-        if args.judge:
-            ruling_first = not args.evidence_first
-            rows = [{**r, "messages": ordered_history(r["messages"], ruling_first)} for r in rows]
-        answer_contexts(model, tokenizer, rows, args.out, temperature, new_tokens)
-        metrics["answer_seconds"] = round(time.monotonic() - began, 1)
-        (args.out / "metrics.json").write_text(json.dumps(metrics, indent=1))
-        print(json.dumps({"answer_seconds": metrics["answer_seconds"]}), file=sys.stderr)
-        if args.run:
-            upload(args.out, args.run, ("answers.jsonl", "metrics.json"))
+    # The judge answers at judge-v1's temperature, the player at the opponent's.
+    temperature, new_tokens = (0.5, 640) if args.judge else (1.0, 96)
+    finish(args, trainer, model, tokenizer, metrics, contexts, temperature, new_tokens)
 
 
 if __name__ == "__main__":
