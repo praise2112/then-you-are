@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 
-import { Duel } from "./pages/Duel.tsx";
+import { Duel } from "./pages/duel/Duel.tsx";
 import { GamesPage } from "./pages/Games.tsx";
 import { HowItWasBuiltPage } from "./pages/HowItWasBuilt.tsx";
 import { Landing } from "./pages/Landing.tsx";
