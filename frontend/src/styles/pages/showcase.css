@@ -1,0 +1,632 @@
+/* Word for Word: the round view */
+
+.stage.showcase {
+  grid-template-columns: 12rem minmax(0, 1fr) 17rem;
+}
+
+@media (min-width: 75.01rem) {
+  .stage.showcase .rounds-so-far {
+    display: none;
+  }
+}
+
+@media (max-width: 75rem) {
+  .stage.showcase {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+  }
+
+  .stage.showcase > .rail {
+    display: none;
+  }
+
+  .stage.showcase .seat-strip {
+    display: block;
+  }
+}
+
+/* Past this width the extra room goes to the columns that hold lists. The middle holds
+   prose, which stops reading well much past 80 characters a line. */
+@media (min-width: 105rem) {
+  .stage {
+    grid-template-columns: 19rem minmax(0, 1fr) 21rem;
+  }
+
+  .stage.showcase {
+    grid-template-columns: 17rem minmax(0, 1fr) 21rem;
+  }
+}
+
+.word-card {
+  text-align: center;
+}
+
+.word-card .headword {
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  font-variation-settings: "opsz" 144;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.word-card .detail {
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: var(--space-1) 0 0;
+}
+
+.entry-card {
+  border: 1px solid var(--rule);
+  background: var(--paper-sunk);
+  padding: var(--space-2) var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.entry-card .headword {
+  font-size: 2.2rem;
+}
+
+.entry-card .example {
+  margin: var(--space-2) 0 0;
+}
+
+.entry-card .example span {
+  font-style: italic;
+}
+
+.first-play .rules-text {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-soft);
+}
+
+ul.rules-text {
+  padding-left: 1.1rem;
+}
+
+ul.rules-text li {
+  margin: 0.25rem 0;
+}
+
+.rules-foot {
+  margin: var(--space-2) 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.stage .rules-text {
+  margin: var(--space-2) 0 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.compose-box.bare textarea {
+  padding-left: var(--space-2);
+}
+
+.rounds-so-far {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.rounds-so-far .tally-line b {
+  color: var(--vermilion-ink);
+}
+
+.rounds-so-far li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.95rem;
+}
+
+.rounds-so-far li > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.rounds-so-far b {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+.rounds-so-far em {
+  color: var(--ink-soft);
+}
+
+.tally-line {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.round-result {
+  margin-top: var(--space-3);
+}
+
+.round-result .centered-label {
+  margin: 0 0 var(--space-2);
+}
+
+.word-card.compact {
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+}
+
+.word-card.compact .headword {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.word-card.long .headword,
+.word-card.compact.long .headword {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.bluffs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(5, auto);
+  column-gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.bluff {
+  position: relative;
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 5;
+  row-gap: var(--space-1);
+  padding: var(--space-1) 0;
+}
+
+.bluff + .bluff {
+  border-left: 1px solid var(--rule);
+  padding-left: var(--space-3);
+}
+
+.bluff p {
+  margin: 0;
+}
+
+.bluff .for {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.bluff .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+}
+
+.bluff .who.you {
+  color: var(--vermilion-ink);
+}
+
+.bluff .said {
+  font-size: 1.1rem;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.bluff .said b {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+.bluff .said i {
+  color: var(--ink-soft);
+}
+
+.bluff .marks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, auto));
+  justify-content: start;
+  column-gap: var(--space-3);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-1);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.bluff .marks > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.bluff .marks .value {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.bluff .marks .decided .small-caps {
+  color: var(--vermilion-ink);
+}
+
+.bluff.won .marks .value {
+  color: var(--vermilion-ink);
+}
+
+.bluff .foot {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-1);
+}
+
+/* The scorecard's `.total` is a bordered row; here it is one number beside a mark. */
+.bluff .total {
+  flex: none;
+  margin: 0;
+  border-top: 0;
+  padding-top: 0;
+  font-family: var(--display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.bluff .total small {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+
+.bluff.won .total {
+  color: var(--vermilion-ink);
+}
+
+.bluff .foot {
+  margin: 0;
+  align-items: center;
+}
+
+/* The reason opens as a note over the card, so nothing below it moves. */
+.bluff .why {
+  position: relative;
+  display: inline-grid;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.bluff .why-mark {
+  cursor: pointer;
+  background: none;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 1px solid var(--ink-faint);
+  border-radius: 50%;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.bluff .why-mark:hover,
+.bluff .why-mark:focus-visible,
+.bluff .why-mark[aria-expanded="true"] {
+  color: var(--vermilion-ink);
+  border-color: var(--vermilion-ink);
+}
+
+.bluff .why-note {
+  position: absolute;
+  z-index: 3;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: max(12rem, 100%);
+  max-width: 70vw;
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--vermilion-ink);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.25);
+  font-style: italic;
+  color: var(--ink);
+}
+
+.bluff .stamp.point {
+  position: static;
+  font-size: 0.75rem;
+  padding: 0.02rem 0.5rem;
+  outline-offset: -5px;
+  margin-right: 0.6rem;
+  transform: rotate(-3deg) translateY(-0.1rem);
+}
+
+.bluff .badges {
+  min-height: 0;
+  margin: 0;
+}
+
+/* The call: two entries on the table, one of them written this minute */
+
+.call-card {
+  margin-top: var(--space-3);
+}
+
+.call-prompt {
+  margin: 0 0 var(--space-2);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.call-options {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.call-option {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--rule);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.call-option:hover:not(:disabled),
+.call-option:focus-visible {
+  border-color: var(--ink-soft);
+  border-left-color: var(--ink);
+}
+
+.call-option.picked {
+  border-color: var(--vermilion);
+  border-left-color: var(--vermilion-ink);
+}
+
+.call-option:disabled {
+  cursor: default;
+}
+
+.call-option .said {
+  display: block;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  text-wrap: pretty;
+  padding-right: 7rem;
+}
+
+.call-option .said b {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+.call-option .said i {
+  color: var(--ink-soft);
+}
+
+.call-option .stamp.point {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.8rem;
+  font-size: 0.72rem;
+  padding: 0.05rem 0.5rem;
+  outline-offset: -5px;
+  transform: rotate(-4deg);
+}
+
+.call-card .composer-foot {
+  margin-top: var(--space-2);
+}
+
+.call-line {
+  margin: var(--space-2) 0 0;
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--rule);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.call-line b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.call-line.mine b {
+  color: var(--vermilion-ink);
+}
+
+/* The side column is narrow, so the host stands above the line and the tail turns upward. */
+.stage > section .host {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.stage > section .host-line {
+  width: 100%;
+}
+
+.stage > section .host-line::before,
+.stage > section .host-line::after {
+  top: -0.6rem;
+  left: 2rem;
+  border: 0.6rem solid transparent;
+  border-top: 0;
+  border-bottom-color: var(--rule);
+}
+
+.stage > section .host-line::after {
+  top: -0.5rem;
+  border-bottom-color: var(--paper-sunk);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: var(--space-2) 0 0;
+}
+
+.badges .stamp {
+  font-size: 0.8rem;
+  padding: 0.15rem 0.6rem;
+  outline-offset: -5px;
+}
+
+.entry {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: var(--space-2) 0 0;
+  padding: var(--space-1) 0;
+  border-top: 3px double var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+
+.entry .medallion.sm {
+  align-self: center;
+}
+
+.entry .headword {
+  font-family: var(--display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  font-variation-settings: "opsz" 96;
+  line-height: 1;
+  margin: 0;
+}
+
+.entry-card .reveal-line {
+  margin: var(--space-1) 0 0;
+  padding-top: var(--space-1);
+  border-top: 3px double var(--ink);
+  font-size: 0.95rem;
+}
+
+.entry-card .reveal-line b {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+.entry .pos {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.entry .sense {
+  font-size: 1.1rem;
+}
+
+.ledger .small-caps {
+  color: var(--ink-faint);
+  letter-spacing: 0.16em;
+  margin: 0 0 var(--space-1);
+}
+
+.ledger ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ledger li {
+  border-top: 1px solid var(--rule);
+  padding: var(--space-1) 0;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.ledger .word {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.ledger .truth {
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+.ledger .open .truth {
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
+.ledger .tally-line {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+}
+
+.ledger .took {
+  color: var(--vermilion-ink);
+  font-weight: 700;
+}
+
+.ledger em {
+  display: block;
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+/* Word for Word: the playbill and the programme */
+
+.program .round-result {
+  margin-top: var(--space-4);
+}
+
+.program .word-card {
+  margin-bottom: var(--space-2);
+}
+
+@media (max-width: 62rem) {
+  .stage.showcase {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .bluffs {
+    grid-template-columns: 1fr;
+  }
+
+  .bluffs {
+    grid-template-rows: none;
+    row-gap: var(--space-2);
+  }
+
+  .bluff {
+    grid-template-rows: auto;
+    grid-row: auto;
+  }
+}

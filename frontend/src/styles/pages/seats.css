@@ -1,0 +1,326 @@
+/* Seats: a colour dot and the name in ink, one line per seat */
+
+.tone-1 { --c: var(--seat-1); }
+
+.tone-2 { --c: var(--seat-2); }
+
+.tone-3 { --c: var(--seat-3); }
+
+.tone-4 { --c: var(--seat-4); }
+
+.tone-5 { --c: var(--seat-5); }
+
+.tone-6 { --c: var(--seat-6); }
+
+.seat-list .who,
+.seat-rows .who,
+.seat-strip .who,
+.entry-mine .who,
+.who[class*="tone-"] {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.seat-list .who::before,
+.seat-rows .who::before,
+.seat-strip .who::before,
+.entry-mine .who::before,
+.who[class*="tone-"]::before {
+  content: "";
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.seat-list .who > span,
+.seat-rows .who > span,
+.seat-strip .who > span,
+.who[class*="tone-"] > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.seat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--rule);
+}
+
+.seat-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  column-gap: var(--space-1);
+  align-items: baseline;
+  padding: 0.35rem 0.6rem;
+}
+
+.seat-list li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.seat-list .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.seat-list .you .who {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.seat-list b {
+  grid-column: 3;
+  font-family: var(--display);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.seat-list small {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.seat-list .state {
+  grid-column: 1 / -1;
+  padding-left: 0.95rem;
+  font-size: 0.8rem;
+}
+
+.seat-list li.on {
+  background: color-mix(in oklab, var(--c) 12%, transparent);
+}
+
+.seat-list li.out {
+  opacity: 0.45;
+}
+
+.seat-list .pending .who::before,
+.seat-strip .dots i.pending,
+.seat-rows .open .who::before {
+  background: none;
+  box-shadow: inset 0 0 0 1.5px var(--c, var(--ink-faint));
+}
+
+.drain {
+  grid-column: 1 / -1;
+  height: 3px;
+  margin-top: 0.3rem;
+  background: var(--rule);
+}
+
+.drain i {
+  display: block;
+  height: 100%;
+  background: var(--c);
+  transition: width 1s linear;
+}
+
+.seat-strip {
+  display: none;
+  margin: 0 0 var(--space-2);
+  border: 1px solid var(--rule);
+}
+
+.seat-strip summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.45rem 0.6rem;
+}
+
+.seat-strip summary::-webkit-details-marker {
+  display: none;
+}
+
+.seat-strip summary > .who,
+.seat-strip summary > .count {
+  flex: 1;
+}
+
+.seat-strip .more {
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.seat-strip .more::after {
+  content: " \25BE";
+}
+
+.seat-strip[open] .more::after {
+  content: " \25B4";
+}
+
+.seat-strip .seat-list {
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.seat-strip .dots {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.seat-strip .dots i {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.composer-foot .clock {
+  font-family: var(--display);
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.entry-mine {
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  border: 1px dashed var(--rule);
+}
+
+.entry-mine .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.entry-mine p {
+  margin: 0.2rem 0 0;
+}
+
+@media (max-width: 62rem) {
+  .stage:not(.showcase) .seat-strip {
+    display: block;
+  }
+
+  .stage:not(.showcase) > section:first-child .seat-list {
+    display: none;
+  }
+
+  /* The move comes first on a phone; the moves so far follow it. */
+  .stage:not(.showcase) > section:nth-child(2) {
+    order: -1;
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .stage:not(.showcase) > section:first-child {
+    border-top: 1px solid var(--rule);
+    padding-top: var(--space-2);
+  }
+}
+
+/* A table waiting for its seats */
+
+.waiting-room {
+  width: min(100%, 34rem);
+  padding: var(--space-3);
+}
+
+.seat-rows {
+  list-style: none;
+  margin: var(--space-2) 0;
+  padding: 0;
+  border: 1px solid var(--rule);
+}
+
+.seat-rows li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0.45rem 0.7rem;
+}
+
+.seat-rows li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.seat-rows .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.seat-rows .you .who {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.seat-rows .open .who {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.seat-rows small {
+  color: var(--ink-faint);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.invite {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--rule);
+  background: var(--paper-sunk);
+}
+
+.invite code {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  font-family: var(--serif);
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.invite .ticket {
+  margin: 0.3rem;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-2);
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+
+.seat-strip .clock {
+  font-family: var(--display);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+small.ai-tag {
+  flex: none;
+  margin-left: 0.35rem;
+  padding: 0 0.3rem;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-family: var(--serif);
+  font-size: 0.65rem;
+  font-style: normal;
+  font-weight: 600;
+  font-variant: normal;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  vertical-align: 0.15em;
+  opacity: 0.75;
+}

@@ -1,0 +1,107 @@
+.sheet-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.sheet-actions small {
+  color: var(--ink-faint);
+}
+
+.first-play.sheet {
+  max-width: 30rem;
+}
+
+.first-play h2 {
+  margin: 0;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.first-play .kicker {
+  color: var(--ink-faint);
+  margin: 0.3rem 0 var(--space-3);
+  font-style: italic;
+}
+
+.name-field {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+  margin-top: var(--space-1);
+  display: grid;
+  gap: 0.4rem;
+}
+
+.name-field input {
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--ink);
+  background: var(--paper-raised);
+  color: var(--ink);
+  max-width: 18rem;
+}
+
+.name-field input:focus {
+  outline: none;
+  border-color: var(--vermilion);
+}
+
+.name-field small {
+  color: var(--ink-faint);
+}
+
+.name-field.refused input {
+  border-color: var(--vermilion);
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
+.name-field.refused small {
+  color: var(--vermilion-ink);
+}
+
+@media (max-width: 37.5rem) {
+  .scrim {
+    background: rgb(23 21 26 / 90%);
+    padding: var(--space-2);
+    align-items: start;
+  }
+
+  .sheet {
+    padding: var(--space-2);
+  }
+
+  .sheet .host {
+    flex-direction: column;
+  }
+
+  .sheet .host-figure {
+    width: 4rem;
+  }
+
+  .sheet .host-line::before,
+  .sheet .host-line::after {
+    top: -0.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 0.6rem solid transparent;
+    border-top: 0;
+    border-bottom-color: var(--rule);
+  }
+
+  .sheet .host-line::after {
+    top: -0.5rem;
+    border-bottom-color: var(--paper-sunk);
+  }
+}
+
+.sheet .fine-print {
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  margin: var(--space-2) 0 0;
+}

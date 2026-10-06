@@ -1,0 +1,260 @@
+/* Match end playbill */
+
+.score {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(3.5rem, 10vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: var(--space-2) 0 0;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.score b {
+  color: var(--vermilion);
+}
+
+.medallion.more {
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  border-style: dashed;
+}
+
+/* Replay */
+
+.program {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-3) var(--space-4);
+}
+
+.program h1 {
+  font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.program .kicker {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0.2rem 0 var(--space-3);
+}
+
+.program .billing {
+  text-align: center;
+  color: var(--ink-faint);
+  margin-bottom: var(--space-3);
+}
+
+.model {
+  border: 1px solid var(--rule);
+  padding: 0 0.4rem;
+  margin: 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
+.model.human {
+  border-color: var(--vermilion);
+  color: var(--vermilion-ink);
+}
+
+.opening {
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.entry.torn {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border-top: 0;
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.entry .who {
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  border-bottom: 2px solid var(--vermilion);
+  display: inline-block;
+}
+
+.entry .said {
+  font-size: 1.8rem;
+  font-variation-settings: "opsz" 72;
+  line-height: 1.15;
+  margin: 0.3rem 0 0;
+  text-wrap: balance;
+}
+
+.entry.opening-card .said {
+  font-size: 1.15rem;
+}
+
+.verdict-slip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.verdict-slip .stamp {
+  font-size: 0.85rem;
+  padding: 0.2rem 0.7rem;
+}
+
+.verdict-slip em {
+  color: var(--ink-soft);
+}
+
+.finale {
+  margin-top: var(--space-4);
+  text-align: center;
+}
+
+.finale blockquote {
+  font-size: 1.3rem;
+  font-style: italic;
+  margin: var(--space-1) 0;
+}
+
+.finale .score {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin: 0.2rem 0;
+}
+
+.finale .score b {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+.play-cta {
+  text-align: center;
+  margin-top: var(--space-3);
+}
+
+.cta-hint {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  margin-top: var(--space-1);
+}
+
+.icon-link .icon {
+  margin-top: -0.1em;
+}
+
+.share {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  font-size: 0.9rem;
+}
+
+.page-status {
+  text-align: center;
+  color: var(--ink-faint);
+  font-style: italic;
+  padding: var(--space-4);
+}
+
+.finale .score {
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 30rem) {
+  .finale .host {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .finale .host-line::before,
+  .finale .host-line::after {
+    top: -0.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 0.6rem solid transparent;
+    border-top: 0;
+    border-bottom-color: var(--rule);
+  }
+
+  .finale .host-line::after {
+    top: -0.5rem;
+    border-bottom-color: var(--paper-sunk);
+  }
+
+  .entry .said {
+    font-size: 1.35rem;
+  }
+}
+
+/* Replay: one Word for Word round at a time */
+
+.stepper:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 6px;
+}
+
+.stepper-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+}
+
+.stepper-bar .turn,
+.stepper-dots button {
+  font: inherit;
+  background: none;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.stepper-bar .turn {
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.stepper-bar .turn:disabled {
+  color: var(--ink-faint);
+  border-color: transparent;
+  cursor: default;
+}
+
+.stepper-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: var(--space-2) 0 0;
+}
+
+.stepper-dots button {
+  width: 0.7rem;
+  height: 0.7rem;
+  padding: 0;
+  border-radius: 50%;
+  border-color: var(--ink-faint);
+}
+
+.stepper-dots button.on {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+}

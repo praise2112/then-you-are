@@ -1,0 +1,558 @@
+/* Duel */
+
+.stage {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr) 17rem;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  align-items: start;
+  max-width: 104rem;
+  margin: 0 auto;
+}
+
+.stage > section + section {
+  border-left: 1px solid var(--rule);
+  padding-left: var(--space-3);
+}
+
+.scoreline {
+  border: 1px solid var(--vermilion);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 0.7rem;
+}
+
+.scoreline b {
+  font-size: 1.3rem;
+  white-space: nowrap;
+  flex: none;
+}
+
+.scoreline .small-caps {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.transcript {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0 var(--space-1) 0 0;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--brass) transparent;
+}
+
+.transcript::-webkit-scrollbar {
+  width: 6px;
+}
+
+.transcript::-webkit-scrollbar-thumb {
+  background: var(--brass);
+  border-radius: 3px;
+}
+
+.transcript li + li {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--rule);
+}
+
+.transcript .move {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.transcript .ruling {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin: 0.3rem 0 0;
+}
+
+.medallion.sm {
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1rem;
+  flex: none;
+}
+
+.last-move {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-variation-settings: "opsz" 72;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0;
+  max-height: 40vh;
+  overflow-y: auto;
+  text-wrap: balance;
+}
+
+.stage .torn {
+  padding: var(--space-4) var(--space-3);
+  position: relative;
+}
+
+.stage .torn .tag {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+}
+
+.stage .host-figure {
+  width: 7rem;
+}
+
+.last-move-head {
+  text-align: center;
+  margin-bottom: var(--space-2);
+}
+
+.waiting {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin: var(--space-3) 0 0;
+}
+
+.composer {
+  position: relative;
+}
+
+.compose-box {
+  position: relative;
+}
+
+.compose-box .prefix {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  font-size: 1.35rem;
+  line-height: 1.35;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
+
+.compose-box textarea {
+  display: block;
+  padding-left: calc(var(--space-2) + 3.1rem);
+}
+
+.share-text {
+  background: var(--paper-sunk);
+  padding: var(--space-2);
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.share-text a {
+  display: block;
+  margin-top: var(--space-1);
+  word-break: break-all;
+}
+
+.composer .why {
+  margin: var(--space-2) 0 0;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.composer .why b {
+  color: var(--ink);
+}
+
+.ticket:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.resign-row {
+  margin-top: var(--space-3);
+  text-align: center;
+}
+
+.error-line {
+  color: var(--vermilion-ink);
+  font-size: 0.9rem;
+  margin: var(--space-1) 0 0;
+}
+
+@media (max-width: 62rem) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stage > section + section {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--rule);
+    padding-top: var(--space-2);
+  }
+}
+
+/* In-place rulings */
+
+.transcript .who {
+  display: block;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+
+.transcript .who.you {
+  color: var(--vermilion-ink);
+}
+
+.transcript .ruling {
+  margin: 0.4rem 0 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-style: normal;
+}
+
+.transcript .ruling .word {
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--vermilion-ink);
+  flex: none;
+}
+
+.transcript .ruling em {
+  color: var(--ink-faint);
+}
+
+.stage .standing .stamp.corner {
+  display: inline-block;
+  font-size: 1.15rem;
+  transform: rotate(-3deg);
+  margin: 0 0 var(--space-2) -0.3rem;
+}
+
+.stage .standing.reading {
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.stage .card-block {
+  margin-bottom: var(--space-3);
+}
+
+.stage .card-block .small-caps {
+  margin: 0 0 var(--space-1);
+  color: var(--ink-faint);
+}
+
+.stage .card-block .card-text {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.compose-box.scanning::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 3px solid transparent;
+  background: linear-gradient(90deg, transparent, var(--vermilion), transparent) border-box no-repeat;
+  background-size: 40% 100%;
+  mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: ink-wash 1.8s ease-in-out infinite;
+}
+
+@keyframes ink-wash {
+  from {
+    background-position: -100% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+.ruled {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  margin-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+}
+
+.ruled .judge-face {
+  flex: none;
+  width: 5.5rem;
+  padding: 0.35rem 0;
+  text-align: center;
+  white-space: nowrap;
+  font-family: "Noto Sans", "Segoe UI Symbol", "DejaVu Sans", sans-serif;
+  font-size: 0.95rem;
+  border: 1px solid var(--rule);
+  background: var(--paper-sunk);
+}
+
+.ruled .judge-face.fall {
+  color: var(--vermilion-ink);
+}
+
+.ruled .headline {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.ruled .because {
+  margin: 0.4rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+}
+
+.ruled .vote {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+}
+
+.your-slip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 auto var(--space-2);
+  max-width: 38rem;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.your-slip .medallion {
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1rem;
+  flex: none;
+}
+
+.your-slip b {
+  color: var(--ink);
+}
+
+.your-slip q {
+  font-style: italic;
+}
+
+.judge-reading {
+  margin-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.judge-reading .host-figure {
+  width: 4.5rem;
+  animation: bob 1.6s ease-in-out infinite;
+}
+
+.judge-reading .dots::after {
+  content: "";
+  animation: dots 1.5s steps(4) infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(1.5deg);
+  }
+}
+
+@keyframes dots {
+  to {
+    content: "...";
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .judge-reading .host-figure,
+  .stage .standing.reading,
+  .compose-box.scanning::after {
+    animation: none;
+    background: none;
+    border: 3px dashed var(--ink-faint);
+  }
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-1);
+}
+
+.panel-head .swap {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  color: var(--vermilion-ink);
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: right;
+}
+
+.scorecard {
+  border: 1px solid var(--rule);
+  padding: var(--space-2);
+  background: var(--paper-raised);
+}
+
+.scorecard .for {
+  margin: 0 0 var(--space-2);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.points {
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.points > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.points dt {
+  font-variant: all-small-caps;
+  letter-spacing: 0.08em;
+  font-size: 0.95rem;
+}
+
+.points dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 5.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.points dd b {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-right: 0.15rem;
+}
+
+.points .decided dt,
+.points .decided dd b {
+  color: var(--vermilion-ink);
+}
+
+.decided-tag {
+  display: block;
+  font-variant: normal;
+  letter-spacing: 0;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--vermilion-ink);
+}
+
+.last-round {
+  margin: 0.2rem 0 var(--space-1);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--vermilion-ink);
+}
+
+.total {
+  margin: var(--space-2) 0 0;
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-1);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+.total b {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+
+.rubric summary small {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  font-weight: 400;
+  margin-left: 0.3rem;
+}
+
+@media (max-width: 37.5rem) {
+  .headline {
+    font-size: 1.45rem;
+  }
+}
+
+.coaching span {
+  display: block;
+  font-family: var(--serif);
+  font-variant: all-small-caps;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+/* Tap targets */
+
+.ruled .vote,
+.panel-head .swap {
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+.panel-head {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 30rem) {
+  .ruled {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}

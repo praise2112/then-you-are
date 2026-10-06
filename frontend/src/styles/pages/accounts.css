@@ -1,0 +1,246 @@
+/* Accounts and standings */
+
+.bar-top .account {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.bar-top .account img {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+}
+
+.bar-top .account .name {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--bar-fg);
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: underline transparent;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.15s;
+}
+
+.bar-top .account .name:hover,
+.bar-top .account .name:focus-visible {
+  text-decoration-color: var(--vermilion);
+}
+
+.bar-top .account .gear {
+  background: none;
+  border: 0;
+  padding: 0.1rem 0.3rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--bar-fg);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.bar-top .account .gear:hover {
+  transform: rotate(30deg);
+}
+
+.settings .who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+  color: var(--ink-soft);
+}
+
+.settings .who img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+}
+
+.settings .notice {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-1) var(--space-2);
+  border-left: 3px solid var(--vermilion);
+  background: var(--paper-sunk);
+  color: var(--ink);
+}
+
+.settings .notice.warn {
+  border-left-color: var(--ink-faint);
+  color: var(--ink-soft);
+}
+
+.settings .choice {
+  margin-top: var(--space-2);
+}
+
+.confirm-sheet {
+  max-width: 24rem;
+}
+
+.confirm-sheet .changes {
+  margin: var(--space-2) 0 0;
+  padding-left: 1.2rem;
+  color: var(--ink-soft);
+}
+
+.settings .delete-account {
+  margin-top: var(--space-3);
+}
+
+.bar-top .account button {
+  background: none;
+  border: 1px solid #a89f90;
+  border-radius: 999px;
+  color: var(--bar-fg);
+  font: inherit;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  padding: 0.15rem 0.7rem;
+  cursor: pointer;
+}
+
+.bar-top .account button:hover {
+  border-color: var(--bar-fg);
+}
+
+.settings .lede {
+  margin: var(--space-1) 0 var(--space-2);
+  color: var(--ink-soft);
+}
+
+.providers {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.provider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.provider:hover,
+.provider:focus-visible {
+  border-color: var(--ink);
+  background: var(--paper-sunk);
+}
+
+.provider svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+  flex: none;
+}
+
+.settings .link-row {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+  margin-top: var(--space-2);
+  display: grid;
+  gap: var(--space-1);
+}
+
+.settings .link-row .providers {
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+
+.standings .board {
+  max-width: 36rem;
+  margin: var(--space-3) auto 0;
+}
+
+.board-foot {
+  color: var(--ink-faint);
+  font-size: 0.92rem;
+  margin-top: var(--space-2);
+}
+
+.board h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-top: 3px double var(--ink);
+  padding-top: var(--space-1);
+  margin: 0 0 var(--space-2);
+}
+
+.board table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.board th {
+  text-align: left;
+  font-weight: 500;
+  font-variant: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.3rem 0.5rem;
+}
+
+.board td {
+  padding: 0.45rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.board tr:first-child td.rank {
+  color: var(--vermilion);
+  font-weight: 600;
+}
+
+.board td.rank {
+  width: 2rem;
+  color: var(--ink-faint);
+}
+
+.board td.player {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.board td.player img {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+}
+
+.board th:nth-child(n + 3),
+.board td.num {
+  text-align: right;
+}
+
+.board .player a {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.board .player a:hover {
+  text-decoration: underline;
+}
+
+.bar-top .account a.name {
+  color: inherit;
+  text-decoration: none;
+}
