@@ -181,7 +181,7 @@ def test_showcase_tie_is_a_draw():
 
 
 def test_entries_on_the_table_share_one_casing():
-    from arena_server.matches import entry_case
+    from arena_server.snapshots import entry_case
 
     assert (
         entry_case("The practice of quoting an authority.")

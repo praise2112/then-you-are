@@ -2,7 +2,6 @@
 the turn clock, persists everything."""
 
 import asyncio
-import hashlib
 import logging
 import secrets
 import time
@@ -17,7 +16,6 @@ from psycopg.rows import DictRow
 
 from arena_core.state import (
     JUDGED,
-    STANDING,
     Actor,
     Change,
     IllegalAction,
@@ -48,8 +46,6 @@ from arena_server.db import Pool
 from arena_server.events import (
     EventBus,
     GuessOpened,
-    GuessOption,
-    GuessView,
     JudgePaused,
     JudgeResumed,
     JudgeStarted,
@@ -65,12 +61,22 @@ from arena_server.events import (
 )
 from arena_server.leaderboard import account_streaks
 from arena_server.presence import Lobby, Presence, TurnNudge
+from arena_server.snapshots import (
+    REPEAT_TEXT,
+    build_snapshot,
+    clock_length,
+    guess_views,
+    hides_round,
+    highlight_seq,
+    rejection,
+    resolve_pick,
+    returned_answer,
+    share_text,
+)
 from arena_server.store import (
-    UNFILLED_WINDOW,
     MatchClosed,
     MatchError,
     Record,
-    SeatRow,
     TurnRow,
     action_seen,
     add_disagreement,
@@ -83,7 +89,6 @@ from arena_server.store import (
     insert_verdict,
     invite_match_id,
     joinable_ids,
-    last_refusal,
     live_public_ids,
     load_match,
     open_table_rows,
@@ -108,13 +113,10 @@ from arena_server.views import (
     MatchSnapshot,
     OpenDuel,
     Replay,
-    RoundView,
-    SeatView,
     SessionView,
     StageView,
     TableKind,
     TableView,
-    TurnView,
 )
 
 PAUSE_BACKOFF_S = (5, 10, 20, 30)
@@ -124,16 +126,11 @@ BILLING_RETRY_S = 60
 # A move whose judge has not ruled by then goes back: a human may play again, the House loses it.
 JUDGE_GIVE_UP_S = 120
 STREAM_LINGER_S = 300
-# Human seats get a clock only when two or more humans share the table.
-TURN_CLOCK = timedelta(seconds=120)
-WRITE_CLOCK = timedelta(seconds=180)
-CALL_CLOCK = timedelta(seconds=60)
 GRACE = timedelta(seconds=30)
 MODEL_REWRITES = 2
 # A House call that fails is tried once more before the fallback takes the seat.
 HOUSE_ATTEMPTS = 2
 HOUSE_RETRY_S = 3
-REPEAT_TEXT = "Someone at the table already wrote exactly that. Try another."
 
 
 log = logging.getLogger(__name__)
@@ -497,7 +494,7 @@ class MatchService:
         """Starts the clock for the turn or phase in play when two or more humans share the
         table; clears it otherwise, or when not running."""
         clocked = running and match.clocked
-        deadline = datetime.now(UTC) + self._clock_length(match, template) if clocked else None
+        deadline = datetime.now(UTC) + clock_length(match, template) if clocked else None
         if deadline is None and rec.turn_deadline is None:
             return None
         await set_deadline(self.pool, match.id, deadline)
@@ -525,211 +522,21 @@ class MatchService:
 
     # Snapshots
 
-    @staticmethod
-    def _display_name(row: SeatRow, rec: Record) -> str:
-        if row.kind == "human":
-            return row.stage_name or "Challenger"
-        houses = sorted(rec.models, key=lambda seat: int(seat[1:]))
-        n = houses.index(row.seat) + 1
-        return "The House" if n == 1 else f"The House {n}"
-
-    def _hides_round(self, match: Match, template: Template) -> bool:
-        """Showcase: the round in play stays off the wire until it is revealed."""
-        return template.mode == "showcase" and match.status not in ("ended", "abandoned")
-
-    def _shown_points(self, match: Match, template: Template, rec: Record) -> dict[str, int]:
-        """Seat totals as of the last revealed round: the round in play is still secret."""
-        shown = dict(match.points)
-        if not self._hides_round(match, template):
-            return shown
-        for t in rec.turn_rows:
-            if t["round_n"] == match.round_n:
-                shown[t["actor"]] -= t["points"] or 0
-        for g in match.round_guesses(match.round_n):
-            shown[g.awarded_to] -= g.points
-        return shown
-
-    def _in_call(self, match: Match, round_n: int) -> bool:
-        return match.phase == "guess" and round_n == match.round_n
-
-    def _rounds(self, match: Match, template: Template, viewer: str | None) -> list[RoundView]:
-        if template.mode == "escalation":
-            return []
-        over = match.status in ("ended", "abandoned")
-        owes = viewer is not None and viewer in match.owed_guesses()
-        views = []
-        for n, token in enumerate(match.cards[: match.round_n], start=1):
-            card = template.seed_named(token)
-            assert card is not None
-            in_call = self._in_call(match, n)
-            revealed = (n < match.round_n or over) and not in_call
-            views.append(
-                RoundView(
-                    round_n=n,
-                    token=token,
-                    emoji=card.opening_emoji if revealed else "",
-                    detail=card.detail,
-                    truth=card.hidden if revealed else None,
-                    options=self._options(match, card, viewer)
-                    if in_call and owes and viewer
-                    else [],
-                    guesses=self._guess_views(match, n) if revealed else [],
-                )
-            )
-        return views
-
-    @staticmethod
-    def _table(match: Match, card: Seed, guesser: Actor) -> dict[str, tuple[str, str]]:
-        """The entries on the table for a guesser, keyed by a hash that says nothing about them."""
-        bluffs = {t.actor: t.move_text for t in match.round_turns(match.round_n)}
-        table = {}
-        for pick in match.guess_options(guesser):
-            text = entry_case(card.hidden if pick == "truth" else bluffs[pick])
-            key = hashlib.sha256(f"{match.id}:{match.round_n}:{text}".encode()).hexdigest()[:8]
-            table[key] = (pick, text)
-        return table
-
-    def _options(self, match: Match, card: Seed, guesser: Actor) -> list[GuessOption]:
-        table = self._table(match, card, guesser)
-        return [GuessOption(key=key, text=table[key][1]) for key in sorted(table)]
-
-    def _resolve_pick(self, match: Match, card: Seed, guesser: Actor, key: str) -> str:
-        entry = self._table(match, card, guesser).get(key)
-        if entry is None:
-            raise MatchError(422, "that entry is not on the table")
-        return entry[0]
-
-    @staticmethod
-    def _guess_views(match: Match, round_n: int) -> list[GuessView]:
-        return [
-            GuessView(actor=g.actor, picked=g.picked, points=g.points, awarded_to=g.awarded_to)
-            for g in match.round_guesses(round_n)
-        ]
-
-    def _seat_views(self, match: Match, template: Template, rec: Record) -> list[SeatView]:
-        shown = self._shown_points(match, template, rec)
-        if match.phase == "guess":
-            # A seat that owes no call (a model seat, or a guesser with no choice) is done.
-            answered = set(match.seats) - set(match.owed_guesses())
-        else:
-            answered = {t.actor for t in match.turns if t.round_n == match.round_n}
-        return [
-            SeatView(
-                seat=row.seat,
-                kind=row.kind,
-                display_name=self._display_name(row, rec),
-                model=self.opponent_name if row.kind == "model" else None,
-                points=shown[row.seat],
-                eliminated=row.seat in match.eliminated,
-                answered=template.mode == "showcase" and (row.seat in answered or row.submitted),
-            )
-            for row in rec.seats
-        ]
-
     async def snapshot(self, match_id: str, session_key: str | None = None) -> MatchSnapshot:
         match, rec = await self._load(match_id)
         template = self.template_of(match)
         viewer = await self._seat_of(rec, session_key)
         if viewer and template.mode == "showcase" and match.status == "active":
             self._start_model_answers(match, rec)
-        hide = self._hides_round(match, template)
-        returned = await self._returned(match, template, rec, viewer) if hide and viewer else None
-        rows = [
-            t
-            for t in rec.turn_rows
-            # The round in play shows only the viewer's own answer, and none while it is called.
-            if not (
-                hide
-                and t["round_n"] == match.round_n
-                and (match.phase == "guess" or t["actor"] != viewer)
-            )
-        ]
-        return MatchSnapshot(
-            id=match.id,
-            template_id=match.template_id,
-            title=template.title,
-            mode=template.mode,
-            kind=rec.kind,
-            status=match.status,
-            state_version=match.state_version,
-            phase=match.phase,
-            seed_token=match.seed,
-            seed_emoji=match.seed_emoji if template.mode == "escalation" else "",
-            rounds=self._rounds(match, template, viewer),
-            round_in_play=match.round_n,
-            seats=self._seat_views(match, template, rec),
-            seats_wanted=rec.seats_wanted,
-            your_seat=viewer,
-            invite_code=rec.invite_code if viewer and match.status == "open" else None,
-            closes_at=(rec.created_at + UNFILLED_WINDOW).isoformat()
-            if match.status == "open"
-            else None,
-            turn_deadline=rec.turn_deadline.isoformat() if rec.turn_deadline else None,
-            clock_seconds=int(self._clock_length(match, template).total_seconds())
-            if rec.turn_deadline
-            else None,
-            to_move=match.to_move,
-            winner=match.winner,
-            end_reason=match.end_reason,
-            judged_moves=match.judged_moves,
-            transcript=[
-                TurnView(
-                    seq=t["seq"],
-                    round_n=t["round_n"],
-                    actor=t["actor"],
-                    move_text=t["move_text"],
-                    outcome=t["outcome"],
-                    scoring=t["scoring"],
-                    host=t["host"],
-                    points=t["points"],
-                    played_by=self._stand_in(t["model_ref"]),
-                )
-                for t in rows
-            ],
-            returned=returned,
-            created_at=rec.created_at.isoformat(),
-            is_public=rec.is_public,
-            is_yours=viewer is not None,
+        hide = hides_round(match, template)
+        returned = (
+            await returned_answer(self.pool, match, template, rec, viewer)
+            if hide and viewer
+            else None
         )
-
-    async def _returned(
-        self, match: Match, template: Template, rec: Record, viewer: str
-    ) -> TurnRejected | None:
-        """Showcase: why the viewer's last answer this round came back, while it still owes one."""
-        if match.phase != "write" or viewer in match.eliminated or match.has_answered(viewer):
-            return None
-        if rec.row(viewer).submitted:
-            return None
-        row = await last_refusal(self.pool, match.id, viewer, match.round_n)
-        if row is None:
-            return None
-        if row["outcome"] == "semantic_reject" and row["host"]:
-            host = HostPayload.model_validate(row["host"])
-            return self._rejection(
-                match,
-                template,
-                viewer,
-                match.strikes[viewer],
-                "semantic_reject",
-                host.headline,
-                host.quotable_line,
-            )
-        reason = row["layer1_result"]
-        if reason == "repeat":
-            text = REPEAT_TEXT
-        elif reason in ("empty", "too_long", "duplicate"):
-            text = getattr(template.validation_messages, reason)
-        else:
-            return None
-        return self._rejection(
-            match, template, viewer, match.strikes[viewer], "deterministic_invalid", text
+        return build_snapshot(
+            match, template, rec, viewer, returned, self.opponent_name, self._stand_in
         )
-
-    @staticmethod
-    def _clock_length(match: Match, template: Template) -> timedelta:
-        if template.mode == "escalation":
-            return TURN_CLOCK
-        return CALL_CLOCK if match.phase == "guess" else WRITE_CLOCK
 
     async def replay(self, match_id: str, session_key: str | None = None) -> Replay:
         _, rec = await self._load(match_id)
@@ -738,20 +545,10 @@ class MatchService:
             raise MatchError(404, "match still running")
         return Replay(
             **snap.model_dump(),
-            share_text=self._share_text(snap),
-            highlight_seq=self._highlight_seq(snap),
+            share_text=share_text(snap, self.public_base_url),
+            highlight_seq=highlight_seq(snap),
             is_curated=rec.is_curated,
         )
-
-    @staticmethod
-    def _highlight_seq(snap: MatchSnapshot) -> int | None:
-        winner_moves = [
-            t
-            for t in snap.transcript
-            if t.actor == snap.winner and t.points is not None and t.outcome != "fail"
-        ]
-        best = max(winner_moves, key=lambda t: t.points or 0, default=None)
-        return best.seq if best else None
 
     async def stage(self) -> StageView:
         return StageView(
@@ -761,26 +558,6 @@ class MatchService:
 
     async def replays(self, sort: Literal["curated", "newest", "longest"]) -> list[Replay]:
         return [await self.replay(match_id) for match_id in await replay_ids(self.pool, sort)]
-
-    def _share_text(self, snap: MatchSnapshot) -> str:
-        """Written from the seat of the table's creator."""
-        link = f"{self.public_base_url}/r/{snap.id}"
-        owner = next(s for s in snap.seats if s.kind == "human")
-        result = "won" if snap.winner == owner.seat else "lost" if snap.winner else "drew"
-        game = "a duel" if len(snap.seats) == 2 else f"a {len(snap.seats)}-player game"
-        if snap.mode == "showcase":
-            best_other = max((s.points for s in snap.seats if s.seat != owner.seat), default=0)
-            cards = " ".join(r.emoji for r in snap.rounds if r.emoji)
-            return (
-                f"I {result} {game} of {snap.title}, {owner.points} to {best_other}. {cards} {link}"
-            )
-        chain = [snap.seed_emoji] + [
-            t.host.generated_emoji for t in snap.transcript if t.host and t.outcome in STANDING
-        ]
-        return (
-            f"I {result} {game} of {snap.title} in {snap.judged_moves} moves. "
-            f"{'→'.join(chain)} {link}"
-        )
 
     # Commands
 
@@ -834,7 +611,7 @@ class MatchService:
             template = self.template_of(match)
             card = template.seed_named(match.card)
             assert card is not None
-            pick = self._resolve_pick(match, card, seat, key)
+            pick = resolve_pick(match, card, seat, key)
             try:
                 apply_guess(match, seat, pick, template)
             except IllegalAction as e:
@@ -880,7 +657,7 @@ class MatchService:
         if session_key is None or await self._seat_of(rec, session_key) is None:
             raise MatchError(403, "only a seat at this table can disagree")
         turn = next((t for t in match.turns if t.seq == seq), None)
-        if turn is None or (self._hides_round(match, template) and turn.round_n >= match.round_n):
+        if turn is None or (hides_round(match, template) and turn.round_n >= match.round_n):
             raise MatchError(404, "no such turn")
         if template.mode == "showcase":
             previous = match.cards[turn.round_n - 1]
@@ -1049,7 +826,7 @@ class MatchService:
         self._emit_rejection(
             match,
             template,
-            self._rejection(
+            rejection(
                 match,
                 template,
                 actor,
@@ -1087,7 +864,7 @@ class MatchService:
         self._emit_rejection(
             match,
             template,
-            self._rejection(
+            rejection(
                 match,
                 template,
                 actor,
@@ -1348,7 +1125,7 @@ class MatchService:
                     self._emit_rejection(
                         match,
                         template,
-                        self._rejection(
+                        rejection(
                             match,
                             template,
                             seat,
@@ -1477,7 +1254,7 @@ class MatchService:
                 emoji=card.opening_emoji,
                 detail=card.detail,
                 truth=card.hidden,
-                guesses=self._guess_views(match, round_n),
+                guesses=guess_views(match, round_n),
                 totals=totals,
                 state_version=match.state_version,
             ),
@@ -1634,25 +1411,6 @@ class MatchService:
             if time.monotonic() - started > JUDGE_GIVE_UP_S:
                 raise JudgeGaveUp(match.id)
 
-    @staticmethod
-    def _rejection(
-        match: Match,
-        template: Template,
-        actor: Actor,
-        strikes: int,
-        outcome: Literal["deterministic_invalid", "semantic_reject"],
-        reason_text: str,
-        nudge: str | None = None,
-    ) -> TurnRejected:
-        if strikes < template.strikes_before_consequence:
-            nudge = None
-        elif nudge is None:
-            target = match.card if template.mode == "showcase" else match.standing_form
-            nudge = template.validation_messages.nudge.format(standing_form=target)
-        return TurnRejected(
-            seat=actor, outcome=outcome, reason_text=reason_text, strikes=strikes, nudge_text=nudge
-        )
-
     def _emit_rejection(self, match: Match, template: Template, rejected: TurnRejected) -> None:
         """A showcase refusal is about a hidden answer, so the stream says only whose it was;
         that seat reads the reason from its own snapshot."""
@@ -1742,18 +1500,10 @@ class MatchService:
                 end_reason=match.end_reason,
                 winner=match.winner,
                 totals={s.seat: s.points for s in snap.seats},
-                highlight_seq=self._highlight_seq(snap),
+                highlight_seq=highlight_seq(snap),
                 coaching_line=coaching_line,
-                share_text=self._share_text(snap),
+                share_text=share_text(snap, self.public_base_url),
                 replay_id=match.id,
                 state_version=match.state_version,
             ),
         )
-
-
-def entry_case(text: str) -> str:
-    """Dictionary casing for an entry on the table: lowercase start, no closing full stop."""
-    text = text.strip().rstrip(".").strip()
-    if len(text) > 1 and text[1].islower():
-        text = text[0].lower() + text[1:]
-    return text
