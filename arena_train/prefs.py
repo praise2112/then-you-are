@@ -37,7 +37,7 @@ from pathlib import Path
 import mlflow
 import torch
 from datasets import Dataset
-from sft import answer_contexts, bucket, load_model, thinking_switch, upload
+from sft import answer_contexts, bucket, load_weights, thinking_switch, upload
 from transformers import AutoTokenizer
 from trl import DPOConfig, DPOTrainer, KTOConfig, KTOTrainer
 from trl.experimental.cpo import CPOConfig, CPOTrainer
@@ -151,7 +151,7 @@ def main() -> None:
     else:
         pairs = [json.loads(x) for path in args.pairs for x in path.read_text().splitlines()]
         rows = pair_rows(tokenizer, pairs, chat_kwargs)
-    model = load_model(source)
+    model = load_weights(source)
 
     spec = dict(METHODS[args.method])
     lr = spec.pop("lr")

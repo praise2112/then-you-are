@@ -15,6 +15,8 @@ import asyncio
 import sys
 from pathlib import Path
 
+from pydantic import BaseModel
+
 from arena_core.state import weighted_total
 from arena_core.template import Template
 from arena_evals.common import load_model, make_caller, read_jsonl, write_jsonl
@@ -27,7 +29,6 @@ from arena_evals.datagen.ledger import (
     Tape,
     move_call_row,
 )
-from arena_evals.datagen.mine import ScoredMove
 from arena_evals.datagen.prefset import JUDGE_RUNS, Position, pair_row, playable, with_move
 from arena_evals.datagen.run import CORPUS_DIR, RUNS_DIR, corpus_games
 from arena_evals.judge_eval import RANK_GAP
@@ -37,6 +38,15 @@ from arena_judge.schema import JudgeResponse
 
 DRAWS = 4
 JUDGE = "judge-v1-direct"
+
+
+class ScoredMove(BaseModel):
+    """One judged draw as prefs.py's KTO input reads it."""
+
+    position: str
+    move: str
+    totals: list[int]
+    passes: bool
 
 
 def teacher_turn(corpus: list[Ledger], pos: Position) -> CallRow:

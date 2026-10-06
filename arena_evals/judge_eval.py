@@ -23,7 +23,7 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel
 
-from arena_core.state import weighted_total
+from arena_core.state import STANDING, weighted_total
 from arena_core.template import Template, load_template_file
 from arena_evals.common import read_jsonl, with_backoff, write_jsonl
 from arena_evals.datagen.ledger import Ledger
@@ -47,7 +47,6 @@ ROWS = (
 TEACHER_JUDGE = "judge-v1"
 # A pair counts for ranking only when Flash's totals differ by twice its rescoring spread.
 RANK_GAP = 7.5
-STOOD = ("accept", "semantic_uncertain")
 RULING_FIRST = ("gates", "confidence", "verdict", "truth_proximity", "scores", "evidence")
 
 
@@ -178,7 +177,7 @@ def score(
             continue
         labels.append((flash_outcome, route_outcome(mine.scoring)))
         errors += [abs(mine.scoring.scores[k] - s) for k, s in flash.scoring.scores.items()]
-        if flash_outcome in STOOD:
+        if flash_outcome in STANDING:
             totals[v.context].append(
                 (
                     weighted_total(flash.scoring.scores, template.weights),

@@ -66,7 +66,7 @@ def corpus_games(slugs: list[str]) -> tuple[dict[str, Template], dict[str, str]]
     return templates, names
 
 
-PROVIDERS = {
+ROUTES = {
     "fireworks": {"judge": "judge-fireworks", "flash": "opponent-fireworks", "concurrency": 20},
     "deepseek": {"judge": "judge-v1", "flash": "opponent-v1", "concurrency": 64},
 }
@@ -271,7 +271,7 @@ def main() -> None:
     start = sub.add_parser("start")
     start.add_argument("run_id")
     start.add_argument("--matches", nargs="+", required=True, help="slug=count ...")
-    start.add_argument("--provider", choices=list(PROVIDERS), default="fireworks")
+    start.add_argument("--provider", choices=list(ROUTES), default="fireworks")
     resume = sub.add_parser("resume")
     resume.add_argument("run_id")
     for p in (start, resume):
@@ -300,7 +300,7 @@ def main() -> None:
         templates, names = corpus_games(list(counts))
         if ledger.plan(args.run_id) is not None:
             raise SystemExit(f"run {args.run_id} exists; use resume")
-        provider = PROVIDERS[args.provider]
+        provider = ROUTES[args.provider]
         ledger.create_run(
             args.run_id,
             {
@@ -325,7 +325,7 @@ def main() -> None:
     check_hashes(plan, templates)
     pending = Counter(row["template_id"] for row in ledger.matches("active"))
     base, peak = estimate(templates, pending)
-    concurrency = args.concurrency or PROVIDERS[plan["provider"]]["concurrency"]
+    concurrency = args.concurrency or ROUTES[plan["provider"]]["concurrency"]
     price = (
         f"${base:.2f}"
         if plan["provider"] == "fireworks"
