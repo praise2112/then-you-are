@@ -2039,9 +2039,8 @@ class MatchService:
         hidden: str = "",
         quiet: bool = False,
     ) -> Judged:
-        """Retries the same judge call until a ruling lands. An escalation move pauses the
-        match and says so; a quiet call (showcase answers) touches neither status nor stream.
-        Raises MatchClosed once the match is closed, JudgeGaveUp after JUDGE_GIVE_UP_S."""
+        """Retries the judge call until it rules, pausing the match meanwhile unless quiet.
+        Raises MatchClosed if the match closes, and JudgeGaveUp after JUDGE_GIVE_UP_S."""
         paused = False
         attempt = 0
         started = time.monotonic()

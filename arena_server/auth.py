@@ -133,11 +133,8 @@ SignIn = Literal["signed_in", "linked", "taken"]
 async def link_account(
     pool: Pool, session_key: str | None, profile: Profile
 ) -> tuple[str, SignIn, str]:
-    """Signs the session in. Returns the session key, what happened, and a name for the notice.
-
-    A known identity signs into its account. A new identity joins the session's account when
-    the session is already signed in, otherwise it opens a new account. A signed-in session
-    meeting an identity that belongs to another account is left alone ("taken")."""
+    """Signs the session in to the identity's account; a new identity joins the session's account
+    or opens one. Returns the key, the result ("taken": another account owns it) and a name."""
     key = session_key or new_session_key()
     async with pool.connection() as conn:
         current_id = await account_of(conn, key)
@@ -203,9 +200,8 @@ async def rename_account(pool: Pool, session_key: str, display_name: str) -> boo
 
 
 async def erase_sessions(conn: AsyncConnection[DictRow], keys: list[str]) -> bool:
-    """Deletes every match only these sessions played, and their votes. A session still seated
-    at someone else's match becomes "Deleted player", unlinked and revoked; the rest are deleted.
-    Returns False, changing nothing, while one of those solo matches is unfinished."""
+    """Deletes the sessions, their votes and every match only they played. Returns False and
+    changes nothing if one is unfinished; a session seated elsewhere becomes "Deleted player"."""
     solo = await (
         await conn.execute(
             "select m.id, m.status from matches m "

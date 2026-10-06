@@ -1,6 +1,5 @@
-"""Per-match event buffer. Ids are "<generation>-<n>": sequential within a process so a client
-resumes from Last-Event-ID, and stamped with the process generation so a cursor from before a
-restart replays the new buffer from the start."""
+"""Per-match event buffer. Event ids are "<generation>-<n>", so a Last-Event-ID from an earlier
+process replays the buffer from the start."""
 
 import asyncio
 import secrets
