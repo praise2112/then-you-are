@@ -45,6 +45,7 @@ def test_a_move_that_fails_banks_no_points():
     apply_ruling(match, "p1", "I am rain", "accept", 0, DUEL, 20)
     apply_ruling(match, "p2", "I am a cloud", "fail", 1, DUEL, 21)
     assert match.points == {"p1": 20, "p2": 0}
+    assert [t.points for t in match.turns] == [20, 0]
 
 
 def test_rejected_move_keeps_the_turn_and_adds_a_strike():

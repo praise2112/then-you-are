@@ -57,6 +57,8 @@ class Turn:
     outcome: Outcome
     round_n: int = 1
     truth_hit: bool = False
+    # What the move was awarded; None when it was never scored.
+    points: int | None = None
 
 
 @dataclass(frozen=True)
@@ -283,7 +285,8 @@ def apply_ruling(
     points: int = 0,
     truth_hit: bool = False,
 ) -> Match:
-    """Record a judged or refused move and advance the match by the template's win rule."""
+    """Record a judged or refused move and advance the match by the template's win rule.
+    `points` is the move's weighted score; a fail is awarded none."""
     _check_open(match, expected_version)
     _check_move(match, actor, template)
     match.state_version += 1
@@ -294,6 +297,7 @@ def apply_ruling(
         match.strikes[actor] += 1
         return match
 
+    earned = 0 if outcome == "fail" else points
     match.turns.append(
         Turn(
             seq=len(match.turns) + 1,
@@ -302,11 +306,11 @@ def apply_ruling(
             outcome=outcome,
             round_n=match.round_n,
             truth_hit=truth_hit,
+            points=earned,
         )
     )
     match.strikes[actor] = 0
-    if outcome != "fail":
-        match.points[actor] += points
+    match.points[actor] += earned
     if template.mode == "showcase":
         if match.round_answered:
             _close_round(match, template, actor)

@@ -3,7 +3,6 @@ and the games played against people, which never count on the record."""
 
 from typing import Any
 
-from arena_core.state import weighted_total
 from arena_server.auth import account_of
 from arena_server.leaderboard import account_rank, streaks
 from arena_server.matches import MatchError, MatchService
@@ -59,13 +58,12 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
             )
         ).fetchall()
         won_ids = [m["id"] for m in matches if m["status"] == "ended" and m["won"]]
-        scorings = await (
+        peaks = await (
             await conn.execute(
-                "select t.match_id, v.scoring from turns t "
-                "join verdicts v on v.id = t.live_verdict_id "
+                "select t.match_id, coalesce(max(t.points), 0) as peak from turns t "
                 "join matches m on m.id = t.match_id "
                 "where t.match_id = any(%s) and t.actor = m.winner "
-                "and t.outcome in ('accept', 'semantic_uncertain')",
+                "and t.outcome in ('accept', 'semantic_uncertain') group by t.match_id",
                 (won_ids,),
             )
         ).fetchall()
@@ -91,7 +89,8 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
     ended_all = sorted((m for m in ranked if m["status"] == "ended"), key=lambda m: m["ended_at"])
     streak, best_streak = streaks([m["won"] for m in ended_all])
     shown = [m for m in matches if is_yours or (m["status"] == "ended" and m["is_public"])]
-    best_ids = _best_ids([m for m in shown if m["kind"] == "house"], scorings, service)
+    peak = {r["match_id"]: r["peak"] for r in peaks}
+    best_ids = _best_ids([m for m in shown if m["kind"] == "house"], peak)
     return ProfileView(
         id=account["id"],
         display_name=account["display_name"],
@@ -110,16 +109,8 @@ async def profile(service: MatchService, account_id: str, session_key: str | Non
     )
 
 
-def _best_ids(matches: list[Any], scorings: list[Any], service: MatchService) -> list[str]:
+def _best_ids(matches: list[Any], peak: dict[str, int]) -> list[str]:
     """Won duels ranked by the player's highest-scoring move; curated duels first."""
-    peak: dict[str, int] = {}
-    template_of = {m["id"]: m["template_id"] for m in matches}
-    for row in scorings:
-        if row["match_id"] not in template_of:
-            continue
-        weights = service.templates[template_of[row["match_id"]]].weights
-        score = weighted_total(row["scoring"]["scores"], weights)
-        peak[row["match_id"]] = max(peak.get(row["match_id"], 0), score)
     won = [m for m in matches if m["status"] == "ended" and m["won"]]
     won.sort(key=lambda m: (m["is_curated"], peak.get(m["id"], 0)), reverse=True)
     return [m["id"] for m in won[:BEST_SHOWN]]

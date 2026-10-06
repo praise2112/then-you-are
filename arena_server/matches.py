@@ -393,15 +393,13 @@ class MatchService:
         house = kind == "house"
         async with self.pool.connection() as conn, conn.transaction():
             await conn.execute(
-                "insert into matches (id, template_id, template_version, config, seed_token, "
-                "seed_emoji, cards, status, is_public, kind, seats_wanted, invite_code) "
-                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                "insert into matches (id, template_id, config, seed_emoji, cards, status, "
+                "is_public, kind, seats_wanted, invite_code) "
+                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (
                     match_id,
                     template.slug,
-                    template.schema_version,
                     template.model_dump_json(),
-                    cards[0].opening_token,
                     cards[0].opening_emoji,
                     [c.opening_token for c in cards],
                     "active" if house else "open",
@@ -624,6 +622,7 @@ class MatchService:
                     t["outcome"],
                     t["round_n"],
                     truth_hit=bool(t["scoring"]) and t["scoring"].get("truth_proximity") == "hit",
+                    points=t["points"],
                 )
                 for t in turns
             ],
@@ -832,12 +831,13 @@ class MatchService:
         verdict_id: int | None,
         action_id: str | None,
     ) -> int:
-        round_n = match.turns[-1].round_n if seq is not None and match.turns else match.round_n
+        # A refused move has no seq and no turn in the match.
+        turn = match.turns[-1] if seq is not None and match.turns else None
         row = await (
             await conn.execute(
                 "insert into turns (match_id, seq, actor, move_text, layer1_result, outcome, "
-                "live_verdict_id, action_id, round_n, model_ref) "
-                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, "
+                "live_verdict_id, action_id, round_n, points, model_ref) "
+                "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
                 "(select model_ref from seats where match_id = %s and seat = %s)) returning id",
                 (
                     match.id,
@@ -848,7 +848,8 @@ class MatchService:
                     outcome,
                     verdict_id,
                     action_id,
-                    round_n,
+                    turn.round_n if turn else match.round_n,
+                    turn.points if turn else None,
                     match.id,
                     actor,
                 ),
@@ -931,7 +932,7 @@ class MatchService:
             return shown
         for t in rec.turn_rows:
             if t["round_n"] == match.round_n:
-                shown[t["actor"]] -= self._turn_points(t["scoring"], template, t["outcome"]) or 0
+                shown[t["actor"]] -= t["points"] or 0
         for g in match.round_guesses(match.round_n):
             shown[g.awarded_to] -= g.points
         return shown
@@ -1068,7 +1069,7 @@ class MatchService:
                     outcome=t["outcome"],
                     scoring=t["scoring"],
                     host=t["host"],
-                    points=self._turn_points(t["scoring"], template, t["outcome"]),
+                    points=t["points"],
                     played_by=self._stand_in(t["model_ref"]),
                 )
                 for t in rows
@@ -1131,28 +1132,14 @@ class MatchService:
             is_curated=rec.is_curated,
         )
 
-    def _turn_points(
-        self, scoring: dict[str, Any] | None, template: Template, outcome: str
-    ) -> int | None:
-        """What the move was awarded. A move that fell takes nothing, whatever it scored."""
-        if scoring is None:
-            return None
-        if outcome == "fail":
-            return 0
-        return weighted_total(scoring["scores"], template.weights)
-
-    def _highlight_seq(self, snap: MatchSnapshot) -> int | None:
-        weights = self.templates[snap.template_id].weights
+    @staticmethod
+    def _highlight_seq(snap: MatchSnapshot) -> int | None:
         winner_moves = [
             t
             for t in snap.transcript
-            if t.actor == snap.winner and t.scoring and t.outcome != "fail"
+            if t.actor == snap.winner and t.points is not None and t.outcome != "fail"
         ]
-        best = max(
-            winner_moves,
-            key=lambda t: weighted_total(t.scoring.scores, weights),  # type: ignore[union-attr]
-            default=None,
-        )
+        best = max(winner_moves, key=lambda t: t.points or 0, default=None)
         return best.seq if best else None
 
     async def stage(self) -> StageView:
@@ -1871,7 +1858,6 @@ class MatchService:
                 continue
             scoring = ScoringPayload.model_validate(row["scoring"])
             host = HostPayload.model_validate(row["host"])
-            earned = self._turn_points(row["scoring"], template, row["outcome"]) or 0
             self.bus.emit(
                 match.id,
                 "ruling",
@@ -1883,7 +1869,7 @@ class MatchService:
                     outcome=row["outcome"],
                     scoring=scoring,
                     host=host,
-                    points=earned,
+                    points=row["points"] or 0,
                     totals=totals,
                     to_move=match.to_move,
                     round_in_play=match.round_n,
