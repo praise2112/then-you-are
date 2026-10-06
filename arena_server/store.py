@@ -119,7 +119,9 @@ async def load_matches(
 ) -> list[tuple[Match, Record]]:
     """Each match found and its record, in the order of `match_ids`, as `load_match` reads one."""
     cached = [match_id for match_id in match_ids if match_id in cache]
-    async with pool.connection() as conn:
+    async with pool.connection() as conn, conn.transaction():
+        # One snapshot for every read, so no turn is newer than its match row.
+        await conn.execute("set transaction isolation level repeatable read, read only")
         rows = await (
             await conn.execute(
                 "select id, template_id, cards, seed_emoji, status, state_version, to_move, "

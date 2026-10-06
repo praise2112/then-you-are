@@ -4,6 +4,7 @@ import os
 import time
 from collections.abc import AsyncIterator
 from pathlib import Path
+from typing import Any
 
 import httpx
 import pytest
@@ -180,6 +181,103 @@ async def test_a_judge_that_never_rules_hands_the_move_back(monkeypatch):
         snap = (await client.get(f"/matches/{match['id']}")).json()
         assert (snap["status"], snap["to_move"], snap["transcript"]) == ("active", "p1", [])
         assert caller.judged == [move]
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+class BrokenHouse(FakeCaller):
+    """A House whose first answer breaks with an error no caller expects."""
+
+    def __init__(self, rulings: list, opponent_moves: list[str]):
+        super().__init__(rulings, opponent_moves)
+        self.broken = True
+
+    def opponent_stream(
+        self, template, seat, card, transcript, hidden="", slot=None, spec=None
+    ) -> AsyncIterator[str]:
+        if not self.broken:
+            return super().opponent_stream(template, seat, card, transcript, hidden, slot, spec)
+        self.broken = False
+
+        async def breaks() -> AsyncIterator[str]:
+            raise RuntimeError("the House broke")
+            yield ""
+
+        return breaks()
+
+
+@pytest.mark.anyio
+async def test_a_house_turn_that_breaks_is_forfeited_and_play_goes_on():
+    app, manager, client = await run_app(BrokenHouse([], ["I am a key, lock-turning."]))
+    try:
+        match_id = (await client.post("/matches", json={"template_id": "then-i-am"})).json()["id"]
+        moved = await client.post(
+            f"/matches/{match_id}/moves",
+            json={"action_id": "a1", "expected_version": 0, "move_text": "I am rust, hinge-eat."},
+        )
+        assert moved.status_code == 202
+        await settle(app)
+        snap = (await client.get(f"/matches/{match_id}")).json()
+        assert (snap["status"], snap["to_move"]) == ("active", "p1")
+        assert [(t["actor"], t["outcome"]) for t in snap["transcript"]] == [
+            ("p1", "accept"),
+            ("p2", "forfeit"),
+        ]
+        again = await client.post(
+            f"/matches/{match_id}/moves",
+            json={
+                "action_id": "a2",
+                "expected_version": snap["state_version"],
+                "move_text": "I am a pick, lock-opening.",
+            },
+        )
+        assert again.status_code == 202
+        await settle(app)
+        snap = (await client.get(f"/matches/{match_id}")).json()
+        assert [t["actor"] for t in snap["transcript"]] == ["p1", "p2", "p1", "p2"]
+        assert snap["to_move"] == "p1"
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_snapshot_never_shows_a_turn_newer_than_its_version(monkeypatch):
+    import psycopg
+
+    app, manager, client = await run_app(FakeCaller([], []))
+    match_id = (await client.post("/matches", json={"template_id": "then-i-am"})).json()["id"]
+    await settle(app)
+    execute = psycopg.AsyncConnection.execute
+    landed = False
+
+    async def land_a_turn_between_reads(self, query: Any, *args, **kwargs):
+        # A forfeit commits after the match row is read and before its turns are.
+        nonlocal landed
+        if not landed and str(query).startswith("select t.*"):
+            landed = True
+            async with await psycopg.AsyncConnection.connect(
+                os.environ["TEST_DATABASE_URL"], autocommit=True
+            ) as other:
+                await other.execute(
+                    "update matches set state_version = state_version + 1 where id = %s",
+                    (match_id,),
+                )
+                await other.execute(
+                    "insert into turns (match_id, seq, actor, move_text, outcome, "
+                    "layer1_result, round_n) values (%s, 1, 'p1', '', 'forfeit', 'forfeit', 1)",
+                    (match_id,),
+                )
+        return await execute(self, query, *args, **kwargs)
+
+    try:
+        monkeypatch.setattr(psycopg.AsyncConnection, "execute", land_a_turn_between_reads)
+        snap = (await client.get(f"/matches/{match_id}")).json()
+        assert landed
+        assert (snap["state_version"], len(snap["transcript"])) == (0, 0)
+        snap = (await client.get(f"/matches/{match_id}")).json()
+        assert (snap["state_version"], len(snap["transcript"])) == (1, 1)
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)

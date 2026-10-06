@@ -450,8 +450,8 @@ class MatchService:
         except MatchClosed:
             log.info("match %s closed while waiting on the judge", match_id)
         except Exception:
-            log.exception("answer on %s failed; the seat may answer again", match_id)
-            await self._hand_back(match_id, seat)
+            log.exception("answer on %s failed", match_id)
+            await self._recover(match_id, seat)
 
     async def _land_answer(
         self,
@@ -470,23 +470,51 @@ class MatchService:
         if not _owes(match, template, seat, round_n):
             return
         change = await self._land(match, rec, seat, text, ruled, action_id)
-        if (change.strikes or change.repeat) and change.forfeit is None:
+        came_back = (change.strikes or change.repeat) and change.forfeit is None
+        if came_back and not shows_live(template):
             await self._give_time(match, rec)
         await self._drive(match, rec)
 
-    async def _hand_back(self, match_id: str, seat: str) -> None:
-        """The seat's answer was lost on the way: it may answer again, with a whole clock if
-        little was left."""
+    async def _recover(self, match_id: str, seat: str) -> None:
+        """After a human seat's answer failed: a House seat whose serial turn failed loses that
+        turn and play goes on; a human seat that still owes gets its answer back."""
         async with await self.lock(match_id):
             await set_submitted(self.pool, match_id, seat, False)
             match, rec = await self.load(match_id)
-            live = shows_live(rec.template)
-            if live:
+            template = rec.template
+            owing = owed(match, template)
+            if not shows_live(template):
+                if seat in owing:
+                    await self._hand_back(match, rec, seat)
+                return
+            if match.status in ("awaiting_judgment", "paused"):
                 await set_status(self.pool, match_id, "active")
                 match.status = "active"
-            deadline = await self._give_time(match, rec)
-            if live:
-                self._turn_changed(match, deadline)
+            if owing == [seat]:
+                self._turn_changed(match, await self._give_time(match, rec))
+                return
+            if owing and owing[0] in rec.models:
+                change = forfeit_turn(match, owing[0], template)
+                await store_turns(self.pool, match, *_forfeit_rows(change))
+                await self._publish(match, rec, change)
+            await self._drive(match, rec)
+
+    async def _hand_back(self, match: Match, rec: Record, seat: str) -> None:
+        """A hidden round: the seat may answer again, with a whole clock if little was left. The
+        table hears only that the seat's answer came back, at a newer version."""
+        match.state_version += 1
+        await save_match(self.pool, match)
+        await self._give_time(match, rec)
+        self.bus.emit(
+            match.id,
+            TurnRejected(
+                seat=seat,
+                outcome="deterministic_invalid",
+                reason_text="",
+                strikes=match.strikes[seat],
+                state_version=match.state_version,
+            ),
+        )
 
     async def _rule(self, match: Match, template: Template, text: str) -> Judged | Layer1Reason:
         """Layer 1's refusal, or else the judge's ruling. Only serial play announces the judge
@@ -774,10 +802,9 @@ class MatchService:
             phase_over = change.ended or change.round_closed or change.call_opened
             if phase_over:
                 break
-        if not shows_live(template) and phase == "write":
-            if not phase_over:
-                # Only answers still with the judge or a House seat remain; the round waits.
-                await set_deadline(self.pool, match.id, None)
+        if not shows_live(template) and phase == "write" and not phase_over:
+            # Only answers still with the judge or a House seat remain; the round waits.
+            await set_deadline(self.pool, match.id, None)
             self._turn_changed(match, None)
         await self._drive(match, rec)
 

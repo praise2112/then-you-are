@@ -596,6 +596,8 @@ def resign(match: Match, actor: Actor, template: Template) -> Change:
         return _change(match, template, round_n, phase)
     if template.mode == "escalation":
         if match.to_move == actor:
+            # A move of the actor's still with the judge goes with it.
+            match.status = "active"
             _pass_turn(match, actor, next_seat(match, actor))
             _end_on_budget(match, template, actor)
     elif match.phase == "write" and match.round_answered:

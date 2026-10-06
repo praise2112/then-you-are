@@ -5,7 +5,7 @@ import re
 import pytest
 
 from tests.conftest import FakeCaller, events_of, judge_response, run_app, settle
-from tests.test_tables import join, move, player, snap, table
+from tests.test_tables import expire, join, move, player, snap, table
 
 pytestmark = [
     pytest.mark.skipif(
@@ -271,5 +271,55 @@ async def test_a_resign_during_a_judge_outage_waits_for_the_ruling(monkeypatch):
             ("match_ended", "resign", "p2", {"p1": 28, "p2": 28}, 3),
         ]
     finally:
+        await ana.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_hidden_answer_the_judge_gave_up_on_comes_back_to_its_writer_only(monkeypatch):
+    monkeypatch.setattr("arena_server.judging.JUDGE_GIVE_UP_S", 0)
+    monkeypatch.setattr("arena_server.judging.PAUSE_BACKOFF_S", (0,))
+    caller = FakeCaller(rulings=[judge_response(), None], opponent_moves=["a cup holder"])
+    app, manager, ana = await run_app(caller)
+    try:
+        duel = (
+            await ana.post("/matches", json={"template_id": "word-for-word", "seed_token": "zarf"})
+        ).json()
+        await settle(app)
+        assert await move(ana, duel["id"], "a1", "a desert cloak") == 202
+        await settle(app)
+        assert sequence(app, duel["id"]) == [
+            ("seat_submitted", "p1", 1),
+            ("turn_rejected", "p1", "deterministic_invalid", 0, False, False, 2),
+        ]
+        state = await snap(ana, duel["id"])
+        assert (state["state_version"], state["phase"]) == (2, "write")
+        assert not state["seats"][0]["answered"]
+        assert await move(ana, duel["id"], "a2", "a desert cloak") == 202
+        await settle(app)
+        assert (await snap(ana, duel["id"]))["phase"] == "guess"
+    finally:
+        await ana.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
+async def test_a_lapsed_write_clock_that_closes_the_round_keeps_the_next_clock():
+    app, manager, ana = await run_app(FakeCaller([], []))
+    ben = player(app)
+    try:
+        opened = await table(ana, "word-for-word", 2, "Ana")
+        match_id = await join(ben, opened["invite_code"], "Ben")
+        await settle(app)
+        assert await move(ana, match_id, "a1", "a hat for a small dog") == 202
+        await settle(app)
+        seen = len(events_of(app, match_id))
+        await expire(app, match_id)
+        state = await snap(ana, match_id)
+        assert (state["phase"], state["state_version"]) == ("guess", 2)
+        assert state["turn_deadline"]
+        assert sequence(app, match_id)[seen:] == [("guess_opened", 1, 2)]
+    finally:
+        await ben.aclose()
         await ana.aclose()
         await manager.__aexit__(None, None, None)

@@ -187,6 +187,41 @@ async def test_a_lapsed_clock_waiting_on_a_busy_match_is_queued_once():
 
 
 @pytest.mark.anyio
+async def test_a_seat_that_resigns_with_its_move_unjudged_leaves_the_turn_to_the_next():
+    import asyncio
+
+    caller = FakeCaller([], [])
+    app, manager, ana = await run_app(caller)
+    ben, cat = player(app), player(app)
+    try:
+        opened = await table(ana, "then-i-am", 3, "Ana")
+        await join(ben, opened["invite_code"], "Ben")
+        match_id = await join(cat, opened["invite_code"], "Cat")
+        await settle(app)
+        # The resign takes the lock before the judge call does.
+        async with await app.state.service.lock(match_id):
+            moving = asyncio.create_task(move(ana, match_id, "a1", "I am rain, rock-wearing."))
+            await asyncio.sleep(0.1)
+            resigning = asyncio.create_task(
+                ana.post(
+                    f"/matches/{match_id}/resign", json={"action_id": "r", "expected_version": 0}
+                )
+            )
+            await asyncio.sleep(0.1)
+        assert await moving == 202 and (await resigning).status_code == 202
+        await settle(app)
+        state = await snap(ben, match_id)
+        assert (state["status"], state["to_move"]) == ("active", "p2")
+        assert caller.judged == []
+        assert await move(ben, match_id, "b1", "I am a river.", state["state_version"]) == 202
+    finally:
+        await cat.aclose()
+        await ben.aclose()
+        await ana.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_two_players_write_at_once_and_see_nothing_of_the_round_until_the_reveal():
     caller = FakeCaller([], ["a cup holder", "a low groan", "a hinge pin"])
     app, manager, ana = await run_app(caller)
