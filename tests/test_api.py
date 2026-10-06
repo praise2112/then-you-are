@@ -562,6 +562,19 @@ async def test_the_featured_template_leads_the_list():
 
 
 @pytest.mark.anyio
+async def test_the_games_may_be_cached_for_five_minutes_but_a_missing_one_is_not():
+    app, manager, client = await run_app(FakeCaller(rulings=[], opponent_moves=[]))
+    try:
+        for path in ("/templates", "/templates/domino"):
+            response = await client.get(path)
+            assert response.headers["cache-control"] == "public, max-age=300"
+        assert "cache-control" not in (await client.get("/templates/nope")).headers
+    finally:
+        await client.aclose()
+        await manager.__aexit__(None, None, None)
+
+
+@pytest.mark.anyio
 async def test_a_refused_judge_bill_backs_off_and_flags_the_health_check(monkeypatch):
     import arena_server.judging as judging
 

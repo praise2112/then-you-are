@@ -273,15 +273,20 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def healthz() -> Health:
         return Health(status="ok", games=list(templates), judge=service.judge.fault or "ok")
 
+    # The games change only with a deploy and carry nothing about the viewer.
+    games_cache = "public, max-age=300"
+
     @app.get("/templates")
-    async def list_templates() -> list[TemplateView]:
+    async def list_templates(response: Response) -> list[TemplateView]:
+        response.headers["Cache-Control"] = games_cache
         featured = settings.featured_template
         return [template_view(t, t.slug == featured) for t in templates.values()]
 
     @app.get("/templates/{slug}")
-    async def get_template(slug: str) -> TemplateView:
+    async def get_template(slug: str, response: Response) -> TemplateView:
         if slug not in templates:
             raise HTTPException(404, "no such template")
+        response.headers["Cache-Control"] = games_cache
         return template_view(templates[slug], slug == settings.featured_template)
 
     async def session_with_providers(key: str | None) -> SessionView:
