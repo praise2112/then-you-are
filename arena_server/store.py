@@ -2,6 +2,7 @@
 
 import json
 import logging
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Literal
@@ -99,42 +100,77 @@ async def load_match(
 ) -> tuple[Match, Record]:
     """The match and its record. Reads the match's own template unless `cache` holds it, and
     caches it while the match is live; `templates` stands in for one this build cannot read."""
-    cached = cache.get(match_id)
+    loaded = await load_matches(pool, [match_id], templates, cache)
+    if not loaded:
+        raise MatchError(404, "no such match")
+    return loaded[0]
+
+
+async def load_matches(
+    pool: Pool, match_ids: list[str], templates: dict[str, Template], cache: dict[str, Template]
+) -> list[tuple[Match, Record]]:
+    """Each match found and its record, in the order of `match_ids`, as `load_match` reads one."""
+    cached = [match_id for match_id in match_ids if match_id in cache]
     async with pool.connection() as conn:
-        row = await (
+        rows = await (
             await conn.execute(
                 "select id, template_id, cards, seed_emoji, status, state_version, to_move, "
                 "phase, round_n, winner, end_reason, kind, seats_wanted, invite_code, "
                 "turn_deadline, is_public, is_curated, created_at, "
-                "case when %s then null else config end as config from matches where id = %s",
-                (cached is not None, match_id),
+                "case when id = any(%s) then null else config end as config "
+                "from matches where id = any(%s)",
+                (cached, match_ids),
             )
-        ).fetchone()
-        if row is None:
-            raise MatchError(404, "no such match")
+        ).fetchall()
         turns = await (
             await conn.execute(
                 "select t.*, v.scoring, v.host from turns t "
                 "left join verdicts v on v.id = t.live_verdict_id "
-                "where t.match_id = %s and t.seq is not null order by t.seq",
-                (match_id,),
+                "where t.match_id = any(%s) and t.seq is not null order by t.seq",
+                (match_ids,),
             )
         ).fetchall()
         guesses = await (
             await conn.execute(
-                "select round_n, actor, picked, points, awarded_to from guesses "
-                "where match_id = %s order by id",
-                (match_id,),
+                "select match_id, round_n, actor, picked, points, awarded_to from guesses "
+                "where match_id = any(%s) order by id",
+                (match_ids,),
             )
         ).fetchall()
-        seat_rows = await (
+        seats = await (
             await conn.execute(
                 "select se.*, s.stage_name, s.account_id from seats se "
                 "left join sessions s on s.session_key = se.session_key "
-                "where se.match_id = %s order by substring(se.seat from 2)::int",
-                (match_id,),
+                "where se.match_id = any(%s) order by substring(se.seat from 2)::int",
+                (match_ids,),
             )
         ).fetchall()
+
+    def by_match(found: list[DictRow]) -> defaultdict[str, list[DictRow]]:
+        grouped: defaultdict[str, list[DictRow]] = defaultdict(list)
+        for r in found:
+            grouped[r["match_id"]].append(r)
+        return grouped
+
+    turns_of, guesses_of, seats_of = by_match(turns), by_match(guesses), by_match(seats)
+    row_of = {row["id"]: row for row in rows}
+    return [
+        _assemble(row_of[i], turns_of[i], guesses_of[i], seats_of[i], templates, cache)
+        for i in match_ids
+        if i in row_of
+    ]
+
+
+def _assemble(
+    row: DictRow,
+    turns: list[DictRow],
+    guesses: list[DictRow],
+    seat_rows: list[DictRow],
+    templates: dict[str, Template],
+    cache: dict[str, Template],
+) -> tuple[Match, Record]:
+    match_id = row["id"]
+    cached = cache.get(match_id)
     template = cached or _stored_template(row, templates)
     if cached is None and row["status"] in LIVE_STATUSES:
         cache[match_id] = template
@@ -161,7 +197,10 @@ async def load_match(
             )
             for t in turns
         ],
-        guesses=[Guess(**g) for g in guesses],
+        guesses=[
+            Guess(g["round_n"], g["actor"], g["picked"], g["points"], g["awarded_to"])
+            for g in guesses
+        ],
         human_seats=tuple(r["seat"] for r in seat_rows if r["kind"] == "human"),
         strikes={r["seat"]: r["strikes"] for r in seat_rows},
         points={r["seat"]: r["points"] for r in seat_rows},

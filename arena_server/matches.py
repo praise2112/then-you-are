@@ -79,6 +79,7 @@ from arena_server.store import (
     hold_move,
     live_public_ids,
     load_match,
+    load_matches,
     overdue_ids,
     replay_ids,
     reset_for_restart,
@@ -231,6 +232,11 @@ class MatchService:
     async def replay(self, match_id: str, session_key: str | None = None) -> Replay:
         event_id = self.bus.cursor(match_id)
         match, rec = await self.load(match_id)
+        return await self._replay(match, rec, session_key, event_id)
+
+    async def _replay(
+        self, match: Match, rec: Record, session_key: str | None, event_id: str
+    ) -> Replay:
         snap = await self._snapshot(match, rec, session_key, event_id)
         if snap.status not in ("ended", "abandoned"):
             raise MatchError(404, "match still running")
@@ -250,7 +256,10 @@ class MatchService:
         )
 
     async def replays(self, sort: Literal["curated", "newest", "longest"]) -> list[Replay]:
-        return [await self.replay(match_id) for match_id in await replay_ids(self.pool, sort)]
+        ids = await replay_ids(self.pool, sort)
+        cursors = {match_id: self.bus.cursor(match_id) for match_id in ids}
+        loaded = await load_matches(self.pool, ids, self.templates, self.match_templates)
+        return [await self._replay(match, rec, None, cursors[match.id]) for match, rec in loaded]
 
     # Commands
 

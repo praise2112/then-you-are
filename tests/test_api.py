@@ -367,6 +367,11 @@ async def test_replay_lists_sort_and_curation_needs_the_token():
         assert curated[0]["id"] == match["id"] and curated[0]["is_curated"] is True
         lengths = [len(r["transcript"]) for r in (await client.get("/replays?sort=longest")).json()]
         assert lengths == sorted(lengths, reverse=True)
+
+        stranger = httpx.AsyncClient(transport=client._transport, base_url="http://test")
+        listed = (await stranger.get("/replays?sort=newest")).json()
+        assert listed == [(await stranger.get(f"/replays/{r['id']}")).json() for r in listed]
+        await stranger.aclose()
     finally:
         await client.aclose()
         await manager.__aexit__(None, None, None)
