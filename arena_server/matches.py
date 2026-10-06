@@ -1,15 +1,11 @@
-"""Match service: creates duels and tables, seats players, runs human and model turns, keeps
-the turn clock, persists everything."""
+"""Match service: the commands, human and model turns in both modes, the turn clock, restart
+recovery and the abandon sweep."""
 
 import asyncio
 import logging
-import secrets
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
-
-from psycopg import AsyncConnection
-from psycopg.rows import DictRow
 
 from arena_core.state import (
     JUDGED,
@@ -22,7 +18,6 @@ from arena_core.state import (
     check_guess,
     check_move,
     check_resign,
-    deal,
     forfeit_turn,
     layer1,
     model_next,
@@ -42,18 +37,16 @@ from arena_server.events import (
     GuessOpened,
     JudgeStarted,
     MatchEnded,
-    MatchStarted,
     RoundRevealed,
     Ruling,
-    SeatJoined,
     SeatSubmitted,
     TurnChanged,
     TurnRejected,
 )
 from arena_server.house import House
 from arena_server.judging import Judge, Judged, JudgeGaveUp
-from arena_server.presence import Lobby, Presence, TurnNudge
-from arena_server.sessions import open_match_ids, seat_of, session_view
+from arena_server.presence import Presence, TurnNudge
+from arena_server.sessions import seat_of
 from arena_server.snapshots import (
     REPEAT_TEXT,
     build_snapshot,
@@ -77,13 +70,8 @@ from arena_server.store import (
     close_unfilled,
     ended_count,
     hold_move,
-    insert_match,
-    insert_seat,
-    invite_match_id,
-    joinable_ids,
     live_public_ids,
     load_match,
-    open_table_rows,
     overdue_ids,
     replay_ids,
     reset_for_restart,
@@ -93,17 +81,11 @@ from arena_server.store import (
     set_status,
     set_submitted,
     stamp_badges,
-    start_table,
     store_guesses,
     store_turn,
 )
-from arena_server.views import (
-    MatchSnapshot,
-    Replay,
-    StageView,
-    TableKind,
-    TableView,
-)
+from arena_server.tables import broadcast_lobby
+from arena_server.views import MatchSnapshot, Replay, StageView
 
 STREAM_LINGER_S = 300
 GRACE = timedelta(seconds=30)
@@ -143,8 +125,6 @@ class MatchService:
         self.house = House(pool, bus, caller, house_slots, fallback)
         self.judge = Judge(pool, bus, caller, judge_model)
         self.locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
-        # Quick match searches and creates under one lock per game.
-        self.seating: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
         self.tasks: set[asyncio.Task] = set()
         # Showcase model seats writing for a round: (match, seat, round).
         self.answering: set[tuple[str, str, int]] = set()
@@ -166,7 +146,7 @@ class MatchService:
         """After a restart: a move waiting on the judge is lost, so the player resubmits; model
         seats finish any turn they owed, and a clocked seat gets a fresh deadline."""
         for match_id in await reset_for_restart(self.pool):
-            self._spawn(self._resume(match_id))
+            self.spawn(self._resume(match_id))
 
     async def _resume(self, match_id: str) -> None:
         async with self.locks[match_id]:
@@ -175,180 +155,17 @@ class MatchService:
                 return
             template = self.template_of(match)
             if template.mode == "escalation":
-                await self._after_turn(match, template, rec)
+                await self.after_turn(match, template, rec)
                 return
             # Model seats write again when a player next opens or answers this match.
-            await self._set_clock(match, rec, template)
-
-    # Creating and seating
-
-    async def create(
-        self,
-        session_key: str,
-        template_id: str,
-        seed_token: str | None = None,
-        kind: TableKind = "house",
-        seats: int = 2,
-    ) -> MatchSnapshot:
-        """A House duel starts at once. A table for friends or for anyone waits for its seats;
-        its creator holds the first one."""
-        template = self.templates.get(template_id)
-        if template is None:
-            raise MatchError(404, "no such template")
-        first = template.seed_named(seed_token) if seed_token else None
-        if seed_token and first is None:
-            raise MatchError(422, "that opening is not in this game")
-        if kind == "house":
-            seats = 2
-        elif not template.num_players.min <= seats <= template.num_players.max:
-            raise MatchError(
-                422,
-                f"{template.title} seats {template.num_players.min} to "
-                f"{template.num_players.max} players",
-            )
-        open_ids = await open_match_ids(self.pool, session_key, template.slug, kind)
-        if open_ids:
-            return await self.snapshot(open_ids[0], session_key)
-        cards = deal(template, secrets.SystemRandom(), first, template.revealed_card)
-        match_id = secrets.token_urlsafe(8)
-        listed = (await session_view(self, session_key)).list_duels
-        house = kind == "house"
-        async with self.pool.connection() as conn, conn.transaction():
-            await insert_match(
-                conn,
-                match_id,
-                template,
-                cards,
-                "active" if house else "open",
-                listed,
-                kind,
-                seats,
-                None if house else secrets.token_urlsafe(6),
-            )
-            await self._insert_seat(conn, match_id, "p1", "human", session_key)
-            if house:
-                await self._insert_seat(conn, match_id, "p2", "model", None)
-        if house and template.mode == "showcase":
-            match, rec = await self.load(match_id)
-            self._start_model_answers(match, rec)
-        if not house:
-            await self._broadcast_lobby()
-        return await self.snapshot(match_id, session_key)
-
-    async def _insert_seat(
-        self,
-        conn: AsyncConnection[DictRow],
-        match_id: str,
-        seat: str,
-        kind: str,
-        session_key: str | None,
-    ) -> None:
-        model_ref = self.opponent_ref if kind == "model" else None
-        await insert_seat(conn, match_id, seat, kind, session_key, model_ref)
-        if kind == "model":
-            self._spawn(self.caller.wake_opponent())
-
-    async def join(self, invite_code: str, session_key: str) -> str:
-        """Seats the session at the table behind an invite code. Returns the match id."""
-        match_id = await invite_match_id(self.pool, invite_code)
-        if match_id is None:
-            raise MatchError(404, "no table with that invite")
-        await self._fill_seat(match_id, session_key, "human")
-        return match_id
-
-    async def quick_match(self, session_key: str, template_id: str, seats: int) -> str:
-        """Takes a seat at the oldest open table for the game, or opens one. Returns its id."""
-        if template_id not in self.templates:
-            raise MatchError(404, "no such template")
-        async with self.seating[template_id]:
-            mine = await open_match_ids(self.pool, session_key, template_id, "open")
-            if mine:
-                return mine[0]
-            for match_id in await joinable_ids(self.pool, template_id, session_key):
-                try:
-                    await self._fill_seat(match_id, session_key, "human")
-                except MatchError as e:
-                    # Filled or closed by an invite or the House since it was listed.
-                    if e.status != 409:
-                        raise
-                    continue
-                return match_id
-            snap = await self.create(session_key, template_id, kind="open", seats=seats)
-            return snap.id
-
-    async def add_house(self, match_id: str, session_key: str) -> None:
-        """The table's creator fills the next open seat with the House."""
-        await self._fill_seat(match_id, session_key, "model")
-
-    async def _fill_seat(
-        self, match_id: str, session_key: str, kind: Literal["human", "model"]
-    ) -> None:
-        """Seats the session, or for its creator the House, at the next seat of a filling table.
-        A session already seated is left where it is."""
-        async with self.locks[match_id]:
-            match, rec = await self.load(match_id)
-            seated = await seat_of(self.pool, rec, session_key)
-            if kind == "human" and seated:
-                return
-            if kind == "model" and seated != rec.owner.seat:
-                raise MatchError(403, "only the table's creator can add the House")
-            if match.status != "open":
-                raise MatchError(409, "this table has already started")
-            seat = f"p{len(rec.seats) + 1}"
-            async with self.pool.connection() as conn:
-                await self._insert_seat(
-                    conn, match_id, seat, kind, session_key if kind == "human" else None
-                )
-            await self._seated(match_id, seat)
-
-    async def _seated(self, match_id: str, seat: str) -> None:
-        """A seat was filled; the table starts when it is full. Runs under the match lock."""
-        _, rec = await self.load(match_id)
-        self.bus.emit(match_id, "seat_joined", SeatJoined(seat=seat, state_version=0))
-        if len(rec.seats) >= rec.seats_wanted:
-            await start_table(self.pool, match_id)
-            match, rec = await self.load(match_id)
-            template = self.template_of(match)
-            self.bus.emit(match_id, "match_started", MatchStarted(state_version=0))
-            if template.mode == "showcase":
-                await self._set_clock(match, rec, template)
-                self._start_model_answers(match, rec)
-            else:
-                await self._after_turn(match, template, rec)
-        self._spawn(self._broadcast_lobby())
-
-    async def open_tables(self) -> list[TableView]:
-        rows = await open_table_rows(self.pool)
-        return [
-            TableView(
-                id=r["id"],
-                template_id=r["template_id"],
-                title=self.templates[r["template_id"]].title,
-                emblem=self.templates[r["template_id"]].emblem,
-                host_name=r["host_name"] or "Challenger",
-                invite_code=r["invite_code"],
-                seats_taken=r["taken"],
-                seats_wanted=r["seats_wanted"],
-                created_at=r["created_at"].isoformat(),
-            )
-            for r in rows
-            if r["template_id"] in self.templates
-        ]
-
-    async def _broadcast_lobby(self) -> None:
-        await self.presence.broadcast(Lobby(tables=await self.open_tables()))
-
-    async def set_visibility(self, match_id: str, session_key: str, public: bool) -> None:
-        _, rec = await self.load(match_id)
-        await self._check_owner(rec, session_key)
-        await set_public(self.pool, match_id, public)
+            await self.set_clock(match, rec, template)
 
     # Loading and saving
 
     async def load(self, match_id: str) -> tuple[Match, Record]:
         return await load_match(self.pool, match_id, self.match_templates)
 
-    async def _set_clock(
+    async def set_clock(
         self, match: Match, rec: Record, template: Template, running: bool = True
     ) -> str | None:
         """Starts the clock for the turn or phase in play when two or more humans share the
@@ -377,7 +194,7 @@ class MatchService:
         for match_id in idle:
             self._forget(match_id)
         if unfilled:
-            await self._broadcast_lobby()
+            await broadcast_lobby(self.presence, self.pool, self.templates)
         return [*idle, *unfilled]
 
     # Snapshots
@@ -387,7 +204,7 @@ class MatchService:
         template = self.template_of(match)
         viewer = await seat_of(self.pool, rec, session_key)
         if viewer and template.mode == "showcase" and match.status == "active":
-            self._start_model_answers(match, rec)
+            self.start_model_answers(match, rec)
         hide = hides_round(match, template)
         returned = (
             await returned_answer(self.pool, match, template, rec, viewer)
@@ -421,6 +238,11 @@ class MatchService:
 
     # Commands
 
+    async def set_visibility(self, match_id: str, session_key: str, public: bool) -> None:
+        _, rec = await self.load(match_id)
+        await self._check_owner(rec, session_key)
+        await set_public(self.pool, match_id, public)
+
     async def submit_move(
         self,
         match_id: str,
@@ -439,17 +261,17 @@ class MatchService:
             )
             template = self.template_of(match)
             if template.mode == "showcase":
-                self._start_model_answers(match, rec)
+                self.start_model_answers(match, rec)
                 await set_submitted(self.pool, match_id, seat, True)
                 self.bus.emit(
                     match_id,
                     "seat_submitted",
                     SeatSubmitted(seat=seat, state_version=match.state_version),
                 )
-                self._spawn(self._answer_as_human(match_id, seat, action_id, move_text))
+                self.spawn(self._answer_as_human(match_id, seat, action_id, move_text))
                 return
             await set_status(self.pool, match_id, "awaiting_judgment")
-        self._spawn(self._run_human_move(match_id, seat, action_id, move_text))
+        self.spawn(self._run_human_move(match_id, seat, action_id, move_text))
 
     async def submit_guess(
         self,
@@ -508,7 +330,7 @@ class MatchService:
                 if change.call_opened or change.round_closed:
                     await self._round_closed(match, template, rec)
                 return
-            await self._after_turn(match, template, rec)
+            await self.after_turn(match, template, rec)
 
     async def disagree(self, match_id: str, seq: int, session_key: str | None) -> None:
         """One vote per seated session and move, on a move the table can already see."""
@@ -577,7 +399,7 @@ class MatchService:
             raise MatchError(409, f"stale version: match is at {match.state_version}")
         return seat
 
-    def _spawn(self, coro: Any) -> asyncio.Task:
+    def spawn(self, coro: Any) -> asyncio.Task:
         task = asyncio.create_task(coro)
         self.tasks.add(task)
         task.add_done_callback(self._task_done)
@@ -601,7 +423,7 @@ class MatchService:
             try:
                 ended = await self._play_move(match, template, seat, move_text, action_id)
                 if not ended:
-                    await self._after_turn(match, template, rec)
+                    await self.after_turn(match, template, rec)
             except MatchClosed:
                 log.info("match %s closed while waiting on the judge", match_id)
             except Exception:
@@ -611,7 +433,7 @@ class MatchService:
                 if match.to_move in rec.models:
                     await self._forfeit(match, template, match.to_move)
                     if not await self._emit_if_ended(match):
-                        await self._after_turn(match, template, rec)
+                        await self.after_turn(match, template, rec)
                     return
                 await self._give_time(match, rec, template)
                 match, rec = await self.load(match_id)
@@ -626,14 +448,14 @@ class MatchService:
                     ),
                 )
 
-    async def _after_turn(self, match: Match, template: Template, rec: Record) -> None:
+    async def after_turn(self, match: Match, template: Template, rec: Record) -> None:
         """Escalation, under the match lock: model seats play until a human seat is to move,
         whose clock then starts."""
         if match.status == "active" and match.to_move in rec.models:
             await self._play_opponent(match, template, rec)
         if match.status != "active":
             return
-        deadline = await self._set_clock(match, rec, template)
+        deadline = await self.set_clock(match, rec, template)
         self.bus.emit(
             match.id,
             "turn_changed",
@@ -853,7 +675,7 @@ class MatchService:
 
     # Showcase turns
 
-    def _start_model_answers(self, match: Match, rec: Record) -> None:
+    def start_model_answers(self, match: Match, rec: Record) -> None:
         """Every model seat starts writing and being judged for the round in play."""
         if match.status != "active" or match.phase != "write":
             return
@@ -866,7 +688,7 @@ class MatchService:
             if key in self.answering:
                 continue
             self.answering.add(key)
-            self._spawn(self._answer_as_model(match.id, seat, match.round_n))
+            self.spawn(self._answer_as_model(match.id, seat, match.round_n))
 
     async def _answer_as_model(
         self, match_id: str, seat: str, round_n: int, tries: int = 0
@@ -919,7 +741,7 @@ class MatchService:
             self.answering.discard((match_id, seat, round_n))
             if rewrite:
                 self.answering.add((match_id, seat, round_n))
-                self._spawn(self._answer_as_model(match_id, seat, round_n, tries + 1))
+                self.spawn(self._answer_as_model(match_id, seat, round_n, tries + 1))
 
     async def _answer_as_human(
         self, match_id: str, seat: str, action_id: str, move_text: str
@@ -1020,7 +842,7 @@ class MatchService:
             return
         left = rec.turn_deadline - datetime.now(UTC) if rec.turn_deadline else None
         if left is None or left < GRACE:
-            await self._set_clock(match, rec, template)
+            await self.set_clock(match, rec, template)
 
     def _still_owed(self, match: Match, seat: str, round_n: int) -> bool:
         """The seat still owes an answer for the round it wrote for."""
@@ -1048,7 +870,7 @@ class MatchService:
         """Under the match lock, once every live seat has answered: open the call, or reveal
         the round and deal the next card."""
         if match.phase == "guess":
-            await self._set_clock(match, rec, template)
+            await self.set_clock(match, rec, template)
             self.bus.emit(
                 match.id,
                 "guess_opened",
@@ -1058,8 +880,8 @@ class MatchService:
         await self._settle_round(match, template)
         if match.status != "active":
             return
-        await self._set_clock(match, rec, template)
-        self._start_model_answers(match, rec)
+        await self.set_clock(match, rec, template)
+        self.start_model_answers(match, rec)
 
     async def _settle_round(self, match: Match, template: Template) -> None:
         """Sends out the round's rulings and reveal, then ends the match when it is over."""
@@ -1164,7 +986,7 @@ class MatchService:
         overdue = await overdue_ids(self.pool)
         # Each on its own task: a House turn played after one forfeit holds up no other match.
         for match_id in overdue:
-            self._spawn(self._expire(match_id))
+            self.spawn(self._expire(match_id))
         return overdue
 
     async def _expire(self, match_id: str) -> None:
@@ -1180,7 +1002,7 @@ class MatchService:
         if template.mode == "escalation":
             await self._forfeit(match, template, match.to_move)
             if not await self._emit_if_ended(match):
-                await self._after_turn(match, template, rec)
+                await self.after_turn(match, template, rec)
             return
         if match.phase == "guess":
             owed = match.owed_guesses()
@@ -1195,7 +1017,7 @@ class MatchService:
                 await self._forfeit(match, template, row.seat)
         if match.round_n == round_n and match.phase == "write" and match.status == "active":
             # Only answers still with the judge or a model seat remain; the round waits.
-            await self._set_clock(match, rec, template, running=False)
+            await self.set_clock(match, rec, template, running=False)
         await self._after_showcase_change(match, template, rec, round_n)
         self.bus.emit(
             match.id,

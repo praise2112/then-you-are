@@ -55,6 +55,7 @@ from arena_server.presence import Lobby, Online, Presence, TurnNudge
 from arena_server.profiles import profile
 from arena_server.sessions import ensure_session, session_view
 from arena_server.store import check_match_exists, set_curated
+from arena_server.tables import Tables, open_tables
 from arena_server.views import (
     BoardSummary,
     BoardView,
@@ -135,6 +136,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         if opponent_spec.base_url
         else None,
     )
+    tables = Tables(service)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -335,7 +337,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         if body.template_id not in templates:
             raise HTTPException(404, "no such template")
         key = await player_session(request, response, body.stage_name)
-        snap = await service.create(key, body.template_id, body.seed_token, body.kind, body.seats)
+        snap = await tables.create(key, body.template_id, body.seed_token, body.kind, body.seats)
         if body.kind == "house" and body.first_move and snap.state_version == 0:
             await service.submit_move(snap.id, key, f"first-{snap.id}", 0, body.first_move)
             snap = await service.snapshot(snap.id, key)
@@ -344,21 +346,21 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     @app.post("/tables/join")
     async def join_table(body: JoinTable, request: Request, response: Response) -> Seated:
         key = await player_session(request, response, body.stage_name)
-        return Seated(match_id=await service.join(body.invite_code, key))
+        return Seated(match_id=await tables.join(body.invite_code, key))
 
     @app.post("/tables/quick")
     async def quick_match(body: QuickMatch, request: Request, response: Response) -> Seated:
         key = await player_session(request, response, body.stage_name)
-        return Seated(match_id=await service.quick_match(key, body.template_id, body.seats))
+        return Seated(match_id=await tables.quick_match(key, body.template_id, body.seats))
 
     @app.post("/matches/{match_id}/seats/house", status_code=204)
     async def add_house(match_id: str, request: Request) -> Response:
-        await service.add_house(match_id, session_of(request))
+        await tables.add_house(match_id, session_of(request))
         return Response(status_code=204)
 
     @app.get("/tables")
     async def get_tables() -> list[TableView]:
-        return await service.open_tables()
+        return await open_tables(pool, templates)
 
     @app.websocket("/ws")
     async def socket(websocket: WebSocket) -> None:
@@ -370,7 +372,9 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         presence.add(key, websocket)
         try:
             await presence.broadcast(Online(count=presence.count))
-            await websocket.send_text(Lobby(tables=await service.open_tables()).model_dump_json())
+            await websocket.send_text(
+                Lobby(tables=await open_tables(pool, templates)).model_dump_json()
+            )
             while True:
                 await websocket.receive_text()
         except WebSocketDisconnect:
