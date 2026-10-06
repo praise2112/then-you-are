@@ -27,6 +27,7 @@ from arena_core.state import STANDING, Actor, Guess, Match, Turn, layer1, weight
 from arena_core.template import Template, load_template_file
 from arena_evals.common import credit_left, load_model, make_caller, read_jsonl, write_jsonl
 from arena_evals.datagen.ledger import (
+    Budget,
     BudgetReached,
     CallFailed,
     JudgeInputs,
@@ -172,15 +173,12 @@ async def build_contexts(matches: int, budget: float) -> None:
     EVAL_DIR.mkdir(exist_ok=True)
     ledger = Ledger(EVAL_DIR / "contexts.db")
     caller = make_caller(judge_ref=JUDGE)
-    start = ledger.spent()
     try:
-        budget = min(budget, await credit_left(caller))
+        limit = Budget(ledger, min(budget, await credit_left(caller)))
         for _, slug, template in games:
-            await play_pilot(
-                template, slug, per_variant, ledger, caller, budget, lambda: ledger.spent() - start
-            )
+            await play_pilot(template, slug, per_variant, ledger, caller, limit)
         contexts = await record_contexts(games, per_variant, ledger, caller)
-        spent = ledger.spent() - start
+        spent = limit.spent()
     finally:
         await caller.aclose()
         ledger.close()
@@ -236,27 +234,22 @@ async def run_calls(
     ROWS_DIR.mkdir(parents=True, exist_ok=True)
     ledger = Ledger(ROWS_DIR / f"{row}.db")
     caller = make_caller(judge_ref=JUDGE)
-    start = ledger.spent()
     sem = asyncio.Semaphore(CONCURRENCY)
-    failed: list[CallFailed] = []
     try:
-        budget = min(budget, await credit_left(caller))
-
-        def over_budget() -> bool:
-            return ledger.spent() - start >= budget or any(f.status == 402 for f in failed)
+        limit = Budget(ledger, min(budget, await credit_left(caller)))
 
         async def one(c: Context):
             async with sem:
                 try:
-                    return await call(c, ledger, caller, over_budget)
+                    return await call(c, ledger, caller, limit.over)
                 except BudgetReached:
                     return None
                 except CallFailed as e:
-                    failed.append(e)
+                    limit.note_failure(e)
                     return None
 
         results = await asyncio.gather(*(one(c) for c in contexts))
-        spent = ledger.spent() - start
+        spent = limit.spent()
     finally:
         await caller.aclose()
         ledger.close()
@@ -265,8 +258,8 @@ async def run_calls(
         f"{row}: {len(done)} of {len(contexts)} done, ${spent:.4f} spent now",
         file=sys.stderr,
     )
-    if no_credit := next((f for f in failed if f.status == 402), None):
-        raise SystemExit(f"OpenRouter is out of credit: {no_credit}")
+    if limit.no_credit:
+        raise SystemExit(f"OpenRouter is out of credit: {limit.no_credit}")
     return done
 
 

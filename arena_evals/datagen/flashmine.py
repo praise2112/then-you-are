@@ -21,6 +21,7 @@ from arena_core.state import weighted_total
 from arena_core.template import Template
 from arena_evals.common import load_model, make_caller, read_jsonl, write_jsonl
 from arena_evals.datagen.ledger import (
+    Budget,
     BudgetReached,
     CallFailed,
     CallRow,
@@ -125,15 +126,12 @@ async def main(args) -> None:
     player = load_model("student-local").model_copy(
         update={"model": "m", "base_url": args.player, "temperature": 0.9}
     )
-    start = ledger.spent()
+    budget = Budget(ledger, args.budget)
     sem = asyncio.Semaphore(args.concurrency)
     judged: list[dict] = []
     moves: list[ScoredMove] = []
     pairs: list[dict] = []
     refused_pairs: list[dict] = []
-
-    def over_budget() -> bool:
-        return ledger.spent() - start >= args.budget
 
     async def one(pos: Position) -> None:
         template = templates[pos.template_id]
@@ -153,7 +151,7 @@ async def main(args) -> None:
                         caller,
                         player,
                         judge,
-                        over_budget,
+                        budget.over,
                         seen,
                         refused,
                     )
@@ -179,7 +177,7 @@ async def main(args) -> None:
         results = await asyncio.gather(*(one(p) for p in positions), return_exceptions=True)
     finally:
         await caller.aclose()
-        spent = ledger.spent() - start
+        spent = budget.spent()
         for db in [*corpus, ledger]:
             db.close()
     for suffix, rows in (

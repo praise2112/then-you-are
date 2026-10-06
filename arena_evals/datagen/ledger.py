@@ -88,6 +88,8 @@ class Ledger:
         self.conn = sqlite3.connect(path)
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript("pragma journal_mode=wal; pragma synchronous=normal;" + SCHEMA)
+        row = self.conn.execute("select coalesce(sum(cost_usd), 0) as total from calls").fetchone()
+        self._spent = float(row["total"])
 
     def close(self) -> None:
         self.conn.close()
@@ -149,6 +151,9 @@ class Ledger:
 
     def add_call(self, row: CallRow) -> None:
         with self.conn:
+            replaced = self.conn.execute(
+                "select cost_usd from calls where match_id = ? and idx = ?", (row.match_id, row.idx)
+            ).fetchone()
             self.conn.execute(
                 "insert or replace into calls values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
@@ -169,6 +174,7 @@ class Ledger:
                     row.attempt,
                 ),
             )
+        self._spent += row.cost_usd - (replaced["cost_usd"] if replaced else 0.0)
 
     def calls(self, match_id: str) -> list[CallRow]:
         rows = self.conn.execute(
@@ -201,8 +207,29 @@ class Ledger:
         return self.conn.execute("select * from sabotage order by rowid").fetchall()
 
     def spent(self) -> float:
-        row = self.conn.execute("select coalesce(sum(cost_usd), 0) as total from calls").fetchone()
-        return float(row["total"])
+        """Dollars recorded in this ledger, summed once on opening and kept up to date since."""
+        return self._spent
+
+
+class Budget:
+    """A spending limit on one ledger, counted from when the budget is made. A 402 from the
+    provider, passed to `note_failure`, also stops it."""
+
+    def __init__(self, ledger: Ledger, limit: float):
+        self.ledger = ledger
+        self.limit = limit
+        self.start = ledger.spent()
+        self.no_credit: CallFailed | None = None
+
+    def spent(self) -> float:
+        return self.ledger.spent() - self.start
+
+    def over(self) -> bool:
+        return self.spent() >= self.limit or self.no_credit is not None
+
+    def note_failure(self, error: CallFailed) -> None:
+        if error.status == 402 and self.no_credit is None:
+            self.no_credit = error
 
 
 def _call_row(r: sqlite3.Row) -> CallRow:

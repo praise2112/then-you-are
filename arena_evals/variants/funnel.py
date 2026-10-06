@@ -29,7 +29,14 @@ from arena_core.template import (
     load_template_file,
 )
 from arena_evals.common import credit_left, load_model, make_caller, merge_json, require_window
-from arena_evals.datagen.ledger import BudgetReached, CallFailed, JudgeInputs, Ledger, Tape
+from arena_evals.datagen.ledger import (
+    Budget,
+    BudgetReached,
+    CallFailed,
+    JudgeInputs,
+    Ledger,
+    Tape,
+)
 from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
 from arena_evals.datagen.sabotage import StoodMove, positions
 from arena_evals.grow_seeds import grow
@@ -198,11 +205,10 @@ async def play_pilot(
     n: int,
     ledger: Ledger,
     caller: ModelCaller,
-    budget: float,
-    spent: Callable[[], float],
+    budget: Budget,
 ) -> list[str]:
-    """Plays the pilot matches not yet ended, Flash self-play judged by Flash, until `spent()`
-    reaches `budget`. Returns every ended id of the pilot, played now or earlier."""
+    """Plays the pilot matches not yet ended, Flash self-play judged by Flash, until the budget
+    is spent. Returns every ended id of the pilot, played now or earlier."""
     flash = Teacher(FLASH, load_model(FLASH))
     teachers: dict[Actor, Teacher] = {"p1": flash, "p2": flash}
     judge = load_model(JUDGE)
@@ -210,30 +216,25 @@ async def play_pilot(
     ids = [f"{slug}-{i}" for i in range(n)]
     done = {r["match_id"] for r in ledger.matches("ended")}
 
-    failed: list[CallFailed] = []
-
-    def over_budget() -> bool:
-        return spent() >= budget or any(f.status == 402 for f in failed)
-
     async def one(i: int) -> None:
         match = new_match(template, deal_for(template, slug, i))
         match.id = ids[i]
         async with sem:
-            if over_budget():
+            if budget.over():
                 return
             try:
-                await play_match(template, match, teachers, caller, ledger, judge, over_budget)
+                await play_match(template, match, teachers, caller, ledger, judge, budget.over)
             except MatchAbandoned as e:
                 print(f"abandoned: {e}", file=sys.stderr)
             except BudgetReached:
                 pass
             except CallFailed as e:
-                failed.append(e)
+                budget.note_failure(e)
                 print(f"call failed: {e}", file=sys.stderr)
 
     await asyncio.gather(*(one(i) for i in range(n) if ids[i] not in done))
-    if no_credit := next((f for f in failed if f.status == 402), None):
-        raise no_credit
+    if budget.no_credit:
+        raise budget.no_credit
     done = {r["match_id"] for r in ledger.matches("ended")}
     return [m for m in ids if m in done]
 
@@ -315,7 +316,8 @@ async def calibrate(slug: str, matches: int, budget: float) -> Calibration:
     ledger = Ledger(PILOTS_DIR / f"{slug}.db")
     caller = make_caller(judge_ref=JUDGE)
     try:
-        ended = await play_pilot(template, slug, matches, ledger, caller, budget, ledger.spent)
+        left = Budget(ledger, budget - ledger.spent())
+        ended = await play_pilot(template, slug, matches, ledger, caller, left)
         if len(ended) < matches or ledger.spent() >= budget:
             raise SystemExit(
                 f"{slug}: {len(ended)} of {matches} matches ended for ${ledger.spent():.2f}; "
@@ -417,17 +419,9 @@ async def pilot(klass: str, budget: float, only: set[str] | None = None) -> None
             else:
                 print(f"  {slug:32s} pool short, stage unchanged", file=sys.stderr)
             return cost
-        before = ledger.spent()
-        ended = await play_pilot(
-            template,
-            slug,
-            PILOT_MATCHES,
-            ledger,
-            caller,
-            left,
-            lambda: ledger.spent() - before + cost,
-        )
-        cost += ledger.spent() - before
+        pilot_budget = Budget(ledger, left - cost)
+        ended = await play_pilot(template, slug, PILOT_MATCHES, ledger, caller, pilot_budget)
+        cost += pilot_budget.spent()
         if len(ended) < PILOT_MATCHES:
             print(f"  {slug:32s} {len(ended)} matches ended, stage unchanged", file=sys.stderr)
             return cost

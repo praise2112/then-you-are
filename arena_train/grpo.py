@@ -20,7 +20,7 @@ from pathlib import Path
 from arena_core.template import Template
 from arena_evals.common import load_model, make_caller, read_jsonl
 from arena_evals.datagen.flashmine import teacher_turn
-from arena_evals.datagen.ledger import CallFailed, JudgeInputs, Ledger, Tape
+from arena_evals.datagen.ledger import Budget, CallFailed, JudgeInputs, Ledger, Tape
 from arena_evals.datagen.prefset import JUDGE_RUNS, Position, playable
 from arena_evals.datagen.run import CORPUS_DIR, RUNS_DIR, corpus_games
 from arena_evals.judge_eval import RANK_GAP
@@ -90,13 +90,10 @@ def flash_reward(spots: dict[str, Spot], run: str, budget: float):
     async def flash(prompts, completions, position, log_metric, **_):
         if not state:
             state["ledger"] = Ledger(RUNS_DIR / f"{run}.db")
-            state["start"] = state["ledger"].spent()
+            state["budget"] = Budget(state["ledger"], budget)
             state["caller"] = make_caller(judge_ref=JUDGE)
             state["sem"] = asyncio.Semaphore(CONCURRENCY)
         ledger = state["ledger"]
-
-        def over_budget() -> bool:
-            return ledger.spent() - state["start"] >= budget
 
         async def one(position_id: str, completion: list[dict]) -> Scored | None:
             spot = spots[position_id]
@@ -108,7 +105,7 @@ def flash_reward(spots: dict[str, Spot], run: str, budget: float):
                         ledger,
                         state["caller"],
                         spec,
-                        over_budget,
+                        state["budget"].over,
                     )
                 except CallFailed:
                     return None
@@ -119,7 +116,7 @@ def flash_reward(spots: dict[str, Spot], run: str, budget: float):
         done = [r for r in results if r is not None]
         log_metric("stood", sum(r.stood for r in done) / max(1, len(done)))
         log_metric("refused", sum(r.outcome == "refused" for r in done) / max(1, len(done)))
-        log_metric("spent", ledger.spent() - state["start"])
+        log_metric("spent", state["budget"].spent())
         return [
             None if r is None else reward_of(r, spots[p].template)
             for p, r in zip(position, results, strict=True)

@@ -26,7 +26,7 @@ from arena_evals.common import (
     seconds_until_open,
 )
 from arena_evals.datagen import card
-from arena_evals.datagen.ledger import BudgetReached, CallFailed, Ledger
+from arena_evals.datagen.ledger import Budget, BudgetReached, CallFailed, Ledger
 from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
 from arena_evals.datagen.sabotage import RATE, Saboteur
 from arena_evals.variants.funnel import PILOTS_DIR
@@ -162,16 +162,16 @@ async def _drive(
     ceiling = min(budget, LANE_CEILING - others, ledger.spent() + await credit_left(caller))
     if ceiling < budget:
         print(f"lane ceiling or balance leaves ${ceiling:.2f} of ${budget:.2f}", file=sys.stderr)
+    limit = Budget(ledger, ceiling - ledger.spent())
     expected = {
         name: load_spec(name)[0].sabotage_expectations for name in set(plan["classes"].values())
     }
     failures = 0
 
     def over_budget() -> bool:
-        spent = ledger.spent()
-        if spent >= ceiling and not stop.is_set():
+        if limit.over() and not stop.is_set():
             stop.set()
-            print(f"budget reached: ${spent:.4f} of ${ceiling:.2f}", file=sys.stderr)
+            print(f"budget reached: ${ledger.spent():.4f} of ${ceiling:.2f}", file=sys.stderr)
         return stop.is_set()
 
     refs = {r[side] for r in ledger.matches() for side in ("teacher_p1", "teacher_p2")}

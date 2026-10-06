@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from arena_core.template import load_template
-from arena_evals.datagen.ledger import CallFailed, JudgeInputs, Ledger, Tape
+from arena_evals.datagen.ledger import Budget, CallFailed, CallRow, JudgeInputs, Ledger, Tape
 from arena_judge.caller import ModelSpec
 from tests.conftest import FakeCaller, judge_response
 
@@ -52,3 +52,31 @@ def test_no_verdict_raises_and_the_next_run_asks_again_keeping_the_first_cost(
     back = FakeCaller([judge_response()], [])
     assert judge(ledger, back).scoring.verdict == "accept"
     assert back.judged == [ASK.move] and len(ledger.calls("m/1")) == 1
+
+
+def paid(idx: int, cost: float) -> CallRow:
+    return CallRow("m/1", idx, "judge", "p1", 1, "j", "", "", None, {}, 0, 0, cost, 0, "parsed")
+
+
+def test_the_running_total_counts_a_replaced_row_once_and_survives_a_reopen(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    ledger.add_call(paid(0, 0.25))
+    ledger.add_call(paid(1, 0.5))
+    ledger.add_call(paid(1, 0.75))
+    assert ledger.spent() == pytest.approx(1.0)
+    ledger.close()
+    assert Ledger(tmp_path / "run.db").spent() == pytest.approx(1.0)
+
+
+def test_a_budget_counts_from_when_it_is_made_and_stops_on_a_402(tmp_path: Path):
+    ledger = Ledger(tmp_path / "run.db")
+    ledger.add_call(paid(0, 5.0))
+    budget = Budget(ledger, 1.0)
+    ledger.add_call(paid(1, 0.5))
+    assert budget.spent() == pytest.approx(0.5) and not budget.over()
+
+    budget.note_failure(CallFailed("rate limited", 429))
+    assert not budget.over()
+    budget.note_failure(CallFailed("out of credit", 402))
+    assert budget.over() and budget.no_credit is not None
+    assert not Budget(ledger, 0.5).over()

@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import pytest
 
 from arena_core.template import load_template
-from arena_evals.datagen.ledger import CallFailed, Ledger
+from arena_evals.datagen.ledger import Budget, CallFailed, Ledger
 from arena_evals.variants import funnel
 from arena_evals.variants.funnel import (
     Calibration,
@@ -56,9 +56,7 @@ def played(tmp_path: Path) -> tuple[Ledger, ScriptedCaller, list[str]]:
         * 2,
         moves=list(MOVES),
     )
-    ended = asyncio.run(
-        play_pilot(DUEL, "duel", 2, ledger, caller, budget=1.0, spent=lambda: 0.0)  # type: ignore[arg-type]
-    )
+    ended = asyncio.run(play_pilot(DUEL, "duel", 2, ledger, caller, Budget(ledger, 1.0)))
     return ledger, caller, ended
 
 
@@ -144,16 +142,12 @@ def test_rejudge_measures_agreement_and_never_asks_twice(tmp_path):
 def test_a_spent_budget_plays_no_pilot_match_but_keeps_the_ones_already_ended(tmp_path):
     ledger = Ledger(tmp_path / "pilot.db")
     caller = ScriptedCaller(rulings=[], moves=list(MOVES))
-    ended = asyncio.run(
-        play_pilot(DUEL, "duel", 2, ledger, caller, budget=0.5, spent=lambda: 0.5)  # type: ignore[arg-type]
-    )
+    ended = asyncio.run(play_pilot(DUEL, "duel", 2, ledger, caller, Budget(ledger, 0.0)))
     assert ended == [] and caller.completed == 0
     ledger, caller, ended = played(tmp_path / "second")
     assert ended == ["duel-0", "duel-1"]
     before = caller.completed
-    again = asyncio.run(
-        play_pilot(DUEL, "duel", 3, ledger, caller, budget=0.5, spent=lambda: 0.5)  # type: ignore[arg-type]
-    )
+    again = asyncio.run(play_pilot(DUEL, "duel", 3, ledger, caller, Budget(ledger, 0.0)))
     assert again == ["duel-0", "duel-1"] and caller.completed == before
     assert funnel.PILOT_MATCHES == 10
 
@@ -167,9 +161,7 @@ def test_moves_the_rule_check_refuses_count_against_the_pass_rate_and_the_stock_
         rulings=[judge_response(verdict="fail")] * 2,
         moves=[too_long] * DUEL.strikes_before_consequence,
     )
-    ended = asyncio.run(
-        play_pilot(DUEL, "long", 1, ledger, caller, budget=1.0, spent=lambda: 0.0)  # type: ignore[arg-type]
-    )
+    ended = asyncio.run(play_pilot(DUEL, "long", 1, ledger, caller, Budget(ledger, 1.0)))
     stats = match_stats(DUEL, ledger, ended)
     assert stats.refused == DUEL.strikes_before_consequence and stats.judged == 0
     assert stats.pass_rate == 0 and stats.dup_rate == 0
