@@ -33,7 +33,6 @@ from arena_judge.schema import (
     Ruling,
     SeatJoined,
     SeatSubmitted,
-    StateResync,
     TurnChanged,
     TurnRejected,
 )
@@ -246,7 +245,6 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         match_ended: MatchEnded
         round_revealed: RoundRevealed
         guess_opened: GuessOpened
-        state_resync: StateResync
         seat_joined: SeatJoined
         match_started: MatchStarted
         seat_submitted: SeatSubmitted

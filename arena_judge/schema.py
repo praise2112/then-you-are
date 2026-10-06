@@ -25,7 +25,6 @@ Outcome = Literal[
     "semantic_reject",
     "semantic_uncertain",
     "deterministic_invalid",
-    "judge_unavailable",
     "forfeit",
 ]
 
@@ -96,7 +95,6 @@ def route_outcome(payload: ScoringPayload) -> Outcome:
 
 
 class TurnRejected(BaseModel):
-    seq: int | None = None
     # The seat whose move came back; other clients ignore it.
     seat: str
     outcome: Literal["deterministic_invalid", "semantic_reject"]
@@ -117,7 +115,6 @@ class Ruling(BaseModel):
     outcome: Outcome
     scoring: ScoringPayload
     host: HostPayload
-    badges: list[str]
     points: int
     # Every seat's total once this ruling lands.
     totals: dict[str, int]
@@ -187,10 +184,6 @@ class MatchEnded(BaseModel):
     coaching_line: str | None = None
     share_text: str
     replay_id: str
-    state_version: int
-
-
-class StateResync(BaseModel):
     state_version: int
 
 

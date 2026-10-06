@@ -331,7 +331,6 @@ async def test_a_refused_answer_is_explained_to_its_writer_only():
         sent = [d for _, name, d in events_of(app, match_id) if name == "turn_rejected"]
         assert sent == [
             {
-                "seq": None,
                 "seat": "p2",
                 "outcome": "semantic_reject",
                 "reason_text": "",

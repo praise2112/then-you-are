@@ -219,7 +219,6 @@ export function Duel({ matchId, spectator = false }: Props) {
         case "seat_joined":
         case "match_started":
         case "turn_changed":
-        case "state_resync":
           void refresh();
           return;
         case "match_ended": {
@@ -324,7 +323,6 @@ export function Duel({ matchId, spectator = false }: Props) {
         setText={setText}
         pending={pending}
         returned={returned}
-        paused={paused}
         ended={!!ended}
         send={() => sendMove(text)}
         resign={resign}
@@ -809,7 +807,6 @@ type ShowcaseProps = {
   setText: (text: string) => void;
   pending: boolean;
   returned: TurnRejected | null;
-  paused: JudgePaused | null;
   ended: boolean;
   send: () => Promise<void>;
   resign: () => Promise<void>;
@@ -825,7 +822,7 @@ type ShowcaseProps = {
 /** Everyone at once: one card per round, every seat writes, the call once all are judged, all
  *  answers shown together once the truth is out. */
 function ShowcaseDuel(props: ShowcaseProps) {
-  const { snap, template, table, spectator, text, setText, pending, returned, paused, ended, formRef, picked, setPicked, calling, call, finished, parting } = props;
+  const { snap, template, table, spectator, text, setText, pending, returned, ended, formRef, picked, setPicked, calling, call, finished, parting } = props;
   const { send, resign } = props;
   const [showResign, setShowResign] = useState(false);
   const left = useSecondsLeft(snap.turn_deadline);
@@ -842,29 +839,27 @@ function ShowcaseDuel(props: ShowcaseProps) {
   const earlier = lastResult ? revealed.slice(0, -1) : revealed;
   const judging = !mine && (pending || !!mySeat?.answered) && snap.phase === "write";
   const out = !!mySeat?.eliminated;
-  const canWrite = snap.status === "active" && !!me && !out && !mine && !judging && !paused && !ended && !!current && snap.phase === "write";
+  const canWrite = snap.status === "active" && !!me && !out && !mine && !judging && !ended && !!current && snap.phase === "write";
   const clock = left !== null ? clockText(left) : null;
   const hostLine = finished
     ? parting!.text
     : ended
     ? "The match is over. One moment."
-    : paused
-      ? paused.host_text
-      : returned?.nudge_text
-        ? returned.nudge_text
-        : onCall
-          ? calling
-            ? "Called. The truth is coming out."
-            : "One of these is real. The rest were written this minute."
-          : waitingCall
-            ? "The others are calling."
-            : judging
-              ? "The judge is reading yours."
-              : mine
-                ? "Yours is in. The rest are still writing."
-                : spectator
-                  ? "The table is writing."
-                  : template.move_hint;
+    : returned?.nudge_text
+      ? returned.nudge_text
+      : onCall
+        ? calling
+          ? "Called. The truth is coming out."
+          : "One of these is real. The rest were written this minute."
+        : waitingCall
+          ? "The others are calling."
+          : judging
+            ? "The judge is reading yours."
+            : mine
+              ? "Yours is in. The rest are still writing."
+              : spectator
+                ? "The table is writing."
+                : template.move_hint;
 
   function play(event: FormEvent) {
     event.preventDefault();
@@ -995,7 +990,7 @@ function ShowcaseDuel(props: ShowcaseProps) {
                 </span>
               )}
               <label className="small-caps" htmlFor="move">
-                {paused ? template.labels.compose_waiting : template.labels.compose.replace("{token}", shortName(current.round.token))}
+                {template.labels.compose.replace("{token}", shortName(current.round.token))}
               </label>
               <div className="compose-box bare">
                 <textarea
@@ -1009,7 +1004,7 @@ function ShowcaseDuel(props: ShowcaseProps) {
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={onKey}
                   disabled={pending || ended}
-                  placeholder={paused ? "thinking ahead. It sends when play resumes." : template.move_example}
+                  placeholder={template.move_example}
                 />
               </div>
               {returned && (
@@ -1029,7 +1024,6 @@ function ShowcaseDuel(props: ShowcaseProps) {
             </form>
           )}
           {out && !finished && <p className="waiting">You are out of this match. The others play on.</p>}
-          {paused && <p className="waiting">The match is paused until the judge rules.</p>}
 
           {!spectator && !finished && me && !out && (
             <p className="resign-row">
@@ -1061,7 +1055,7 @@ function ShowcaseDuel(props: ShowcaseProps) {
             ))}
           </ul>
           <div className="host" style={{ marginTop: "var(--space-3)" }}>
-            <Host state={finished ? "tipping" : paused || judging ? "thinking" : "idle"} />
+            <Host state={finished ? "tipping" : judging ? "thinking" : "idle"} />
             <p className={`host-line${parting?.label ? " coaching" : ""}`}>
               {parting?.label && <span>{parting.label}</span>}
               {hostLine}

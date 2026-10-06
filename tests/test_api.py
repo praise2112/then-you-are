@@ -193,13 +193,11 @@ async def test_stale_version_is_a_409_and_refusals_hand_the_turn_back():
 
 
 @pytest.mark.anyio
-async def test_judge_outage_pauses_then_resumes_with_the_same_move():
+async def test_judge_outage_pauses_then_resumes_with_the_same_move(monkeypatch):
+    monkeypatch.setattr("arena_server.matches.PAUSE_BACKOFF_S", (0,))
     caller = FakeCaller(rulings=[None, judge_response(verdict="fail")], opponent_moves=[])
     app, manager, client = await run_app(caller)
     try:
-        import arena_server.matches as matches
-
-        matches.PAUSE_BACKOFF_S = (0,)
         match = (await client.post("/matches", json={"template_id": "then-i-am"})).json()
         await client.post(
             f"/matches/{match['id']}/moves",
@@ -442,10 +440,10 @@ async def test_a_word_duel_holds_the_house_bluff_until_the_reveal():
         assert reveals[0]["guesses"][0]["picked"] == "truth"
         assert reveals[0]["totals"] == {"p1": bluff_points + 10, "p2": bluff_points}
         rulings = [d for _, name, d in events if name == "ruling"]
-        assert rulings[1]["badges"] == ["accidental_truth"]
+        assert rulings[1]["host"]["badges"] == ["accidental_truth"]
         assert rulings[3]["points"] == 0
-        assert rulings[4]["badges"] == ["near_miss"]
-        assert rulings[5]["badges"] == ["close_call"]
+        assert rulings[4]["host"]["badges"] == ["near_miss"]
+        assert rulings[5]["host"]["badges"] == ["close_call"]
         assert all(h for h in caller.hidden_seen)
         assert caller.opponent_saw[0] == []
         assert caller.opponent_hidden[0].startswith("a holder")

@@ -44,7 +44,6 @@ export type MatchEvent =
   | { name: "match_ended"; data: MatchEnded }
   | { name: "round_revealed"; data: RoundRevealed }
   | { name: "guess_opened"; data: GuessOpened }
-  | { name: "state_resync"; data: S["StateResync"] }
   | { name: "seat_joined"; data: S["SeatJoined"] }
   | { name: "match_started"; data: S["MatchStarted"] }
   | { name: "seat_submitted"; data: S["SeatSubmitted"] }
@@ -60,7 +59,6 @@ const EVENT_NAMES: MatchEvent["name"][] = [
   "match_ended",
   "round_revealed",
   "guess_opened",
-  "state_resync",
   "seat_joined",
   "match_started",
   "seat_submitted",

@@ -110,6 +110,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/leaderboard/players": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Ranked Players */
+        get: operations["get_ranked_players_leaderboard_players_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/leaderboard/{slug}": {
         parameters: {
             query?: never;
@@ -122,6 +139,26 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/me/account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete My Account
+         * @description Deletes the signed-in account; its moves in other people's matches stay, unnamed.
+         */
+        delete: operations["delete_my_account_sessions_me_account_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -459,6 +496,23 @@ export interface paths {
         };
         /** Replay Shell */
         get: operations["replay_shell_r__match_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/how-it-was-built": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Writeup Shell */
+        get: operations["writeup_shell_how_it_was_built_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1178,11 +1232,9 @@ export interface components {
              * Outcome
              * @enum {string}
              */
-            outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "judge_unavailable" | "forfeit";
+            outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "forfeit";
             scoring: components["schemas"]["ScoringPayload"];
             host: components["schemas"]["HostPayload"];
-            /** Badges */
-            badges: string[];
             /** Points */
             points: number;
             /** Totals */
@@ -1311,7 +1363,6 @@ export interface components {
             match_ended: components["schemas"]["MatchEnded"];
             round_revealed: components["schemas"]["RoundRevealed"];
             guess_opened: components["schemas"]["GuessOpened"];
-            state_resync: components["schemas"]["StateResync"];
             seat_joined: components["schemas"]["SeatJoined"];
             match_started: components["schemas"]["MatchStarted"];
             seat_submitted: components["schemas"]["SeatSubmitted"];
@@ -1341,11 +1392,6 @@ export interface components {
             wins: number;
             /** Played */
             played: number;
-        };
-        /** StateResync */
-        StateResync: {
-            /** State Version */
-            state_version: number;
         };
         /**
          * TableView
@@ -1449,8 +1495,6 @@ export interface components {
         };
         /** TurnRejected */
         TurnRejected: {
-            /** Seq */
-            seq?: number | null;
             /** Seat */
             seat: string;
             /**
@@ -1479,7 +1523,7 @@ export interface components {
              * Outcome
              * @enum {string}
              */
-            outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "judge_unavailable" | "forfeit";
+            outcome: "accept" | "fail" | "semantic_reject" | "semantic_uncertain" | "deterministic_invalid" | "forfeit";
             scoring: components["schemas"]["ScoringPayload"] | null;
             host: components["schemas"]["HostPayload"] | null;
             /** Points */
@@ -1685,6 +1729,26 @@ export interface operations {
             };
         };
     };
+    get_ranked_players_leaderboard_players_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": number;
+                };
+            };
+        };
+    };
     get_board_leaderboard__slug__get: {
         parameters: {
             query?: never;
@@ -1713,6 +1777,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    delete_my_account_sessions_me_account_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -2311,6 +2393,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    writeup_shell_how_it_was_built_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
                 };
             };
         };
