@@ -7,18 +7,11 @@ from dataclasses import dataclass
 
 from arena_core.state import STANDING
 from arena_core.template import Template
-from arena_evals.common import judge_with_backoff, model_label
-from arena_evals.datagen.ledger import (
-    CallFailed,
-    CallRow,
-    Ledger,
-    Tape,
-    judge_call_row,
-    move_call_row,
-)
+from arena_evals.common import model_label
+from arena_evals.datagen.ledger import CallRow, JudgeInputs, Ledger, Tape, move_call_row
 from arena_judge.caller import ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
-from arena_judge.schema import JudgeResponse, route_outcome
+from arena_judge.schema import route_outcome
 
 RATE = 0.12
 MECHANICAL = ("near_duplicate", "verbosity", "injection", "meta")
@@ -47,7 +40,7 @@ FILLER = (
 
 
 @dataclass(frozen=True)
-class Position:
+class StoodMove:
     """One judged move that stood, with the state the judge saw."""
 
     seq: int
@@ -67,23 +60,24 @@ def kinds_for(template: Template) -> list[str]:
     return kinds
 
 
-def positions(calls: list[CallRow]) -> list[Position]:
+def positions(calls: list[CallRow]) -> list[StoodMove]:
     found = []
     last_move: CallRow | None = None
     for call in calls:
         if call.role == "move":
             last_move = call
             continue
-        if not call.payload["response"]:
+        verdict = call.verdict
+        if verdict is None:
             continue
-        outcome = route_outcome(JudgeResponse.model_validate(call.payload["response"]).scoring)
+        outcome = route_outcome(verdict.scoring)
         if outcome not in STANDING:
             continue
         if last_move is None or clean_move(last_move.raw) != call.payload["move"]:
             continue
         p = call.payload
         found.append(
-            Position(
+            StoodMove(
                 call.seq,
                 call.actor,
                 p["previous"],
@@ -97,7 +91,7 @@ def positions(calls: list[CallRow]) -> list[Position]:
     return found
 
 
-def mutate(kind: str, pos: Position, template: Template) -> str | None:
+def mutate(kind: str, pos: StoodMove, template: Template) -> str | None:
     """The mechanical mutation for a kind, or None when it cannot fit the move limit."""
     prefix = template.move_constraints.prefix
     limit = template.move_constraints.max_chars
@@ -158,7 +152,7 @@ class Saboteur:
                 done += 1
         return done
 
-    async def _sabotage(self, kind: str, pos: Position) -> bool:
+    async def _sabotage(self, kind: str, pos: StoodMove) -> bool:
         if kind in MECHANICAL:
             text = mutate(kind, pos, self.template)
         else:
@@ -166,20 +160,11 @@ class Saboteur:
         if not text:
             return False
         call_idx = self.tape.idx
-        inputs = {
-            "previous": pos.previous,
-            "move": text,
-            "hidden": pos.hidden,
-            "transcript": pos.transcript,
-        }
-        row = await self.tape.step(
-            "judge", pos.actor, pos.seq, lambda idx: self._judge_live(idx, pos, inputs), inputs
+        ask = JudgeInputs(pos.previous, text, pos.hidden, pos.transcript)
+        response = await self.tape.judge(
+            self.caller, self.judge, self.template, pos.actor, pos.seq, ask
         )
-        response = row.payload["response"]
-        if response is None:
-            status = row.payload.get("error_status")
-            raise CallFailed(f"{self.key}: judge gave no verdict ({status})", status)
-        outcome = route_outcome(JudgeResponse.model_validate(response).scoring)
+        outcome = route_outcome(response.scoring)
         want = self.expected[kind]
         expected = pos.outcome if want == "same_as_source" else want
         self.ledger.add_sabotage(
@@ -187,7 +172,7 @@ class Saboteur:
         )
         return True
 
-    async def _prompted(self, kind: str, pos: Position) -> str:
+    async def _prompted(self, kind: str, pos: StoodMove) -> str:
         original = pos.student["messages"]
         messages = [*original[:-1], {**original[-1]}]
         messages[-1]["content"] = f"{PROMPTED[kind]}\n\n{original[-1]['content']}"
@@ -210,15 +195,3 @@ class Saboteur:
             {"messages": original, "kind": kind},
         )
         return clean_move(row.raw)
-
-    async def _judge_live(self, idx: int, pos: Position, inputs: dict) -> CallRow:
-        call = await judge_with_backoff(
-            self.caller,
-            self.template,
-            pos.transcript,
-            pos.previous,
-            inputs["move"],
-            pos.hidden,
-            self.judge,
-        )
-        return judge_call_row(self.key, idx, pos.actor, pos.seq, self.judge, call, inputs)

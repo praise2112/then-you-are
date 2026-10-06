@@ -18,16 +18,16 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from arena_core.template import Template
-from arena_evals.common import judge_with_backoff, load_model, make_caller
+from arena_evals.common import load_model, make_caller
 from arena_evals.datagen.flashmine import teacher_turn
-from arena_evals.datagen.ledger import CallFailed, Ledger, Tape, judge_call_row
+from arena_evals.datagen.ledger import CallFailed, JudgeInputs, Ledger, Tape
 from arena_evals.datagen.prefset import JUDGE_RUNS, Position, playable
 from arena_evals.datagen.run import CORPUS_DIR, RUNS_DIR, corpus_games
 from arena_evals.judge_eval import RANK_GAP
 from arena_evals.train_eval import Scored, verdict_score
 from arena_judge.caller import ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
-from arena_judge.schema import SCORE_MAX, JudgeResponse
+from arena_judge.schema import SCORE_MAX
 
 JUDGE = "judge-v1-direct"
 MINED = ("prefs-1", "prefs-2")
@@ -76,24 +76,8 @@ async def judge_move(
         return Scored(text=move, outcome="refused", total=0)
     digest = hashlib.sha1(move.encode()).hexdigest()[:16]
     tape = Tape(ledger, f"{spot.position.id}/{digest}", over_budget)
-    inputs = {**spot.judge_inputs, "move": move}
-
-    async def live(idx: int):
-        call = await judge_with_backoff(
-            caller,
-            spot.template,
-            inputs["transcript"],
-            inputs["previous"],
-            move,
-            inputs["hidden"],
-            spec,
-        )
-        return judge_call_row(tape.key, idx, spot.actor, spot.seq, spec, call, inputs)
-
-    verdict = await tape.step("judge", spot.actor, spot.seq, live, inputs)
-    if verdict.payload["response"] is None:
-        raise CallFailed(f"{tape.key}: no verdict", verdict.payload.get("error_status"))
-    response = JudgeResponse.model_validate(verdict.payload["response"])
+    ask = JudgeInputs(move=move, **spot.judge_inputs)
+    response = await tape.judge(caller, spec, spot.template, spot.actor, spot.seq, ask)
     return verdict_score(spot.template, move, response)
 
 

@@ -28,22 +28,16 @@ from arena_core.template import (
     load_template,
     load_template_file,
 )
-from arena_evals.common import (
-    credit_left,
-    judge_with_backoff,
-    load_model,
-    make_caller,
-    require_window,
-)
-from arena_evals.datagen.ledger import BudgetReached, CallFailed, Ledger, judge_call_row
+from arena_evals.common import credit_left, load_model, make_caller, require_window
+from arena_evals.datagen.ledger import BudgetReached, CallFailed, JudgeInputs, Ledger, Tape
 from arena_evals.datagen.play import MatchAbandoned, Teacher, new_match, play_match
-from arena_evals.datagen.sabotage import Position, positions
+from arena_evals.datagen.sabotage import StoodMove, positions
 from arena_evals.grow_seeds import grow
 from arena_evals.variants.generate import POOL_DIR, Stage, load_index, pool_path, save_index
 from arena_evals.variants.spec import spec_names
 from arena_judge.caller import CallError, ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move
-from arena_judge.schema import JudgeResponse, route_outcome
+from arena_judge.schema import route_outcome
 
 PILOTS_DIR = POOL_DIR / "pilots"
 CALIBRATION_PATH = POOL_DIR / "calibration.json"
@@ -112,9 +106,9 @@ def summarize(template: Template, ledger: Ledger, match_ids: list[str]) -> list[
                 continue
             if call.payload["move"] == written:
                 written = None
-            if not call.payload["response"] or call.payload["move"] == template.default_move:
+            response = call.verdict
+            if response is None or call.payload["move"] == template.default_move:
                 continue
-            response = JudgeResponse.model_validate(call.payload["response"])
             outcome = route_outcome(response.scoring)
             outcomes.append(outcome)
             norms.append(normalize(call.payload["move"]))
@@ -248,49 +242,30 @@ async def rejudge(
     template: Template,
     ledger: Ledger,
     key: str,
-    sample: list[Position],
+    sample: list[StoodMove],
     spec: ModelSpec,
     caller: ModelCaller,
 ) -> list[bool]:
-    """Judges each position again with `spec`; True where the outcome matched the original.
-    Rows are cached by position the moment they land, so a rerun pays only for new ones."""
+    """Judges each move again with `spec`; True where the outcome matched the original.
+    Rows are cached by move the moment they land, so a rerun pays only for new ones."""
     sem = asyncio.Semaphore(8)
 
-    async def one(pos: Position) -> bool:
-        pos_key = f"{key}/{position_id(pos)}"
-        recorded = ledger.calls(pos_key)
-        row = recorded[0] if recorded else None
-        if row is None or row.payload["response"] is None:
-            async with sem:
-                call = await judge_with_backoff(
-                    caller, template, pos.transcript, pos.previous, pos.move, pos.hidden, spec
-                )
-            if row is not None:
-                call.cost_usd += row.cost_usd
-            inputs = {
-                "previous": pos.previous,
-                "move": pos.move,
-                "hidden": pos.hidden,
-                "transcript": pos.transcript,
-                "original": pos.outcome,
-            }
-            row = judge_call_row(pos_key, 0, pos.actor, pos.seq, spec, call, inputs)
-            ledger.add_call(row)
-        response = row.payload["response"]
-        if response is None:
-            status = row.payload.get("error_status")
-            raise CallFailed(f"{pos_key}: judge gave no verdict ({status})", status)
-        return route_outcome(JudgeResponse.model_validate(response).scoring) == pos.outcome
+    async def one(pos: StoodMove) -> bool:
+        tape = Tape(ledger, f"{key}/{position_id(pos)}")
+        ask = JudgeInputs(pos.previous, pos.move, pos.hidden, pos.transcript)
+        async with sem:
+            response = await tape.judge(caller, spec, template, pos.actor, pos.seq, ask)
+        return route_outcome(response.scoring) == pos.outcome
 
     return list(await asyncio.gather(*(one(pos) for pos in sample)))
 
 
-def position_id(pos: Position) -> str:
+def position_id(pos: StoodMove) -> str:
     text = "\n".join([*pos.transcript, pos.previous, pos.move])
     return hashlib.sha1(text.encode()).hexdigest()[:12]
 
 
-def stood_positions(ledger: Ledger, match_ids: list[str]) -> list[Position]:
+def stood_positions(ledger: Ledger, match_ids: list[str]) -> list[StoodMove]:
     found = []
     for match_id in match_ids:
         found.extend(positions(ledger.calls(match_id)))

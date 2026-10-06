@@ -150,11 +150,7 @@ def export(
                 continue
             sabotage = sabotage_by_call.get((match_key, call.idx))
             quality = sabotage["kind"] if sabotage else "best"
-            response = (
-                JudgeResponse.model_validate(call.payload["response"])
-                if call.payload["response"]
-                else None
-            )
+            response = call.verdict
             outcome = route_outcome(response.scoring) if response else None
             before = (call.seq, -1 if sabotage else call.idx)
             earlier = judged_before(calls_by_match.get(match_id, []), before)

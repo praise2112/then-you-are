@@ -26,14 +26,13 @@ from pydantic import BaseModel
 
 from arena_core.state import STANDING, Actor, Guess, Match, Turn, layer1, weighted_total
 from arena_core.template import Template, load_template_file
-from arena_evals.common import credit_left, judge_with_backoff, load_model, make_caller
+from arena_evals.common import credit_left, load_model, make_caller
 from arena_evals.datagen.ledger import (
     BudgetReached,
     CallFailed,
-    CallRow,
+    JudgeInputs,
     Ledger,
     Tape,
-    judge_call_row,
     move_call_row,
 )
 from arena_evals.datagen.play import MatchPlayer, Teacher, new_match
@@ -106,14 +105,14 @@ class ContextRecorder(MatchPlayer):
         self.game_class = game_class
         self.contexts: dict[str, Context] = {}
 
-    async def _judge(self, actor, previous, move, hidden, lines):
+    async def _judge(self, actor: Actor, ask: JudgeInputs) -> JudgeResponse:
         before = dataclasses.asdict(self.match)
-        judged = await super()._judge(actor, previous, move, hidden, lines)
+        response = await super()._judge(actor, ask)
         written = next(r for r in reversed(self.tape.recorded[: self.tape.idx]) if r.role == "move")
         key = f"{self.match.id}/{written.seq}/{actor}"
         if (
-            move != self.template.default_move
-            and clean_move(written.raw) == move
+            ask.move != self.template.default_move
+            and clean_move(written.raw) == ask.move
             and key not in self.contexts
         ):
             self.contexts[key] = Context(
@@ -125,12 +124,12 @@ class ContextRecorder(MatchPlayer):
                 seq=written.seq,
                 messages=written.payload["messages"],
                 match=before,
-                previous=previous,
-                hidden=hidden,
-                lines=lines,
-                flash=verdict_score(self.template, move, judged.response),
+                previous=ask.previous,
+                hidden=ask.hidden,
+                lines=ask.transcript,
+                flash=verdict_score(self.template, ask.move, response),
             )
-        return judged
+        return response
 
 
 def heldout_variants() -> list[tuple[str, str]]:
@@ -310,18 +309,8 @@ async def score(row: str, judge_ref: str, budget: float, n: int | None) -> None:
         if layer1(template, text, match_of(c)) is not None:
             return {"context": c.id, **Scored(text=text, outcome="refused", total=0).model_dump()}
         tape = Tape(ledger, f"{c.id}/{judge_ref}", over_budget)
-        inputs = {"previous": c.previous, "move": text, "hidden": c.hidden, "transcript": c.lines}
-
-        async def live(idx: int) -> CallRow:
-            call = await judge_with_backoff(
-                caller, template, c.lines, c.previous, text, c.hidden, spec
-            )
-            return judge_call_row(tape.key, idx, c.actor, c.seq, spec, call, inputs)
-
-        verdict = await tape.step("judge", c.actor, c.seq, live, inputs)
-        if verdict.payload["response"] is None:
-            raise CallFailed(f"{c.id}: no verdict", verdict.payload.get("error_status"))
-        response = JudgeResponse.model_validate(verdict.payload["response"])
+        ask = JudgeInputs(c.previous, text, c.hidden, c.lines)
+        response = await tape.judge(caller, spec, template, c.actor, c.seq, ask)
         return {"context": c.id, **verdict_score(template, text, response).model_dump()}
 
     done = await run_calls(row, budget, one, todo)

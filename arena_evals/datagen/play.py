@@ -16,18 +16,10 @@ from arena_core.state import (
     weighted_total,
 )
 from arena_core.template import Seed, Template
-from arena_evals.common import judge_with_backoff
-from arena_evals.datagen.ledger import (
-    CallFailed,
-    CallRow,
-    Ledger,
-    Tape,
-    judge_call_row,
-    move_call_row,
-)
+from arena_evals.datagen.ledger import JudgeInputs, Ledger, Tape, move_call_row
 from arena_judge.caller import ModelCaller, ModelSpec
 from arena_judge.prompt import clean_move, judge_prompt_hash, render_opponent_messages
-from arena_judge.schema import JudgeResponse, Outcome, route_outcome
+from arena_judge.schema import JudgeResponse, route_outcome
 
 
 class MatchAbandoned(Exception):
@@ -38,13 +30,6 @@ class MatchAbandoned(Exception):
 class Teacher:
     ref: str
     spec: ModelSpec
-
-
-@dataclass(frozen=True)
-class Judged:
-    outcome: Outcome
-    response: JudgeResponse
-    text: str
 
 
 def new_match(template: Template, cards: list[Seed]) -> Match:
@@ -106,11 +91,12 @@ class MatchPlayer:
         if layer1(template, text, match) is not None:
             apply_ruling(match, actor, text, "deterministic_invalid", match.state_version, template)
             return
-        judged = await self._judge(
-            actor, match.standing_form, text, "", transcript(match, template)
+        response = await self._judge(
+            actor, JudgeInputs(match.standing_form, text, "", transcript(match, template))
         )
-        points = weighted_total(judged.response.scoring.scores, template.weights)
-        apply_ruling(match, actor, text, judged.outcome, match.state_version, template, points)
+        points = weighted_total(response.scoring.scores, template.weights)
+        outcome = route_outcome(response.scoring)
+        apply_ruling(match, actor, text, outcome, match.state_version, template, points)
 
     # Showcase
 
@@ -121,36 +107,40 @@ class MatchPlayer:
             assert card is not None
             lines = transcript(match, template)
             for actor in match.live_seats:
-                judged = await self._write_and_judge_bluff(actor, card, lines)
-                proximity = judged.response.scoring.truth_proximity if card.hidden else "none"
-                points = weighted_total(judged.response.scoring.scores, template.weights)
+                text, response = await self._write_and_judge_bluff(actor, card, lines)
+                proximity = response.scoring.truth_proximity if card.hidden else "none"
+                points = weighted_total(response.scoring.scores, template.weights)
                 apply_ruling(
                     match,
                     actor,
-                    judged.text,
-                    judged.outcome,
+                    text,
+                    route_outcome(response.scoring),
                     match.state_version,
                     template,
                     points,
                     truth_hit=proximity == "hit",
                 )
 
-    async def _write_and_judge_bluff(self, actor: Actor, card: Seed, lines: list[str]) -> Judged:
-        """Rewrites once on a truth hit, and on each refusal until the strikes run out."""
+    async def _write_and_judge_bluff(
+        self, actor: Actor, card: Seed, lines: list[str]
+    ) -> tuple[str, JudgeResponse]:
+        """The move that stood and its verdict. Rewrites once on a truth hit, and on each
+        refusal until the strikes run out."""
         template = self.template
         text = await self._write(actor, card.card_text, card.hidden)
         refusals = 0
         retold = False
         while True:
             if layer1(template, text, self.match) is None:
-                judged = await self._judge(actor, card.card_text, text, card.hidden, lines)
-                hit = judged.response.scoring.truth_proximity == "hit"
+                ask = JudgeInputs(card.card_text, text, card.hidden, lines)
+                response = await self._judge(actor, ask)
+                hit = response.scoring.truth_proximity == "hit"
                 if hit and card.hidden and not retold:
                     retold = True
                     text = await self._write(actor, card.card_text, card.hidden)
                     continue
-                if judged.outcome != "semantic_reject":
-                    return judged
+                if route_outcome(response.scoring) != "semantic_reject":
+                    return text, response
             refusals += 1
             if refusals < template.strikes_before_consequence:
                 text = await self._write(actor, card.card_text, card.hidden)
@@ -179,25 +169,9 @@ class MatchPlayer:
         )
         return clean_move(row.raw)
 
-    async def _judge(
-        self, actor: Actor, previous: str, move: str, hidden: str, lines: list[str]
-    ) -> Judged:
-        match = self.match
-        seq = len(match.turns) + 1
-        inputs = {"previous": previous, "move": move, "hidden": hidden, "transcript": lines}
-
-        async def live(idx: int) -> CallRow:
-            call = await judge_with_backoff(
-                self.caller, self.template, lines, previous, move, hidden, self.judge_spec
-            )
-            return judge_call_row(match.id, idx, actor, seq, self.judge_spec, call, inputs)
-
-        row = await self.tape.step("judge", actor, seq, live, inputs)
-        if row.payload["response"] is None:
-            status = row.payload.get("error_status")
-            raise CallFailed(f"{match.id}: judge gave no verdict ({status})", status)
-        response = JudgeResponse.model_validate(row.payload["response"])
-        return Judged(route_outcome(response.scoring), response, move)
+    async def _judge(self, actor: Actor, ask: JudgeInputs) -> JudgeResponse:
+        seq = len(self.match.turns) + 1
+        return await self.tape.judge(self.caller, self.judge_spec, self.template, actor, seq, ask)
 
 
 async def play_match(

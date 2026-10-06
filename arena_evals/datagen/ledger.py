@@ -8,8 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from arena_evals.common import model_label, with_backoff
+from arena_core.template import Template
+from arena_evals.common import judge_with_backoff, model_label, with_backoff
 from arena_judge.caller import CallError, JudgeCall, ModelCaller, ModelSpec
+from arena_judge.schema import JudgeResponse
 
 SCHEMA = """
 create table if not exists runs (
@@ -62,6 +64,22 @@ class CallRow:
     cost_usd: float
     latency_ms: int
     attempt: str
+
+    @property
+    def verdict(self) -> JudgeResponse | None:
+        """A judge row's parsed verdict, or None when the judge gave none."""
+        response = self.payload["response"]
+        return JudgeResponse.model_validate(response) if response else None
+
+
+@dataclass(frozen=True)
+class JudgeInputs:
+    """What the judge rules on: the move to beat, the move, the hidden meaning, the transcript."""
+
+    previous: str
+    move: str
+    hidden: str
+    transcript: list[str]
 
 
 class Ledger:
@@ -258,6 +276,31 @@ class Tape:
             self.ledger.add_call(row)
         self.idx += 1
         return row
+
+    async def judge(
+        self,
+        caller: ModelCaller,
+        spec: ModelSpec,
+        template: Template,
+        actor: str,
+        seq: int,
+        ask: JudgeInputs,
+    ) -> JudgeResponse:
+        """The verdict on `ask`, replayed when recorded; raises CallFailed when there is none."""
+        inputs = dataclasses.asdict(ask)
+
+        async def live(idx: int) -> CallRow:
+            call = await judge_with_backoff(
+                caller, template, ask.transcript, ask.previous, ask.move, ask.hidden, spec
+            )
+            return judge_call_row(self.key, idx, actor, seq, spec, call, inputs)
+
+        row = await self.step("judge", actor, seq, live, inputs)
+        verdict = row.verdict
+        if verdict is None:
+            status = row.payload.get("error_status")
+            raise CallFailed(f"{self.key}: judge gave no verdict ({status})", status)
+        return verdict
 
 
 def judge_call_row(

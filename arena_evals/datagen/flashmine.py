@@ -18,14 +18,14 @@ from pathlib import Path
 
 from arena_core.state import weighted_total
 from arena_core.template import Template
-from arena_evals.common import judge_with_backoff, load_model, make_caller
+from arena_evals.common import load_model, make_caller
 from arena_evals.datagen.ledger import (
     BudgetReached,
     CallFailed,
     CallRow,
+    JudgeInputs,
     Ledger,
     Tape,
-    judge_call_row,
     move_call_row,
 )
 from arena_evals.datagen.mine import ScoredMove
@@ -96,22 +96,12 @@ async def draw_and_judge(
         refused.append(move)
         return None
     p = turn.payload
-    inputs = {
-        "previous": p["previous"],
-        "move": move,
-        "hidden": p["hidden"],
-        "transcript": p["transcript"],
-    }
-
-    async def live(idx: int) -> CallRow:
-        call = await judge_with_backoff(
-            caller, template, p["transcript"], p["previous"], move, p["hidden"], judge
-        )
-        return judge_call_row(tape.key, idx, turn.actor, turn.seq, judge, call, inputs)
-
-    verdict = await tape.step("judge", turn.actor, turn.seq, live, inputs)
-    response = verdict.payload["response"]
-    return (move, JudgeResponse.model_validate(response)) if response else None
+    ask = JudgeInputs(p["previous"], move, p["hidden"], p["transcript"])
+    try:
+        response = await tape.judge(caller, judge, template, turn.actor, turn.seq, ask)
+    except CallFailed:
+        return None
+    return move, response
 
 
 async def main(args) -> None:

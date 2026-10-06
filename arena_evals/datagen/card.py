@@ -9,7 +9,7 @@ from arena_core.state import STANDING, weighted_total
 from arena_core.template import Template
 from arena_evals.datagen.ledger import CallRow, Ledger
 from arena_evals.datagen.records import PARSED, export
-from arena_judge.schema import JudgeResponse, route_outcome
+from arena_judge.schema import route_outcome
 
 SHARE_SLACK = 0.05
 
@@ -31,9 +31,9 @@ def write(run_id: str, ledger: Ledger, corpus_dir: Path, templates: dict[str, Te
     judge_versions: set[tuple[str, str]] = set()
     for match_id in matches:
         for call in ledger.calls(match_id):
-            if call.role != "judge" or not call.payload["response"]:
+            response = call.verdict if call.role == "judge" else None
+            if response is None:
                 continue
-            response = JudgeResponse.model_validate(call.payload["response"])
             template = templates[matches[match_id]["template_id"]]
             outcome = route_outcome(response.scoring)
             in_match.append(
