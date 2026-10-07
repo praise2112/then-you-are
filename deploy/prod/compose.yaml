@@ -1,0 +1,47 @@
+name: thenyouare
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql:ro
+    # TCP is checked because the init-time server listens only on the socket.
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "oddstage", "-d", "oddstage"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    logging:
+      driver: journald
+    security_opt:
+      - no-new-privileges:true
+
+  app:
+    image: thenyouare:${IMAGE_TAG:?}
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://oddstage:${APP_DB_PASSWORD:?}@db:5432/oddstage
+      FORWARDED_ALLOW_IPS: "*"
+      # Blanked so the app never holds the database passwords on their own.
+      POSTGRES_PASSWORD: ""
+      APP_DB_PASSWORD: ""
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./models.local.yaml:/app/models.local.yaml:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: journald
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  pgdata:
