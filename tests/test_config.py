@@ -14,3 +14,10 @@ def test_every_model_role_can_call_deepseek_directly(monkeypatch):
     for ref in (settings.judge_ref, settings.fallback_ref):
         spec = load_model(ref)
         assert (spec.base_url, spec.api_key_env) == ("https://api.deepseek.com", "DEEPSEEK_API_KEY")
+
+
+def test_a_model_entry_can_come_from_a_file_outside_the_repo(monkeypatch, tmp_path):
+    extra = tmp_path / "models.local.yaml"
+    extra.write_text("house:\n  display_name: The House\n  model: private-model\n")
+    monkeypatch.setenv("EXTRA_MODELS_PATH", str(extra))
+    assert load_model("house").model == "private-model"

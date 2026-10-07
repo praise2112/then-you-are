@@ -67,6 +67,8 @@ class ModelSpec(BaseModel):
 
 def load_model(ref: str) -> ModelSpec:
     registry = yaml.safe_load(MODELS_PATH.read_text())
+    if extra := os.environ.get("EXTRA_MODELS_PATH"):
+        registry |= yaml.safe_load(Path(extra).read_text())
     if ref not in registry:
         raise KeyError(f"no model named {ref} in models.yaml")
     entry = registry[ref]

@@ -14,6 +14,7 @@ frontend/dist/
 # Secrets and local state
 .env
 .env.local
+models.local.yaml
 *.db
 arena_evals/datagen/corpus/
 .claude/runs/
