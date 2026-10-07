@@ -271,6 +271,47 @@ def test_a_stream_chunk_without_choices_is_skipped(monkeypatch):
     asyncio.run(caller.aclose())
 
 
+def test_a_streamed_move_reports_its_cost_from_the_last_chunk(monkeypatch):
+    seen: list[httpx.Request] = []
+    lines = [
+        'data: {"choices": [{"delta": {"content": "I am a lid."}}]}',
+        'data: {"choices": [], "usage": {"prompt_cache_miss_tokens": 1000000, '
+        '"completion_tokens": 500000}}',
+        "data: [DONE]",
+    ]
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        return httpx.Response(200, text="\n".join(lines) + "\n")
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(
+        httpx, "AsyncClient", lambda **kw: real(transport=httpx.MockTransport(handler), **kw)
+    )
+    monkeypatch.setenv("HOUSE_KEY", "k")
+    spec = ModelSpec(
+        model="flash",
+        display_name="The House",
+        base_url="https://api.example",
+        api_key_env="HOUSE_KEY",
+        prices=Prices(cache_hit=0.1, cache_miss=0.2, output=0.4),
+    )
+    costs: list[float] = []
+
+    async def on_cost(cost: float) -> None:
+        costs.append(cost)
+
+    caller = ModelCaller("secret", spec, spec, on_cost=on_cost)
+
+    async def collect() -> str:
+        return "".join([d async for d in caller.stream(spec, [])])
+
+    assert asyncio.run(collect()) == "I am a lid."
+    asyncio.run(caller.aclose())
+    assert json.loads(seen[0].content)["stream_options"] == {"include_usage": True}
+    assert costs == [pytest.approx(0.4)]
+
+
 def test_a_scoring_block_of_the_wrong_shape_is_unparseable_not_a_crash():
     assert parse_judge('{"scoring": "accept"}', ["counter_strength"]) is None
     assert parse_judge('{"scoring": {"evidence": "reason"}}', ["counter_strength"]) is None

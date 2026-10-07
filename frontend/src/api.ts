@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import type { components } from "./generated/openapi";
+import { humanToken } from "./turnstile";
 
 type S = components["schemas"];
 export type TemplateView = S["TemplateView"];
@@ -56,11 +57,17 @@ export class ApiError extends Error {
   }
 }
 
+// Cloudflare's rate limit answers 429 with its own page, never a detail.
+const CROWDED = "The stage is crowded right now. Try again in a moment.";
+// Matches the server's line for a failed Turnstile check.
+const NOT_SEEN = "The doorman didn't catch your face. Try once more.";
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     ...init,
     headers: { "content-type": "application/json", ...init?.headers },
   });
+  if (response.status === 429) throw new ApiError(429, CROWDED);
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     throw new ApiError(response.status, body.detail ?? response.statusText);
@@ -72,11 +79,20 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   templates: () => request<TemplateView[]>("/templates"),
   template: (slug: string) => request<TemplateView>(`/templates/${slug}`),
-  createMatch: (
+  createMatch: async (
     templateId: string,
     opts: { stageName?: string; seedToken?: string; firstMove?: string; friends?: boolean; seats?: number } = {},
-  ) =>
-    request<MatchSnapshot>("/matches", {
+  ) => {
+    const session = await request<SessionView>("/sessions/me");
+    let token = "";
+    if (!session.account) {
+      try {
+        token = await humanToken(session.turnstile_site_key);
+      } catch {
+        throw new ApiError(403, NOT_SEEN);
+      }
+    }
+    return request<MatchSnapshot>("/matches", {
       method: "POST",
       body: JSON.stringify({
         template_id: templateId,
@@ -85,8 +101,10 @@ export const api = {
         first_move: opts.firstMove ?? null,
         kind: opts.friends ? "friends" : "house",
         seats: opts.seats ?? 2,
+        turnstile_token: token,
       }),
-    }),
+    });
+  },
   joinTable: (inviteCode: string, stageName?: string) =>
     request<{ match_id: string }>("/tables/join", {
       method: "POST",

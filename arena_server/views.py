@@ -259,6 +259,7 @@ class SessionView(BaseModel):
     account: AccountView | None = None
     providers: list[str] = []
     open_duels: list[OpenDuel] = []
+    turnstile_site_key: str = ""
 
 
 class StandingView(BaseModel):

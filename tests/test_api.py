@@ -14,7 +14,14 @@ from asgi_lifespan import LifespanManager
 from arena_core.template import load_template
 from arena_server.app import build_app
 from arena_server.config import load_settings
-from tests.conftest import FakeCaller, events_of, judge_response, run_app, settle
+from tests.conftest import (
+    FakeCaller,
+    always_human,
+    events_of,
+    judge_response,
+    run_app,
+    settle,
+)
 
 pytestmark = [
     pytest.mark.skipif(
@@ -140,7 +147,7 @@ async def test_the_stand_in_takes_the_house_seat_unnamed_when_the_house_is_down(
         curator_token="shh",
         opponent_ref="student-local",
     )
-    app = build_app(settings, caller)
+    app = build_app(settings, caller, always_human)
     manager = LifespanManager(app)
     await manager.__aenter__()
     client = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test")
@@ -821,7 +828,7 @@ async def test_each_house_conversation_keeps_a_llama_server_slot_until_its_match
         curator_token="shh",
         opponent_ref="student-local",
     )
-    app = build_app(settings, caller)
+    app = build_app(settings, caller, always_human)
     manager = LifespanManager(app)
     await manager.__aenter__()
     transport = httpx.ASGITransport(app=app)

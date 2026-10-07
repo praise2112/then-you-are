@@ -617,6 +617,11 @@ export interface components {
              * @default 2
              */
             seats: number;
+            /**
+             * Turnstile Token
+             * @default
+             */
+            turnstile_token: string;
         };
         /** CurateCommand */
         CurateCommand: {
@@ -1407,6 +1412,11 @@ export interface components {
              * @default []
              */
             open_duels: components["schemas"]["OpenDuel"][];
+            /**
+             * Turnstile Site Key
+             * @default
+             */
+            turnstile_site_key: string;
         };
         /**
          * SsePayloads

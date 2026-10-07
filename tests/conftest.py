@@ -2,7 +2,7 @@ import asyncio
 import dataclasses
 import json
 import os
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Awaitable, Callable
 
 import httpx
 import psycopg
@@ -157,16 +157,26 @@ def no_live_matches(request: pytest.FixtureRequest) -> None:
             )
 
 
-async def run_app(caller: ModelCaller):
-    """Boots the app on the test database. Returns the app, its lifespan to close, and a client."""
+async def always_human(_token: str) -> bool:
+    return True
+
+
+async def run_app(
+    caller: ModelCaller,
+    verify_human: Callable[[str], Awaitable[bool]] = always_human,
+    **overrides: object,
+):
+    """Boots the app on the test database, with any settings given replaced. Returns the app,
+    its lifespan to close, and a client."""
     settings = dataclasses.replace(
         load_settings(),
         database_url=os.environ["TEST_DATABASE_URL"],
         curator_token="shh",
         session_secret="test-secret",
         oauth_clients={"github": ("id", "secret"), "discord": ("id", "secret")},
+        **{"daily_cap_usd": None, **overrides},
     )
-    app = build_app(settings, caller)
+    app = build_app(settings, caller, verify_human)
     manager = LifespanManager(app)
     await manager.__aenter__()
     transport = httpx.ASGITransport(app=app)

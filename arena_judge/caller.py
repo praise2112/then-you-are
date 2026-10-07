@@ -6,7 +6,7 @@ import json
 import os
 import re
 import time
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator, Awaitable, Callable, Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -127,10 +127,13 @@ class ModelCaller:
         opponent: ModelSpec,
         timeout_s: float = 30.0,
         tracer: Langfuse | None = None,
+        on_cost: Callable[[float], Awaitable[None]] | None = None,
     ):
         self.judge_spec = judge
         self.opponent_spec = opponent
         self.tracer = tracer
+        # Awaited with each call's cost in dollars, streamed or not.
+        self.on_cost = on_cost
         self.client = httpx.AsyncClient(
             headers={"Authorization": f"Bearer {api_key}"},
             timeout=httpx.Timeout(timeout_s, connect=10.0),
@@ -182,6 +185,8 @@ class ModelCaller:
             **extra,
         }
         if spec.base_url:
+            if extra.get("stream"):
+                body["stream_options"] = {"include_usage": True}
             if spec.reasoning_effort:
                 body["reasoning_effort"] = spec.reasoning_effort
             if spec.thinking is not None:
@@ -209,7 +214,9 @@ class ModelCaller:
                     usage_details={"input": result.tokens_in, "output": result.tokens_out},
                     cost_details={"total": result.cost_usd},
                 )
-            return result
+        if self.on_cost and result.cost_usd:
+            await self.on_cost(result.cost_usd)
+        return result
 
     async def _complete(self, spec: ModelSpec, messages: list[dict], **extra: Any) -> CallResult:
         t0 = time.monotonic()
@@ -228,16 +235,13 @@ class ModelCaller:
             raise CallError(f"no choices in response: {json.dumps(data)[:300]}")
         usage = data.get("usage") or {}
         message = data["choices"][0]["message"]
-        cost = usage.get("cost")
-        if cost is None and spec.prices:
-            cost = spec.prices.cost(usage, datetime.now(UTC))
         return CallResult(
             text=message.get("content") or "",
             latency_ms=int((time.monotonic() - t0) * 1000),
             reasoning=message.get("reasoning") or message.get("reasoning_content") or None,
             tokens_in=usage.get("prompt_tokens", 0),
             tokens_out=usage.get("completion_tokens", 0),
-            cost_usd=float(cost or 0.0),
+            cost_usd=_cost(spec, usage),
         )
 
     async def stream(
@@ -245,6 +249,7 @@ class ModelCaller:
     ) -> AsyncIterator[str]:
         body = self._body(spec, messages, stream=True, **extra)
         client, url, headers = self._route(spec)
+        usage: dict = {}
         with self._observe(spec) as generation:
             started = False
             try:
@@ -256,6 +261,7 @@ class ModelCaller:
                         chunk = json.loads(line[6:])
                         if "error" in chunk:
                             raise CallError("error chunk in stream")
+                        usage = chunk.get("usage") or usage
                         choices = chunk.get("choices") or [{}]
                         delta = choices[0].get("delta", {}).get("content")
                         if not delta:
@@ -266,6 +272,17 @@ class ModelCaller:
                         yield delta
             except (httpx.HTTPError, ValueError) as e:
                 raise CallError(str(e)) from e
+            cost = _cost(spec, usage)
+            if generation:
+                generation.update(
+                    usage_details={
+                        "input": usage.get("prompt_tokens", 0),
+                        "output": usage.get("completion_tokens", 0),
+                    },
+                    cost_details={"total": cost},
+                )
+        if self.on_cost and cost:
+            await self.on_cost(cost)
 
     async def judge(
         self,
@@ -346,6 +363,14 @@ class ModelCaller:
             await self.local.get(
                 self.opponent_spec.base_url.rstrip("/").removesuffix("/v1") + "/health"
             )
+
+
+def _cost(spec: ModelSpec, usage: dict) -> float:
+    """The provider's reported cost, else the spec's prices applied to the usage."""
+    cost = usage.get("cost")
+    if cost is None and spec.prices:
+        cost = spec.prices.cost(usage, datetime.now(UTC))
+    return float(cost or 0.0)
 
 
 def extract_json(raw: str) -> dict | None:

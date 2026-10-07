@@ -446,6 +446,25 @@ async def insert_verdict(pool: Pool, call: JudgeCall, judge_model: str) -> int:
     return row["id"]
 
 
+async def add_spend(pool: Pool, cost_usd: float) -> None:
+    async with pool.connection() as conn:
+        await conn.execute(
+            "insert into daily_spend (day, cost_usd) values ((now() at time zone 'utc')::date, %s) "
+            "on conflict (day) do update set cost_usd = daily_spend.cost_usd + excluded.cost_usd",
+            (cost_usd,),
+        )
+
+
+async def spent_today(pool: Pool) -> float:
+    async with pool.connection() as conn:
+        row = await (
+            await conn.execute(
+                "select cost_usd from daily_spend where day = (now() at time zone 'utc')::date"
+            )
+        ).fetchone()
+    return row["cost_usd"] if row else 0.0
+
+
 async def stamp_badges(pool: Pool, verdict_id: int, badges: list[str]) -> None:
     async with pool.connection() as conn:
         await conn.execute(

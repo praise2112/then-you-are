@@ -5,6 +5,7 @@ import html
 import logging
 import os
 import re
+import secrets
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -54,8 +55,9 @@ from arena_server.names import check_name
 from arena_server.presence import Lobby, Online, Presence, TurnNudge
 from arena_server.profiles import profile
 from arena_server.sessions import ensure_session, session_view
-from arena_server.store import MatchError, match_is_live, set_curated
+from arena_server.store import MatchError, add_spend, match_is_live, set_curated
 from arena_server.tables import Tables, open_tables
+from arena_server.turnstile import passes_turnstile
 from arena_server.views import (
     BoardSummary,
     BoardView,
@@ -105,7 +107,11 @@ def page_with_head(shell: str | None, head: str, title: str, body: str) -> str:
     )
 
 
-def build_app(settings: Settings | None = None, caller: ModelCaller | None = None) -> FastAPI:
+def build_app(
+    settings: Settings | None = None,
+    caller: ModelCaller | None = None,
+    verify_human: Callable[[str], Awaitable[bool]] | None = None,
+) -> FastAPI:
     settings = settings or load_settings()
     templates = load_templates()
     if settings.featured_template not in templates:
@@ -122,13 +128,14 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     for spec in (judge_spec, opponent_spec):
         if spec.api_key_env and not os.environ.get(spec.api_key_env):
             raise RuntimeError(f"{spec.api_key_env} is not set")
+    pool = make_pool(settings.database_url)
     caller = caller or ModelCaller(
         settings.openrouter_api_key,
         judge_spec,
         opponent_spec,
         tracer=Langfuse() if settings.trace_calls else None,
+        on_cost=lambda cost: add_spend(pool, cost),
     )
-    pool = make_pool(settings.database_url)
     bus = EventBus()
     presence = Presence()
     service = MatchService(
@@ -146,7 +153,12 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         if opponent_spec.base_url
         else None,
     )
-    tables = Tables(service)
+    turnstile_secret = settings.turnstile_secret_key
+    tables = Tables(
+        service,
+        settings.daily_cap_usd,
+        verify_human or (lambda token: passes_turnstile(turnstile_secret, token)),
+    )
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -170,7 +182,16 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         await caller.aclose()
         await pool.close()
 
-    app = FastAPI(title="Then You Are", version="0.1.0", lifespan=lifespan)
+    # The API docs are served only when the site is not on https.
+    local = not settings.secure_cookies
+    app = FastAPI(
+        title="Then You Are",
+        version="0.1.0",
+        lifespan=lifespan,
+        docs_url="/docs" if local else None,
+        redoc_url="/redoc" if local else None,
+        openapi_url="/openapi.json" if local else None,
+    )
     app.add_middleware(
         SessionMiddleware,
         secret_key=settings.session_secret,
@@ -198,6 +219,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         first_move: str | None = Field(default=None, max_length=2000)
         kind: Literal["house", "friends"] = "house"
         seats: int = Field(default=2, ge=2, le=6)
+        turnstile_token: str = Field(default="", max_length=4096)
 
     class JoinTable(BaseModel):
         invite_code: str = Field(min_length=1, max_length=16)
@@ -309,6 +331,7 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def session_with_providers(key: str | None) -> SessionView:
         view = await session_view(service, key)
         view.providers = list(settings.oauth_clients)
+        view.turnstile_site_key = settings.turnstile_site_key
         return view
 
     @app.get("/sessions/me")
@@ -356,7 +379,9 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
         if body.template_id not in templates:
             raise HTTPException(404, "no such template")
         key = await player_session(request, response, body.stage_name)
-        snap = await tables.create(key, body.template_id, body.seed_token, body.kind, body.seats)
+        snap = await tables.create(
+            key, body.template_id, body.seed_token, body.kind, body.seats, body.turnstile_token
+        )
         if body.kind == "house" and body.first_move and snap.state_version == 0:
             await service.submit_move(snap.id, key, f"first-{snap.id}", 0, body.first_move)
             snap = await service.snapshot(snap.id, key)
@@ -496,7 +521,9 @@ def build_app(settings: Settings | None = None, caller: ModelCaller | None = Non
     async def post_curate(
         match_id: str, body: CurateCommand, x_curator_token: str = Header(default="")
     ) -> Response:
-        if not settings.curator_token or x_curator_token != settings.curator_token:
+        if not settings.curator_token or not secrets.compare_digest(
+            x_curator_token, settings.curator_token
+        ):
             raise HTTPException(403, "curator token required")
         await set_curated(pool, match_id, body.curated)
         return Response(status_code=204)

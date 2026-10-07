@@ -5,6 +5,8 @@ import secrets
 from dataclasses import dataclass
 from pathlib import Path
 
+from arena_server.turnstile import TEST_SECRET_KEY, TEST_SITE_KEY
+
 
 @dataclass(frozen=True)
 class Settings:
@@ -23,6 +25,10 @@ class Settings:
     oauth_clients: dict[str, tuple[str, str]]
     # Model calls are traced to Langfuse when both of its keys are set.
     trace_calls: bool
+    # No new match starts once today's model spend reaches this; None means no cap.
+    daily_cap_usd: float | None
+    turnstile_site_key: str
+    turnstile_secret_key: str
 
 
 def load_settings() -> Settings:
@@ -31,6 +37,9 @@ def load_settings() -> Settings:
     secure = public_base_url.startswith("https://")
     if secure and not os.environ.get("SESSION_SECRET"):
         raise RuntimeError("SESSION_SECRET must be set when the site is served over https")
+    turnstile = os.environ.get("TURNSTILE_SITE_KEY"), os.environ.get("TURNSTILE_SECRET_KEY")
+    if secure and not all(turnstile):
+        raise RuntimeError("TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY must be set over https")
     return Settings(
         database_url=os.environ.get(
             "DATABASE_URL", "postgresql://oddstage:oddstage@localhost:5433/oddstage"
@@ -49,6 +58,9 @@ def load_settings() -> Settings:
         trace_calls=bool(
             os.environ.get("LANGFUSE_PUBLIC_KEY") and os.environ.get("LANGFUSE_SECRET_KEY")
         ),
+        daily_cap_usd=float(cap) if (cap := os.environ.get("DAILY_CAP_USD")) else None,
+        turnstile_site_key=turnstile[0] or TEST_SITE_KEY,
+        turnstile_secret_key=turnstile[1] or TEST_SECRET_KEY,
     )
 
 

@@ -136,6 +136,12 @@ create table if not exists disagreements (
     primary key (match_id, seq, session_key)
 );
 
+-- Model spend in dollars per UTC day; kept when accounts and matches are deleted.
+create table if not exists daily_spend (
+    day date primary key,
+    cost_usd double precision not null
+);
+
 -- Runs once, on a database that still has matches.seed_token: stores each turn's points and
 -- drops the unused columns.
 do $$

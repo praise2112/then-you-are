@@ -4,6 +4,7 @@ of tables still filling."""
 import asyncio
 import secrets
 from collections import defaultdict
+from collections.abc import Awaitable, Callable
 from typing import TYPE_CHECKING, Literal
 
 from psycopg import AsyncConnection
@@ -14,7 +15,7 @@ from arena_core.template import Template
 from arena_server.db import Pool
 from arena_server.events import MatchStarted, SeatJoined
 from arena_server.presence import Lobby, Presence
-from arena_server.sessions import lists_duels, open_match_ids, seat_of
+from arena_server.sessions import account_of, lists_duels, open_match_ids, seat_of
 from arena_server.store import (
     MatchError,
     insert_match,
@@ -22,6 +23,7 @@ from arena_server.store import (
     invite_match_id,
     joinable_ids,
     open_table_rows,
+    spent_today,
     start_table,
 )
 from arena_server.views import MatchSnapshot, TableKind, TableView
@@ -53,9 +55,23 @@ async def broadcast_lobby(presence: Presence, pool: Pool, templates: dict[str, T
     await presence.broadcast(Lobby(tables=await open_tables(pool, templates)))
 
 
+# Shown when today's model spend has reached the cap.
+CLOSED_FOR_TODAY = "The House has closed its doors for today. Come back tomorrow."
+# Shown when a guest's browser fails the Turnstile check.
+NOT_SEEN = "The doorman didn't catch your face. Try once more."
+
+
 class Tables:
-    def __init__(self, service: "MatchService"):
+    def __init__(
+        self,
+        service: "MatchService",
+        daily_cap_usd: float | None,
+        verify_human: Callable[[str], Awaitable[bool]],
+    ):
         self.service = service
+        self.daily_cap_usd = daily_cap_usd
+        # Checks a Turnstile token with Cloudflare.
+        self.verify_human = verify_human
         # Quick match searches and creates under one lock per game.
         self.seating: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 
@@ -66,9 +82,11 @@ class Tables:
         seed_token: str | None = None,
         kind: TableKind = "house",
         seats: int = 2,
+        human_token: str | None = None,
     ) -> MatchSnapshot:
         """A House duel starts at once. A table for friends or for anyone waits for its seats;
-        its creator holds the first one."""
+        its creator holds the first one. A guest starting a new match must pass `human_token`'s
+        Turnstile check; None skips it."""
         service = self.service
         template = service.templates.get(template_id)
         if template is None:
@@ -87,6 +105,12 @@ class Tables:
         open_ids = await open_match_ids(service.pool, session_key, template.slug, kind)
         if open_ids:
             return await service.snapshot(open_ids[0], session_key)
+        await self._check_cap()
+        if human_token is not None:
+            async with service.pool.connection() as conn:
+                guest = await account_of(conn, session_key) is None
+            if guest and not await self.verify_human(human_token):
+                raise MatchError(403, NOT_SEEN)
         cards = deal(template, secrets.SystemRandom(), first, template.revealed_card)
         match_id = secrets.token_urlsafe(8)
         listed = await lists_duels(service.pool, session_key)
@@ -173,6 +197,8 @@ class Tables:
                 raise MatchError(403, "only the table's creator can add the House")
             if match.status != "open":
                 raise MatchError(409, "this table has already started")
+            if len(rec.seats) + 1 >= rec.seats_wanted:
+                await self._check_cap()
             seat = f"p{len(rec.seats) + 1}"
             async with service.pool.connection() as conn:
                 await self._insert_seat(
@@ -191,6 +217,12 @@ class Tables:
             service.bus.emit(match_id, MatchStarted(state_version=0))
             await service.start(match, rec)
         service.spawn(self._broadcast_lobby())
+
+    async def _check_cap(self) -> None:
+        if self.daily_cap_usd is not None and (
+            await spent_today(self.service.pool) >= self.daily_cap_usd
+        ):
+            raise MatchError(503, CLOSED_FOR_TODAY)
 
     async def _broadcast_lobby(self) -> None:
         service = self.service
