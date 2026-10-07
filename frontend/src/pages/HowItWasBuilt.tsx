@@ -212,7 +212,8 @@ function TheGame() {
         The House is Qwen3.5-0.8B, an open model with 0.8 billion parameters, picked from six open models between 0.6
         and 2 billion. It learned the game in three stages: supervised fine-tuning (<strong>SFT</strong>) on moves
         written by two bigger models, two rounds of <strong>preference optimization</strong>, and reinforcement learning
-        (<strong>RL</strong>) with the judge's verdict as the reward. It ships as a compressed file of 517 MiB and runs
+        (<strong>RL</strong>) with the judge's verdict as the reward. It ships as a{" "}
+        <a href="https://huggingface.co/Praise2112/then-you-are-house-0.8b">compressed file of 517 MiB</a> and runs
         with llama.cpp on 4 CPU cores, with no GPU, in a container that shuts down when nobody is playing.
       </p>
       <p>
@@ -874,6 +875,11 @@ function References() {
   return (
     <section id="references">
       <h2>References</h2>
+      <p>
+        The model's weights and card are on{" "}
+        <a href="https://huggingface.co/Praise2112/then-you-are-house-0.8b">Hugging Face</a>, and the code is on{" "}
+        <a href="https://github.com/praise2112/then-you-are">GitHub</a>.
+      </p>
       {REFERENCES.map((group) => (
         <div key={group.section} className="writeup-references">
           <h3>

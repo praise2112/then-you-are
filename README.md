@@ -13,7 +13,8 @@ training. Qwen3.5-4B, prompted the same way without fine-tuning, gets 55.1%. It 
 4 CPU cores with no GPU.
 
 How the models were built, with every number and its source:
-[How it was built](https://thenyouare.com/how-it-was-built).
+[How it was built](https://thenyouare.com/how-it-was-built). The model's weights, GGUF and card:
+[Praise2112/then-you-are-house-0.8b](https://huggingface.co/Praise2112/then-you-are-house-0.8b).
 
 ## How a model is made
 
