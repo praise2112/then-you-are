@@ -1,5 +1,5 @@
 thenyouare.com, www.thenyouare.com {
-	tls /etc/caddy/certs/origin.pem /etc/caddy/certs/origin.key {
+	tls /etc/caddy/certs/thenyouare.pem /etc/caddy/certs/thenyouare.key {
 		client_auth {
 			mode require_and_verify
 			trust_pool file /etc/caddy/certs/cloudflare-origin-pull-ca.pem
