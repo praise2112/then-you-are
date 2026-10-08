@@ -957,3 +957,19 @@ async def test_the_writeup_link_previews_with_its_own_title_and_image(tmp_path: 
     assert 'content="https://example.org/how-it-was-built"' in page
     assert page.count('property="og:image"') == 1
     assert 'content="https://example.org/og-image.png"' in page
+
+
+@pytest.mark.anyio
+async def test_the_home_page_link_previews_with_the_site_title(tmp_path: Path):
+    (tmp_path / "assets").mkdir()
+    (tmp_path / "index.html").write_text("<html><head></head><body></body></html>")
+    settings = dataclasses.replace(
+        load_settings(),
+        database_url=os.environ["TEST_DATABASE_URL"],
+        frontend_dist=tmp_path,
+        public_base_url="https://example.org",
+    )
+    [(status, page)] = await get_texts(settings, "/")
+    assert status == 200
+    assert '<meta property="og:title" content="Then You Are">' in page
+    assert '<meta property="og:url" content="https://example.org/">' in page

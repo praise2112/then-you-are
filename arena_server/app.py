@@ -74,6 +74,8 @@ from arena_server.views import (
 SWEEP_EVERY_S = 60
 GUEST_SWEEP_EVERY_S = 60 * 60 * 24
 CLOCK_EVERY_S = 10
+HOME_TITLE = "Then You Are"
+HOME_DESCRIPTION = "Quick word games. Play friends, strangers, or the House."
 WRITEUP_TITLE = "How the models in Then You Are were built"
 WRITEUP_DESCRIPTION = (
     "The AI player in Then You Are is Qwen3.5-0.8B. Fine-tuning took it from 19.0% to 68.5% of "
@@ -544,6 +546,19 @@ def build_app(
             f'<meta property="og:url" content="{settings.public_base_url}/r/{match_id}">'
         )
         return HTMLResponse(page_with_head(shell_page, head, title, description))
+
+    home_page = page_with_head(
+        shell_page,
+        f'<meta property="og:title" content="{html.escape(HOME_TITLE)}">'
+        f'<meta property="og:description" content="{html.escape(HOME_DESCRIPTION)}">'
+        f'<meta property="og:url" content="{settings.public_base_url}/">',
+        html.escape(HOME_TITLE),
+        html.escape(HOME_DESCRIPTION),
+    )
+
+    @app.get("/", response_class=HTMLResponse)
+    async def home_shell() -> HTMLResponse:
+        return HTMLResponse(home_page)
 
     writeup_head = (
         f'<meta property="og:title" content="{html.escape(WRITEUP_TITLE)}">'
