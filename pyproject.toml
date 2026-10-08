@@ -21,7 +21,7 @@ dependencies = [
 dev = [
     "anyio>=4.14.2",
     "asgi-lifespan>=2.1.0",
-    "b2sdk==2.13.0",
+    "b2sdk==2.13.1",
     "httpx>=0.27",
     "markdown>=3.7",
     "pyright>=1.1.390",
