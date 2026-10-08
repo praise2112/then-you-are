@@ -19,6 +19,7 @@ from langfuse import Langfuse
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from arena_core.template import load_templates
 from arena_judge.caller import ModelCaller, load_model
@@ -97,6 +98,19 @@ async def sweep(
         except Exception:
             log.exception("%s sweep failed", name)
         await asyncio.sleep(every_s)
+
+
+class HeadAsGet:
+    """ASGI middleware: a HEAD request runs the GET route. Routes get a copy of the scope, so the
+    server still sees HEAD and drops the body."""
+
+    def __init__(self, app: ASGIApp):
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] == "http" and scope["method"] == "HEAD":
+            scope = {**scope, "method": "GET"}
+        await self.app(scope, receive, send)
 
 
 def page_with_head(shell: str | None, head: str, title: str, body: str) -> str:
@@ -201,6 +215,7 @@ def build_app(
         https_only=settings.secure_cookies,
     )
     app.add_middleware(SessionCheck, pool=pool)
+    app.add_middleware(HeadAsGet)
     app.state.service = service
     app.state.bus = bus
     mount_auth(app, settings, pool)

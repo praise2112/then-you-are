@@ -973,3 +973,22 @@ async def test_the_home_page_link_previews_with_the_site_title(tmp_path: Path):
     assert status == 200
     assert '<meta property="og:title" content="Then You Are">' in page
     assert '<meta property="og:url" content="https://example.org/">' in page
+
+
+@pytest.mark.anyio
+async def test_a_head_request_answers_like_get(tmp_path: Path):
+    (tmp_path / "assets").mkdir()
+    (tmp_path / "index.html").write_text("<html><head></head><body></body></html>")
+    settings = dataclasses.replace(
+        load_settings(), database_url=os.environ["TEST_DATABASE_URL"], frontend_dist=tmp_path
+    )
+    app = build_app(settings, FakeCaller(rulings=[], opponent_moves=[]))
+    async with (
+        LifespanManager(app),
+        httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as c,
+    ):
+        assert [(await c.head(path)).status_code for path in ("/healthz", "/", "/privacy")] == [
+            200,
+            200,
+            200,
+        ]
