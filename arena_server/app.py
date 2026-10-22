@@ -53,6 +53,7 @@ from arena_server.events import (
 from arena_server.leaderboard import board, boards_index, ranked_players
 from arena_server.matches import MatchService
 from arena_server.names import check_name
+from arena_server.page_views import PageViews
 from arena_server.presence import Lobby, Online, Presence, TurnNudge
 from arena_server.profiles import profile
 from arena_server.sessions import ensure_session, session_view
@@ -216,6 +217,7 @@ def build_app(
     )
     app.add_middleware(SessionCheck, pool=pool)
     app.add_middleware(HeadAsGet)
+    app.add_middleware(PageViews, pool=pool)
     app.state.service = service
     app.state.bus = bus
     mount_auth(app, settings, pool)

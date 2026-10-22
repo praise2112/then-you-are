@@ -142,6 +142,17 @@ create table if not exists daily_spend (
     cost_usd double precision not null
 );
 
+-- Page views counted per day; no IP, cookie or session is stored.
+create table if not exists page_views (
+    day date not null default current_date,
+    section text not null,
+    source text not null,
+    country text not null,
+    device text not null,
+    views int not null default 1,
+    primary key (day, section, source, country, device)
+);
+
 -- Runs once, on a database that still has matches.seed_token: stores each turn's points and
 -- drops the unused columns.
 do $$
